@@ -4,7 +4,7 @@
   "private": true,
   "displayName": "Refactorix",
   "publisher": "nicoespeon",
-  "description": "Automated refactorings for VSCode",
+  "description": "Automated refactorings for VS Code",
   "author": "Nicolas Carlo <nicolascarlo.espeon@gmail.com>",
   "license": "MIT",
   "repository": "nicoespeon/refactorix",
