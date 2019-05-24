@@ -39,7 +39,7 @@
     "build": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "yarn run build && node ./node_modules/vscode/bin/test",
+    "test": "jest",
     "prepackage": "rm -rf dist/*.vsix",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
@@ -51,11 +51,13 @@
     }
   },
   "devDependencies": {
-    "@types/mocha": "2.2.42",
+    "@types/jest": "24.0.13",
     "@types/node": "10.12.21",
     "husky": "2.3.0",
+    "jest": "24.8.0",
     "prettier": "1.17.1",
     "pretty-quick": "1.11.0",
+    "ts-jest": "24.0.2",
     "tslint": "5.12.1",
     "typescript": "3.3.1",
     "vsce": "1.61.0",
