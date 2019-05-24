@@ -1,0 +1,64 @@
+{
+  "name": "refactorix",
+  "version": "0.0.1",
+  "private": true,
+  "displayName": "Refactorix",
+  "publisher": "nicoespeon",
+  "description": "Automated refactorings for VSCode",
+  "author": "Nicolas Carlo <nicolascarlo.espeon@gmail.com>",
+  "license": "MIT",
+  "repository": "nicoespeon/refactorix",
+  "homepage": "https://github.com/nicoespeon/refactorix",
+  "bugs": "https://github.com/nicoespeon/refactorix/issues",
+  "keywords": [
+    "refactor",
+    "legacy code",
+    "javascript",
+    "typescript"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "engines": {
+    "vscode": "^1.34.0"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:extension.helloWorld"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "yarn run build && node ./node_modules/vscode/bin/test",
+    "prepackage": "rm -rf dist/*.vsix",
+    "package": "vsce package",
+    "postpackage": "mkdir -p dist && mv *.vsix dist",
+    "package:install": "code --install-extension dist/*.vsix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "@types/mocha": "2.2.42",
+    "@types/node": "10.12.21",
+    "husky": "2.3.0",
+    "prettier": "1.17.1",
+    "pretty-quick": "1.11.0",
+    "tslint": "5.12.1",
+    "typescript": "3.3.1",
+    "vsce": "1.61.0",
+    "vscode": "1.1.28"
+  }
+}
