@@ -24,15 +24,36 @@
   },
   "main": "./out/extension.js",
   "activationEvents": [
-    "onCommand:extension.helloWorld"
+    "onCommand:refactorix.renameSymbol"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "extension.helloWorld",
-        "title": "Hello World"
+        "command": "refactorix.renameSymbol",
+        "title": "Rename Symbol",
+        "category": "Refactorix"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "refactorix.renameSymbol",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "refactorix.renameSymbol",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "refactorix.renameSymbol",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "refactorix.renameSymbol",
+          "when": "editorLangId == typescriptreact"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run build",
