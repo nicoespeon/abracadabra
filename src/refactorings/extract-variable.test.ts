@@ -1,13 +1,13 @@
 import { DelegateToEditor, EditorCommand } from "./i-delegate-to-editor";
 import { WriteUpdates } from "./i-write-updates";
 import { extractVariable } from "./extract-variable";
-import { createSelection } from "./selection";
+import { Selection } from "./selection";
 
 const ONE_STRING_LITERAL = {
   code: `import logger from "./logger";
 
 logger("Hello!");`,
-  selection: createSelection([2, 7], [2, 15])
+  selection: new Selection([2, 7], [2, 15])
 };
 const MANY_STRING_LITERALS = {
   code: `import logger from "./logger";
@@ -15,7 +15,7 @@ const MANY_STRING_LITERALS = {
 logger("Hello");
 logger("World!");
 logger("How are you doing?");`,
-  selection: createSelection([3, 7], [3, 15])
+  selection: new Selection([3, 7], [3, 15])
 };
 
 describe("Extract Variable", () => {
@@ -35,7 +35,7 @@ describe("Extract Variable", () => {
     expect(writeUpdates).toBeCalledWith([
       {
         code: 'const extracted = "Hello!";\n',
-        selection: createSelection([2, 0], [2, 0])
+        selection: new Selection([2, 0], [2, 0])
       },
       { code: "extracted", selection }
     ]);
@@ -58,7 +58,7 @@ describe("Extract Variable", () => {
     expect(writeUpdates).toBeCalledWith([
       {
         code: 'const extracted = "World!";\n',
-        selection: createSelection([3, 0], [3, 0])
+        selection: new Selection([3, 0], [3, 0])
       },
       { code: "extracted", selection }
     ]);

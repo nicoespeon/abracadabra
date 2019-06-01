@@ -5,7 +5,7 @@ import * as t from "@babel/types";
 import { Code, WriteUpdates } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { renameSymbol } from "./rename-symbol";
-import { Selection, createSelection } from "./selection";
+import { Selection } from "./selection";
 import { Position } from "./position";
 
 export { extractVariable };
@@ -59,13 +59,9 @@ async function extractVariable(
 
   const variableName = "extracted";
   const variableDeclaration = `const ${variableName} = ${extractedCode};\n`;
-  const variableDeclarationSelection = createSelection(
-    [selection.start.line, 0],
-    [selection.start.line, 0]
-  );
 
   await writeUpdates([
-    { code: variableDeclaration, selection: variableDeclarationSelection },
+    { code: variableDeclaration, selection: selection.putCursorAtLineStart() },
     { code: variableName, selection }
   ]);
 
