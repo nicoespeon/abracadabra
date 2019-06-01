@@ -3,6 +3,8 @@ import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 
 import { Code, Selection, WriteUpdates } from "./i-write-updates";
+import { DelegateToEditor } from "./i-delegate-to-editor";
+import { renameSymbol } from "./rename-symbol";
 
 export { extractVariable };
 
@@ -25,7 +27,8 @@ function isStringLiteral(
 async function extractVariable(
   code: Code,
   selection: Selection,
-  writeUpdates: WriteUpdates
+  writeUpdates: WriteUpdates,
+  delegateToEditor: DelegateToEditor
 ) {
   const ast = parse(code, {
     // Parse in strict mode and allow module declarations
@@ -61,4 +64,7 @@ async function extractVariable(
     { code: variableDeclaration, selection: variableDeclarationSelection },
     { code: variableName, selection }
   ]);
+
+  // Extracted symbol is located at `selection` => just trigger a rename.
+  await renameSymbol(delegateToEditor);
 }
