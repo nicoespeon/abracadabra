@@ -32,6 +32,11 @@
         "command": "refactorix.renameSymbol",
         "title": "Rename Symbol",
         "category": "Refactorix"
+      },
+      {
+        "command": "refactorix.extractVariable",
+        "title": "Extract Variable",
+        "category": "Refactorix"
       }
     ],
     "menus": {
@@ -50,6 +55,22 @@
         },
         {
           "command": "refactorix.renameSymbol",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "refactorix.extractVariable",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "refactorix.extractVariable",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "refactorix.extractVariable",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "refactorix.extractVariable",
           "when": "editorLangId == typescriptreact"
         }
       ]
@@ -72,6 +93,7 @@
     }
   },
   "devDependencies": {
+    "@types/babel__traverse": "7.0.6",
     "@types/jest": "24.0.13",
     "@types/node": "10.12.21",
     "husky": "2.3.0",
@@ -83,5 +105,10 @@
     "typescript": "3.3.1",
     "vsce": "1.61.0",
     "vscode": "1.1.28"
+  },
+  "dependencies": {
+    "@babel/parser": "7.4.5",
+    "@babel/traverse": "7.4.5",
+    "@babel/types": "7.4.4"
   }
 }
