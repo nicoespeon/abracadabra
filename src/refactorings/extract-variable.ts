@@ -18,11 +18,12 @@ async function extractVariable(
 
   traverseAST(code, {
     enter(path) {
-      if (isStringLiteral(path.node) && path.node.loc) {
-        if (selection.start.isEqualTo(Position.fromAST(path.node.loc.start))) {
-          extractedCode = path.node.extra.raw;
-          indentationLevel = selection.findIndentationLevel(path);
-        }
+      if (!isStringLiteral(path.node)) return;
+      if (!path.node.loc) return;
+
+      if (selection.start.isEqualTo(Position.fromAST(path.node.loc.start))) {
+        extractedCode = path.node.extra.raw;
+        indentationLevel = selection.findIndentationLevel(path);
       }
     }
   });
