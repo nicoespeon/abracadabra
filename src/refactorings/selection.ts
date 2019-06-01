@@ -1,11 +1,8 @@
+import { Position } from "./position";
+
 export interface Selection {
   start: Position;
   end: Position;
-}
-
-export interface Position {
-  line: number;
-  character: number;
 }
 
 export function createSelection(
@@ -13,7 +10,7 @@ export function createSelection(
   [endLine, endChar]: number[]
 ): Selection {
   return {
-    start: { line: startLine, character: startChar },
-    end: { line: endLine, character: endChar }
+    start: new Position(startLine, startChar),
+    end: new Position(endLine, endChar)
   };
 }

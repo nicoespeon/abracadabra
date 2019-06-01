@@ -6,6 +6,7 @@ import { Code, WriteUpdates } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { renameSymbol } from "./rename-symbol";
 import { Selection, createSelection } from "./selection";
+import { Position } from "./position";
 
 export { extractVariable };
 
@@ -48,11 +49,8 @@ async function extractVariable(
 
   traverse(ast, {
     enter(path) {
-      if (isStringLiteral(path.node)) {
-        if (
-          path.node.loc &&
-          selection.start.line + 1 === path.node.loc.start.line
-        ) {
+      if (isStringLiteral(path.node) && path.node.loc) {
+        if (selection.start.isEqualTo(Position.fromAST(path.node.loc.start))) {
           extractedCode = path.node.extra.raw;
         }
       }

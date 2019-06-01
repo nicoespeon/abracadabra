@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import { renameSymbol } from "./refactorings/rename-symbol";
 import { extractVariable } from "./refactorings/extract-variable";
+import { createSelection } from "./refactorings/selection";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { createWriteUpdatesToVSCode } from "./refactorings/adapters/write-updates-to-vscode";
@@ -26,7 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
       await executeSafely(() =>
         extractVariable(
           document.getText(),
-          selection,
+          createSelection(
+            [selection.start.line, selection.start.character],
+            [selection.end.line, selection.end.character]
+          ),
           createWriteUpdatesToVSCode(document.uri),
           delegateToVSCode
         )
