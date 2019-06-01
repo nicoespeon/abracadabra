@@ -1,15 +1,13 @@
 import { DelegateToEditor, EditorCommand } from "./i-delegate-to-editor";
 import { WriteUpdates } from "./i-write-updates";
 import { extractVariable } from "./extract-variable";
+import { createSelection } from "./selection";
 
 const BASIC_SCENARIO = {
   code: `import logger from "./logger";
 
   logger("Hello!");`,
-  selection: {
-    start: { line: 2, character: 7 },
-    end: { line: 2, character: 15 }
-  }
+  selection: createSelection([2, 7], [2, 15])
 };
 
 describe("Extract Variable", () => {
@@ -26,14 +24,10 @@ describe("Extract Variable", () => {
 
     await extractVariable(code, selection, writeUpdates, delegateToEditor);
 
-    const expectedSelectionForExtracted = {
-      start: { line: 2, character: 0 },
-      end: { line: 2, character: 0 }
-    };
     expect(writeUpdates).toBeCalledWith([
       {
         code: 'const extracted = "Hello!";\n',
-        selection: expectedSelectionForExtracted
+        selection: createSelection([2, 0], [2, 0])
       },
       { code: "extracted", selection }
     ]);

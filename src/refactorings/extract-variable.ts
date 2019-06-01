@@ -2,9 +2,10 @@ import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 
-import { Code, Selection, WriteUpdates } from "./i-write-updates";
+import { Code, WriteUpdates } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { renameSymbol } from "./rename-symbol";
+import { Selection, createSelection } from "./selection";
 
 export { extractVariable };
 
@@ -55,10 +56,10 @@ async function extractVariable(
 
   const variableName = "extracted";
   const variableDeclaration = `const ${variableName} = ${extractedCode};\n`;
-  const variableDeclarationSelection = {
-    start: { line: selection.start.line, character: 0 },
-    end: { line: selection.start.line, character: 0 }
-  };
+  const variableDeclarationSelection = createSelection(
+    [selection.start.line, 0],
+    [selection.start.line, 0]
+  );
 
   await writeUpdates([
     { code: variableDeclaration, selection: variableDeclarationSelection },

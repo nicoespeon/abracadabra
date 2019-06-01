@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
-import { WriteUpdates, Position } from "../i-write-updates";
+import { WriteUpdates } from "../i-write-updates";
+import { Position } from "../selection";
 
 export { createWriteUpdatesToVSCode };
 
