@@ -20,6 +20,6 @@ export class Position {
   }
 
   isEqualTo(position: Position): boolean {
-    return this.line === position.line;
+    return this.line === position.line && this.character === position.character;
   }
 }

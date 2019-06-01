@@ -13,9 +13,9 @@ const MANY_STRING_LITERALS = {
   code: `import logger from "./logger";
 
 logger("Hello");
-logger("World!");
+logger("the", "World!", "Alright.");
 logger("How are you doing?");`,
-  selection: new Selection([3, 7], [3, 15])
+  selection: new Selection([3, 14], [3, 22])
 };
 
 describe("Extract Variable", () => {
