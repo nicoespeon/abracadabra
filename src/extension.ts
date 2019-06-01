@@ -10,12 +10,12 @@ export function activate(context: vscode.ExtensionContext) {
   // `commandId` parameters must match `command` fields in `package.json`.
   const renameSymbolCommand = vscode.commands.registerCommand(
     "refactorix.renameSymbol",
-    () => renameSymbol(delegateToVSCode)
+    () => executeSafely(() => renameSymbol(delegateToVSCode))
   );
 
   const extractVariableCommand = vscode.commands.registerCommand(
     "refactorix.extractVariable",
-    () => {
+    async () => {
       const activeTextEditor = vscode.window.activeTextEditor;
       if (!activeTextEditor) {
         return;
@@ -23,10 +23,13 @@ export function activate(context: vscode.ExtensionContext) {
 
       const { document, selection } = activeTextEditor;
 
-      extractVariable(
-        document.getText(),
-        selection,
-        createWriteUpdatesToVSCode(document.uri)
+      await executeSafely(() =>
+        extractVariable(
+          document.getText(),
+          selection,
+          createWriteUpdatesToVSCode(document.uri),
+          delegateToVSCode
+        )
       );
     }
   );
@@ -36,3 +39,17 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+
+async function executeSafely(command: () => Promise<any>): Promise<void> {
+  try {
+    await command();
+  } catch (err) {
+    if (err.name === "Canceled") {
+      // This happens when "Rename Symbol" is completed.
+      // In general, if command is cancelled, we're fine to ignore the error.
+      return;
+    }
+
+    console.error(err);
+  }
+}

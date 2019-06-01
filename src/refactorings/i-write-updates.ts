@@ -1,4 +1,4 @@
-export type WriteUpdates = (updates: Update[]) => void;
+export type WriteUpdates = (updates: Update[]) => Promise<void>;
 
 export interface Update {
   code: Code;

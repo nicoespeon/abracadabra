@@ -5,8 +5,8 @@ import { DelegateToEditor, EditorCommand } from "../i-delegate-to-editor";
 let delegateToVSCode: DelegateToEditor;
 export { delegateToVSCode };
 
-delegateToVSCode = command => {
-  vscode.commands.executeCommand(toVSCodeCommand(command));
+delegateToVSCode = async command => {
+  await vscode.commands.executeCommand(toVSCodeCommand(command));
 };
 
 function toVSCodeCommand(command: EditorCommand): string {

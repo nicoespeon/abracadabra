@@ -1,6 +1,6 @@
 export { DelegateToEditor, EditorCommand };
 
-type DelegateToEditor = (command: EditorCommand) => void;
+type DelegateToEditor = (command: EditorCommand) => Promise<void>;
 
 enum EditorCommand {
   RenameSymbol

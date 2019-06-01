@@ -57,7 +57,7 @@ async function extractVariable(
     end: { line: selection.start.line, character: 0 }
   };
 
-  writeUpdates([
+  await writeUpdates([
     { code: variableDeclaration, selection: variableDeclarationSelection },
     { code: variableName, selection }
   ]);

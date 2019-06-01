@@ -5,7 +5,7 @@ import { WriteUpdates, Position } from "../i-write-updates";
 export { createWriteUpdatesToVSCode };
 
 function createWriteUpdatesToVSCode(uri: vscode.Uri): WriteUpdates {
-  return updates => {
+  return async updates => {
     const textEdits = updates.map(({ code, selection }) => {
       const startPosition = toVSCodePosition(selection.start);
       const endPosition = toVSCodePosition(selection.end);
@@ -19,7 +19,7 @@ function createWriteUpdatesToVSCode(uri: vscode.Uri): WriteUpdates {
     const edit = new vscode.WorkspaceEdit();
     edit.set(uri, textEdits);
 
-    vscode.workspace.applyEdit(edit);
+    await vscode.workspace.applyEdit(edit);
   };
 }
 

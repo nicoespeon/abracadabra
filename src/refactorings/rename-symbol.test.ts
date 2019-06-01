@@ -2,11 +2,11 @@ import { DelegateToEditor, EditorCommand } from "./i-delegate-to-editor";
 import { renameSymbol } from "./rename-symbol";
 
 describe("Rename Symbol", () => {
-  it("should delegate the work to the editor", () => {
-    const delegateToFakeEditor: DelegateToEditor = jest.fn();
+  it("should delegate the work to the editor", async () => {
+    const delegateToEditor: DelegateToEditor = jest.fn();
 
-    renameSymbol(delegateToFakeEditor);
+    await renameSymbol(delegateToEditor);
 
-    expect(delegateToFakeEditor).toBeCalledWith(EditorCommand.RenameSymbol);
+    expect(delegateToEditor).toBeCalledWith(EditorCommand.RenameSymbol);
   });
 });
