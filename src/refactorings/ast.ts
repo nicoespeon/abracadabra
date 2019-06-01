@@ -4,6 +4,7 @@ import * as t from "@babel/types";
 
 import { Code } from "./i-write-updates";
 
+export { NodePath } from "@babel/traverse";
 export { traverseAST, isStringLiteral };
 
 function traverseAST(code: Code, opts: TraverseOptions): void {
@@ -30,7 +31,7 @@ function isStringLiteral(
   return t.isStringLiteral(node, opts);
 }
 
-interface StringLiteral extends t.StringLiteral {
+export interface StringLiteral extends t.StringLiteral {
   extra: Extra;
 }
 

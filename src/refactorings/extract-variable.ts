@@ -14,22 +14,28 @@ async function extractVariable(
   delegateToEditor: DelegateToEditor
 ) {
   let extractedCode;
+  let indentationLevel = 0;
 
   traverseAST(code, {
     enter(path) {
       if (isStringLiteral(path.node) && path.node.loc) {
         if (selection.start.isEqualTo(Position.fromAST(path.node.loc.start))) {
           extractedCode = path.node.extra.raw;
+          indentationLevel = selection.findIndentationLevel(path);
         }
       }
     }
   });
 
   const variableName = "extracted";
-  const variableDeclaration = `const ${variableName} = ${extractedCode};\n`;
+  const indentation = " ".repeat(indentationLevel);
+  const variableDeclaration = `const ${variableName} = ${extractedCode};\n${indentation}`;
 
   await writeUpdates([
-    { code: variableDeclaration, selection: selection.putCursorAtLineStart() },
+    {
+      code: variableDeclaration,
+      selection: selection.putCursorAtColumn(indentationLevel)
+    },
     { code: variableName, selection }
   ]);
 

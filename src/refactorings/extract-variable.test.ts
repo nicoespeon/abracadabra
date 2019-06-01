@@ -17,6 +17,14 @@ logger("the", "World!", "Alright.");
 logger("How are you doing?");`,
   selection: new Selection([3, 14], [3, 22])
 };
+const NESTED_STRING_LITERAL = {
+  code: `import logger from "./logger";
+
+function sayHello() {
+  logger("Hello!");
+}`,
+  selection: new Selection([3, 9], [3, 17])
+};
 
 describe("Extract Variable", () => {
   let delegateToEditor: DelegateToEditor;
@@ -59,6 +67,20 @@ describe("Extract Variable", () => {
       {
         code: 'const extracted = "World!";\n',
         selection: new Selection([3, 0], [3, 0])
+      },
+      { code: "extracted", selection }
+    ]);
+  });
+
+  it("should extract a nested string with correct indentation", async () => {
+    const { code, selection } = NESTED_STRING_LITERAL;
+
+    await extractVariable(code, selection, writeUpdates, delegateToEditor);
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: 'const extracted = "Hello!";\n  ',
+        selection: new Selection([3, 2], [3, 2])
       },
       { code: "extracted", selection }
     ]);
