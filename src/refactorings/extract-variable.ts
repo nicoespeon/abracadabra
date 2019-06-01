@@ -49,7 +49,12 @@ async function extractVariable(
   traverse(ast, {
     enter(path) {
       if (isStringLiteral(path.node)) {
-        extractedCode = path.node.extra.raw;
+        if (
+          path.node.loc &&
+          selection.start.line + 1 === path.node.loc.start.line
+        ) {
+          extractedCode = path.node.extra.raw;
+        }
       }
     }
   });
