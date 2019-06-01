@@ -7,6 +7,16 @@ import { Code } from "./i-write-updates";
 export { NodePath } from "@babel/traverse";
 export { traverseAST, isStringLiteral };
 
+export interface Selection {
+  start: Position;
+  end: Position;
+}
+
+export interface Position {
+  line: number;
+  column: number;
+}
+
 function traverseAST(code: Code, opts: TraverseOptions): void {
   const ast = parse(code, {
     // Parse in strict mode and allow module declarations

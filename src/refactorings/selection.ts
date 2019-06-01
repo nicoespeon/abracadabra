@@ -1,5 +1,5 @@
 import { Position } from "./position";
-import { NodePath } from "./ast";
+import { NodePath, Selection as ASTSelection } from "./ast";
 
 export class Selection {
   private _start: Position;
@@ -8,6 +8,20 @@ export class Selection {
   constructor([startLine, startChar]: number[], [endLine, endChar]: number[]) {
     this._start = new Position(startLine, startChar);
     this._end = new Position(endLine, endChar);
+  }
+
+  static fromPositions(start: Position, end: Position): Selection {
+    return new Selection(
+      [start.line, start.character],
+      [end.line, end.character]
+    );
+  }
+
+  static fromAST(astSelection: ASTSelection): Selection {
+    return Selection.fromPositions(
+      Position.fromAST(astSelection.start),
+      Position.fromAST(astSelection.end)
+    );
   }
 
   get start(): Position {
@@ -44,6 +58,12 @@ export class Selection {
     }
 
     return this.findIndentationLevel(parentPath, parent.loc.start.column);
+  }
+
+  isInside(selection: Selection): boolean {
+    return (
+      this.start.isAfter(selection.start) && this.end.isBefore(selection.end)
+    );
   }
 }
 

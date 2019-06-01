@@ -1,3 +1,5 @@
+import { Position as ASTPosition } from "./ast";
+
 export class Position {
   private _line: number;
   private _character: number;
@@ -7,7 +9,7 @@ export class Position {
     this._character = character;
   }
 
-  static fromAST(astPosition: { line: number; column: number }): Position {
+  static fromAST(astPosition: ASTPosition): Position {
     return new Position(astPosition.line - 1, astPosition.column);
   }
 
@@ -27,5 +29,13 @@ export class Position {
 
   isSameLineThan(position: Position): boolean {
     return this.line === position.line;
+  }
+
+  isBefore(position: Position): boolean {
+    return this.line <= position.line && this.character <= position.character;
+  }
+
+  isAfter(position: Position): boolean {
+    return this.line >= position.line && this.character >= position.character;
   }
 }

@@ -2,7 +2,6 @@ import { Code, WriteUpdates } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { renameSymbol } from "./rename-symbol";
 import { Selection } from "./selection";
-import { Position } from "./position";
 import { traverseAST, isStringLiteral } from "./ast";
 
 export { extractVariable };
@@ -15,14 +14,17 @@ async function extractVariable(
 ) {
   let extractedCode;
   let indentationLevel = 0;
+  let extractedSelection = selection;
 
   traverseAST(code, {
     enter(path) {
       if (!isStringLiteral(path.node)) return;
       if (!path.node.loc) return;
 
-      if (selection.start.isEqualTo(Position.fromAST(path.node.loc.start))) {
+      const selectionInAST = Selection.fromAST(path.node.loc);
+      if (selection.isInside(selectionInAST)) {
         extractedCode = path.node.extra.raw;
+        extractedSelection = selectionInAST;
         indentationLevel = selection.findIndentationLevel(path);
       }
     }
@@ -37,7 +39,7 @@ async function extractVariable(
       code: variableDeclaration,
       selection: selection.putCursorAtColumn(indentationLevel)
     },
-    { code: variableName, selection }
+    { code: variableName, selection: extractedSelection }
   ]);
 
   // Extracted symbol is located at `selection` => just trigger a rename.

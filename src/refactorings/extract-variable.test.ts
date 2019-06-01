@@ -25,6 +25,12 @@ function sayHello() {
 }`,
   selection: new Selection([3, 9], [3, 17])
 };
+const ONE_STRING_LITERAL_CURSOR_INSIDE = {
+  code: `import logger from "./logger";
+
+logger("Hello!");`,
+  selection: new Selection([2, 9], [2, 9])
+};
 
 describe("Extract Variable", () => {
   let delegateToEditor: DelegateToEditor;
@@ -83,6 +89,20 @@ describe("Extract Variable", () => {
         selection: new Selection([3, 2], [3, 2])
       },
       { code: "extracted", selection }
+    ]);
+  });
+
+  it("should select string where cursor is for extraction", async () => {
+    const { code, selection } = ONE_STRING_LITERAL_CURSOR_INSIDE;
+
+    await extractVariable(code, selection, writeUpdates, delegateToEditor);
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: 'const extracted = "Hello!";\n',
+        selection: new Selection([2, 0], [2, 0])
+      },
+      { code: "extracted", selection: new Selection([2, 7], [2, 15]) }
     ]);
   });
 });
