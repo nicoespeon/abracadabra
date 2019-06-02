@@ -34,14 +34,7 @@ async function extractVariable(
 
       const selectionInAST = Selection.fromAST(path.node.loc);
       if (selection.isInside(selectionInAST)) {
-        // If extracted code is a string, we want the raw value with the quotes.
-        extractedCode = ast.isStringLiteral(path.node)
-          ? path.node.extra.raw
-          : ast.isNullLiteral(path.node)
-          ? null
-          : ast.isUndefinedLiteral(path.node)
-          ? undefined
-          : path.node.value;
+        extractedCode = getExtractedCode(path.node);
         foundExtractedCode = true;
         extractedSelection = selectionInAST;
         indentationLevel = selection.findIndentationLevel(path);
@@ -68,4 +61,24 @@ async function extractVariable(
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(delegateToEditor);
+}
+
+function getExtractedCode(
+  node:
+    | ast.BooleanLiteral
+    | ast.Identifier
+    | ast.NumericLiteral
+    | ast.NullLiteral
+    | ast.StringLiteral
+): any {
+  if (ast.isStringLiteral(node)) {
+    // The `raw` value contains the string quotes (" or ').
+    return node.extra.raw;
+  } else if (ast.isNullLiteral(node)) {
+    return null;
+  } else if (ast.isUndefinedLiteral(node)) {
+    return undefined;
+  } else {
+    return node.value;
+  }
 }

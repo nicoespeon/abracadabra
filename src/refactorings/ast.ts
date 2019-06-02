@@ -7,7 +7,7 @@ import { Code } from "./i-write-updates";
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
 export { traverseAST, isStringLiteral, isUndefinedLiteral };
-export { Selection, Position };
+export { Selection, Position, StringLiteral };
 
 interface Selection {
   start: Position;
