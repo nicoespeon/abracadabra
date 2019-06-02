@@ -1,4 +1,4 @@
-import { Code, WriteUpdates } from "./i-write-updates";
+import { Code, WriteUpdates, GetCode } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
@@ -11,6 +11,7 @@ async function extractVariable(
   code: Code,
   selection: Selection,
   writeUpdates: WriteUpdates,
+  getCode: GetCode,
   delegateToEditor: DelegateToEditor,
   showErrorMessage: ShowErrorMessage
 ) {
@@ -35,7 +36,7 @@ async function extractVariable(
   const variableName = "extracted";
   const indentationLevel = selection.findIndentationLevel(foundPath);
   const indentation = " ".repeat(indentationLevel);
-  const extractedCode = getExtractedCode(foundPath.node);
+  const extractedCode = getExtractedCode(foundPath.node, getCode);
   const variableDeclaration = `const ${variableName} = ${extractedCode};\n${indentation}`;
 
   await writeUpdates([
@@ -55,7 +56,7 @@ async function extractVariable(
   await renameSymbol(delegateToEditor);
 }
 
-function getExtractedCode(node: ExtractableNode): any {
+function getExtractedCode(node: ExtractableNode, getCode: GetCode): any {
   if (ast.isStringLiteral(node)) {
     // The `raw` value contains the string quotes (" or ').
     return node.extra.raw;
@@ -63,6 +64,8 @@ function getExtractedCode(node: ExtractableNode): any {
     return null;
   } else if (ast.isUndefinedLiteral(node)) {
     return undefined;
+  } else if (ast.isArrayExpression(node)) {
+    return getCode(Selection.fromAST(node.loc));
   } else {
     return node.value;
   }
@@ -74,7 +77,8 @@ function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
       ast.isNumericLiteral(path.node) ||
       ast.isBooleanLiteral(path.node) ||
       ast.isNullLiteral(path.node) ||
-      ast.isUndefinedLiteral(path.node)) &&
+      ast.isUndefinedLiteral(path.node) ||
+      ast.isArrayExpression(path.node)) &&
     !!path.node.loc
   );
 }
@@ -82,6 +86,7 @@ function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
 type ExtractablePath = ast.NodePath<ExtractableNode>;
 
 type ExtractableNode = (
+  | ast.ArrayExpression
   | ast.BooleanLiteral
   | ast.Identifier
   | ast.NumericLiteral

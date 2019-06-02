@@ -1,5 +1,5 @@
 import { DelegateToEditor, EditorCommand } from "./i-delegate-to-editor";
-import { WriteUpdates, Code } from "./i-write-updates";
+import { WriteUpdates, Code, GetCode } from "./i-write-updates";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { extractVariable } from "./extract-variable";
 import { Selection } from "./selection";
@@ -7,11 +7,13 @@ import { Selection } from "./selection";
 describe("Extract Variable", () => {
   let delegateToEditor: DelegateToEditor;
   let writeUpdates: WriteUpdates;
+  let getCode: GetCode;
   let showErrorMessage: ShowErrorMessage;
 
   beforeEach(() => {
     delegateToEditor = jest.fn();
     writeUpdates = jest.fn();
+    getCode = jest.fn().mockReturnValue("");
     showErrorMessage = jest.fn();
   });
 
@@ -171,11 +173,51 @@ function sayHello() {
     ]);
   });
 
-  function doExtractVariable(code: Code, selection: Selection) {
+  it("should extract an array", async () => {
+    const code = "console.log([1, 2, 'three']);";
+    const selection = new Selection([0, 12], [0, 27]);
+
+    await doExtractVariable(code, selection, "[1, 2, 'three']");
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: "const extracted = [1, 2, 'three'];\n",
+        selection: new Selection([0, 0], [0, 0])
+      },
+      { code: "extracted", selection }
+    ]);
+  });
+
+  it("should get code with correct selection for arrays", async () => {
+    const code = "console.log([1, 2, 'three']);";
+    const selection = new Selection([0, 12], [0, 27]);
+
+    await doExtractVariable(code, selection);
+
+    expect(getCode).toBeCalledWith(selection);
+  });
+
+  it("should get code with correct selection for arrays when cursor is inside", async () => {
+    const code = "console.log([1, 2, 'three']);";
+    const selection = new Selection([0, 15], [0, 15]);
+
+    await doExtractVariable(code, selection);
+
+    expect(getCode).toBeCalledWith(new Selection([0, 12], [0, 27]));
+  });
+
+  function doExtractVariable(
+    code: Code,
+    selection: Selection,
+    retrievedCode = ""
+  ) {
+    getCode = jest.fn().mockReturnValue(retrievedCode);
+
     return extractVariable(
       code,
       selection,
       writeUpdates,
+      getCode,
       delegateToEditor,
       showErrorMessage
     );

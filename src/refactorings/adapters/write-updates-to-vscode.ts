@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
-import { WriteUpdates } from "../i-write-updates";
+import { WriteUpdates, GetCode } from "../i-write-updates";
 import { Position } from "../position";
 
-export { createWriteUpdatesToVSCode };
+export { createWriteUpdatesToVSCode, createGetCodeFromVSCode };
 
 function createWriteUpdatesToVSCode(uri: vscode.Uri): WriteUpdates {
   return async updates => {
@@ -24,6 +24,14 @@ function createWriteUpdatesToVSCode(uri: vscode.Uri): WriteUpdates {
   };
 }
 
+function createGetCodeFromVSCode(document: vscode.TextDocument): GetCode {
+  return selection => {
+    const startPosition = toVSCodePosition(selection.start);
+    const endPosition = toVSCodePosition(selection.end);
+
+    return document.getText(new vscode.Range(startPosition, endPosition));
+  };
+}
 function toVSCodePosition(position: Position): vscode.Position {
   return new vscode.Position(position.line, position.character);
 }
