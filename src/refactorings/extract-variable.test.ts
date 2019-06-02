@@ -139,6 +139,24 @@ console.log("How are you doing?");`;
 }`
   );
 
+  it(`should extract a "object (multi-lines)" at correct selection when cursor is inside`, async () => {
+    const extractableCode = `{
+  one: 1,
+  foo: true,
+  hello: 'World!'
+}`;
+    const code = `console.log(${extractableCode});`;
+    const selectionInExtractableCode = new Selection([2, 3], [2, 3]);
+
+    await doExtractVariable(code, selectionInExtractableCode, extractableCode);
+
+    expect(editor.write).toBeCalledTimes(1);
+    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+    expect(extractedUpdate.selection).toStrictEqual(
+      new Selection([0, 0], [0, 0])
+    );
+  });
+
   function shouldExtractA(type: string, value: string) {
     it(`should extract a "${type}"`, async () => {
       const extractableCode = `${value}`;
