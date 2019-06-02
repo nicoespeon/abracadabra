@@ -1,5 +1,5 @@
 import { Position } from "./position";
-import { NodePath, Selection as ASTSelection } from "./ast";
+import { Node, NodePath, Selection as ASTSelection } from "./ast";
 
 export { Selection };
 
@@ -42,31 +42,37 @@ class Selection {
    * Recursively compare parent paths' position against selection start
    * to determine which one is the top-left. We consider this path's column to
    * be the indentation level of the selection.
-   *
-   * We consider the default indentation level to be 0. May not be true,
-   * but so far it works.
    */
-  findIndentationLevel(
-    path: NodePath,
-    currentIndentationLevel: number = 0
-  ): IndentationLevel {
-    const { parent, parentPath } = path;
+  findIndentationLevel(path: NodePath): IndentationLevel {
+    // Consider 0 to be the default indentation level
+    // => may not be true, but so far it works!
+    const DEFAULT_INDENTATION_LEVEL = 0;
 
-    if (
-      !parent.loc ||
-      !parentPath ||
-      !this.start.isSameLineThan(Position.fromAST(parent.loc.start))
-    ) {
-      return currentIndentationLevel;
-    }
+    const parent = this.findTopParent(path);
+    if (!parent.loc) return DEFAULT_INDENTATION_LEVEL;
 
-    return this.findIndentationLevel(parentPath, parent.loc.start.column);
+    return Position.fromAST(parent.loc.start).character;
   }
 
   isInside(selection: Selection): boolean {
     return (
       this.start.isAfter(selection.start) && this.end.isBefore(selection.end)
     );
+  }
+
+  private findTopParent(path: NodePath): Node {
+    const { parentPath, node } = path;
+    if (!parentPath) return node;
+
+    const {
+      node: { loc }
+    } = parentPath;
+    if (!loc) return node;
+
+    const astStart = Position.fromAST(loc.start);
+    if (!this.start.isSameLineThan(astStart)) return node;
+
+    return this.findTopParent(parentPath);
   }
 }
 
