@@ -6,7 +6,7 @@ import { Code } from "./i-write-updates";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
-export { traverseAST, isStringLiteral };
+export { traverseAST, isStringLiteral, isUndefinedLiteral };
 export { Selection, Position };
 
 interface Selection {
@@ -50,4 +50,11 @@ interface StringLiteral extends t.StringLiteral {
 interface Extra {
   raw: string;
   rawValue: string;
+}
+
+function isUndefinedLiteral(
+  node: object | null | undefined,
+  opts?: object | null
+): node is t.Identifier {
+  return t.isIdentifier(node, opts) && node.name === "undefined";
 }

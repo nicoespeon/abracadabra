@@ -215,4 +215,25 @@ function sayHello() {
       { code: "extracted", selection }
     ]);
   });
+
+  it("should extract an undefined", async () => {
+    const code = "console.log(undefined);";
+    const selection = new Selection([0, 12], [0, 21]);
+
+    await extractVariable(
+      code,
+      selection,
+      writeUpdates,
+      delegateToEditor,
+      showErrorMessage
+    );
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: "const extracted = undefined;\n",
+        selection: new Selection([0, 0], [0, 0])
+      },
+      { code: "extracted", selection }
+    ]);
+  });
 });

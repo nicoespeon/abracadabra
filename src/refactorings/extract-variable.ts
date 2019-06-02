@@ -15,6 +15,7 @@ async function extractVariable(
   showErrorMessage: ShowErrorMessage
 ) {
   let extractedCode;
+  let foundExtractedCode = false;
   let indentationLevel = 0;
   let extractedSelection = selection;
 
@@ -24,7 +25,8 @@ async function extractVariable(
         !ast.isStringLiteral(path.node) &&
         !ast.isNumericLiteral(path.node) &&
         !ast.isBooleanLiteral(path.node) &&
-        !ast.isNullLiteral(path.node)
+        !ast.isNullLiteral(path.node) &&
+        !ast.isUndefinedLiteral(path.node)
       )
         return;
       if (!path.node.loc) return;
@@ -36,14 +38,17 @@ async function extractVariable(
           ? path.node.extra.raw
           : ast.isNullLiteral(path.node)
           ? null
+          : ast.isUndefinedLiteral(path.node)
+          ? undefined
           : path.node.value;
+        foundExtractedCode = true;
         extractedSelection = selectionInAST;
         indentationLevel = selection.findIndentationLevel(path);
       }
     }
   });
 
-  if (extractedCode === undefined) {
+  if (!foundExtractedCode) {
     showErrorMessage(ErrorReason.DidNotFoundExtractedCode);
     return;
   }
