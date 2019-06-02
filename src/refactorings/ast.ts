@@ -5,7 +5,8 @@ import * as t from "@babel/types";
 import { Code } from "./i-write-updates";
 
 export { NodePath } from "@babel/traverse";
-export { traverseAST, isStringLiteral, isNumericLiteral };
+export * from "@babel/types";
+export { traverseAST, isStringLiteral };
 export { Selection, Position };
 
 interface Selection {
@@ -43,17 +44,6 @@ function isStringLiteral(
 }
 
 interface StringLiteral extends t.StringLiteral {
-  extra: Extra;
-}
-
-function isNumericLiteral(
-  node: object | null | undefined,
-  opts?: object | null
-): node is NumericLiteral {
-  return t.isNumericLiteral(node, opts);
-}
-
-interface NumericLiteral extends t.NumericLiteral {
   extra: Extra;
 }
 

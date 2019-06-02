@@ -173,4 +173,25 @@ function sayHello() {
       { code: "extracted", selection }
     ]);
   });
+
+  it("should extract a boolean", async () => {
+    const code = "console.log(false);";
+    const selection = new Selection([0, 12], [0, 17]);
+
+    await extractVariable(
+      code,
+      selection,
+      writeUpdates,
+      delegateToEditor,
+      showErrorMessage
+    );
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: "const extracted = false;\n",
+        selection: new Selection([0, 0], [0, 0])
+      },
+      { code: "extracted", selection }
+    ]);
+  });
 });

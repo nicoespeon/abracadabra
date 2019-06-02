@@ -3,7 +3,12 @@ import { DelegateToEditor } from "./i-delegate-to-editor";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
 import { Selection } from "./selection";
-import { traverseAST, isStringLiteral, isNumericLiteral } from "./ast";
+import {
+  traverseAST,
+  isStringLiteral,
+  isNumericLiteral,
+  isBooleanLiteral
+} from "./ast";
 
 export { extractVariable };
 
@@ -20,19 +25,27 @@ async function extractVariable(
 
   traverseAST(code, {
     enter(path) {
-      if (!isStringLiteral(path.node) && !isNumericLiteral(path.node)) return;
+      if (
+        !isStringLiteral(path.node) &&
+        !isNumericLiteral(path.node) &&
+        !isBooleanLiteral(path.node)
+      )
+        return;
       if (!path.node.loc) return;
 
       const selectionInAST = Selection.fromAST(path.node.loc);
       if (selection.isInside(selectionInAST)) {
-        extractedCode = path.node.extra.raw;
+        // If extracted code is a string, we want the raw value with the quotes.
+        extractedCode = isStringLiteral(path.node)
+          ? path.node.extra.raw
+          : path.node.value;
         extractedSelection = selectionInAST;
         indentationLevel = selection.findIndentationLevel(path);
       }
     }
   });
 
-  if (!extractedCode) {
+  if (extractedCode === undefined) {
     showErrorMessage(ErrorReason.DidNotFoundExtractedCode);
     return;
   }
