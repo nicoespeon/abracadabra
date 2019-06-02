@@ -22,6 +22,37 @@ A solution would be to develop a custom test runner using Jest, but it's not tri
 
 Also, the need for integration test should be fairly small if we isolate our domain properly. We should mostly rely on unit tests (e.g. state-based tests, collaboration tests and contract tests).
 
+## Code Style
+
+Style formatting is managed by [Prettier][prettier]. It runs as a pre-commit hook, so you shouldn't have to worry about it 👐
+
+There a few conventions that we'd like to keep consistent and are not automatically enforced yet.
+
+### Structure of TS files
+
+We structure TS files like this:
+
+```ts
+// 1. Imports from external libs
+import { parse } from "@babel/parser";
+
+// 2. Imports from local files
+import { Selection } from "./selection";
+import { Position } from "./position";
+
+// 3. Exports
+export { isStringLiteral, isClassDeclaration };
+export { StringLiteral };
+
+// 4. Rest of the code
+function isStringLiteral() {
+  // …
+}
+```
+
+As a general rule, we prefer to have **what is exposed appear before what is private**. That's why we list the exports at the top of the file. We find it simpler to see what is exposed from a file, so it's easier to decide if that's too much and we should split.
+
 [testing-extension]: https://code.visualstudio.com/api/working-with-extensions/testing-extension
 [mocha]: https://mochajs.org/
 [jest]: https://jestjs.io/
+[prettier]: https://prettier.io

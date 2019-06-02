@@ -1,7 +1,9 @@
 import { Position } from "./position";
 import { NodePath, Selection as ASTSelection } from "./ast";
 
-export class Selection {
+export { Selection };
+
+class Selection {
   private _start: Position;
   private _end: Position;
 

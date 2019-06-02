@@ -1,6 +1,8 @@
 import { Position as ASTPosition } from "./ast";
 
-export class Position {
+export { Position };
+
+class Position {
   private _line: number;
   private _character: number;
 

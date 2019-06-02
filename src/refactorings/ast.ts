@@ -6,13 +6,14 @@ import { Code } from "./i-write-updates";
 
 export { NodePath } from "@babel/traverse";
 export { traverseAST, isStringLiteral };
+export { Selection, Position, StringLiteral };
 
-export interface Selection {
+interface Selection {
   start: Position;
   end: Position;
 }
 
-export interface Position {
+interface Position {
   line: number;
   column: number;
 }
@@ -41,7 +42,7 @@ function isStringLiteral(
   return t.isStringLiteral(node, opts);
 }
 
-export interface StringLiteral extends t.StringLiteral {
+interface StringLiteral extends t.StringLiteral {
   extra: Extra;
 }
 
