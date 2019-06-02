@@ -34,15 +34,14 @@ async function extractVariable(
 
   const variableName = "extracted";
   const extractedCodeSelection = Selection.fromAST(foundPath.node.loc);
-  const indentationLevel = selection.findIndentationLevel(foundPath);
-  const indentation = " ".repeat(indentationLevel);
+  const indentation = " ".repeat(selection.getIndentationLevel(foundPath));
   const extractedCode = editor.read(extractedCodeSelection);
 
   await editor.write([
     // Insert new variable declaration.
     {
       code: `const ${variableName} = ${extractedCode};\n${indentation}`,
-      selection: selection.putCursorAtColumn(indentationLevel)
+      selection: selection.putCursorAtScopeParentPosition(foundPath)
     },
     // Replace extracted code with new variable.
     {

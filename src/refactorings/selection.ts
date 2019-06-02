@@ -34,24 +34,13 @@ class Selection {
     return this._end;
   }
 
-  putCursorAtColumn(column: number): Selection {
-    return new Selection([this.start.line, column], [this.start.line, column]);
+  putCursorAtScopeParentPosition(path: NodePath): Selection {
+    const position = this.getScopeParentPosition(path);
+    return Selection.fromPositions(position, position);
   }
 
-  /**
-   * Recursively compare parent paths' position against selection start
-   * to determine which one is the top-left. We consider this path's column to
-   * be the indentation level of the selection.
-   */
-  findIndentationLevel(path: NodePath): IndentationLevel {
-    // Consider 0 to be the default indentation level
-    // => may not be true, but so far it works!
-    const DEFAULT_INDENTATION_LEVEL = 0;
-
-    const parent = this.findTopParent(path);
-    if (!parent.loc) return DEFAULT_INDENTATION_LEVEL;
-
-    return Position.fromAST(parent.loc.start).character;
+  getIndentationLevel(path: NodePath): IndentationLevel {
+    return this.getScopeParentPosition(path).character;
   }
 
   isInside(selection: Selection): boolean {
@@ -60,7 +49,20 @@ class Selection {
     );
   }
 
-  private findTopParent(path: NodePath): Node {
+  private getScopeParentPosition(path: NodePath): Position {
+    const parent = this.findScopeParent(path);
+    if (!parent.loc) return this.start;
+
+    return Position.fromAST(parent.loc.start);
+  }
+
+  /**
+   * Recursively compare path parents' start position against selection start
+   * position to determine which one is at the top-left of selected scope.
+   *
+   * We consider the last parent to be the scope parent of the selection.
+   */
+  private findScopeParent(path: NodePath): Node {
     const { parentPath, node } = path;
     if (!parentPath) return node;
 
@@ -72,7 +74,7 @@ class Selection {
     const astStart = Position.fromAST(loc.start);
     if (!this.start.isSameLineThan(astStart)) return node;
 
-    return this.findTopParent(parentPath);
+    return this.findScopeParent(parentPath);
   }
 }
 
