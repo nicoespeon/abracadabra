@@ -15,7 +15,7 @@ describe("Extract Variable", () => {
     showErrorMessage = jest.fn();
   });
 
-  describe("one string literal", () => {
+  describe("basic extraction (one string literal)", () => {
     const code = `import logger from "./logger";
 
 logger("Hello!");`;
@@ -51,9 +51,59 @@ logger("Hello!");`;
       expect(delegateToEditor).toBeCalledTimes(1);
       expect(delegateToEditor).toBeCalledWith(EditorCommand.RenameSymbol);
     });
+
+    it("should select string where cursor is for extraction", async () => {
+      const selection = new Selection([2, 9], [2, 9]);
+
+      await extractVariable(
+        code,
+        selection,
+        writeUpdates,
+        delegateToEditor,
+        showErrorMessage
+      );
+
+      expect(writeUpdates).toBeCalledWith([
+        {
+          code: 'const extracted = "Hello!";\n',
+          selection: new Selection([2, 0], [2, 0])
+        },
+        { code: "extracted", selection: new Selection([2, 7], [2, 15]) }
+      ]);
+    });
+
+    describe("invalid selection", () => {
+      const invalidSelection = new Selection([2, 1], [2, 3]);
+
+      it("should not extract anything", async () => {
+        await extractVariable(
+          code,
+          invalidSelection,
+          writeUpdates,
+          delegateToEditor,
+          showErrorMessage
+        );
+
+        expect(writeUpdates).not.toBeCalled();
+      });
+
+      it("should show an error message", async () => {
+        await extractVariable(
+          code,
+          invalidSelection,
+          writeUpdates,
+          delegateToEditor,
+          showErrorMessage
+        );
+
+        expect(showErrorMessage).toBeCalledWith(
+          ErrorReason.DidNotFoundExtractedCode
+        );
+      });
+    });
   });
 
-  it("should extract the correct string into a variable", async () => {
+  it("should extract the correct variable when we have many", async () => {
     const code = `import logger from "./logger";
 
 logger("Hello");
@@ -78,7 +128,7 @@ logger("How are you doing?");`;
     ]);
   });
 
-  it("should extract a nested string with correct indentation", async () => {
+  it("should extract a nested variable with correct indentation", async () => {
     const code = `import logger from "./logger";
 
 function sayHello() {
@@ -101,61 +151,5 @@ function sayHello() {
       },
       { code: "extracted", selection }
     ]);
-  });
-
-  it("should select string where cursor is for extraction", async () => {
-    const code = `import logger from "./logger";
-
-logger("Hello!");`;
-    const selection = new Selection([2, 9], [2, 9]);
-
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
-
-    expect(writeUpdates).toBeCalledWith([
-      {
-        code: 'const extracted = "Hello!";\n',
-        selection: new Selection([2, 0], [2, 0])
-      },
-      { code: "extracted", selection: new Selection([2, 7], [2, 15]) }
-    ]);
-  });
-
-  describe("invalid selection", () => {
-    const code = `import logger from "./logger";
-
-logger("Hello!");`;
-    const invalidSelection = new Selection([2, 1], [2, 3]);
-
-    it("should not extract anything", async () => {
-      await extractVariable(
-        code,
-        invalidSelection,
-        writeUpdates,
-        delegateToEditor,
-        showErrorMessage
-      );
-
-      expect(writeUpdates).not.toBeCalled();
-    });
-
-    it("should show an error message", async () => {
-      await extractVariable(
-        code,
-        invalidSelection,
-        writeUpdates,
-        delegateToEditor,
-        showErrorMessage
-      );
-
-      expect(showErrorMessage).toBeCalledWith(
-        ErrorReason.DidNotFoundExtractedCode
-      );
-    });
   });
 });
