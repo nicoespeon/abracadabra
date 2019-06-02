@@ -129,6 +129,7 @@ console.log("How are you doing?");`;
   shouldExtractA("null", "null");
   shouldExtractA("undefined", "undefined");
   shouldExtractA("array", "[1, 2, 'three', [true, null]]");
+  shouldExtractA("object", "{ one: 1, foo: true, hello: 'World!' }");
 
   function shouldExtractA(type: string, value: string) {
     it(`should extract a "${type}"`, async () => {

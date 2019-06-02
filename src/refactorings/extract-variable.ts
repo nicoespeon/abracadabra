@@ -62,7 +62,8 @@ function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
       ast.isBooleanLiteral(path.node) ||
       ast.isNullLiteral(path.node) ||
       ast.isUndefinedLiteral(path.node) ||
-      ast.isArrayExpression(path.node)) &&
+      ast.isArrayExpression(path.node) ||
+      ast.isObjectExpression(path.node)) &&
     !!path.node.loc
   );
 }
