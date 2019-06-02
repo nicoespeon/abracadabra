@@ -54,6 +54,7 @@ class Selection {
 
     if (
       !parent.loc ||
+      !parentPath ||
       !this.start.isSameLineThan(Position.fromAST(parent.loc.start))
     ) {
       return currentIndentationLevel;

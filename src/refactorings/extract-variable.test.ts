@@ -152,4 +152,25 @@ function sayHello() {
       { code: "extracted", selection }
     ]);
   });
+
+  it("should extract a number", async () => {
+    const code = "const x = 1 + 12.5;";
+    const selection = new Selection([0, 14], [0, 18]);
+
+    await extractVariable(
+      code,
+      selection,
+      writeUpdates,
+      delegateToEditor,
+      showErrorMessage
+    );
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: "const extracted = 12.5;\n",
+        selection: new Selection([0, 0], [0, 0])
+      },
+      { code: "extracted", selection }
+    ]);
+  });
 });

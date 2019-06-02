@@ -3,7 +3,7 @@ import { DelegateToEditor } from "./i-delegate-to-editor";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
 import { Selection } from "./selection";
-import { traverseAST, isStringLiteral } from "./ast";
+import { traverseAST, isStringLiteral, isNumericLiteral } from "./ast";
 
 export { extractVariable };
 
@@ -20,7 +20,7 @@ async function extractVariable(
 
   traverseAST(code, {
     enter(path) {
-      if (!isStringLiteral(path.node)) return;
+      if (!isStringLiteral(path.node) && !isNumericLiteral(path.node)) return;
       if (!path.node.loc) return;
 
       const selectionInAST = Selection.fromAST(path.node.loc);
