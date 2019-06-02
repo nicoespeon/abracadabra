@@ -130,12 +130,20 @@ console.log("How are you doing?");`;
   shouldExtractA("undefined", "undefined");
   shouldExtractA("array", "[1, 2, 'three', [true, null]]");
   shouldExtractA("object", "{ one: 1, foo: true, hello: 'World!' }");
+  shouldExtractA(
+    "object (multi-lines)",
+    `{
+  one: 1,
+  foo: true,
+  hello: 'World!'
+}`
+  );
 
   function shouldExtractA(type: string, value: string) {
     it(`should extract a "${type}"`, async () => {
       const extractableCode = `${value}`;
       const code = `console.log(${extractableCode});`;
-      const extractableSelection = selectionFor([0, 12], extractableCode);
+      const extractableSelection = new Selection([0, 12], [0, 12]);
 
       await doExtractVariable(code, extractableSelection, extractableCode);
 

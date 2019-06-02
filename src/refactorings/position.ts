@@ -34,10 +34,14 @@ class Position {
   }
 
   isBefore(position: Position): boolean {
-    return this.line <= position.line && this.character <= position.character;
+    return (
+      this.isEqualTo(position) ||
+      this.line < position.line ||
+      (this.isSameLineThan(position) && this.character < position.character)
+    );
   }
 
   isAfter(position: Position): boolean {
-    return this.line >= position.line && this.character >= position.character;
+    return this.isEqualTo(position) || !this.isBefore(position);
   }
 }
