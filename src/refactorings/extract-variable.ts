@@ -14,63 +14,48 @@ async function extractVariable(
   delegateToEditor: DelegateToEditor,
   showErrorMessage: ShowErrorMessage
 ) {
-  let extractedCode;
-  let foundExtractedCode = false;
-  let indentationLevel = 0;
-  let extractedSelection = selection;
+  let foundPath: ExtractablePath | undefined;
 
   ast.traverseAST(code, {
     enter(path) {
       if (
-        !ast.isStringLiteral(path.node) &&
-        !ast.isNumericLiteral(path.node) &&
-        !ast.isBooleanLiteral(path.node) &&
-        !ast.isNullLiteral(path.node) &&
-        !ast.isUndefinedLiteral(path.node)
+        isExtractablePath(path) &&
+        selection.isInside(Selection.fromAST(path.node.loc))
       ) {
-        return;
-      }
-      if (!path.node.loc) return;
-
-      const selectionInAST = Selection.fromAST(path.node.loc);
-      if (selection.isInside(selectionInAST)) {
-        extractedCode = getExtractedCode(path.node);
-        foundExtractedCode = true;
-        extractedSelection = selectionInAST;
-        indentationLevel = selection.findIndentationLevel(path);
+        foundPath = path;
       }
     }
   });
 
-  if (!foundExtractedCode) {
+  if (!foundPath) {
     showErrorMessage(ErrorReason.DidNotFoundExtractedCode);
     return;
   }
 
   const variableName = "extracted";
+  const indentationLevel = selection.findIndentationLevel(foundPath);
   const indentation = " ".repeat(indentationLevel);
+  const extractedCode = getExtractedCode(foundPath.node);
   const variableDeclaration = `const ${variableName} = ${extractedCode};\n${indentation}`;
 
   await writeUpdates([
+    // Insert variable declaration.
     {
       code: variableDeclaration,
       selection: selection.putCursorAtColumn(indentationLevel)
     },
-    { code: variableName, selection: extractedSelection }
+    // Replace extracted code with variable.
+    {
+      code: variableName,
+      selection: Selection.fromAST(foundPath.node.loc)
+    }
   ]);
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(delegateToEditor);
 }
 
-function getExtractedCode(
-  node:
-    | ast.BooleanLiteral
-    | ast.Identifier
-    | ast.NumericLiteral
-    | ast.NullLiteral
-    | ast.StringLiteral
-): any {
+function getExtractedCode(node: ExtractableNode): any {
   if (ast.isStringLiteral(node)) {
     // The `raw` value contains the string quotes (" or ').
     return node.extra.raw;
@@ -82,3 +67,23 @@ function getExtractedCode(
     return node.value;
   }
 }
+
+function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
+  return (
+    (ast.isStringLiteral(path.node) ||
+      ast.isNumericLiteral(path.node) ||
+      ast.isBooleanLiteral(path.node) ||
+      ast.isNullLiteral(path.node) ||
+      ast.isUndefinedLiteral(path.node)) &&
+    !!path.node.loc
+  );
+}
+
+type ExtractablePath = ast.NodePath<ExtractableNode>;
+
+type ExtractableNode = (
+  | ast.BooleanLiteral
+  | ast.Identifier
+  | ast.NumericLiteral
+  | ast.NullLiteral
+  | ast.StringLiteral) & { loc: ast.SourceLocation };
