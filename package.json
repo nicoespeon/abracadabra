@@ -24,7 +24,8 @@
   },
   "main": "./out/extension.js",
   "activationEvents": [
-    "onCommand:refactorix.renameSymbol"
+    "onCommand:refactorix.renameSymbol",
+    "onCommand:refactorix.extractVariable"
   ],
   "contributes": {
     "commands": [
