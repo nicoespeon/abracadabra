@@ -1,5 +1,6 @@
 import { Code, WriteUpdates } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
+import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
 import { Selection } from "./selection";
 import { traverseAST, isStringLiteral } from "./ast";
@@ -10,7 +11,8 @@ async function extractVariable(
   code: Code,
   selection: Selection,
   writeUpdates: WriteUpdates,
-  delegateToEditor: DelegateToEditor
+  delegateToEditor: DelegateToEditor,
+  showErrorMessage: ShowErrorMessage
 ) {
   let extractedCode;
   let indentationLevel = 0;
@@ -29,6 +31,11 @@ async function extractVariable(
       }
     }
   });
+
+  if (!extractedCode) {
+    showErrorMessage(ErrorReason.DidNotFoundExtractedCode);
+    return;
+  }
 
   const variableName = "extracted";
   const indentation = " ".repeat(indentationLevel);

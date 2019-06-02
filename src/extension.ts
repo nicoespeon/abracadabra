@@ -5,6 +5,7 @@ import { extractVariable } from "./refactorings/extract-variable";
 import { Selection } from "./refactorings/selection";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
+import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
 import { createWriteUpdatesToVSCode } from "./refactorings/adapters/write-updates-to-vscode";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -30,7 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
           document.getText(),
           createSelectionFromVSCode(selection),
           createWriteUpdatesToVSCode(document.uri),
-          delegateToVSCode
+          delegateToVSCode,
+          showErrorMessageInVSCode
         )
       );
     }
