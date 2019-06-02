@@ -40,6 +40,14 @@
         "category": "Refactorix"
       }
     ],
+    "keybindings": [
+      {
+        "command": "refactorix.extractVariable",
+        "key": "ctrl+alt+v",
+        "mac": "cmd+alt+v",
+        "when": "editorTextFocus"
+      }
+    ],
     "menus": {
       "commandPalette": [
         {
