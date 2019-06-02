@@ -7,14 +7,14 @@ import { Code } from "./i-write-updates";
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
 export { traverseAST, isUndefinedLiteral };
-export { Selection, Position };
+export { ASTSelection, ASTPosition };
 
-interface Selection {
-  start: Position;
-  end: Position;
+interface ASTSelection {
+  start: ASTPosition;
+  end: ASTPosition;
 }
 
-interface Position {
+interface ASTPosition {
   line: number;
   column: number;
 }

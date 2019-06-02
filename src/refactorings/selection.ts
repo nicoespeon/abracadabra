@@ -1,5 +1,5 @@
 import { Position } from "./position";
-import { Node, NodePath, Selection as ASTSelection } from "./ast";
+import { Node, NodePath, ASTSelection } from "./ast";
 
 export { Selection };
 
