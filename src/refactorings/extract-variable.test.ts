@@ -1,5 +1,5 @@
 import { DelegateToEditor, EditorCommand } from "./i-delegate-to-editor";
-import { WriteUpdates } from "./i-write-updates";
+import { WriteUpdates, Code } from "./i-write-updates";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { extractVariable } from "./extract-variable";
 import { Selection } from "./selection";
@@ -22,13 +22,7 @@ logger("Hello!");`;
     const selection = new Selection([2, 7], [2, 15]);
 
     it("should extract selected string into a variable", async () => {
-      await extractVariable(
-        code,
-        selection,
-        writeUpdates,
-        delegateToEditor,
-        showErrorMessage
-      );
+      await doExtractVariable(code, selection);
 
       expect(writeUpdates).toBeCalledWith([
         {
@@ -40,13 +34,7 @@ logger("Hello!");`;
     });
 
     it("should rename extracted symbol", async () => {
-      await extractVariable(
-        code,
-        selection,
-        writeUpdates,
-        delegateToEditor,
-        showErrorMessage
-      );
+      await doExtractVariable(code, selection);
 
       expect(delegateToEditor).toBeCalledTimes(1);
       expect(delegateToEditor).toBeCalledWith(EditorCommand.RenameSymbol);
@@ -55,13 +43,7 @@ logger("Hello!");`;
     it("should select string where cursor is for extraction", async () => {
       const selection = new Selection([2, 9], [2, 9]);
 
-      await extractVariable(
-        code,
-        selection,
-        writeUpdates,
-        delegateToEditor,
-        showErrorMessage
-      );
+      await doExtractVariable(code, selection);
 
       expect(writeUpdates).toBeCalledWith([
         {
@@ -76,25 +58,13 @@ logger("Hello!");`;
       const invalidSelection = new Selection([2, 1], [2, 3]);
 
       it("should not extract anything", async () => {
-        await extractVariable(
-          code,
-          invalidSelection,
-          writeUpdates,
-          delegateToEditor,
-          showErrorMessage
-        );
+        await doExtractVariable(code, invalidSelection);
 
         expect(writeUpdates).not.toBeCalled();
       });
 
       it("should show an error message", async () => {
-        await extractVariable(
-          code,
-          invalidSelection,
-          writeUpdates,
-          delegateToEditor,
-          showErrorMessage
-        );
+        await doExtractVariable(code, invalidSelection);
 
         expect(showErrorMessage).toBeCalledWith(
           ErrorReason.DidNotFoundExtractedCode
@@ -111,13 +81,7 @@ logger("the", "World!", "Alright.");
 logger("How are you doing?");`;
     const selection = new Selection([3, 14], [3, 22]);
 
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
+    await doExtractVariable(code, selection);
 
     expect(writeUpdates).toBeCalledWith([
       {
@@ -136,13 +100,7 @@ function sayHello() {
 }`;
     const selection = new Selection([3, 9], [3, 17]);
 
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
+    await doExtractVariable(code, selection);
 
     expect(writeUpdates).toBeCalledWith([
       {
@@ -157,13 +115,7 @@ function sayHello() {
     const code = "const x = 1 + 12.5;";
     const selection = new Selection([0, 14], [0, 18]);
 
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
+    await doExtractVariable(code, selection);
 
     expect(writeUpdates).toBeCalledWith([
       {
@@ -178,13 +130,7 @@ function sayHello() {
     const code = "console.log(false);";
     const selection = new Selection([0, 12], [0, 17]);
 
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
+    await doExtractVariable(code, selection);
 
     expect(writeUpdates).toBeCalledWith([
       {
@@ -199,13 +145,7 @@ function sayHello() {
     const code = "console.log(null);";
     const selection = new Selection([0, 12], [0, 16]);
 
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
+    await doExtractVariable(code, selection);
 
     expect(writeUpdates).toBeCalledWith([
       {
@@ -220,13 +160,7 @@ function sayHello() {
     const code = "console.log(undefined);";
     const selection = new Selection([0, 12], [0, 21]);
 
-    await extractVariable(
-      code,
-      selection,
-      writeUpdates,
-      delegateToEditor,
-      showErrorMessage
-    );
+    await doExtractVariable(code, selection);
 
     expect(writeUpdates).toBeCalledWith([
       {
@@ -236,4 +170,14 @@ function sayHello() {
       { code: "extracted", selection }
     ]);
   });
+
+  function doExtractVariable(code: Code, selection: Selection) {
+    return extractVariable(
+      code,
+      selection,
+      writeUpdates,
+      delegateToEditor,
+      showErrorMessage
+    );
+  }
 });
