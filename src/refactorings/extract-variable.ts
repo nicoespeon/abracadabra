@@ -27,8 +27,9 @@ async function extractVariable(
         !ast.isBooleanLiteral(path.node) &&
         !ast.isNullLiteral(path.node) &&
         !ast.isUndefinedLiteral(path.node)
-      )
+      ) {
         return;
+      }
       if (!path.node.loc) return;
 
       const selectionInAST = Selection.fromAST(path.node.loc);
