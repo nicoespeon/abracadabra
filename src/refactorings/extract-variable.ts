@@ -34,6 +34,8 @@ async function extractVariable(
         // If extracted code is a string, we want the raw value with the quotes.
         extractedCode = ast.isStringLiteral(path.node)
           ? path.node.extra.raw
+          : ast.isNullLiteral(path.node)
+          ? null
           : path.node.value;
         extractedSelection = selectionInAST;
         indentationLevel = selection.findIndentationLevel(path);

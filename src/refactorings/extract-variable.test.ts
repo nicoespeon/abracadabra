@@ -194,4 +194,25 @@ function sayHello() {
       { code: "extracted", selection }
     ]);
   });
+
+  it("should extract a null", async () => {
+    const code = "console.log(null);";
+    const selection = new Selection([0, 12], [0, 16]);
+
+    await extractVariable(
+      code,
+      selection,
+      writeUpdates,
+      delegateToEditor,
+      showErrorMessage
+    );
+
+    expect(writeUpdates).toBeCalledWith([
+      {
+        code: "const extracted = null;\n",
+        selection: new Selection([0, 0], [0, 0])
+      },
+      { code: "extracted", selection }
+    ]);
+  });
 });
