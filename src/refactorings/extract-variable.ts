@@ -3,12 +3,7 @@ import { DelegateToEditor } from "./i-delegate-to-editor";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
 import { Selection } from "./selection";
-import {
-  traverseAST,
-  isStringLiteral,
-  isNumericLiteral,
-  isBooleanLiteral
-} from "./ast";
+import * as ast from "./ast";
 
 export { extractVariable };
 
@@ -23,12 +18,13 @@ async function extractVariable(
   let indentationLevel = 0;
   let extractedSelection = selection;
 
-  traverseAST(code, {
+  ast.traverseAST(code, {
     enter(path) {
       if (
-        !isStringLiteral(path.node) &&
-        !isNumericLiteral(path.node) &&
-        !isBooleanLiteral(path.node)
+        !ast.isStringLiteral(path.node) &&
+        !ast.isNumericLiteral(path.node) &&
+        !ast.isBooleanLiteral(path.node) &&
+        !ast.isNullLiteral(path.node)
       )
         return;
       if (!path.node.loc) return;
@@ -36,7 +32,7 @@ async function extractVariable(
       const selectionInAST = Selection.fromAST(path.node.loc);
       if (selection.isInside(selectionInAST)) {
         // If extracted code is a string, we want the raw value with the quotes.
-        extractedCode = isStringLiteral(path.node)
+        extractedCode = ast.isStringLiteral(path.node)
           ? path.node.extra.raw
           : path.node.value;
         extractedSelection = selectionInAST;
