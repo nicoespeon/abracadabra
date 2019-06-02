@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     "refactorix.renameSymbol",
     () => executeSafely(() => renameSymbol(delegateToVSCode))
   );
+  context.subscriptions.push(renameSymbolCommand);
 
   const extractVariableCommand = vscode.commands.registerCommand(
     "refactorix.extractVariable",
@@ -36,7 +37,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(extractVariableCommand);
-  context.subscriptions.push(renameSymbolCommand);
 }
 
 export function deactivate() {}
