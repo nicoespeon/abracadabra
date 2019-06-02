@@ -1,11 +1,12 @@
 import { Selection } from "./selection";
 
-export { WriteUpdates, GetCode };
+export { WritableEditor };
 export { Update, Code };
 
-type WriteUpdates = (updates: Update[]) => Promise<void>;
-
-type GetCode = (selection: Selection) => Code;
+interface WritableEditor {
+  write: (updates: Update[]) => Promise<void>;
+  read: (selection: Selection) => Code;
+}
 
 interface Update {
   code: Code;

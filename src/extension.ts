@@ -6,10 +6,7 @@ import { Selection } from "./refactorings/selection";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
-import {
-  createWriteUpdatesToVSCode,
-  createGetCodeFromVSCode
-} from "./refactorings/adapters/write-updates-to-vscode";
+import { WritableVSCode } from "./refactorings/adapters/writable-vscode";
 
 export function activate(context: vscode.ExtensionContext) {
   // `commandId` parameters must match `command` fields in `package.json`.
@@ -33,8 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
         extractVariable(
           document.getText(),
           createSelectionFromVSCode(selection),
-          createWriteUpdatesToVSCode(document.uri),
-          createGetCodeFromVSCode(document),
+          new WritableVSCode(document),
           delegateToVSCode,
           showErrorMessageInVSCode
         )

@@ -1,12 +1,19 @@
 import * as vscode from "vscode";
 
-import { WriteUpdates, GetCode } from "../i-write-updates";
+import { WritableEditor, Update } from "../i-write-updates";
 import { Position } from "../position";
+import { Selection } from "../selection";
 
-export { createWriteUpdatesToVSCode, createGetCodeFromVSCode };
+export { WritableVSCode };
 
-function createWriteUpdatesToVSCode(uri: vscode.Uri): WriteUpdates {
-  return async updates => {
+class WritableVSCode implements WritableEditor {
+  private _document: vscode.TextDocument;
+
+  constructor(document: vscode.TextDocument) {
+    this._document = document;
+  }
+
+  async write(updates: Update[]) {
     const textEdits = updates.map(({ code, selection }) => {
       const startPosition = toVSCodePosition(selection.start);
       const endPosition = toVSCodePosition(selection.end);
@@ -18,20 +25,19 @@ function createWriteUpdatesToVSCode(uri: vscode.Uri): WriteUpdates {
     });
 
     const edit = new vscode.WorkspaceEdit();
-    edit.set(uri, textEdits);
+    edit.set(this._document.uri, textEdits);
 
     await vscode.workspace.applyEdit(edit);
-  };
-}
+  }
 
-function createGetCodeFromVSCode(document: vscode.TextDocument): GetCode {
-  return selection => {
+  read(selection: Selection) {
     const startPosition = toVSCodePosition(selection.start);
     const endPosition = toVSCodePosition(selection.end);
 
-    return document.getText(new vscode.Range(startPosition, endPosition));
-  };
+    return this._document.getText(new vscode.Range(startPosition, endPosition));
+  }
 }
+
 function toVSCodePosition(position: Position): vscode.Position {
   return new vscode.Position(position.line, position.character);
 }

@@ -6,8 +6,8 @@ import { Code } from "./i-write-updates";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
-export { traverseAST, isStringLiteral, isUndefinedLiteral };
-export { Selection, Position, StringLiteral };
+export { traverseAST, isUndefinedLiteral };
+export { Selection, Position };
 
 interface Selection {
   start: Position;
@@ -34,22 +34,6 @@ function traverseAST(code: Code, opts: TraverseOptions): void {
   });
 
   traverse(ast, opts);
-}
-
-function isStringLiteral(
-  node: object | null | undefined,
-  opts?: object | null
-): node is StringLiteral {
-  return t.isStringLiteral(node, opts);
-}
-
-interface StringLiteral extends t.StringLiteral {
-  extra: Extra;
-}
-
-interface Extra {
-  raw: string;
-  rawValue: string;
 }
 
 function isUndefinedLiteral(

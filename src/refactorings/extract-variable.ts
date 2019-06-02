@@ -1,4 +1,4 @@
-import { Code, WriteUpdates, GetCode } from "./i-write-updates";
+import { Code, WritableEditor } from "./i-write-updates";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
@@ -10,8 +10,7 @@ export { extractVariable };
 async function extractVariable(
   code: Code,
   selection: Selection,
-  writeUpdates: WriteUpdates,
-  getCode: GetCode,
+  editor: WritableEditor,
   delegateToEditor: DelegateToEditor,
   showErrorMessage: ShowErrorMessage
 ) {
@@ -34,41 +33,26 @@ async function extractVariable(
   }
 
   const variableName = "extracted";
+  const extractedCodeSelection = Selection.fromAST(foundPath.node.loc);
   const indentationLevel = selection.findIndentationLevel(foundPath);
   const indentation = " ".repeat(indentationLevel);
-  const extractedCode = getExtractedCode(foundPath.node, getCode);
-  const variableDeclaration = `const ${variableName} = ${extractedCode};\n${indentation}`;
+  const extractedCode = editor.read(extractedCodeSelection);
 
-  await writeUpdates([
-    // Insert variable declaration.
+  await editor.write([
+    // Insert new variable declaration.
     {
-      code: variableDeclaration,
+      code: `const ${variableName} = ${extractedCode};\n${indentation}`,
       selection: selection.putCursorAtColumn(indentationLevel)
     },
-    // Replace extracted code with variable.
+    // Replace extracted code with new variable.
     {
       code: variableName,
-      selection: Selection.fromAST(foundPath.node.loc)
+      selection: extractedCodeSelection
     }
   ]);
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(delegateToEditor);
-}
-
-function getExtractedCode(node: ExtractableNode, getCode: GetCode): any {
-  if (ast.isStringLiteral(node)) {
-    // The `raw` value contains the string quotes (" or ').
-    return node.extra.raw;
-  } else if (ast.isNullLiteral(node)) {
-    return null;
-  } else if (ast.isUndefinedLiteral(node)) {
-    return undefined;
-  } else if (ast.isArrayExpression(node)) {
-    return getCode(Selection.fromAST(node.loc));
-  } else {
-    return node.value;
-  }
 }
 
 function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
