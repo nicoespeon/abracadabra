@@ -146,6 +146,13 @@ console.log("How are you doing?");`;
   hello: 'World!'
 }`
   );
+  shouldExtractA(
+    "named function",
+    `function sayHello() {
+  return "Hello!";
+}`
+  );
+  shouldExtractA("anonymous function", `() => "Hello!"`);
 
   it(`should extract a multi-lines object at correct selection when cursor is inside`, async () => {
     const extractableCode = `{
@@ -223,6 +230,17 @@ console.log("How are you doing?");`;
     await doExtractVariable(code, selectionOnAttribute, extractableCode);
 
     expect(editor.read).toBeCalledWith(selectionFor([0, 19], extractableCode));
+  });
+
+  it(`should not extract a function declaration`, async () => {
+    const code = `function sayHello() {
+  console.log("hello");
+}`;
+    const selectionInExtractableCode = new Selection([0, 0], [2, 1]);
+
+    await doExtractVariable(code, selectionInExtractableCode);
+
+    expect(editor.write).not.toBeCalled();
   });
 
   function shouldExtractA(type: string, value: string) {
