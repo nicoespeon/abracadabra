@@ -1,5 +1,12 @@
 import { Position } from "./position";
-import { Node, NodePath, ASTSelection } from "./ast";
+import {
+  Node,
+  NodePath,
+  ASTSelection,
+  isObjectProperty,
+  isObjectExpression,
+  isArrayExpression
+} from "./ast";
 
 export { Selection };
 
@@ -72,7 +79,14 @@ class Selection {
     if (!loc) return node;
 
     const astStart = Position.fromAST(loc.start);
-    if (!this.start.isSameLineThan(astStart)) return node;
+    if (
+      !this.start.isSameLineThan(astStart) &&
+      !isObjectProperty(node) &&
+      !isObjectExpression(node) &&
+      !isArrayExpression(node)
+    ) {
+      return node;
+    }
 
     return this.findScopeParent(parentPath);
   }

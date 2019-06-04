@@ -147,7 +147,7 @@ console.log("How are you doing?");`;
 }`
   );
 
-  it(`should extract a "object (multi-lines)" at correct selection when cursor is inside`, async () => {
+  it(`should extract a multi-lines object at correct selection when cursor is inside`, async () => {
     const extractableCode = `{
   one: 1,
   foo: true,
@@ -155,6 +155,46 @@ console.log("How are you doing?");`;
 }`;
     const code = `console.log(${extractableCode});`;
     const selectionInExtractableCode = new Selection([2, 3], [2, 3]);
+
+    await doExtractVariable(code, selectionInExtractableCode, extractableCode);
+
+    expect(editor.write).toBeCalledTimes(1);
+    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+    expect(extractedUpdate.selection).toStrictEqual(
+      new Selection([0, 0], [0, 0])
+    );
+  });
+
+  it(`should extract an element nested in a multi-lines object at correct selection`, async () => {
+    const extractableCode = '"Hello!"';
+    const code = `console.log({
+  one: 1,
+  foo: {
+    bar: ${extractableCode}
+  }
+});`;
+    const selectionInExtractableCode = selectionFor([3, 9], extractableCode);
+
+    await doExtractVariable(code, selectionInExtractableCode, extractableCode);
+
+    expect(editor.write).toBeCalledTimes(1);
+    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+    expect(extractedUpdate.selection).toStrictEqual(
+      new Selection([0, 0], [0, 0])
+    );
+  });
+
+  it(`should extract an element nested in a multi-lines array at correct selection`, async () => {
+    const extractableCode = '"Hello!"';
+    const code = `console.log([
+  1,
+  [
+    {
+      hello: ${extractableCode}
+    }
+  ]
+]);`;
+    const selectionInExtractableCode = selectionFor([3, 13], extractableCode);
 
     await doExtractVariable(code, selectionInExtractableCode, extractableCode);
 
