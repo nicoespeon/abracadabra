@@ -59,16 +59,7 @@ async function extractVariable(
 }
 
 function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
-  const isExtractableType =
-    ast.isStringLiteral(path.node) ||
-    ast.isNumericLiteral(path.node) ||
-    ast.isBooleanLiteral(path.node) ||
-    ast.isNullLiteral(path.node) ||
-    ast.isUndefinedLiteral(path.node) ||
-    ast.isArrayExpression(path.node) ||
-    ast.isObjectExpression(path.node);
-
-  return isExtractableType && !!path.node.loc;
+  return ast.isExpression(path.parent) && !!path.node.loc;
 }
 
 type ExtractablePath = ast.NodePath<ExtractableNode>;
