@@ -212,22 +212,22 @@ console.log("How are you doing?");`;
     );
   });
 
-  it(`should read the whole object when cursor is on its attribute`, async () => {
+  it(`should read the whole object when cursor is on its property`, async () => {
     const extractableCode = '{ foo: "bar", one: true }';
     const code = `console.log(${extractableCode});`;
-    const selectionOnAttribute = new Selection([0, 16], [0, 16]);
+    const selectionOnProperty = new Selection([0, 16], [0, 16]);
 
-    await doExtractVariable(code, selectionOnAttribute, extractableCode);
+    await doExtractVariable(code, selectionOnProperty, extractableCode);
 
     expect(editor.read).toBeCalledWith(selectionFor([0, 12], extractableCode));
   });
 
-  it(`should read the nested object when cursor is on its attribute`, async () => {
+  it(`should read the nested object when cursor is on nested object property`, async () => {
     const extractableCode = "{ bar: true }";
     const code = `console.log({ foo: ${extractableCode} });`;
-    const selectionOnAttribute = new Selection([0, 21], [0, 21]);
+    const selectionOnNestedProperty = new Selection([0, 21], [0, 21]);
 
-    await doExtractVariable(code, selectionOnAttribute, extractableCode);
+    await doExtractVariable(code, selectionOnNestedProperty, extractableCode);
 
     expect(editor.read).toBeCalledWith(selectionFor([0, 19], extractableCode));
   });
