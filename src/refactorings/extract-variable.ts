@@ -15,25 +15,44 @@ async function extractVariable(
   showErrorMessage: ShowErrorMessage
 ) {
   let foundPath: ExtractablePath | undefined;
+  let foundLoc: ast.SourceLocation | undefined;
 
   ast.traverseAST(code, {
     enter(path) {
-      if (
-        isExtractablePath(path) &&
-        selection.isInside(Selection.fromAST(path.node.loc))
-      ) {
-        foundPath = path;
+      if (!isExtractablePath(path)) return;
+      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+
+      foundPath = path;
+
+      const node = path.node;
+      if (!ast.isObjectProperty(node)) {
+        foundLoc = node.loc;
+        return;
       }
+
+      if (
+        isExtractableNode(node.value) &&
+        selection.isInside(Selection.fromAST(node.value.loc))
+      ) {
+        // Node contains the object property key => extract the value only.
+        // E.g. node is `foo: "bar"` / value is `"bar"`
+        foundLoc = node.value.loc;
+      }
+
+      // Here, node is an object property which value is not in selection.
+      // It means the property is selected. In this case, we extract the
+      // object containing the property, not the property value.
+      // The object to extract was matched before. Do nothing here.
     }
   });
 
-  if (!foundPath) {
+  if (!foundPath || !foundLoc) {
     showErrorMessage(ErrorReason.DidNotFoundExtractedCode);
     return;
   }
 
   const variableName = "extracted";
-  const extractedCodeSelection = Selection.fromAST(foundPath.node.loc);
+  const extractedCodeSelection = Selection.fromAST(foundLoc);
   const indentation = " ".repeat(
     extractedCodeSelection.getIndentationLevel(foundPath)
   );
@@ -59,15 +78,13 @@ async function extractVariable(
 }
 
 function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
-  return ast.isExpression(path.parent) && !!path.node.loc;
+  return ast.isExpression(path.parent) && isExtractableNode(path.node);
+}
+
+function isExtractableNode(node: ast.Node): node is ExtractableNode {
+  return !!node.loc;
 }
 
 type ExtractablePath = ast.NodePath<ExtractableNode>;
 
-type ExtractableNode = (
-  | ast.ArrayExpression
-  | ast.BooleanLiteral
-  | ast.Identifier
-  | ast.NumericLiteral
-  | ast.NullLiteral
-  | ast.StringLiteral) & { loc: ast.SourceLocation };
+type ExtractableNode = ast.Node & { loc: ast.SourceLocation };
