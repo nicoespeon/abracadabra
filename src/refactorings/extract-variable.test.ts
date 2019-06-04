@@ -129,6 +129,14 @@ console.log("How are you doing?");`;
   shouldExtractA("null", "null");
   shouldExtractA("undefined", "undefined");
   shouldExtractA("array", "[1, 2, 'three', [true, null]]");
+  shouldExtractA(
+    "array (multi-lines)",
+    `[
+  1,
+  'Two',
+  [true, null]
+]`
+  );
   shouldExtractA("object", "{ one: 1, foo: true, hello: 'World!' }");
   shouldExtractA(
     "object (multi-lines)",
