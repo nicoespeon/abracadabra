@@ -165,11 +165,7 @@ console.log("How are you doing?");`;
 
     await doExtractVariable(code, selectionInExtractableCode, extractableCode);
 
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.selection).toStrictEqual(
-      new Selection([0, 0], [0, 0])
-    );
+    expectSelectionIs(new Selection([0, 0], [0, 0]));
   });
 
   it(`should extract an element nested in a multi-lines object at correct selection`, async () => {
@@ -184,11 +180,7 @@ console.log("How are you doing?");`;
 
     await doExtractVariable(code, selectionInExtractableCode, extractableCode);
 
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.selection).toStrictEqual(
-      new Selection([0, 0], [0, 0])
-    );
+    expectSelectionIs(new Selection([0, 0], [0, 0]));
   });
 
   it(`should extract an element nested in a multi-lines array at correct selection`, async () => {
@@ -205,11 +197,7 @@ console.log("How are you doing?");`;
 
     await doExtractVariable(code, selectionInExtractableCode, extractableCode);
 
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.selection).toStrictEqual(
-      new Selection([0, 0], [0, 0])
-    );
+    expectSelectionIs(new Selection([0, 0], [0, 0]));
   });
 
   it(`should read the whole object when cursor is on its property`, async () => {
@@ -273,6 +261,13 @@ console.log("How are you doing?");`;
         `const extracted = ${extractableCode};\n`
       );
     });
+  }
+
+  function expectSelectionIs(expectedSelection: Selection) {
+    expect(editor.write).toBeCalledTimes(1);
+
+    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+    expect(extractedUpdate.selection).toStrictEqual(expectedSelection);
   }
 
   function selectionFor([line, char]: number[], code: string): Selection {
