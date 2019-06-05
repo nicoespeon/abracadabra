@@ -24,10 +24,8 @@ describe("Extract Variable", () => {
 
   describe("basic extraction", () => {
     const extractableCode = '"Hello!"';
-    const code = `import logger from "./logger";
-
-logger(${extractableCode});`;
-    const extractableSelection = selectionFor([2, 7], extractableCode);
+    const code = `console.log(${extractableCode});`;
+    const extractableSelection = selectionFor([0, 12], extractableCode);
 
     it("should read code from extractable selection", async () => {
       await doExtractVariable(code, extractableSelection, extractableCode);
@@ -36,7 +34,7 @@ logger(${extractableCode});`;
     });
 
     it("should read code from extractable selection when selection is inside extractable code", async () => {
-      const selectionInExtractableCode = new Selection([2, 9], [2, 9]);
+      const selectionInExtractableCode = new Selection([0, 15], [0, 16]);
 
       await doExtractVariable(
         code,
@@ -53,7 +51,7 @@ logger(${extractableCode});`;
       expect(editor.write).toBeCalledWith([
         {
           code: `const extracted = ${extractableCode};\n`,
-          selection: new Selection([2, 0], [2, 0])
+          selection: new Selection([0, 0], [0, 0])
         },
         { code: "extracted", selection: extractableSelection }
       ]);
@@ -67,7 +65,7 @@ logger(${extractableCode});`;
     });
 
     describe("invalid selection", () => {
-      const invalidSelection = selectionFor([2, 1], extractableCode);
+      const invalidSelection = selectionFor([0, 10], extractableCode);
 
       it("should not extract anything", async () => {
         await doExtractVariable(code, invalidSelection, extractableCode);
@@ -113,14 +111,9 @@ console.log("How are you doing?");`;
 
     await doExtractVariable(code, extractableSelection, extractableCode);
 
-    const expectedIndentationLevel = 6;
-    const expectedIndentation = " ".repeat(expectedIndentationLevel);
-    const expectedCursorPosition = [2, expectedIndentationLevel];
     const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.code.endsWith(expectedIndentation)).toBe(true);
-    expect(extractedUpdate.selection).toStrictEqual(
-      new Selection(expectedCursorPosition, expectedCursorPosition)
-    );
+    expect(extractedUpdate.code.endsWith("      ")).toBe(true);
+    expectSelectionIs(new Selection([2, 6], [2, 6]));
   });
 
   shouldExtractA("string", "'Hello!'");
