@@ -193,7 +193,7 @@ console.log("How are you doing?");`;
     expectSelectionIs(new Selection([0, 0], [0, 0]));
   });
 
-  it(`should read the whole object when cursor is on its property`, async () => {
+  it(`should extract the whole object when cursor is on its property`, async () => {
     const extractableCode = '{ foo: "bar", one: true }';
     const code = `console.log(${extractableCode});`;
     const selectionOnProperty = new Selection([0, 16], [0, 16]);
@@ -203,7 +203,7 @@ console.log("How are you doing?");`;
     expect(editor.read).toBeCalledWith(selectionFor([0, 12], extractableCode));
   });
 
-  it(`should read the whole object when cursor is on a short-method declaration`, async () => {
+  it(`should extract the whole object when cursor is on a method declaration`, async () => {
     const extractableCode = `{
   getFoo() {
     return "bar";
@@ -217,7 +217,7 @@ console.log("How are you doing?");`;
     expect(editor.read).toBeCalledWith(new Selection([0, 12], [4, 1]));
   });
 
-  it(`should read the nested object when cursor is on nested object property`, async () => {
+  it(`should extract the nested object when cursor is on nested object property`, async () => {
     const extractableCode = "{ bar: true }";
     const code = `console.log({ foo: ${extractableCode} });`;
     const selectionOnNestedProperty = new Selection([0, 21], [0, 21]);
