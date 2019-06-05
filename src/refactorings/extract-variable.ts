@@ -26,6 +26,10 @@ async function extractVariable(
 
       const node = path.node;
       if (!ast.isObjectProperty(node)) {
+        // If it's a method, we don't extract it because we don't handle `this`.
+        // It will fallback on the Object Expression.
+        if (ast.isObjectMethod(node)) return;
+
         foundLoc = node.loc;
         return;
       }

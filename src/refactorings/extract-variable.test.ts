@@ -203,6 +203,20 @@ console.log("How are you doing?");`;
     expect(editor.read).toBeCalledWith(selectionFor([0, 12], extractableCode));
   });
 
+  it(`should read the whole object when cursor is on a short-method declaration`, async () => {
+    const extractableCode = `{
+  getFoo() {
+    return "bar";
+  }
+}`;
+    const code = `console.log(${extractableCode});`;
+    const selectionOnProperty = new Selection([1, 2], [1, 8]);
+
+    await doExtractVariable(code, selectionOnProperty, extractableCode);
+
+    expect(editor.read).toBeCalledWith(new Selection([0, 12], [4, 1]));
+  });
+
   it(`should read the nested object when cursor is on nested object property`, async () => {
     const extractableCode = "{ bar: true }";
     const code = `console.log({ foo: ${extractableCode} });`;
