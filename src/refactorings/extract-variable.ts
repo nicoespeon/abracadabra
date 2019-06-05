@@ -78,7 +78,10 @@ async function extractVariable(
 }
 
 function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
-  return ast.isExpression(path.parent) && isExtractableNode(path.node);
+  return (
+    (ast.isExpression(path.parent) || ast.isReturnStatement(path.parent)) &&
+    isExtractableNode(path.node)
+  );
 }
 
 function isExtractableNode(node: ast.Node): node is ExtractableNode {
