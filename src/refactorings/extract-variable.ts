@@ -21,6 +21,7 @@ async function extractVariable(
     enter(path) {
       if (!isExtractablePath(path)) return;
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      if (isClassPropertyIdentifier(path)) return;
 
       foundPath = path;
 
@@ -85,13 +86,18 @@ function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
   const isInExtractableContext =
     ast.isExpression(path.parent) ||
     ast.isReturnStatement(path.parent) ||
-    ast.isVariableDeclarator(path.parent);
+    ast.isVariableDeclarator(path.parent) ||
+    ast.isClassProperty(path.parent);
 
   return isInExtractableContext && isExtractableNode(path.node);
 }
 
 function isExtractableNode(node: ast.Node): node is ExtractableNode {
   return !!node.loc;
+}
+
+function isClassPropertyIdentifier(path: ast.NodePath): boolean {
+  return ast.isClassProperty(path.parent) && ast.isIdentifier(path.node);
 }
 
 type ExtractablePath = ast.NodePath<ExtractableNode>;

@@ -5,7 +5,9 @@ import {
   ASTSelection,
   isObjectProperty,
   isObjectExpression,
-  isArrayExpression
+  isArrayExpression,
+  isClassProperty,
+  isClassBody
 } from "./ast";
 
 export { Selection };
@@ -83,7 +85,9 @@ class Selection {
       !this.start.isSameLineThan(astStart) &&
       !isObjectProperty(node) &&
       !isObjectExpression(node) &&
-      !isArrayExpression(node)
+      !isArrayExpression(node) &&
+      !isClassProperty(node) &&
+      !isClassBody(node)
     ) {
       return node;
     }

@@ -268,6 +268,33 @@ console.log("How are you doing?");`;
     );
   });
 
+  it(`should extract a class property assignment`, async () => {
+    const extractableCode = `"Hello!"`;
+    const code = `class Logger {
+  message = ${extractableCode};
+}`;
+    const extractableSelection = selectionFor([1, 12], extractableCode);
+
+    await doExtractVariable(code, extractableSelection, extractableCode);
+
+    expect(editor.write).toBeCalledTimes(1);
+    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+    expect(extractedUpdate.code).toBe(
+      `const extracted = ${extractableCode};\n`
+    );
+  });
+
+  it(`should not extract a class property identifier`, async () => {
+    const code = `class Logger {
+  message = "Hello!";
+}`;
+    const extractableSelection = new Selection([1, 2], [1, 9]);
+
+    await doExtractVariable(code, extractableSelection);
+
+    expect(editor.write).not.toBeCalled();
+  });
+
   function shouldExtractA(type: string, value: string) {
     it(`should extract a "${type}"`, async () => {
       const extractableCode = `${value}`;
