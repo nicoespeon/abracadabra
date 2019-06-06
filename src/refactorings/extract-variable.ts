@@ -22,38 +22,13 @@ async function extractVariable(
       if (!isExtractablePath(path)) return;
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
       if (isClassPropertyIdentifier(path)) return;
+      // Don't extract object method because we don't handle `this`.
+      if (ast.isObjectMethod(path.node)) return;
 
       foundPath = path;
-
-      const node = path.node;
-      if (!ast.isObjectProperty(node)) {
-        // If it's a method, we don't extract it because we don't handle `this`.
-        // It will fallback on the Object Expression.
-        if (ast.isObjectMethod(node)) return;
-
-        foundLoc = node.loc;
-        return;
-      }
-
-      if (
-        isExtractableNode(node.value) &&
-        selection.isInside(Selection.fromAST(node.value.loc))
-      ) {
-        // Node contains the object property key => extract the value only.
-        // E.g. node is `foo: "bar"` / value is `"bar"`
-        foundLoc = node.value.loc;
-        return;
-      }
-
-      if (node.computed) {
-        foundLoc = node.key.loc;
-        return;
-      }
-
-      // Here, node is an object property which value is not in selection.
-      // It means the property is selected. In this case, we extract the
-      // object containing the property, not the property value.
-      // The object to extract was matched before. Do nothing here.
+      foundLoc = ast.isObjectProperty(path.node)
+        ? findObjectPropertyLoc(selection, path.node) || foundLoc
+        : path.node.loc;
     }
   });
 
@@ -88,6 +63,22 @@ async function extractVariable(
   await renameSymbol(delegateToEditor);
 }
 
+function findObjectPropertyLoc(
+  selection: Selection,
+  node: ExtractableObjectProperty
+): ast.SourceLocation | null {
+  const isPropertyValueSelected =
+    isExtractableNode(node.value) &&
+    selection.isInside(Selection.fromAST(node.value.loc));
+
+  if (isPropertyValueSelected) return node.value.loc;
+  if (node.computed) return node.key.loc;
+
+  // Non-computed properties can't be extracted.
+  // It will extract the whole object instead.
+  return null;
+}
+
 function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
   const isInExtractableContext =
     ast.isExpression(path.parent) ||
@@ -111,5 +102,6 @@ function isClassPropertyIdentifier(path: ast.NodePath): boolean {
 }
 
 type ExtractablePath = ast.NodePath<ExtractableNode>;
-
-type ExtractableNode = ast.Node & { loc: ast.SourceLocation };
+type ExtractableNode = Extractable<ast.Node>;
+type ExtractableObjectProperty = Extractable<ast.ObjectProperty>;
+type Extractable<T> = T & { loc: ast.SourceLocation };
