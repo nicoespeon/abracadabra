@@ -247,6 +247,15 @@ console.log("How are you doing?");`;
     expect(editor.read).toBeCalledWith(selectionFor([0, 19], extractableCode));
   });
 
+  it(`should extract a valid path when cursor is on a part of member expression`, async () => {
+    const code = `console.log(path.node.name)`;
+    const selectionOnProperty = new Selection([0, 17], [0, 17]);
+
+    await doExtractVariable(code, selectionOnProperty);
+
+    expect(editor.read).toBeCalledWith(new Selection([0, 12], [0, 21]));
+  });
+
   it(`should not extract a function declaration`, async () => {
     const code = `function sayHello() {
   console.log("hello");

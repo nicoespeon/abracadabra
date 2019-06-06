@@ -21,6 +21,7 @@ async function extractVariable(
     enter(path) {
       if (!isExtractablePath(path)) return;
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      if (isPartOfMemberExpression(path)) return;
       if (isClassPropertyIdentifier(path)) return;
       // Don't extract object method because we don't handle `this`.
       if (ast.isObjectMethod(path.node)) return;
@@ -99,6 +100,10 @@ function isClassPropertyIdentifier(path: ast.NodePath): boolean {
     !path.parent.computed &&
     ast.isIdentifier(path.node)
   );
+}
+
+function isPartOfMemberExpression(path: ExtractablePath): boolean {
+  return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
 
 type ExtractablePath = ast.NodePath<ExtractableNode>;
