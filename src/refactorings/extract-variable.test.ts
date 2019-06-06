@@ -64,6 +64,21 @@ describe("Extract Variable", () => {
       expect(delegateToEditor).toBeCalledWith(EditorCommand.RenameSymbol);
     });
 
+    it("should extract with correct indentation", async () => {
+      const extractableCode = '"Hello!"';
+      const code = `
+    function sayHello() {
+      console.log(${extractableCode});
+    }`;
+      const extractableSelection = selectionFor([2, 18], extractableCode);
+
+      await doExtractVariable(code, extractableSelection, extractableCode);
+
+      const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+      expect(extractedUpdate.code.endsWith("      ")).toBe(true);
+      expectSelectionIs(new Selection([2, 6], [2, 6]));
+    });
+
     describe("invalid selection", () => {
       const invalidSelection = selectionFor([0, 10], extractableCode);
 
@@ -83,102 +98,114 @@ describe("Extract Variable", () => {
     });
   });
 
-  it("should extract the correct variable when we have many", async () => {
-    const extractableCode = '"World!"';
-    const code = `console.log("Hello");
-console.log("the", ${extractableCode}, "Alright.");
-console.log("How are you doing?");`;
-    const extractableSelection = selectionFor([1, 19], extractableCode);
-
-    await doExtractVariable(code, extractableSelection, extractableCode);
-
-    expect(editor.write).toBeCalledWith([
-      {
-        code: `const extracted = ${extractableCode};\n`,
-        selection: new Selection([1, 0], [1, 0])
-      },
-      { code: "extracted", selection: extractableSelection }
-    ]);
-  });
-
-  it("should extract with correct indentation", async () => {
-    const extractableCode = '"Hello!"';
-    const code = `
-    function sayHello() {
-      console.log(${extractableCode});
-    }`;
-    const extractableSelection = selectionFor([2, 18], extractableCode);
-
-    await doExtractVariable(code, extractableSelection, extractableCode);
-
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.code.endsWith("      ")).toBe(true);
-    expectSelectionIs(new Selection([2, 6], [2, 6]));
-  });
-
-  shouldExtractA("string", "'Hello!'");
-  shouldExtractA("number", "12.5");
-  shouldExtractA("boolean", "false");
-  shouldExtractA("null", "null");
-  shouldExtractA("undefined", "undefined");
-  shouldExtractA("array", "[1, 2, 'three', [true, null]]");
-  shouldExtractA(
-    "array (multi-lines)",
-    `[
+  describe("simple extractions", () => {
+    shouldExtractA("string", "'Hello!'");
+    shouldExtractA("number", "12.5");
+    shouldExtractA("boolean", "false");
+    shouldExtractA("null", "null");
+    shouldExtractA("undefined", "undefined");
+    shouldExtractA("array", "[1, 2, 'three', [true, null]]");
+    shouldExtractA(
+      "array (multi-lines)",
+      `[
   1,
   'Two',
   [true, null]
 ]`
-  );
-  shouldExtractA("object", "{ one: 1, foo: true, hello: 'World!' }");
-  shouldExtractA(
-    "object (multi-lines)",
-    `{
+    );
+    shouldExtractA("object", "{ one: 1, foo: true, hello: 'World!' }");
+    shouldExtractA(
+      "object (multi-lines)",
+      `{
   one: 1,
   foo: true,
   hello: 'World!'
 }`
-  );
-  shouldExtractA(
-    "named function",
-    `function sayHello() {
+    );
+    shouldExtractA(
+      "named function",
+      `function sayHello() {
   return "Hello!";
 }`
-  );
-  shouldExtractA("anonymous function", `() => "Hello!"`);
+    );
+    shouldExtractA("anonymous function", `() => "Hello!"`);
 
-  it(`should extract a multi-lines object at correct selection when cursor is inside`, async () => {
-    const extractableCode = `{
+    function shouldExtractA(type: string, value: string) {
+      it(`should extract a "${type}"`, async () => {
+        const extractableCode = `${value}`;
+        const code = `console.log(${extractableCode});`;
+        const extractableSelection = new Selection([0, 12], [0, 12]);
+
+        await doExtractVariable(code, extractableSelection, extractableCode);
+
+        expect(editor.write).toBeCalledTimes(1);
+        const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+        expect(extractedUpdate.code).toBe(
+          `const extracted = ${extractableCode};\n`
+        );
+      });
+    }
+  });
+
+  describe("complex extractions", () => {
+    it("should extract the correct variable when we have many", async () => {
+      const extractableCode = '"World!"';
+      const code = `console.log("Hello");
+console.log("the", ${extractableCode}, "Alright.");
+console.log("How are you doing?");`;
+      const extractableSelection = selectionFor([1, 19], extractableCode);
+
+      await doExtractVariable(code, extractableSelection, extractableCode);
+
+      expect(editor.write).toBeCalledWith([
+        {
+          code: `const extracted = ${extractableCode};\n`,
+          selection: new Selection([1, 0], [1, 0])
+        },
+        { code: "extracted", selection: extractableSelection }
+      ]);
+    });
+
+    it(`should extract a multi-lines object at correct selection when cursor is inside`, async () => {
+      const extractableCode = `{
   one: 1,
   foo: true,
   hello: 'World!'
 }`;
-    const code = `console.log(${extractableCode});`;
-    const selectionInExtractableCode = new Selection([2, 3], [2, 3]);
+      const code = `console.log(${extractableCode});`;
+      const selectionInExtractableCode = new Selection([2, 3], [2, 3]);
 
-    await doExtractVariable(code, selectionInExtractableCode, extractableCode);
+      await doExtractVariable(
+        code,
+        selectionInExtractableCode,
+        extractableCode
+      );
 
-    expectSelectionIs(new Selection([0, 0], [0, 0]));
-  });
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
 
-  it(`should extract an element nested in a multi-lines object at correct selection`, async () => {
-    const extractableCode = '"Hello!"';
-    const code = `console.log({
+    it(`should extract an element nested in a multi-lines object at correct selection`, async () => {
+      const extractableCode = '"Hello!"';
+      const code = `console.log({
   one: 1,
   foo: {
     bar: ${extractableCode}
   }
 });`;
-    const selectionInExtractableCode = selectionFor([3, 9], extractableCode);
+      const selectionInExtractableCode = selectionFor([3, 9], extractableCode);
 
-    await doExtractVariable(code, selectionInExtractableCode, extractableCode);
+      await doExtractVariable(
+        code,
+        selectionInExtractableCode,
+        extractableCode
+      );
 
-    expectSelectionIs(new Selection([0, 0], [0, 0]));
-  });
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
 
-  it(`should extract an element nested in a multi-lines array at correct selection`, async () => {
-    const extractableCode = '"Hello!"';
-    const code = `console.log([
+    it(`should extract an element nested in a multi-lines array at correct selection`, async () => {
+      const extractableCode = '"Hello!"';
+      const code = `console.log([
   1,
   [
     {
@@ -186,165 +213,104 @@ console.log("How are you doing?");`;
     }
   ]
 ]);`;
-    const selectionInExtractableCode = selectionFor([3, 13], extractableCode);
+      const selectionInExtractableCode = selectionFor([3, 13], extractableCode);
 
-    await doExtractVariable(code, selectionInExtractableCode, extractableCode);
+      await doExtractVariable(
+        code,
+        selectionInExtractableCode,
+        extractableCode
+      );
 
-    expectSelectionIs(new Selection([0, 0], [0, 0]));
-  });
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
 
-  it(`should extract the whole object when cursor is on its property`, async () => {
-    const extractableCode = '{ foo: "bar", one: true }';
-    const code = `console.log(${extractableCode});`;
-    const selectionOnProperty = new Selection([0, 16], [0, 16]);
+    it(`should extract the whole object when cursor is on its property`, async () => {
+      const extractableCode = '{ foo: "bar", one: true }';
+      const code = `console.log(${extractableCode});`;
+      const selectionOnProperty = new Selection([0, 16], [0, 16]);
 
-    await doExtractVariable(code, selectionOnProperty, extractableCode);
+      await doExtractVariable(code, selectionOnProperty, extractableCode);
 
-    expect(editor.read).toBeCalledWith(selectionFor([0, 12], extractableCode));
-  });
+      expect(editor.read).toBeCalledWith(
+        selectionFor([0, 12], extractableCode)
+      );
+    });
 
-  it(`should extract a computed object property`, async () => {
-    const extractableCode = `key`;
-    const code = `const a = { [${extractableCode}]: "value" }`;
-    const extractableSelection = selectionFor([0, 13], extractableCode);
+    it(`should extract a computed object property`, async () => {
+      const extractableCode = `key`;
+      const code = `const a = { [${extractableCode}]: "value" }`;
+      const extractableSelection = selectionFor([0, 13], extractableCode);
 
-    await doExtractVariable(code, extractableSelection, extractableCode);
+      await doExtractVariable(code, extractableSelection, extractableCode);
 
-    expect(editor.read).toBeCalledWith(extractableSelection);
-  });
+      expect(editor.read).toBeCalledWith(extractableSelection);
+    });
 
-  it(`should extract computed object property value when cursor is on value`, async () => {
-    const extractableCode = `"value"`;
-    const code = `const a = { [key]: ${extractableCode} }`;
-    const extractableSelection = selectionFor([0, 19], extractableCode);
+    it(`should extract computed object property value when cursor is on value`, async () => {
+      const extractableCode = `"value"`;
+      const code = `const a = { [key]: ${extractableCode} }`;
+      const extractableSelection = selectionFor([0, 19], extractableCode);
 
-    await doExtractVariable(code, extractableSelection, extractableCode);
+      await doExtractVariable(code, extractableSelection, extractableCode);
 
-    expect(editor.read).toBeCalledWith(extractableSelection);
-  });
+      expect(editor.read).toBeCalledWith(extractableSelection);
+    });
 
-  it(`should extract the whole object when cursor is on a method declaration`, async () => {
-    const extractableCode = `{
+    it(`should extract the whole object when cursor is on a method declaration`, async () => {
+      const extractableCode = `{
   getFoo() {
     return "bar";
   }
 }`;
-    const code = `console.log(${extractableCode});`;
-    const selectionOnProperty = new Selection([1, 2], [1, 8]);
+      const code = `console.log(${extractableCode});`;
+      const selectionOnProperty = new Selection([1, 2], [1, 8]);
 
-    await doExtractVariable(code, selectionOnProperty, extractableCode);
+      await doExtractVariable(code, selectionOnProperty, extractableCode);
 
-    expect(editor.read).toBeCalledWith(new Selection([0, 12], [4, 1]));
-  });
+      expect(editor.read).toBeCalledWith(new Selection([0, 12], [4, 1]));
+    });
 
-  it(`should extract the nested object when cursor is on nested object property`, async () => {
-    const extractableCode = "{ bar: true }";
-    const code = `console.log({ foo: ${extractableCode} });`;
-    const selectionOnNestedProperty = new Selection([0, 21], [0, 21]);
+    it(`should extract the nested object when cursor is on nested object property`, async () => {
+      const extractableCode = "{ bar: true }";
+      const code = `console.log({ foo: ${extractableCode} });`;
+      const selectionOnNestedProperty = new Selection([0, 21], [0, 21]);
 
-    await doExtractVariable(code, selectionOnNestedProperty, extractableCode);
+      await doExtractVariable(code, selectionOnNestedProperty, extractableCode);
 
-    expect(editor.read).toBeCalledWith(selectionFor([0, 19], extractableCode));
-  });
+      expect(editor.read).toBeCalledWith(
+        selectionFor([0, 19], extractableCode)
+      );
+    });
 
-  it(`should extract a valid path when cursor is on a part of member expression`, async () => {
-    const code = `console.log(path.node.name)`;
-    const selectionOnProperty = new Selection([0, 17], [0, 17]);
+    it(`should extract a valid path when cursor is on a part of member expression`, async () => {
+      const code = `console.log(path.node.name)`;
+      const selectionOnProperty = new Selection([0, 17], [0, 17]);
 
-    await doExtractVariable(code, selectionOnProperty);
+      await doExtractVariable(code, selectionOnProperty);
 
-    expect(editor.read).toBeCalledWith(new Selection([0, 12], [0, 21]));
-  });
+      expect(editor.read).toBeCalledWith(new Selection([0, 12], [0, 21]));
+    });
 
-  it(`should not extract a function declaration`, async () => {
-    const code = `function sayHello() {
-  console.log("hello");
-}`;
-    const selectionInExtractableCode = new Selection([0, 0], [2, 1]);
-
-    await doExtractVariable(code, selectionInExtractableCode);
-
-    expect(editor.write).not.toBeCalled();
-  });
-
-  it(`should extract a return value of a function`, async () => {
-    const extractableCode = `"Hello!"`;
-    const code = `function getMessage() {
+    it(`should extract a return value of a function`, async () => {
+      const extractableCode = `"Hello!"`;
+      const code = `function getMessage() {
   return ${extractableCode};
 }`;
-    const extractableSelection = selectionFor([1, 9], extractableCode);
+      const extractableSelection = selectionFor([1, 9], extractableCode);
 
-    await doExtractVariable(code, extractableSelection, extractableCode);
+      await doExtractVariable(code, extractableSelection, extractableCode);
 
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.code).toBe(
-      `const extracted = ${extractableCode};\n  `
-    );
-  });
+      expect(editor.write).toBeCalledTimes(1);
+      const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+      expect(extractedUpdate.code).toBe(
+        `const extracted = ${extractableCode};\n  `
+      );
+    });
 
-  it(`should extract an assigned variable`, async () => {
-    const extractableCode = `"Hello!"`;
-    const code = `const message = ${extractableCode};`;
-    const extractableSelection = selectionFor([0, 16], extractableCode);
-
-    await doExtractVariable(code, extractableSelection, extractableCode);
-
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.code).toBe(
-      `const extracted = ${extractableCode};\n`
-    );
-  });
-
-  it(`should extract a class property assignment`, async () => {
-    const extractableCode = `"Hello!"`;
-    const code = `class Logger {
-  message = ${extractableCode};
-}`;
-    const extractableSelection = selectionFor([1, 12], extractableCode);
-
-    await doExtractVariable(code, extractableSelection, extractableCode);
-
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.code).toBe(
-      `const extracted = ${extractableCode};\n`
-    );
-  });
-
-  it(`should not extract a class property identifier`, async () => {
-    const code = `class Logger {
-  message = "Hello!";
-}`;
-    const extractableSelection = new Selection([1, 2], [1, 9]);
-
-    await doExtractVariable(code, extractableSelection);
-
-    expect(editor.write).not.toBeCalled();
-  });
-
-  it(`should extract a computed class property`, async () => {
-    const extractableCode = `key`;
-    const code = `class Logger {
-  [${extractableCode}] = "value";
-}`;
-    const extractableSelection = selectionFor([1, 3], extractableCode);
-
-    await doExtractVariable(code, extractableSelection, extractableCode);
-
-    expect(editor.write).toBeCalledTimes(1);
-    const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-    expect(extractedUpdate.code).toBe(
-      `const extracted = ${extractableCode};\n`
-    );
-  });
-
-  function shouldExtractA(type: string, value: string) {
-    it(`should extract a "${type}"`, async () => {
-      const extractableCode = `${value}`;
-      const code = `console.log(${extractableCode});`;
-      const extractableSelection = new Selection([0, 12], [0, 12]);
+    it(`should extract an assigned variable`, async () => {
+      const extractableCode = `"Hello!"`;
+      const code = `const message = ${extractableCode};`;
+      const extractableSelection = selectionFor([0, 16], extractableCode);
 
       await doExtractVariable(code, extractableSelection, extractableCode);
 
@@ -354,7 +320,63 @@ console.log("How are you doing?");`;
         `const extracted = ${extractableCode};\n`
       );
     });
-  }
+
+    it(`should extract a class property assignment`, async () => {
+      const extractableCode = `"Hello!"`;
+      const code = `class Logger {
+  message = ${extractableCode};
+}`;
+      const extractableSelection = selectionFor([1, 12], extractableCode);
+
+      await doExtractVariable(code, extractableSelection, extractableCode);
+
+      expect(editor.write).toBeCalledTimes(1);
+      const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+      expect(extractedUpdate.code).toBe(
+        `const extracted = ${extractableCode};\n`
+      );
+    });
+
+    it(`should extract a computed class property`, async () => {
+      const extractableCode = `key`;
+      const code = `class Logger {
+  [${extractableCode}] = "value";
+}`;
+      const extractableSelection = selectionFor([1, 3], extractableCode);
+
+      await doExtractVariable(code, extractableSelection, extractableCode);
+
+      expect(editor.write).toBeCalledTimes(1);
+      const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
+      expect(extractedUpdate.code).toBe(
+        `const extracted = ${extractableCode};\n`
+      );
+    });
+  });
+
+  describe("invalid extractions", () => {
+    it(`should not extract a function declaration`, async () => {
+      const code = `function sayHello() {
+  console.log("hello");
+}`;
+      const selectionInExtractableCode = new Selection([0, 0], [2, 1]);
+
+      await doExtractVariable(code, selectionInExtractableCode);
+
+      expect(editor.write).not.toBeCalled();
+    });
+
+    it(`should not extract a class property identifier`, async () => {
+      const code = `class Logger {
+  message = "Hello!";
+}`;
+      const extractableSelection = new Selection([1, 2], [1, 9]);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.write).not.toBeCalled();
+    });
+  });
 
   function expectSelectionIs(expectedSelection: Selection) {
     expect(editor.write).toBeCalledTimes(1);
