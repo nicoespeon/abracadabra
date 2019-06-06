@@ -42,6 +42,12 @@ async function extractVariable(
         // Node contains the object property key => extract the value only.
         // E.g. node is `foo: "bar"` / value is `"bar"`
         foundLoc = node.value.loc;
+        return;
+      }
+
+      if (node.computed) {
+        foundLoc = node.key.loc;
+        return;
       }
 
       // Here, node is an object property which value is not in selection.
@@ -97,7 +103,11 @@ function isExtractableNode(node: ast.Node): node is ExtractableNode {
 }
 
 function isClassPropertyIdentifier(path: ast.NodePath): boolean {
-  return ast.isClassProperty(path.parent) && ast.isIdentifier(path.node);
+  return (
+    ast.isClassProperty(path.parent) &&
+    !path.parent.computed &&
+    ast.isIdentifier(path.node)
+  );
 }
 
 type ExtractablePath = ast.NodePath<ExtractableNode>;
