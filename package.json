@@ -25,7 +25,11 @@
   "main": "./out/extension.js",
   "activationEvents": [
     "onCommand:refactorix.renameSymbol",
-    "onCommand:refactorix.extractVariable"
+    "onCommand:refactorix.extractVariable",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
   ],
   "contributes": {
     "commands": [

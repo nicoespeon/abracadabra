@@ -11,7 +11,7 @@ showErrorMessageInVSCode = async reason => {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
-    case ErrorReason.DidNotFoundExtractedCode:
+    case ErrorReason.DidNotFoundExtractableCode:
       return "I didn't found a valid code to extract from current selection 🤔";
 
     default:

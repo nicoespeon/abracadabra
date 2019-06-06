@@ -92,7 +92,7 @@ describe("Extract Variable", () => {
         await doExtractVariable(code, invalidSelection, extractableCode);
 
         expect(showErrorMessage).toBeCalledWith(
-          ErrorReason.DidNotFoundExtractedCode
+          ErrorReason.DidNotFoundExtractableCode
         );
       });
     });
