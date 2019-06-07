@@ -1,5 +1,7 @@
 # Contributing to Refactorix
 
+Architecture decisions for this project [are documented here][adrs], using the [Architecture Decision Records (ADR)][adrs-pattern] pattern.
+
 ## Tests
 
 ### Unit tests
@@ -52,7 +54,11 @@ function isStringLiteral() {
 
 As a general rule, we prefer to have **what is exposed appear before what is private**. That's why we list the exports at the top of the file. We find it simpler to see what is exposed from a file, so it's easier to decide if that's too much and we should split.
 
+<!-- Links -->
+
 [testing-extension]: https://code.visualstudio.com/api/working-with-extensions/testing-extension
 [mocha]: https://mochajs.org/
 [jest]: https://jestjs.io/
 [prettier]: https://prettier.io
+[adrs-pattern]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
+[adrs]: https://github.com/nicoespeon/refactorix/blob/master/docs/adr
