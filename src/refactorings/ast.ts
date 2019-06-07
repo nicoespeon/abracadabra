@@ -2,7 +2,7 @@ import { parse } from "@babel/parser";
 import traverse, { TraverseOptions } from "@babel/traverse";
 import * as t from "@babel/types";
 
-import { Code } from "./i-write-updates";
+import { Code } from "./i-update-code";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";

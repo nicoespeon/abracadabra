@@ -1,35 +1,36 @@
 import { DelegateToEditor, EditorCommand } from "./i-delegate-to-editor";
-import { WritableEditor, Code, Update } from "./i-write-updates";
+import { UpdateWith, Code, Update } from "./i-update-code";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { extractVariable } from "./extract-variable";
 import { Selection } from "./selection";
 
-class WritableFakeEditor implements Mockify<WritableEditor> {
-  write = jest.fn();
-  read = jest.fn();
-}
-
-type Mockify<T> = { [P in keyof T]: jest.Mock<{}> };
-
 describe("Extract Variable", () => {
+  let updateWith: UpdateWith;
   let delegateToEditor: DelegateToEditor;
   let showErrorMessage: ShowErrorMessage;
-  let editor: WritableFakeEditor;
+  let updates: Update[] = [];
 
   beforeEach(() => {
     delegateToEditor = jest.fn();
     showErrorMessage = jest.fn();
-    editor = new WritableFakeEditor();
+    updateWith = jest
+      .fn()
+      .mockImplementation(
+        (_, getUpdates) => (updates = getUpdates('"Hello!"'))
+      );
   });
 
   describe("basic extraction behaviour", () => {
     const code = `console.log("Hello!");`;
     const extractableSelection = new Selection([0, 12], [0, 20]);
 
-    it("should read code from extractable selection", async () => {
+    it("should update code with extractable selection", async () => {
       await doExtractVariable(code, extractableSelection);
 
-      expect(editor.read).toBeCalledWith(extractableSelection);
+      expect(updateWith).toBeCalledWith(
+        extractableSelection,
+        expect.any(Function)
+      );
     });
 
     it("should expand selection to the nearest extractable code", async () => {
@@ -37,15 +38,16 @@ describe("Extract Variable", () => {
 
       await doExtractVariable(code, selectionInExtractableCode);
 
-      expect(editor.read).toBeCalledWith(extractableSelection);
+      expect(updateWith).toBeCalledWith(
+        extractableSelection,
+        expect.any(Function)
+      );
     });
 
     it("should update code to extract selection into a variable", async () => {
-      editor.read.mockReturnValue('"Hello!"');
-
       await doExtractVariable(code, extractableSelection);
 
-      expect(editor.write).toBeCalledWith([
+      expect(updates).toEqual([
         {
           code: `const extracted = "Hello!";\n`,
           selection: Selection.cursorAt(0, 0)
@@ -70,12 +72,10 @@ describe("Extract Variable", () => {
 
       await doExtractVariable(code, extractableSelection);
 
-      const [extractedUpdate]: Update[] = editor.write.mock.calls[0][0];
-      expect(extractedUpdate.code.endsWith("      ")).toBe(true);
-      expect(editor.write).toBeCalledTimes(1);
-      expect(extractedUpdate.selection).toStrictEqual(
-        new Selection([2, 6], [2, 6])
-      );
+      expect(updates[0]).toEqual({
+        code: expect.stringMatching(/"Hello!";\n {6}$/),
+        selection: Selection.cursorAt(2, 6)
+      });
     });
 
     describe("invalid selection", () => {
@@ -84,7 +84,7 @@ describe("Extract Variable", () => {
       it("should not extract anything", async () => {
         await doExtractVariable(code, invalidSelection);
 
-        expect(editor.write).not.toBeCalled();
+        expect(updateWith).not.toBeCalled();
       });
 
       it("should show an error message", async () => {
@@ -434,12 +434,14 @@ console.log("How are you doing?");`,
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
 
-    expect(editor.read).toBeCalledWith(expectedSelection.read);
+    expect(updateWith).toBeCalledWith(
+      expectedSelection.read,
+      expect.any(Function)
+    );
 
-    const [update]: Update[] = editor.write.mock.calls[0][0];
     const expectedUpdateSelection =
       expectedSelection.update || Selection.cursorAt(0, 0);
-    expect(update.selection).toStrictEqual(expectedUpdateSelection);
+    expect(updates[0].selection).toStrictEqual(expectedUpdateSelection);
   });
 
   // ✋ Patterns that can't be extracted
@@ -473,14 +475,14 @@ console.log("How are you doing?");`,
   ])("should not extract %s", async (_, context) => {
     await doExtractVariable(context.code, context.selection);
 
-    expect(editor.write).not.toBeCalled();
+    expect(updateWith).not.toBeCalled();
   });
 
   function doExtractVariable(code: Code, selection: Selection) {
     return extractVariable(
       code,
       selection,
-      editor,
+      updateWith,
       delegateToEditor,
       showErrorMessage
     );

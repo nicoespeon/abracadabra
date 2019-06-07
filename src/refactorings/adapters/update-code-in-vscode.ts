@@ -1,19 +1,23 @@
 import * as vscode from "vscode";
+import { Pipe } from "ts-functionaltypes";
 
-import { WritableEditor, Update } from "../i-write-updates";
+import { UpdateWith, Update } from "../i-update-code";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-export { WritableVSCode };
+export { createUpdateWithInVSCode };
 
-class WritableVSCode implements WritableEditor {
-  private _document: vscode.TextDocument;
+const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
-  constructor(document: vscode.TextDocument) {
-    this._document = document;
-  }
+function createUpdateWithInVSCode(document: vscode.TextDocument): UpdateWith {
+  return async (selection, getUpdates) =>
+    pipe(
+      read,
+      getUpdates,
+      write
+    )(selection);
 
-  async write(updates: Update[]) {
+  async function write(updates: Update[]) {
     const textEdits = updates.map(({ code, selection }) => {
       const startPosition = toVSCodePosition(selection.start);
       const endPosition = toVSCodePosition(selection.end);
@@ -25,16 +29,16 @@ class WritableVSCode implements WritableEditor {
     });
 
     const edit = new vscode.WorkspaceEdit();
-    edit.set(this._document.uri, textEdits);
+    edit.set(document.uri, textEdits);
 
     await vscode.workspace.applyEdit(edit);
   }
 
-  read(selection: Selection) {
+  function read(selection: Selection) {
     const startPosition = toVSCodePosition(selection.start);
     const endPosition = toVSCodePosition(selection.end);
 
-    return this._document.getText(new vscode.Range(startPosition, endPosition));
+    return document.getText(new vscode.Range(startPosition, endPosition));
   }
 }
 

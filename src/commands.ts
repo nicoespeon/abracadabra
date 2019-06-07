@@ -7,7 +7,7 @@ import { extractVariable } from "./refactorings/extract-variable";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
-import { WritableVSCode } from "./refactorings/adapters/writable-vscode";
+import { createUpdateWithInVSCode } from "./refactorings/adapters/update-code-in-vscode";
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 
 export default {
@@ -37,7 +37,7 @@ async function extractVariableCommand() {
     extractVariable(
       document.getText(),
       createSelectionFromVSCode(selection),
-      new WritableVSCode(document),
+      createUpdateWithInVSCode(document),
       delegateToVSCode,
       showErrorMessageInVSCode
     )
