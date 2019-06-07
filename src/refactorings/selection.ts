@@ -1,15 +1,6 @@
 import { Position } from "./position";
-import {
-  Node,
-  NodePath,
-  ASTSelection,
-  isObjectProperty,
-  isObjectExpression,
-  isArrayExpression,
-  isClassProperty,
-  isClassBody,
-  isVariableDeclarator
-} from "./ast";
+import * as ast from "./ast";
+import { Node, NodePath, ASTSelection } from "./ast";
 
 export { Selection };
 
@@ -84,12 +75,12 @@ class Selection {
     const astStart = Position.fromAST(loc.start);
     if (
       !this.start.isSameLineThan(astStart) &&
-      !isObjectProperty(node) &&
-      !isObjectExpression(node) &&
-      !isArrayExpression(node) &&
-      !isClassProperty(node) &&
-      !isClassBody(node) &&
-      !isVariableDeclarator(node)
+      !ast.isObjectProperty(node) &&
+      !ast.isObjectExpression(node) &&
+      !ast.isArrayExpression(node) &&
+      !ast.isClassProperty(node) &&
+      !ast.isClassBody(node) &&
+      !ast.isVariableDeclarator(node)
     ) {
       return node;
     }
