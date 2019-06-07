@@ -371,6 +371,18 @@ console.log("How are you doing?");`;
         `const extracted = ${extractableCode};\n`
       );
     });
+
+    it(`should extract an interpolated string when cursor is on a subpart of it`, async () => {
+      const extractableCode = "`Hello ${world}! How are you doing?`";
+      const code = `console.log(${extractableCode})`;
+      const extractableSelection = new Selection([0, 15], [0, 15]);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.read).toBeCalledWith(
+        selectionFor([0, 12], extractableCode)
+      );
+    });
   });
 
   describe("invalid extractions", () => {
