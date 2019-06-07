@@ -82,6 +82,7 @@ class Selection {
       !ast.isClassBody(node) &&
       !ast.isVariableDeclarator(node) &&
       !ast.isLogicalExpression(node) &&
+      !ast.isBinaryExpression(node) &&
       !ast.isSwitchCase(node)
     ) {
       return node;

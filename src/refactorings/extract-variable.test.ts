@@ -407,6 +407,19 @@ console.log("How are you doing?");`;
       expectSelectionIs(new Selection([0, 0], [0, 0]));
     });
 
+    it(`should extract a part of a multi-line if statement`, async () => {
+      const code = `if (
+  parents.length > 0 &&
+  type === 'refactor'
+) doSomething()`;
+      const extractableSelection = new Selection([2, 2], [2, 21]);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.read).toBeCalledWith(extractableSelection);
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
+
     it(`should extract a while statement`, async () => {
       const extractableCode = "parents.length > 0 && type === 'refactor'";
       const code = `while (${extractableCode}) doSomething()`;
