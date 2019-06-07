@@ -80,7 +80,8 @@ class Selection {
       !ast.isArrayExpression(node) &&
       !ast.isClassProperty(node) &&
       !ast.isClassBody(node) &&
-      !ast.isVariableDeclarator(node)
+      !ast.isVariableDeclarator(node) &&
+      !ast.isSwitchCase(node)
     ) {
       return node;
     }

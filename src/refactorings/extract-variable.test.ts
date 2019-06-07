@@ -403,6 +403,21 @@ console.log("How are you doing?");`;
 
       expect(editor.read).toBeCalledWith(extractableSelection);
     });
+
+    it(`should extract a case statement`, async () => {
+      const extractableCode = "'Hello'";
+      const code = `switch (text) {
+  case ${extractableCode}:
+  default:
+    break;
+}`;
+      const extractableSelection = selectionFor([1, 7], extractableCode);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.read).toBeCalledWith(extractableSelection);
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
   });
 
   describe("invalid extractions", () => {

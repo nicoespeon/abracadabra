@@ -102,7 +102,8 @@ function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
     ast.isVariableDeclarator(path.parent) ||
     ast.isClassProperty(path.parent) ||
     ast.isIfStatement(path.parent) ||
-    ast.isWhileStatement(path.parent);
+    ast.isWhileStatement(path.parent) ||
+    ast.isSwitchCase(path.parent);
 
   return isInExtractableContext && isExtractableNode(path.node);
 }
