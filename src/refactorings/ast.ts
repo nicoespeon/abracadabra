@@ -1,5 +1,5 @@
 import { parse } from "@babel/parser";
-import traverse, { TraverseOptions } from "@babel/traverse";
+import traverse, { TraverseOptions, NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 import { Code } from "./i-update-code";
@@ -8,6 +8,13 @@ export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
 export { traverseAST, isUndefinedLiteral };
 export { ASTSelection, ASTPosition };
+export {
+  isSelectableNode,
+  SelectablePath,
+  SelectableNode,
+  SelectableObjectProperty,
+  Selectable
+};
 
 interface ASTSelection {
   start: ASTPosition;
@@ -41,4 +48,13 @@ function isUndefinedLiteral(
   opts?: object | null
 ): node is t.Identifier {
   return t.isIdentifier(node, opts) && node.name === "undefined";
+}
+
+type SelectablePath = NodePath<SelectableNode>;
+type SelectableNode = Selectable<t.Node>;
+type SelectableObjectProperty = Selectable<t.ObjectProperty>;
+type Selectable<T> = T & { loc: t.SourceLocation };
+
+function isSelectableNode(node: t.Node): node is SelectableNode {
+  return !!node.loc;
 }

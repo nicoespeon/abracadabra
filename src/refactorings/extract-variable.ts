@@ -82,10 +82,10 @@ function findExtractableCode(
 
 function findObjectPropertyLoc(
   selection: Selection,
-  node: ExtractableObjectProperty
+  node: ast.SelectableObjectProperty
 ): ast.SourceLocation | null {
   const isPropertyValueSelected =
-    isExtractableNode(node.value) &&
+    ast.isSelectableNode(node.value) &&
     selection.isInside(Selection.fromAST(node.value.loc));
 
   if (isPropertyValueSelected) return node.value.loc;
@@ -96,7 +96,7 @@ function findObjectPropertyLoc(
   return null;
 }
 
-function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
+function isExtractablePath(path: ast.NodePath): path is ast.SelectablePath {
   const isInExtractableContext =
     ast.isExpression(path.parent) ||
     ast.isReturnStatement(path.parent) ||
@@ -106,11 +106,7 @@ function isExtractablePath(path: ast.NodePath): path is ExtractablePath {
     ast.isWhileStatement(path.parent) ||
     ast.isSwitchCase(path.parent);
 
-  return isInExtractableContext && isExtractableNode(path.node);
-}
-
-function isExtractableNode(node: ast.Node): node is ExtractableNode {
-  return !!node.loc;
+  return isInExtractableContext && ast.isSelectableNode(path.node);
 }
 
 function isClassPropertyIdentifier(path: ast.NodePath): boolean {
@@ -125,15 +121,11 @@ function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
   return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
 }
 
-function isPartOfMemberExpression(path: ExtractablePath): boolean {
+function isPartOfMemberExpression(path: ast.SelectablePath): boolean {
   return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
 
 type ExtractableCode = {
-  path: ExtractablePath | undefined;
+  path: ast.SelectablePath | undefined;
   loc: ast.SourceLocation | undefined;
 };
-type ExtractablePath = ast.NodePath<ExtractableNode>;
-type ExtractableNode = Extractable<ast.Node>;
-type ExtractableObjectProperty = Extractable<ast.ObjectProperty>;
-type Extractable<T> = T & { loc: ast.SourceLocation };
