@@ -27,6 +27,10 @@ class Selection {
     );
   }
 
+  static cursorAt(line: number, char: number): Selection {
+    return new Selection([line, char], [line, char]);
+  }
+
   get start(): Position {
     return this._start;
   }
