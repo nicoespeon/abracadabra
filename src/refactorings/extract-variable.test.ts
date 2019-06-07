@@ -468,6 +468,15 @@ console.log("How are you doing?");`;
 
       expect(editor.write).not.toBeCalled();
     });
+
+    it(`should not extract the identifier from a variable declaration`, async () => {
+      const code = `const foo = "bar";`;
+      const extractableSelection = new Selection([0, 6], [0, 9]);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.write).not.toBeCalled();
+    });
   });
 
   function expectSelectionIs(expectedSelection: Selection) {

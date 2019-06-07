@@ -65,6 +65,7 @@ function findExtractableCode(
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
       if (isPartOfMemberExpression(path)) return;
       if (isClassPropertyIdentifier(path)) return;
+      if (isVariableDeclarationIdentifier(path)) return;
       if (ast.isTemplateElement(path)) return;
       // Don't extract object method because we don't handle `this`.
       if (ast.isObjectMethod(path.node)) return;
@@ -118,6 +119,10 @@ function isClassPropertyIdentifier(path: ast.NodePath): boolean {
     !path.parent.computed &&
     ast.isIdentifier(path.node)
   );
+}
+
+function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
+  return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
 }
 
 function isPartOfMemberExpression(path: ExtractablePath): boolean {
