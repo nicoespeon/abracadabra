@@ -65,6 +65,7 @@ function findExtractableCode(
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
       if (isPartOfMemberExpression(path)) return;
       if (isClassPropertyIdentifier(path)) return;
+      if (ast.isTemplateElement(path)) return;
       // Don't extract object method because we don't handle `this`.
       if (ast.isObjectMethod(path.node)) return;
 
