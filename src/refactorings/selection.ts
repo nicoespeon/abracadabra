@@ -7,7 +7,8 @@ import {
   isObjectExpression,
   isArrayExpression,
   isClassProperty,
-  isClassBody
+  isClassBody,
+  isVariableDeclarator
 } from "./ast";
 
 export { Selection };
@@ -87,7 +88,8 @@ class Selection {
       !isObjectExpression(node) &&
       !isArrayExpression(node) &&
       !isClassProperty(node) &&
-      !isClassBody(node)
+      !isClassBody(node) &&
+      !isVariableDeclarator(node)
     ) {
       return node;
     }

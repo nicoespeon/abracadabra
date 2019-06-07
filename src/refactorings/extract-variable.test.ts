@@ -166,7 +166,7 @@ console.log("How are you doing?");`;
       ]);
     });
 
-    it(`should extract a multi-lines object at correct selection when cursor is inside`, async () => {
+    it(`should extract a multi-lines object when cursor is inside`, async () => {
       const extractableCode = `{
   one: 1,
   foo: true,
@@ -184,7 +184,7 @@ console.log("How are you doing?");`;
       expectSelectionIs(new Selection([0, 0], [0, 0]));
     });
 
-    it(`should extract an element nested in a multi-lines object at correct selection`, async () => {
+    it(`should extract an element nested in a multi-lines object`, async () => {
       const extractableCode = '"Hello!"';
       const code = `console.log({
   one: 1,
@@ -203,7 +203,26 @@ console.log("How are you doing?");`;
       expectSelectionIs(new Selection([0, 0], [0, 0]));
     });
 
-    it(`should extract an element nested in a multi-lines array at correct selection`, async () => {
+    it(`should extract an element nested in a multi-lines object that is assigned to a variable`, async () => {
+      const extractableCode = '"Hello!"';
+      const code = `const a = {
+  one: 1,
+  foo: {
+    bar: ${extractableCode}
+  }
+};`;
+      const selectionInExtractableCode = selectionFor([3, 9], extractableCode);
+
+      await doExtractVariable(
+        code,
+        selectionInExtractableCode,
+        extractableCode
+      );
+
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
+
+    it(`should extract an element nested in a multi-lines array`, async () => {
       const extractableCode = '"Hello!"';
       const code = `console.log([
   1,
