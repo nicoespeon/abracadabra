@@ -444,6 +444,19 @@ console.log("How are you doing?");`;
       expect(editor.read).toBeCalledWith(extractableSelection);
       expectSelectionIs(new Selection([0, 0], [0, 0]));
     });
+
+    it(`should extract an unamed function parameter when cursor is inside`, async () => {
+      const extractableCode = `function () {
+  return "Hello!";
+}`;
+      const code = `console.log(${extractableCode})`;
+      const extractableSelection = new Selection([1, 0], [1, 0]);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.read).toBeCalledWith(new Selection([0, 12], [2, 1]));
+      expectSelectionIs(new Selection([0, 0], [0, 0]));
+    });
   });
 
   describe("invalid extractions", () => {

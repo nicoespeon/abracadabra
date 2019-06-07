@@ -67,6 +67,7 @@ function findExtractableCode(
       if (isClassPropertyIdentifier(path)) return;
       if (isVariableDeclarationIdentifier(path)) return;
       if (ast.isTemplateElement(path)) return;
+      if (ast.isBlockStatement(path)) return;
       // Don't extract object method because we don't handle `this`.
       if (ast.isObjectMethod(path.node)) return;
 
