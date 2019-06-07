@@ -383,6 +383,26 @@ console.log("How are you doing?");`;
         selectionFor([0, 12], extractableCode)
       );
     });
+
+    it(`should extract an if statement`, async () => {
+      const extractableCode = "parents.length > 0 && type === 'refactor'";
+      const code = `if (${extractableCode}) doSomething()`;
+      const extractableSelection = selectionFor([0, 4], extractableCode);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.read).toBeCalledWith(extractableSelection);
+    });
+
+    it(`should extract a while statement`, async () => {
+      const extractableCode = "parents.length > 0 && type === 'refactor'";
+      const code = `while (${extractableCode}) doSomething()`;
+      const extractableSelection = selectionFor([0, 7], extractableCode);
+
+      await doExtractVariable(code, extractableSelection);
+
+      expect(editor.read).toBeCalledWith(extractableSelection);
+    });
   });
 
   describe("invalid extractions", () => {
