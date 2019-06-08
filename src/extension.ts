@@ -11,7 +11,11 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 export function activate(context: vscode.ExtensionContext) {
-  context.subscriptions.push(commands.renameSymbol, commands.extractVariable);
+  context.subscriptions.push(
+    commands.renameSymbol,
+    commands.extractVariable,
+    commands.inlineVariable
+  );
 
   SUPPORTED_LANGUAGES.forEach(language => {
     const actionProviders = createActionProvidersFor(language);

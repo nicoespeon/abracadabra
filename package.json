@@ -26,6 +26,7 @@
   "activationEvents": [
     "onCommand:refactorix.renameSymbol",
     "onCommand:refactorix.extractVariable",
+    "onCommand:refactorix.inlineVariable",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -42,6 +43,11 @@
         "command": "refactorix.extractVariable",
         "title": "Extract Variable",
         "category": "Refactorix"
+      },
+      {
+        "command": "refactorix.inlineVariable",
+        "title": "Inline Variable",
+        "category": "Refactorix"
       }
     ],
     "keybindings": [
@@ -49,6 +55,12 @@
         "command": "refactorix.extractVariable",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "refactorix.inlineVariable",
+        "key": "ctrl+alt+n",
+        "mac": "cmd+alt+n",
         "when": "editorTextFocus"
       }
     ],
@@ -84,6 +96,22 @@
         },
         {
           "command": "refactorix.extractVariable",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "refactorix.inlineVariable",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "refactorix.inlineVariable",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "refactorix.inlineVariable",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "refactorix.inlineVariable",
           "when": "editorLangId == typescriptreact"
         }
       ]
