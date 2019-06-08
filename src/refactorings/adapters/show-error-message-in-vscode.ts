@@ -15,6 +15,6 @@ function toString(reason: ErrorReason): string {
       return "I didn't found a valid code to extract from current selection 🤔";
 
     default:
-      return "";
+      return "I'm sorry, something went wrong but I'm not sure what 😅";
   }
 }
