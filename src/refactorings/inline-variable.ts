@@ -1,25 +1,27 @@
 import { Code, UpdateWith } from "./i-update-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
+import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 export { inlineVariable };
 
 async function inlineVariable(
   code: Code,
   selection: Selection,
-  updateWith: UpdateWith
+  updateWith: UpdateWith,
+  showErrorMessage: ShowErrorMessage
 ) {
   const { id, valueLoc } = findInlinableCode(code, selection);
 
   if (!id || !valueLoc) {
-    // TODO: show error message
+    showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
     return;
   }
 
   const idToReplaceLoc = findIdentifierToReplaceLoc(code, id);
 
   if (!idToReplaceLoc) {
-    // TODO: show error message
+    showErrorMessage(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
     return;
   }
 
@@ -54,14 +56,12 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
       // Only consider the first declared variable.
-      const declaration = node.declarations[0];
-      if (!ast.isIdentifier(declaration.id)) return;
+      const { id, init } = node.declarations[0];
+      if (!ast.isIdentifier(id) || !ast.isSelectableNode(id)) return;
+      if (!init || !ast.isSelectableNode(init)) return;
 
-      const value = declaration.init;
-      if (!value || !ast.isSelectableNode(value)) return;
-
-      result.id = declaration.id;
-      result.valueLoc = value.loc;
+      result.id = id;
+      result.valueLoc = init.loc;
     }
   });
 
@@ -70,7 +70,7 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
 
 function findIdentifierToReplaceLoc(
   code: Code,
-  id: ast.Identifier
+  id: ast.SelectableIdentifier
 ): ast.SourceLocation | undefined {
   let result: ast.SourceLocation | undefined;
 
@@ -80,6 +80,10 @@ function findIdentifierToReplaceLoc(
       if (!ast.isSelectableNode(node)) return;
       if (node.name !== id.name) return;
 
+      const selection = Selection.fromAST(node.loc);
+      const isSameIdentifier = selection.isInside(Selection.fromAST(id.loc));
+      if (isSameIdentifier) return;
+
       result = node.loc;
     }
   });
@@ -88,6 +92,6 @@ function findIdentifierToReplaceLoc(
 }
 
 interface InlinableCode {
-  id: ast.Identifier | undefined;
+  id: ast.SelectableIdentifier | undefined;
   valueLoc: ast.SourceLocation | undefined;
 }

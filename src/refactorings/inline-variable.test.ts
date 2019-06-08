@@ -1,12 +1,15 @@
-import { UpdateWith, Update } from "./i-update-code";
+import { UpdateWith, Update, Code } from "./i-update-code";
 import { inlineVariable } from "./inline-variable";
+import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { Selection } from "./selection";
 
 describe("Inline Variable", () => {
+  let showErrorMessage: ShowErrorMessage;
   let updateWith: UpdateWith;
   let updates: Update[] = [];
 
   beforeEach(() => {
+    showErrorMessage = jest.fn();
     updateWith = jest
       .fn()
       .mockImplementation(
@@ -24,7 +27,7 @@ describe("Inline Variable", () => {
       ["cursor is on identifier", Selection.cursorAt(0, 7)],
       ["cursor is on declarator", Selection.cursorAt(0, 2)]
     ])("should select variable value if %s", async (_, selection) => {
-      await inlineVariable(code, selection, updateWith);
+      await doInlineVariable(code, selection);
 
       expect(updateWith).toBeCalledWith(
         new Selection([0, 12], [0, 17]),
@@ -39,7 +42,7 @@ const hello = "World!";
 console.log(foo);`;
     const selection = new Selection([0, 0], [0, 18]);
 
-    await inlineVariable(code, selection, updateWith);
+    await doInlineVariable(code, selection);
 
     expect(updateWith).toBeCalledWith(
       new Selection([0, 12], [0, 17]),
@@ -52,7 +55,7 @@ console.log(foo);`;
 console.log(hello);`;
     const selection = Selection.cursorAt(0, 14);
 
-    await inlineVariable(code, selection, updateWith);
+    await doInlineVariable(code, selection);
 
     expect(updates).toEqual([
       {
@@ -65,4 +68,30 @@ console.log(hello);`;
       }
     ]);
   });
+
+  it("should show an error message if selection is not inlinable", async () => {
+    const code = `console.log("Nothing to inline here!")`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineVariable(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundInlinableCode
+    );
+  });
+
+  it("should show an error message if variable is not used", async () => {
+    const code = `const hello = "Hello!";`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineVariable(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundInlinableCodeIdentifiers
+    );
+  });
+
+  async function doInlineVariable(code: Code, selection: Selection) {
+    await inlineVariable(code, selection, updateWith, showErrorMessage);
+  }
 });

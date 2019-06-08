@@ -61,9 +61,8 @@ async function inlineVariableCommand() {
     inlineVariable(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createUpdateWithInVSCode(document)
-      // delegateToVSCode,
-      // showErrorMessageInVSCode
+      createUpdateWithInVSCode(document),
+      showErrorMessageInVSCode
     )
   );
 }

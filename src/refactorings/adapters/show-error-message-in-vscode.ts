@@ -14,6 +14,12 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFoundExtractableCode:
       return "I didn't found a valid code to extract from current selection 🤔";
 
+    case ErrorReason.DidNotFoundInlinableCode:
+      return "I didn't found a valid code to inline from current selection 🤔";
+
+    case ErrorReason.DidNotFoundInlinableCodeIdentifiers:
+      return "I didn't found references of this variable in the code 🤔";
+
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";
   }

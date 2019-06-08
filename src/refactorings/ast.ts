@@ -13,6 +13,7 @@ export {
   SelectablePath,
   SelectableNode,
   SelectableObjectProperty,
+  SelectableIdentifier,
   Selectable
 };
 
@@ -53,6 +54,7 @@ function isUndefinedLiteral(
 type SelectablePath = NodePath<SelectableNode>;
 type SelectableNode = Selectable<t.Node>;
 type SelectableObjectProperty = Selectable<t.ObjectProperty>;
+type SelectableIdentifier = Selectable<t.Identifier>;
 type Selectable<T> = T & { loc: t.SourceLocation };
 
 function isSelectableNode(node: t.Node): node is SelectableNode {
