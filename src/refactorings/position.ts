@@ -44,4 +44,12 @@ class Position {
   isAfter(position: Position): boolean {
     return this.isEqualTo(position) || !this.isBefore(position);
   }
+
+  putAtStartOfLine(): Position {
+    return new Position(this.line, 0);
+  }
+
+  putAtNextLine(): Position {
+    return new Position(this.line + 1, this.character);
+  }
 }

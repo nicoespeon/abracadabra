@@ -44,6 +44,17 @@ class Selection {
     return Selection.fromPositions(position, position);
   }
 
+  extendToStartOfLine(): Selection {
+    return Selection.fromPositions(this.start.putAtStartOfLine(), this.end);
+  }
+
+  extendToStartOfNextLine(): Selection {
+    return Selection.fromPositions(
+      this.start,
+      this.end.putAtNextLine().putAtStartOfLine()
+    );
+  }
+
   getIndentationLevel(path: NodePath): IndentationLevel {
     return this.getScopeParentPosition(path).character;
   }
