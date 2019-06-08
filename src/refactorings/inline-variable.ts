@@ -18,21 +18,22 @@ async function inlineVariable(
     return;
   }
 
-  const idToReplaceLoc = findIdentifierToReplaceLoc(code, id);
+  const idsToReplaceLocs = findIdentifiersToReplaceLocs(code, id);
 
-  if (!idToReplaceLoc) {
+  if (idsToReplaceLocs.length === 0) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
     return;
   }
 
   const inlinedCodeSelection = Selection.fromAST(valueLoc);
-  const idToReplaceSelection = Selection.fromAST(idToReplaceLoc);
   await updateWith(inlinedCodeSelection, inlinedCode => {
     return [
-      {
+      // Replace all identifiers with inlined code
+      ...idsToReplaceLocs.map(loc => ({
         code: inlinedCode,
-        selection: idToReplaceSelection
-      },
+        selection: Selection.fromAST(loc)
+      })),
+      // Remove the variable declaration
       {
         code: "",
         selection: inlinedCodeSelection
@@ -68,11 +69,11 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
   return result;
 }
 
-function findIdentifierToReplaceLoc(
+function findIdentifiersToReplaceLocs(
   code: Code,
   id: ast.SelectableIdentifier
-): ast.SourceLocation | undefined {
-  let result: ast.SourceLocation | undefined;
+): ast.SourceLocation[] {
+  let result: ast.SourceLocation[] = [];
 
   ast.traverseAST(code, {
     enter({ node }) {
@@ -84,7 +85,7 @@ function findIdentifierToReplaceLoc(
       const isSameIdentifier = selection.isInside(Selection.fromAST(id.loc));
       if (isSameIdentifier) return;
 
-      result = node.loc;
+      result.push(node.loc);
     }
   });
 

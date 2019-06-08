@@ -50,7 +50,7 @@ console.log(foo);`;
     );
   });
 
-  it("should update code to inline selection where it's referenced", async () => {
+  it("should update code to inline selection where it's referenced (1 reference)", async () => {
     const code = `const hello = "Hello!";
 console.log(hello);`;
     const selection = Selection.cursorAt(0, 14);
@@ -61,6 +61,30 @@ console.log(hello);`;
       {
         code: '"Hello!"',
         selection: new Selection([1, 12], [1, 17])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [1, 0])
+      }
+    ]);
+  });
+
+  it("should update code to inline selection where it's referenced (many references)", async () => {
+    const code = `const hello = "Hello!";
+console.log(hello);
+sendMessageSaying(hello).to(world);`;
+    const selection = Selection.cursorAt(0, 14);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: '"Hello!"',
+        selection: new Selection([1, 12], [1, 17])
+      },
+      {
+        code: '"Hello!"',
+        selection: new Selection([2, 18], [2, 23])
       },
       {
         code: "",
