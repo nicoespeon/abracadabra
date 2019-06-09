@@ -28,4 +28,26 @@ describe("Selection", () => {
       expect(extendedSelection).toStrictEqual(new Selection([0, 10], [4, 0]));
     });
   });
+
+  describe("extendEndTo", () => {
+    it("should return selection that ends at given selection start", () => {
+      const selection = new Selection([0, 10], [3, 10]);
+
+      const extendedSelection = selection.extendEndTo(
+        new Selection([3, 12], [3, 15])
+      );
+
+      expect(extendedSelection).toStrictEqual(new Selection([0, 10], [3, 12]));
+    });
+
+    it("should not change selection if the given one starts before our selection ends", () => {
+      const selection = new Selection([0, 10], [3, 10]);
+
+      const extendedSelection = selection.extendEndTo(
+        new Selection([2, 12], [3, 15])
+      );
+
+      expect(extendedSelection).toStrictEqual(new Selection([0, 10], [3, 10]));
+    });
+  });
 });

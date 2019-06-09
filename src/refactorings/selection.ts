@@ -55,6 +55,12 @@ class Selection {
     );
   }
 
+  extendEndTo(selection: Selection): Selection {
+    return selection.start.isAfter(this.end)
+      ? Selection.fromPositions(this.start, selection.start)
+      : this;
+  }
+
   getIndentationLevel(path: NodePath): IndentationLevel {
     return this.getScopeParentPosition(path).character;
   }
