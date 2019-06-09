@@ -7,13 +7,14 @@ describe("Inline Variable", () => {
   let showErrorMessage: ShowErrorMessage;
   let updateWith: UpdateWith;
   let updates: Update[] = [];
+  const inlinableCode = "Hello!";
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
     updateWith = jest
       .fn()
       .mockImplementation(
-        (_, getUpdates) => (updates = getUpdates('"Hello!"'))
+        (_, getUpdates) => (updates = getUpdates(inlinableCode))
       );
   });
 
@@ -49,7 +50,7 @@ console.log(foo);`;
   });
 
   it("should update code to inline selection where it's referenced (1 reference)", async () => {
-    const code = `const hello = "Hello!";
+    const code = `const hello = ${inlinableCode};
 console.log(hello);`;
     const selection = Selection.cursorAt(0, 14);
 
@@ -57,7 +58,7 @@ console.log(hello);`;
 
     expect(updates).toEqual([
       {
-        code: '"Hello!"',
+        code: inlinableCode,
         selection: new Selection([1, 12], [1, 17])
       },
       {
@@ -68,7 +69,7 @@ console.log(hello);`;
   });
 
   it("should update code to inline selection where it's referenced (many references)", async () => {
-    const code = `const hello = "Hello!";
+    const code = `const hello = ${inlinableCode};
 console.log(hello);
 sendMessageSaying(hello).to(world);`;
     const selection = Selection.cursorAt(0, 14);
@@ -77,11 +78,11 @@ sendMessageSaying(hello).to(world);`;
 
     expect(updates).toEqual([
       {
-        code: '"Hello!"',
+        code: inlinableCode,
         selection: new Selection([1, 12], [1, 17])
       },
       {
-        code: '"Hello!"',
+        code: inlinableCode,
         selection: new Selection([2, 18], [2, 23])
       },
       {
