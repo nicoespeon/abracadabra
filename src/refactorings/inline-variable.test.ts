@@ -92,6 +92,81 @@ sendMessageSaying(hello).to(world);`;
     ]);
   });
 
+  describe("multiple variables declaration", () => {
+    const code = `const one = 1, two = 2, three = 3;
+const result = one + two + three;`;
+
+    it("should select the correct variable value", async () => {
+      const selection = Selection.cursorAt(0, 15);
+
+      await doInlineVariable(code, selection);
+
+      expect(updateWith).toBeCalledWith(
+        new Selection([0, 21], [0, 22]),
+        expect.any(Function)
+      );
+    });
+
+    it.each<[string, { selection: Selection; expectedSelection: Selection }]>([
+      [
+        "basic scenario",
+        {
+          selection: Selection.cursorAt(0, 15),
+          expectedSelection: new Selection([0, 15], [0, 24])
+        }
+      ],
+      [
+        "last variable",
+        {
+          selection: Selection.cursorAt(0, 24),
+          expectedSelection: new Selection([0, 22], [0, 33])
+        }
+      ],
+      [
+        "first variable",
+        {
+          selection: Selection.cursorAt(0, 6),
+          expectedSelection: new Selection([0, 6], [0, 15])
+        }
+      ]
+    ])(
+      "should only remove the inlined variable (%s)",
+      async (_, { selection, expectedSelection }) => {
+        await doInlineVariable(code, selection);
+
+        expect(updates[1]).toEqual({
+          code: "",
+          selection: expectedSelection
+        });
+      }
+    );
+
+    it("should not inline code if cursor is not explicitly on one of the variables", async () => {
+      const selectionOnDeclarator = Selection.cursorAt(0, 0);
+
+      await doInlineVariable(code, selectionOnDeclarator);
+
+      expect(showErrorMessage).toBeCalledWith(
+        ErrorReason.DidNotFoundInlinableCode
+      );
+    });
+
+    it("should work on multi-lines declarations", async () => {
+      const code = `const one = 1,
+  two = 2,
+  three = 3;
+    const result = one + two + three;`;
+      const selection = Selection.cursorAt(1, 2);
+
+      await doInlineVariable(code, selection);
+
+      expect(updates[1]).toEqual({
+        code: "",
+        selection: new Selection([1, 2], [2, 2])
+      });
+    });
+  });
+
   it("should show an error message if selection is not inlinable", async () => {
     const code = `console.log("Nothing to inline here!")`;
     const selection = Selection.cursorAt(0, 0);

@@ -11,7 +11,10 @@ async function inlineVariable(
   updateWith: UpdateWith,
   showErrorMessage: ShowErrorMessage
 ) {
-  const { id, valueLoc } = findInlinableCode(code, selection);
+  const { id, valueLoc, multiDeclarationsLocs } = findInlinableCode(
+    code,
+    selection
+  );
 
   if (!id || !valueLoc) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
@@ -36,19 +39,17 @@ async function inlineVariable(
       // Remove the variable declaration
       {
         code: "",
-        selection: inlinedCodeSelection
-          .extendToStartOfLine()
-          .extendToStartOfNextLine()
+        selection: getCodeToRemoveSelection(
+          inlinedCodeSelection,
+          multiDeclarationsLocs
+        )
       }
     ];
   });
 }
 
 function findInlinableCode(code: Code, selection: Selection): InlinableCode {
-  let result: InlinableCode = {
-    id: undefined,
-    valueLoc: undefined
-  };
+  let result: InlinableCode = {};
 
   ast.traverseAST(code, {
     enter({ node }) {
@@ -56,17 +57,58 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
       if (!ast.isVariableDeclaration(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
-      // Only consider the first declared variable.
-      const { id, init } = node.declarations[0];
-      if (!ast.isIdentifier(id) || !ast.isSelectableNode(id)) return;
-      if (!init || !ast.isSelectableNode(init)) return;
+      const declarations = node.declarations.filter(
+        ast.isSelectableVariableDeclarator
+      );
 
-      result.id = id;
-      result.valueLoc = init.loc;
+      if (declarations.length === 1) {
+        result = getPartialInlinableCodeFrom(declarations[0]);
+      } else {
+        declarations.forEach((declaration, index) => {
+          if (!selection.isInside(Selection.fromAST(declaration.loc))) return;
+
+          const previousDeclaration = declarations[index - 1];
+          const nextDeclaration = declarations[index + 1];
+          if (!previousDeclaration && !nextDeclaration) return;
+
+          // We prefer to use the next declaration by default.
+          // Fallback on previous declaration when current is the last one.
+          const multiDeclarationsLocs = !!nextDeclaration
+            ? {
+                isOtherAfterCurrent: true,
+                current: declaration.loc,
+                other: nextDeclaration.loc
+              }
+            : {
+                isOtherAfterCurrent: false,
+                current: declaration.loc,
+                other: previousDeclaration.loc
+              };
+
+          result = {
+            ...getPartialInlinableCodeFrom(declaration),
+            multiDeclarationsLocs
+          };
+        });
+      }
     }
   });
 
   return result;
+}
+
+function getPartialInlinableCodeFrom(
+  declaration: ast.SelectableVariableDeclarator
+): InlinableCode {
+  const { id, init } = declaration;
+
+  if (!ast.isIdentifier(id) || !ast.isSelectableNode(id)) return {};
+  if (!init || !ast.isSelectableNode(init)) return {};
+
+  return {
+    id,
+    valueLoc: init.loc
+  };
 }
 
 function findIdentifiersToReplaceLocs(
@@ -92,7 +134,28 @@ function findIdentifiersToReplaceLocs(
   return result;
 }
 
+function getCodeToRemoveSelection(
+  inlinedCodeSelection: Selection,
+  multiVariablesLocs: MultiDeclarationsLocs | undefined
+): Selection {
+  if (!multiVariablesLocs) {
+    return inlinedCodeSelection.extendToStartOfLine().extendToStartOfNextLine();
+  }
+
+  const { isOtherAfterCurrent, current, other } = multiVariablesLocs;
+  return isOtherAfterCurrent
+    ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
+    : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
+}
+
 interface InlinableCode {
-  id: ast.SelectableIdentifier | undefined;
-  valueLoc: ast.SourceLocation | undefined;
+  id?: ast.SelectableIdentifier;
+  valueLoc?: ast.SourceLocation;
+  multiDeclarationsLocs?: MultiDeclarationsLocs;
+}
+
+interface MultiDeclarationsLocs {
+  isOtherAfterCurrent: boolean;
+  current: ast.SourceLocation;
+  other: ast.SourceLocation;
 }

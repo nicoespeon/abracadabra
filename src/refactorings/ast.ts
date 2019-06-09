@@ -10,10 +10,12 @@ export { traverseAST, isUndefinedLiteral };
 export { ASTSelection, ASTPosition };
 export {
   isSelectableNode,
+  isSelectableVariableDeclarator,
   SelectablePath,
   SelectableNode,
   SelectableObjectProperty,
   SelectableIdentifier,
+  SelectableVariableDeclarator,
   Selectable
 };
 
@@ -55,8 +57,15 @@ type SelectablePath = NodePath<SelectableNode>;
 type SelectableNode = Selectable<t.Node>;
 type SelectableObjectProperty = Selectable<t.ObjectProperty>;
 type SelectableIdentifier = Selectable<t.Identifier>;
+type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
 type Selectable<T> = T & { loc: t.SourceLocation };
 
 function isSelectableNode(node: t.Node): node is SelectableNode {
   return !!node.loc;
+}
+
+function isSelectableVariableDeclarator(
+  declaration: t.VariableDeclarator
+): declaration is SelectableVariableDeclarator {
+  return !!declaration.loc;
 }
