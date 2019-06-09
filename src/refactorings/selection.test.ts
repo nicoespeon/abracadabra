@@ -50,4 +50,26 @@ describe("Selection", () => {
       expect(extendedSelection).toStrictEqual(new Selection([0, 10], [3, 10]));
     });
   });
+
+  describe("extendStartTo", () => {
+    it("should return selection that starts at given selection end", () => {
+      const selection = new Selection([0, 10], [3, 10]);
+
+      const extendedSelection = selection.extendStartTo(
+        new Selection([0, 0], [0, 3])
+      );
+
+      expect(extendedSelection).toStrictEqual(new Selection([0, 3], [3, 10]));
+    });
+
+    it("should not change selection if the given one ends after our selection starts", () => {
+      const selection = new Selection([0, 10], [3, 10]);
+
+      const extendedSelection = selection.extendStartTo(
+        new Selection([0, 0], [1, 3])
+      );
+
+      expect(extendedSelection).toStrictEqual(new Selection([0, 10], [3, 10]));
+    });
+  });
 });

@@ -55,6 +55,12 @@ class Selection {
     );
   }
 
+  extendStartTo(selection: Selection): Selection {
+    return selection.end.isBefore(this.start)
+      ? Selection.fromPositions(selection.end, this.end)
+      : this;
+  }
+
   extendEndTo(selection: Selection): Selection {
     return selection.start.isAfter(this.end)
       ? Selection.fromPositions(this.start, selection.start)
