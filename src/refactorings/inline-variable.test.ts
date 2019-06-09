@@ -17,23 +17,21 @@ describe("Inline Variable", () => {
       );
   });
 
-  describe("update code with variable value", () => {
+  it.each<[string, Selection]>([
+    ["all variable declaration is selected", new Selection([0, 0], [0, 18])],
+    ["cursor is on value", Selection.cursorAt(0, 14)],
+    ["cursor is on identifier", Selection.cursorAt(0, 7)],
+    ["cursor is on declarator", Selection.cursorAt(0, 2)]
+  ])("should select variable value if %s", async (_, selection) => {
     const code = `const foo = "bar";
-    console.log(foo);`;
+console.log(foo);`;
 
-    it.each<[string, Selection]>([
-      ["all variable declaration is selected", new Selection([0, 0], [0, 18])],
-      ["cursor is on value", Selection.cursorAt(0, 14)],
-      ["cursor is on identifier", Selection.cursorAt(0, 7)],
-      ["cursor is on declarator", Selection.cursorAt(0, 2)]
-    ])("should select variable value if %s", async (_, selection) => {
-      await doInlineVariable(code, selection);
+    await doInlineVariable(code, selection);
 
-      expect(updateWith).toBeCalledWith(
-        new Selection([0, 12], [0, 17]),
-        expect.any(Function)
-      );
-    });
+    expect(updateWith).toBeCalledWith(
+      new Selection([0, 12], [0, 17]),
+      expect.any(Function)
+    );
   });
 
   it("should inline the variable value that matches selection", async () => {
