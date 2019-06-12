@@ -11,21 +11,21 @@ async function inlineVariable(
   updateWith: UpdateWith,
   showErrorMessage: ShowErrorMessage
 ) {
-  const exportedIdNames = findExportedIdNames(code);
   const inlinableCode = findInlinableCode(code, selection);
-  const { id, valueLoc, multiDeclarationsLocs } = inlinableCode;
+  const { scope, id, valueLoc, multiDeclarationsLocs } = inlinableCode;
 
-  if (!id || !valueLoc) {
+  if (!scope || !id || !valueLoc) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
     return;
   }
 
+  const exportedIdNames = findExportedIdNames(scope);
   if (exportedIdNames.includes(id.name)) {
     showErrorMessage(ErrorReason.CantInlineExportedVariables);
     return;
   }
 
-  const idsToReplaceLocs = findIdentifiersToReplaceLocs(code, id);
+  const idsToReplaceLocs = findIdentifiersToReplaceLocs(scope, id);
 
   if (idsToReplaceLocs.length === 0) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
@@ -52,28 +52,32 @@ async function inlineVariable(
   });
 }
 
-function findExportedIdNames(code: Code): ast.Identifier["name"][] {
+function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
   let result: ast.Identifier["name"][] = [];
 
-  ast.traverseAST(code, {
-    enter({ node, parent }) {
-      if (!ast.isExportDeclaration(parent)) return;
-
+  ast.traverse(scope, {
+    enter(node) {
       // Pattern `export default foo`
-      if (ast.isIdentifier(node)) {
-        result.push(node.name);
+      if (
+        ast.isExportDefaultDeclaration(node) &&
+        ast.isIdentifier(node.declaration)
+      ) {
+        result.push(node.declaration.name);
       }
 
-      // Pattern `export { foo, hello }`
-      if (ast.isExportSpecifier(node)) {
-        result.push(node.local.name);
-      }
+      if (ast.isExportNamedDeclaration(node)) {
+        // Pattern `export const foo = "bar", hello = "world"`
+        if (ast.isVariableDeclaration(node.declaration)) {
+          node.declaration.declarations.forEach(({ id }) => {
+            if (!("name" in id)) return;
+            result.push(id.name);
+          });
+        }
 
-      // Pattern `export const foo = "bar", hello = "world"`
-      if (ast.isVariableDeclaration(node)) {
-        node.declarations.forEach(declaration => {
-          if (!("name" in declaration.id)) return;
-          result.push(declaration.id.name);
+        // Pattern `export { foo, hello }`
+        node.specifiers.forEach(specifier => {
+          if (!ast.isExportSpecifier(specifier)) return;
+          result.push(specifier.local.name);
         });
       }
     }
@@ -86,7 +90,7 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
   let result: InlinableCode = {};
 
   ast.traverseAST(code, {
-    enter({ node }) {
+    enter({ node, parent }) {
       if (!ast.isSelectableNode(node)) return;
       if (!ast.isVariableDeclaration(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
@@ -96,7 +100,10 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
       );
 
       if (declarations.length === 1) {
-        result = getPartialInlinableCodeFrom(declarations[0]);
+        result = {
+          ...getPartialInlinableCodeFrom(declarations[0]),
+          scope: parent
+        };
       } else {
         declarations.forEach((declaration, index) => {
           if (!selection.isInside(Selection.fromAST(declaration.loc))) return;
@@ -121,7 +128,8 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
 
           result = {
             ...getPartialInlinableCodeFrom(declaration),
-            multiDeclarationsLocs
+            multiDeclarationsLocs,
+            scope: parent
           };
         });
       }
@@ -146,13 +154,13 @@ function getPartialInlinableCodeFrom(
 }
 
 function findIdentifiersToReplaceLocs(
-  code: Code,
+  scope: ast.Node,
   id: ast.SelectableIdentifier
 ): ast.SourceLocation[] {
   let result: ast.SourceLocation[] = [];
 
-  ast.traverseAST(code, {
-    enter({ node }) {
+  ast.traverse(scope, {
+    enter(node) {
       if (!ast.isIdentifier(node)) return;
       if (!ast.isSelectableNode(node)) return;
       if (node.name !== id.name) return;
@@ -183,6 +191,7 @@ function getCodeToRemoveSelection(
 }
 
 interface InlinableCode {
+  scope?: ast.Node;
   id?: ast.SelectableIdentifier;
   valueLoc?: ast.SourceLocation;
   multiDeclarationsLocs?: MultiDeclarationsLocs;

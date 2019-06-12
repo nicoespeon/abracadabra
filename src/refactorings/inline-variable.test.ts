@@ -92,6 +92,53 @@ sendMessageSaying(hello).to(world);`;
     ]);
   });
 
+  it("should limit inlining to variable declaration scope", async () => {
+    const code = `function sayHello() {
+  const hello = ${inlinableCode};
+  console.log(hello);
+}
+
+console.log(hello);`;
+    const selection = Selection.cursorAt(1, 14);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([2, 14], [2, 19])
+      },
+      {
+        code: "",
+        selection: new Selection([1, 0], [2, 0])
+      }
+    ]);
+  });
+
+  it("should inline variable if export is outside of declaration scope", async () => {
+    const code = `function sayHello() {
+  const hello = ${inlinableCode};
+  console.log(hello);
+}
+
+const hello = "Some other thing";
+export { hello };`;
+    const selection = Selection.cursorAt(1, 14);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([2, 14], [2, 19])
+      },
+      {
+        code: "",
+        selection: new Selection([1, 0], [2, 0])
+      }
+    ]);
+  });
+
   describe("multiple variables declaration", () => {
     const code = `const one = 1, two = 2, three = 3;
 const result = one + two + three;`;
@@ -204,7 +251,7 @@ console.log(foo);`,
         code: `const foo = "bar", hello = "world";
 console.log(foo);
 
-export { foo };`,
+export { hello, foo };`,
         selection: Selection.cursorAt(0, 12)
       }
     ],
