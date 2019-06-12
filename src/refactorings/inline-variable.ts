@@ -12,15 +12,15 @@ async function inlineVariable(
   showErrorMessage: ShowErrorMessage
 ) {
   const inlinableCode = findInlinableCode(code, selection);
-  const { scope, id, valueLoc, multiDeclarationsLocs } = inlinableCode;
 
-  if (!scope || !id || !valueLoc) {
+  if (!inlinableCode) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
     return;
   }
 
-  const exportedIdNames = findExportedIdNames(scope);
-  if (exportedIdNames.includes(id.name)) {
+  const { scope, id } = inlinableCode;
+
+  if (findExportedIdNames(scope).includes(id.name)) {
     showErrorMessage(ErrorReason.CantInlineExportedVariables);
     return;
   }
@@ -32,7 +32,7 @@ async function inlineVariable(
     return;
   }
 
-  const inlinedCodeSelection = Selection.fromAST(valueLoc);
+  const inlinedCodeSelection = Selection.fromAST(inlinableCode.valueLoc);
   await updateWith(inlinedCodeSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
@@ -45,7 +45,7 @@ async function inlineVariable(
         code: "",
         selection: getCodeToRemoveSelection(
           inlinedCodeSelection,
-          multiDeclarationsLocs
+          inlinableCode.multiDeclarationsLocs
         )
       }
     ];
@@ -86,8 +86,11 @@ function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
   return result;
 }
 
-function findInlinableCode(code: Code, selection: Selection): InlinableCode {
-  let result: InlinableCode = {};
+function findInlinableCode(
+  code: Code,
+  selection: Selection
+): InlinableCode | null {
+  let result: InlinableCode | null = null;
 
   ast.traverseAST(code, {
     enter({ node, parent }) {
@@ -100,57 +103,54 @@ function findInlinableCode(code: Code, selection: Selection): InlinableCode {
       );
 
       if (declarations.length === 1) {
+        const { id, init } = declarations[0];
+        if (!ast.isSelectableIdentifier(id)) return;
+        if (!ast.isSelectableNode(init)) return;
+
         result = {
-          ...getPartialInlinableCodeFrom(declarations[0]),
+          id,
+          valueLoc: init.loc,
           scope: parent
         };
-      } else {
-        declarations.forEach((declaration, index) => {
-          if (!selection.isInside(Selection.fromAST(declaration.loc))) return;
-
-          const previousDeclaration = declarations[index - 1];
-          const nextDeclaration = declarations[index + 1];
-          if (!previousDeclaration && !nextDeclaration) return;
-
-          // We prefer to use the next declaration by default.
-          // Fallback on previous declaration when current is the last one.
-          const multiDeclarationsLocs = !!nextDeclaration
-            ? {
-                isOtherAfterCurrent: true,
-                current: declaration.loc,
-                other: nextDeclaration.loc
-              }
-            : {
-                isOtherAfterCurrent: false,
-                current: declaration.loc,
-                other: previousDeclaration.loc
-              };
-
-          result = {
-            ...getPartialInlinableCodeFrom(declaration),
-            multiDeclarationsLocs,
-            scope: parent
-          };
-        });
+        return;
       }
+
+      declarations.forEach((declaration, index) => {
+        if (!selection.isInside(Selection.fromAST(declaration.loc))) return;
+
+        const { id, init } = declaration;
+        if (!ast.isSelectableIdentifier(id)) return;
+        if (!ast.isSelectableNode(init)) return;
+
+        const previousDeclaration = declarations[index - 1];
+        const nextDeclaration = declarations[index + 1];
+        if (!previousDeclaration && !nextDeclaration) return;
+
+        // We prefer to use the next declaration by default.
+        // Fallback on previous declaration when current is the last one.
+        const multiDeclarationsLocs = !!nextDeclaration
+          ? {
+              isOtherAfterCurrent: true,
+              current: declaration.loc,
+              other: nextDeclaration.loc
+            }
+          : {
+              isOtherAfterCurrent: false,
+              current: declaration.loc,
+              other: previousDeclaration.loc
+            };
+
+        result = {
+          id,
+          valueLoc: init.loc,
+          multiDeclarationsLocs,
+          scope: parent
+        };
+      });
     }
   });
 
   return result;
-}
-
-function getPartialInlinableCodeFrom(
-  declaration: ast.SelectableVariableDeclarator
-): InlinableCode {
-  const { id, init } = declaration;
-
-  if (!ast.isIdentifier(id) || !ast.isSelectableNode(id)) return {};
-  if (!init || !ast.isSelectableNode(init)) return {};
-
-  return {
-    id,
-    valueLoc: init.loc
-  };
 }
 
 function findIdentifiersToReplaceLocs(
@@ -191,9 +191,9 @@ function getCodeToRemoveSelection(
 }
 
 interface InlinableCode {
-  scope?: ast.Node;
-  id?: ast.SelectableIdentifier;
-  valueLoc?: ast.SourceLocation;
+  scope: ast.Node;
+  id: ast.SelectableIdentifier;
+  valueLoc: ast.SourceLocation;
   multiDeclarationsLocs?: MultiDeclarationsLocs;
 }
 

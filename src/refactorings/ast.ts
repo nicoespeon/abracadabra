@@ -11,6 +11,7 @@ export { ASTSelection, ASTPosition };
 export {
   isSelectableNode,
   isSelectableVariableDeclarator,
+  isSelectableIdentifier,
   SelectablePath,
   SelectableNode,
   SelectableObjectProperty,
@@ -60,8 +61,12 @@ type SelectableIdentifier = Selectable<t.Identifier>;
 type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
 type Selectable<T> = T & { loc: t.SourceLocation };
 
-function isSelectableNode(node: t.Node): node is SelectableNode {
-  return !!node.loc;
+function isSelectableNode(node: t.Node | null): node is SelectableNode {
+  return !!node && !!node.loc;
+}
+
+function isSelectableIdentifier(node: t.Node): node is SelectableIdentifier {
+  return t.isIdentifier(node) && isSelectableNode(node);
 }
 
 function isSelectableVariableDeclarator(
