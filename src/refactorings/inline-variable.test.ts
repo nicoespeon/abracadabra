@@ -189,6 +189,55 @@ const result = one + two + three;`;
     );
   });
 
+  it.each<[string, { code: Code; selection: Selection }]>([
+    [
+      "export declaration",
+      {
+        code: `export const foo = "bar", hello = "world";
+console.log(foo);`,
+        selection: Selection.cursorAt(0, 19)
+      }
+    ],
+    [
+      "export after declaration",
+      {
+        code: `const foo = "bar", hello = "world";
+console.log(foo);
+
+export { foo };`,
+        selection: Selection.cursorAt(0, 12)
+      }
+    ],
+    [
+      "export before declaration",
+      {
+        code: `export { foo };
+const foo = "bar", hello = "world";
+console.log(foo);`,
+        selection: Selection.cursorAt(1, 12)
+      }
+    ],
+    [
+      "default export after declaration",
+      {
+        code: `const foo = "bar", hello = "world";
+console.log(foo);
+
+export default foo;`,
+        selection: Selection.cursorAt(0, 12)
+      }
+    ]
+  ])(
+    "should not inline an exported variable (%s)",
+    async (_, { code, selection }) => {
+      await doInlineVariable(code, selection);
+
+      expect(showErrorMessage).toBeCalledWith(
+        ErrorReason.CantInlineExportedVariables
+      );
+    }
+  );
+
   async function doInlineVariable(code: Code, selection: Selection) {
     await inlineVariable(code, selection, updateWith, showErrorMessage);
   }

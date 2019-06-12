@@ -5,5 +5,6 @@ type ShowErrorMessage = (reason: ErrorReason) => Promise<void>;
 enum ErrorReason {
   DidNotFoundExtractableCode,
   DidNotFoundInlinableCode,
-  DidNotFoundInlinableCodeIdentifiers
+  DidNotFoundInlinableCodeIdentifiers,
+  CantInlineExportedVariables
 }

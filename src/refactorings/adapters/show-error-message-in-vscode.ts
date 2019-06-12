@@ -20,6 +20,9 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFoundInlinableCodeIdentifiers:
       return "I didn't found references of this variable in the code 🤔";
 
+    case ErrorReason.CantInlineExportedVariables:
+      return "I'm sorry, I can't inline exported variables yet 😅";
+
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";
   }

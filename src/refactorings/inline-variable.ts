@@ -11,13 +11,17 @@ async function inlineVariable(
   updateWith: UpdateWith,
   showErrorMessage: ShowErrorMessage
 ) {
-  const { id, valueLoc, multiDeclarationsLocs } = findInlinableCode(
-    code,
-    selection
-  );
+  const exportedIdNames = findExportedIdNames(code);
+  const inlinableCode = findInlinableCode(code, selection);
+  const { id, valueLoc, multiDeclarationsLocs } = inlinableCode;
 
   if (!id || !valueLoc) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
+    return;
+  }
+
+  if (exportedIdNames.includes(id.name)) {
+    showErrorMessage(ErrorReason.CantInlineExportedVariables);
     return;
   }
 
@@ -46,6 +50,36 @@ async function inlineVariable(
       }
     ];
   });
+}
+
+function findExportedIdNames(code: Code): ast.Identifier["name"][] {
+  let result: ast.Identifier["name"][] = [];
+
+  ast.traverseAST(code, {
+    enter({ node, parent }) {
+      if (!ast.isExportDeclaration(parent)) return;
+
+      // Pattern `export default foo`
+      if (ast.isIdentifier(node)) {
+        result.push(node.name);
+      }
+
+      // Pattern `export { foo, hello }`
+      if (ast.isExportSpecifier(node)) {
+        result.push(node.local.name);
+      }
+
+      // Pattern `export const foo = "bar", hello = "world"`
+      if (ast.isVariableDeclaration(node)) {
+        node.declarations.forEach(declaration => {
+          if (!("name" in declaration.id)) return;
+          result.push(declaration.id.name);
+        });
+      }
+    }
+  });
+
+  return result;
 }
 
 function findInlinableCode(code: Code, selection: Selection): InlinableCode {
