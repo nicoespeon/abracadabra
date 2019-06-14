@@ -119,6 +119,16 @@ console.log(hello);`;
     const code = `const hello = ${inlinableCode};
 console.log(hello);
 
+if (isHappy) {
+  const hello = "Hello!!";
+  console.log(hello);
+}
+
+{
+  const hello = "World";
+  console.log(hello);
+}
+
 function sayHello(yo, hello) {
   console.log(hello);
 }`;

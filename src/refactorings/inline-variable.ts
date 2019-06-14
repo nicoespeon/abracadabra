@@ -183,7 +183,7 @@ function findIdentifiersToReplaceLocs(
     enter(node, ancestors) {
       if (!ast.isSelectableNode(node)) return;
       if (!isMatchingIdentifier(id, node)) return;
-      if (isShadowIn(ancestors)) return;
+      if (isShadowIn(id, ancestors)) return;
 
       const selection = Selection.fromAST(node.loc);
       const isSameIdentifier = selection.isInside(Selection.fromAST(id.loc));
@@ -197,13 +197,38 @@ function findIdentifiersToReplaceLocs(
   });
 
   return result;
+}
 
-  function isShadowIn(ancestors: ast.TraversalAncestors): boolean {
-    // A variable is "shadow" if one of its ancestor redefines the Identifier.
-    return ancestors.some(
-      ({ node }) =>
-        ast.isFunctionDeclaration(node) &&
-        node.params.some(node => isMatchingIdentifier(id, node))
+function isShadowIn(
+  id: ast.Identifier,
+  ancestors: ast.TraversalAncestors
+): boolean {
+  // A variable is "shadow" if one of its ancestor redefines the Identifier.
+  return ancestors.some(
+    ({ node }) => isDeclaredInFunction(node) || isDeclaredInScope(node)
+  );
+
+  function isDeclaredInFunction(node: ast.Node): boolean {
+    return (
+      ast.isFunctionDeclaration(node) &&
+      node.params.some(node => isMatchingIdentifier(id, node))
+    );
+  }
+
+  function isDeclaredInScope(node: ast.Node): boolean {
+    return (
+      ast.isBlockStatement(node) &&
+      node.body.some(
+        child =>
+          ast.isVariableDeclaration(child) &&
+          child.declarations.some(
+            declaration =>
+              ast.isVariableDeclarator(declaration) &&
+              isMatchingIdentifier(id, declaration.id) &&
+              // Of course, if it's the inlined variable it's not a shadow!
+              declaration.id !== id
+          )
+      )
     );
   }
 }
