@@ -60,8 +60,8 @@ function findExtractableCode(
 
   ast.traverseAST(code, {
     enter(path) {
-      if (!isExtractablePath(path)) return;
-      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      if (!isExtractableContext(path.parent)) return;
+
       if (isPartOfMemberExpression(path)) return;
       if (isClassPropertyIdentifier(path)) return;
       if (isVariableDeclarationIdentifier(path)) return;
@@ -69,12 +69,16 @@ function findExtractableCode(
       if (ast.isBlockStatement(path)) return;
       if (ast.isSpreadElement(path)) return;
       // Don't extract object method because we don't handle `this`.
-      if (ast.isObjectMethod(path.node)) return;
+      if (ast.isObjectMethod(path)) return;
+
+      const { node } = path;
+      if (!ast.isSelectableNode(node)) return;
+      if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
       result.path = path;
-      result.loc = ast.isObjectProperty(path.node)
-        ? findObjectPropertyLoc(selection, path.node) || result.loc
-        : path.node.loc;
+      result.loc = ast.isObjectProperty(node)
+        ? findObjectPropertyLoc(selection, node) || result.loc
+        : node.loc;
     }
   });
 
@@ -97,17 +101,16 @@ function findObjectPropertyLoc(
   return null;
 }
 
-function isExtractablePath(path: ast.NodePath): path is ast.SelectablePath {
-  const isInExtractableContext =
-    ast.isExpression(path.parent) ||
-    ast.isReturnStatement(path.parent) ||
-    ast.isVariableDeclarator(path.parent) ||
-    ast.isClassProperty(path.parent) ||
-    ast.isIfStatement(path.parent) ||
-    ast.isWhileStatement(path.parent) ||
-    ast.isSwitchCase(path.parent);
-
-  return isInExtractableContext && ast.isSelectableNode(path.node);
+function isExtractableContext(node: ast.Node): boolean {
+  return (
+    ast.isExpression(node) ||
+    ast.isReturnStatement(node) ||
+    ast.isVariableDeclarator(node) ||
+    ast.isClassProperty(node) ||
+    ast.isIfStatement(node) ||
+    ast.isWhileStatement(node) ||
+    ast.isSwitchCase(node)
+  );
 }
 
 function isClassPropertyIdentifier(path: ast.NodePath): boolean {
@@ -122,11 +125,11 @@ function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
   return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
 }
 
-function isPartOfMemberExpression(path: ast.SelectablePath): boolean {
+function isPartOfMemberExpression(path: ast.NodePath): boolean {
   return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
 
 type ExtractableCode = {
-  path: ast.SelectablePath | undefined;
+  path: ast.NodePath | undefined;
   loc: ast.SourceLocation | undefined;
 };
