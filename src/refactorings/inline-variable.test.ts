@@ -225,7 +225,7 @@ const result = one + two + three;`;
       const code = `const one = 1,
   two = 2,
   three = 3;
-    const result = one + two + three;`;
+const result = one + two + three;`;
       const selection = Selection.cursorAt(1, 2);
 
       await doInlineVariable(code, selection);
