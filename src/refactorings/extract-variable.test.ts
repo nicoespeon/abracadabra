@@ -317,12 +317,23 @@ console.log("How are you doing?");`,
       { read: new Selection([0, 19], [0, 32]) }
     ],
     [
-      "a destructured variable",
+      "a spread variable",
       {
         code: `console.log({ ...foo.bar })`,
         selection: Selection.cursorAt(0, 22)
       },
       { read: new Selection([0, 12], [0, 26]) }
+    ],
+    [
+      "a spread function result",
+      {
+        code: `console.log({
+  ...getInlinableCode(declaration),
+  id: "name"
+})`,
+        selection: Selection.cursorAt(1, 11)
+      },
+      { read: new Selection([0, 12], [3, 1]) }
     ],
     [
       "a valid path when cursor is on a part of member expression",
