@@ -199,6 +199,14 @@ describe("Extract Variable", () => {
       { read: new Selection([0, 12], [0, 26]) }
     ],
     [
+      "a function call",
+      {
+        code: `console.log(sayHello("World"))`,
+        selection: Selection.cursorAt(0, 12)
+      },
+      { read: new Selection([0, 12], [0, 29]) }
+    ],
+    [
       "the correct variable when we have many",
       {
         code: `console.log("Hello");

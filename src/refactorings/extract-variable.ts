@@ -65,6 +65,7 @@ function findExtractableCode(
       if (isPartOfMemberExpression(path)) return;
       if (isClassPropertyIdentifier(path)) return;
       if (isVariableDeclarationIdentifier(path)) return;
+      if (isFunctionCallIdentifier(path)) return;
       if (ast.isTemplateElement(path)) return;
       if (ast.isBlockStatement(path)) return;
       if (ast.isSpreadElement(path)) return;
@@ -123,6 +124,10 @@ function isClassPropertyIdentifier(path: ast.NodePath): boolean {
 
 function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
   return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
+}
+
+function isFunctionCallIdentifier(path: ast.NodePath): boolean {
+  return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
 }
 
 function isPartOfMemberExpression(path: ast.NodePath): boolean {
