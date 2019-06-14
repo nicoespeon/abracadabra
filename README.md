@@ -34,6 +34,8 @@ This refactoring allows you to rename things and make sure all references in you
 | :--------------- | :------ |
 | `Ctrl + Alt + V` | `⌥ ⌘ V` |
 
+> 💡 Available as Quick Fix
+
 This refactoring helps you give a meaning to the hardcoded constants and low-level expressions. It makes your source code easier to read and maintain.
 
 Select the code you want to extract:
@@ -43,6 +45,16 @@ Select the code you want to extract:
 You don't have to select though. It will extract the closest element from your cursor or partial selection:
 
 ![][demo-extract-variable-with-shortcut]
+
+### Inline Variable
+
+| Keybinding       | On Mac  |
+| :--------------- | :------ |
+| `Ctrl + Alt + N` | `⌥ ⌘ N` |
+
+This refactoring is the opposite of _Extract Variable_. It replaces a redundant usage of a variable or a constant with its initializer. It's usually helpful to inline things so you can extract them differently.
+
+![][demo-inline-variable]
 
 ## Known Issues
 
@@ -71,3 +83,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-command-palette]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/command-palette.png?raw=true
 [demo-extract-variable-with-lightbulb]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable-with-lightbulb.gif?raw=true
 [demo-extract-variable-with-shortcut]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable-with-shortcut.gif?raw=true
+[demo-inline-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/inline-variable.gif?raw=true
