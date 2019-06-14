@@ -309,6 +309,14 @@ console.log("How are you doing?");`,
       { read: new Selection([0, 19], [0, 32]) }
     ],
     [
+      "a destructured variable",
+      {
+        code: `console.log({ ...foo.bar })`,
+        selection: Selection.cursorAt(0, 22)
+      },
+      { read: new Selection([0, 12], [0, 26]) }
+    ],
+    [
       "a valid path when cursor is on a part of member expression",
       {
         code: `console.log(path.node.name)`,
