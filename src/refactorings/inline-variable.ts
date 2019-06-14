@@ -20,6 +20,11 @@ async function inlineVariable(
 
   const { scope, id } = inlinableCode;
 
+  if (isRedeclaredIn(scope, id)) {
+    showErrorMessage(ErrorReason.CantInlineRedeclaredVariables);
+    return;
+  }
+
   if (findExportedIdNames(scope).includes(id.name)) {
     showErrorMessage(ErrorReason.CantInlineExportedVariables);
     return;
@@ -50,6 +55,21 @@ async function inlineVariable(
       }
     ];
   });
+}
+
+function isRedeclaredIn(scope: ast.Node, id: ast.Identifier): boolean {
+  let result = false;
+
+  ast.traverse(scope, {
+    enter(node) {
+      if (!ast.isAssignmentExpression(node)) return;
+      if (!isMatchingIdentifier(id, node.left)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
@@ -162,7 +182,7 @@ function findIdentifiersToReplaceLocs(
   ast.traverse(scope, {
     enter(node, ancestors) {
       if (!ast.isSelectableNode(node)) return;
-      if (!isMatchingIdentifier(node)) return;
+      if (!isMatchingIdentifier(id, node)) return;
       if (isShadowIn(ancestors)) return;
 
       const selection = Selection.fromAST(node.loc);
@@ -183,13 +203,13 @@ function findIdentifiersToReplaceLocs(
     return ancestors.some(
       ({ node }) =>
         ast.isFunctionDeclaration(node) &&
-        node.params.some(isMatchingIdentifier)
+        node.params.some(node => isMatchingIdentifier(id, node))
     );
   }
+}
 
-  function isMatchingIdentifier(node: ast.Node): boolean {
-    return ast.isIdentifier(node) && node.name === id.name;
-  }
+function isMatchingIdentifier(id: ast.Identifier, node: ast.Node): boolean {
+  return ast.isIdentifier(node) && node.name === id.name;
 }
 
 function getCodeToRemoveSelection(

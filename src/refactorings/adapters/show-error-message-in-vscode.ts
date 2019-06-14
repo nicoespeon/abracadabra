@@ -23,6 +23,9 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.CantInlineExportedVariables:
       return "I'm sorry, I can't inline exported variables yet 😅";
 
+    case ErrorReason.CantInlineRedeclaredVariables:
+      return "I'm sorry, I can't inline redeclared variables yet 😅";
+
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";
   }

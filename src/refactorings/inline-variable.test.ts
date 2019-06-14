@@ -310,6 +310,19 @@ export default foo;`,
     }
   );
 
+  it("should not inline a redeclared variable", async () => {
+    const code = `let hello = "Hello!";
+console.log(hello);
+hello = "World!";`;
+    const selection = Selection.cursorAt(0, 5);
+
+    await doInlineVariable(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.CantInlineRedeclaredVariables
+    );
+  });
+
   async function doInlineVariable(code: Code, selection: Selection) {
     await inlineVariable(code, selection, updateWith, showErrorMessage);
   }
