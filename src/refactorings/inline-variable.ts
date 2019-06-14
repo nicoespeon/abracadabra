@@ -160,20 +160,36 @@ function findIdentifiersToReplaceLocs(
   let result: ast.SourceLocation[] = [];
 
   ast.traverse(scope, {
-    enter(node) {
-      if (!ast.isIdentifier(node)) return;
+    enter(node, ancestors) {
       if (!ast.isSelectableNode(node)) return;
-      if (node.name !== id.name) return;
+      if (!isMatchingIdentifier(node)) return;
+      if (isShadowIn(ancestors)) return;
 
       const selection = Selection.fromAST(node.loc);
       const isSameIdentifier = selection.isInside(Selection.fromAST(id.loc));
       if (isSameIdentifier) return;
+
+      const parent = ancestors[ancestors.length - 1];
+      if (ast.isFunctionDeclaration(parent.node)) return;
 
       result.push(node.loc);
     }
   });
 
   return result;
+
+  function isShadowIn(ancestors: ast.TraversalAncestors): boolean {
+    // A variable is "shadow" if one of its ancestor redefines the Identifier.
+    return ancestors.some(
+      ({ node }) =>
+        ast.isFunctionDeclaration(node) &&
+        node.params.some(isMatchingIdentifier)
+    );
+  }
+
+  function isMatchingIdentifier(node: ast.Node): boolean {
+    return ast.isIdentifier(node) && node.name === id.name;
+  }
 }
 
 function getCodeToRemoveSelection(

@@ -115,6 +115,29 @@ console.log(hello);`;
     ]);
   });
 
+  it("should limit inlining to variables that are not shadowed", async () => {
+    const code = `const hello = ${inlinableCode};
+console.log(hello);
+
+function sayHello(yo, hello) {
+  console.log(hello);
+}`;
+    const selection = Selection.cursorAt(0, 14);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([1, 12], [1, 17])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [1, 0])
+      }
+    ]);
+  });
+
   it("should inline variable if export is outside of declaration scope", async () => {
     const code = `function sayHello() {
   const hello = ${inlinableCode};
@@ -213,6 +236,8 @@ const result = one + two + three;`;
       });
     });
   });
+
+  // ✋ Patterns that can't be inlined
 
   it("should show an error message if selection is not inlinable", async () => {
     const code = `console.log("Nothing to inline here!")`;
