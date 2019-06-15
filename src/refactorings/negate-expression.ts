@@ -93,4 +93,7 @@ function negate(code: Code): Code {
       .replace(SYMBOLS.greaterThan, OPERATORS.greaterThan)
       .replace(SYMBOLS.greaterOrEqual, OPERATORS.greaterOrEqual)
   );
+
+  // 🤔 Another solution could be to parse and transform the AST.
+  // But this solution is simple and seems to work reasonably so far.
 }
