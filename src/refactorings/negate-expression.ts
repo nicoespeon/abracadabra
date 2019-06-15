@@ -58,6 +58,15 @@ function negate(code: Code): Code {
 
     LogicalExpression(path) {
       path.node.operator = getNegatedLogicalOperator(path.node.operator);
+
+      if (ast.isIdentifier(path.node.left)) {
+        path.node.left = ast.unaryExpression("!", path.node.left, true);
+      }
+
+      if (ast.isIdentifier(path.node.right)) {
+        path.node.right = ast.unaryExpression("!", path.node.right, true);
+      }
+
       setNode(ast.unaryExpression("!", path.node, true));
     },
 

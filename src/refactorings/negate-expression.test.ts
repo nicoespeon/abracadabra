@@ -149,6 +149,17 @@ describe("Negate Expression", () => {
           selection: new Selection([0, 6], [0, 22])
         }
       }
+    ],
+    [
+      "identifiers (boolean values)",
+      {
+        expression: "isValid || isCorrect",
+        selection: Selection.cursorAt(0, 13),
+        expected: {
+          code: "!(!isValid && !isCorrect)",
+          selection: new Selection([0, 4], [0, 24])
+        }
+      }
     ]
   ])("should negate %s", async (_, { expression, selection, expected }) => {
     updatedExpression = expression;
