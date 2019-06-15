@@ -1,5 +1,3 @@
-import uniqid from "uniqid";
-
 import { Code, UpdateWith } from "./i-update-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
@@ -53,47 +51,64 @@ function isNegatable(node: ast.Node): boolean {
 }
 
 function negate(code: Code): Code {
-  // Use ids to prevent conflicts when we replace the operators.
-  const IDS = {
-    looseNotEq: uniqid.time("LOOSE_NOT_EQ"),
-    looseEq: uniqid.time("LOOSE_EQ"),
-    strictNotEq: uniqid.time("STRICT_NOT_EQ"),
-    strictEq: uniqid.time("STRICT_EQ"),
-    greaterThan: uniqid.time("GREATER_THAN"),
-    greaterOrEqual: uniqid.time("GREATER_OR_EQ"),
-    lowerThan: uniqid.time("LOWER_THAN"),
-    lowerOrEqual: uniqid.time("LOWER_OR_EQ"),
-    and: uniqid.time("AND"),
-    or: uniqid.time("OR")
-  };
+  const negatedCode = ast.transform(code, setNode => ({
+    UnaryExpression(path) {
+      setNode(path.node.argument);
+    },
 
-  const negatedExpression = code
-    // First replace all operators with negated symbols…
-    .replace(/===/g, IDS.strictNotEq)
-    .replace(/!==/g, IDS.strictEq)
-    .replace(/==/g, IDS.looseNotEq)
-    .replace(/!=/g, IDS.looseEq)
-    .replace(/>=/g, IDS.lowerThan)
-    .replace(/>/g, IDS.lowerOrEqual)
-    .replace(/<=/g, IDS.greaterThan)
-    .replace(/</g, IDS.greaterOrEqual)
-    .replace(/&&/g, IDS.or)
-    .replace(/\|\|/g, IDS.and)
-    // … then find all symbols to transform into the adequate operator.
-    .replace(new RegExp(IDS.strictNotEq, "g"), "!==")
-    .replace(new RegExp(IDS.strictEq, "g"), "===")
-    .replace(new RegExp(IDS.looseNotEq, "g"), "!=")
-    .replace(new RegExp(IDS.looseEq, "g"), "==")
-    .replace(new RegExp(IDS.lowerThan, "g"), "<")
-    .replace(new RegExp(IDS.lowerOrEqual, "g"), "<=")
-    .replace(new RegExp(IDS.greaterThan, "g"), ">")
-    .replace(new RegExp(IDS.greaterOrEqual, "g"), ">=")
-    .replace(new RegExp(IDS.and, "g"), "&&")
-    .replace(new RegExp(IDS.or, "g"), "||");
+    LogicalExpression(path) {
+      path.node.operator = getNegatedLogicalOperator(path.node.operator);
+      setNode(ast.unaryExpression("!", path.node, true));
+    },
 
-  // 🤔 Another solution could be to parse and transform the AST.
-  // But this solution is simple and seems to work reasonably so far.
+    BinaryExpression(path) {
+      path.node.operator = getNegatedBinaryOperator(path.node.operator);
+      setNode(ast.unaryExpression("!", path.node, true));
+    }
+  }));
 
-  const DOUBLE_NEGATION_PATTERN = /^!\(!\((.*)\)\)$/;
-  return `!(${negatedExpression})`.replace(DOUBLE_NEGATION_PATTERN, "$1");
+  if (!negatedCode) {
+    // TODO: show error message
+    return code;
+  }
+
+  return negatedCode;
+}
+
+function getNegatedLogicalOperator(
+  operator: ast.LogicalExpression["operator"]
+): ast.LogicalExpression["operator"] {
+  switch (operator) {
+    case "||":
+      return "&&";
+    case "&&":
+      return "||";
+    default:
+      return operator;
+  }
+}
+
+function getNegatedBinaryOperator(
+  operator: ast.BinaryExpression["operator"]
+): ast.BinaryExpression["operator"] {
+  switch (operator) {
+    case "==":
+      return "!=";
+    case "!=":
+      return "==";
+    case "===":
+      return "!==";
+    case "!==":
+      return "===";
+    case ">":
+      return "<=";
+    case ">=":
+      return "<";
+    case "<":
+      return ">=";
+    case "<=":
+      return ">";
+    default:
+      return operator;
+  }
 }

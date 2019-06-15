@@ -1,12 +1,13 @@
 import { parse } from "@babel/parser";
 import traverse, { TraverseOptions } from "@babel/traverse";
+import generate from "@babel/generator";
 import * as t from "@babel/types";
 
 import { Code } from "./i-update-code";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
-export { traverseAST, isUndefinedLiteral };
+export { traverseAST, transform, isUndefinedLiteral };
 export { ASTSelection, ASTPosition };
 export {
   isSelectableNode,
@@ -44,6 +45,33 @@ function traverseAST(code: Code, opts: TraverseOptions): void {
   });
 
   traverse(ast, opts);
+}
+
+/**
+ * @param code The code to parse and transform
+ * @param cb Function taking a `setNode` callback to set the transformed `code`.
+ */
+function transform(
+  code: Code,
+  cb: (setNode: (node: t.Node) => void) => TraverseOptions
+): Code | undefined {
+  let result: t.Node | undefined;
+
+  traverseAST(
+    code,
+    cb(node => {
+      // Only set once to take the transformed node from the top-most ancestor.
+      // This works because nodes are visited from top to bottom.
+      // Further visited children should mutate the references.
+      if (!result) result = node;
+    })
+  );
+  if (!result) return;
+
+  const generatedResult = generate(result);
+  if (!generatedResult || !generatedResult.code) return;
+
+  return generatedResult.code;
 }
 
 function isUndefinedLiteral(
