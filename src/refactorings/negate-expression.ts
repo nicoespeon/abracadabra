@@ -30,15 +30,15 @@ async function negateExpression(
 
 function findExpressionLoc(
   code: Code,
-  // TODO: test with many binary expressions
-  _selection: Selection
+  selection: Selection
 ): ast.SourceLocation | null {
   let result: ast.SourceLocation | null = null;
 
   ast.traverseAST(code, {
     enter({ node }) {
       if (!ast.isSelectableNode(node)) return;
-      if (!ast.isBinaryExpression(node)) return;
+      if (!isNegatable(node)) return;
+      if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
       result = node.loc;
     }
@@ -47,21 +47,13 @@ function findExpressionLoc(
   return result;
 }
 
-function negate(code: Code): Code {
-  const OPERATORS = {
-    looseNotEq: "!=",
-    looseEq: "==",
-    strictNotEq: "!==",
-    strictEq: "===",
-    greaterThan: ">",
-    greaterOrEqual: ">=",
-    lowerThan: "<",
-    lowerOrEqual: "<="
-  };
+function isNegatable(node: ast.Node): boolean {
+  return ast.isBinaryExpression(node) || ast.isLogicalExpression(node);
+}
 
-  // Use symbols to prevent conflicts when we replace the operators.
-  // Symbols should be unique, so we can identify them in code.
-  const SYMBOLS = {
+function negate(code: Code): Code {
+  // Use ids to prevent conflicts when we replace the operators.
+  const IDS = {
     looseNotEq: uniqid.time("LOOSE_NOT_EQ"),
     looseEq: uniqid.time("LOOSE_EQ"),
     strictNotEq: uniqid.time("STRICT_NOT_EQ"),
@@ -69,29 +61,35 @@ function negate(code: Code): Code {
     greaterThan: uniqid.time("GREATER_THAN"),
     greaterOrEqual: uniqid.time("GREATER_OR_EQ"),
     lowerThan: uniqid.time("LOWER_THAN"),
-    lowerOrEqual: uniqid.time("LOWER_OR_EQ")
+    lowerOrEqual: uniqid.time("LOWER_OR_EQ"),
+    and: uniqid.time("AND"),
+    or: uniqid.time("OR")
   };
 
   return (
     code
       // First replace all operators with negated symbols…
-      .replace(OPERATORS.strictEq, SYMBOLS.strictNotEq)
-      .replace(OPERATORS.strictNotEq, SYMBOLS.strictEq)
-      .replace(OPERATORS.looseEq, SYMBOLS.looseNotEq)
-      .replace(OPERATORS.looseNotEq, SYMBOLS.looseEq)
-      .replace(OPERATORS.greaterOrEqual, SYMBOLS.lowerThan)
-      .replace(OPERATORS.greaterThan, SYMBOLS.lowerOrEqual)
-      .replace(OPERATORS.lowerOrEqual, SYMBOLS.greaterThan)
-      .replace(OPERATORS.lowerThan, SYMBOLS.greaterOrEqual)
+      .replace(/===/g, IDS.strictNotEq)
+      .replace(/!==/g, IDS.strictEq)
+      .replace(/==/g, IDS.looseNotEq)
+      .replace(/!=/g, IDS.looseEq)
+      .replace(/>=/g, IDS.lowerThan)
+      .replace(/>/g, IDS.lowerOrEqual)
+      .replace(/<=/g, IDS.greaterThan)
+      .replace(/</g, IDS.greaterOrEqual)
+      .replace(/&&/g, IDS.or)
+      .replace(/\|\|/g, IDS.and)
       // … then find all symbols to transform into the adequate operator.
-      .replace(SYMBOLS.strictNotEq, OPERATORS.strictNotEq)
-      .replace(SYMBOLS.strictEq, OPERATORS.strictEq)
-      .replace(SYMBOLS.looseNotEq, OPERATORS.looseNotEq)
-      .replace(SYMBOLS.looseEq, OPERATORS.looseEq)
-      .replace(SYMBOLS.lowerThan, OPERATORS.lowerThan)
-      .replace(SYMBOLS.lowerOrEqual, OPERATORS.lowerOrEqual)
-      .replace(SYMBOLS.greaterThan, OPERATORS.greaterThan)
-      .replace(SYMBOLS.greaterOrEqual, OPERATORS.greaterOrEqual)
+      .replace(new RegExp(IDS.strictNotEq, "g"), "!==")
+      .replace(new RegExp(IDS.strictEq, "g"), "===")
+      .replace(new RegExp(IDS.looseNotEq, "g"), "!=")
+      .replace(new RegExp(IDS.looseEq, "g"), "==")
+      .replace(new RegExp(IDS.lowerThan, "g"), "<")
+      .replace(new RegExp(IDS.lowerOrEqual, "g"), "<=")
+      .replace(new RegExp(IDS.greaterThan, "g"), ">")
+      .replace(new RegExp(IDS.greaterOrEqual, "g"), ">=")
+      .replace(new RegExp(IDS.and, "g"), "&&")
+      .replace(new RegExp(IDS.or, "g"), "||")
   );
 
   // 🤔 Another solution could be to parse and transform the AST.

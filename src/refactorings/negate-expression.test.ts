@@ -8,6 +8,8 @@ describe("Negate Expression", () => {
   let updatedExpression = "";
 
   beforeEach(() => {
+    updates = [];
+    updatedExpression = "";
     updateWith = jest
       .fn()
       .mockImplementation(
@@ -31,7 +33,7 @@ describe("Negate Expression", () => {
     );
   });
 
-  it.each<[string, { expression: Code; expected: Update }]>([
+  it.each<[string, Assertion]>([
     [
       "loose equality",
       {
@@ -111,13 +113,35 @@ describe("Negate Expression", () => {
           selection: new Selection([0, 4], [0, 10])
         }
       }
+    ],
+    [
+      "logical and",
+      {
+        expression: "a == b && b == c",
+        selection: Selection.cursorAt(0, 12),
+        expected: {
+          code: "!(a != b || b != c)",
+          selection: new Selection([0, 4], [0, 20])
+        }
+      }
+    ],
+    [
+      "logical or",
+      {
+        expression: "a == b || b == c",
+        selection: Selection.cursorAt(0, 12),
+        expected: {
+          code: "!(a != b && b != c)",
+          selection: new Selection([0, 4], [0, 20])
+        }
+      }
     ]
-  ])("should negate %s", async (_, { expression, expected }) => {
+  ])("should negate %s", async (_, { expression, selection, expected }) => {
     updatedExpression = expression;
     const code = `if (${expression}) {}`;
-    const selection = Selection.cursorAt(0, 4);
+    const DEFAULT_SELECTION = Selection.cursorAt(0, 4);
 
-    await doNegateExpression(code, selection);
+    await doNegateExpression(code, selection || DEFAULT_SELECTION);
 
     expect(updates).toEqual([expected]);
   });
@@ -126,3 +150,9 @@ describe("Negate Expression", () => {
     await negateExpression(code, selection, updateWith);
   }
 });
+
+interface Assertion {
+  expression: Code;
+  selection?: Selection;
+  expected: Update;
+}
