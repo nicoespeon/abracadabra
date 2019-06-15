@@ -135,6 +135,17 @@ describe("Negate Expression", () => {
           selection: new Selection([0, 4], [0, 20])
         }
       }
+    ],
+    [
+      "an already negated expression",
+      {
+        expression: "!(a != b && b != c)",
+        selection: Selection.cursorAt(0, 14),
+        expected: {
+          code: "a == b || b == c",
+          selection: new Selection([0, 6], [0, 22])
+        }
+      }
     ]
   ])("should negate %s", async (_, { expression, selection, expected }) => {
     updatedExpression = expression;
