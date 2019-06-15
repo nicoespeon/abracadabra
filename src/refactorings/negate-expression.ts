@@ -19,12 +19,21 @@ async function negateExpression(
   }
 
   const expressionSelection = Selection.fromAST(expressionLoc);
-  await updateWith(expressionSelection, code => [
-    {
-      code: negate(code),
-      selection: expressionSelection
+  await updateWith(expressionSelection, code => {
+    const negatedCode = negate(code);
+
+    if (!negatedCode) {
+      showErrorMessage(ErrorReason.DidNotFoundNegatableExpression);
+      return [];
     }
-  ]);
+
+    return [
+      {
+        code: negatedCode,
+        selection: expressionSelection
+      }
+    ];
+  });
 }
 
 function findExpressionLoc(
@@ -50,8 +59,8 @@ function isNegatable(node: ast.Node): boolean {
   return ast.isBinaryExpression(node) || ast.isLogicalExpression(node);
 }
 
-function negate(code: Code): Code {
-  const negatedCode = ast.transform(code, setNode => ({
+function negate(code: Code): Code | undefined {
+  return ast.transform(code, setNode => ({
     UnaryExpression(path) {
       setNode(path.node.argument);
     },
@@ -75,13 +84,6 @@ function negate(code: Code): Code {
       setNode(ast.unaryExpression("!", path.node, true));
     }
   }));
-
-  if (!negatedCode) {
-    // TODO: show error message
-    return code;
-  }
-
-  return negatedCode;
 }
 
 function getNegatedLogicalOperator(
