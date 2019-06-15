@@ -3,19 +3,20 @@ import uniqid from "uniqid";
 import { Code, UpdateWith } from "./i-update-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
-// import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
+import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 export { negateExpression };
 
 async function negateExpression(
   code: Code,
   selection: Selection,
-  updateWith: UpdateWith
+  updateWith: UpdateWith,
+  showErrorMessage: ShowErrorMessage
 ) {
   const expressionLoc = findExpressionLoc(code, selection);
 
   if (!expressionLoc) {
-    // TODO: show error message
+    showErrorMessage(ErrorReason.DidNotFoundNegatableExpression);
     return;
   }
 

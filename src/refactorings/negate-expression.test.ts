@@ -1,13 +1,16 @@
 import { UpdateWith, Update, Code } from "./i-update-code";
 import { negateExpression } from "./negate-expression";
 import { Selection } from "./selection";
+import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 describe("Negate Expression", () => {
+  let showErrorMessage: ShowErrorMessage;
   let updateWith: UpdateWith;
   let updates: Update[] = [];
   let updatedExpression = "";
 
   beforeEach(() => {
+    showErrorMessage = jest.fn();
     updates = [];
     updatedExpression = "";
     updateWith = jest
@@ -157,8 +160,19 @@ describe("Negate Expression", () => {
     expect(updates).toEqual([expected]);
   });
 
+  it("should show an error message if selection can't be negated", async () => {
+    const code = `console.log("Nothing to negate here!")`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doNegateExpression(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundNegatableExpression
+    );
+  });
+
   async function doNegateExpression(code: Code, selection: Selection) {
-    await negateExpression(code, selection, updateWith);
+    await negateExpression(code, selection, updateWith, showErrorMessage);
   }
 });
 
