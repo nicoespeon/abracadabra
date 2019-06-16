@@ -56,6 +56,18 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 
 ![][demo-inline-variable]
 
+### Negate Expression
+
+> 💡 Available as Quick Fix
+
+This refactoring negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
+
+![][demo-negate-expression]
+
+It will negate the closest expression from your cursor or partial selection.
+
+![][demo-negate-expression-partial]
+
 ## Known Issues
 
 🌈 None at the moment.
@@ -84,3 +96,5 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-command-palette]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/command-palette.png?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/inline-variable.gif?raw=true
+[demo-negate-expression]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/negate-expression.gif?raw=true
+[demo-negate-expression-partial]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/negate-expression-partial.gif?raw=true
