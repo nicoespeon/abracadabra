@@ -77,10 +77,29 @@ function isNegatable(
   node: ast.Node
 ): node is ast.BinaryExpression | ast.LogicalExpression | ast.UnaryExpression {
   return (
-    ast.isBinaryExpression(node) ||
-    ast.isLogicalExpression(node) ||
-    ast.isUnaryExpression(node)
+    ast.isUnaryExpression(node) ||
+    ((ast.isBinaryExpression(node) || ast.isLogicalExpression(node)) &&
+      hasNegatableOperator(node.operator))
   );
+}
+
+function hasNegatableOperator(
+  operator: ast.BinaryExpression["operator"] | ast.LogicalExpression["operator"]
+): boolean {
+  const NEGATABLE_OPERATORS = [
+    "==",
+    "!=",
+    "===",
+    "!==",
+    ">",
+    ">=",
+    "<",
+    "<=",
+    "||",
+    "&&"
+  ];
+
+  return NEGATABLE_OPERATORS.includes(operator);
 }
 
 function negate(code: Code): Code | undefined {

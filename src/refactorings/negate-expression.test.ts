@@ -1,5 +1,5 @@
 import { UpdateWith, Update, Code } from "./i-update-code";
-import { negateExpression } from "./negate-expression";
+import { negateExpression, findNegatableExpression } from "./negate-expression";
 import { Selection } from "./selection";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
@@ -84,6 +84,14 @@ describe("Negate Expression", () => {
         selection: Selection.cursorAt(0, 14),
         expected: "!(isValid && !isCorrect)"
       }
+    ],
+    [
+      "expression with non-negatable operators",
+      {
+        expression: "a + b > 0",
+        selection: Selection.cursorAt(0, 6),
+        expected: "!(a + b <= 0)"
+      }
     ]
   ])("should negate %s", async (_, { expression, selection, expected }) => {
     updatedExpression = expression;
@@ -150,6 +158,39 @@ describe("Negate Expression", () => {
   async function doNegateExpression(code: Code, selection: Selection) {
     await negateExpression(code, selection, updateWith, showErrorMessage);
   }
+});
+
+describe("Finding negatable expression (quick fix)", () => {
+  it("should match against logical expressions", async () => {
+    const code = `if (a > b) {}`;
+    const selection = Selection.cursorAt(0, 4);
+
+    const expression = findNegatableExpression(code, selection);
+
+    expect(expression).toBeDefined();
+  });
+
+  it("should match against binary expressions", async () => {
+    const code = `function result() {
+  return a === 0;
+}`;
+    const selection = Selection.cursorAt(1, 13);
+
+    const expression = findNegatableExpression(code, selection);
+
+    expect(expression).toBeDefined();
+  });
+
+  it("should not match against concatenable operators", async () => {
+    const code = `function result() {
+  return "(" + this.getValue() + ")";
+}`;
+    const selection = Selection.cursorAt(1, 13);
+
+    const expression = findNegatableExpression(code, selection);
+
+    expect(expression).toBeUndefined();
+  });
 });
 
 interface Assertion {
