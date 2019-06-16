@@ -3,11 +3,7 @@ import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
-export { canBeNegated, negateExpression };
-
-function canBeNegated(code: Code, selection: Selection): boolean {
-  return !!findExpressionLoc(code, selection);
-}
+export { findNegatableExpression, negateExpression };
 
 async function negateExpression(
   code: Code,
@@ -15,14 +11,14 @@ async function negateExpression(
   updateWith: UpdateWith,
   showErrorMessage: ShowErrorMessage
 ) {
-  const expressionLoc = findExpressionLoc(code, selection);
+  const expression = findNegatableExpression(code, selection);
 
-  if (!expressionLoc) {
+  if (!expression) {
     showErrorMessage(ErrorReason.DidNotFoundNegatableExpression);
     return;
   }
 
-  const expressionSelection = Selection.fromAST(expressionLoc);
+  const expressionSelection = Selection.fromAST(expression.loc);
   await updateWith(expressionSelection, code => {
     const negatedCode = negate(code);
 
@@ -40,11 +36,11 @@ async function negateExpression(
   });
 }
 
-function findExpressionLoc(
+function findNegatableExpression(
   code: Code,
   selection: Selection
-): ast.SourceLocation | null {
-  let result: ast.SourceLocation | null = null;
+): NegatableExpression | undefined {
+  let result: NegatableExpression | undefined;
 
   ast.traverseAST(code, {
     enter({ node, parent }) {
@@ -55,14 +51,31 @@ function findExpressionLoc(
       // If parent is unary expression we don't go further to double-negate it.
       if (ast.isUnaryExpression(parent)) return;
 
-      result = node.loc;
+      result = {
+        loc: node.loc,
+        negatedOperator: ast.isLogicalExpression(node)
+          ? getNegatedLogicalOperator(node.operator)
+          : ast.isBinaryExpression(node)
+          ? getNegatedBinaryOperator(node.operator)
+          : null
+      };
     }
   });
 
   return result;
 }
 
-function isNegatable(node: ast.Node): boolean {
+interface NegatableExpression {
+  loc: ast.SourceLocation;
+  negatedOperator:
+    | ast.BinaryExpression["operator"]
+    | ast.LogicalExpression["operator"]
+    | null;
+}
+
+function isNegatable(
+  node: ast.Node
+): node is ast.BinaryExpression | ast.LogicalExpression | ast.UnaryExpression {
   return (
     ast.isBinaryExpression(node) ||
     ast.isLogicalExpression(node) ||
