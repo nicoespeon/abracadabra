@@ -1,5 +1,7 @@
 # 🧙‍ Abracadabra
 
+![](https://img.shields.io/badge/it%27s-magic-purple.svg)
+
 > 👷 This project is under initial development phase and is not stable yet.
 
 Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript.
@@ -85,6 +87,8 @@ See the [Changelog][changelog] for the list of all notable changes.
 VS Code ships with [basic refactoring operations][vscode-refactorings]. But they tend to be limited and we didn't found the UX to be very intuitive.
 
 There is also an extension called [JS Refactor][js-refactor] that provides JS automated refactorings for VS Code. But we didn't like its UX much (e.g. it takes a lot of keystrokes to extract a variable). Also, it didn't support JS class syntax well, nor JSX, TS and TSX when we decided to create **Abracadabra**.
+
+![](https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/magic.gif?raw=true)
 
 <!-- Links -->
 
