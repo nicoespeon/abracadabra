@@ -171,6 +171,42 @@ describe("Negate Expression", () => {
     expect(updates).toEqual([expected]);
   });
 
+  it("should negate the left-side of a logical expression", async () => {
+    const code = `if (a == b || b == c) {}`;
+    const selection = Selection.cursorAt(0, 6);
+
+    await doNegateExpression(code, selection);
+
+    expect(updateWith).toBeCalledWith(
+      new Selection([0, 4], [0, 10]),
+      expect.any(Function)
+    );
+  });
+
+  it("should negate the right-side of a logical expression", async () => {
+    const code = `if (a == b || b == c) {}`;
+    const selection = Selection.cursorAt(0, 15);
+
+    await doNegateExpression(code, selection);
+
+    expect(updateWith).toBeCalledWith(
+      new Selection([0, 14], [0, 20]),
+      expect.any(Function)
+    );
+  });
+
+  it("should negate the whole logical expression if cursor is on identifier", async () => {
+    const code = `if (isValid || b == c) {}`;
+    const selection = Selection.cursorAt(0, 6);
+
+    await doNegateExpression(code, selection);
+
+    expect(updateWith).toBeCalledWith(
+      new Selection([0, 4], [0, 21]),
+      expect.any(Function)
+    );
+  });
+
   it("should show an error message if selection can't be negated", async () => {
     const code = `console.log("Nothing to negate here!")`;
     const selection = Selection.cursorAt(0, 0);
