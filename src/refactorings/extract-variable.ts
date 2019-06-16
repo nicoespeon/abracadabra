@@ -5,7 +5,7 @@ import { renameSymbol } from "./rename-symbol";
 import { Selection } from "./selection";
 import * as ast from "./ast";
 
-export { extractVariable, canBeExtractedAsVariable };
+export { extractVariable };
 
 async function extractVariable(
   code: Code,
@@ -42,11 +42,6 @@ async function extractVariable(
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(delegateToEditor);
-}
-
-function canBeExtractedAsVariable(code: Code, selection: Selection): boolean {
-  const { path, loc } = findExtractableCode(code, selection);
-  return !!(path && loc);
 }
 
 function findExtractableCode(

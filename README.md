@@ -6,7 +6,7 @@ Refactorix is a Visual Studio Code extension that brings you automated refactori
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
 
-![Illustration of "Extract Variable" refactoring][demo-extract-variable-with-shortcut]
+![Illustration of "Extract Variable" refactoring][demo-extract-variable]
 
 ## Installation
 
@@ -34,17 +34,11 @@ This refactoring allows you to rename things and make sure all references in you
 | :--------------- | :------ |
 | `Ctrl + Alt + V` | `⌥ ⌘ V` |
 
-> 💡 Available as Quick Fix
-
 This refactoring helps you give a meaning to the hardcoded constants and low-level expressions. It makes your source code easier to read and maintain.
 
-Select the code you want to extract:
+![][demo-extract-variable]
 
-![][demo-extract-variable-with-lightbulb]
-
-You don't have to select though. It will extract the closest element from your cursor or partial selection:
-
-![][demo-extract-variable-with-shortcut]
+It will extract the closest element from your cursor or partial selection.
 
 ### Inline Variable
 
@@ -81,6 +75,5 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 <!-- Demo images -->
 
 [demo-command-palette]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/command-palette.png?raw=true
-[demo-extract-variable-with-lightbulb]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable-with-lightbulb.gif?raw=true
-[demo-extract-variable-with-shortcut]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable-with-shortcut.gif?raw=true
+[demo-extract-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/inline-variable.gif?raw=true
