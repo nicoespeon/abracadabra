@@ -146,7 +146,7 @@ describe("Negate Expression", () => {
         selection: Selection.cursorAt(0, 14),
         expected: {
           code: "a == b || b == c",
-          selection: new Selection([0, 6], [0, 22])
+          selection: new Selection([0, 4], [0, 23])
         }
       }
     ],

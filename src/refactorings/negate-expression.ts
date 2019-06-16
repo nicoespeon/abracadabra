@@ -47,10 +47,13 @@ function findExpressionLoc(
   let result: ast.SourceLocation | null = null;
 
   ast.traverseAST(code, {
-    enter({ node }) {
+    enter({ node, parent }) {
       if (!ast.isSelectableNode(node)) return;
       if (!isNegatable(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
+
+      // If parent is unary expression we don't go further to double-negate it.
+      if (ast.isUnaryExpression(parent)) return;
 
       result = node.loc;
     }
@@ -60,7 +63,11 @@ function findExpressionLoc(
 }
 
 function isNegatable(node: ast.Node): boolean {
-  return ast.isBinaryExpression(node) || ast.isLogicalExpression(node);
+  return (
+    ast.isBinaryExpression(node) ||
+    ast.isLogicalExpression(node) ||
+    ast.isUnaryExpression(node)
+  );
 }
 
 function negate(code: Code): Code | undefined {
