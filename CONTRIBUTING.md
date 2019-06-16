@@ -1,4 +1,4 @@
-# Contributing to Refactorix
+# Contributing to Abracadabra
 
 Architecture decisions for this project [are documented here][adrs], using the [Architecture Decision Records (ADR)][adrs-pattern] pattern.
 
@@ -61,4 +61,4 @@ As a general rule, we prefer to have **what is exposed appear before what is pri
 [jest]: https://jestjs.io/
 [prettier]: https://prettier.io
 [adrs-pattern]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
-[adrs]: https://github.com/nicoespeon/refactorix/blob/master/docs/adr
+[adrs]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr

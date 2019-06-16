@@ -1,15 +1,15 @@
 {
-  "name": "refactorix",
+  "name": "abracadabra",
   "version": "0.0.1",
   "private": true,
-  "displayName": "Refactorix",
+  "displayName": "Abracadabra",
   "publisher": "nicoespeon",
   "description": "Automated refactorings for VS Code",
   "author": "Nicolas Carlo <nicolascarlo.espeon@gmail.com>",
   "license": "MIT",
-  "repository": "nicoespeon/refactorix",
-  "homepage": "https://github.com/nicoespeon/refactorix",
-  "bugs": "https://github.com/nicoespeon/refactorix/issues",
+  "repository": "nicoespeon/abracadabra",
+  "homepage": "https://github.com/nicoespeon/abracadabra",
+  "bugs": "https://github.com/nicoespeon/abracadabra/issues",
   "keywords": [
     "refactor",
     "legacy code",
@@ -24,10 +24,10 @@
   },
   "main": "./out/extension.js",
   "activationEvents": [
-    "onCommand:refactorix.renameSymbol",
-    "onCommand:refactorix.extractVariable",
-    "onCommand:refactorix.inlineVariable",
-    "onCommand:refactorix.negateExpression",
+    "onCommand:abracadabra.renameSymbol",
+    "onCommand:abracadabra.extractVariable",
+    "onCommand:abracadabra.inlineVariable",
+    "onCommand:abracadabra.negateExpression",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -36,35 +36,35 @@
   "contributes": {
     "commands": [
       {
-        "command": "refactorix.renameSymbol",
+        "command": "abracadabra.renameSymbol",
         "title": "Rename Symbol",
-        "category": "Refactorix"
+        "category": "Abracadabra"
       },
       {
-        "command": "refactorix.extractVariable",
+        "command": "abracadabra.extractVariable",
         "title": "Extract Variable",
-        "category": "Refactorix"
+        "category": "Abracadabra"
       },
       {
-        "command": "refactorix.inlineVariable",
+        "command": "abracadabra.inlineVariable",
         "title": "Inline Variable",
-        "category": "Refactorix"
+        "category": "Abracadabra"
       },
       {
-        "command": "refactorix.negateExpression",
+        "command": "abracadabra.negateExpression",
         "title": "Negate Expression",
-        "category": "Refactorix"
+        "category": "Abracadabra"
       }
     ],
     "keybindings": [
       {
-        "command": "refactorix.extractVariable",
+        "command": "abracadabra.extractVariable",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",
         "when": "editorTextFocus"
       },
       {
-        "command": "refactorix.inlineVariable",
+        "command": "abracadabra.inlineVariable",
         "key": "ctrl+alt+n",
         "mac": "cmd+alt+n",
         "when": "editorTextFocus"
@@ -73,67 +73,67 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "refactorix.renameSymbol",
+          "command": "abracadabra.renameSymbol",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "refactorix.renameSymbol",
+          "command": "abracadabra.renameSymbol",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "refactorix.renameSymbol",
+          "command": "abracadabra.renameSymbol",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "refactorix.renameSymbol",
+          "command": "abracadabra.renameSymbol",
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "refactorix.extractVariable",
+          "command": "abracadabra.extractVariable",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "refactorix.extractVariable",
+          "command": "abracadabra.extractVariable",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "refactorix.extractVariable",
+          "command": "abracadabra.extractVariable",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "refactorix.extractVariable",
+          "command": "abracadabra.extractVariable",
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "refactorix.inlineVariable",
+          "command": "abracadabra.inlineVariable",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "refactorix.inlineVariable",
+          "command": "abracadabra.inlineVariable",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "refactorix.inlineVariable",
+          "command": "abracadabra.inlineVariable",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "refactorix.inlineVariable",
+          "command": "abracadabra.inlineVariable",
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "refactorix.negateExpression",
+          "command": "abracadabra.negateExpression",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "refactorix.negateExpression",
+          "command": "abracadabra.negateExpression",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "refactorix.negateExpression",
+          "command": "abracadabra.negateExpression",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "refactorix.negateExpression",
+          "command": "abracadabra.negateExpression",
           "when": "editorLangId == typescriptreact"
         }
       ]
