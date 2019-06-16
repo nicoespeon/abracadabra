@@ -37,95 +37,20 @@ describe("Negate Expression", () => {
   });
 
   it.each<[string, Assertion]>([
-    [
-      "loose equality",
-      {
-        expression: "a == b",
-        expected: {
-          code: "!(a != b)",
-          selection: new Selection([0, 4], [0, 10])
-        }
-      }
-    ],
-    [
-      "strict equality",
-      {
-        expression: "a === b",
-        expected: {
-          code: "!(a !== b)",
-          selection: new Selection([0, 4], [0, 11])
-        }
-      }
-    ],
-    [
-      "loose inequality",
-      {
-        expression: "a != b",
-        expected: {
-          code: "!(a == b)",
-          selection: new Selection([0, 4], [0, 10])
-        }
-      }
-    ],
-    [
-      "strict inequality",
-      {
-        expression: "a !== b",
-        expected: {
-          code: "!(a === b)",
-          selection: new Selection([0, 4], [0, 11])
-        }
-      }
-    ],
-    [
-      "lower than",
-      {
-        expression: "a < b",
-        expected: {
-          code: "!(a >= b)",
-          selection: new Selection([0, 4], [0, 9])
-        }
-      }
-    ],
-    [
-      "lower or equal",
-      {
-        expression: "a <= b",
-        expected: {
-          code: "!(a > b)",
-          selection: new Selection([0, 4], [0, 10])
-        }
-      }
-    ],
-    [
-      "greater than",
-      {
-        expression: "a > b",
-        expected: {
-          code: "!(a <= b)",
-          selection: new Selection([0, 4], [0, 9])
-        }
-      }
-    ],
-    [
-      "greater or equal",
-      {
-        expression: "a >= b",
-        expected: {
-          code: "!(a < b)",
-          selection: new Selection([0, 4], [0, 10])
-        }
-      }
-    ],
+    ["loose equality", { expression: "a == b", expected: "!(a != b)" }],
+    ["strict equality", { expression: "a === b", expected: "!(a !== b)" }],
+    ["loose inequality", { expression: "a != b", expected: "!(a == b)" }],
+    ["strict inequality", { expression: "a !== b", expected: "!(a === b)" }],
+    ["lower than", { expression: "a < b", expected: "!(a >= b)" }],
+    ["lower or equal", { expression: "a <= b", expected: "!(a > b)" }],
+    ["greater than", { expression: "a > b", expected: "!(a <= b)" }],
+    ["greater or equal", { expression: "a >= b", expected: "!(a < b)" }],
     [
       "logical and",
       {
         expression: "a == b && b == c",
         selection: Selection.cursorAt(0, 12),
-        expected: {
-          code: "!(a != b || b != c)",
-          selection: new Selection([0, 4], [0, 20])
-        }
+        expected: "!(a != b || b != c)"
       }
     ],
     [
@@ -133,10 +58,7 @@ describe("Negate Expression", () => {
       {
         expression: "a == b || b == c",
         selection: Selection.cursorAt(0, 12),
-        expected: {
-          code: "!(a != b && b != c)",
-          selection: new Selection([0, 4], [0, 20])
-        }
+        expected: "!(a != b && b != c)"
       }
     ],
     [
@@ -144,10 +66,7 @@ describe("Negate Expression", () => {
       {
         expression: "!(a != b && b != c)",
         selection: Selection.cursorAt(0, 14),
-        expected: {
-          code: "a == b || b == c",
-          selection: new Selection([0, 4], [0, 23])
-        }
+        expected: "a == b || b == c"
       }
     ],
     [
@@ -155,10 +74,7 @@ describe("Negate Expression", () => {
       {
         expression: "isValid || isCorrect",
         selection: Selection.cursorAt(0, 13),
-        expected: {
-          code: "!(!isValid && !isCorrect)",
-          selection: new Selection([0, 4], [0, 24])
-        }
+        expected: "!(!isValid && !isCorrect)"
       }
     ],
     [
@@ -166,10 +82,7 @@ describe("Negate Expression", () => {
       {
         expression: "!isValid || isCorrect",
         selection: Selection.cursorAt(0, 14),
-        expected: {
-          code: "!(isValid && !isCorrect)",
-          selection: new Selection([0, 4], [0, 25])
-        }
+        expected: "!(isValid && !isCorrect)"
       }
     ]
   ])("should negate %s", async (_, { expression, selection, expected }) => {
@@ -179,7 +92,12 @@ describe("Negate Expression", () => {
 
     await doNegateExpression(code, selection || DEFAULT_SELECTION);
 
-    expect(updates).toEqual([expected]);
+    expect(updates).toEqual([
+      {
+        code: expected,
+        selection: new Selection([0, 4], [0, 4 + expression.length])
+      }
+    ]);
   });
 
   it("should negate the left-side of a logical expression", async () => {
@@ -237,5 +155,5 @@ describe("Negate Expression", () => {
 interface Assertion {
   expression: Code;
   selection?: Selection;
-  expected: Update;
+  expected: Code;
 }
