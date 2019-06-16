@@ -24,9 +24,15 @@ Some refactorings have default keybindings configured, but [you can change that]
 
 ### Rename Symbol
 
-A `Symbol` is typically a variable or a function name.
+| Keybinding (VS Code internal) |
+| :---------------------------- |
+| `F2`                          |
+
+> A `Symbol` is typically a variable or a function name.
 
 This refactoring allows you to rename things and make sure all references in your code follow! It's easier and safer to use than a classic "Find and Replace".
+
+[VS Code does this refactoring][vscode-rename-symbol] very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
 
 ### Extract Variable
 
@@ -69,6 +75,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [command-palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
 [change-keybindings]: https://code.visualstudio.com/docs/getstarted/keybindings
 [vscode-refactorings]: https://code.visualstudio.com/docs/editor/refactoring
+[vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [changelog]: https://github.com/nicoespeon/refactorix/blob/master/CHANGELOG.md
 
