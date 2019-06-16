@@ -81,10 +81,14 @@ function negate(code: Code): Code | undefined {
 
       if (ast.isIdentifier(path.node.left)) {
         path.node.left = ast.unaryExpression("!", path.node.left, true);
+      } else if (ast.isUnaryExpression(path.node.left)) {
+        path.node.left = path.node.left.argument;
       }
 
       if (ast.isIdentifier(path.node.right)) {
         path.node.right = ast.unaryExpression("!", path.node.right, true);
+      } else if (ast.isUnaryExpression(path.node.right)) {
+        path.node.right = path.node.right.argument;
       }
 
       setNode(ast.unaryExpression("!", path.node, true));
