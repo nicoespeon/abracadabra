@@ -6,7 +6,7 @@ Refactorix is a Visual Studio Code extension that brings you automated refactori
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
 
-![Illustration of "Extract Variable" refactoring][demo-extract-variable]
+![Gif showing refactoring operations this extension can do][demo-extension]
 
 ## Installation
 
@@ -45,6 +45,8 @@ This refactoring helps you give a meaning to the hardcoded constants and low-lev
 ![][demo-extract-variable]
 
 It will extract the closest element from your cursor or partial selection.
+
+![][demo-extract-variable-partial]
 
 ### Inline Variable
 
@@ -93,8 +95,10 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 
 <!-- Demo images -->
 
+[demo-extension]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extension.gif?raw=true
 [demo-command-palette]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/command-palette.png?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable.gif?raw=true
+[demo-extract-variable-partial]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/extract-variable-partial.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/inline-variable.gif?raw=true
 [demo-negate-expression]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/negate-expression.gif?raw=true
 [demo-negate-expression-partial]: https://github.com/nicoespeon/refactorix/blob/master/docs/demo/negate-expression-partial.gif?raw=true
