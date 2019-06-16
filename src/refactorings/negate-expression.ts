@@ -3,7 +3,11 @@ import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
-export { negateExpression };
+export { canBeNegated, negateExpression };
+
+function canBeNegated(code: Code, selection: Selection): boolean {
+  return !!findExpressionLoc(code, selection);
+}
 
 async function negateExpression(
   code: Code,

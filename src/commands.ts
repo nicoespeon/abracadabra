@@ -5,6 +5,7 @@ import { Refactoring } from "./refactoring";
 import { renameSymbol } from "./refactorings/rename-symbol";
 import { extractVariable } from "./refactorings/extract-variable";
 import { inlineVariable } from "./refactorings/inline-variable";
+import { negateExpression } from "./refactorings/negate-expression";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
@@ -23,6 +24,10 @@ export default {
   inlineVariable: vscode.commands.registerCommand(
     Refactoring.InlineVariable,
     inlineVariableCommand
+  ),
+  negateExpression: vscode.commands.registerCommand(
+    Refactoring.NegateExpression,
+    negateExpressionCommand
   )
 };
 
@@ -59,6 +64,24 @@ async function inlineVariableCommand() {
 
   await executeSafely(() =>
     inlineVariable(
+      document.getText(),
+      createSelectionFromVSCode(selection),
+      createUpdateWithInVSCode(document),
+      showErrorMessageInVSCode
+    )
+  );
+}
+
+async function negateExpressionCommand() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const { document, selection } = activeTextEditor;
+
+  await executeSafely(() =>
+    negateExpression(
       document.getText(),
       createSelectionFromVSCode(selection),
       createUpdateWithInVSCode(document),

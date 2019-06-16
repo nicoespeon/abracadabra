@@ -4,5 +4,6 @@ export { Refactoring };
 enum Refactoring {
   RenameSymbol = "refactorix.renameSymbol",
   ExtractVariable = "refactorix.extractVariable",
-  InlineVariable = "refactorix.inlineVariable"
+  InlineVariable = "refactorix.inlineVariable",
+  NegateExpression = "refactorix.negateExpression"
 }
