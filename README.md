@@ -22,6 +22,8 @@ All refactorings are available through the [Command Palette][command-palette].
 
 Some refactorings have default keybindings configured, but [you can change that][change-keybindings].
 
+Refactorings that don't have default keybindings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You usually access them by clicking on the lightbulb that appear next to the code 💡 We recommend you to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
+
 ### Rename Symbol
 
 | Keybinding (VS Code internal) |
@@ -89,6 +91,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [command-palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
 [change-keybindings]: https://code.visualstudio.com/docs/getstarted/keybindings
 [vscode-refactorings]: https://code.visualstudio.com/docs/editor/refactoring
+[vscode-quick-fixes]: https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings
 [vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [changelog]: https://github.com/nicoespeon/refactorix/blob/master/CHANGELOG.md
