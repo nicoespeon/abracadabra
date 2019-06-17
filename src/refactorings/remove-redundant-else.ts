@@ -1,4 +1,4 @@
-import { Code, UpdateWith } from "./i-update-code";
+import { Code, Write } from "./i-update-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
@@ -8,25 +8,22 @@ export { removeRedundantElse };
 async function removeRedundantElse(
   code: Code,
   selection: Selection,
-  updateWith: UpdateWith,
+  write: Write,
   showErrorMessage: ShowErrorMessage
 ) {
-  // TODO: use another simpler update pattern to do everything once (selection & transform).
-  await updateWith(selection, _ => {
-    const updatedCode = removeElseFrom(code, selection);
+  const updatedCode = removeElseFrom(code, selection);
 
-    if (!updatedCode) {
-      showErrorMessage(ErrorReason.DidNotFoundRedundantElse);
-      return [];
+  if (!updatedCode) {
+    showErrorMessage(ErrorReason.DidNotFoundRedundantElse);
+    return;
+  }
+
+  await write([
+    {
+      code: updatedCode.code,
+      selection: Selection.fromAST(updatedCode.loc)
     }
-
-    return [
-      {
-        code: updatedCode.code,
-        selection: Selection.fromAST(updatedCode.loc)
-      }
-    ];
-  });
+  ]);
 }
 
 function removeElseFrom(

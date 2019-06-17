@@ -1,23 +1,16 @@
 import * as vscode from "vscode";
 import { Pipe } from "ts-functionaltypes";
 
-import { UpdateWith, Update } from "../i-update-code";
+import { UpdateWith, Write, Update } from "../i-update-code";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-export { createUpdateWithInVSCode };
+export { createUpdateWithInVSCode, createWriteInVSCode };
 
 const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
-function createUpdateWithInVSCode(document: vscode.TextDocument): UpdateWith {
-  return async (selection, getUpdates) =>
-    pipe(
-      read,
-      getUpdates,
-      write
-    )(selection);
-
-  async function write(updates: Update[]) {
+function createWriteInVSCode(document: vscode.TextDocument): Write {
+  return async function write(updates: Update[]) {
     const textEdits = updates.map(({ code, selection }) => {
       const startPosition = toVSCodePosition(selection.start);
       const endPosition = toVSCodePosition(selection.end);
@@ -32,7 +25,16 @@ function createUpdateWithInVSCode(document: vscode.TextDocument): UpdateWith {
     edit.set(document.uri, textEdits);
 
     await vscode.workspace.applyEdit(edit);
-  }
+  };
+}
+
+function createUpdateWithInVSCode(document: vscode.TextDocument): UpdateWith {
+  return async (selection, getUpdates) =>
+    pipe(
+      read,
+      getUpdates,
+      createWriteInVSCode(document)
+    )(selection);
 
   function read(selection: Selection) {
     const startPosition = toVSCodePosition(selection.start);

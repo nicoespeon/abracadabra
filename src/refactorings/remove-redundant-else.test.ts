@@ -1,23 +1,15 @@
-import { UpdateWith, Update, Code } from "./i-update-code";
+import { Write, Code } from "./i-update-code";
 import { removeRedundantElse } from "./remove-redundant-else";
 import { Selection } from "./selection";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 describe("Negate Expression", () => {
   let showErrorMessage: ShowErrorMessage;
-  let updateWith: UpdateWith;
-  let updates: Update[] = [];
-  let updatedExpression = "";
+  let write: Write;
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
-    updates = [];
-    updatedExpression = "";
-    updateWith = jest
-      .fn()
-      .mockImplementation(
-        (_, getUpdates) => (updates = getUpdates(updatedExpression))
-      );
+    write = jest.fn();
   });
 
   it("should remove redundant else", async () => {
@@ -31,17 +23,10 @@ describe("Negate Expression", () => {
   }
 }`;
     const selection = new Selection([1, 3], [7, 3]);
-    updatedExpression = `if (!isValid) {
-  showWarning();
-  return;
-} else {
-  doSomething();
-  doAnotherThing();
-}`;
 
     await doRemoveRedundantElse(code, selection);
 
-    expect(updates).toEqual([
+    expect(write).toBeCalledWith([
       {
         code: `{
   if (!isValid) {
@@ -74,11 +59,6 @@ describe("Negate Expression", () => {
   });
 
   async function doRemoveRedundantElse(code: Code, selection: Selection) {
-    return await removeRedundantElse(
-      code,
-      selection,
-      updateWith,
-      showErrorMessage
-    );
+    return await removeRedundantElse(code, selection, write, showErrorMessage);
   }
 });
