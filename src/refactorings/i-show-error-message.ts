@@ -7,6 +7,7 @@ enum ErrorReason {
   DidNotFoundInlinableCode,
   DidNotFoundInlinableCodeIdentifiers,
   DidNotFoundNegatableExpression,
+  DidNotFoundRedundantElse,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables
 }

@@ -23,6 +23,9 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFoundNegatableExpression:
       return "I didn't found a valid expression to negate from current selection 🤔";
 
+    case ErrorReason.DidNotFoundRedundantElse:
+      return "I didn't found a redundant else to remove from current selection 🤔";
+
     case ErrorReason.CantInlineExportedVariables:
       return "I'm sorry, I can't inline exported variables yet 😅";
 
