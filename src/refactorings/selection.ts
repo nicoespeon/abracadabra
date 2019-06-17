@@ -102,6 +102,7 @@ class Selection {
     const astStart = Position.fromAST(loc.start);
     if (
       !this.start.isSameLineThan(astStart) &&
+      // List of node types that would be part of the same scope.
       !ast.isObjectProperty(node) &&
       !ast.isObjectExpression(node) &&
       !ast.isArrayExpression(node) &&
@@ -112,6 +113,7 @@ class Selection {
       !ast.isBinaryExpression(node) &&
       !ast.isSwitchCase(node) &&
       !ast.isArrowFunctionExpression(node) &&
+      !ast.isCallExpression(node) &&
       !ast.isExportNamedDeclaration(parentPath.node)
     ) {
       return node;

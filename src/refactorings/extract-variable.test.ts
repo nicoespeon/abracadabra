@@ -477,6 +477,16 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 9)
       },
       { read: new Selection([1, 7], [1, 12]) }
+    ],
+    [
+      "an object from a nested call expression",
+      {
+        code: `assert.isTrue(
+  getError({ context: ["value"] })
+);`,
+        selection: Selection.cursorAt(1, 15)
+      },
+      { read: new Selection([1, 11], [1, 33]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
