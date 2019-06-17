@@ -7,8 +7,9 @@ import { Code } from "./i-update-code";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
-export { traverseAST, transform, isUndefinedLiteral };
 export { ASTSelection, ASTPosition };
+export { traverseAST, transform, Transformed };
+export { isUndefinedLiteral };
 export {
   isSelectableNode,
   isSelectableVariableDeclarator,
@@ -49,12 +50,13 @@ function traverseAST(code: Code, opts: TraverseOptions): void {
 
 /**
  * @param code The code to parse and transform
- * @param cb Function taking a `setNode` callback to set the transformed `code`.
+ * @param cb Function taking a `replaceWith()` to select the node
+ *           from which to generate the transformed code.
  */
 function transform(
   code: Code,
-  cb: (setNode: (node: t.Node) => void) => TraverseOptions
-): Code | undefined {
+  cb: (replaceWith: (node: t.Node) => void) => TraverseOptions
+): Transformed | undefined {
   let result: t.Node | undefined;
 
   traverseAST(
@@ -68,11 +70,13 @@ function transform(
   );
   if (!result) return;
 
-  const generatedResult = generate(result);
-  if (!generatedResult || !generatedResult.code) return;
-
-  return generatedResult.code;
+  return { code: generate(result).code, loc: result.loc };
 }
+
+type Transformed = {
+  code: Code;
+  loc: t.SourceLocation | null;
+};
 
 function isUndefinedLiteral(
   node: object | null | undefined,

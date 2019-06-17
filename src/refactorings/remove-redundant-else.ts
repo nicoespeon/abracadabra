@@ -13,7 +13,7 @@ async function removeRedundantElse(
 ) {
   const updatedCode = removeElseFrom(code, selection);
 
-  if (!updatedCode) {
+  if (!updatedCode || !updatedCode.loc) {
     showErrorMessage(ErrorReason.DidNotFoundRedundantElse);
     return;
   }
@@ -30,11 +30,10 @@ function removeElseFrom(
   code: Code,
   // TODO: filter using selection (expand, limit, etc.)
   _selection: Selection
-): { code: Code; loc: ast.SourceLocation } | undefined {
-  let loc: ast.SourceLocation | null = null;
-
-  const resultCode = ast.transform(code, setNode => ({
+): ast.Transformed | undefined {
+  return ast.transform(code, replaceWith => ({
     IfStatement(path) {
+      if (!ast.isSelectableNode(path.parentPath.node)) return;
       // TODO: test when there is a throw instead of return statement
       if (
         ast.isBlockStatement(path.node.consequent) &&
@@ -51,15 +50,9 @@ function removeElseFrom(
         path.node.alternate = null;
         // TODO: try with other elements in body to see if position is correct
         path.replaceWithMultiple([path.node, ...elseBranch.body]);
-        // TODO: try not to use `setNode`
-        setNode(path.parentPath.node);
-        loc = path.parentPath.node.loc;
+
+        replaceWith(path.parentPath.node);
       }
     }
   }));
-
-  if (!resultCode) return;
-  if (!loc) return;
-
-  return { code: resultCode, loc };
 }

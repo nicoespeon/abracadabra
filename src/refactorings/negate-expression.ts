@@ -103,9 +103,9 @@ function hasNegatableOperator(
 }
 
 function negate(code: Code): Code | undefined {
-  return ast.transform(code, setNode => ({
+  const result = ast.transform(code, replaceWith => ({
     UnaryExpression(path) {
-      setNode(path.node.argument);
+      replaceWith(path.node.argument);
     },
 
     LogicalExpression(path) {
@@ -123,14 +123,17 @@ function negate(code: Code): Code | undefined {
         path.node.right = path.node.right.argument;
       }
 
-      setNode(ast.unaryExpression("!", path.node, true));
+      replaceWith(ast.unaryExpression("!", path.node, true));
     },
 
     BinaryExpression(path) {
       path.node.operator = getNegatedBinaryOperator(path.node.operator);
-      setNode(ast.unaryExpression("!", path.node, true));
+      replaceWith(ast.unaryExpression("!", path.node, true));
     }
   }));
+  if (!result) return;
+
+  return result.code;
 }
 
 function getNegatedLogicalOperator(
