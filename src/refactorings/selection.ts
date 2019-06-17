@@ -110,7 +110,9 @@ class Selection {
       !ast.isVariableDeclarator(node) &&
       !ast.isLogicalExpression(node) &&
       !ast.isBinaryExpression(node) &&
-      !ast.isSwitchCase(node)
+      !ast.isSwitchCase(node) &&
+      !ast.isArrowFunctionExpression(node) &&
+      !ast.isExportNamedDeclaration(parentPath.node)
     ) {
       return node;
     }

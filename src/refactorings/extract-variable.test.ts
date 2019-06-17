@@ -457,6 +457,26 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 0)
       },
       { read: new Selection([0, 12], [2, 1]) }
+    ],
+    [
+      "an exported variable declaration",
+      {
+        code: `export const something = {
+  foo: "bar"
+};`,
+        selection: Selection.cursorAt(1, 9)
+      },
+      { read: new Selection([1, 7], [1, 12]) }
+    ],
+    [
+      "an object returned from anonymous function",
+      {
+        code: `const something = () => ({
+  foo: "bar"
+});`,
+        selection: Selection.cursorAt(1, 9)
+      },
+      { read: new Selection([1, 7], [1, 12]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
