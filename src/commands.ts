@@ -100,6 +100,9 @@ async function executeSafely(command: () => Promise<any>): Promise<void> {
       return;
     }
 
+    vscode.window.showErrorMessage(
+      `😅 I'm sorry, something went wrong: ${err.message}`
+    );
     console.error(err);
   }
 }
