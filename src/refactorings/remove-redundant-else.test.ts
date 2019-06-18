@@ -73,6 +73,30 @@ describe("Remove Redundant Else", () => {
   }
 }`
       }
+    ],
+    [
+      "redundant else when cursor is inside",
+      {
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    showWarning();
+    return;
+  } else {
+    doSomething();
+    doAnotherThing();
+  }
+}`,
+        selection: Selection.cursorAt(3, 3),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    showWarning();
+    return;
+  }
+
+  doSomething();
+  doAnotherThing();
+}`
+      }
     ]
   ])("should remove %s", async (_, { code, selection, expected }) => {
     const result = await doRemoveRedundantElse(code, selection);
