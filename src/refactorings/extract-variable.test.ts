@@ -406,7 +406,7 @@ console.log("How are you doing?");`,
       { read: new Selection([0, 4], [0, 22]) }
     ],
     [
-      "a multi-line if statement (whole statement)",
+      "a multi-lines if statement (whole statement)",
       {
         code: `if (
   parents.length > 0 &&
@@ -417,7 +417,7 @@ console.log("How are you doing?");`,
       { read: new Selection([1, 2], [2, 21]) }
     ],
     [
-      "a multi-line if statement (part of it)",
+      "a multi-lines if statement (part of it)",
       {
         code: `if (
   parents.length > 0 &&
@@ -487,6 +487,18 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 15)
       },
       { read: new Selection([1, 11], [1, 33]) }
+    ],
+    [
+      "a multi-lines ternary",
+      {
+        code: `function getText() {
+  return isValid
+    ? "yes"
+    : "no";
+}`,
+        selection: Selection.cursorAt(2, 8)
+      },
+      { read: new Selection([2, 6], [2, 11]), update: Selection.cursorAt(1, 2) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);

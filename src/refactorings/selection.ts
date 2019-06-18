@@ -114,6 +114,8 @@ class Selection {
       !ast.isSwitchCase(node) &&
       !ast.isArrowFunctionExpression(node) &&
       !ast.isCallExpression(node) &&
+      !ast.isReturnStatement(parentPath.node) &&
+      !ast.isConditionalExpression(parentPath.node) &&
       !ast.isExportNamedDeclaration(parentPath.node)
     ) {
       return node;
