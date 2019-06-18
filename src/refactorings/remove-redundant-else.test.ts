@@ -1,19 +1,21 @@
-import { Write, Code } from "./i-update-code";
+import { Code } from "./i-update-code";
 import { removeRedundantElse } from "./remove-redundant-else";
 import { Selection } from "./selection";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
+import { createWriteInMemoryOn } from "./adapters/update-code-in-memory";
 
-describe("Negate Expression", () => {
+describe("Remove Redundant Else", () => {
   let showErrorMessage: ShowErrorMessage;
-  let write: Write;
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
-    write = jest.fn();
   });
 
-  it("should remove redundant else", async () => {
-    const code = `function doSomethingIfValid() {
+  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+    [
+      "redundant else",
+      {
+        code: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
     return;
@@ -21,14 +23,9 @@ describe("Negate Expression", () => {
     doSomething();
     doAnotherThing();
   }
-}`;
-    const selection = new Selection([1, 3], [7, 3]);
-
-    await doRemoveRedundantElse(code, selection);
-
-    expect(write).toBeCalledWith([
-      {
-        code: `{
+}`,
+        selection: new Selection([1, 3], [7, 3]),
+        expected: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
     return;
@@ -36,10 +33,13 @@ describe("Negate Expression", () => {
 
   doSomething();
   doAnotherThing();
-}`,
-        selection: new Selection([0, 30], [8, 1])
+}`
       }
-    ]);
+    ]
+  ])("should remove %s", async (_, { code, selection, expected }) => {
+    const result = await doRemoveRedundantElse(code, selection);
+
+    expect(result).toBe(expected);
   });
 
   it("should show an error message if selection has no redundant else", async () => {
@@ -58,7 +58,12 @@ describe("Negate Expression", () => {
     );
   });
 
-  async function doRemoveRedundantElse(code: Code, selection: Selection) {
-    return await removeRedundantElse(code, selection, write, showErrorMessage);
+  async function doRemoveRedundantElse(
+    code: Code,
+    selection: Selection
+  ): Promise<Code> {
+    const [write, getCode] = createWriteInMemoryOn(code);
+    await removeRedundantElse(code, selection, write, showErrorMessage);
+    return getCode();
   }
 });
