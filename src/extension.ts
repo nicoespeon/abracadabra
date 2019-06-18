@@ -20,7 +20,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   SUPPORTED_LANGUAGES.forEach(language => {
     const actionProviders = createActionProvidersFor(language);
-    context.subscriptions.push(actionProviders.negateExpression);
+    context.subscriptions.push(
+      actionProviders.negateExpression,
+      actionProviders.removeRedundantElse
+    );
   });
 }
 

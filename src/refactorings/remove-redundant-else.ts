@@ -3,7 +3,7 @@ import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
-export { removeRedundantElse };
+export { removeRedundantElse, hasRedundantElse };
 
 async function removeRedundantElse(
   code: Code,
@@ -24,6 +24,10 @@ async function removeRedundantElse(
       selection: Selection.fromAST(updatedCode.loc)
     }
   ]);
+}
+
+function hasRedundantElse(code: Code, selection: Selection): boolean {
+  return !!removeElseFrom(code, selection);
 }
 
 function removeElseFrom(

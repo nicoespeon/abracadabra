@@ -28,6 +28,7 @@
     "onCommand:abracadabra.extractVariable",
     "onCommand:abracadabra.inlineVariable",
     "onCommand:abracadabra.negateExpression",
+    "onCommand:abracadabra.removeRedundantElse",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -53,6 +54,11 @@
       {
         "command": "abracadabra.negateExpression",
         "title": "Negate Expression",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.removeRedundantElse",
+        "title": "Remove Redundant Else",
         "category": "Abracadabra"
       }
     ],
@@ -134,6 +140,22 @@
         },
         {
           "command": "abracadabra.negateExpression",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.removeRedundantElse",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.removeRedundantElse",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.removeRedundantElse",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.removeRedundantElse",
           "when": "editorLangId == typescriptreact"
         }
       ]

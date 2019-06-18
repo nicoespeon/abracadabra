@@ -5,5 +5,6 @@ enum Refactoring {
   RenameSymbol = "abracadabra.renameSymbol",
   ExtractVariable = "abracadabra.extractVariable",
   InlineVariable = "abracadabra.inlineVariable",
-  NegateExpression = "abracadabra.negateExpression"
+  NegateExpression = "abracadabra.negateExpression",
+  RemoveRedundantElse = "abracadabra.removeRedundantElse"
 }

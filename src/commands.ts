@@ -6,10 +6,14 @@ import { renameSymbol } from "./refactorings/rename-symbol";
 import { extractVariable } from "./refactorings/extract-variable";
 import { inlineVariable } from "./refactorings/inline-variable";
 import { negateExpression } from "./refactorings/negate-expression";
+import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
-import { createReadThenWriteInVSCode } from "./refactorings/adapters/write-code-in-vscode";
+import {
+  createReadThenWriteInVSCode,
+  createWriteInVSCode
+} from "./refactorings/adapters/write-code-in-vscode";
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 
 export default {
@@ -28,6 +32,10 @@ export default {
   negateExpression: vscode.commands.registerCommand(
     Refactoring.NegateExpression,
     negateExpressionCommand
+  ),
+  removeRedundantElse: vscode.commands.registerCommand(
+    Refactoring.RemoveRedundantElse,
+    removeRedundantElseCommand
   )
 };
 
@@ -85,6 +93,24 @@ async function negateExpressionCommand() {
       document.getText(),
       createSelectionFromVSCode(selection),
       createReadThenWriteInVSCode(document),
+      showErrorMessageInVSCode
+    )
+  );
+}
+
+async function removeRedundantElseCommand() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const { document, selection } = activeTextEditor;
+
+  await executeSafely(() =>
+    removeRedundantElse(
+      document.getText(),
+      createSelectionFromVSCode(selection),
+      createWriteInVSCode(document),
       showErrorMessageInVSCode
     )
   );
