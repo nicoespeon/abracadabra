@@ -56,7 +56,7 @@ class NegateExpressionActionProvider implements CodeActionProvider {
     const expression = findNegatableExpression(code, selection);
     if (!expression) return;
 
-    let actionText = "Negate the expression";
+    let actionText = "✨ Negate the expression";
     if (expression.negatedOperator) {
       actionText += ` (use ${expression.negatedOperator} instead)`;
     }
@@ -83,7 +83,7 @@ class RemoveRedundantElseActionProvider implements CodeActionProvider {
 
     if (!hasRedundantElse(code, selection)) return;
 
-    const action = new vscode.CodeAction("Remove redundant else", this.kind);
+    const action = new vscode.CodeAction("✨ Remove redundant else", this.kind);
     action.isPreferred = true;
     action.command = {
       command: Refactoring.RemoveRedundantElse,
