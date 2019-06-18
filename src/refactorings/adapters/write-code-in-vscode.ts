@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
 import { Pipe } from "ts-functionaltypes";
 
-import { UpdateWith, Write, Update } from "../i-update-code";
+import { ReadThenWrite, Write, Update } from "../i-write-code";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-export { createUpdateWithInVSCode, createWriteInVSCode };
+export { createWriteInVSCode, createReadThenWriteInVSCode };
 
 const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
@@ -28,7 +28,9 @@ function createWriteInVSCode(document: vscode.TextDocument): Write {
   };
 }
 
-function createUpdateWithInVSCode(document: vscode.TextDocument): UpdateWith {
+function createReadThenWriteInVSCode(
+  document: vscode.TextDocument
+): ReadThenWrite {
   return async (selection, getUpdates) =>
     pipe(
       read,

@@ -1,8 +1,8 @@
-import { Code } from "./i-update-code";
+import { Code } from "./i-write-code";
 import { removeRedundantElse } from "./remove-redundant-else";
 import { Selection } from "./selection";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
-import { createWriteInMemoryOn } from "./adapters/update-code-in-memory";
+import { createWriteInMemory } from "./adapters/write-code-in-memory";
 
 describe("Remove Redundant Else", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -100,7 +100,7 @@ describe("Remove Redundant Else", () => {
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getCode] = createWriteInMemoryOn(code);
+    const [write, getCode] = createWriteInMemory(code);
     await removeRedundantElse(code, selection, write, showErrorMessage);
     return getCode();
   }

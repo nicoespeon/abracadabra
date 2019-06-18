@@ -1,4 +1,4 @@
-import { Code, Write } from "./i-update-code";
+import { Code, Write } from "./i-write-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";

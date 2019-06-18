@@ -9,7 +9,7 @@ import { negateExpression } from "./refactorings/negate-expression";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
-import { createUpdateWithInVSCode } from "./refactorings/adapters/update-code-in-vscode";
+import { createReadThenWriteInVSCode } from "./refactorings/adapters/write-code-in-vscode";
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 
 export default {
@@ -47,7 +47,7 @@ async function extractVariableCommand() {
     extractVariable(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createUpdateWithInVSCode(document),
+      createReadThenWriteInVSCode(document),
       delegateToVSCode,
       showErrorMessageInVSCode
     )
@@ -66,7 +66,7 @@ async function inlineVariableCommand() {
     inlineVariable(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createUpdateWithInVSCode(document),
+      createReadThenWriteInVSCode(document),
       showErrorMessageInVSCode
     )
   );
@@ -84,7 +84,7 @@ async function negateExpressionCommand() {
     negateExpression(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createUpdateWithInVSCode(document),
+      createReadThenWriteInVSCode(document),
       showErrorMessageInVSCode
     )
   );

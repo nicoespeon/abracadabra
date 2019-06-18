@@ -1,11 +1,11 @@
-import { UpdateWith, Update, Code } from "./i-update-code";
+import { ReadThenWrite, Update, Code } from "./i-write-code";
 import { negateExpression, findNegatableExpression } from "./negate-expression";
 import { Selection } from "./selection";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 describe("Negate Expression", () => {
   let showErrorMessage: ShowErrorMessage;
-  let updateWith: UpdateWith;
+  let readThenWrite: ReadThenWrite;
   let updates: Update[] = [];
   let updatedExpression = "";
 
@@ -13,7 +13,7 @@ describe("Negate Expression", () => {
     showErrorMessage = jest.fn();
     updates = [];
     updatedExpression = "";
-    updateWith = jest
+    readThenWrite = jest
       .fn()
       .mockImplementation(
         (_, getUpdates) => (updates = getUpdates(updatedExpression))
@@ -30,7 +30,7 @@ describe("Negate Expression", () => {
 
     await doNegateExpression(code, selection);
 
-    expect(updateWith).toBeCalledWith(
+    expect(readThenWrite).toBeCalledWith(
       new Selection([0, 4], [0, 10]),
       expect.any(Function)
     );
@@ -114,7 +114,7 @@ describe("Negate Expression", () => {
 
     await doNegateExpression(code, selection);
 
-    expect(updateWith).toBeCalledWith(
+    expect(readThenWrite).toBeCalledWith(
       new Selection([0, 4], [0, 10]),
       expect.any(Function)
     );
@@ -126,7 +126,7 @@ describe("Negate Expression", () => {
 
     await doNegateExpression(code, selection);
 
-    expect(updateWith).toBeCalledWith(
+    expect(readThenWrite).toBeCalledWith(
       new Selection([0, 14], [0, 20]),
       expect.any(Function)
     );
@@ -138,7 +138,7 @@ describe("Negate Expression", () => {
 
     await doNegateExpression(code, selection);
 
-    expect(updateWith).toBeCalledWith(
+    expect(readThenWrite).toBeCalledWith(
       new Selection([0, 4], [0, 21]),
       expect.any(Function)
     );
@@ -156,7 +156,7 @@ describe("Negate Expression", () => {
   });
 
   async function doNegateExpression(code: Code, selection: Selection) {
-    await negateExpression(code, selection, updateWith, showErrorMessage);
+    await negateExpression(code, selection, readThenWrite, showErrorMessage);
   }
 });
 

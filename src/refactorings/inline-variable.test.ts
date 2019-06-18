@@ -1,17 +1,17 @@
-import { UpdateWith, Update, Code } from "./i-update-code";
+import { ReadThenWrite, Update, Code } from "./i-write-code";
 import { inlineVariable } from "./inline-variable";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { Selection } from "./selection";
 
 describe("Inline Variable", () => {
   let showErrorMessage: ShowErrorMessage;
-  let updateWith: UpdateWith;
+  let readThenWrite: ReadThenWrite;
   let updates: Update[] = [];
   const inlinableCode = "Hello!";
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
-    updateWith = jest
+    readThenWrite = jest
       .fn()
       .mockImplementation(
         (_, getUpdates) => (updates = getUpdates(inlinableCode))
@@ -29,7 +29,7 @@ console.log(foo);`;
 
     await doInlineVariable(code, selection);
 
-    expect(updateWith).toBeCalledWith(
+    expect(readThenWrite).toBeCalledWith(
       new Selection([0, 12], [0, 17]),
       expect.any(Function)
     );
@@ -43,7 +43,7 @@ console.log(foo);`;
 
     await doInlineVariable(code, selection);
 
-    expect(updateWith).toBeCalledWith(
+    expect(readThenWrite).toBeCalledWith(
       new Selection([0, 12], [0, 17]),
       expect.any(Function)
     );
@@ -181,7 +181,7 @@ const result = one + two + three;`;
 
       await doInlineVariable(code, selection);
 
-      expect(updateWith).toBeCalledWith(
+      expect(readThenWrite).toBeCalledWith(
         new Selection([0, 21], [0, 22]),
         expect.any(Function)
       );
@@ -334,6 +334,6 @@ hello = "World!";`;
   });
 
   async function doInlineVariable(code: Code, selection: Selection) {
-    await inlineVariable(code, selection, updateWith, showErrorMessage);
+    await inlineVariable(code, selection, readThenWrite, showErrorMessage);
   }
 });

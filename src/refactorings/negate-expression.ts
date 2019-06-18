@@ -1,4 +1,4 @@
-import { Code, UpdateWith } from "./i-update-code";
+import { Code, ReadThenWrite } from "./i-write-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
@@ -8,7 +8,7 @@ export { findNegatableExpression, negateExpression };
 async function negateExpression(
   code: Code,
   selection: Selection,
-  updateWith: UpdateWith,
+  readThenWrite: ReadThenWrite,
   showErrorMessage: ShowErrorMessage
 ) {
   const expression = findNegatableExpression(code, selection);
@@ -19,7 +19,7 @@ async function negateExpression(
   }
 
   const expressionSelection = Selection.fromAST(expression.loc);
-  await updateWith(expressionSelection, code => {
+  await readThenWrite(expressionSelection, code => {
     const negatedCode = negate(code);
 
     if (!negatedCode) {

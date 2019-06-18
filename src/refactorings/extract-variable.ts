@@ -1,4 +1,4 @@
-import { UpdateWith, Code } from "./i-update-code";
+import { ReadThenWrite, Code } from "./i-write-code";
 import { DelegateToEditor } from "./i-delegate-to-editor";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { renameSymbol } from "./rename-symbol";
@@ -10,7 +10,7 @@ export { extractVariable };
 async function extractVariable(
   code: Code,
   selection: Selection,
-  updateWith: UpdateWith,
+  readThenWrite: ReadThenWrite,
   delegateToEditor: DelegateToEditor,
   showErrorMessage: ShowErrorMessage
 ) {
@@ -27,7 +27,7 @@ async function extractVariable(
     extractedCodeSelection.getIndentationLevel(path)
   );
 
-  await updateWith(extractedCodeSelection, extractedCode => [
+  await readThenWrite(extractedCodeSelection, extractedCode => [
     // Insert new variable declaration.
     {
       code: `const ${variableName} = ${extractedCode};\n${indentation}`,

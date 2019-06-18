@@ -1,4 +1,4 @@
-import { Code, UpdateWith } from "./i-update-code";
+import { Code, ReadThenWrite } from "./i-write-code";
 import { Selection } from "./selection";
 import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
@@ -8,7 +8,7 @@ export { inlineVariable };
 async function inlineVariable(
   code: Code,
   selection: Selection,
-  updateWith: UpdateWith,
+  readThenWrite: ReadThenWrite,
   showErrorMessage: ShowErrorMessage
 ) {
   const inlinableCode = findInlinableCode(code, selection);
@@ -38,7 +38,7 @@ async function inlineVariable(
   }
 
   const inlinedCodeSelection = Selection.fromAST(inlinableCode.valueLoc);
-  await updateWith(inlinedCodeSelection, inlinedCode => {
+  await readThenWrite(inlinedCodeSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
       ...idsToReplaceLocs.map(loc => ({

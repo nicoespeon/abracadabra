@@ -1,7 +1,7 @@
-import { Code, Write } from "./i-update-code";
+import { Code, Write } from "./i-write-code";
 import { Selection } from "./selection";
 
-export { createUpdateCodeContractTests };
+export { createWriteCodeContractTests };
 
 /**
  * This is a contract tests factory.
@@ -17,7 +17,7 @@ export { createUpdateCodeContractTests };
  * - It tells you if everything still work when you upgrade the adapter
  */
 
-function createUpdateCodeContractTests(
+function createWriteCodeContractTests(
   adapterName: string,
   createWriteOn: (code: Code) => [Write, () => Code]
 ) {
