@@ -35,6 +35,44 @@ describe("Remove Redundant Else", () => {
   doAnotherThing();
 }`
       }
+    ],
+    [
+      "only the selected redundant else",
+      {
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    showWarning();
+    return;
+  } else {
+    doSomething();
+    doAnotherThing();
+  }
+
+  if (!isCorrect) {
+    showWarning();
+    return;
+  } else {
+    showMessage();
+  }
+}`,
+        selection: new Selection([1, 3], [7, 3]),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    showWarning();
+    return;
+  }
+
+  doSomething();
+  doAnotherThing();
+
+  if (!isCorrect) {
+    showWarning();
+    return;
+  } else {
+    showMessage();
+  }
+}`
+      }
     ]
   ])("should remove %s", async (_, { code, selection, expected }) => {
     const result = await doRemoveRedundantElse(code, selection);

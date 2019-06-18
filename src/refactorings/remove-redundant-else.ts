@@ -28,12 +28,13 @@ async function removeRedundantElse(
 
 function removeElseFrom(
   code: Code,
-  // TODO: filter using selection (expand, limit, etc.)
-  _selection: Selection
+  selection: Selection
 ): ast.Transformed | undefined {
   return ast.transform(code, replaceWith => ({
     IfStatement(path) {
-      if (!ast.isSelectableNode(path.parentPath.node)) return;
+      if (!ast.isSelectableNode(path.node)) return;
+      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+
       // TODO: test when there is a throw instead of return statement
       if (
         ast.isBlockStatement(path.node.consequent) &&
