@@ -16,6 +16,8 @@ describe("Remove Redundant Else", () => {
       "redundant else",
       {
         code: `function doSomethingIfValid() {
+  console.log("Start working");
+
   if (!isValid) {
     showWarning();
     return;
@@ -23,9 +25,13 @@ describe("Remove Redundant Else", () => {
     doSomething();
     doAnotherThing();
   }
+
+  doSomeFinalThing();
 }`,
-        selection: new Selection([1, 3], [7, 3]),
+        selection: new Selection([3, 3], [9, 3]),
         expected: `function doSomethingIfValid() {
+  console.log("Start working");
+
   if (!isValid) {
     showWarning();
     return;
@@ -33,6 +39,7 @@ describe("Remove Redundant Else", () => {
 
   doSomething();
   doAnotherThing();
+  doSomeFinalThing();
 }`
       }
     ],

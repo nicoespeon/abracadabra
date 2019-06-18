@@ -44,7 +44,6 @@ function removeElseFrom(
       if (!ast.isBlockStatement(elseBranch)) return;
 
       path.node.alternate = null;
-      // TODO: try with other elements in body to see if position is correct
       path.replaceWithMultiple([path.node, ...elseBranch.body]);
 
       replaceWith(path.parentPath.node);
