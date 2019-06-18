@@ -97,6 +97,28 @@ describe("Remove Redundant Else", () => {
   doAnotherThing();
 }`
       }
+    ],
+    [
+      "redundant else (throw in if branch)",
+      {
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    throw new Error("Oh no!");
+  } else {
+    doSomething();
+    doAnotherThing();
+  }
+}`,
+        selection: Selection.cursorAt(3, 3),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    throw new Error("Oh no!");
+  }
+
+  doSomething();
+  doAnotherThing();
+}`
+      }
     ]
   ])("should remove %s", async (_, { code, selection, expected }) => {
     const result = await doRemoveRedundantElse(code, selection);

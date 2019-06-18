@@ -35,25 +35,27 @@ function removeElseFrom(
       if (!ast.isSelectableNode(path.node)) return;
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
 
-      // TODO: test when there is a throw instead of return statement
-      if (
-        ast.isBlockStatement(path.node.consequent) &&
-        !ast.isReturnStatement(
-          path.node.consequent.body[path.node.consequent.body.length - 1]
-        )
-      ) {
-        return;
-      }
+      const ifBranch = path.node.consequent;
+      if (!ast.isBlockStatement(ifBranch)) return;
+      if (!hasExitStatement(ifBranch)) return;
 
       const elseBranch = path.node.alternate;
-      // TODO: handle other type of nodes
-      if (elseBranch && ast.isBlockStatement(elseBranch)) {
-        path.node.alternate = null;
-        // TODO: try with other elements in body to see if position is correct
-        path.replaceWithMultiple([path.node, ...elseBranch.body]);
+      if (!elseBranch) return;
+      if (!ast.isBlockStatement(elseBranch)) return;
 
-        replaceWith(path.parentPath.node);
-      }
+      path.node.alternate = null;
+      // TODO: try with other elements in body to see if position is correct
+      path.replaceWithMultiple([path.node, ...elseBranch.body]);
+
+      replaceWith(path.parentPath.node);
     }
   }));
+}
+
+function hasExitStatement(node: ast.BlockStatement): boolean {
+  const lastStatement = node.body[node.body.length - 1];
+
+  return (
+    ast.isReturnStatement(lastStatement) || ast.isThrowStatement(lastStatement)
+  );
 }
