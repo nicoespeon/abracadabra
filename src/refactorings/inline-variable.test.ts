@@ -113,6 +113,25 @@ console.log({
     ]);
   });
 
+  it("should inline code that has a member expression with the same name", async () => {
+    const code = `const world = props.world;
+const helloWorld = sayHelloTo(world);`;
+    const selection = Selection.cursorAt(0, 9);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([1, 30], [1, 35])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [1, 0])
+      }
+    ]);
+  });
+
   it("should limit inlining to variable declaration scope", async () => {
     const code = `function sayHello() {
   const hello = ${inlinableCode};
