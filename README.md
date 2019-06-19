@@ -66,13 +66,21 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 
 > 💡 Available as Quick Fix
 
-This refactoring negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
+Negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
 
 ![][demo-negate-expression]
 
 It will negate the closest expression from your cursor or partial selection.
 
 ![][demo-negate-expression-partial]
+
+### Remove Redundant Else
+
+> 💡 Available as Quick Fix
+
+Removes the `else` keyword when it's not necessary, resulting in less nested code. This refactoring helps you [replace nested conditional with guard clauses][replace-nested-conditional-with-guard-clauses] to make your code easier to read.
+
+![][demo-remove-redundant-else]
 
 ## Known Issues
 
@@ -99,6 +107,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
+[replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
 
 <!-- Demo images -->
 
@@ -109,3 +118,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-inline-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-variable.gif?raw=true
 [demo-negate-expression]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression.gif?raw=true
 [demo-negate-expression-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression-partial.gif?raw=true
+[demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-redundant-else.gif?raw=true
