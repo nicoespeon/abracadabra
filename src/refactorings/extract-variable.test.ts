@@ -499,6 +499,18 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(2, 8)
       },
       { read: new Selection([2, 6], [2, 11]), update: Selection.cursorAt(1, 2) }
+    ],
+    [
+      "a multi-lines unary expression",
+      {
+        code: `if (
+  !(threshold > 10 || isPaused)
+) {
+  console.log("Ship it");
+}`,
+        selection: Selection.cursorAt(1, 17)
+      },
+      { read: new Selection([1, 16], [1, 18]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
