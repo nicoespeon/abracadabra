@@ -92,6 +92,27 @@ sendMessageSaying(hello).to(world);`;
     ]);
   });
 
+  it("should not inline code in the property key", async () => {
+    const code = `const hello = ${inlinableCode};
+console.log({
+  hello: hello
+});`;
+    const selection = Selection.cursorAt(0, 14);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([2, 9], [2, 14])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [1, 0])
+      }
+    ]);
+  });
+
   it("should limit inlining to variable declaration scope", async () => {
     const code = `function sayHello() {
   const hello = ${inlinableCode};

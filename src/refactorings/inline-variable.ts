@@ -190,7 +190,8 @@ function findIdentifiersToReplaceLocs(
       if (isSameIdentifier) return;
 
       const parent = ancestors[ancestors.length - 1];
-      if (ast.isFunctionDeclaration(parent.node)) return;
+      if (ast.isFunctionDeclaration(parent)) return;
+      if (ast.isObjectProperty(parent.node) && parent.node.key === node) return;
 
       result.push(node.loc);
     }
