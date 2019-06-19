@@ -46,6 +46,7 @@ function findNegatableExpression(
     enter({ node, parent }) {
       if (!ast.isSelectableNode(node)) return;
       if (!isNegatable(node)) return;
+      if (isNegatedIdentifier(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
       // If parent is unary expression we don't go further to double-negate it.
@@ -81,6 +82,10 @@ function isNegatable(
     ((ast.isBinaryExpression(node) || ast.isLogicalExpression(node)) &&
       hasNegatableOperator(node.operator))
   );
+}
+
+function isNegatedIdentifier(node: ast.Node): boolean {
+  return ast.isUnaryExpression(node) && ast.isIdentifier(node.argument);
 }
 
 function hasNegatableOperator(

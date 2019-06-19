@@ -144,6 +144,18 @@ describe("Negate Expression", () => {
     );
   });
 
+  it("should negate the whole logical expression if cursor is on a negated identifier", async () => {
+    const code = `if (!isValid || b == c) {}`;
+    const selection = Selection.cursorAt(0, 6);
+
+    await doNegateExpression(code, selection);
+
+    expect(readThenWrite).toBeCalledWith(
+      new Selection([0, 4], [0, 22]),
+      expect.any(Function)
+    );
+  });
+
   it("should show an error message if selection can't be negated", async () => {
     const code = `console.log("Nothing to negate here!")`;
     const selection = Selection.cursorAt(0, 0);
