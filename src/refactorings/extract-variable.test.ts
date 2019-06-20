@@ -511,6 +511,21 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 17)
       },
       { read: new Selection([1, 16], [1, 18]) }
+    ],
+    [
+      "a variable in a JSX element",
+      {
+        code: `function render() {
+  return <div className="text-lg font-weight-bold">
+    {props.location.name}
+  </div>
+}`,
+        selection: Selection.cursorAt(2, 12)
+      },
+      {
+        read: new Selection([2, 5], [2, 19]),
+        update: Selection.cursorAt(1, 2)
+      }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
