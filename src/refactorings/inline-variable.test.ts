@@ -132,6 +132,26 @@ const helloWorld = sayHelloTo(world);`;
     ]);
   });
 
+  it("should inline code that has variable declarator on a different line", async () => {
+    const code = `const world =
+  ${inlinableCode};
+const helloWorld = sayHelloTo(world);`;
+    const selection = Selection.cursorAt(1, 2);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([2, 30], [2, 35])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [2, 0])
+      }
+    ]);
+  });
+
   it("should limit inlining to variable declaration scope", async () => {
     const code = `function sayHello() {
   const hello = ${inlinableCode};
@@ -283,6 +303,24 @@ const result = one + two + three;`;
       expect(updates[1]).toEqual({
         code: "",
         selection: new Selection([1, 2], [2, 2])
+      });
+    });
+
+    it("should work on multi-lines declarations, with declaration on previous line", async () => {
+      const code = `const one =
+    1,
+  two =
+    2,
+  three =
+    3;
+const result = one + two + three;`;
+      const selection = Selection.cursorAt(2, 2);
+
+      await doInlineVariable(code, selection);
+
+      expect(updates[1]).toEqual({
+        code: "",
+        selection: new Selection([2, 2], [4, 2])
       });
     });
   });

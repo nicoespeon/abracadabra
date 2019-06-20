@@ -48,10 +48,7 @@ async function inlineVariable(
       // Remove the variable declaration
       {
         code: "",
-        selection: getCodeToRemoveSelection(
-          inlinedCodeSelection,
-          inlinableCode.multiDeclarationsLocs
-        )
+        selection: getCodeToRemoveSelection(inlinableCode)
       }
     ];
   });
@@ -239,15 +236,17 @@ function isMatchingIdentifier(id: ast.Identifier, node: ast.Node): boolean {
   return ast.isIdentifier(node) && node.name === id.name;
 }
 
-function getCodeToRemoveSelection(
-  inlinedCodeSelection: Selection,
-  multiVariablesLocs: MultiDeclarationsLocs | undefined
-): Selection {
-  if (!multiVariablesLocs) {
-    return inlinedCodeSelection.extendToStartOfLine().extendToStartOfNextLine();
+function getCodeToRemoveSelection(inlinableCode: InlinableCode): Selection {
+  const { multiDeclarationsLocs } = inlinableCode;
+
+  if (!multiDeclarationsLocs) {
+    return Selection.fromAST(inlinableCode.valueLoc)
+      .extendStartTo(Selection.fromAST(inlinableCode.id.loc))
+      .extendToStartOfLine()
+      .extendToStartOfNextLine();
   }
 
-  const { isOtherAfterCurrent, current, other } = multiVariablesLocs;
+  const { isOtherAfterCurrent, current, other } = multiDeclarationsLocs;
   return isOtherAfterCurrent
     ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
     : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
