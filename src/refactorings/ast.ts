@@ -31,7 +31,7 @@ interface ASTPosition {
   column: number;
 }
 
-function traverseAST(code: Code, opts: TraverseOptions): void {
+function traverseAST(code: Code, opts: TraverseOptions): t.File {
   const ast = parse(code, {
     // Parse in strict mode and allow module declarations
     sourceType: "module",
@@ -46,37 +46,42 @@ function traverseAST(code: Code, opts: TraverseOptions): void {
   });
 
   traverse(ast, opts);
+
+  return ast;
 }
 
 /**
- * @param code The code to parse and transform
- * @param cb Function taking a `replaceWith()` to select the node
- *           from which to generate the transformed code.
+ * Parse and transform AST from `code`, then return the transformed code.
+ *
+ * @param code Code to parse and transform
+ * @param cb Should return `TraverseOptions` that perform AST transformations.
+ * Takes a `selectNode()` argument you can use to select the node to return.
+ * By default, the whole AST is returned.
  */
 function transform(
   code: Code,
-  cb: (replaceWith: (node: t.Node) => void) => TraverseOptions
-): Transformed | undefined {
-  let result: t.Node | undefined;
+  cb: (selectNode: (node: t.Node) => void) => TraverseOptions
+): Transformed {
+  let result: t.File | t.Node | null = null;
+  let hasSelectedNode = false;
 
-  traverseAST(
+  const ast = traverseAST(
     code,
     cb(node => {
-      // Only set once to take the transformed node from the top-most ancestor.
-      // This works because nodes are visited from top to bottom.
-      // Further visited children should mutate the references.
-      if (!result) result = node;
+      result = node;
+      hasSelectedNode = true;
     })
   );
-  if (!result) return;
+  if (!result) result = ast;
 
-  return { code: generate(result).code, loc: result.loc };
+  return { code: generate(result).code, loc: result.loc, hasSelectedNode };
 }
 
-type Transformed = {
+interface Transformed {
   code: Code;
   loc: t.SourceLocation | null;
-};
+  hasSelectedNode: boolean;
+}
 
 function isUndefinedLiteral(
   node: object | null | undefined,

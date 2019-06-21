@@ -19,21 +19,12 @@ async function negateExpression(
   }
 
   const expressionSelection = Selection.fromAST(expression.loc);
-  await readThenWrite(expressionSelection, code => {
-    const negatedCode = negate(code);
-
-    if (!negatedCode) {
-      showErrorMessage(ErrorReason.DidNotFoundNegatableExpression);
-      return [];
+  await readThenWrite(expressionSelection, code => [
+    {
+      code: negate(code),
+      selection: expressionSelection
     }
-
-    return [
-      {
-        code: negatedCode,
-        selection: expressionSelection
-      }
-    ];
-  });
+  ]);
 }
 
 function findNegatableExpression(
@@ -107,38 +98,50 @@ function hasNegatableOperator(
   return NEGATABLE_OPERATORS.includes(operator);
 }
 
-function negate(code: Code): Code | undefined {
-  const result = ast.transform(code, replaceWith => ({
-    UnaryExpression(path) {
-      replaceWith(path.node.argument);
-    },
-
+function negate(code: Code): Code {
+  const result = ast.transform(code, () => ({
+    // Handle `||` and `&&` expressions
     LogicalExpression(path) {
       path.node.operator = getNegatedLogicalOperator(path.node.operator);
+      path.node.left = negateBranch(path.node.left);
+      path.node.right = negateBranch(path.node.right);
+      const negatedExpression = ast.unaryExpression("!", path.node, true);
 
-      if (ast.isIdentifier(path.node.left)) {
-        path.node.left = ast.unaryExpression("!", path.node.left, true);
-      } else if (ast.isUnaryExpression(path.node.left)) {
-        path.node.left = path.node.left.argument;
-      }
-
-      if (ast.isIdentifier(path.node.right)) {
-        path.node.right = ast.unaryExpression("!", path.node.right, true);
-      } else if (ast.isUnaryExpression(path.node.right)) {
-        path.node.right = path.node.right.argument;
-      }
-
-      replaceWith(ast.unaryExpression("!", path.node, true));
+      path.replaceWith(negatedExpression);
+      path.stop();
     },
 
+    // Handle operators like `>`, `<=`, etc.
     BinaryExpression(path) {
       path.node.operator = getNegatedBinaryOperator(path.node.operator);
-      replaceWith(ast.unaryExpression("!", path.node, true));
+      const negatedExpression = ast.unaryExpression("!", path.node, true);
+
+      path.replaceWith(negatedExpression);
+      path.stop();
     }
   }));
-  if (!result) return;
 
-  return result.code;
+  return (
+    result.code
+      // Generated code has a final `;` because it's a statement.
+      // E.g. `a || b` => `!(a && b);`
+      .replace(/;$/, "")
+      // We might end up with a double-negation, let's clean that.
+      // E.g. `!!(a || b)` => `a || b`
+      .replace(/^!!\((.*)\)$/, "$1")
+  );
+}
+
+function negateBranch(node: ast.Expression): ast.Expression {
+  if (ast.isUnaryExpression(node)) {
+    return node.argument;
+  }
+
+  if (ast.isBinaryExpression(node)) {
+    return { ...node, operator: getNegatedBinaryOperator(node.operator) };
+  }
+
+  return ast.unaryExpression("!", node, true);
 }
 
 function getNegatedLogicalOperator(
