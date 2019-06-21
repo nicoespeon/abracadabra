@@ -92,6 +92,13 @@ describe("Negate Expression", () => {
         selection: Selection.cursorAt(0, 6),
         expected: "!(a + b <= 0)"
       }
+    ],
+    [
+      "an equality with cursor on 'typeof' operator",
+      {
+        expression: "typeof location.lat === 'number'",
+        expected: "!(typeof location.lat !== 'number')"
+      }
     ]
   ])("should negate %s", async (_, { expression, selection, expected }) => {
     updatedExpression = expression;

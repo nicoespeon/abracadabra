@@ -69,7 +69,7 @@ function isNegatable(
   node: ast.Node
 ): node is ast.BinaryExpression | ast.LogicalExpression | ast.UnaryExpression {
   return (
-    ast.isUnaryExpression(node) ||
+    (ast.isUnaryExpression(node) && node.operator === "!") ||
     ((ast.isBinaryExpression(node) || ast.isLogicalExpression(node)) &&
       hasNegatableOperator(node.operator))
   );
