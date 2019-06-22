@@ -45,10 +45,13 @@ function removeRedundantElseFrom(
 
       const elseBranch = path.node.alternate;
       if (!elseBranch) return;
-      if (!ast.isBlockStatement(elseBranch)) return;
+
+      const elseBranchNodes = ast.isBlockStatement(elseBranch)
+        ? elseBranch.body
+        : [elseBranch];
 
       path.node.alternate = null;
-      path.replaceWithMultiple([path.node, ...elseBranch.body]);
+      path.replaceWithMultiple([path.node, ...elseBranchNodes]);
       path.stop();
 
       selectNode(path.parentPath.node);

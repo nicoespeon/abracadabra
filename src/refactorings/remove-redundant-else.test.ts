@@ -13,7 +13,7 @@ describe("Remove Redundant Else", () => {
 
   it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
     [
-      "redundant else",
+      "basic scenario",
       {
         code: `function doSomethingIfValid() {
   console.log("Start working");
@@ -44,7 +44,7 @@ describe("Remove Redundant Else", () => {
       }
     ],
     [
-      "only the selected redundant else",
+      "only the selected one",
       {
         code: `function doSomethingIfValid() {
   if (!isValid) {
@@ -82,7 +82,7 @@ describe("Remove Redundant Else", () => {
       }
     ],
     [
-      "redundant else when cursor is inside",
+      "when cursor is inside",
       {
         code: `function doSomethingIfValid() {
   if (!isValid) {
@@ -106,7 +106,7 @@ describe("Remove Redundant Else", () => {
       }
     ],
     [
-      "redundant else (throw in if branch)",
+      "with throw expression",
       {
         code: `function doSomethingIfValid() {
   if (!isValid) {
@@ -126,12 +126,41 @@ describe("Remove Redundant Else", () => {
   doAnotherThing();
 }`
       }
-    ]
-  ])("should remove %s", async (_, { code, selection, expected }) => {
-    const result = await doRemoveRedundantElse(code, selection);
+    ],
+    [
+      "with else if",
+      {
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    throw new Error("Oh no!");
+  } else if (isCorrect) {
+    doSomething();
+  } else {
+    doAnotherThing();
+  }
+}`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    throw new Error("Oh no!");
+  }
 
-    expect(result).toBe(expected);
-  });
+  if (isCorrect) {
+    doSomething();
+  } else {
+    doAnotherThing();
+  }
+}`
+      }
+    ]
+  ])(
+    "should remove redundant else (%s)",
+    async (_, { code, selection, expected }) => {
+      const result = await doRemoveRedundantElse(code, selection);
+
+      expect(result).toBe(expected);
+    }
+  );
 
   it("should show an error message if selection has no redundant else", async () => {
     const code = `if (!isValid) {
