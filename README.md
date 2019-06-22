@@ -32,6 +32,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Negate Expression](#negate-expression)
 1. [Remove Redundant Else](#remove-redundant-else)
 1. [Flip If/Else](#flip-ifelse)
+1. [Flip Ternary](#flip-ternary)
 
 ### Rename Symbol
 
@@ -97,6 +98,14 @@ Flip the `if` and `else` statements. It's a useful refactoring to have in your t
 
 ![][demo-flip-if-else]
 
+### Flip Ternary
+
+> 💡 Available as Quick Fix
+
+Flip a ternary statement. It's really similar to _Flip If/Else_ refactoring.
+
+![][demo-flip-ternary]
+
 ## Known Issues
 
 🌈 None at the moment.
@@ -135,3 +144,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-negate-expression-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression-partial.gif?raw=true
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-redundant-else.gif?raw=true
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-if-else.gif?raw=true
+[demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
