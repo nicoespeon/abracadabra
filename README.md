@@ -82,6 +82,14 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 
 ![][demo-remove-redundant-else]
 
+### Flip If/Else
+
+> 💡 Available as Quick Fix
+
+Flip the `if` and `else` statements. It's a useful refactoring to have in your toolbelt to simplify logical expressions.
+
+![][demo-flip-if-else]
+
 ## Known Issues
 
 🌈 None at the moment.
@@ -119,3 +127,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-negate-expression]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression.gif?raw=true
 [demo-negate-expression-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression-partial.gif?raw=true
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-redundant-else.gif?raw=true
+[demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-if-else.gif?raw=true
