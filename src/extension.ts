@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     commands.extractVariable,
     commands.inlineVariable,
     commands.negateExpression,
+    commands.removeRedundantElse,
     commands.flipIfElse
   );
 
