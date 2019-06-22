@@ -14,7 +14,10 @@ async function extractVariable(
   delegateToEditor: DelegateToEditor,
   showErrorMessage: ShowErrorMessage
 ) {
-  const { path, loc } = findExtractableCode(code, selection);
+  const { path, loc, shouldWrapInJSXExpressionContainer } = findExtractableCode(
+    code,
+    selection
+  );
 
   if (!path || !loc) {
     showErrorMessage(ErrorReason.DidNotFoundExtractableCode);
@@ -35,7 +38,9 @@ async function extractVariable(
     },
     // Replace extracted code with new variable.
     {
-      code: variableName,
+      code: shouldWrapInJSXExpressionContainer
+        ? `{${variableName}}`
+        : variableName,
       selection: extractedCodeSelection
     }
   ]);
@@ -50,7 +55,8 @@ function findExtractableCode(
 ): ExtractableCode {
   let result: ExtractableCode = {
     path: undefined,
-    loc: undefined
+    loc: undefined,
+    shouldWrapInJSXExpressionContainer: false
   };
 
   ast.traverseAST(code, {
@@ -61,6 +67,7 @@ function findExtractableCode(
       if (isClassPropertyIdentifier(path)) return;
       if (isVariableDeclarationIdentifier(path)) return;
       if (isFunctionCallIdentifier(path)) return;
+      if (isJSXPartialElement(path)) return;
       if (ast.isTemplateElement(path)) return;
       if (ast.isBlockStatement(path)) return;
       if (ast.isSpreadElement(path)) return;
@@ -77,6 +84,8 @@ function findExtractableCode(
         : ast.isJSXExpressionContainer(node)
         ? node.expression.loc || result.loc
         : node.loc;
+      result.shouldWrapInJSXExpressionContainer =
+        ast.isJSX(node) && ast.isJSX(path.parent);
     }
   });
 
@@ -127,6 +136,10 @@ function isFunctionCallIdentifier(path: ast.NodePath): boolean {
   return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
 }
 
+function isJSXPartialElement(path: ast.NodePath): boolean {
+  return ast.isJSXOpeningElement(path) || ast.isJSXClosingElement(path);
+}
+
 function isPartOfMemberExpression(path: ast.NodePath): boolean {
   return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
@@ -134,4 +147,5 @@ function isPartOfMemberExpression(path: ast.NodePath): boolean {
 type ExtractableCode = {
   path: ast.NodePath | undefined;
   loc: ast.SourceLocation | undefined;
+  shouldWrapInJSXExpressionContainer: boolean;
 };

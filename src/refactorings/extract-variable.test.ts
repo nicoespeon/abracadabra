@@ -526,6 +526,36 @@ console.log("How are you doing?");`,
         read: new Selection([2, 5], [2, 29]),
         update: Selection.cursorAt(1, 2)
       }
+    ],
+    [
+      "a JSX element (cursor on opening tag)",
+      {
+        code: `function render() {
+  return <div className="text-lg font-weight-bold">
+    {this.props.location.name}
+  </div>
+}`,
+        selection: Selection.cursorAt(1, 11)
+      },
+      {
+        read: new Selection([1, 9], [3, 8]),
+        update: Selection.cursorAt(1, 2)
+      }
+    ],
+    [
+      "a JSX element (cursor on closing tag)",
+      {
+        code: `function render() {
+  return <div className="text-lg font-weight-bold">
+    {this.props.location.name}
+  </div>
+}`,
+        selection: Selection.cursorAt(3, 3)
+      },
+      {
+        read: new Selection([1, 9], [3, 8]),
+        update: Selection.cursorAt(1, 2)
+      }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
@@ -538,6 +568,40 @@ console.log("How are you doing?");`,
     const expectedUpdateSelection =
       expectedSelection.update || Selection.cursorAt(0, 0);
     expect(updates[0].selection).toStrictEqual(expectedUpdateSelection);
+  });
+
+  it("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
+    const code = `function render() {
+  return <div className="text-lg font-weight-bold">
+    <p>{name}</p>
+  </div>
+}`;
+    const selection = Selection.cursorAt(2, 4);
+    readThenWrite = jest
+      .fn()
+      .mockImplementation(
+        (_, getUpdates) => (updates = getUpdates("<p>{name}</p>"))
+      );
+
+    await doExtractVariable(code, selection);
+
+    expect(updates[1].code).toBe("{extracted}");
+  });
+
+  it("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
+    const code = `function render() {
+  return <p>{name}</p>;
+}`;
+    const selection = Selection.cursorAt(1, 9);
+    readThenWrite = jest
+      .fn()
+      .mockImplementation(
+        (_, getUpdates) => (updates = getUpdates("<p>{name}</p>"))
+      );
+
+    await doExtractVariable(code, selection);
+
+    expect(updates[1].code).toBe("extracted");
   });
 
   // ✋ Patterns that can't be extracted
