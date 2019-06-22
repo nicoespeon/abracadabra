@@ -8,6 +8,7 @@ enum ErrorReason {
   DidNotFoundInlinableCodeIdentifiers,
   DidNotFoundNegatableExpression,
   DidNotFoundRedundantElse,
+  DidNotFoundIfElseToFlip,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables
 }

@@ -4,6 +4,7 @@ import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 export { findNegatableExpression, negateExpression };
+export { getNegatedBinaryOperator };
 
 async function negateExpression(
   code: Code,

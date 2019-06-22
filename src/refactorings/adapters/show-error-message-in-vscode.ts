@@ -26,6 +26,9 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFoundRedundantElse:
       return "I didn't found a redundant else to remove from current selection 🤔";
 
+    case ErrorReason.DidNotFoundIfElseToFlip:
+      return "I didn't found an if statement to flip from current selection 🤔";
+
     case ErrorReason.CantInlineExportedVariables:
       return "I'm sorry, I can't inline exported variables yet 😅";
 
