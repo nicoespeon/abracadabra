@@ -11,7 +11,7 @@ describe("Flip Ternary", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.only.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
     [
       "basic scenario",
       {
