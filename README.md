@@ -26,6 +26,13 @@ Some refactorings have default keybindings configured, but [you can change that]
 
 Refactorings that don't have default keybindings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You usually access them by clicking on the lightbulb that appear next to the code 💡 We recommend you to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
 
+1. [Rename Symbol](#rename-symbol)
+1. [Extract Variable](#extract-variable)
+1. [Inline Variable](#inline-variable)
+1. [Negate Expression](#negate-expression)
+1. [Remove Redundant Else](#remove-redundant-else)
+1. [Flip If/Else](#flip-ifelse)
+
 ### Rename Symbol
 
 | Keybinding (VS Code internal) |
