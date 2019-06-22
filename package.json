@@ -29,6 +29,7 @@
     "onCommand:abracadabra.inlineVariable",
     "onCommand:abracadabra.negateExpression",
     "onCommand:abracadabra.removeRedundantElse",
+    "onCommand:abracadabra.flipIfElse",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -59,6 +60,11 @@
       {
         "command": "abracadabra.removeRedundantElse",
         "title": "Remove Redundant Else",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.flipIfElse",
+        "title": "Flip If/Else",
         "category": "Abracadabra"
       }
     ],
@@ -156,6 +162,22 @@
         },
         {
           "command": "abracadabra.removeRedundantElse",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.flipIfElse",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.flipIfElse",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.flipIfElse",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.flipIfElse",
           "when": "editorLangId == typescriptreact"
         }
       ]

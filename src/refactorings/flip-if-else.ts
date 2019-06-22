@@ -4,7 +4,7 @@ import * as ast from "./ast";
 import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 import { getNegatedBinaryOperator } from "./negate-expression";
 
-export { flipIfElse };
+export { flipIfElse, hasIfElseToFlip };
 
 async function flipIfElse(
   code: Code,
@@ -25,6 +25,10 @@ async function flipIfElse(
       selection: Selection.fromAST(updatedCode.loc)
     }
   ]);
+}
+
+function hasIfElseToFlip(code: Code, selection: Selection): boolean {
+  return updateCode(code, selection).hasSelectedNode;
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {

@@ -15,14 +15,16 @@ export function activate(context: vscode.ExtensionContext) {
     commands.renameSymbol,
     commands.extractVariable,
     commands.inlineVariable,
-    commands.negateExpression
+    commands.negateExpression,
+    commands.flipIfElse
   );
 
   SUPPORTED_LANGUAGES.forEach(language => {
     const actionProviders = createActionProvidersFor(language);
     context.subscriptions.push(
       actionProviders.negateExpression,
-      actionProviders.removeRedundantElse
+      actionProviders.removeRedundantElse,
+      actionProviders.flipIfElse
     );
   });
 }

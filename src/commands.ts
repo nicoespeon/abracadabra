@@ -7,6 +7,7 @@ import { extractVariable } from "./refactorings/extract-variable";
 import { inlineVariable } from "./refactorings/inline-variable";
 import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
+import { flipIfElse } from "./refactorings/flip-if-else";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
@@ -36,6 +37,10 @@ export default {
   removeRedundantElse: vscode.commands.registerCommand(
     Refactoring.RemoveRedundantElse,
     removeRedundantElseCommand
+  ),
+  flipIfElse: vscode.commands.registerCommand(
+    Refactoring.FlipIfElse,
+    flipIfElseCommand
   )
 };
 
@@ -108,6 +113,24 @@ async function removeRedundantElseCommand() {
 
   await executeSafely(() =>
     removeRedundantElse(
+      document.getText(),
+      createSelectionFromVSCode(selection),
+      createWriteInVSCode(document),
+      showErrorMessageInVSCode
+    )
+  );
+}
+
+async function flipIfElseCommand() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const { document, selection } = activeTextEditor;
+
+  await executeSafely(() =>
+    flipIfElse(
       document.getText(),
       createSelectionFromVSCode(selection),
       createWriteInVSCode(document),
