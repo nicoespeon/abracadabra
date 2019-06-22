@@ -9,6 +9,7 @@ enum ErrorReason {
   DidNotFoundNegatableExpression,
   DidNotFoundRedundantElse,
   DidNotFoundIfElseToFlip,
+  DidNotFoundTernaryToFlip,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables
 }
