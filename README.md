@@ -24,7 +24,9 @@ All refactorings are available through the [Command Palette][command-palette].
 
 Some refactorings have default keybindings configured, but [you can change that][change-keybindings].
 
-Refactorings that don't have default keybindings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You usually access them by clicking on the lightbulb that appear next to the code 💡 We recommend you to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
+Refactorings that don't have default keybindings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You usually access them by clicking on the lightbulb that appear next to the code 💡
+
+**We recommend you** to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
 
 1. [Rename Symbol](#rename-symbol)
 1. [Extract Variable](#extract-variable)
