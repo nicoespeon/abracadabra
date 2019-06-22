@@ -74,6 +74,8 @@ function findExtractableCode(
       result.path = path;
       result.loc = ast.isObjectProperty(node)
         ? findObjectPropertyLoc(selection, node) || result.loc
+        : ast.isJSXExpressionContainer(node)
+        ? node.expression.loc || result.loc
         : node.loc;
     }
   });

@@ -517,13 +517,13 @@ console.log("How are you doing?");`,
       {
         code: `function render() {
   return <div className="text-lg font-weight-bold">
-    {props.location.name}
+    {this.props.location.name}
   </div>
 }`,
-        selection: Selection.cursorAt(2, 12)
+        selection: Selection.cursorAt(2, 27)
       },
       {
-        read: new Selection([2, 5], [2, 19]),
+        read: new Selection([2, 5], [2, 29]),
         update: Selection.cursorAt(1, 2)
       }
     ]
