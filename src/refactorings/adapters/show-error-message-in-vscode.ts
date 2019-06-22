@@ -32,6 +32,9 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFoundTernaryToFlip:
       return "I didn't found a ternary to flip from current selection 🤔";
 
+    case ErrorReason.DidNotFoundIfElseToConvert:
+      return "I didn't found a valid if statement to convert into ternary from current selection 🤔";
+
     case ErrorReason.CantInlineExportedVariables:
       return "I'm sorry, I can't inline exported variables yet 😅";
 

@@ -10,6 +10,7 @@ enum ErrorReason {
   DidNotFoundRedundantElse,
   DidNotFoundIfElseToFlip,
   DidNotFoundTernaryToFlip,
+  DidNotFoundIfElseToConvert,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables
 }
