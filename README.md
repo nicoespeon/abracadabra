@@ -35,6 +35,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Remove Redundant Else](#remove-redundant-else)
 1. [Flip If/Else](#flip-ifelse)
 1. [Flip Ternary](#flip-ternary)
+1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
 
 ### Rename Symbol
 
@@ -108,6 +109,14 @@ Flip a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 ![][demo-flip-ternary]
 
+### Convert If/Else to Ternary
+
+> 💡 Available as Quick Fix
+
+Convert an if/else statement into a (shorter) ternary expression. This is very handy to improve code readability.
+
+![][demo-convert-if-else-to-ternary]
+
 ## Known Issues
 
 🌈 None at the moment.
@@ -147,3 +156,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-redundant-else.gif?raw=true
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-if-else.gif?raw=true
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
+[demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true

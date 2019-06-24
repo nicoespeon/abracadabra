@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[New refactoring]** "Convert If/Else to Ternary"
 - **[New refactoring]** "Flip Ternary"
 - **[New refactoring]** "Flip If/Else"
 - **[New refactoring]** "Remove Redundant Else"
