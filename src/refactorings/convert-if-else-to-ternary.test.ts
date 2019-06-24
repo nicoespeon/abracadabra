@@ -27,6 +27,26 @@ describe("Convert If/Else to Ternary", () => {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
       }
+    ],
+    [
+      "with an assignment",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  let mode;
+  if (daysInAdvance > 10) {
+    mode = "early";
+  } else {
+    mode = "normal"
+  }
+  return \`reserve-\${mode}\`;
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `function reservationMode(daysInAdvance) {
+  let mode;
+  mode = daysInAdvance > 10 ? "early" : "normal";
+  return \`reserve-\${mode}\`;
+}`
+      }
     ]
   ])(
     "should convert if/else to ternary (%s)",
