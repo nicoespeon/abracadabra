@@ -87,6 +87,10 @@ function getAssignmentExpressionTernary(
   const elseAssignedArgument = getAssignedArgument(node.alternate);
   if (!elseAssignedArgument) return;
 
+  if (!haveSameLeftIdentifiers(ifAssignedArgument, elseAssignedArgument)) {
+    return;
+  }
+
   return ast.assignmentExpression(
     "=",
     ifAssignedArgument.left,
@@ -102,10 +106,22 @@ function getAssignedArgument(
   node: ast.Statement | null
 ): ast.AssignmentExpression | null {
   if (!ast.isBlockStatement(node)) return null;
+  if (node.body.length > 1) return null;
 
   const firstChild = node.body[0];
   if (!ast.isExpressionStatement(firstChild)) return null;
   if (!ast.isAssignmentExpression(firstChild.expression)) return null;
 
   return firstChild.expression;
+}
+
+function haveSameLeftIdentifiers(
+  expressionA: ast.AssignmentExpression,
+  expressionB: ast.AssignmentExpression
+): boolean {
+  return (
+    ast.isIdentifier(expressionA.left) &&
+    ast.isIdentifier(expressionB.left) &&
+    expressionA.left.name === expressionB.left.name
+  );
 }
