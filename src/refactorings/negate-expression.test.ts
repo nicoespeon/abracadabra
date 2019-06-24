@@ -174,6 +174,17 @@ describe("Negate Expression", () => {
     );
   });
 
+  it("should not negate a logical `||` used to fallback a variable declaration", async () => {
+    const code = `const foo = bar || "default";`;
+    const selection = Selection.cursorAt(0, 17);
+
+    await doNegateExpression(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundNegatableExpression
+    );
+  });
+
   async function doNegateExpression(code: Code, selection: Selection) {
     await negateExpression(code, selection, readThenWrite, showErrorMessage);
   }

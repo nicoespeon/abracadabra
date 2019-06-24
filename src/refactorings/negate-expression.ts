@@ -44,6 +44,9 @@ function findNegatableExpression(
       // If parent is unary expression we don't go further to double-negate it.
       if (ast.isUnaryExpression(parent)) return;
 
+      // E.g. `const foo = bar || "default"` => expression is not negatable
+      if (ast.isVariableDeclarator(parent)) return;
+
       result = {
         loc: node.loc,
         negatedOperator: ast.isLogicalExpression(node)
