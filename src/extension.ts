@@ -18,7 +18,8 @@ export function activate(context: vscode.ExtensionContext) {
     commands.negateExpression,
     commands.removeRedundantElse,
     commands.flipIfElse,
-    commands.flipTernary
+    commands.flipTernary,
+    commands.convertIfElseToTernary
   );
 
   SUPPORTED_LANGUAGES.forEach(language => {
@@ -27,7 +28,8 @@ export function activate(context: vscode.ExtensionContext) {
       actionProviders.negateExpression,
       actionProviders.removeRedundantElse,
       actionProviders.flipIfElse,
-      actionProviders.flipTernary
+      actionProviders.flipTernary,
+      actionProviders.convertIfElseToTernary
     );
   });
 }

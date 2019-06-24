@@ -31,6 +31,7 @@
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
+    "onCommand:abracadabra.convertIfElseToTernary",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -71,6 +72,11 @@
       {
         "command": "abracadabra.flipTernary",
         "title": "Flip Ternary",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertIfElseToTernary",
+        "title": "Convert If/Else to Ternary",
         "category": "Abracadabra"
       }
     ],
@@ -200,6 +206,22 @@
         },
         {
           "command": "abracadabra.flipTernary",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertIfElseToTernary",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertIfElseToTernary",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertIfElseToTernary",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertIfElseToTernary",
           "when": "editorLangId == typescriptreact"
         }
       ]

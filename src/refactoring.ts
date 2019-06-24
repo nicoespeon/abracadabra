@@ -8,5 +8,6 @@ enum Refactoring {
   NegateExpression = "abracadabra.negateExpression",
   RemoveRedundantElse = "abracadabra.removeRedundantElse",
   FlipIfElse = "abracadabra.flipIfElse",
-  FlipTernary = "abracadabra.flipTernary"
+  FlipTernary = "abracadabra.flipTernary",
+  ConvertIfElseToTernary = "abracadabra.convertIfElseToTernary"
 }

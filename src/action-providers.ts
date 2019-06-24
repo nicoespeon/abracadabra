@@ -6,6 +6,7 @@ import { findNegatableExpression } from "./refactorings/negate-expression";
 import { hasRedundantElse } from "./refactorings/remove-redundant-else";
 import { hasIfElseToFlip } from "./refactorings/flip-if-else";
 import { hasTernaryToFlip } from "./refactorings/flip-ternary";
+import { hasIfElseToConvert } from "./refactorings/convert-if-else-to-ternary";
 
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 
@@ -16,6 +17,7 @@ interface ActionProviders {
   removeRedundantElse: vscode.Disposable;
   flipIfElse: vscode.Disposable;
   flipTernary: vscode.Disposable;
+  convertIfElseToTernary: vscode.Disposable;
 }
 
 interface CodeActionProvider extends vscode.CodeActionProvider {
@@ -33,7 +35,10 @@ function createActionProvidersFor(
       new RemoveRedundantElseActionProvider()
     ),
     flipIfElse: createActionProvider(new FlipIfElseActionProvider()),
-    flipTernary: createActionProvider(new FlipTernaryActionProvider())
+    flipTernary: createActionProvider(new FlipTernaryActionProvider()),
+    convertIfElseToTernary: createActionProvider(
+      new ConvertIfElseToTernaryActionProvider()
+    )
   };
 
   function createActionProvider(
@@ -141,6 +146,32 @@ class FlipTernaryActionProvider implements CodeActionProvider {
     action.command = {
       command: Refactoring.FlipTernary,
       title: "Flip Ternary"
+    };
+
+    return [action];
+  }
+}
+
+class ConvertIfElseToTernaryActionProvider implements CodeActionProvider {
+  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
+
+  public provideCodeActions(
+    document: vscode.TextDocument,
+    range: vscode.Range | vscode.Selection
+  ): vscode.ProviderResult<vscode.CodeAction[]> {
+    const code = document.getText();
+    const selection = createSelectionFromVSCode(range);
+
+    if (!hasIfElseToConvert(code, selection)) return;
+
+    const action = new vscode.CodeAction(
+      "✨ Convert if/else to ternary",
+      this.kind
+    );
+    action.isPreferred = false;
+    action.command = {
+      command: Refactoring.ConvertIfElseToTernary,
+      title: "Convert If/Else to Ternary"
     };
 
     return [action];
