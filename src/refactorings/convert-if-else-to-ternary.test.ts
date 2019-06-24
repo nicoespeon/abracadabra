@@ -64,6 +64,26 @@ describe("Convert If/Else to Ternary", () => {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
       }
+    ],
+    [
+      "with an assignment of a different operator",
+      {
+        code: `function getTotalFees(daysInAdvance) {
+  let fees = 10;
+  if (daysInAdvance > 10) {
+    fees += 2;
+  } else {
+    fees += 6;
+  }
+  return fees;
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `function getTotalFees(daysInAdvance) {
+  let fees = 10;
+  fees += daysInAdvance > 10 ? 2 : 6;
+  return fees;
+}`
+      }
     ]
   ])(
     "should convert if/else to ternary (%s)",
@@ -75,6 +95,21 @@ describe("Convert If/Else to Ternary", () => {
   );
 
   it.each<[string, { code: Code; selection: Selection }]>([
+    [
+      "there is an `else if` branch",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  if (daysInAdvance > 10) {
+    return "early";
+  } else if (daysInAdvance > 5) {
+    return "normal";
+  } else {
+    return "late";
+  }
+}`,
+        selection: Selection.cursorAt(1, 6)
+      }
+    ],
     [
       "there are other expressions in if branch (return statement)",
       {
@@ -123,7 +158,7 @@ describe("Convert If/Else to Ternary", () => {
       }
     ],
     [
-      "assigned variables are different in the two branches",
+      "assigned variables identifiers are different",
       {
         code: `function reservationMode(daysInAdvance) {
   let mode, urgency;
@@ -133,6 +168,21 @@ describe("Convert If/Else to Ternary", () => {
     urgency = "high";
   }
   return \`reserve-\${mode}\`;
+}`,
+        selection: Selection.cursorAt(2, 6)
+      }
+    ],
+    [
+      "assigned variables operators are different",
+      {
+        code: `function getTotalFees(daysInAdvance) {
+  let fees = 10;
+  if (daysInAdvance > 10) {
+    fees -= 2;
+  } else {
+    fees += 6;
+  }
+  return fees;
 }`,
         selection: Selection.cursorAt(2, 6)
       }
