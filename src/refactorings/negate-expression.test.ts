@@ -99,6 +99,14 @@ describe("Negate Expression", () => {
         expression: "typeof location.lat === 'number'",
         expected: "!(typeof location.lat !== 'number')"
       }
+    ],
+    [
+      "a logical expression with cursor on negated member expression",
+      {
+        expression: "!this.currentContext && isBackward",
+        selection: Selection.cursorAt(0, 12),
+        expected: "!(this.currentContext || !isBackward)"
+      }
     ]
   ])("should negate %s", async (_, { expression, selection, expected }) => {
     updatedExpression = expression;

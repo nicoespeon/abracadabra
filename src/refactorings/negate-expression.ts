@@ -47,6 +47,11 @@ function findNegatableExpression(
       // E.g. `const foo = bar || "default"` => expression is not negatable
       if (ast.isVariableDeclarator(parent)) return;
 
+      // E.g. `if (!this.isValid && isCorrect)` => don't match `!this.isValid`
+      if (ast.isUnaryExpression(node) && ast.isLogicalExpression(parent)) {
+        return;
+      }
+
       result = {
         loc: node.loc,
         negatedOperator: ast.isLogicalExpression(node)
