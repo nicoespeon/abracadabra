@@ -1,6 +1,6 @@
 import { Position } from "./position";
-import * as ast from "./ast";
-import { Node, NodePath, ASTSelection } from "./ast";
+import * as ast from "../ast";
+import { Node, NodePath, ASTSelection } from "../ast";
 
 export { Selection };
 

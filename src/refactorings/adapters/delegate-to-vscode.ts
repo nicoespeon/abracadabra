@@ -1,6 +1,9 @@
 import * as vscode from "vscode";
 
-import { DelegateToEditor, EditorCommand } from "../i-delegate-to-editor";
+import {
+  DelegateToEditor,
+  EditorCommand
+} from "../editor/i-delegate-to-editor";
 
 let delegateToVSCode: DelegateToEditor;
 export { delegateToVSCode };

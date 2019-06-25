@@ -1,7 +1,7 @@
-import { ReadThenWrite, Update, Code } from "./i-write-code";
+import { ReadThenWrite, Update, Code } from "./editor/i-write-code";
+import { Selection } from "./editor/selection";
+import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { negateExpression, findNegatableExpression } from "./negate-expression";
-import { Selection } from "./selection";
-import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 describe("Negate Expression", () => {
   let showErrorMessage: ShowErrorMessage;

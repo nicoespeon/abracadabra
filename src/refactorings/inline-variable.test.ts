@@ -1,7 +1,7 @@
-import { ReadThenWrite, Update, Code } from "./i-write-code";
+import { ReadThenWrite, Update, Code } from "./editor/i-write-code";
+import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
+import { Selection } from "./editor/selection";
 import { inlineVariable } from "./inline-variable";
-import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
-import { Selection } from "./selection";
 
 describe("Inline Variable", () => {
   let showErrorMessage: ShowErrorMessage;

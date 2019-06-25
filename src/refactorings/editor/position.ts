@@ -1,4 +1,4 @@
-import { ASTPosition } from "./ast";
+import { ASTPosition } from "../ast";
 
 export { Position };
 

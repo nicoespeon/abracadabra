@@ -3,7 +3,7 @@ import traverse, { TraverseOptions } from "@babel/traverse";
 import generate from "@babel/generator";
 import * as t from "@babel/types";
 
-import { Code } from "./i-write-code";
+import { Code } from "./editor/i-write-code";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";

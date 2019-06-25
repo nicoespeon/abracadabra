@@ -1,8 +1,8 @@
-import { Code } from "./i-write-code";
-import { removeRedundantElse } from "./remove-redundant-else";
-import { Selection } from "./selection";
-import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
+import { Code } from "./editor/i-write-code";
+import { Selection } from "./editor/selection";
+import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
+import { removeRedundantElse } from "./remove-redundant-else";
 
 describe("Remove Redundant Else", () => {
   let showErrorMessage: ShowErrorMessage;

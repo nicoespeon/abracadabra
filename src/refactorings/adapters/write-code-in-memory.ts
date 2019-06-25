@@ -1,4 +1,4 @@
-import { Write, Code } from "../i-write-code";
+import { Write, Code } from "../editor/i-write-code";
 
 export { createWriteInMemory };
 

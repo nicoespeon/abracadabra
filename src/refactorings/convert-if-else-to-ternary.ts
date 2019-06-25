@@ -1,7 +1,7 @@
-import { Code, Write } from "./i-write-code";
-import { Selection } from "./selection";
+import { Code, Write } from "./editor/i-write-code";
+import { Selection } from "./editor/selection";
+import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import * as ast from "./ast";
-import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
 
 export { convertIfElseToTernary, hasIfElseToConvert };
 

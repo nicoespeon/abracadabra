@@ -1,8 +1,8 @@
-import { Code } from "./i-write-code";
-import { flipIfElse } from "./flip-if-else";
-import { Selection } from "./selection";
-import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
+import { Code } from "./editor/i-write-code";
+import { Selection } from "./editor/selection";
+import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
+import { flipIfElse } from "./flip-if-else";
 
 describe("Flip If/Else", () => {
   let showErrorMessage: ShowErrorMessage;

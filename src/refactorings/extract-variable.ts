@@ -1,9 +1,9 @@
-import { ReadThenWrite, Code } from "./i-write-code";
-import { DelegateToEditor } from "./i-delegate-to-editor";
-import { ShowErrorMessage, ErrorReason } from "./i-show-error-message";
-import { renameSymbol } from "./rename-symbol";
-import { Selection } from "./selection";
+import { ReadThenWrite, Code } from "./editor/i-write-code";
+import { DelegateToEditor } from "./editor/i-delegate-to-editor";
+import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
+import { Selection } from "./editor/selection";
 import * as ast from "./ast";
+import { renameSymbol } from "./rename-symbol";
 
 export { extractVariable };
 
