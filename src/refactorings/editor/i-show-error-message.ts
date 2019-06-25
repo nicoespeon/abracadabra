@@ -11,6 +11,7 @@ enum ErrorReason {
   DidNotFoundIfElseToFlip,
   DidNotFoundTernaryToFlip,
   DidNotFoundIfElseToConvert,
+  DidNotFoundTernaryToConvert,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables
 }
@@ -40,6 +41,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundIfElseToConvert:
       return didNotFound("a valid if statement to convert into ternary");
+
+    case ErrorReason.DidNotFoundTernaryToConvert:
+      return didNotFound("a ternary to convert into if statement");
 
     case ErrorReason.CantInlineExportedVariables:
       return "I'm sorry, I can't inline exported variables yet 😅";
