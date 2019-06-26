@@ -40,14 +40,9 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // Scenario `return isVIP ? "vip" : "normal"`
       if (ast.isReturnStatement(parent)) {
         parentPath.replaceWith(
-          createIfStatement(
-            node.test,
-            ast.returnStatement(node.consequent),
-            ast.returnStatement(node.alternate)
-          )
+          createReturnIfStatement(node.test, node.consequent, node.alternate)
         );
 
-        path.stop();
         selectNode(parentPath.parent);
         return;
       }
@@ -65,7 +60,6 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
           )
         );
 
-        path.stop();
         selectNode(parentPath.parentPath.parent);
         return;
       }
@@ -86,23 +80,98 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
           )
         ]);
 
-        path.stop();
         selectNode(parentPath.parentPath.node);
+        return;
+      }
+
+      // Scenario of nested ternaries
+      if (isConditionalExpressionPath(parentPath)) {
+        const replacedPath = replaceNestedConditionalExpression(
+          parentPath,
+          node
+        );
+
+        // We've created new nested ternaries => don't re-visit them!
+        replacedPath.stop();
+
+        selectNode(replacedPath.parent);
         return;
       }
     }
   }));
 }
 
+function isConditionalExpressionPath(
+  path: ast.NodePath
+): path is ast.NodePath<ast.ConditionalExpression> {
+  return ast.isConditionalExpression(path);
+}
+
+function replaceNestedConditionalExpression(
+  path: ast.NodePath<ast.ConditionalExpression>,
+  node: ast.ConditionalExpression,
+  createNestedExpression: CreateNestedExpression = id => id
+): ast.NodePath {
+  const { parentPath } = path;
+
+  const createNestedConditionalExpression: CreateNestedExpression =
+    node === path.node.alternate
+      ? expression =>
+          ast.conditionalExpression(
+            path.node.test,
+            path.node.consequent,
+            createNestedExpression(expression)
+          )
+      : expression =>
+          ast.conditionalExpression(
+            path.node.test,
+            createNestedExpression(expression),
+            path.node.alternate
+          );
+
+  // Recursively replace nested conditionals.
+  if (isConditionalExpressionPath(parentPath)) {
+    return replaceNestedConditionalExpression(
+      parentPath,
+      node,
+      createNestedConditionalExpression
+    );
+  }
+
+  parentPath.replaceWith(
+    createReturnIfStatement(
+      node.test,
+      createNestedConditionalExpression(node.consequent),
+      createNestedConditionalExpression(node.alternate)
+    )
+  );
+
+  return parentPath;
+}
+
+type CreateNestedExpression = (expression: ast.Expression) => ast.Expression;
+
+function createReturnIfStatement(
+  test: ast.Expression,
+  consequent: ast.Expression,
+  alternate: ast.Expression
+): ast.IfStatement {
+  return createIfStatement(
+    test,
+    ast.returnStatement(consequent),
+    ast.returnStatement(alternate)
+  );
+}
+
 function createIfStatement(
   test: ast.Expression,
-  leftStatement: ast.Statement,
-  rightStatement: ast.Statement
+  consequent: ast.Statement,
+  alternate: ast.Statement
 ): ast.IfStatement {
   return ast.ifStatement(
     test,
-    ast.blockStatement([leftStatement]),
-    ast.blockStatement([rightStatement])
+    ast.blockStatement([consequent]),
+    ast.blockStatement([alternate])
   );
 }
 

@@ -86,6 +86,54 @@ describe("Convert Ternary to If/Else", () => {
   }
 }`
       }
+    ],
+    [
+      "nested ternary, cursor on nested ternary",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  return daysInAdvance > 10 ? "early" : isVIP ? "vip" : "normal";
+}`,
+        selection: Selection.cursorAt(1, 44),
+        expected: `function reservationMode(daysInAdvance) {
+  if (isVIP) {
+    return daysInAdvance > 10 ? "early" : "vip";
+  } else {
+    return daysInAdvance > 10 ? "early" : "normal";
+  }
+}`
+      }
+    ],
+    [
+      "nested ternary on consequent branch, cursor on nested ternary",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" :"early";
+}`,
+        selection: Selection.cursorAt(1, 34),
+        expected: `function reservationMode(daysInAdvance) {
+  if (isVIP) {
+    return daysInAdvance <= 10 ? "vip" : "early";
+  } else {
+    return daysInAdvance <= 10 ? "normal" : "early";
+  }
+}`
+      }
+    ],
+    [
+      "deeply nested ternary, cursor on nested ternary",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  return daysInAdvance <= 10 ? isVIP ? "vip" : isNormal ? "normal" : "unknown" :"early";
+}`,
+        selection: Selection.cursorAt(1, 50),
+        expected: `function reservationMode(daysInAdvance) {
+  if (isNormal) {
+    return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "early";
+  } else {
+    return daysInAdvance <= 10 ? isVIP ? "vip" : "unknown" : "early";
+  }
+}`
+      }
     ]
   ])(
     "should convert ternary to if/else (%s)",
