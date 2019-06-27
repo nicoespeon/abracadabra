@@ -10,6 +10,7 @@ import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { flipIfElse } from "./refactorings/flip-if-else";
 import { flipTernary } from "./refactorings/flip-ternary";
 import { convertIfElseToTernary } from "./refactorings/convert-if-else-to-ternary";
+import { convertTernaryToIfElse } from "./refactorings/convert-ternary-to-if-else";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
@@ -51,6 +52,10 @@ export default {
   convertIfElseToTernary: vscode.commands.registerCommand(
     Refactoring.ConvertIfElseToTernary,
     convertIfElseToTernaryCommand
+  ),
+  convertTernaryToIfElse: vscode.commands.registerCommand(
+    Refactoring.ConvertTernaryToIfElse,
+    convertTernaryToIfElseCommand
   )
 };
 
@@ -177,6 +182,24 @@ async function convertIfElseToTernaryCommand() {
 
   await executeSafely(() =>
     convertIfElseToTernary(
+      document.getText(),
+      createSelectionFromVSCode(selection),
+      createWriteInVSCode(document),
+      showErrorMessageInVSCode
+    )
+  );
+}
+
+async function convertTernaryToIfElseCommand() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const { document, selection } = activeTextEditor;
+
+  await executeSafely(() =>
+    convertTernaryToIfElse(
       document.getText(),
       createSelectionFromVSCode(selection),
       createWriteInVSCode(document),

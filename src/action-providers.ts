@@ -7,6 +7,7 @@ import { hasRedundantElse } from "./refactorings/remove-redundant-else";
 import { hasIfElseToFlip } from "./refactorings/flip-if-else";
 import { hasTernaryToFlip } from "./refactorings/flip-ternary";
 import { hasIfElseToConvert } from "./refactorings/convert-if-else-to-ternary";
+import { hasTernaryToConvert } from "./refactorings/convert-ternary-to-if-else";
 
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 
@@ -18,6 +19,7 @@ interface ActionProviders {
   flipIfElse: vscode.Disposable;
   flipTernary: vscode.Disposable;
   convertIfElseToTernary: vscode.Disposable;
+  convertTernaryToIfElse: vscode.Disposable;
 }
 
 interface CodeActionProvider extends vscode.CodeActionProvider {
@@ -38,6 +40,9 @@ function createActionProvidersFor(
     flipTernary: createActionProvider(new FlipTernaryActionProvider()),
     convertIfElseToTernary: createActionProvider(
       new ConvertIfElseToTernaryActionProvider()
+    ),
+    convertTernaryToIfElse: createActionProvider(
+      new ConvertTernaryToIfElseActionProvider()
     )
   };
 
@@ -172,6 +177,32 @@ class ConvertIfElseToTernaryActionProvider implements CodeActionProvider {
     action.command = {
       command: Refactoring.ConvertIfElseToTernary,
       title: "Convert If/Else to Ternary"
+    };
+
+    return [action];
+  }
+}
+
+class ConvertTernaryToIfElseActionProvider implements CodeActionProvider {
+  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
+
+  public provideCodeActions(
+    document: vscode.TextDocument,
+    range: vscode.Range | vscode.Selection
+  ): vscode.ProviderResult<vscode.CodeAction[]> {
+    const code = document.getText();
+    const selection = createSelectionFromVSCode(range);
+
+    if (!hasTernaryToConvert(code, selection)) return;
+
+    const action = new vscode.CodeAction(
+      "✨ Convert ternary to if/else",
+      this.kind
+    );
+    action.isPreferred = false;
+    action.command = {
+      command: Refactoring.ConvertTernaryToIfElse,
+      title: "Convert Ternary to If/Else"
     };
 
     return [action];

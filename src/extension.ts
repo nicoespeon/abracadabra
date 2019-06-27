@@ -19,7 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
     commands.removeRedundantElse,
     commands.flipIfElse,
     commands.flipTernary,
-    commands.convertIfElseToTernary
+    commands.convertIfElseToTernary,
+    commands.convertTernaryToIfElse
   );
 
   SUPPORTED_LANGUAGES.forEach(language => {
@@ -29,7 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
       actionProviders.removeRedundantElse,
       actionProviders.flipIfElse,
       actionProviders.flipTernary,
-      actionProviders.convertIfElseToTernary
+      actionProviders.convertIfElseToTernary,
+      actionProviders.convertTernaryToIfElse
     );
   });
 }
