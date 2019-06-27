@@ -38,24 +38,21 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
       if (ast.isReturnStatement(parentPath.node)) {
-        parentPath.replaceWith(createReturnIfStatement(selection, node));
+        parentPath.replaceWith(
+          createIfStatement(selection, node, ast.returnStatement)
+        );
+
         selectNode(parentPath.parent);
       }
 
       if (ast.isAssignmentExpression(parentPath.node)) {
+        const { operator, left } = parentPath.node;
+
+        // AssignmentExpression is contained in an ExpressionStatement
+        // => replace parentPath's parent path
         parentPath.parentPath.replaceWith(
-          createIfStatement(
-            node.test,
-            createAssignment(
-              parentPath.node.operator,
-              parentPath.node.left,
-              node.consequent
-            ),
-            createAssignment(
-              parentPath.node.operator,
-              parentPath.node.left,
-              node.alternate
-            )
+          createIfStatement(selection, node, expression =>
+            createAssignment(operator, left, expression)
           )
         );
 
@@ -66,12 +63,14 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         ast.isVariableDeclarator(parentPath.node) &&
         ast.isVariableDeclaration(parentPath.parent)
       ) {
+        const id = parentPath.node.id;
+
+        // VariableDeclarator is contained in a VariableDeclaration
+        // => replace parentPath's parent path
         parentPath.parentPath.replaceWithMultiple([
-          createLetDeclaration(parentPath.node.id),
-          createIfStatement(
-            node.test,
-            createValueAssignment(parentPath.node.id, node.consequent),
-            createValueAssignment(parentPath.node.id, node.alternate)
+          createLetDeclaration(id),
+          createIfStatement(selection, node, expression =>
+            createAssignment("=", id, expression)
           )
         ]);
 
@@ -81,35 +80,35 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
   }));
 }
 
-function createReturnIfStatement(
+function createIfStatement(
   selection: Selection,
   node: ast.ConditionalExpression,
-  createNestedExpression: CreateNestedExpression = id => id
+  createNestedStatement: CreateNestedStatement
 ): ast.IfStatement {
   if (isSelectedConditionalExpression(node.consequent, selection)) {
-    return createReturnIfStatement(selection, node.consequent, expression =>
-      createNestedExpression(
+    return createIfStatement(selection, node.consequent, expression =>
+      createNestedStatement(
         ast.conditionalExpression(node.test, expression, node.alternate)
       )
     );
   }
 
   if (isSelectedConditionalExpression(node.alternate, selection)) {
-    return createReturnIfStatement(selection, node.alternate, expression =>
-      createNestedExpression(
+    return createIfStatement(selection, node.alternate, expression =>
+      createNestedStatement(
         ast.conditionalExpression(node.test, node.consequent, expression)
       )
     );
   }
 
-  return createIfStatement(
+  return ast.ifStatement(
     node.test,
-    ast.returnStatement(createNestedExpression(node.consequent)),
-    ast.returnStatement(createNestedExpression(node.alternate))
+    ast.blockStatement([createNestedStatement(node.consequent)]),
+    ast.blockStatement([createNestedStatement(node.alternate)])
   );
 }
 
-type CreateNestedExpression = (expression: ast.Expression) => ast.Expression;
+type CreateNestedStatement = (expression: ast.Expression) => ast.Statement;
 
 function isSelectedConditionalExpression(
   node: ast.Node,
@@ -122,27 +121,8 @@ function isSelectedConditionalExpression(
   );
 }
 
-function createIfStatement(
-  test: ast.Expression,
-  consequent: ast.Statement,
-  alternate: ast.Statement
-): ast.IfStatement {
-  return ast.ifStatement(
-    test,
-    ast.blockStatement([consequent]),
-    ast.blockStatement([alternate])
-  );
-}
-
 function createLetDeclaration(id: ast.LVal): ast.VariableDeclaration {
   return ast.variableDeclaration("let", [ast.variableDeclarator(id)]);
-}
-
-function createValueAssignment(
-  id: ast.LVal,
-  value: ast.Expression
-): ast.ExpressionStatement {
-  return createAssignment("=", id, value);
 }
 
 function createAssignment(

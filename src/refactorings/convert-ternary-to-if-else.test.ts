@@ -134,6 +134,27 @@ describe("Convert Ternary to If/Else", () => {
   }
 }`
       }
+    ],
+    [
+      "deeply nested ternary, variable declaration",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  const mode = daysInAdvance <= 10 ? isVIP ? "vip" : isNormal ? "normal" : "unknown" :"early";
+  return mode;
+}`,
+        selection: Selection.cursorAt(1, 56),
+        expected: `function reservationMode(daysInAdvance) {
+  let mode;
+
+  if (isNormal) {
+    mode = daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "early";
+  } else {
+    mode = daysInAdvance <= 10 ? isVIP ? "vip" : "unknown" : "early";
+  }
+
+  return mode;
+}`
+      }
     ]
   ])(
     "should convert ternary to if/else (%s)",
