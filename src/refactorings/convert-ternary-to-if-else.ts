@@ -43,6 +43,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         );
 
         selectNode(parentPath.parent);
+        parentPath.stop();
       }
 
       if (ast.isAssignmentExpression(parentPath.node)) {
@@ -57,6 +58,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         );
 
         selectNode(parentPath.parentPath.parent);
+        parentPath.parentPath.stop();
       }
 
       if (
@@ -75,6 +77,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         ]);
 
         selectNode(parentPath.parentPath.parent);
+        parentPath.parentPath.stop();
       }
     }
   }));
