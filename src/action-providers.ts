@@ -13,38 +13,19 @@ import { createSelectionFromVSCode } from "./refactorings/adapters/selection-fro
 
 export { createActionProvidersFor };
 
-interface ActionProviders {
-  negateExpression: vscode.Disposable;
-  removeRedundantElse: vscode.Disposable;
-  flipIfElse: vscode.Disposable;
-  flipTernary: vscode.Disposable;
-  convertIfElseToTernary: vscode.Disposable;
-  convertTernaryToIfElse: vscode.Disposable;
-}
-
 interface CodeActionProvider extends vscode.CodeActionProvider {
   readonly kind: vscode.CodeActionKind;
 }
 
-function createActionProvidersFor(
-  selector: vscode.DocumentSelector
-): ActionProviders {
-  return {
-    negateExpression: createActionProvider(
-      new NegateExpressionActionProvider()
-    ),
-    removeRedundantElse: createActionProvider(
-      new RemoveRedundantElseActionProvider()
-    ),
-    flipIfElse: createActionProvider(new FlipIfElseActionProvider()),
-    flipTernary: createActionProvider(new FlipTernaryActionProvider()),
-    convertIfElseToTernary: createActionProvider(
-      new ConvertIfElseToTernaryActionProvider()
-    ),
-    convertTernaryToIfElse: createActionProvider(
-      new ConvertTernaryToIfElseActionProvider()
-    )
-  };
+function createActionProvidersFor(selector: vscode.DocumentSelector) {
+  return [
+    createActionProvider(new NegateExpressionActionProvider()),
+    createActionProvider(new RemoveRedundantElseActionProvider()),
+    createActionProvider(new FlipIfElseActionProvider()),
+    createActionProvider(new FlipTernaryActionProvider()),
+    createActionProvider(new ConvertIfElseToTernaryActionProvider()),
+    createActionProvider(new ConvertTernaryToIfElseActionProvider())
+  ];
 
   function createActionProvider(
     actionProvider: CodeActionProvider

@@ -21,44 +21,44 @@ import {
 } from "./refactorings/adapters/write-code-in-vscode";
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 
-export default {
-  renameSymbol: vscode.commands.registerCommand(
+export default [
+  vscode.commands.registerCommand(
     RefactoringCommand.RenameSymbol,
     renameSymbolCommand
   ),
-  extractVariable: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.ExtractVariable,
     extractVariableCommand
   ),
-  inlineVariable: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.InlineVariable,
     inlineVariableCommand
   ),
-  negateExpression: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.NegateExpression,
     negateExpressionCommand
   ),
-  removeRedundantElse: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.RemoveRedundantElse,
     createCommand(removeRedundantElse)
   ),
-  flipIfElse: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.FlipIfElse,
     createCommand(flipIfElse)
   ),
-  flipTernary: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.FlipTernary,
     createCommand(flipTernary)
   ),
-  convertIfElseToTernary: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.ConvertIfElseToTernary,
     createCommand(convertIfElseToTernary)
   ),
-  convertTernaryToIfElse: vscode.commands.registerCommand(
+  vscode.commands.registerCommand(
     RefactoringCommand.ConvertTernaryToIfElse,
     createCommand(convertTernaryToIfElse)
   )
-};
+];
 
 function renameSymbolCommand() {
   executeSafely(() => renameSymbol(delegateToVSCode));

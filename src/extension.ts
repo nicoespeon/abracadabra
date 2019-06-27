@@ -11,27 +11,11 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 export function activate(context: vscode.ExtensionContext) {
-  context.subscriptions.push(
-    commands.renameSymbol,
-    commands.extractVariable,
-    commands.inlineVariable,
-    commands.negateExpression,
-    commands.removeRedundantElse,
-    commands.flipIfElse,
-    commands.flipTernary,
-    commands.convertIfElseToTernary,
-    commands.convertTernaryToIfElse
-  );
+  commands.forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
-    const actionProviders = createActionProvidersFor(language);
-    context.subscriptions.push(
-      actionProviders.negateExpression,
-      actionProviders.removeRedundantElse,
-      actionProviders.flipIfElse,
-      actionProviders.flipTernary,
-      actionProviders.convertIfElseToTernary,
-      actionProviders.convertTernaryToIfElse
+    createActionProvidersFor(language).forEach(actionProvider =>
+      context.subscriptions.push(actionProvider)
     );
   });
 }
