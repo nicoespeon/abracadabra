@@ -556,6 +556,14 @@ console.log("How are you doing?");`,
         read: new Selection([1, 9], [3, 8]),
         update: Selection.cursorAt(1, 2)
       }
+    ],
+    [
+      "an error instance",
+      {
+        code: `console.log(new Error("It failed"))`,
+        selection: Selection.cursorAt(0, 14)
+      },
+      { read: new Selection([0, 12], [0, 34]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
