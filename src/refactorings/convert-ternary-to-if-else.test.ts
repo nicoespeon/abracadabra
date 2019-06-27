@@ -88,6 +88,22 @@ describe("Convert Ternary to If/Else", () => {
       }
     ],
     [
+      "nested ternary on consequent branch, cursor on nested ternary",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "early";
+}`,
+        selection: Selection.cursorAt(1, 34),
+        expected: `function reservationMode(daysInAdvance) {
+  if (isVIP) {
+    return daysInAdvance <= 10 ? "vip" : "early";
+  } else {
+    return daysInAdvance <= 10 ? "normal" : "early";
+  }
+}`
+      }
+    ],
+    [
       "nested ternary on alternate branch, cursor on nested ternary",
       {
         code: `function reservationMode(daysInAdvance) {
@@ -104,17 +120,33 @@ describe("Convert Ternary to If/Else", () => {
       }
     ],
     [
-      "nested ternary on consequent branch, cursor on nested ternary",
+      "nested ternary on both branches, cursor on consequent nested ternary",
       {
         code: `function reservationMode(daysInAdvance) {
-  return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" :"early";
+  return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : isEarly ? "early" : "unknown";
 }`,
         selection: Selection.cursorAt(1, 34),
         expected: `function reservationMode(daysInAdvance) {
   if (isVIP) {
-    return daysInAdvance <= 10 ? "vip" : "early";
+    return daysInAdvance <= 10 ? "vip" : isEarly ? "early" : "unknown";
   } else {
-    return daysInAdvance <= 10 ? "normal" : "early";
+    return daysInAdvance <= 10 ? "normal" : isEarly ? "early" : "unknown";
+  }
+}`
+      }
+    ],
+    [
+      "nested ternary on both branches, cursor on alternate nested ternary",
+      {
+        code: `function reservationMode(daysInAdvance) {
+  return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : isEarly ? "early" : "unknown";
+}`,
+        selection: Selection.cursorAt(1, 60),
+        expected: `function reservationMode(daysInAdvance) {
+  if (isEarly) {
+    return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "early";
+  } else {
+    return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "unknown";
   }
 }`
       }
