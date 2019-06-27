@@ -88,7 +88,7 @@ describe("Convert Ternary to If/Else", () => {
       }
     ],
     [
-      "nested ternary, cursor on nested ternary",
+      "nested ternary on alternate branch, cursor on nested ternary",
       {
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : isVIP ? "vip" : "normal";

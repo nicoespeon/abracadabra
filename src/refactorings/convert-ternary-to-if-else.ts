@@ -33,133 +33,92 @@ function hasTernaryToConvert(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, selectNode => ({
     ConditionalExpression(path) {
-      const { node, parentPath, parent } = path;
+      const { parentPath, node } = path;
       if (!ast.isSelectableNode(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
-      // Scenario `return isVIP ? "vip" : "normal"`
-      if (ast.isReturnStatement(parent)) {
-        parentPath.replaceWith(
-          createReturnIfStatement(node.test, node.consequent, node.alternate)
-        );
-
+      if (ast.isReturnStatement(parentPath.node)) {
+        parentPath.replaceWith(createReturnIfStatement(selection, node));
         selectNode(parentPath.parent);
-        return;
       }
 
-      // Scenario `mode = isVIP ? "vip" : "normal"`
-      if (ast.isAssignmentExpression(parent)) {
-        const operator = parent.operator;
-        const id = parent.left;
-
+      if (ast.isAssignmentExpression(parentPath.node)) {
         parentPath.parentPath.replaceWith(
           createIfStatement(
             node.test,
-            createAssignment(operator, id, node.consequent),
-            createAssignment(operator, id, node.alternate)
+            createAssignment(
+              parentPath.node.operator,
+              parentPath.node.left,
+              node.consequent
+            ),
+            createAssignment(
+              parentPath.node.operator,
+              parentPath.node.left,
+              node.alternate
+            )
           )
         );
 
         selectNode(parentPath.parentPath.parent);
-        return;
       }
 
-      // Scenario `const mode = isVIP ? "vip" : "normal"`
       if (
-        ast.isVariableDeclarator(parent) &&
+        ast.isVariableDeclarator(parentPath.node) &&
         ast.isVariableDeclaration(parentPath.parent)
       ) {
-        const id = parent.id;
-
         parentPath.parentPath.replaceWithMultiple([
-          createLetDeclaration(id),
+          createLetDeclaration(parentPath.node.id),
           createIfStatement(
             node.test,
-            createValueAssignment(id, node.consequent),
-            createValueAssignment(id, node.alternate)
+            createValueAssignment(parentPath.node.id, node.consequent),
+            createValueAssignment(parentPath.node.id, node.alternate)
           )
         ]);
 
-        selectNode(parentPath.parentPath.node);
-        return;
-      }
-
-      // Scenario of nested ternaries
-      if (isConditionalExpressionPath(parentPath)) {
-        const replacedPath = replaceNestedConditionalExpression(
-          parentPath,
-          node
-        );
-
-        // We've created new nested ternaries => don't re-visit them!
-        replacedPath.stop();
-
-        selectNode(replacedPath.parent);
-        return;
+        selectNode(parentPath.parentPath.parent);
       }
     }
   }));
 }
 
-function isConditionalExpressionPath(
-  path: ast.NodePath
-): path is ast.NodePath<ast.ConditionalExpression> {
-  return ast.isConditionalExpression(path);
-}
-
-function replaceNestedConditionalExpression(
-  path: ast.NodePath<ast.ConditionalExpression>,
+function createReturnIfStatement(
+  selection: Selection,
   node: ast.ConditionalExpression,
   createNestedExpression: CreateNestedExpression = id => id
-): ast.NodePath {
-  const { parentPath } = path;
-
-  const createNestedConditionalExpression: CreateNestedExpression =
-    node === path.node.alternate
-      ? expression =>
-          ast.conditionalExpression(
-            path.node.test,
-            path.node.consequent,
-            createNestedExpression(expression)
-          )
-      : expression =>
-          ast.conditionalExpression(
-            path.node.test,
-            createNestedExpression(expression),
-            path.node.alternate
-          );
-
-  // Recursively replace nested conditionals.
-  if (isConditionalExpressionPath(parentPath)) {
-    return replaceNestedConditionalExpression(
-      parentPath,
-      node,
-      createNestedConditionalExpression
+): ast.IfStatement {
+  if (isSelectedConditionalExpression(node.consequent, selection)) {
+    return createReturnIfStatement(selection, node.consequent, expression =>
+      createNestedExpression(
+        ast.conditionalExpression(node.test, expression, node.alternate)
+      )
     );
   }
 
-  parentPath.replaceWith(
-    createReturnIfStatement(
-      node.test,
-      createNestedConditionalExpression(node.consequent),
-      createNestedConditionalExpression(node.alternate)
-    )
-  );
+  if (isSelectedConditionalExpression(node.alternate, selection)) {
+    return createReturnIfStatement(selection, node.alternate, expression =>
+      createNestedExpression(
+        ast.conditionalExpression(node.test, node.consequent, expression)
+      )
+    );
+  }
 
-  return parentPath;
+  return createIfStatement(
+    node.test,
+    ast.returnStatement(createNestedExpression(node.consequent)),
+    ast.returnStatement(createNestedExpression(node.alternate))
+  );
 }
 
 type CreateNestedExpression = (expression: ast.Expression) => ast.Expression;
 
-function createReturnIfStatement(
-  test: ast.Expression,
-  consequent: ast.Expression,
-  alternate: ast.Expression
-): ast.IfStatement {
-  return createIfStatement(
-    test,
-    ast.returnStatement(consequent),
-    ast.returnStatement(alternate)
+function isSelectedConditionalExpression(
+  node: ast.Node,
+  selection: Selection
+): node is ast.ConditionalExpression {
+  return (
+    ast.isConditionalExpression(node) &&
+    ast.isSelectableNode(node) &&
+    selection.isInside(Selection.fromAST(node.loc))
   );
 }
 
