@@ -11,6 +11,7 @@ import { flipIfElse } from "./refactorings/flip-if-else";
 import { flipTernary } from "./refactorings/flip-ternary";
 import { convertIfElseToTernary } from "./refactorings/convert-if-else-to-ternary";
 import { convertTernaryToIfElse } from "./refactorings/convert-ternary-to-if-else";
+import { Refactoring } from "./refactorings/refactoring";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
@@ -39,23 +40,23 @@ export default {
   ),
   removeRedundantElse: vscode.commands.registerCommand(
     RefactoringCommand.RemoveRedundantElse,
-    removeRedundantElseCommand
+    createCommand(removeRedundantElse)
   ),
   flipIfElse: vscode.commands.registerCommand(
     RefactoringCommand.FlipIfElse,
-    flipIfElseCommand
+    createCommand(flipIfElse)
   ),
   flipTernary: vscode.commands.registerCommand(
     RefactoringCommand.FlipTernary,
-    flipTernaryCommand
+    createCommand(flipTernary)
   ),
   convertIfElseToTernary: vscode.commands.registerCommand(
     RefactoringCommand.ConvertIfElseToTernary,
-    convertIfElseToTernaryCommand
+    createCommand(convertIfElseToTernary)
   ),
   convertTernaryToIfElse: vscode.commands.registerCommand(
     RefactoringCommand.ConvertTernaryToIfElse,
-    convertTernaryToIfElseCommand
+    createCommand(convertTernaryToIfElse)
   )
 };
 
@@ -118,94 +119,24 @@ async function negateExpressionCommand() {
   );
 }
 
-async function removeRedundantElseCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
+function createCommand(refactoring: Refactoring) {
+  return async () => {
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (!activeTextEditor) {
+      return;
+    }
 
-  const { document, selection } = activeTextEditor;
+    const { document, selection } = activeTextEditor;
 
-  await executeSafely(() =>
-    removeRedundantElse(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
-}
-
-async function flipIfElseCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    flipIfElse(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
-}
-
-async function flipTernaryCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    flipTernary(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
-}
-
-async function convertIfElseToTernaryCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    convertIfElseToTernary(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
-}
-
-async function convertTernaryToIfElseCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    convertTernaryToIfElse(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
+    await executeSafely(() =>
+      refactoring(
+        document.getText(),
+        createSelectionFromVSCode(selection),
+        createWriteInVSCode(document),
+        showErrorMessageInVSCode
+      )
+    );
+  };
 }
 
 async function executeSafely(command: () => Promise<any>): Promise<void> {
