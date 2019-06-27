@@ -36,6 +36,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Flip If/Else](#flip-ifelse)
 1. [Flip Ternary](#flip-ternary)
 1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
+1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
 
 ### Rename Symbol
 
@@ -117,6 +118,14 @@ Convert an if/else statement into a (shorter) ternary expression. This is very h
 
 ![][demo-convert-if-else-to-ternary]
 
+### Convert Ternary to If/Else
+
+> 💡 Available as Quick Fix
+
+Convert a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
+
+![][demo-convert-ternary-to-if-else]
+
 ## Known Issues
 
 🌈 None at the moment.
@@ -157,3 +166,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-if-else.gif?raw=true
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true
+[demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
