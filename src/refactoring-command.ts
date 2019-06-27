@@ -1,7 +1,7 @@
-export { Refactoring };
+export { RefactoringCommand };
 
 // String values must match `command` fields in `package.json`
-enum Refactoring {
+enum RefactoringCommand {
   RenameSymbol = "abracadabra.renameSymbol",
   ExtractVariable = "abracadabra.extractVariable",
   InlineVariable = "abracadabra.inlineVariable",

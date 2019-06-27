@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { Refactoring } from "./refactoring";
+import { RefactoringCommand } from "./refactoring-command";
 
 import { findNegatableExpression } from "./refactorings/negate-expression";
 import { hasRedundantElse } from "./refactorings/remove-redundant-else";
@@ -80,7 +80,7 @@ class NegateExpressionActionProvider implements CodeActionProvider {
     const action = new vscode.CodeAction(actionText, this.kind);
     action.isPreferred = false;
     action.command = {
-      command: Refactoring.NegateExpression,
+      command: RefactoringCommand.NegateExpression,
       title: "Negate Expression"
     };
 
@@ -103,7 +103,7 @@ class RemoveRedundantElseActionProvider implements CodeActionProvider {
     const action = new vscode.CodeAction("✨ Remove redundant else", this.kind);
     action.isPreferred = true;
     action.command = {
-      command: Refactoring.RemoveRedundantElse,
+      command: RefactoringCommand.RemoveRedundantElse,
       title: "Remove Redundant Else"
     };
 
@@ -126,7 +126,7 @@ class FlipIfElseActionProvider implements CodeActionProvider {
     const action = new vscode.CodeAction("✨ Flip if/else", this.kind);
     action.isPreferred = true;
     action.command = {
-      command: Refactoring.FlipIfElse,
+      command: RefactoringCommand.FlipIfElse,
       title: "Flip If/Else"
     };
 
@@ -149,7 +149,7 @@ class FlipTernaryActionProvider implements CodeActionProvider {
     const action = new vscode.CodeAction("✨ Flip ternary", this.kind);
     action.isPreferred = true;
     action.command = {
-      command: Refactoring.FlipTernary,
+      command: RefactoringCommand.FlipTernary,
       title: "Flip Ternary"
     };
 
@@ -175,7 +175,7 @@ class ConvertIfElseToTernaryActionProvider implements CodeActionProvider {
     );
     action.isPreferred = false;
     action.command = {
-      command: Refactoring.ConvertIfElseToTernary,
+      command: RefactoringCommand.ConvertIfElseToTernary,
       title: "Convert If/Else to Ternary"
     };
 
@@ -201,7 +201,7 @@ class ConvertTernaryToIfElseActionProvider implements CodeActionProvider {
     );
     action.isPreferred = false;
     action.command = {
-      command: Refactoring.ConvertTernaryToIfElse,
+      command: RefactoringCommand.ConvertTernaryToIfElse,
       title: "Convert Ternary to If/Else"
     };
 

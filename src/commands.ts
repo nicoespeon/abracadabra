@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { Refactoring } from "./refactoring";
+import { RefactoringCommand } from "./refactoring-command";
 
 import { renameSymbol } from "./refactorings/rename-symbol";
 import { extractVariable } from "./refactorings/extract-variable";
@@ -22,39 +22,39 @@ import { createSelectionFromVSCode } from "./refactorings/adapters/selection-fro
 
 export default {
   renameSymbol: vscode.commands.registerCommand(
-    Refactoring.RenameSymbol,
+    RefactoringCommand.RenameSymbol,
     renameSymbolCommand
   ),
   extractVariable: vscode.commands.registerCommand(
-    Refactoring.ExtractVariable,
+    RefactoringCommand.ExtractVariable,
     extractVariableCommand
   ),
   inlineVariable: vscode.commands.registerCommand(
-    Refactoring.InlineVariable,
+    RefactoringCommand.InlineVariable,
     inlineVariableCommand
   ),
   negateExpression: vscode.commands.registerCommand(
-    Refactoring.NegateExpression,
+    RefactoringCommand.NegateExpression,
     negateExpressionCommand
   ),
   removeRedundantElse: vscode.commands.registerCommand(
-    Refactoring.RemoveRedundantElse,
+    RefactoringCommand.RemoveRedundantElse,
     removeRedundantElseCommand
   ),
   flipIfElse: vscode.commands.registerCommand(
-    Refactoring.FlipIfElse,
+    RefactoringCommand.FlipIfElse,
     flipIfElseCommand
   ),
   flipTernary: vscode.commands.registerCommand(
-    Refactoring.FlipTernary,
+    RefactoringCommand.FlipTernary,
     flipTernaryCommand
   ),
   convertIfElseToTernary: vscode.commands.registerCommand(
-    Refactoring.ConvertIfElseToTernary,
+    RefactoringCommand.ConvertIfElseToTernary,
     convertIfElseToTernaryCommand
   ),
   convertTernaryToIfElse: vscode.commands.registerCommand(
-    Refactoring.ConvertTernaryToIfElse,
+    RefactoringCommand.ConvertTernaryToIfElse,
     convertTernaryToIfElseCommand
   )
 };
