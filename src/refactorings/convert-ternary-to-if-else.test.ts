@@ -51,6 +51,28 @@ describe("Convert Ternary to If/Else", () => {
       }
     ],
     [
+      "assignment expression with different operator",
+      {
+        code: `function getTotal(daysInAdvance) {
+  let total = 10;
+  total += daysInAdvance > 10 ? 2 : 5;
+  return total;
+}`,
+        selection: Selection.cursorAt(2, 16),
+        expected: `function getTotal(daysInAdvance) {
+  let total = 10;
+
+  if (daysInAdvance > 10) {
+    total += 2;
+  } else {
+    total += 5;
+  }
+
+  return total;
+}`
+      }
+    ],
+    [
       "variable declaration",
       {
         code: `function reservationMode(daysInAdvance) {
