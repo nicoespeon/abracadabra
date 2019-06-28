@@ -12,6 +12,10 @@ enum ErrorReason {
   DidNotFoundTernaryToFlip,
   DidNotFoundIfElseToConvert,
   DidNotFoundTernaryToConvert,
+  CantMoveStatementUp,
+  CantMoveMultiLinesStatementUp,
+  CantMoveStatementDown,
+  CantMoveMultiLinesStatementDown,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables
 }
@@ -44,6 +48,18 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundTernaryToConvert:
       return didNotFound("a ternary to convert into if statement");
+
+    case ErrorReason.CantMoveStatementUp:
+      return "I'm sorry, I can't move this statement up 😅";
+
+    case ErrorReason.CantMoveMultiLinesStatementUp:
+      return "I'm sorry, I can't move up a multi-lines selection yet 😅";
+
+    case ErrorReason.CantMoveStatementDown:
+      return "I'm sorry, I can't move this statement down 😅";
+
+    case ErrorReason.CantMoveMultiLinesStatementDown:
+      return "I'm sorry, I can't move down a multi-lines selection yet 😅";
 
     case ErrorReason.CantInlineExportedVariables:
       return "I'm sorry, I can't inline exported variables yet 😅";

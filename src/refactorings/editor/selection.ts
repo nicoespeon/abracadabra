@@ -39,6 +39,10 @@ class Selection {
     return this._end;
   }
 
+  get isMultiLines(): boolean {
+    return !this.start.isSameLineThan(this.end);
+  }
+
   putCursorAtScopeParentPosition(path: NodePath): Selection {
     const position = this.getScopeParentPosition(path);
     return Selection.fromPositions(position, position);
