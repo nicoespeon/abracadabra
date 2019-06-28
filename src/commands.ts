@@ -19,9 +19,9 @@ import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
 import {
   createReadThenWriteInVSCode,
-  createWriteInVSCode
+  createWriteInVSCode,
+  createSelectionFromVSCode
 } from "./refactorings/adapters/write-code-in-vscode";
-import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
 import { createPutCursorAtInVSCode } from "./refactorings/adapters/put-cursor-at-in-vscode";
 
 export default [

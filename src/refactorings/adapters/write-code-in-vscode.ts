@@ -5,7 +5,12 @@ import { ReadThenWrite, Write, Update } from "../editor/i-write-code";
 import { Position } from "../editor/position";
 import { Selection } from "../editor/selection";
 
-export { createWriteInVSCode, createReadThenWriteInVSCode, toVSCodePosition };
+export {
+  createWriteInVSCode,
+  createReadThenWriteInVSCode,
+  toVSCodePosition,
+  createSelectionFromVSCode
+};
 
 const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
@@ -48,4 +53,13 @@ function createReadThenWriteInVSCode(
 
 function toVSCodePosition(position: Position): vscode.Position {
   return new vscode.Position(position.line, position.character);
+}
+
+function createSelectionFromVSCode(
+  selection: vscode.Selection | vscode.Range
+): Selection {
+  return new Selection(
+    [selection.start.line, selection.start.character],
+    [selection.end.line, selection.end.character]
+  );
 }
