@@ -11,6 +11,8 @@ import { flipIfElse } from "./refactorings/flip-if-else";
 import { flipTernary } from "./refactorings/flip-ternary";
 import { convertIfElseToTernary } from "./refactorings/convert-if-else-to-ternary";
 import { convertTernaryToIfElse } from "./refactorings/convert-ternary-to-if-else";
+import { moveStatementUp } from "./refactorings/move-statement-up";
+import { moveStatementDown } from "./refactorings/move-statement-down";
 import { Refactoring } from "./refactorings/refactoring";
 
 import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
@@ -57,6 +59,14 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.ConvertTernaryToIfElse,
     createCommand(convertTernaryToIfElse)
+  ),
+  vscode.commands.registerCommand(
+    RefactoringCommand.MoveStatementUp,
+    createCommand(moveStatementUp)
+  ),
+  vscode.commands.registerCommand(
+    RefactoringCommand.MoveStatementDown,
+    createCommand(moveStatementDown)
   )
 ];
 

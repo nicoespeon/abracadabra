@@ -10,5 +10,7 @@ enum RefactoringCommand {
   FlipIfElse = "abracadabra.flipIfElse",
   FlipTernary = "abracadabra.flipTernary",
   ConvertIfElseToTernary = "abracadabra.convertIfElseToTernary",
-  ConvertTernaryToIfElse = "abracadabra.convertTernaryToIfElse"
+  ConvertTernaryToIfElse = "abracadabra.convertTernaryToIfElse",
+  MoveStatementUp = "abracadabra.moveStatementUp",
+  MoveStatementDown = "abracadabra.moveStatementDown"
 }
