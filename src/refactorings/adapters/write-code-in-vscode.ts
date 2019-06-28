@@ -5,7 +5,7 @@ import { ReadThenWrite, Write, Update } from "../editor/i-write-code";
 import { Position } from "../editor/position";
 import { Selection } from "../editor/selection";
 
-export { createWriteInVSCode, createReadThenWriteInVSCode };
+export { createWriteInVSCode, createReadThenWriteInVSCode, toVSCodePosition };
 
 const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 

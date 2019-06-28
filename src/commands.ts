@@ -22,6 +22,7 @@ import {
   createWriteInVSCode
 } from "./refactorings/adapters/write-code-in-vscode";
 import { createSelectionFromVSCode } from "./refactorings/adapters/selection-from-vscode";
+import { createPutCursorAtInVSCode } from "./refactorings/adapters/put-cursor-at-in-vscode";
 
 export default [
   vscode.commands.registerCommand(
@@ -62,7 +63,7 @@ export default [
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.MoveStatementUp,
-    createCommand(moveStatementUp)
+    moveStatementUpCommand
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.MoveStatementDown,
@@ -125,6 +126,25 @@ async function negateExpressionCommand() {
       createSelectionFromVSCode(selection),
       createReadThenWriteInVSCode(document),
       showErrorMessageInVSCode
+    )
+  );
+}
+
+async function moveStatementUpCommand() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const { document, selection } = activeTextEditor;
+
+  await executeSafely(() =>
+    moveStatementUp(
+      document.getText(),
+      createSelectionFromVSCode(selection),
+      createWriteInVSCode(document),
+      showErrorMessageInVSCode,
+      createPutCursorAtInVSCode(activeTextEditor)
     )
   );
 }

@@ -1,14 +1,18 @@
 import { Code } from "./editor/i-write-code";
 import { Selection } from "./editor/selection";
+import { Position } from "./editor/position";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
+import { PutCursorAt } from "./editor/i-put-cursor-at";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { moveStatementUp } from "./move-statement-up";
 
 describe("Move Statement Up", () => {
   let showErrorMessage: ShowErrorMessage;
+  let putCursorAt: PutCursorAt;
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
+    putCursorAt = jest.fn();
   });
 
   it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
@@ -103,6 +107,19 @@ if (isVIP) {
     }
   );
 
+  it("should set editor cursor at moved statement new position", async () => {
+    const code = `if (isValid) {
+  console.log("First");
+  console.log("Second");
+  console.log("Third");
+}`;
+    const selection = Selection.cursorAt(3, 2);
+
+    await doMoveStatementUp(code, selection);
+
+    expect(putCursorAt).toBeCalledWith(new Position(2, 2));
+  });
+
   it("should do nothing, nor show an error message if selected statement is at the top of the file", async () => {
     const code = `console.log(
   "nothing up this statement"
@@ -142,7 +159,13 @@ console.log("Third")`;
     selection: Selection
   ): Promise<Code> {
     const [write, getCode] = createWriteInMemory(code);
-    await moveStatementUp(code, selection, write, showErrorMessage);
+    await moveStatementUp(
+      code,
+      selection,
+      write,
+      showErrorMessage,
+      putCursorAt
+    );
     return getCode();
   }
 });
