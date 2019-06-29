@@ -1,5 +1,7 @@
 # 🧙‍ Abracadabra
 
+![](./docs/logo/abracadabra-logo.svg)
+
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
 > 👷 This project is under initial development phase and is not stable yet.
@@ -167,3 +169,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
+
+<!-- Logo -->
+
+[logo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/master/docs/logo/abracadabra-logo.svg?raw=true
