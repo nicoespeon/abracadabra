@@ -119,10 +119,10 @@ class Selection {
       !ast.isArrowFunctionExpression(node) &&
       !ast.isUnaryExpression(node) &&
       !ast.isCallExpression(parent) &&
-      !ast.isJSXElement(parentPath.node) &&
-      !ast.isReturnStatement(parentPath.node) &&
-      !ast.isConditionalExpression(parentPath.node) &&
-      !ast.isExportNamedDeclaration(parentPath.node)
+      !ast.isJSXElement(parent) &&
+      !ast.isReturnStatement(parent) &&
+      !ast.isConditionalExpression(parent) &&
+      !ast.isExportNamedDeclaration(parent)
     ) {
       return node;
     }
