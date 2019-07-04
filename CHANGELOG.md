@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[New refactoring]** "Move Statement Down"
+- **[New refactoring]** "Move Statement Up"
 - **[New refactoring]** "Convert Ternary to If/Else"
 - **[New refactoring]** "Convert If/Else to Ternary"
 - **[New refactoring]** "Flip Ternary"
