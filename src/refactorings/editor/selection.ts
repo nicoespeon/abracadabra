@@ -115,6 +115,7 @@ class Selection {
       !ast.isVariableDeclarator(node) &&
       !ast.isLogicalExpression(node) &&
       !ast.isBinaryExpression(node) &&
+      !ast.isConditionalExpression(node) &&
       !ast.isSwitchCase(node) &&
       !ast.isArrowFunctionExpression(node) &&
       !ast.isUnaryExpression(node) &&

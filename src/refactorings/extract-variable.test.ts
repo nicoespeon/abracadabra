@@ -576,6 +576,17 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 20)
       },
       { read: new Selection([1, 2], [1, 26]) }
+    ],
+    [
+      "a conditional expression (multi-lines)",
+      {
+        code: `const type = !!(
+  path.node.loc.length > 0
+) ? "with-loc"
+  : "without-loc";`,
+        selection: Selection.cursorAt(1, 17)
+      },
+      { read: new Selection([1, 2], [1, 22]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
