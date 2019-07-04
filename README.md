@@ -39,6 +39,8 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Flip Ternary](#flip-ternary)
 1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
 1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
+1. [Move Statement Up](#move-statement-up)
+1. [Move Statement Down](#move-statement-down)
 
 ### Rename Symbol
 
@@ -128,6 +130,30 @@ Convert a ternary expression into an if/else statement. It reverses _Convert If/
 
 ![][demo-convert-ternary-to-if-else]
 
+### Move Statement Up
+
+| Keybinding          | On Mac  |
+| :------------------ | :------ |
+| `Ctrl + Shift + Up` | `⌘ ⇧ ↑` |
+
+> A `Statement` is typically a variable or a function declaration.
+
+Move the whole selected statement up. If the selected statement and the one above are one-liners, this is the same as doing VS Code _Move Line Up_. But if one of these statements is multi-lines, this refactoring is very handy!
+
+As for all refactorings, it works even if you partially select the statement, or if the cursor is on the statement.
+
+![][demo-move-statement-up]
+
+### Move Statement Down
+
+| Keybinding            | On Mac  |
+| :-------------------- | :------ |
+| `Ctrl + Shift + Down` | `⌘ ⇧ ↓` |
+
+Same as _Move Statement Up_, but it moves the selected statement down. Like, the other direction. That's it.
+
+![][demo-move-statement-down]
+
 ## Known Issues
 
 ### Code was formatted when I did a refactoring!?
@@ -184,6 +210,8 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
+[demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-up.gif?raw=true
+[demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
 
 <!-- Logo -->
 
