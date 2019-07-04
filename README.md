@@ -215,4 +215,4 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 
 <!-- Logo -->
 
-[logo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/master/docs/logo/abracadabra-logo.svg?raw=true
+[logo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/master/docs/logo/abracadabra-logo.png?raw=true
