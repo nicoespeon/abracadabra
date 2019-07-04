@@ -97,6 +97,26 @@ if (isVIP) {
   console.log("I shouldn't move");
 }`
       }
+    ],
+    [
+      "statement inside a container, cursor at start of line",
+      {
+        code: `if (isValid) {
+  console.log("I'm up");
+  console.log("I'm down");
+}
+if (isVIP) {
+  console.log("I shouldn't move");
+}`,
+        selection: Selection.cursorAt(2, 0),
+        expected: `if (isValid) {
+  console.log("I'm down");
+  console.log("I'm up");
+}
+if (isVIP) {
+  console.log("I shouldn't move");
+}`
+      }
     ]
   ])(
     "should move statement up (%s)",

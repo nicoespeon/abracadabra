@@ -55,7 +55,11 @@ function updateCode(
     Statement(path) {
       const { node } = path;
       if (!ast.isSelectableNode(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+
+      const extendedSelection = Selection.fromAST(
+        node.loc
+      ).extendToStartOfLine();
+      if (!selection.isInside(extendedSelection)) return;
 
       if (typeof path.key !== "number") return;
 
