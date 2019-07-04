@@ -68,7 +68,9 @@ function updateCode(
       const pathAbove = path.getSibling(pathAboveKey);
       if (!ast.isSelectableNode(pathAbove.node)) return;
 
-      newStatementPosition = Position.fromAST(pathAbove.node.loc.start);
+      newStatementPosition = Position.fromAST(
+        pathAbove.node.loc.start
+      ).putAtSameCharacter(selection.start);
       path.insertAfter({ ...pathAbove.node });
       pathAbove.remove();
 

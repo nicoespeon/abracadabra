@@ -113,11 +113,11 @@ if (isVIP) {
   console.log("Second");
   console.log("Third");
 }`;
-    const selection = Selection.cursorAt(3, 2);
+    const selection = Selection.cursorAt(3, 5);
 
     await doMoveStatementUp(code, selection);
 
-    expect(putCursorAt).toBeCalledWith(new Position(2, 2));
+    expect(putCursorAt).toBeCalledWith(new Position(2, 5));
   });
 
   it("should do nothing, nor show an error message if selected statement is at the top of the file", async () => {

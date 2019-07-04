@@ -52,4 +52,8 @@ class Position {
   putAtNextLine(): Position {
     return new Position(this.line + 1, this.character);
   }
+
+  putAtSameCharacter(position: Position): Position {
+    return new Position(this.line, position.character);
+  }
 }
