@@ -111,6 +111,12 @@ function findInlinableCode(
 
   ast.traverseAST(code, {
     enter({ node, parent }) {
+      // It seems variable declaration inside a named export may have no loc.
+      // Use the named export loc in that situation.
+      if (ast.isExportNamedDeclaration(parent) && !ast.isSelectableNode(node)) {
+        node.loc = parent.loc;
+      }
+
       if (!ast.isSelectableNode(node)) return;
       if (!ast.isVariableDeclaration(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;

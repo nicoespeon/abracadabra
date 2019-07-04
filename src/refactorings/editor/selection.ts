@@ -98,9 +98,14 @@ class Selection {
     const { parentPath, parent, node } = path;
     if (!parentPath) return node;
 
-    const {
-      node: { loc }
-    } = parentPath;
+    let { loc } = parent;
+
+    // It seems variable declaration inside a named export may have no loc.
+    // Use the named export loc in that situation.
+    if (ast.isExportNamedDeclaration(parentPath.parent) && !loc) {
+      loc = parentPath.parent.loc;
+    }
+
     if (!loc) return node;
 
     const astStart = Position.fromAST(loc.start);

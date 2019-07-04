@@ -136,8 +136,8 @@ function negate(code: Code): Code {
       // E.g. `a || b` => `!(a && b);`
       .replace(/;$/, "")
       // We might end up with a double-negation, let's clean that.
-      // E.g. `!!(a || b)` => `a || b`
-      .replace(/^!!\((.*)\)$/, "$1")
+      // E.g. `!(!(a || b))` => `a || b`
+      .replace(/^!\(!\((.*)\)\)$/, "$1")
   );
 }
 

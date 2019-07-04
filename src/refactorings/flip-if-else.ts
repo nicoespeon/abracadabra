@@ -21,7 +21,11 @@ async function flipIfElse(
 
   await write([
     {
-      code: updatedCode.code,
+      code: updatedCode.code
+        // Recast doesn't format empty block statement as expected
+        // Until it's fixed, parse this pattern manually
+        // https://github.com/benjamn/recast/issues/612
+        .replace(/\)\n\s*{} else {/, ") {} else {"),
       selection: Selection.fromAST(updatedCode.loc)
     }
   ]);

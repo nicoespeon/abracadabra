@@ -1,7 +1,7 @@
 import { parse } from "@babel/parser";
 import traverse, { TraverseOptions } from "@babel/traverse";
-import generate from "@babel/generator";
 import * as t from "@babel/types";
+import * as recast from "recast";
 
 import { Code } from "./editor/i-write-code";
 
@@ -32,17 +32,44 @@ interface ASTPosition {
 }
 
 function traverseAST(code: Code, opts: TraverseOptions): t.File {
-  const ast = parse(code, {
-    // Parse in strict mode and allow module declarations
-    sourceType: "module",
+  const ast: t.File = recast.parse(code, {
+    parser: {
+      parse: (source: Code) =>
+        parse(source, {
+          sourceType: "module",
+          allowImportExportEverywhere: true,
+          allowReturnOutsideFunction: true,
+          startLine: 1,
 
-    plugins: [
-      "classProperties",
-      "classPrivateProperties",
-      "classPrivateMethods",
-      "jsx",
-      "typescript"
-    ]
+          // Tokens are necessary for Recast to do its magic ✨
+          tokens: true,
+
+          plugins: [
+            "asyncGenerators",
+            "bigInt",
+            "classPrivateMethods",
+            "classPrivateProperties",
+            "classProperties",
+            "decorators-legacy",
+            "doExpressions",
+            "dynamicImport",
+            "exportDefaultFrom",
+            "exportNamespaceFrom",
+            "functionBind",
+            "functionSent",
+            "importMeta",
+            "nullishCoalescingOperator",
+            "numericSeparator",
+            "objectRestSpread",
+            "optionalCatchBinding",
+            "optionalChaining",
+            ["pipelineOperator", { proposal: "minimal" }],
+            "throwExpressions",
+            "jsx",
+            "typescript"
+          ]
+        })
+    }
   });
 
   traverse(ast, opts);
@@ -74,7 +101,7 @@ function transform(
   );
   if (!result) result = ast;
 
-  return { code: generate(result).code, loc: result.loc, hasSelectedNode };
+  return { code: recast.print(result).code, loc: result.loc, hasSelectedNode };
 }
 
 interface Transformed {

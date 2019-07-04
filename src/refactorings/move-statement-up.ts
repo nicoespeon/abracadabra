@@ -75,8 +75,12 @@ function updateCode(
       newStatementPosition = Position.fromAST(
         pathAbove.node.loc.start
       ).putAtSameCharacter(selection.start);
-      path.insertAfter({ ...pathAbove.node });
-      pathAbove.remove();
+
+      // Preserve the `loc` of the above path & reset the one of the moved node.
+      const newNodeAbove = { ...path.node, loc: pathAbove.node.loc };
+      const newNode = { ...pathAbove.node, loc: null };
+      pathAbove.replaceWith(newNodeAbove);
+      path.replaceWith(newNode);
 
       selectNode(path.parent);
     }

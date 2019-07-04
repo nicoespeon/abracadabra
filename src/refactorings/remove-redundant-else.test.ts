@@ -39,6 +39,7 @@ describe("Remove Redundant Else", () => {
 
   doSomething();
   doAnotherThing();
+
   doSomeFinalThing();
 }`
       }
@@ -99,7 +100,6 @@ describe("Remove Redundant Else", () => {
     showWarning();
     return;
   }
-
   doSomething();
   doAnotherThing();
 }`
@@ -121,7 +121,6 @@ describe("Remove Redundant Else", () => {
   if (!isValid) {
     throw new Error("Oh no!");
   }
-
   doSomething();
   doAnotherThing();
 }`
@@ -144,7 +143,6 @@ describe("Remove Redundant Else", () => {
   if (!isValid) {
     throw new Error("Oh no!");
   }
-
   if (isCorrect) {
     doSomething();
   } else {
