@@ -1,6 +1,6 @@
 # 🧙‍ Abracadabra
 
-![](./docs/logo/abracadabra-logo.svg)
+![][logo-abracadabra]
 
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
