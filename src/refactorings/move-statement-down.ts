@@ -1,6 +1,8 @@
 import { Code, Write } from "./editor/i-write-code";
 import { Selection } from "./editor/selection";
+import { Position } from "./editor/position";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
+import { PutCursorAt } from "./editor/i-put-cursor-at";
 import * as ast from "./ast";
 
 export { moveStatementDown };
@@ -9,7 +11,8 @@ async function moveStatementDown(
   code: Code,
   selection: Selection,
   write: Write,
-  showErrorMessage: ShowErrorMessage
+  showErrorMessage: ShowErrorMessage,
+  putCursorAt: PutCursorAt
 ) {
   if (selection.isMultiLines) {
     // This should be implemented.
@@ -34,13 +37,19 @@ async function moveStatementDown(
       selection: Selection.fromAST(updatedCode.loc)
     }
   ]);
+
+  await putCursorAt(updatedCode.newStatementPosition);
 }
 
 function updateCode(
   code: Code,
   selection: Selection
-): ast.Transformed & { isLastStatement: boolean } {
+): ast.Transformed & {
+  isLastStatement: boolean;
+  newStatementPosition: Position;
+} {
   let isLastStatement = false;
+  let newStatementPosition = selection.start;
 
   const result = ast.transform(code, selectNode => ({
     Statement(path) {
@@ -59,6 +68,9 @@ function updateCode(
       }
 
       const pathBelow = path.getSibling(pathBelowKey);
+      if (!ast.isSelectableNode(pathBelow.node)) return;
+
+      newStatementPosition = Position.fromAST(pathBelow.node.loc.start);
       path.insertBefore({ ...pathBelow.node });
       pathBelow.remove();
 
@@ -66,5 +78,5 @@ function updateCode(
     }
   }));
 
-  return { ...result, isLastStatement };
+  return { ...result, isLastStatement, newStatementPosition };
 }

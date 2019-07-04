@@ -67,7 +67,7 @@ export default [
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.MoveStatementDown,
-    createCommand(moveStatementDown)
+    moveStatementDownCommand
   )
 ];
 
@@ -140,6 +140,25 @@ async function moveStatementUpCommand() {
 
   await executeSafely(() =>
     moveStatementUp(
+      document.getText(),
+      createSelectionFromVSCode(selection),
+      createWriteInVSCode(document),
+      showErrorMessageInVSCode,
+      createPutCursorAtInVSCode(activeTextEditor)
+    )
+  );
+}
+
+async function moveStatementDownCommand() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const { document, selection } = activeTextEditor;
+
+  await executeSafely(() =>
+    moveStatementDown(
       document.getText(),
       createSelectionFromVSCode(selection),
       createWriteInVSCode(document),
