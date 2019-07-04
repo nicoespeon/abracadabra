@@ -564,6 +564,18 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(0, 14)
       },
       { read: new Selection([0, 12], [0, 34]) }
+    ],
+    [
+      "a call expression parameter (multi-lines)",
+      {
+        code: `createIfStatement(
+  parentPath.node.operator,
+  parentPath.node.left,
+  node.consequent
+)`,
+        selection: Selection.cursorAt(1, 20)
+      },
+      { read: new Selection([1, 2], [1, 26]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);

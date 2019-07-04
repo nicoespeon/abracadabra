@@ -95,7 +95,7 @@ class Selection {
    * We consider the last parent to be the scope parent of the selection.
    */
   private findScopeParent(path: NodePath): Node {
-    const { parentPath, node } = path;
+    const { parentPath, parent, node } = path;
     if (!parentPath) return node;
 
     const {
@@ -117,8 +117,8 @@ class Selection {
       !ast.isBinaryExpression(node) &&
       !ast.isSwitchCase(node) &&
       !ast.isArrowFunctionExpression(node) &&
-      !ast.isCallExpression(node) &&
       !ast.isUnaryExpression(node) &&
+      !ast.isCallExpression(parent) &&
       !ast.isJSXElement(parentPath.node) &&
       !ast.isReturnStatement(parentPath.node) &&
       !ast.isConditionalExpression(parentPath.node) &&
