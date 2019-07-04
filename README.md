@@ -130,7 +130,21 @@ Convert a ternary expression into an if/else statement. It reverses _Convert If/
 
 ## Known Issues
 
-🌈 None at the moment.
+### Code was formatted when I did a refactoring!?
+
+Some refactorings reformat the code around the one that is modified.
+
+This is because we use babel to parse code into AST, then we modify the AST and we regenerate the code from it. The regenerated code is formatted by babel, and the current way we update the source code applies the new formatting to more code than we'd like.
+
+We've some leads in mind to fix that. It's obviously not a behaviour we want to keep for v1.
+
+### The result of "XXX" refactoring is broken!!
+
+Because there are many possible patterns in the wild, it's very likely we have missed some. _Extract Variable_ is a typical refactoring that may not work as expected in a specific situation.
+
+When that happens, please [open a new issue][open-issue]. That way we can add test this pattern and fix it for good 🤓
+
+We hope to progressively cover more and more use-cases. We won't consider the extension ready for v1 until we're confident about the robustness of the proposed refactorings!
 
 ## Release Notes
 
@@ -154,6 +168,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
 [replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
+[open-issue]: https://github.com/nicoespeon/abracadabra/issues/new
 
 <!-- Demo images -->
 
