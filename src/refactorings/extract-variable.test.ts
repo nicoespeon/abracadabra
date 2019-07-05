@@ -191,7 +191,7 @@ describe("Extract Variable", () => {
       { read: new Selection([0, 12], [2, 1]) }
     ],
     [
-      "an anonymous function",
+      "an arrow function",
       {
         code: `console.log(() => "Hello!")`,
         selection: Selection.cursorAt(0, 12)
@@ -469,7 +469,7 @@ console.log("How are you doing?");`,
       { read: new Selection([1, 7], [1, 12]) }
     ],
     [
-      "an object returned from anonymous function",
+      "an object returned from arrow function",
       {
         code: `const something = () => ({
   foo: "bar"
@@ -477,6 +477,16 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 9)
       },
       { read: new Selection([1, 7], [1, 12]) }
+    ],
+    [
+      "a value inside an arrow function",
+      {
+        code: `() => (
+  console.log("Hello")
+)`,
+        selection: Selection.cursorAt(1, 16)
+      },
+      { read: new Selection([1, 14], [1, 21]) }
     ],
     [
       "an object from a nested call expression",
