@@ -121,6 +121,9 @@ class Selection {
       !ast.isUnaryExpression(node) &&
       !ast.isCallExpression(parent) &&
       !ast.isJSXElement(parent) &&
+      !ast.isJSXExpressionContainer(parent) &&
+      !ast.isJSXAttribute(parent) &&
+      !ast.isJSXOpeningElement(parent) &&
       !ast.isReturnStatement(parent) &&
       !ast.isConditionalExpression(parent) &&
       !ast.isExportNamedDeclaration(parent)

@@ -587,6 +587,18 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 17)
       },
       { read: new Selection([1, 2], [1, 22]) }
+    ],
+    [
+      "a value in a JSXExpressionContainer",
+      {
+        code: `<Component
+  text={getTextForPerson({
+    name: "Pedro"
+  })}
+/>`,
+        selection: Selection.cursorAt(2, 12)
+      },
+      { read: new Selection([2, 10], [2, 17]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
