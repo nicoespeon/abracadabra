@@ -14,17 +14,12 @@ async function flipTernary(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged) {
     showErrorMessage(ErrorReason.DidNotFoundTernaryToFlip);
     return;
   }
 
-  await write([
-    {
-      code: updatedCode.code,
-      selection: Selection.fromAST(updatedCode.loc)
-    }
-  ]);
+  await write(updatedCode.code);
 }
 
 function hasTernaryToFlip(code: Code, selection: Selection): boolean {

@@ -3,7 +3,7 @@ import { Selection } from "./selection";
 export { Write, ReadThenWrite };
 export { Update, Code };
 
-type Write = (updates: Update[]) => Promise<void>;
+type Write = (code: Code) => Promise<void>;
 
 type ReadThenWrite = (
   selection: Selection,

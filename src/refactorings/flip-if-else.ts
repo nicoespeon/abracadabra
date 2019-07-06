@@ -14,21 +14,18 @@ async function flipIfElse(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged) {
     showErrorMessage(ErrorReason.DidNotFoundIfElseToFlip);
     return;
   }
 
-  await write([
-    {
-      code: updatedCode.code
-        // Recast doesn't format empty block statement as expected
-        // Until it's fixed, parse this pattern manually
-        // https://github.com/benjamn/recast/issues/612
-        .replace(/\)\n\s*{} else {/, ") {} else {"),
-      selection: Selection.fromAST(updatedCode.loc)
-    }
-  ]);
+  await write(
+    updatedCode.code
+      // Recast doesn't format empty block statement as expected
+      // Until it's fixed, parse this pattern manually
+      // https://github.com/benjamn/recast/issues/612
+      .replace(/\)\n\s*{} else {/, ") {} else {")
+  );
 }
 
 function hasIfElseToFlip(code: Code, selection: Selection): boolean {

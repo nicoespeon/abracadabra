@@ -23,7 +23,7 @@ async function moveStatementDown(
 
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged) {
     // Don't bother the user with an error message for this.
     if (updatedCode.isLastStatement) return;
 
@@ -31,13 +31,7 @@ async function moveStatementDown(
     return;
   }
 
-  await write([
-    {
-      code: updatedCode.code,
-      selection: Selection.fromAST(updatedCode.loc)
-    }
-  ]);
-
+  await write(updatedCode.code);
   await putCursorAt(updatedCode.newStatementPosition);
 }
 

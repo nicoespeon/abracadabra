@@ -13,17 +13,12 @@ async function removeRedundantElse(
 ) {
   const updatedCode = removeRedundantElseFrom(code, selection);
 
-  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged) {
     showErrorMessage(ErrorReason.DidNotFoundRedundantElse);
     return;
   }
 
-  await write([
-    {
-      code: updatedCode.code,
-      selection: Selection.fromAST(updatedCode.loc)
-    }
-  ]);
+  await write(updatedCode.code);
 }
 
 function hasRedundantElse(code: Code, selection: Selection): boolean {

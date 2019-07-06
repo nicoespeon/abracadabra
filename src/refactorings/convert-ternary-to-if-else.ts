@@ -13,17 +13,12 @@ async function convertTernaryToIfElse(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged) {
     showErrorMessage(ErrorReason.DidNotFoundTernaryToConvert);
     return;
   }
 
-  await write([
-    {
-      code: updatedCode.code,
-      selection: Selection.fromAST(updatedCode.loc)
-    }
-  ]);
+  await write(updatedCode.code);
 }
 
 function hasTernaryToConvert(code: Code, selection: Selection): boolean {
