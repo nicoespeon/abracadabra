@@ -83,14 +83,12 @@ function transform(code: Code, options: TraverseOptions): Transformed {
 
   return {
     code: newCode,
-    hasCodeChanged: newCode !== code,
-    loc: ast.loc
+    hasCodeChanged: newCode !== code
   };
 }
 
 interface Transformed {
   code: Code;
-  loc: t.SourceLocation | null;
   hasCodeChanged: boolean;
 }
 
