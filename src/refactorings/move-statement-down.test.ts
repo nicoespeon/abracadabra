@@ -2,17 +2,14 @@ import { Code } from "./editor/i-write-code";
 import { Selection } from "./editor/selection";
 import { Position } from "./editor/position";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
-import { PutCursorAt } from "./editor/i-put-cursor-at";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { moveStatementDown } from "./move-statement-down";
 
 describe("Move Statement Down", () => {
   let showErrorMessage: ShowErrorMessage;
-  let putCursorAt: PutCursorAt;
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
-    putCursorAt = jest.fn();
   });
 
   it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
@@ -124,7 +121,7 @@ if (isValid) {
     async (_, { code, selection, expected }) => {
       const result = await doMoveStatementDown(code, selection);
 
-      expect(result).toBe(expected);
+      expect(result.code).toBe(expected);
     }
   );
 
@@ -136,9 +133,9 @@ if (isValid) {
 }`;
     const selection = Selection.cursorAt(1, 5);
 
-    await doMoveStatementDown(code, selection);
+    const result = await doMoveStatementDown(code, selection);
 
-    expect(putCursorAt).toBeCalledWith(new Position(2, 5));
+    expect(result.position).toStrictEqual(new Position(2, 5));
   });
 
   it("should set editor cursor at moved statement new position (multi-lines)", async () => {
@@ -160,8 +157,8 @@ console.log("Third");`;
 console.log("First");
 
 console.log("Third");`;
-    expect(result).toBe(expected);
-    expect(putCursorAt).toBeCalledWith(new Position(4, 0));
+    expect(result.code).toBe(expected);
+    expect(result.position).toStrictEqual(new Position(4, 0));
   });
 
   it("should do nothing, nor show an error message if selected statement is at the bottom of the file", async () => {
@@ -172,7 +169,7 @@ console.log("Third");`;
 
     const result = await doMoveStatementDown(code, selection);
 
-    expect(result).toBe(code);
+    expect(result.code).toBe(code);
     expect(showErrorMessage).not.toBeCalled();
   });
 
@@ -201,15 +198,9 @@ console.log("Third")`;
   async function doMoveStatementDown(
     code: Code,
     selection: Selection
-  ): Promise<Code> {
+  ): Promise<{ code: Code; position: Position }> {
     const [write, getState] = createWriteInMemory(code);
-    await moveStatementDown(
-      code,
-      selection,
-      write,
-      showErrorMessage,
-      putCursorAt
-    );
-    return getState().code;
+    await moveStatementDown(code, selection, write, showErrorMessage);
+    return getState();
   }
 });

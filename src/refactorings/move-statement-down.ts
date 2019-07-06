@@ -2,7 +2,6 @@ import { Code, Write } from "./editor/i-write-code";
 import { Selection } from "./editor/selection";
 import { Position } from "./editor/position";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
-import { PutCursorAt } from "./editor/i-put-cursor-at";
 import * as ast from "./ast";
 
 export { moveStatementDown };
@@ -11,8 +10,7 @@ async function moveStatementDown(
   code: Code,
   selection: Selection,
   write: Write,
-  showErrorMessage: ShowErrorMessage,
-  putCursorAt: PutCursorAt
+  showErrorMessage: ShowErrorMessage
 ) {
   if (selection.isMultiLines) {
     // This should be implemented.
@@ -31,8 +29,7 @@ async function moveStatementDown(
     return;
   }
 
-  await write(updatedCode.code);
-  await putCursorAt(updatedCode.newStatementPosition);
+  await write(updatedCode.code, updatedCode.newStatementPosition);
 }
 
 function updateCode(
