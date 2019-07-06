@@ -13,7 +13,7 @@ async function removeRedundantElse(
 ) {
   const updatedCode = removeRedundantElseFrom(code, selection);
 
-  if (!updatedCode.hasSelectedNode || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
     showErrorMessage(ErrorReason.DidNotFoundRedundantElse);
     return;
   }
@@ -27,16 +27,16 @@ async function removeRedundantElse(
 }
 
 function hasRedundantElse(code: Code, selection: Selection): boolean {
-  return removeRedundantElseFrom(code, selection).hasSelectedNode;
+  return removeRedundantElseFrom(code, selection).hasCodeChanged;
 }
 
 function removeRedundantElseFrom(
   code: Code,
   selection: Selection
 ): ast.Transformed {
-  return ast.transform(code, selectNode => ({
+  return ast.transform(code, {
     IfStatement(path) {
-      const { node, parent } = path;
+      const { node } = path;
       if (!ast.isSelectableNode(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
@@ -54,10 +54,8 @@ function removeRedundantElseFrom(
       node.alternate = null;
       path.replaceWithMultiple([node, ...elseBranchNodes]);
       path.stop();
-
-      selectNode(parent);
     }
-  }));
+  });
 }
 
 function hasExitStatement(node: ast.BlockStatement): boolean {

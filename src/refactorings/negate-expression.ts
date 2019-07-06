@@ -108,7 +108,7 @@ function hasNegatableOperator(
 }
 
 function negate(code: Code): Code {
-  const result = ast.transform(code, () => ({
+  const result = ast.transform(code, {
     // Handle `||` and `&&` expressions
     LogicalExpression(path) {
       path.node.operator = getNegatedLogicalOperator(path.node.operator);
@@ -128,7 +128,7 @@ function negate(code: Code): Code {
       path.replaceWith(negatedExpression);
       path.stop();
     }
-  }));
+  });
 
   return (
     result.code

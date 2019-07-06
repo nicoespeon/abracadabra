@@ -14,7 +14,7 @@ async function flipTernary(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasSelectedNode || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
     showErrorMessage(ErrorReason.DidNotFoundTernaryToFlip);
     return;
   }
@@ -28,11 +28,11 @@ async function flipTernary(
 }
 
 function hasTernaryToFlip(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasSelectedNode;
+  return updateCode(code, selection).hasCodeChanged;
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, selectNode => ({
+  return ast.transform(code, {
     ConditionalExpression({ node }) {
       if (!ast.isSelectableNode(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
@@ -42,10 +42,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       node.consequent = elseBranch;
       node.alternate = ifBranch;
       node.test = getNegatedIfTest(node.test);
-
-      selectNode(node);
     }
-  }));
+  });
 }
 
 function getNegatedIfTest(

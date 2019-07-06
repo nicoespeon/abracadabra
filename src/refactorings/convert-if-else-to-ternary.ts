@@ -13,7 +13,7 @@ async function convertIfElseToTernary(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasSelectedNode || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
     showErrorMessage(ErrorReason.DidNotFoundIfElseToConvert);
     return;
   }
@@ -27,13 +27,13 @@ async function convertIfElseToTernary(
 }
 
 function hasIfElseToConvert(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasSelectedNode;
+  return updateCode(code, selection).hasCodeChanged;
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, selectNode => ({
+  return ast.transform(code, {
     IfStatement(path) {
-      const { node, parent } = path;
+      const { node } = path;
       if (!ast.isSelectableNode(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
@@ -43,10 +43,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       path.replaceWith(ternary);
       path.stop();
-
-      selectNode(parent);
     }
-  }));
+  });
 }
 
 function getReturnStatementTernary(

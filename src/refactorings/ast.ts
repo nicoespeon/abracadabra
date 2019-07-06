@@ -77,37 +77,21 @@ function traverseAST(code: Code, opts: TraverseOptions): t.File {
   return ast;
 }
 
-/**
- * Parse and transform AST from `code`, then return the transformed code.
- *
- * @param code Code to parse and transform
- * @param cb Should return `TraverseOptions` that perform AST transformations.
- * Takes a `selectNode()` argument you can use to select the node to return.
- * By default, the whole AST is returned.
- */
-function transform(
-  code: Code,
-  cb: (selectNode: (node: t.Node) => void) => TraverseOptions
-): Transformed {
-  let result: t.File | t.Node | null = null;
-  let hasSelectedNode = false;
+function transform(code: Code, options: TraverseOptions): Transformed {
+  const ast = traverseAST(code, options);
+  const newCode = recast.print(ast).code;
 
-  const ast = traverseAST(
-    code,
-    cb(node => {
-      result = node;
-      hasSelectedNode = true;
-    })
-  );
-  if (!result) result = ast;
-
-  return { code: recast.print(result).code, loc: result.loc, hasSelectedNode };
+  return {
+    code: newCode,
+    hasCodeChanged: newCode !== code,
+    loc: ast.loc
+  };
 }
 
 interface Transformed {
   code: Code;
   loc: t.SourceLocation | null;
-  hasSelectedNode: boolean;
+  hasCodeChanged: boolean;
 }
 
 function isUndefinedLiteral(

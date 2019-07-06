@@ -13,7 +13,7 @@ async function convertTernaryToIfElse(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasSelectedNode || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
     showErrorMessage(ErrorReason.DidNotFoundTernaryToConvert);
     return;
   }
@@ -27,11 +27,11 @@ async function convertTernaryToIfElse(
 }
 
 function hasTernaryToConvert(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasSelectedNode;
+  return updateCode(code, selection).hasCodeChanged;
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, selectNode => ({
+  return ast.transform(code, {
     ConditionalExpression(path) {
       const { parentPath, node } = path;
       if (!ast.isSelectableNode(node)) return;
@@ -42,7 +42,6 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
           createIfStatement(selection, node, ast.returnStatement)
         );
 
-        selectNode(parentPath.parent);
         parentPath.stop();
       }
 
@@ -57,7 +56,6 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
           )
         );
 
-        selectNode(parentPath.parentPath.parent);
         parentPath.parentPath.stop();
       }
 
@@ -76,11 +74,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
           )
         ]);
 
-        selectNode(parentPath.parentPath.parent);
         parentPath.parentPath.stop();
       }
     }
-  }));
+  });
 }
 
 function createIfStatement(

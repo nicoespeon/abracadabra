@@ -23,7 +23,7 @@ async function moveStatementUp(
 
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasSelectedNode || !updatedCode.loc) {
+  if (!updatedCode.hasCodeChanged || !updatedCode.loc) {
     // Don't bother the user with an error message for this.
     if (updatedCode.isFirstStatement) return;
 
@@ -51,9 +51,9 @@ function updateCode(
   let isFirstStatement = false;
   let newStatementPosition = selection.start;
 
-  const result = ast.transform(code, selectNode => ({
+  const result = ast.transform(code, {
     Statement(path) {
-      const { node, parent } = path;
+      const { node } = path;
       if (!ast.isSelectableNode(node)) return;
 
       const extendedSelection = Selection.fromAST(
@@ -82,10 +82,8 @@ function updateCode(
       const newNode = { ...pathAbove.node, loc: null };
       pathAbove.replaceWith(newNodeAbove);
       path.replaceWith(newNode);
-
-      selectNode(parent);
     }
-  }));
+  });
 
   return { ...result, isFirstStatement, newStatementPosition };
 }
