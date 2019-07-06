@@ -140,10 +140,7 @@ if (isVIP) {
     expect(putCursorAt).toBeCalledWith(new Position(2, 5));
   });
 
-  // I can't find how to solve this one because code is reformated.
-  // So the computed position is not the one we'd like.
-  // Maybe changing babel for another parser would solve the issue?
-  it.skip("should set editor cursor at moved statement new position (multi-lines)", async () => {
+  it("should set editor cursor at moved statement new position (multi-lines)", async () => {
     const code = `console.log("First");
 
 function doSomething() {
@@ -153,9 +150,17 @@ function doSomething() {
 console.log("Third");`;
     const selection = Selection.cursorAt(0, 0);
 
-    await doMoveStatementDown(code, selection);
+    const result = await doMoveStatementDown(code, selection);
 
-    expect(putCursorAt).toBeCalledWith(new Position(5, 0));
+    const expected = `function doSomething() {
+  console.log("Second");
+}
+
+console.log("First");
+
+console.log("Third");`;
+    expect(result).toBe(expected);
+    expect(putCursorAt).toBeCalledWith(new Position(4, 0));
   });
 
   it("should do nothing, nor show an error message if selected statement is at the bottom of the file", async () => {

@@ -75,7 +75,7 @@ function updateCode(
       if (!ast.isSelectableNode(pathBelow.node)) return;
 
       newStatementPosition = Position.fromAST(
-        pathBelow.node.loc.start
+        pathBelow.node.loc.end
       ).putAtSameCharacter(selection.start);
 
       // Preserve the `loc` of the below path & reset the one of the moved node.
