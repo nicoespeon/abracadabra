@@ -156,15 +156,9 @@ Same as _Move Statement Up_, but it moves the selected statement down. Like, the
 
 ## Known Issues
 
-### Code was formatted when I did a refactoring!?
+🌈 None that we're aware of.
 
-Some refactorings reformat the code around the one that is modified.
-
-This is because we use babel to parse code into AST, then we modify the AST and we regenerate the code from it. The regenerated code is formatted by babel, and the current way we update the source code applies the new formatting to more code than we'd like.
-
-We've some leads in mind to fix that. It's obviously not a behaviour we want to keep for v1.
-
-### The result of "XXX" refactoring is broken!!
+### What if the result of "XXX" refactoring is broken?
 
 Because there are many possible patterns in the wild, it's very likely we have missed some. _Extract Variable_ is a typical refactoring that may not work as expected in a specific situation.
 
