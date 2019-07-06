@@ -158,14 +158,6 @@ Same as _Move Statement Up_, but it moves the selected statement down. Like, the
 
 🌈 None that we're aware of.
 
-### What if the result of "XXX" refactoring is broken?
-
-Because there are many possible patterns in the wild, it's very likely we have missed some. _Extract Variable_ is a typical refactoring that may not work as expected in a specific situation.
-
-When that happens, please [open a new issue][open-issue]. That way we can add test this pattern and fix it for good 🤓
-
-We hope to progressively cover more and more use-cases. We won't consider the extension ready for v1 until we're confident about the robustness of the proposed refactorings!
-
 ## Release Notes
 
 See the [Changelog][changelog] for the list of all notable changes.
@@ -188,7 +180,6 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
 [replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
-[open-issue]: https://github.com/nicoespeon/abracadabra/issues/new
 
 <!-- Demo images -->
 
