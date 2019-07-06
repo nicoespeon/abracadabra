@@ -142,7 +142,7 @@ async function moveStatementUpCommand() {
     moveStatementUp(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
+      createWriteInVSCode(activeTextEditor),
       showErrorMessageInVSCode,
       createPutCursorAtInVSCode(activeTextEditor)
     )
@@ -161,7 +161,7 @@ async function moveStatementDownCommand() {
     moveStatementDown(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createWriteInVSCode(document),
+      createWriteInVSCode(activeTextEditor),
       showErrorMessageInVSCode,
       createPutCursorAtInVSCode(activeTextEditor)
     )
@@ -181,7 +181,7 @@ function createCommand(refactoring: Refactoring) {
       refactoring(
         document.getText(),
         createSelectionFromVSCode(selection),
-        createWriteInVSCode(document),
+        createWriteInVSCode(activeTextEditor),
         showErrorMessageInVSCode
       )
     );

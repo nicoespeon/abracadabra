@@ -14,8 +14,15 @@ export {
 
 const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
-function createWriteInVSCode(document: vscode.TextDocument): Write {
-  return async function writeAll(code: Code) {
+function createWriteInVSCode(editor: vscode.TextEditor): Write {
+  const { document } = editor;
+
+  return async function write(code: Code) {
+    const originalStartPosition = new vscode.Selection(
+      editor.selection.start,
+      editor.selection.start
+    );
+
     const edit = new vscode.WorkspaceEdit();
     const allDocumentRange = new vscode.Range(
       new vscode.Position(0, 0),
@@ -25,6 +32,8 @@ function createWriteInVSCode(document: vscode.TextDocument): Write {
     edit.set(document.uri, [new vscode.TextEdit(allDocumentRange, code)]);
 
     await vscode.workspace.applyEdit(edit);
+
+    editor.selection = originalStartPosition;
   };
 }
 
