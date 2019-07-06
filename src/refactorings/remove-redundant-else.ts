@@ -36,25 +36,26 @@ function removeRedundantElseFrom(
 ): ast.Transformed {
   return ast.transform(code, selectNode => ({
     IfStatement(path) {
-      if (!ast.isSelectableNode(path.node)) return;
-      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      const { node, parent } = path;
+      if (!ast.isSelectableNode(node)) return;
+      if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
-      const ifBranch = path.node.consequent;
+      const ifBranch = node.consequent;
       if (!ast.isBlockStatement(ifBranch)) return;
       if (!hasExitStatement(ifBranch)) return;
 
-      const elseBranch = path.node.alternate;
+      const elseBranch = node.alternate;
       if (!elseBranch) return;
 
       const elseBranchNodes = ast.isBlockStatement(elseBranch)
         ? elseBranch.body
         : [elseBranch];
 
-      path.node.alternate = null;
-      path.replaceWithMultiple([path.node, ...elseBranchNodes]);
+      node.alternate = null;
+      path.replaceWithMultiple([node, ...elseBranchNodes]);
       path.stop();
 
-      selectNode(path.parentPath.node);
+      selectNode(parent);
     }
   }));
 }

@@ -33,7 +33,7 @@ function hasIfElseToConvert(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, selectNode => ({
     IfStatement(path) {
-      const { node } = path;
+      const { node, parent } = path;
       if (!ast.isSelectableNode(node)) return;
       if (!selection.isInside(Selection.fromAST(node.loc))) return;
 
@@ -44,7 +44,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       path.replaceWith(ternary);
       path.stop();
 
-      selectNode(path.parentPath.node);
+      selectNode(parent);
     }
   }));
 }

@@ -53,7 +53,7 @@ function updateCode(
 
   const result = ast.transform(code, selectNode => ({
     Statement(path) {
-      const { node } = path;
+      const { node, parent } = path;
       if (!ast.isSelectableNode(node)) return;
 
       const extendedSelection = Selection.fromAST(
@@ -79,12 +79,13 @@ function updateCode(
       ).putAtSameCharacter(selection.start);
 
       // Preserve the `loc` of the below path & reset the one of the moved node.
+      // Use `path.node` intead of `node` or TS won't build. I don't know why.
       const newNodeBelow = { ...path.node, loc: pathBelow.node.loc };
       const newNode = { ...pathBelow.node, loc: null };
       pathBelow.replaceWith(newNodeBelow);
       path.replaceWith(newNode);
 
-      selectNode(path.parent);
+      selectNode(parent);
     }
   }));
 
