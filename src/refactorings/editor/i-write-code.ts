@@ -1,9 +1,10 @@
 import { Selection } from "./selection";
+import { Position } from "./position";
 
 export { Write, ReadThenWrite };
 export { Update, Code };
 
-type Write = (code: Code) => Promise<void>;
+type Write = (code: Code, newCursorPosition?: Position) => Promise<void>;
 
 type ReadThenWrite = (
   selection: Selection,

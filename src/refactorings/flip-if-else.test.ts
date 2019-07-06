@@ -88,8 +88,8 @@ describe("Flip If/Else", () => {
   });
 
   async function doFlipIfElse(code: Code, selection: Selection): Promise<Code> {
-    const [write, getCode] = createWriteInMemory(code);
+    const [write, getState] = createWriteInMemory(code);
     await flipIfElse(code, selection, write, showErrorMessage);
-    return getCode();
+    return getState().code;
   }
 });

@@ -202,7 +202,7 @@ console.log("Third")`;
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getCode] = createWriteInMemory(code);
+    const [write, getState] = createWriteInMemory(code);
     await moveStatementDown(
       code,
       selection,
@@ -210,6 +210,6 @@ console.log("Third")`;
       showErrorMessage,
       putCursorAt
     );
-    return getCode();
+    return getState().code;
   }
 });

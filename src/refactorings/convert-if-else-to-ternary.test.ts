@@ -223,8 +223,8 @@ describe("Convert If/Else to Ternary", () => {
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getCode] = createWriteInMemory(code);
+    const [write, getState] = createWriteInMemory(code);
     await convertIfElseToTernary(code, selection, write, showErrorMessage);
-    return getCode();
+    return getState().code;
   }
 });

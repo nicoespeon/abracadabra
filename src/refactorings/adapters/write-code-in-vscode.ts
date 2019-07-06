@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Pipe } from "ts-functionaltypes";
 
-import { ReadThenWrite, Update, Write, Code } from "../editor/i-write-code";
+import { ReadThenWrite, Update, Write } from "../editor/i-write-code";
 import { Position } from "../editor/position";
 import { Selection } from "../editor/selection";
 
@@ -17,8 +17,8 @@ const pipe: Pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 function createWriteInVSCode(editor: vscode.TextEditor): Write {
   const { document } = editor;
 
-  return async function write(code: Code) {
-    const originalStartPosition = new vscode.Selection(
+  return async function write(code, newCursorPosition) {
+    const cursorAtInitialStartPosition = new vscode.Selection(
       editor.selection.start,
       editor.selection.start
     );
@@ -33,7 +33,9 @@ function createWriteInVSCode(editor: vscode.TextEditor): Write {
 
     await vscode.workspace.applyEdit(edit);
 
-    editor.selection = originalStartPosition;
+    editor.selection = newCursorPosition
+      ? toVSCodeCursor(newCursorPosition)
+      : cursorAtInitialStartPosition;
   };
 }
 
@@ -70,6 +72,13 @@ function createReadThenWriteInVSCode(
 
     await vscode.workspace.applyEdit(edit);
   }
+}
+
+function toVSCodeCursor(position: Position): vscode.Selection {
+  return new vscode.Selection(
+    toVSCodePosition(position),
+    toVSCodePosition(position)
+  );
 }
 
 function toVSCodePosition(position: Position): vscode.Position {

@@ -1,4 +1,5 @@
 import { Code, Write } from "./i-write-code";
+import { Position } from "./position";
 
 export { createWriteCodeContractTests };
 
@@ -18,7 +19,10 @@ export { createWriteCodeContractTests };
 
 function createWriteCodeContractTests(
   adapterName: string,
-  createWriteOn: (code: Code) => [Write, () => Code]
+  createWriteOn: (
+    code: Code,
+    position?: Position
+  ) => [Write, () => { code: Code; position: Position }]
 ) {
   describe(`${adapterName} Write`, () => {
     it("should update code with the given one", async () => {
@@ -30,10 +34,42 @@ function createWriteCodeContractTests(
   console.log("How are you doing?");
 }`;
 
-      const [write, getCode] = createWriteOn(code);
+      const [write, getState] = createWriteOn(code);
       await write(newCode);
 
-      expect(getCode()).toEqual(newCode);
+      expect(getState().code).toEqual(newCode);
+    });
+
+    it("should set position to the given one", async () => {
+      const code = `function sayHello() {
+  // Replace me with some code
+}`;
+      const newCode = `function sayHi() {
+  console.log("Hello");
+  console.log("How are you doing?");
+}`;
+      const newPosition = new Position(2, 3);
+
+      const [write, getState] = createWriteOn(code);
+      await write(newCode, newPosition);
+
+      expect(getState().position).toEqual(newPosition);
+    });
+
+    it("should default to initial position if no position is given", async () => {
+      const code = `function sayHello() {
+  // Replace me with some code
+}`;
+      const newCode = `function sayHi() {
+  console.log("Hello");
+  console.log("How are you doing?");
+}`;
+      const position = new Position(0, 1);
+
+      const [write, getState] = createWriteOn(code, position);
+      await write(newCode);
+
+      expect(getState().position).toEqual(position);
     });
   });
 }
