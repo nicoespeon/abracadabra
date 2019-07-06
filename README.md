@@ -154,10 +154,6 @@ Same as _Move Statement Up_, but it moves the selected statement down. Like, the
 
 ![][demo-move-statement-down]
 
-## Known Issues
-
-🌈 None that we're aware of.
-
 ## Release Notes
 
 See the [Changelog][changelog] for the list of all notable changes.
