@@ -40,7 +40,9 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       const ifBranch = node.consequent;
       const elseBranch = node.alternate || ast.blockStatement([]);
-      node.consequent = elseBranch;
+      node.consequent = ast.isIfStatement(elseBranch)
+        ? ast.blockStatement([elseBranch])
+        : elseBranch;
       node.alternate = ifBranch;
       node.test = getNegatedIfTest(node.test);
     }

@@ -67,6 +67,31 @@ describe("Flip If/Else", () => {
   doAnotherThing();
 }`
       }
+    ],
+    [
+      "an if statement with else-ifs",
+      {
+        code: `if (a > b) {
+  doSomething();
+} else if (a === 10) {
+  doSomethingWith(a);
+} else if (b === 10) {
+  doSomethingWith(b);
+} else {
+  doNothing();
+}`,
+        expected: `if (a <= b) {
+  if (a === 10) {
+    doSomethingWith(a);
+  } else if (b === 10) {
+    doSomethingWith(b);
+  } else {
+    doNothing();
+  }
+} else {
+  doSomething();
+}`
+      }
     ]
   ])("should flip if and else branch (%s)", async (_, { code, expected }) => {
     const selection = Selection.cursorAt(0, 0);
