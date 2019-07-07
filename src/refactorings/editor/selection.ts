@@ -123,8 +123,10 @@ class Selection {
       !ast.isConditionalExpression(node) &&
       !ast.isSwitchCase(node) &&
       !ast.isArrowFunctionExpression(node) &&
-      !ast.isArrowFunctionExpression(parent) &&
+      !ast.isNewExpression(node) &&
+      !ast.isCallExpression(node) &&
       !ast.isUnaryExpression(node) &&
+      !ast.isArrowFunctionExpression(parent) &&
       !ast.isNewExpression(parent) &&
       !ast.isCallExpression(parent) &&
       !ast.isJSXElement(parent) &&

@@ -619,6 +619,26 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 2)
       },
       { read: new Selection([1, 2], [1, 8]) }
+    ],
+    [
+      "a value in an Array argument of a function",
+      {
+        code: `doSomething([
+  getValueOf("name")
+])`,
+        selection: Selection.cursorAt(1, 2)
+      },
+      { read: new Selection([1, 2], [1, 20]) }
+    ],
+    [
+      "a new Expression in an Array argument of a function",
+      {
+        code: `doSomething([
+  new Author("Eliott")
+])`,
+        selection: Selection.cursorAt(1, 2)
+      },
+      { read: new Selection([1, 2], [1, 22]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
