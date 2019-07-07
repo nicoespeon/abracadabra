@@ -639,6 +639,17 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 2)
       },
       { read: new Selection([1, 2], [1, 22]) }
+    ],
+    [
+      "a value in a binary expression",
+      {
+        code: `console.log(
+  currentValue >
+  10
+);`,
+        selection: Selection.cursorAt(2, 2)
+      },
+      { read: new Selection([2, 2], [2, 4]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);

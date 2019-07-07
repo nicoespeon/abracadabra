@@ -127,6 +127,7 @@ class Selection {
       !ast.isCallExpression(node) &&
       !ast.isUnaryExpression(node) &&
       !ast.isArrowFunctionExpression(parent) &&
+      !ast.isBinaryExpression(parent) &&
       !ast.isNewExpression(parent) &&
       !ast.isCallExpression(parent) &&
       !ast.isJSXElement(parent) &&
