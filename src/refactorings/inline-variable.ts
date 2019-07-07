@@ -30,9 +30,9 @@ async function inlineVariable(
     return;
   }
 
-  const idsToReplaceLocs = findIdentifiersToReplaceLocs(scope, id);
+  const idsToReplace = findIdentifiersToReplace(scope, id);
 
-  if (idsToReplaceLocs.length === 0) {
+  if (idsToReplace.length === 0) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
     return;
   }
@@ -41,7 +41,7 @@ async function inlineVariable(
   await readThenWrite(inlinedCodeSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
-      ...idsToReplaceLocs.map(loc => ({
+      ...idsToReplace.map(({ loc }) => ({
         code: inlinedCode,
         selection: Selection.fromAST(loc)
       })),
@@ -176,11 +176,11 @@ function findInlinableCode(
   return result;
 }
 
-function findIdentifiersToReplaceLocs(
+function findIdentifiersToReplace(
   scope: ast.Node,
   id: ast.SelectableIdentifier
-): ast.SourceLocation[] {
-  let result: ast.SourceLocation[] = [];
+): IdentifierToReplace[] {
+  let result: IdentifierToReplace[] = [];
 
   ast.traverse(scope, {
     enter(node, ancestors) {
@@ -197,11 +197,15 @@ function findIdentifiersToReplaceLocs(
       if (ast.isObjectProperty(parent.node) && parent.node.key === node) return;
       if (ast.isMemberExpression(parent.node)) return;
 
-      result.push(node.loc);
+      result.push({ loc: node.loc });
     }
   });
 
   return result;
+}
+
+interface IdentifierToReplace {
+  loc: ast.SourceLocation;
 }
 
 function isShadowIn(
