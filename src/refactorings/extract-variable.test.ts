@@ -609,6 +609,16 @@ console.log("How are you doing?");`,
         selection: Selection.cursorAt(2, 12)
       },
       { read: new Selection([2, 10], [2, 17]) }
+    ],
+    [
+      "a value in a new Expression",
+      {
+        code: `new Author(
+  "name"
+)`,
+        selection: Selection.cursorAt(1, 2)
+      },
+      { read: new Selection([1, 2], [1, 8]) }
     ]
   ])("should extract %s", async (_, context, expectedSelection) => {
     await doExtractVariable(context.code, context.selection);
