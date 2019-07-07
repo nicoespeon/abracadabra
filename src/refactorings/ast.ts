@@ -1,5 +1,5 @@
 import { parse } from "@babel/parser";
-import traverse, { TraverseOptions } from "@babel/traverse";
+import traverse, { TraverseOptions, NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
 
@@ -14,6 +14,7 @@ export {
   isSelectableNode,
   isSelectableVariableDeclarator,
   isSelectableIdentifier,
+  SelectablePath,
   SelectableNode,
   SelectableObjectProperty,
   SelectableIdentifier,
@@ -99,6 +100,7 @@ function isUndefinedLiteral(
   return t.isIdentifier(node, opts) && node.name === "undefined";
 }
 
+type SelectablePath = NodePath<SelectableNode>;
 type SelectableNode = Selectable<t.Node>;
 type SelectableObjectProperty = Selectable<t.ObjectProperty>;
 type SelectableIdentifier = Selectable<t.Identifier>;

@@ -74,50 +74,62 @@ if (isValid) {
   console.log("I'm up");
 }`
       }
-      // TODO: These statements need to be fixed
-      //     ],
-      //     [
-      //       "statement inside a container",
-      //       {
-      //         code: `if (isVIP) {
-      //   console.log("I shouldn't move");
-      // }
-      // if (isValid) {
-      //   console.log("I'm up");
-      //   console.log("I'm down");
-      // }`,
-      //         selection: Selection.cursorAt(4, 2),
-      //         expected: `if (isVIP) {
-      //   console.log("I shouldn't move");
-      // }
-      // if (isValid) {
-      //   console.log("I'm down");
-      //   console.log("I'm up");
-      // }`
-      //       }
-      //     ],
-      //     [
-      //       "statement inside a container, cursor at start of line",
-      //       {
-      //         code: `if (isVIP) {
-      //   console.log("I shouldn't move");
-      // }
-      // if (isValid) {
-      //   console.log("I'm up");
-      //   console.log("I'm down");
-      // }`,
-      //         selection: Selection.cursorAt(4, 0),
-      //         expected: `if (isVIP) {
-      //   console.log("I shouldn't move");
-      // }
-      // if (isValid) {
-      //   console.log("I'm down");
-      //   console.log("I'm up");
-      // }
-      // if (isVIP) {
-      //   console.log("I shouldn't move");
-      // }`
-      //       }
+    ],
+    [
+      "statement inside a container",
+      {
+        code: `const hello = "world";
+
+function doSomethingElse() {
+  const a = 1;
+  const b = 2;
+
+  if (isValid) {
+    console.log("I shouldn't move");
+    console.log("Me neither");
+  }
+}`,
+        selection: Selection.cursorAt(4, 2),
+        expected: `const hello = "world";
+
+function doSomethingElse() {
+  const b = 2;
+  const a = 1;
+
+  if (isValid) {
+    console.log("I shouldn't move");
+    console.log("Me neither");
+  }
+}`
+      }
+    ],
+    [
+      "statement inside a container, cursor at start of line",
+      {
+        code: `const hello = "world";
+
+function doSomethingElse() {
+  const a = 1;
+  const b = 2;
+
+  if (isValid) {
+    console.log("I shouldn't move");
+    console.log("Me neither");
+  }
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `const hello = "world";
+
+function doSomethingElse() {
+  const b = 2;
+  const a = 1;
+
+  if (isValid) {
+    console.log("I shouldn't move");
+    console.log("Me neither");
+  }
+}`
+      }
     ]
   ])(
     "should move statement up (%s)",
