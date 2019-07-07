@@ -115,7 +115,8 @@ console.log({
 
   it("should inline code that has a member expression with the same name", async () => {
     const code = `const world = props.world;
-const helloWorld = sayHelloTo(world);`;
+const helloWorld = sayHelloTo(world);
+console.log(around.the.world);`;
     const selection = Selection.cursorAt(0, 9);
 
     await doInlineVariable(code, selection);
@@ -163,6 +164,25 @@ return !isCorrect;`;
       {
         code: `(${inlinableCode})`,
         selection: new Selection([1, 8], [1, 17])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [1, 0])
+      }
+    ]);
+  });
+
+  it("should inline object that is accessed", async () => {
+    const code = `const foo = { value: "foo" };
+console.log(foo.value);`;
+    const selection = Selection.cursorAt(0, 6);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: inlinableCode,
+        selection: new Selection([1, 12], [1, 15])
       },
       {
         code: "",

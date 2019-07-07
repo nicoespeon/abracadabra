@@ -197,7 +197,12 @@ function findIdentifiersToReplace(
       const parent = ancestors[ancestors.length - 1];
       if (ast.isFunctionDeclaration(parent)) return;
       if (ast.isObjectProperty(parent.node) && parent.node.key === node) return;
-      if (ast.isMemberExpression(parent.node)) return;
+      if (
+        ast.isMemberExpression(parent.node) &&
+        parent.node.property === node
+      ) {
+        return;
+      }
 
       result.push({
         loc: node.loc,
