@@ -12,7 +12,17 @@ describe("Move Statement Up", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+  it.each<
+    [
+      string,
+      {
+        code: Code;
+        selection: Selection;
+        expected: Code;
+        expectedPosition: Position;
+      }
+    ]
+  >([
     [
       "single-line statement",
       {
@@ -20,7 +30,8 @@ describe("Move Statement Up", () => {
 console.log("I'm down");`,
         selection: Selection.cursorAt(1, 0),
         expected: `console.log("I'm down");
-console.log("I'm up");`
+console.log("I'm up");`,
+        expectedPosition: new Position(0, 0)
       }
     ],
     [
@@ -36,7 +47,8 @@ if (isValid) {
   console.log("I'm down");
 }
 
-console.log("I'm up");`
+console.log("I'm up");`,
+        expectedPosition: new Position(0, 0)
       }
     ],
     [
@@ -52,7 +64,8 @@ console.log("I'm down");`,
 
 if (isValid) {
   console.log("I'm up");
-}`
+}`,
+        expectedPosition: new Position(0, 0)
       }
     ],
     [
@@ -72,7 +85,8 @@ function saySomething() {
 
 if (isValid) {
   console.log("I'm up");
-}`
+}`,
+        expectedPosition: new Position(0, 0)
       }
     ],
     [
@@ -100,7 +114,8 @@ function doSomethingElse() {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
-}`
+}`,
+        expectedPosition: new Position(3, 2)
       }
     ],
     [
@@ -128,53 +143,19 @@ function doSomethingElse() {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
-}`
+}`,
+        expectedPosition: new Position(3, 0)
       }
     ]
   ])(
     "should move statement up (%s)",
-    async (_, { code, selection, expected }) => {
+    async (_, { code, selection, expected, expectedPosition }) => {
       const result = await doMoveStatementUp(code, selection);
 
       expect(result.code).toBe(expected);
+      expect(result.position).toStrictEqual(expectedPosition);
     }
   );
-
-  it("should set editor cursor at moved statement new position", async () => {
-    const code = `if (isValid) {
-  console.log("First");
-  console.log("Second");
-  console.log("Third");
-}`;
-    const selection = Selection.cursorAt(3, 5);
-
-    const result = await doMoveStatementUp(code, selection);
-
-    expect(result.position).toStrictEqual(new Position(2, 5));
-  });
-
-  it("should set editor cursor at moved statement new position (multi-lines)", async () => {
-    const code = `console.log("First");
-
-function doSomething() {
-  console.log("Second");
-}
-
-console.log("Third");`;
-    const selection = Selection.cursorAt(6, 0);
-
-    const result = await doMoveStatementUp(code, selection);
-
-    const expected = `console.log("First");
-
-console.log("Third");
-
-function doSomething() {
-  console.log("Second");
-}`;
-    expect(result.code).toBe(expected);
-    expect(result.position).toStrictEqual(new Position(2, 0));
-  });
 
   it("should do nothing, nor show an error message if selected statement is at the top of the file", async () => {
     const code = `console.log(
