@@ -65,6 +65,21 @@ function updateCode(
         pathBelow.node.loc.end
       ).putAtSameCharacter(selection.start);
 
+      // If `pathBelow` is a function, it may create new lines when moved.
+      // Adapt the new statement position accordingly.
+      if (ast.isFunction(pathBelow)) {
+        const hasPathAbove = path.key > 0;
+        const extracted = path.getSibling(path.key - 1);
+
+        if (hasPathAbove && !hasSpaceBetweenPaths(extracted, path)) {
+          newStatementPosition = newStatementPosition.putAtNextLine();
+        }
+
+        if (!hasSpaceBetweenPaths(path, pathBelow)) {
+          newStatementPosition = newStatementPosition.putAtNextLine();
+        }
+      }
+
       // Preserve the `loc` of the below path & reset the one of the moved node.
       // Use `path.node` intead of `node` or TS won't build. I don't know why.
       const newNodeBelow = { ...path.node, loc: pathBelow.node.loc };
@@ -116,4 +131,17 @@ function matchesSelection(path: ast.NodePath, selection: Selection): boolean {
   if (!selection.isInside(extendedSelection)) return false;
 
   return true;
+}
+
+function hasSpaceBetweenPaths(
+  pathA: ast.NodePath,
+  pathB: ast.NodePath
+): boolean {
+  if (!ast.isSelectableNode(pathA.node)) return false;
+  if (!ast.isSelectableNode(pathB.node)) return false;
+
+  const startPositionA = Position.fromAST(pathA.node.loc.end);
+  const endPositionB = Position.fromAST(pathB.node.loc.start);
+
+  return endPositionB.line - startPositionA.line > 1;
 }

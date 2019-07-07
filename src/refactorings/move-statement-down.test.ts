@@ -176,6 +176,86 @@ console.log("Third");`;
     expect(result.position).toStrictEqual(new Position(4, 0));
   });
 
+  it("should set editor cursor at moved statement new position (move down function at next line)", async () => {
+    const code = `console.log("First");
+function doSomething() {
+  console.log("Second");
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    const result = await doMoveStatementDown(code, selection);
+
+    const expected = `function doSomething() {
+  console.log("Second");
+}
+
+console.log("First");`;
+    expect(result.code).toBe(expected);
+    expect(result.position).toStrictEqual(new Position(4, 0));
+  });
+
+  it("should set editor cursor at moved statement new position (move down function at a further line)", async () => {
+    const code = `console.log("First");
+
+function doSomething() {
+  console.log("Second");
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    const result = await doMoveStatementDown(code, selection);
+
+    const expected = `function doSomething() {
+  console.log("Second");
+}
+
+console.log("First");`;
+    expect(result.code).toBe(expected);
+    expect(result.position).toStrictEqual(new Position(4, 0));
+  });
+
+  it("should set editor cursor at moved statement new position (move down function at a further line + statement before)", async () => {
+    const code = `console.log("First");
+console.log("Second");
+
+function doSomething() {
+  console.log("Third");
+}`;
+    const selection = Selection.cursorAt(1, 0);
+
+    const result = await doMoveStatementDown(code, selection);
+
+    const expected = `console.log("First");
+
+function doSomething() {
+  console.log("Third");
+}
+
+console.log("Second");`;
+    expect(result.code).toBe(expected);
+    expect(result.position).toStrictEqual(new Position(6, 0));
+  });
+
+  it("should set editor cursor at moved statement new position (move down function at next line + statement before)", async () => {
+    const code = `console.log("First");
+console.log("Second");
+function doSomething() {
+  console.log("Third");
+}`;
+    const selection = Selection.cursorAt(1, 0);
+
+    const result = await doMoveStatementDown(code, selection);
+
+    const expected = `console.log("First");
+
+function doSomething() {
+  console.log("Third");
+}
+
+console.log("Second");`;
+    expect(result.code).toBe(expected);
+    expect(result.position).toStrictEqual(new Position(6, 0));
+  });
+
   it("should do nothing, nor show an error message if selected statement is at the bottom of the file", async () => {
     const code = `console.log(
   "nothing below this statement"
