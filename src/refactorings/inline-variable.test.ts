@@ -152,6 +152,25 @@ const helloWorld = sayHelloTo(world);`;
     ]);
   });
 
+  it("should inline code that ends up being a unary expression", async () => {
+    const code = `const isCorrect = ${inlinableCode};
+return !isCorrect;`;
+    const selection = Selection.cursorAt(0, 6);
+
+    await doInlineVariable(code, selection);
+
+    expect(updates).toEqual([
+      {
+        code: `(${inlinableCode})`,
+        selection: new Selection([1, 8], [1, 17])
+      },
+      {
+        code: "",
+        selection: new Selection([0, 0], [1, 0])
+      }
+    ]);
+  });
+
   it("should limit inlining to variable declaration scope", async () => {
     const code = `function sayHello() {
   const hello = ${inlinableCode};

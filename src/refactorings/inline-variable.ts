@@ -41,10 +41,12 @@ async function inlineVariable(
   await readThenWrite(inlinedCodeSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
-      ...idsToReplace.map(({ loc }) => ({
-        code: inlinedCode,
-        selection: Selection.fromAST(loc)
-      })),
+      ...idsToReplace.map(
+        ({ loc, isInUnaryExpression: isUnaryExpression }) => ({
+          code: isUnaryExpression ? `(${inlinedCode})` : inlinedCode,
+          selection: Selection.fromAST(loc)
+        })
+      ),
       // Remove the variable declaration
       {
         code: "",
@@ -197,7 +199,10 @@ function findIdentifiersToReplace(
       if (ast.isObjectProperty(parent.node) && parent.node.key === node) return;
       if (ast.isMemberExpression(parent.node)) return;
 
-      result.push({ loc: node.loc });
+      result.push({
+        loc: node.loc,
+        isInUnaryExpression: ast.isUnaryExpression(parent.node)
+      });
     }
   });
 
@@ -206,6 +211,7 @@ function findIdentifiersToReplace(
 
 interface IdentifierToReplace {
   loc: ast.SourceLocation;
+  isInUnaryExpression: boolean;
 }
 
 function isShadowIn(
