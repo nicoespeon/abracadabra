@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: ✨ Feature request
 about: Suggest an idea for this project (e.g. a new refactoring)
 title: ""
 labels: ":sparkles: Feature"
