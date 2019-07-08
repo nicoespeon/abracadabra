@@ -24,7 +24,7 @@ We use [Jest][jest] under the hood, so you can pass any valid Jest command to `y
 
 In short, most of our tests are unit tests. We test business logic in isolation from VS Code API.
 
-We don't have VS Code integration tests. [We've documented why in this adr][adr-no-integration-tests].
+We don't have VS Code integration tests. [We've documented why in this ADR][adr-no-integration-tests].
 
 ## Useful resources to start changing the code
 
