@@ -311,7 +311,7 @@
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "jest",
-    "prepackage": "rm -rf dist/*.vsix",
+    "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
     "package:install": "code --install-extension dist/*.vsix"
