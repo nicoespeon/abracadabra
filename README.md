@@ -182,6 +182,20 @@ Read our [contributing guide][contributing] to learn about our development proce
 
 To help you get your feet wet and become familiar with our contribution process, we have a list of [good first issues][good-first-issues] that contains things with a relatively limited scope. This is a great place to get started!
 
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table><tr><td align="center"><a href="https://nicoespeon.com"><img src="https://avatars.githubusercontent.com/u/1094774?v=3" width="100px;" alt="Nicolas Carlo"/><br /><sub><b>Nicolas Carlo</b></sub></a><br /><a href="#question-nicoespeon" title="Answering Questions">💬</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=nicoespeon" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=nicoespeon" title="Documentation">📖</a> <a href="#review-nicoespeon" title="Reviewed Pull Requests">👀</a> <a href="#ideas-fabien0102" title="Ideas">🤔</a></td><td align="center"><a href="https://fabien0102.com/"><img src="https://avatars.githubusercontent.com/u/1761469?v=3" width="100px;" alt="Fabien Bernard"/><br /><sub><b>Fabien Bernard</b></sub></a><br /><a href="#ideas-fabien0102" title="Ideas">🤔</a> <a href="#design-fabien0102" title="Design">🎨</a></td></tr></table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors][all-contributors] specification.
+
+Contributions of any kind are welcome!
+
 ## Alternatives
 
 VS Code ships with [basic refactoring operations][vscode-refactorings]. But they tend to be limited and we didn't found the UX to be very intuitive.
@@ -190,11 +204,9 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 
 ![](https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/magic.gif?raw=true)
 
-## Copyright and License
+## License
 
-Copyright (c) 2019 Nicolas CARLO under the [MIT license][license].
-
-💁‍ [What does that mean?](http://choosealicense.com/licenses/mit/)
+💁 [MIT][license]
 
 <!-- Links -->
 
@@ -210,6 +222,8 @@ Copyright (c) 2019 Nicolas CARLO under the [MIT license][license].
 [good-first-issues]: https://github.com/nicoespeon/abracadabra/issues?q=is%3Aissue+is%3Aopen+label%3A%22%3Awave%3A+Good+first+issue%22
 [replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
 [semver]: http://semver.org/
+[all-contributors]: https://allcontributors.org
+[all-contributors-emoji]: https://allcontributors.org/docs/en/emoji-key
 
 <!-- Demo images -->
 

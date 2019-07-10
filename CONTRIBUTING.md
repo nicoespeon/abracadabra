@@ -1,5 +1,7 @@
 # Contributing to Abracadabra
 
+First of all, we'd like to thank you for taking some of your time to contribute to the project. You're awesome 🤠👍
+
 Architecture decisions for this project [are documented here][adrs], using the [Architecture Decision Records (ADR)][adrs-pattern] pattern.
 
 ## Getting started
@@ -76,6 +78,16 @@ When it's done, run `yarn package:install` to install this new version instead o
 
 This allows you to use the package before it's published to the MarketPlace.
 
+## Open a PR and add acknowledge your contribution
+
+You can open a Pull-Request at any time. It can even be a draft if you need to ask for guidance and help. Actually, we'd be pretty happy to assist you going in the best direction!
+
+Once everything is ready, open a Pull-Request (if it's not already done) and ask for a review. We'll do our best to review it asap.
+
+Finally, [use all-contributors bot command][all-contributors-bot-command] to add yourself to the list of contributors. It's very easy to do, you basically need to mention the bot in a comment of your PR.
+
+Whether it's code, design, typo or documentation, every contribution is welcomed! So again, thank you very, very much 🧙‍
+
 <!-- Links -->
 
 [mocha]: https://mochajs.org/
@@ -92,6 +104,7 @@ This allows you to use the package before it's published to the MarketPlace.
 [babel-handbook]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
 [babel-handbook-transformation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-transformation-operations
 [babel-handbook-manipulation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#manipulation
+[all-contributors-bot-command]: https://allcontributors.org/docs/en/bot/usage#all-contributors-add
 
 <!-- Repo links -->
 
