@@ -21,7 +21,7 @@
     "Programming Languages",
     "Other"
   ],
-  "icon": "https://github.com/nicoespeon/abracadabra/blob/master/docs/logo/abracadabra-vignette.png?raw=true",
+  "icon": "docs/logo/abracadabra-vignette.png",
   "galleryBanner": {
     "color": "#27172D",
     "theme": "dark"
