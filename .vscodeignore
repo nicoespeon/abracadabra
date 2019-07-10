@@ -2,6 +2,7 @@
 .vscode/**
 dist/**
 docs/**
+!docs/logo/abracadabra-vignette.png
 node_modules/**
 out/test/**
 src/**
