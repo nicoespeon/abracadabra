@@ -258,6 +258,19 @@ console.log("How are you doing?");`,
       { read: new Selection([3, 9], [3, 17]) }
     ],
     [
+      "an element in a multi-lines array",
+      {
+        code: `const SUPPORTED_LANGUAGES = [
+  "javascript",
+  "javascriptreact",
+  "typescript",
+  "typescriptreact"
+];`,
+        selection: Selection.cursorAt(2, 2)
+      },
+      { read: new Selection([2, 2], [2, 19]) }
+    ],
+    [
       "an element nested in a multi-lines array",
       {
         code: `console.log([
