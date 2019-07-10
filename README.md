@@ -156,7 +156,31 @@ Same as _Move Statement Up_, but it moves the selected statement down. Like, the
 
 ## Release Notes
 
-See the [Changelog][changelog] for the list of all notable changes.
+[Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
+
+### Versioning
+
+We follow [SemVer][semver] convention for versionning.
+
+That means our releases use the following format:
+
+```
+<major>.<minor>.<patch>
+```
+
+- Breaking changes bump `<major>` (and reset `<minor>` & `<patch>`)
+- Backward compatible changes bump `<minor>` (and reset `<patch>`)
+- Bug fixes bump `<patch>`
+
+## Contributing
+
+### [Contributing Guide][contributing]
+
+Read our [contributing guide][contributing] to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Abracadabra.
+
+### [Good First Issues][good-first-issues]
+
+To help you get your feet wet and become familiar with our contribution process, we have a list of [good first issues][good-first-issues] that contains things with a relatively limited scope. This is a great place to get started!
 
 ## Alternatives
 
@@ -165,6 +189,12 @@ VS Code ships with [basic refactoring operations][vscode-refactorings]. But they
 There is also an extension called [JS Refactor][js-refactor] that provides JS automated refactorings for VS Code. But we didn't like its UX much (e.g. it takes a lot of keystrokes to extract a variable). Also, it didn't support JS class syntax well, nor JSX, TS and TSX when we decided to create **Abracadabra**.
 
 ![](https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/magic.gif?raw=true)
+
+## Copyright and License
+
+Copyright (c) 2019 Nicolas CARLO under the [MIT license][license].
+
+💁‍ [What does that mean?](http://choosealicense.com/licenses/mit/)
 
 <!-- Links -->
 
@@ -175,7 +205,11 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
+[contributing]: https://github.com/nicoespeon/abracadabra/blob/master/CONTRIBUTING.md
+[license]: https://github.com/nicoespeon/abracadabra/blob/master/LICENSE.md
+[good-first-issues]: https://github.com/nicoespeon/abracadabra/issues?q=is%3Aissue+is%3Aopen+label%3A%22%3Awave%3A+Good+first+issue%22
 [replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
+[semver]: http://semver.org/
 
 <!-- Demo images -->
 
