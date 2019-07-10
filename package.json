@@ -23,6 +23,43 @@
     "vscode": "^1.34.0"
   },
   "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "yarn run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "jest",
+    "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
+    "package": "vsce package",
+    "postpackage": "mkdir -p dist && mv *.vsix dist",
+    "package:install": "code --install-extension dist/*.vsix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "7.0.6",
+    "@types/jest": "24.0.13",
+    "@types/node": "10.12.21",
+    "husky": "2.3.0",
+    "jest": "24.8.0",
+    "prettier": "1.17.1",
+    "pretty-quick": "1.11.0",
+    "ts-functionaltypes": "1.0.6",
+    "ts-jest": "24.0.2",
+    "tslint": "5.12.1",
+    "typescript": "3.3.1",
+    "vsce": "1.61.0",
+    "vscode": "1.1.28"
+  },
+  "dependencies": {
+    "@babel/parser": "7.4.5",
+    "@babel/traverse": "7.4.5",
+    "@babel/types": "7.4.4",
+    "recast": "0.18.1"
+  },
   "activationEvents": [
     "onCommand:abracadabra.renameSymbol",
     "onCommand:abracadabra.extractVariable",
@@ -304,42 +341,5 @@
         }
       ]
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "yarn run build",
-    "build": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "jest",
-    "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
-    "package": "vsce package",
-    "postpackage": "mkdir -p dist && mv *.vsix dist",
-    "package:install": "code --install-extension dist/*.vsix"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
-  "devDependencies": {
-    "@types/babel__traverse": "7.0.6",
-    "@types/jest": "24.0.13",
-    "@types/node": "10.12.21",
-    "husky": "2.3.0",
-    "jest": "24.8.0",
-    "prettier": "1.17.1",
-    "pretty-quick": "1.11.0",
-    "ts-functionaltypes": "1.0.6",
-    "ts-jest": "24.0.2",
-    "tslint": "5.12.1",
-    "typescript": "3.3.1",
-    "vsce": "1.61.0",
-    "vscode": "1.1.28"
-  },
-  "dependencies": {
-    "@babel/parser": "7.4.5",
-    "@babel/traverse": "7.4.5",
-    "@babel/types": "7.4.4",
-    "recast": "0.18.1"
   }
 }
