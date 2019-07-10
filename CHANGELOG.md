@@ -20,3 +20,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[New refactoring]** "Inline Variable"
 - **[New refactoring]** "Extract Variable"
 - **[New refactoring]** "Rename Symbol"
+
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/224558fafc2c9247b637a74a7f17fe3c62140d47...HEAD
