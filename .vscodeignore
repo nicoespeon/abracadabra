@@ -4,7 +4,6 @@ dist/**
 docs/**
 !docs/logo/abracadabra-vignette.png
 node_modules/**
-out/test/**
 src/**
 .adr-dir
 .gitignore
