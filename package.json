@@ -33,9 +33,9 @@
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "jest",
-    "vscode:prepublish": "webpack --mode production",
     "build": "webpack --mode none",
     "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
+    "vscode:prepublish": "webpack --mode production",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
     "package:install": "code --install-extension dist/*.vsix"
