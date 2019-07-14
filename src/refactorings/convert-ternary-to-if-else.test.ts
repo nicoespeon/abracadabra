@@ -3,6 +3,7 @@ import { Selection } from "./editor/selection";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { convertTernaryToIfElse } from "./convert-ternary-to-if-else";
+import { testEach } from "../tests-helpers";
 
 describe("Convert Ternary to If/Else", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -11,10 +12,11 @@ describe("Convert Ternary to If/Else", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+  testEach<{ code: Code; selection: Selection; expected: Code }>(
+    "should convert ternary to if/else",
     [
-      "return statement",
       {
+        description: "return statement",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : "normal";
 }`,
@@ -26,11 +28,9 @@ describe("Convert Ternary to If/Else", () => {
     return "normal";
   }
 }`
-      }
-    ],
-    [
-      "assignment expression",
+      },
       {
+        description: "assignment expression",
         code: `function reservationMode(daysInAdvance) {
   let mode;
   mode = daysInAdvance > 10 ? "early" : "normal";
@@ -48,11 +48,9 @@ describe("Convert Ternary to If/Else", () => {
 
   return mode;
 }`
-      }
-    ],
-    [
-      "assignment expression with different operator",
+      },
       {
+        description: "assignment expression with different operator",
         code: `function getTotal(daysInAdvance) {
   let total = 10;
   total += daysInAdvance > 10 ? 2 : 5;
@@ -70,11 +68,9 @@ describe("Convert Ternary to If/Else", () => {
 
   return total;
 }`
-      }
-    ],
-    [
-      "variable declaration",
+      },
       {
+        description: "variable declaration",
         code: `function reservationMode(daysInAdvance) {
   const mode = daysInAdvance > 10 ? "early" : "normal";
   return mode;
@@ -91,11 +87,9 @@ describe("Convert Ternary to If/Else", () => {
 
   return mode;
 }`
-      }
-    ],
-    [
-      "nested ternary, cursor on wrapping ternary",
+      },
       {
+        description: "nested ternary, cursor on wrapping ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : isVIP ? "vip" : "normal";
 }`,
@@ -107,11 +101,10 @@ describe("Convert Ternary to If/Else", () => {
     return isVIP ? "vip" : "normal";
   }
 }`
-      }
-    ],
-    [
-      "nested ternary on consequent branch, cursor on nested ternary",
+      },
       {
+        description:
+          "nested ternary on consequent branch, cursor on nested ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "early";
 }`,
@@ -123,11 +116,10 @@ describe("Convert Ternary to If/Else", () => {
     return daysInAdvance <= 10 ? "normal" : "early";
   }
 }`
-      }
-    ],
-    [
-      "nested ternary on alternate branch, cursor on nested ternary",
+      },
       {
+        description:
+          "nested ternary on alternate branch, cursor on nested ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : isVIP ? "vip" : "normal";
 }`,
@@ -139,11 +131,10 @@ describe("Convert Ternary to If/Else", () => {
     return daysInAdvance > 10 ? "early" : "normal";
   }
 }`
-      }
-    ],
-    [
-      "nested ternary on both branches, cursor on consequent nested ternary",
+      },
       {
+        description:
+          "nested ternary on both branches, cursor on consequent nested ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : isEarly ? "early" : "unknown";
 }`,
@@ -155,11 +146,10 @@ describe("Convert Ternary to If/Else", () => {
     return daysInAdvance <= 10 ? "normal" : isEarly ? "early" : "unknown";
   }
 }`
-      }
-    ],
-    [
-      "nested ternary on both branches, cursor on alternate nested ternary",
+      },
       {
+        description:
+          "nested ternary on both branches, cursor on alternate nested ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : isEarly ? "early" : "unknown";
 }`,
@@ -171,11 +161,9 @@ describe("Convert Ternary to If/Else", () => {
     return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "unknown";
   }
 }`
-      }
-    ],
-    [
-      "deeply nested ternary, cursor on nested ternary",
+      },
       {
+        description: "deeply nested ternary, cursor on nested ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isVIP ? "vip" : isNormal ? "normal" : "unknown" :"early";
 }`,
@@ -187,11 +175,9 @@ describe("Convert Ternary to If/Else", () => {
     return daysInAdvance <= 10 ? isVIP ? "vip" : "unknown" : "early";
   }
 }`
-      }
-    ],
-    [
-      "deeply nested ternary, assignment expression",
+      },
       {
+        description: "deeply nested ternary, assignment expression",
         code: `function reservationMode(daysInAdvance) {
   let mode;
   mode = daysInAdvance <= 10 ? isVIP ? "vip" : isNormal ? "normal" : "unknown" :"early";
@@ -209,11 +195,9 @@ describe("Convert Ternary to If/Else", () => {
 
   return mode;
 }`
-      }
-    ],
-    [
-      "deeply nested ternary, variable declaration",
+      },
       {
+        description: "deeply nested ternary, variable declaration",
         code: `function reservationMode(daysInAdvance) {
   const mode = daysInAdvance <= 10 ? isVIP ? "vip" : isNormal ? "normal" : "unknown" :"early";
   return mode;
@@ -231,10 +215,8 @@ describe("Convert Ternary to If/Else", () => {
   return mode;
 }`
       }
-    ]
-  ])(
-    "should convert ternary to if/else (%s)",
-    async (_, { code, selection, expected }) => {
+    ],
+    async ({ code, selection, expected }) => {
       const result = await doConvertTernaryToIfElse(code, selection);
 
       expect(result).toBe(expected);

@@ -3,6 +3,7 @@ import { Selection } from "./editor/selection";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { convertIfElseToTernary } from "./convert-if-else-to-ternary";
+import { testEach } from "../tests-helpers";
 
 describe("Convert If/Else to Ternary", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -11,10 +12,11 @@ describe("Convert If/Else to Ternary", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+  testEach<{ code: Code; selection: Selection; expected: Code }>(
+    "should convert if/else to ternary",
     [
-      "with a return value",
       {
+        description: "with a return value",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     return "early";
@@ -26,11 +28,9 @@ describe("Convert If/Else to Ternary", () => {
         expected: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
-      }
-    ],
-    [
-      "with an assignment",
+      },
       {
+        description: "with an assignment",
         code: `function reservationMode(daysInAdvance) {
   let mode;
   if (daysInAdvance > 10) {
@@ -46,11 +46,9 @@ describe("Convert If/Else to Ternary", () => {
   mode = daysInAdvance > 10 ? "early" : "normal";
   return \`reserve-\${mode}\`;
 }`
-      }
-    ],
-    [
-      "with a return value and dead code after",
+      },
       {
+        description: "with a return value and dead code after",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     return "early";
@@ -63,11 +61,9 @@ describe("Convert If/Else to Ternary", () => {
         expected: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
-      }
-    ],
-    [
-      "with an assignment of a different operator",
+      },
       {
+        description: "with an assignment of a different operator",
         code: `function getTotalFees(daysInAdvance) {
   let fees = 10;
   if (daysInAdvance > 10) {
@@ -84,20 +80,19 @@ describe("Convert If/Else to Ternary", () => {
   return fees;
 }`
       }
-    ]
-  ])(
-    "should convert if/else to ternary (%s)",
-    async (_, { code, selection, expected }) => {
+    ],
+    async ({ code, selection, expected }) => {
       const result = await doConvertIfElseToTernary(code, selection);
 
       expect(result).toBe(expected);
     }
   );
 
-  it.each<[string, { code: Code; selection: Selection }]>([
+  testEach<{ code: Code; selection: Selection }>(
+    "should not convert if/else to ternary when",
     [
-      "there is an `else if` branch",
       {
+        description: "there is an `else if` branch",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     return "early";
@@ -108,11 +103,10 @@ describe("Convert If/Else to Ternary", () => {
   }
 }`,
         selection: Selection.cursorAt(1, 6)
-      }
-    ],
-    [
-      "there are other expressions in if branch (return statement)",
+      },
       {
+        description:
+          "there are other expressions in if branch (return statement)",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     console.log("debug");
@@ -122,11 +116,10 @@ describe("Convert If/Else to Ternary", () => {
   }
 }`,
         selection: Selection.cursorAt(1, 6)
-      }
-    ],
-    [
-      "there are other expressions in if branch (assignment expression)",
+      },
       {
+        description:
+          "there are other expressions in if branch (assignment expression)",
         code: `function reservationMode(daysInAdvance) {
   let mode;
   if (daysInAdvance > 10) {
@@ -138,11 +131,9 @@ describe("Convert If/Else to Ternary", () => {
   return \`reserve-\${mode}\`;
 }`,
         selection: Selection.cursorAt(1, 6)
-      }
-    ],
-    [
-      "many variables are assigned",
+      },
       {
+        description: "many variables are assigned",
         code: `function reservationMode(daysInAdvance) {
   let mode, urgency;
   if (daysInAdvance > 10) {
@@ -155,11 +146,9 @@ describe("Convert If/Else to Ternary", () => {
   return \`reserve-\${mode}-\${urgency}\`;
 }`,
         selection: Selection.cursorAt(2, 6)
-      }
-    ],
-    [
-      "assigned variables identifiers are different",
+      },
       {
+        description: "assigned variables identifiers are different",
         code: `function reservationMode(daysInAdvance) {
   let mode, urgency;
   if (daysInAdvance > 10) {
@@ -170,11 +159,9 @@ describe("Convert If/Else to Ternary", () => {
   return \`reserve-\${mode}\`;
 }`,
         selection: Selection.cursorAt(2, 6)
-      }
-    ],
-    [
-      "assigned variables operators are different",
+      },
       {
+        description: "assigned variables operators are different",
         code: `function getTotalFees(daysInAdvance) {
   let fees = 10;
   if (daysInAdvance > 10) {
@@ -185,11 +172,9 @@ describe("Convert If/Else to Ternary", () => {
   return fees;
 }`,
         selection: Selection.cursorAt(2, 6)
-      }
-    ],
-    [
-      "there is no else branch",
+      },
       {
+        description: "there is no else branch",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     return "early";
@@ -198,10 +183,9 @@ describe("Convert If/Else to Ternary", () => {
 }`,
         selection: Selection.cursorAt(1, 6)
       }
-    ]
-  ])(
-    "should not convert if/else to ternary when %s",
-    async (_, { code, selection }) => {
+    ],
+
+    async ({ code, selection }) => {
       const result = await doConvertIfElseToTernary(code, selection);
 
       expect(result).toBe(code);

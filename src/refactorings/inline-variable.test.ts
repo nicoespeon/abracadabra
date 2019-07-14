@@ -2,6 +2,7 @@ import { ReadThenWrite, Update, Code } from "./editor/i-write-code";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { Selection } from "./editor/selection";
 import { inlineVariable } from "./inline-variable";
+import { testEach } from "../tests-helpers";
 
 describe("Inline Variable", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -18,22 +19,38 @@ describe("Inline Variable", () => {
       );
   });
 
-  it.each<[string, Selection]>([
-    ["all variable declaration is selected", new Selection([0, 0], [0, 18])],
-    ["cursor is on value", Selection.cursorAt(0, 14)],
-    ["cursor is on identifier", Selection.cursorAt(0, 7)],
-    ["cursor is on declarator", Selection.cursorAt(0, 2)]
-  ])("should select variable value if %s", async (_, selection) => {
-    const code = `const foo = "bar";
+  testEach<{ selection: Selection }>(
+    "should select variable value if",
+    [
+      {
+        description: "all variable declaration is selected",
+        selection: new Selection([0, 0], [0, 18])
+      },
+      {
+        description: "cursor is on value",
+        selection: Selection.cursorAt(0, 14)
+      },
+      {
+        description: "cursor is on identifier",
+        selection: Selection.cursorAt(0, 7)
+      },
+      {
+        description: "cursor is on declarator",
+        selection: Selection.cursorAt(0, 2)
+      }
+    ],
+    async ({ selection }) => {
+      const code = `const foo = "bar";
 console.log(foo);`;
 
-    await doInlineVariable(code, selection);
+      await doInlineVariable(code, selection);
 
-    expect(readThenWrite).toBeCalledWith(
-      new Selection([0, 12], [0, 17]),
-      expect.any(Function)
-    );
-  });
+      expect(readThenWrite).toBeCalledWith(
+        new Selection([0, 12], [0, 17]),
+        expect.any(Function)
+      );
+    }
+  );
 
   it("should inline the variable value that matches selection", async () => {
     const code = `const foo = "bar";
@@ -286,31 +303,26 @@ const result = one + two + three;`;
       );
     });
 
-    it.each<[string, { selection: Selection; expectedSelection: Selection }]>([
+    testEach<{ selection: Selection; expectedSelection: Selection }>(
+      "should only remove the inlined variable if",
       [
-        "basic scenario",
         {
+          description: "basic scenario",
           selection: Selection.cursorAt(0, 15),
           expectedSelection: new Selection([0, 15], [0, 24])
-        }
-      ],
-      [
-        "last variable",
+        },
         {
+          description: "last variable",
           selection: Selection.cursorAt(0, 24),
           expectedSelection: new Selection([0, 22], [0, 33])
-        }
-      ],
-      [
-        "first variable",
+        },
         {
+          description: "first variable",
           selection: Selection.cursorAt(0, 6),
           expectedSelection: new Selection([0, 6], [0, 15])
         }
-      ]
-    ])(
-      "should only remove the inlined variable (%s)",
-      async (_, { selection, expectedSelection }) => {
+      ],
+      async ({ selection, expectedSelection }) => {
         await doInlineVariable(code, selection);
 
         expect(updates[1]).toEqual({
@@ -388,47 +400,40 @@ const result = one + two + three;`;
     );
   });
 
-  it.each<[string, { code: Code; selection: Selection }]>([
+  testEach<{ code: Code; selection: Selection }>(
+    "should not inline an exported variable if",
     [
-      "export declaration",
       {
+        description: "export declaration",
         code: `export const foo = "bar", hello = "world";
 console.log(foo);`,
         selection: Selection.cursorAt(0, 19)
-      }
-    ],
-    [
-      "export after declaration",
+      },
       {
+        description: "export after declaration",
         code: `const foo = "bar", hello = "world";
 console.log(foo);
 
 export { hello, foo };`,
         selection: Selection.cursorAt(0, 12)
-      }
-    ],
-    [
-      "export before declaration",
+      },
       {
+        description: "export before declaration",
         code: `export { foo };
 const foo = "bar", hello = "world";
 console.log(foo);`,
         selection: Selection.cursorAt(1, 12)
-      }
-    ],
-    [
-      "default export after declaration",
+      },
       {
+        description: "default export after declaration",
         code: `const foo = "bar", hello = "world";
 console.log(foo);
 
 export default foo;`,
         selection: Selection.cursorAt(0, 12)
       }
-    ]
-  ])(
-    "should not inline an exported variable (%s)",
-    async (_, { code, selection }) => {
+    ],
+    async ({ code, selection }) => {
       await doInlineVariable(code, selection);
 
       expect(showErrorMessage).toBeCalledWith(
