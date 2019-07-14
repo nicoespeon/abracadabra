@@ -4,6 +4,7 @@ import { Position } from "./editor/position";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { moveStatementDown } from "./move-statement-down";
+import { testEach } from "../tests-helpers";
 
 describe("Move Statement Down", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -12,31 +13,25 @@ describe("Move Statement Down", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<
+  testEach<{
+    code: Code;
+    selection: Selection;
+    expected: Code;
+    expectedPosition: Position;
+  }>(
+    "should move statement down",
     [
-      string,
       {
-        code: Code;
-        selection: Selection;
-        expected: Code;
-        expectedPosition: Position;
-      }
-    ]
-  >([
-    [
-      "single-line statement",
-      {
+        description: "single-line statement",
         code: `console.log("I'm up");
 console.log("I'm down");`,
         selection: Selection.cursorAt(0, 0),
         expected: `console.log("I'm down");
 console.log("I'm up");`,
         expectedPosition: new Position(1, 0)
-      }
-    ],
-    [
-      "single-line statement moved below multi-lines statement",
+      },
       {
+        description: "single-line statement moved below multi-lines statement",
         code: `console.log("I'm up");
 
 if (isValid) {
@@ -49,11 +44,9 @@ if (isValid) {
 
 console.log("I'm up");`,
         expectedPosition: new Position(4, 0)
-      }
-    ],
-    [
-      "multi-lines statement",
+      },
       {
+        description: "multi-lines statement",
         code: `if (isValid) {
   console.log("I'm up");
 }
@@ -66,11 +59,9 @@ if (isValid) {
   console.log("I'm up");
 }`,
         expectedPosition: new Position(4, 0)
-      }
-    ],
-    [
-      "multi-lines statement moved below multi-lines statement",
+      },
       {
+        description: "multi-lines statement moved below multi-lines statement",
         code: `if (isValid) {
   console.log("I'm up");
 }
@@ -87,11 +78,9 @@ if (isValid) {
   console.log("I'm up");
 }`,
         expectedPosition: new Position(6, 0)
-      }
-    ],
-    [
-      "statement inside a container",
+      },
       {
+        description: "statement inside a container",
         code: `function doSomethingElse() {
   const a = 1;
   const b = 2;
@@ -116,11 +105,9 @@ const hello = "world";`,
 
 const hello = "world";`,
         expectedPosition: new Position(2, 2)
-      }
-    ],
-    [
-      "statement inside a container, cursor at start of line",
+      },
       {
+        description: "statement inside a container, cursor at start of line",
         code: `function doSomethingElse() {
   const a = 1;
   const b = 2;
@@ -145,11 +132,9 @@ const hello = "world";`,
 
 const hello = "world";`,
         expectedPosition: new Position(2, 0)
-      }
-    ],
-    [
-      "statement below is a function, without space in-between",
+      },
       {
+        description: "statement below is a function, without space in-between",
         code: `console.log("First");
 function doSomething() {
   console.log("Second");
@@ -161,11 +146,9 @@ function doSomething() {
 
 console.log("First");`,
         expectedPosition: new Position(4, 0)
-      }
-    ],
-    [
-      "statement below is a function, with space in-between",
+      },
       {
+        description: "statement below is a function, with space in-between",
         code: `console.log("First");
 
 function doSomething() {
@@ -178,11 +161,10 @@ function doSomething() {
 
 console.log("First");`,
         expectedPosition: new Position(4, 0)
-      }
-    ],
-    [
-      "statement below is a function, without space in-between + statement above",
+      },
       {
+        description:
+          "statement below is a function, without space in-between + statement above",
         code: `console.log("First");
 console.log("Second");
 function doSomething() {
@@ -198,10 +180,8 @@ function doSomething() {
 console.log("Second");`,
         expectedPosition: new Position(6, 0)
       }
-    ]
-  ])(
-    "should move statement down (%s)",
-    async (_, { code, selection, expected, expectedPosition }) => {
+    ],
+    async ({ code, selection, expected, expectedPosition }) => {
       const result = await doMoveStatementDown(code, selection);
 
       expect(result.code).toBe(expected);

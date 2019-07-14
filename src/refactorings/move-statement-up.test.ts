@@ -4,6 +4,7 @@ import { Position } from "./editor/position";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { moveStatementUp } from "./move-statement-up";
+import { testEach } from "../tests-helpers";
 
 describe("Move Statement Up", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -12,31 +13,25 @@ describe("Move Statement Up", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<
+  testEach<{
+    code: Code;
+    selection: Selection;
+    expected: Code;
+    expectedPosition: Position;
+  }>(
+    "should move statement up",
     [
-      string,
       {
-        code: Code;
-        selection: Selection;
-        expected: Code;
-        expectedPosition: Position;
-      }
-    ]
-  >([
-    [
-      "single-line statement",
-      {
+        description: "single-line statement",
         code: `console.log("I'm up");
 console.log("I'm down");`,
         selection: Selection.cursorAt(1, 0),
         expected: `console.log("I'm down");
 console.log("I'm up");`,
         expectedPosition: new Position(0, 0)
-      }
-    ],
-    [
-      "multi-lines statement",
+      },
       {
+        description: "multi-lines statement",
         code: `console.log("I'm up");
 
 if (isValid) {
@@ -49,11 +44,9 @@ if (isValid) {
 
 console.log("I'm up");`,
         expectedPosition: new Position(0, 0)
-      }
-    ],
-    [
-      "single-line statement moved above multi-lines statement",
+      },
       {
+        description: "single-line statement moved above multi-lines statement",
         code: `if (isValid) {
   console.log("I'm up");
 }
@@ -66,11 +59,9 @@ if (isValid) {
   console.log("I'm up");
 }`,
         expectedPosition: new Position(0, 0)
-      }
-    ],
-    [
-      "multi-lines statement moved above multi-lines statement",
+      },
       {
+        description: "multi-lines statement moved above multi-lines statement",
         code: `if (isValid) {
   console.log("I'm up");
 }
@@ -87,11 +78,9 @@ if (isValid) {
   console.log("I'm up");
 }`,
         expectedPosition: new Position(0, 0)
-      }
-    ],
-    [
-      "statement inside a container",
+      },
       {
+        description: "statement inside a container",
         code: `const hello = "world";
 
 function doSomethingElse() {
@@ -116,11 +105,9 @@ function doSomethingElse() {
   }
 }`,
         expectedPosition: new Position(3, 2)
-      }
-    ],
-    [
-      "statement inside a container, cursor at start of line",
+      },
       {
+        description: "statement inside a container, cursor at start of line",
         code: `const hello = "world";
 
 function doSomethingElse() {
@@ -146,10 +133,8 @@ function doSomethingElse() {
 }`,
         expectedPosition: new Position(3, 0)
       }
-    ]
-  ])(
-    "should move statement up (%s)",
-    async (_, { code, selection, expected, expectedPosition }) => {
+    ],
+    async ({ code, selection, expected, expectedPosition }) => {
       const result = await doMoveStatementUp(code, selection);
 
       expect(result.code).toBe(expected);

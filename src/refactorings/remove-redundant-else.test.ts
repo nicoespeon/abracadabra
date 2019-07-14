@@ -3,6 +3,7 @@ import { Selection } from "./editor/selection";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { removeRedundantElse } from "./remove-redundant-else";
+import { testEach } from "../tests-helpers";
 
 describe("Remove Redundant Else", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -11,10 +12,11 @@ describe("Remove Redundant Else", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+  testEach<{ code: Code; selection: Selection; expected: Code }>(
+    "should remove redundant else",
     [
-      "basic scenario",
       {
+        description: "basic scenario",
         code: `function doSomethingIfValid() {
   console.log("Start working");
 
@@ -42,11 +44,9 @@ describe("Remove Redundant Else", () => {
 
   doSomeFinalThing();
 }`
-      }
-    ],
-    [
-      "only the selected one",
+      },
       {
+        description: "only the selected one",
         code: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
@@ -80,11 +80,9 @@ describe("Remove Redundant Else", () => {
     showMessage();
   }
 }`
-      }
-    ],
-    [
-      "when cursor is inside",
+      },
       {
+        description: "when cursor is inside",
         code: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
@@ -103,11 +101,9 @@ describe("Remove Redundant Else", () => {
   doSomething();
   doAnotherThing();
 }`
-      }
-    ],
-    [
-      "with throw expression",
+      },
       {
+        description: "with throw expression",
         code: `function doSomethingIfValid() {
   if (!isValid) {
     throw new Error("Oh no!");
@@ -124,11 +120,9 @@ describe("Remove Redundant Else", () => {
   doSomething();
   doAnotherThing();
 }`
-      }
-    ],
-    [
-      "with else if",
+      },
       {
+        description: "with else if",
         code: `function doSomethingIfValid() {
   if (!isValid) {
     throw new Error("Oh no!");
@@ -150,10 +144,8 @@ describe("Remove Redundant Else", () => {
   }
 }`
       }
-    ]
-  ])(
-    "should remove redundant else (%s)",
-    async (_, { code, selection, expected }) => {
+    ],
+    async ({ code, selection, expected }) => {
       const result = await doRemoveRedundantElse(code, selection);
 
       expect(result).toBe(expected);

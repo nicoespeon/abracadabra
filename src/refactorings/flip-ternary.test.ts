@@ -3,6 +3,7 @@ import { Selection } from "./editor/selection";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
 import { createWriteInMemory } from "./adapters/write-code-in-memory";
 import { flipTernary } from "./flip-ternary";
+import { testEach } from "../tests-helpers";
 
 describe("Flip Ternary", () => {
   let showErrorMessage: ShowErrorMessage;
@@ -11,36 +12,34 @@ describe("Flip Ternary", () => {
     showErrorMessage = jest.fn();
   });
 
-  it.each<[string, { code: Code; selection: Selection; expected: Code }]>([
+  testEach<{ code: Code; selection: Selection; expected: Code }>(
+    "should flip ternary",
     [
-      "basic scenario",
       {
+        description: "basic scenario",
         code: `const hello = isMorning ? "Good morning" : "Hello";`,
         selection: Selection.cursorAt(0, 16),
         expected: `const hello = !isMorning ? "Hello" : "Good morning";`
-      }
-    ],
-    [
-      "an already flipped ternary",
+      },
       {
+        description: "an already flipped ternary",
         code: `const hello = !isMorning ? "Hello" : "Good morning";`,
         selection: Selection.cursorAt(0, 16),
         expected: `const hello = isMorning ? "Good morning" : "Hello";`
-      }
-    ],
-    [
-      "a ternary with a binary expression",
+      },
       {
+        description: "a ternary with a binary expression",
         code: `const max = a > b ? a : b;`,
         selection: Selection.cursorAt(0, 16),
         expected: `const max = a <= b ? b : a;`
       }
-    ]
-  ])("should flip ternary (%s)", async (_, { code, selection, expected }) => {
-    const result = await doFlipTernary(code, selection);
+    ],
+    async ({ code, selection, expected }) => {
+      const result = await doFlipTernary(code, selection);
 
-    expect(result).toBe(expected);
-  });
+      expect(result).toBe(expected);
+    }
+  );
 
   it("should show an error message if selection has no ternary", async () => {
     const code = `console.log("no ternary")`;
