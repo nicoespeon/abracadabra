@@ -9,7 +9,6 @@ import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { flipIfElse } from "./refactorings/flip-if-else";
 import { flipTernary } from "./refactorings/flip-ternary";
-import { convertTernaryToIfElse } from "./refactorings/convert-ternary-to-if-else";
 import { moveStatementUp } from "./refactorings/move-statement-up";
 import { moveStatementDown } from "./refactorings/move-statement-down";
 import { Refactoring } from "./refactorings/refactoring";
@@ -50,10 +49,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.FlipTernary,
     createCommand(flipTernary)
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.ConvertTernaryToIfElse,
-    createCommand(convertTernaryToIfElse)
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.MoveStatementUp,

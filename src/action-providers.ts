@@ -6,7 +6,6 @@ import { findNegatableExpression } from "./refactorings/negate-expression";
 import { hasRedundantElse } from "./refactorings/remove-redundant-else";
 import { hasIfElseToFlip } from "./refactorings/flip-if-else";
 import { hasTernaryToFlip } from "./refactorings/flip-ternary";
-import { hasTernaryToConvert } from "./refactorings/convert-ternary-to-if-else";
 
 import { createSelectionFromVSCode } from "./editor/adapters/write-code-in-vscode";
 
@@ -25,10 +24,7 @@ function createActionProvidersFor(selector: vscode.DocumentSelector) {
     createActionProviderFor(new NegateExpressionActionProvider())(selector),
     createActionProviderFor(new RemoveRedundantElseActionProvider())(selector),
     createActionProviderFor(new FlipIfElseActionProvider())(selector),
-    createActionProviderFor(new FlipTernaryActionProvider())(selector),
-    createActionProviderFor(new ConvertTernaryToIfElseActionProvider())(
-      selector
-    )
+    createActionProviderFor(new FlipTernaryActionProvider())(selector)
   ];
 }
 
@@ -133,32 +129,6 @@ class FlipTernaryActionProvider implements CodeActionProvider {
     action.command = {
       command: RefactoringCommand.FlipTernary,
       title: "Flip Ternary"
-    };
-
-    return [action];
-  }
-}
-
-class ConvertTernaryToIfElseActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!hasTernaryToConvert(code, selection)) return;
-
-    const action = new vscode.CodeAction(
-      "✨ Convert ternary to if/else",
-      this.kind
-    );
-    action.isPreferred = false;
-    action.command = {
-      command: RefactoringCommand.ConvertTernaryToIfElse,
-      title: "Convert Ternary to If/Else"
     };
 
     return [action];
