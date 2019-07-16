@@ -11,6 +11,7 @@ import flipIfElseCommand from "./refactorings/flip-if-else/command";
 import flipTernaryCommand from "./refactorings/flip-ternary/command";
 import inlineVariableCommand from "./refactorings/inline-variable/command";
 import moveStatementDownCommand from "./refactorings/move-statement-down/command";
+import moveStatementUpCommand from "./refactorings/move-statement-up/command";
 
 // If all refactorings follow same pattern, we could dynamically import them.
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
@@ -34,7 +35,8 @@ export function activate(context: vscode.ExtensionContext) {
     flipIfElseCommand,
     flipTernaryCommand,
     inlineVariableCommand,
-    moveStatementDownCommand
+    moveStatementDownCommand,
+    moveStatementUpCommand
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {

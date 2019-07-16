@@ -4,6 +4,5 @@ export { RefactoringCommand };
 enum RefactoringCommand {
   RenameSymbol = "abracadabra.renameSymbol",
   NegateExpression = "abracadabra.negateExpression",
-  RemoveRedundantElse = "abracadabra.removeRedundantElse",
-  MoveStatementUp = "abracadabra.moveStatementUp"
+  RemoveRedundantElse = "abracadabra.removeRedundantElse"
 }
