@@ -8,11 +8,13 @@ import convertIfElseToTernaryCommand from "./refactorings/convert-if-else-to-ter
 import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-else/command";
 import extractVariableCommand from "./refactorings/extract-variable/command";
 import flipIfElseCommand from "./refactorings/flip-if-else/command";
+import flipTernaryCommand from "./refactorings/flip-ternary/command";
 
 // If all refactorings follow same pattern, we could dynamically import them.
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
+import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -27,7 +29,8 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToTernaryCommand,
     convertTernaryToIfElseCommand,
     extractVariableCommand,
-    flipIfElseCommand
+    flipIfElseCommand,
+    flipTernaryCommand
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
@@ -35,7 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
       ...createActionProvidersFor(language),
       convertIfElseToTernaryActionProviderFor(language),
       convertTernaryToIfElseActionProviderFor(language),
-      flipIfElseActionProviderFor(language)
+      flipIfElseActionProviderFor(language),
+      flipTernaryActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
   });
 }

@@ -1,9 +1,12 @@
-import { Code } from "../editor/i-write-code";
-import { Selection } from "../editor/selection";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import { createWriteInMemory } from "../editor/adapters/write-code-in-memory";
+import { Code } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
 import { flipTernary } from "./flip-ternary";
-import { testEach } from "../tests-helpers";
+import { testEach } from "../../tests-helpers";
 
 describe("Flip Ternary", () => {
   let showErrorMessage: ShowErrorMessage;
