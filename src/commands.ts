@@ -6,7 +6,6 @@ import { renameSymbol } from "./refactorings/rename-symbol";
 import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { moveStatementUp } from "./refactorings/move-statement-up";
-import { moveStatementDown } from "./refactorings/move-statement-down";
 import { Refactoring } from "./refactorings/refactoring";
 
 import { delegateToVSCode } from "./editor/adapters/delegate-to-vscode";
@@ -33,10 +32,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.MoveStatementUp,
     createCommand(moveStatementUp)
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.MoveStatementDown,
-    createCommand(moveStatementDown)
   )
 ];
 

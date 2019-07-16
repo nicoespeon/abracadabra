@@ -1,10 +1,13 @@
-import { Code } from "../editor/i-write-code";
-import { Selection } from "../editor/selection";
-import { Position } from "../editor/position";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import { createWriteInMemory } from "../editor/adapters/write-code-in-memory";
+import { Code } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import { Position } from "../../editor/position";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
 import { moveStatementDown } from "./move-statement-down";
-import { testEach } from "../tests-helpers";
+import { testEach } from "../../tests-helpers";
 
 describe("Move Statement Down", () => {
   let showErrorMessage: ShowErrorMessage;
