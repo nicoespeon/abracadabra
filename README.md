@@ -4,8 +4,6 @@
 
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
-> 👷 This project is under initial development phase and is not stable yet.
-
 Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript.
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
