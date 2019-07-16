@@ -1,9 +1,12 @@
-import { Code } from "../editor/i-write-code";
-import { Selection } from "../editor/selection";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import { createWriteInMemory } from "../editor/adapters/write-code-in-memory";
+import { Code } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
 import { removeRedundantElse } from "./remove-redundant-else";
-import { testEach } from "../tests-helpers";
+import { testEach } from "../../tests-helpers";
 
 describe("Remove Redundant Else", () => {
   let showErrorMessage: ShowErrorMessage;

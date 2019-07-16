@@ -3,7 +3,6 @@ import * as vscode from "vscode";
 import { RefactoringCommand } from "./refactoring-command";
 
 import { renameSymbol } from "./refactorings/rename-symbol";
-import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { Refactoring } from "./refactorings/refactoring";
 
 import { delegateToVSCode } from "./editor/adapters/delegate-to-vscode";
@@ -17,10 +16,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.RenameSymbol,
     renameSymbolCommand
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.RemoveRedundantElse,
-    createCommand(removeRedundantElse)
   )
 ];
 

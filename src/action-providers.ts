@@ -1,25 +1,9 @@
 import * as vscode from "vscode";
 
-import { RefactoringCommand } from "./refactoring-command";
-
-import { hasRedundantElse } from "./refactorings/remove-redundant-else";
-
-import { createSelectionFromVSCode } from "./editor/adapters/write-code-in-vscode";
-
-export {
-  createActionProvidersFor,
-  CodeActionProvider,
-  createActionProviderFor
-};
+export { CodeActionProvider, createActionProviderFor };
 
 interface CodeActionProvider extends vscode.CodeActionProvider {
   readonly kind: vscode.CodeActionKind;
-}
-
-function createActionProvidersFor(selector: vscode.DocumentSelector) {
-  return [
-    createActionProviderFor(new RemoveRedundantElseActionProvider())(selector)
-  ];
 }
 
 function createActionProviderFor(
@@ -29,27 +13,4 @@ function createActionProviderFor(
     vscode.languages.registerCodeActionsProvider(selector, actionProvider, {
       providedCodeActionKinds: [actionProvider.kind]
     });
-}
-
-class RemoveRedundantElseActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!hasRedundantElse(code, selection)) return;
-
-    const action = new vscode.CodeAction("✨ Remove redundant else", this.kind);
-    action.isPreferred = true;
-    action.command = {
-      command: RefactoringCommand.RemoveRedundantElse,
-      title: "Remove Redundant Else"
-    };
-
-    return [action];
-  }
 }
