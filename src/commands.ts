@@ -3,7 +3,6 @@ import * as vscode from "vscode";
 import { RefactoringCommand } from "./refactoring-command";
 
 import { renameSymbol } from "./refactorings/rename-symbol";
-import { extractVariable } from "./refactorings/extract-variable";
 import { inlineVariable } from "./refactorings/inline-variable";
 import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
@@ -25,10 +24,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.RenameSymbol,
     renameSymbolCommand
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.ExtractVariable,
-    extractVariableCommand
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.InlineVariable,
@@ -62,25 +57,6 @@ export default [
 
 function renameSymbolCommand() {
   executeSafely(() => renameSymbol(delegateToVSCode));
-}
-
-async function extractVariableCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    extractVariable(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createReadThenWriteInVSCode(document),
-      delegateToVSCode,
-      showErrorMessageInVSCode
-    )
-  );
 }
 
 async function inlineVariableCommand() {
@@ -139,7 +115,9 @@ export function createCommand(refactoring: Refactoring) {
   };
 }
 
-async function executeSafely(command: () => Promise<any>): Promise<void> {
+export async function executeSafely(
+  command: () => Promise<any>
+): Promise<void> {
   try {
     await command();
   } catch (err) {

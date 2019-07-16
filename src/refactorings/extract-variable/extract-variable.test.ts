@@ -1,12 +1,15 @@
 import {
   DelegateToEditor,
   EditorCommand
-} from "../editor/i-delegate-to-editor";
-import { ReadThenWrite, Code, Update } from "../editor/i-write-code";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import { Selection } from "../editor/selection";
+} from "../../editor/i-delegate-to-editor";
+import { ReadThenWrite, Code, Update } from "../../editor/i-write-code";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import { Selection } from "../../editor/selection";
 import { extractVariable } from "./extract-variable";
-import { testEach } from "../tests-helpers";
+import { testEach } from "../../tests-helpers";
 
 describe("Extract Variable", () => {
   let readThenWrite: ReadThenWrite;
