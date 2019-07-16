@@ -1,8 +1,11 @@
-import { Code, Write } from "../editor/i-write-code";
-import { Selection } from "../editor/selection";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import * as ast from "../ast";
-import { getNegatedBinaryOperator } from "./negate-expression";
+import { Code, Write } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import * as ast from "../../ast";
+import { getNegatedBinaryOperator } from "../negate-expression";
 
 export { flipIfElse, hasIfElseToFlip };
 

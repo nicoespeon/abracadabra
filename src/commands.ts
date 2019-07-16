@@ -6,7 +6,6 @@ import { renameSymbol } from "./refactorings/rename-symbol";
 import { inlineVariable } from "./refactorings/inline-variable";
 import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
-import { flipIfElse } from "./refactorings/flip-if-else";
 import { flipTernary } from "./refactorings/flip-ternary";
 import { moveStatementUp } from "./refactorings/move-statement-up";
 import { moveStatementDown } from "./refactorings/move-statement-down";
@@ -36,10 +35,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.RemoveRedundantElse,
     createCommand(removeRedundantElse)
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.FlipIfElse,
-    createCommand(flipIfElse)
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.FlipTernary,
