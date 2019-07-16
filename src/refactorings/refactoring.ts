@@ -1,6 +1,6 @@
-import { Code, Write } from "./editor/i-write-code";
-import { Selection } from "./editor/selection";
-import { ShowErrorMessage } from "./editor/i-show-error-message";
+import { Code, Write } from "../editor/i-write-code";
+import { Selection } from "../editor/selection";
+import { ShowErrorMessage } from "../editor/i-show-error-message";
 
 export { Refactoring };
 

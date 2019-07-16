@@ -1,6 +1,6 @@
 import { Position } from "./position";
-import * as ast from "../ast";
-import { Node, NodePath, ASTSelection } from "../ast";
+import * as ast from "../refactorings/ast";
+import { Node, NodePath, ASTSelection } from "../refactorings/ast";
 
 export { Selection };
 

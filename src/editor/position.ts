@@ -1,4 +1,4 @@
-import { ASTPosition } from "../ast";
+import { ASTPosition } from "../refactorings/ast";
 
 export { Position };
 
