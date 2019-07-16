@@ -1,6 +1,3 @@
-import { Code } from "./refactorings/editor/i-write-code";
-import { Selection } from "./refactorings/editor/selection";
-
 export { testEach };
 
 function testEach<T>(
