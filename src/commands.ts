@@ -3,7 +3,6 @@ import * as vscode from "vscode";
 import { RefactoringCommand } from "./refactoring-command";
 
 import { renameSymbol } from "./refactorings/rename-symbol";
-import { inlineVariable } from "./refactorings/inline-variable";
 import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { moveStatementUp } from "./refactorings/move-statement-up";
@@ -22,10 +21,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.RenameSymbol,
     renameSymbolCommand
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.InlineVariable,
-    inlineVariableCommand
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.NegateExpression,
@@ -47,24 +42,6 @@ export default [
 
 function renameSymbolCommand() {
   executeSafely(() => renameSymbol(delegateToVSCode));
-}
-
-async function inlineVariableCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    inlineVariable(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createReadThenWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
 }
 
 async function negateExpressionCommand() {

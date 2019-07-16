@@ -1,7 +1,10 @@
-import { Code, ReadThenWrite } from "../editor/i-write-code";
-import { Selection } from "../editor/selection";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import * as ast from "../ast";
+import { Code, ReadThenWrite } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import * as ast from "../../ast";
 
 export { inlineVariable };
 
