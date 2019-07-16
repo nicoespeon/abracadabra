@@ -1,7 +1,7 @@
 import { Code } from "./editor/i-write-code";
 import { Selection } from "./editor/selection";
 import { ShowErrorMessage, ErrorReason } from "./editor/i-show-error-message";
-import { createWriteInMemory } from "./adapters/write-code-in-memory";
+import { createWriteInMemory } from "./editor/adapters/write-code-in-memory";
 import { convertIfElseToTernary } from "./convert-if-else-to-ternary";
 import { testEach } from "../tests-helpers";
 

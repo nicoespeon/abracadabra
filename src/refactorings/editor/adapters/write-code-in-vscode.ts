@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { Pipe } from "ts-functionaltypes";
 
-import { ReadThenWrite, Update, Write } from "../editor/i-write-code";
-import { Position } from "../editor/position";
-import { Selection } from "../editor/selection";
+import { ReadThenWrite, Update, Write } from "../i-write-code";
+import { Position } from "../position";
+import { Selection } from "../selection";
 
 export {
   createWriteInVSCode,

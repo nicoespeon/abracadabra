@@ -9,7 +9,7 @@ import { hasTernaryToFlip } from "./refactorings/flip-ternary";
 import { hasIfElseToConvert } from "./refactorings/convert-if-else-to-ternary";
 import { hasTernaryToConvert } from "./refactorings/convert-ternary-to-if-else";
 
-import { createSelectionFromVSCode } from "./refactorings/adapters/write-code-in-vscode";
+import { createSelectionFromVSCode } from "./refactorings/editor/adapters/write-code-in-vscode";
 
 export { createActionProvidersFor };
 

@@ -15,13 +15,13 @@ import { moveStatementUp } from "./refactorings/move-statement-up";
 import { moveStatementDown } from "./refactorings/move-statement-down";
 import { Refactoring } from "./refactorings/refactoring";
 
-import { delegateToVSCode } from "./refactorings/adapters/delegate-to-vscode";
-import { showErrorMessageInVSCode } from "./refactorings/adapters/show-error-message-in-vscode";
+import { delegateToVSCode } from "./refactorings/editor/adapters/delegate-to-vscode";
+import { showErrorMessageInVSCode } from "./refactorings/editor/adapters/show-error-message-in-vscode";
 import {
   createReadThenWriteInVSCode,
   createWriteInVSCode,
   createSelectionFromVSCode
-} from "./refactorings/adapters/write-code-in-vscode";
+} from "./refactorings/editor/adapters/write-code-in-vscode";
 
 export default [
   vscode.commands.registerCommand(

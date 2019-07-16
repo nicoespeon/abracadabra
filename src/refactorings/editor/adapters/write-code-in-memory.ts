@@ -1,5 +1,5 @@
-import { Write, Code } from "../editor/i-write-code";
-import { Position } from "../editor/position";
+import { Write, Code } from "../i-write-code";
+import { Position } from "../position";
 
 export { createWriteInMemory };
 
