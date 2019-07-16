@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 
-import { Refactoring } from "./refactorings/refactoring";
+import { Code, Write } from "./editor/i-write-code";
+import { Selection } from "./editor/selection";
+import { ShowErrorMessage } from "./editor/i-show-error-message";
 
 import { showErrorMessageInVSCode } from "./editor/adapters/show-error-message-in-vscode";
 import {
@@ -29,6 +31,13 @@ function createCommand(refactoring: Refactoring) {
     );
   };
 }
+
+type Refactoring = (
+  code: Code,
+  selection: Selection,
+  write: Write,
+  showErrorMessage: ShowErrorMessage
+) => Promise<void>;
 
 async function executeSafely(command: () => Promise<any>): Promise<void> {
   try {
