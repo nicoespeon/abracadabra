@@ -6,7 +6,7 @@ import {
 } from "../../editor/i-show-error-message";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
-import { renameSymbol } from "../rename-symbol";
+import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export { extractVariable };
 

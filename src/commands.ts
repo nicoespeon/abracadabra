@@ -1,29 +1,16 @@
 import * as vscode from "vscode";
 
-import { RefactoringCommand } from "./refactoring-command";
-
-import { renameSymbol } from "./refactorings/rename-symbol";
 import { Refactoring } from "./refactorings/refactoring";
 
-import { delegateToVSCode } from "./editor/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./editor/adapters/show-error-message-in-vscode";
 import {
   createWriteInVSCode,
   createSelectionFromVSCode
 } from "./editor/adapters/write-code-in-vscode";
 
-export default [
-  vscode.commands.registerCommand(
-    RefactoringCommand.RenameSymbol,
-    renameSymbolCommand
-  )
-];
+export { createCommand, executeSafely };
 
-function renameSymbolCommand() {
-  executeSafely(() => renameSymbol(delegateToVSCode));
-}
-
-export function createCommand(refactoring: Refactoring) {
+function createCommand(refactoring: Refactoring) {
   return async () => {
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) {
@@ -43,9 +30,7 @@ export function createCommand(refactoring: Refactoring) {
   };
 }
 
-export async function executeSafely(
-  command: () => Promise<any>
-): Promise<void> {
+async function executeSafely(command: () => Promise<any>): Promise<void> {
   try {
     await command();
   } catch (err) {

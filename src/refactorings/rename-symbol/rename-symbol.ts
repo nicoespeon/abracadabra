@@ -1,7 +1,7 @@
 import {
   DelegateToEditor,
   EditorCommand
-} from "../editor/i-delegate-to-editor";
+} from "../../editor/i-delegate-to-editor";
 
 export { renameSymbol };
 

@@ -1,8 +1,5 @@
 import * as vscode from "vscode";
 
-import commands from "./commands";
-
-// If all refactorings follow same pattern, we could dynamically import them.
 import convertIfElseToTernaryCommand from "./refactorings/convert-if-else-to-ternary/command";
 import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-else/command";
 import extractVariableCommand from "./refactorings/extract-variable/command";
@@ -13,6 +10,7 @@ import moveStatementDownCommand from "./refactorings/move-statement-down/command
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
 import negateExpressionCommand from "./refactorings/negate-expression/command";
 import removeRedundantElseCommand from "./refactorings/remove-redundant-else/command";
+import renameSymbolCommand from "./refactorings/rename-symbol/command";
 
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
@@ -30,7 +28,6 @@ const SUPPORTED_LANGUAGES = [
 
 export function activate(context: vscode.ExtensionContext) {
   [
-    ...commands,
     convertIfElseToTernaryCommand,
     convertTernaryToIfElseCommand,
     extractVariableCommand,
@@ -40,7 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
     moveStatementDownCommand,
     moveStatementUpCommand,
     negateExpressionCommand,
-    removeRedundantElseCommand
+    removeRedundantElseCommand,
+    renameSymbolCommand
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
