@@ -2,7 +2,7 @@ import { Code, Write } from "../editor/i-write-code";
 import { Selection } from "../editor/selection";
 import { Position } from "../editor/position";
 import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
-import * as ast from "./ast";
+import * as ast from "../ast";
 
 export { moveStatementUp };
 
