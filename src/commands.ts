@@ -9,7 +9,6 @@ import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { flipIfElse } from "./refactorings/flip-if-else";
 import { flipTernary } from "./refactorings/flip-ternary";
-import { convertIfElseToTernary } from "./refactorings/convert-if-else-to-ternary";
 import { convertTernaryToIfElse } from "./refactorings/convert-ternary-to-if-else";
 import { moveStatementUp } from "./refactorings/move-statement-up";
 import { moveStatementDown } from "./refactorings/move-statement-down";
@@ -51,10 +50,6 @@ export default [
   vscode.commands.registerCommand(
     RefactoringCommand.FlipTernary,
     createCommand(flipTernary)
-  ),
-  vscode.commands.registerCommand(
-    RefactoringCommand.ConvertIfElseToTernary,
-    createCommand(convertIfElseToTernary)
   ),
   vscode.commands.registerCommand(
     RefactoringCommand.ConvertTernaryToIfElse,
@@ -129,7 +124,7 @@ async function negateExpressionCommand() {
   );
 }
 
-function createCommand(refactoring: Refactoring) {
+export function createCommand(refactoring: Refactoring) {
   return async () => {
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) {
