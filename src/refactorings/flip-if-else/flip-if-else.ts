@@ -5,7 +5,7 @@ import {
   ErrorReason
 } from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
-import { getNegatedBinaryOperator } from "../negate-expression";
+import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
 export { flipIfElse, hasIfElseToFlip };
 

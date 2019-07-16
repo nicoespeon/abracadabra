@@ -12,12 +12,14 @@ import flipTernaryCommand from "./refactorings/flip-ternary/command";
 import inlineVariableCommand from "./refactorings/inline-variable/command";
 import moveStatementDownCommand from "./refactorings/move-statement-down/command";
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
+import negateExpressionCommand from "./refactorings/negate-expression/command";
 
 // If all refactorings follow same pattern, we could dynamically import them.
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
 import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
+import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -36,7 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
     flipTernaryCommand,
     inlineVariableCommand,
     moveStatementDownCommand,
-    moveStatementUpCommand
+    moveStatementUpCommand,
+    negateExpressionCommand
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
@@ -45,7 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
       convertIfElseToTernaryActionProviderFor(language),
       convertTernaryToIfElseActionProviderFor(language),
       flipIfElseActionProviderFor(language),
-      flipTernaryActionProviderFor(language)
+      flipTernaryActionProviderFor(language),
+      negateExpressionActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
   });
 }

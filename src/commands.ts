@@ -3,14 +3,12 @@ import * as vscode from "vscode";
 import { RefactoringCommand } from "./refactoring-command";
 
 import { renameSymbol } from "./refactorings/rename-symbol";
-import { negateExpression } from "./refactorings/negate-expression";
 import { removeRedundantElse } from "./refactorings/remove-redundant-else";
 import { Refactoring } from "./refactorings/refactoring";
 
 import { delegateToVSCode } from "./editor/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "./editor/adapters/show-error-message-in-vscode";
 import {
-  createReadThenWriteInVSCode,
   createWriteInVSCode,
   createSelectionFromVSCode
 } from "./editor/adapters/write-code-in-vscode";
@@ -21,10 +19,6 @@ export default [
     renameSymbolCommand
   ),
   vscode.commands.registerCommand(
-    RefactoringCommand.NegateExpression,
-    negateExpressionCommand
-  ),
-  vscode.commands.registerCommand(
     RefactoringCommand.RemoveRedundantElse,
     createCommand(removeRedundantElse)
   )
@@ -32,24 +26,6 @@ export default [
 
 function renameSymbolCommand() {
   executeSafely(() => renameSymbol(delegateToVSCode));
-}
-
-async function negateExpressionCommand() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
-
-  const { document, selection } = activeTextEditor;
-
-  await executeSafely(() =>
-    negateExpression(
-      document.getText(),
-      createSelectionFromVSCode(selection),
-      createReadThenWriteInVSCode(document),
-      showErrorMessageInVSCode
-    )
-  );
 }
 
 export function createCommand(refactoring: Refactoring) {

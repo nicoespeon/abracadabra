@@ -1,8 +1,11 @@
-import { ReadThenWrite, Update, Code } from "../editor/i-write-code";
-import { Selection } from "../editor/selection";
-import { ShowErrorMessage, ErrorReason } from "../editor/i-show-error-message";
+import { ReadThenWrite, Update, Code } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
 import { negateExpression, findNegatableExpression } from "./negate-expression";
-import { testEach } from "../tests-helpers";
+import { testEach } from "../../tests-helpers";
 
 describe("Negate Expression", () => {
   let showErrorMessage: ShowErrorMessage;
