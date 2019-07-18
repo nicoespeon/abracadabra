@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function/command";
 import convertIfElseToTernaryCommand from "./refactorings/convert-if-else-to-ternary/command";
 import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-else/command";
 import extractVariableCommand from "./refactorings/extract-variable/command";
@@ -28,6 +29,7 @@ const SUPPORTED_LANGUAGES = [
 
 export function activate(context: vscode.ExtensionContext) {
   [
+    addBracesToArrowFunction,
     convertIfElseToTernaryCommand,
     convertTernaryToIfElseCommand,
     extractVariableCommand,
