@@ -13,6 +13,7 @@ import negateExpressionCommand from "./refactorings/negate-expression/command";
 import removeRedundantElseCommand from "./refactorings/remove-redundant-else/command";
 import renameSymbolCommand from "./refactorings/rename-symbol/command";
 
+import addBracesToArrowFunctionActionProviderFor from "./refactorings/add-braces-to-arrow-function/action-provider";
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
@@ -50,7 +51,8 @@ export function activate(context: vscode.ExtensionContext) {
       flipIfElseActionProviderFor(language),
       flipTernaryActionProviderFor(language),
       negateExpressionActionProviderFor(language),
-      removeRedundantElseActionProviderFor(language)
+      removeRedundantElseActionProviderFor(language),
+      addBracesToArrowFunctionActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
   });
 }

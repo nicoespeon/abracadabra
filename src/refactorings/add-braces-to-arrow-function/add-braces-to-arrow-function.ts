@@ -6,7 +6,7 @@ import {
 } from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 
-export { addBracesToArrowFunction };
+export { addBracesToArrowFunction, hasArrowFunctionToAddBraces };
 
 async function addBracesToArrowFunction(
   code: Code,
@@ -22,6 +22,13 @@ async function addBracesToArrowFunction(
   }
 
   await write(updatedCode.code);
+}
+
+function hasArrowFunctionToAddBraces(
+  code: Code,
+  selection: Selection
+): boolean {
+  return updateCode(code, selection).hasCodeChanged;
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
