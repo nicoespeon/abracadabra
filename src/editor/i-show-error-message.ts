@@ -12,6 +12,7 @@ enum ErrorReason {
   DidNotFoundTernaryToFlip,
   DidNotFoundIfElseToConvert,
   DidNotFoundTernaryToConvert,
+  DidNotFoundArrowFunctionToAddBraces,
   CantMoveStatementUp,
   CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
@@ -48,6 +49,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundTernaryToConvert:
       return didNotFound("a ternary to convert into if statement");
+
+    case ErrorReason.DidNotFoundArrowFunctionToAddBraces:
+      return didNotFound("an arrow function to add braces");
 
     case ErrorReason.CantMoveStatementUp:
       return "I'm sorry, I can't move this statement up 😅";
