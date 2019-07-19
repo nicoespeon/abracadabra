@@ -82,6 +82,7 @@
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.moveStatementDown",
+    "onCommand:abracadabra.addBracesToArrowFunction",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -142,6 +143,11 @@
       {
         "command": "abracadabra.moveStatementDown",
         "title": "Move Statement Down",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.addBracesToArrowFunction",
+        "title": "Add Braces to Arrow Function",
         "category": "Abracadabra"
       }
     ],
@@ -347,6 +353,22 @@
         },
         {
           "command": "abracadabra.moveStatementDown",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.addBracesToArrowFunction",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.addBracesToArrowFunction",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.addBracesToArrowFunction",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.addBracesToArrowFunction",
           "when": "editorLangId == typescriptreact"
         }
       ]

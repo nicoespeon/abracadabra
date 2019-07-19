@@ -39,6 +39,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
 1. [Move Statement Up](#move-statement-up)
 1. [Move Statement Down](#move-statement-down)
+1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
 
 ### Rename Symbol
 
@@ -152,6 +153,16 @@ Same as _Move Statement Up_, but it moves the selected statement down. Like, the
 
 ![][demo-move-statement-down]
 
+### Add Braces to Arrow Function
+
+> 💡 Available as Quick Fix
+
+Useful when you need to add code in the body of an arrow function.
+
+VS Code provides this refactoring, but it only works if you have the correct selection. This one works wherever your cursor is!
+
+![][demo-add-braces-to-arrow-function]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -239,6 +250,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
+[demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true
 
 <!-- Logo -->
 
