@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **[New refactoring]** Add Braces to Arrow Function
+
 ## [0.0.1] - 2019-07-09
 
 ### Added
