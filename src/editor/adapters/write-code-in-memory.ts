@@ -44,31 +44,43 @@ function createReadThenWriteInMemory(code: Code): [ReadThenWrite, () => Code] {
         readCodeMatrix.push(codeMatrix[end.line].slice(0, end.character));
       }
 
+      // Since we insert updates progressively as new elements, keep track
+      // of them so we can indent properly.
+      const previousUpdatesOnLine: { [key: number]: number } = {};
       getUpdates(read(readCodeMatrix)).forEach(({ code, selection }) => {
         const { start, end } = selection;
+
+        if (!previousUpdatesOnLine[start.line]) {
+          previousUpdatesOnLine[start.line] = 0;
+        }
 
         if (start.line === end.line) {
           // Replace selected code with updated code.
           codeMatrix[start.line].splice(
-            start.character,
+            start.character + previousUpdatesOnLine[start.line],
             end.character - start.character,
             code
           );
         } else if (end.line > start.line) {
           // Replace selected code with updated code.
           codeMatrix[start.line].splice(
-            start.character,
+            start.character + previousUpdatesOnLine[start.line],
             codeMatrix[start.line].length - start.character,
             code
           );
 
+          // Merge the rest of the last line.
+          codeMatrix[start.line].push(
+            ...codeMatrix[end.line].slice(end.character)
+          );
+
           // Delete all lines in between selection
-          for (let i = start.line + 1; i < end.line; i++) {
+          for (let i = start.line + 1; i <= end.line; i++) {
             codeMatrix[i] = [];
           }
-
-          codeMatrix[end.line].splice(0, end.character);
         }
+
+        previousUpdatesOnLine[start.line] += 1;
       });
 
       return Promise.resolve();

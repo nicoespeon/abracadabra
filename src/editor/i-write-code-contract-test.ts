@@ -238,28 +238,40 @@ function createReadThenWriteCodeContractTests(
 }`);
     });
 
-    it("should apply multiple updates, in order", async () => {
-      const code = `function sayHello() {
-  // Replace me with some code
-}`;
+    it("should apply multiple updates, in parallel", async () => {
+      const code = `console.log("Hello!");`;
 
       const [readThenWrite, getCode] = createReadThenWriteOn(code);
-      await readThenWrite(Selection.cursorAt(0, 0), () => [
+      await readThenWrite(new Selection([0, 12], [0, 20]), readCode => [
         {
-          code: `console.log("Hello");
-  console.log("How are you doing?");`,
-          selection: new Selection([1, 2], [1, 30])
+          code: `const extracted = ${readCode};\n`,
+          selection: Selection.cursorAt(0, 0)
         },
-        {
-          code: `sayHi`,
-          selection: new Selection([0, 9], [0, 17])
-        }
+        { code: `extracted`, selection: new Selection([0, 12], [0, 20]) }
       ]);
 
-      expect(getCode()).toEqual(`function sayHi() {
-  console.log("Hello");
-  console.log("How are you doing?");
-}`);
+      expect(getCode()).toEqual(`const extracted = "Hello!";
+console.log(extracted);`);
+    });
+
+    it("should apply multiple multi-lines updates, in parallel", async () => {
+      const code = `console.log([
+  "Hello!"
+]);`;
+
+      const [readThenWrite, getCode] = createReadThenWriteOn(code);
+      await readThenWrite(new Selection([0, 12], [2, 1]), readCode => [
+        {
+          code: `const extracted = ${readCode};\n`,
+          selection: Selection.cursorAt(0, 0)
+        },
+        { code: `extracted`, selection: new Selection([0, 12], [2, 1]) }
+      ]);
+
+      expect(getCode()).toEqual(`const extracted = [
+  "Hello!"
+];
+console.log(extracted);`);
     });
   });
 }
