@@ -1,5 +1,12 @@
-import { createWriteCodeContractTests } from "../i-write-code-contract-test";
+import {
+  createWriteCodeContractTests,
+  createReadThenWriteCodeContractTests
+} from "../i-write-code-contract-test";
 
-import { createWriteInMemory } from "./write-code-in-memory";
+import {
+  createWriteInMemory,
+  createReadThenWriteInMemory
+} from "./write-code-in-memory";
 
 createWriteCodeContractTests("InMemory", createWriteInMemory);
+createReadThenWriteCodeContractTests("InMemory", createReadThenWriteInMemory);
