@@ -1,27 +1,18 @@
-import { ReadThenWrite, Update, Code } from "../../editor/i-write-code";
+import { Code } from "../../editor/i-write-code";
 import { Selection } from "../../editor/selection";
 import {
   ShowErrorMessage,
   ErrorReason
 } from "../../editor/i-show-error-message";
+import { createReadThenWriteInMemory } from "../../editor/adapters/write-code-in-memory";
 import { negateExpression, findNegatableExpression } from "./negate-expression";
 import { testEach } from "../../tests-helpers";
 
 describe("Negate Expression", () => {
   let showErrorMessage: ShowErrorMessage;
-  let readThenWrite: ReadThenWrite;
-  let updates: Update[] = [];
-  let updatedExpression = "";
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
-    updates = [];
-    updatedExpression = "";
-    readThenWrite = jest
-      .fn()
-      .mockImplementation(
-        (_, getUpdates) => (updates = getUpdates(updatedExpression))
-      );
   });
 
   testEach<{ selection: Selection }>(
@@ -47,12 +38,9 @@ describe("Negate Expression", () => {
     async ({ selection }) => {
       const code = `if (a == b) {}`;
 
-      await doNegateExpression(code, selection);
+      const result = await doNegateExpression(code, selection);
 
-      expect(readThenWrite).toBeCalledWith(
-        new Selection([0, 4], [0, 10]),
-        expect.any(Function)
-      );
+      expect(result).toBe(`if (!(a != b)) {}`);
     }
   );
 
@@ -61,7 +49,7 @@ describe("Negate Expression", () => {
     selection?: Selection;
     expected: Code;
   }>(
-    "should negate",
+    "should negate expression",
     [
       {
         description: "loose equality",
@@ -116,7 +104,7 @@ describe("Negate Expression", () => {
         expected: "!(a != b && b != c)"
       },
       {
-        description: "an already negated expression",
+        description: "already negated expression",
         expression: "!(a != b && b != c)",
         selection: Selection.cursorAt(0, 14),
         expected: "a == b || b == c"
@@ -134,87 +122,61 @@ describe("Negate Expression", () => {
         expected: "!(isValid && !isCorrect)"
       },
       {
-        description: "expression with non-negatable operators",
+        description: "non-negatable operators",
         expression: "a + b > 0",
         selection: Selection.cursorAt(0, 6),
         expected: "!(a + b <= 0)"
       },
       {
-        description: "an equality with cursor on 'typeof' operator",
+        description: "equality with cursor on 'typeof' operator",
         expression: "typeof location.lat === 'number'",
         expected: "!(typeof location.lat !== 'number')"
       },
       {
         description:
-          "a logical expression with cursor on negated member expression",
+          "logical expression with cursor on negated member expression",
         expression: "!this.currentContext && isBackward",
         selection: Selection.cursorAt(0, 12),
         expected: "!(this.currentContext || !isBackward)"
+      },
+      {
+        description: "left-side of a logical expression",
+        expression: "a == b || b == c",
+        selection: Selection.cursorAt(0, 6),
+        expected: "!(a != b) || b == c"
+      },
+      {
+        description: "right-side of a logical expression",
+        expression: "a == b || b == c",
+        selection: Selection.cursorAt(0, 15),
+        expected: "a == b || !(b != c)"
+      },
+      {
+        description: "whole logical expression if cursor is on identifier",
+        expression: "isValid || b == c",
+        selection: Selection.cursorAt(0, 6),
+        expected: "!(!isValid && b != c)"
+      },
+      {
+        description:
+          "whole logical expression if cursor is on negated identifier",
+        expression: "!isValid || b == c",
+        selection: Selection.cursorAt(0, 6),
+        expected: "!(isValid && b != c)"
       }
     ],
     async ({ expression, selection, expected }) => {
-      updatedExpression = expression;
       const code = `if (${expression}) {}`;
       const DEFAULT_SELECTION = Selection.cursorAt(0, 4);
 
-      await doNegateExpression(code, selection || DEFAULT_SELECTION);
+      const result = await doNegateExpression(
+        code,
+        selection || DEFAULT_SELECTION
+      );
 
-      expect(updates).toEqual([
-        {
-          code: expected,
-          selection: new Selection([0, 4], [0, 4 + expression.length])
-        }
-      ]);
+      expect(result).toBe(`if (${expected}) {}`);
     }
   );
-
-  it("should negate the left-side of a logical expression", async () => {
-    const code = `if (a == b || b == c) {}`;
-    const selection = Selection.cursorAt(0, 6);
-
-    await doNegateExpression(code, selection);
-
-    expect(readThenWrite).toBeCalledWith(
-      new Selection([0, 4], [0, 10]),
-      expect.any(Function)
-    );
-  });
-
-  it("should negate the right-side of a logical expression", async () => {
-    const code = `if (a == b || b == c) {}`;
-    const selection = Selection.cursorAt(0, 15);
-
-    await doNegateExpression(code, selection);
-
-    expect(readThenWrite).toBeCalledWith(
-      new Selection([0, 14], [0, 20]),
-      expect.any(Function)
-    );
-  });
-
-  it("should negate the whole logical expression if cursor is on identifier", async () => {
-    const code = `if (isValid || b == c) {}`;
-    const selection = Selection.cursorAt(0, 6);
-
-    await doNegateExpression(code, selection);
-
-    expect(readThenWrite).toBeCalledWith(
-      new Selection([0, 4], [0, 21]),
-      expect.any(Function)
-    );
-  });
-
-  it("should negate the whole logical expression if cursor is on a negated identifier", async () => {
-    const code = `if (!isValid || b == c) {}`;
-    const selection = Selection.cursorAt(0, 6);
-
-    await doNegateExpression(code, selection);
-
-    expect(readThenWrite).toBeCalledWith(
-      new Selection([0, 4], [0, 22]),
-      expect.any(Function)
-    );
-  });
 
   it("should show an error message if selection can't be negated", async () => {
     const code = `console.log("Nothing to negate here!")`;
@@ -238,8 +200,13 @@ describe("Negate Expression", () => {
     );
   });
 
-  async function doNegateExpression(code: Code, selection: Selection) {
+  async function doNegateExpression(
+    code: Code,
+    selection: Selection
+  ): Promise<Code> {
+    const [readThenWrite, getCode] = createReadThenWriteInMemory(code);
     await negateExpression(code, selection, readThenWrite, showErrorMessage);
+    return getCode();
   }
 });
 
