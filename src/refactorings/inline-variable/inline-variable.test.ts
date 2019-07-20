@@ -1,25 +1,18 @@
-import { ReadThenWrite, Update, Code } from "../../editor/i-write-code";
+import { Code } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
 import {
   ShowErrorMessage,
   ErrorReason
 } from "../../editor/i-show-error-message";
-import { Selection } from "../../editor/selection";
+import { createReadThenWriteInMemory } from "../../editor/adapters/write-code-in-memory";
 import { inlineVariable } from "./inline-variable";
 import { testEach } from "../../tests-helpers";
 
 describe("Inline Variable", () => {
   let showErrorMessage: ShowErrorMessage;
-  let readThenWrite: ReadThenWrite;
-  let updates: Update[] = [];
-  const inlinableCode = "Hello!";
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
-    readThenWrite = jest
-      .fn()
-      .mockImplementation(
-        (_, getUpdates) => (updates = getUpdates(inlinableCode))
-      );
   });
 
   testEach<{ selection: Selection }>(
@@ -46,196 +39,93 @@ describe("Inline Variable", () => {
       const code = `const foo = "bar";
 console.log(foo);`;
 
-      await doInlineVariable(code, selection);
+      const result = await doInlineVariable(code, selection);
 
-      expect(readThenWrite).toBeCalledWith(
-        new Selection([0, 12], [0, 17]),
-        expect.any(Function)
-      );
+      expect(result).toBe(`console.log("bar");`);
     }
   );
 
-  it("should inline the variable value that matches selection", async () => {
-    const code = `const foo = "bar";
+  testEach<{ code: Code; selection: Selection; expected: Code }>(
+    "should inline the variable value",
+    [
+      {
+        description: "basic scenario",
+        code: `const foo = "bar";
 const hello = "World!";
-console.log(foo);`;
-    const selection = new Selection([0, 0], [0, 18]);
-
-    await doInlineVariable(code, selection);
-
-    expect(readThenWrite).toBeCalledWith(
-      new Selection([0, 12], [0, 17]),
-      expect.any(Function)
-    );
-  });
-
-  it("should update code to inline selection where it's referenced (1 reference)", async () => {
-    const code = `const hello = ${inlinableCode};
-console.log(hello);`;
-    const selection = Selection.cursorAt(0, 14);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([1, 12], [1, 17])
+console.log(foo);`,
+        selection: new Selection([0, 0], [0, 18]),
+        expected: `const hello = "World!";
+console.log("bar");`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should update code to inline selection where it's referenced (many references)", async () => {
-    const code = `const hello = ${inlinableCode};
+        description: "many references",
+        code: `const hello = "Hello!";
 console.log(hello);
-sendMessageSaying(hello).to(world);`;
-    const selection = Selection.cursorAt(0, 14);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([1, 12], [1, 17])
+sendMessageSaying(hello).to(world);`,
+        selection: new Selection([0, 0], [0, 18]),
+        expected: `console.log("Hello!");
+sendMessageSaying("Hello!").to(world);`
       },
       {
-        code: inlinableCode,
-        selection: new Selection([2, 18], [2, 23])
-      },
-      {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should not inline code in the property key", async () => {
-    const code = `const hello = ${inlinableCode};
+        description: "property key with the same name",
+        code: `const hello = "Hello!";
 console.log({
   hello: hello
-});`;
-    const selection = Selection.cursorAt(0, 14);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([2, 9], [2, 14])
+});`,
+        selection: Selection.cursorAt(0, 14),
+        expected: `console.log({
+  hello: "Hello!"
+});`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should inline code that has a member expression with the same name", async () => {
-    const code = `const world = props.world;
+        description: "member expression with the same name",
+        code: `const world = props.world;
 const helloWorld = sayHelloTo(world);
-console.log(around.the.world);`;
-    const selection = Selection.cursorAt(0, 9);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([1, 30], [1, 35])
+console.log(around.the.world);`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `const helloWorld = sayHelloTo(props.world);
+console.log(around.the.world);`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should inline code that has variable declarator on a different line", async () => {
-    const code = `const world =
-  ${inlinableCode};
-const helloWorld = sayHelloTo(world);`;
-    const selection = Selection.cursorAt(1, 2);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([2, 30], [2, 35])
+        description: "variable declarator on a different line",
+        code: `const world =
+  "Hello!";
+const helloWorld = sayHelloTo(world);`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `const helloWorld = sayHelloTo("Hello!");`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [2, 0])
-      }
-    ]);
-  });
-
-  it("should inline code that ends up being a unary expression", async () => {
-    const code = `const isCorrect = ${inlinableCode};
-return !isCorrect;`;
-    const selection = Selection.cursorAt(0, 6);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: `(${inlinableCode})`,
-        selection: new Selection([1, 8], [1, 17])
+        description: "unary expression",
+        code: `const isCorrect = "Hello!";
+return !isCorrect;`,
+        selection: Selection.cursorAt(0, 6),
+        expected: `return !("Hello!");`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should inline object that is accessed", async () => {
-    const code = `const foo = { value: "foo" };
-console.log(foo.value);`;
-    const selection = Selection.cursorAt(0, 6);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([1, 12], [1, 15])
+        description: "object",
+        code: `const foo = { value: "foo" };
+console.log(foo.value);`,
+        selection: Selection.cursorAt(0, 6),
+        expected: `console.log({ value: "foo" }.value);`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should limit inlining to variable declaration scope", async () => {
-    const code = `function sayHello() {
-  const hello = ${inlinableCode};
+        description: "limited scope",
+        code: `function sayHello() {
+  const hello = "Hello!";
   console.log(hello);
 }
 
-console.log(hello);`;
-    const selection = Selection.cursorAt(1, 14);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([2, 14], [2, 19])
+console.log(hello);`,
+        selection: Selection.cursorAt(1, 14),
+        // Note: end result is not perfect, we're losing some new lines
+        expected: `function sayHello() {
+  console.log("Hello!");
+}
+console.log(hello);`
       },
       {
-        code: "",
-        selection: new Selection([1, 0], [2, 0])
-      }
-    ]);
-  });
-
-  it("should limit inlining to variables that are not shadowed", async () => {
-    const code = `const hello = ${inlinableCode};
+        description: "shadowed variable",
+        code: `const hello = "Hello!";
 console.log(hello);
 
 if (isHappy) {
@@ -250,90 +140,76 @@ if (isHappy) {
 
 function sayHello(yo, hello) {
   console.log(hello);
-}`;
-    const selection = Selection.cursorAt(0, 14);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([1, 12], [1, 17])
+}`,
+        selection: Selection.cursorAt(0, 14),
+        // Note: end result is not perfect, we're losing some new lines
+        expected: `console.log("Hello!");
+if (isHappy) {
+  const hello = "Hello!!";
+  console.log(hello);
+}
+{
+  const hello = "World";
+  console.log(hello);
+}
+function sayHello(yo, hello) {
+  console.log(hello);
+}`
       },
       {
-        code: "",
-        selection: new Selection([0, 0], [1, 0])
-      }
-    ]);
-  });
-
-  it("should inline variable if export is outside of declaration scope", async () => {
-    const code = `function sayHello() {
-  const hello = ${inlinableCode};
+        description: "export outside of declaration scope",
+        code: `function sayHello() {
+  const hello = "Hello!";
   console.log(hello);
 }
 
 const hello = "Some other thing";
-export { hello };`;
-    const selection = Selection.cursorAt(1, 14);
-
-    await doInlineVariable(code, selection);
-
-    expect(updates).toEqual([
-      {
-        code: inlinableCode,
-        selection: new Selection([2, 14], [2, 19])
-      },
-      {
-        code: "",
-        selection: new Selection([1, 0], [2, 0])
+export { hello };`,
+        selection: Selection.cursorAt(1, 14),
+        // Note: end result is not perfect, we're losing some new lines
+        expected: `function sayHello() {
+  console.log("Hello!");
+}
+const hello = "Some other thing";
+export { hello };`
       }
-    ]);
-  });
+    ],
+    async ({ code, selection, expected }) => {
+      const result = await doInlineVariable(code, selection);
+      expect(result).toBe(expected);
+    }
+  );
 
   describe("multiple variables declaration", () => {
     const code = `const one = 1, two = 2, three = 3;
 const result = one + two + three;`;
 
-    it("should select the correct variable value", async () => {
+    it("should select the correct variable value (basic scenario)", async () => {
       const selection = Selection.cursorAt(0, 15);
 
-      await doInlineVariable(code, selection);
+      const result = await doInlineVariable(code, selection);
 
-      expect(readThenWrite).toBeCalledWith(
-        new Selection([0, 21], [0, 22]),
-        expect.any(Function)
-      );
+      expect(result).toBe(`const one = 1, three = 3;
+const result = one + 2 + three;`);
     });
 
-    testEach<{ selection: Selection; expectedSelection: Selection }>(
-      "should only remove the inlined variable if",
-      [
-        {
-          description: "basic scenario",
-          selection: Selection.cursorAt(0, 15),
-          expectedSelection: new Selection([0, 15], [0, 24])
-        },
-        {
-          description: "last variable",
-          selection: Selection.cursorAt(0, 24),
-          expectedSelection: new Selection([0, 22], [0, 33])
-        },
-        {
-          description: "first variable",
-          selection: Selection.cursorAt(0, 6),
-          expectedSelection: new Selection([0, 6], [0, 15])
-        }
-      ],
-      async ({ selection, expectedSelection }) => {
-        await doInlineVariable(code, selection);
+    it("should select the correct variable value (last variable)", async () => {
+      const selection = Selection.cursorAt(0, 24);
 
-        expect(updates[1]).toEqual({
-          code: "",
-          selection: expectedSelection
-        });
-      }
-    );
+      const result = await doInlineVariable(code, selection);
+
+      expect(result).toBe(`const one = 1, two = 2;
+const result = one + two + 3;`);
+    });
+
+    it("should select the correct variable value (first variable)", async () => {
+      const selection = Selection.cursorAt(0, 6);
+
+      const result = await doInlineVariable(code, selection);
+
+      expect(result).toBe(`const two = 2, three = 3;
+const result = 1 + two + three;`);
+    });
 
     it("should not inline code if cursor is not explicitly on one of the variables", async () => {
       const selectionOnDeclarator = Selection.cursorAt(0, 0);
@@ -352,12 +228,12 @@ const result = one + two + three;`;
 const result = one + two + three;`;
       const selection = Selection.cursorAt(1, 2);
 
-      await doInlineVariable(code, selection);
+      const result = await doInlineVariable(code, selection);
 
-      expect(updates[1]).toEqual({
-        code: "",
-        selection: new Selection([1, 2], [2, 2])
-      });
+      // End result isn't great: it has trailing spaces and loses indentation
+      // We use `\n  \n` to preserve the trailing spaces.
+      expect(result).toBe(`const one = 1,\n  \nthree = 3;
+const result = one + 2 + three;`);
     });
 
     it("should work on multi-lines declarations, with declaration on previous line", async () => {
@@ -370,12 +246,14 @@ const result = one + two + three;`;
 const result = one + two + three;`;
       const selection = Selection.cursorAt(2, 2);
 
-      await doInlineVariable(code, selection);
+      const result = await doInlineVariable(code, selection);
 
-      expect(updates[1]).toEqual({
-        code: "",
-        selection: new Selection([2, 2], [4, 2])
-      });
+      // End result isn't great: it has trailing spaces and loses indentation
+      // We use `\n  \n` to preserve the trailing spaces.
+      expect(result).toBe(`const one =
+    1,\n  \nthree =
+    3;
+const result = one + 2 + three;`);
     });
   });
 
@@ -458,7 +336,12 @@ hello = "World!";`;
     );
   });
 
-  async function doInlineVariable(code: Code, selection: Selection) {
+  async function doInlineVariable(
+    code: Code,
+    selection: Selection
+  ): Promise<Code> {
+    const [readThenWrite, getCode] = createReadThenWriteInMemory(code);
     await inlineVariable(code, selection, readThenWrite, showErrorMessage);
+    return getCode();
   }
 });
