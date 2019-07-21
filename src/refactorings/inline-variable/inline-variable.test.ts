@@ -117,10 +117,10 @@ console.log(foo.value);`,
 
 console.log(hello);`,
         selection: Selection.cursorAt(1, 14),
-        // Note: end result is not perfect, we're losing some new lines
         expected: `function sayHello() {
   console.log("Hello!");
 }
+
 console.log(hello);`
       },
       {
@@ -142,16 +142,18 @@ function sayHello(yo, hello) {
   console.log(hello);
 }`,
         selection: Selection.cursorAt(0, 14),
-        // Note: end result is not perfect, we're losing some new lines
         expected: `console.log("Hello!");
+
 if (isHappy) {
   const hello = "Hello!!";
   console.log(hello);
 }
+
 {
   const hello = "World";
   console.log(hello);
 }
+
 function sayHello(yo, hello) {
   console.log(hello);
 }`
@@ -166,10 +168,10 @@ function sayHello(yo, hello) {
 const hello = "Some other thing";
 export { hello };`,
         selection: Selection.cursorAt(1, 14),
-        // Note: end result is not perfect, we're losing some new lines
         expected: `function sayHello() {
   console.log("Hello!");
 }
+
 const hello = "Some other thing";
 export { hello };`
       }
@@ -230,9 +232,8 @@ const result = one + two + three;`;
 
       const result = await doInlineVariable(code, selection);
 
-      // End result isn't great: it has trailing spaces and loses indentation
-      // We use `\n  \n` to preserve the trailing spaces.
-      expect(result).toBe(`const one = 1,\n  \nthree = 3;
+      expect(result).toBe(`const one = 1,
+  three = 3;
 const result = one + 2 + three;`);
     });
 
@@ -248,10 +249,9 @@ const result = one + two + three;`;
 
       const result = await doInlineVariable(code, selection);
 
-      // End result isn't great: it has trailing spaces and loses indentation
-      // We use `\n  \n` to preserve the trailing spaces.
       expect(result).toBe(`const one =
-    1,\n  \nthree =
+    1,
+  three =
     3;
 const result = one + 2 + three;`);
     });

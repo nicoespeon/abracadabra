@@ -160,6 +160,24 @@ function createReadThenWriteCodeContractTests(
 }`);
     });
 
+    it("should preserve empty lines", async () => {
+      const code = `console.log("Hello");
+
+console.log("World!");`;
+
+      const [readThenWrite, getCode] = createReadThenWriteOn(code);
+      await readThenWrite(Selection.cursorAt(0, 0), () => [
+        {
+          code: `console.log("Goodbye");`,
+          selection: new Selection([0, 0], [0, 21])
+        }
+      ]);
+
+      expect(getCode()).toEqual(`console.log("Goodbye");
+
+console.log("World!");`);
+    });
+
     it("should apply update instead of multi-line selection", async () => {
       const code = `function sayHello() {
   console.log("Hello");

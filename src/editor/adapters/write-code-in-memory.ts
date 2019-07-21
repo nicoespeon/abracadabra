@@ -20,6 +20,7 @@ function createWriteInMemory(
 function createReadThenWriteInMemory(code: Code): [ReadThenWrite, () => Code] {
   const LINE_SEPARATOR = "\n";
   const CHARS_SEPARATOR = "";
+  const DELETED_LINE = "___DELETED_LINE___";
   const codeMatrix: CodeMatrix = code
     .split(LINE_SEPARATOR)
     .map(line => line.split(CHARS_SEPARATOR));
@@ -76,7 +77,7 @@ function createReadThenWriteInMemory(code: Code): [ReadThenWrite, () => Code] {
 
           // Delete all lines in between selection
           for (let i = start.line + 1; i <= end.line; i++) {
-            codeMatrix[i] = [];
+            codeMatrix[i] = [DELETED_LINE];
           }
         }
 
@@ -89,13 +90,10 @@ function createReadThenWriteInMemory(code: Code): [ReadThenWrite, () => Code] {
   ];
 
   function read(codeMatrix: CodeMatrix): string {
-    return (
-      codeMatrix
-        .map(line => line.join(CHARS_SEPARATOR))
-        // Get rid of deleted lines
-        .filter(line => line !== "")
-        .join(LINE_SEPARATOR)
-    );
+    return codeMatrix
+      .map(line => line.join(CHARS_SEPARATOR))
+      .filter(line => line !== DELETED_LINE)
+      .join(LINE_SEPARATOR);
   }
 }
 
