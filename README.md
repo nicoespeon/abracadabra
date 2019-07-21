@@ -41,6 +41,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Move Statement Up](#move-statement-up)
 1. [Move Statement Down](#move-statement-down)
 1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
+1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
 
 ### Rename Symbol
 
@@ -164,6 +165,14 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 
 ![][demo-add-braces-to-arrow-function]
 
+### Remove Braces from Arrow Function
+
+> 💡 Available as Quick Fix
+
+Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
+
+![][demo-remove-braces-from-arrow-function]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -252,6 +261,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
 [demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true
+[demo-remove-braces-from-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-arrow-function.gif?raw=true
 
 <!-- Logo -->
 
