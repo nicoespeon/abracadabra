@@ -83,6 +83,7 @@
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.addBracesToArrowFunction",
+    "onCommand:abracadabra.removeBracesFromArrowFunction",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -148,6 +149,11 @@
       {
         "command": "abracadabra.addBracesToArrowFunction",
         "title": "Add Braces to Arrow Function",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.removeBracesFromArrowFunction",
+        "title": "Remove Braces from Arrow Function",
         "category": "Abracadabra"
       }
     ],
@@ -369,6 +375,22 @@
         },
         {
           "command": "abracadabra.addBracesToArrowFunction",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.removeBracesFromArrowFunction",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.removeBracesFromArrowFunction",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.removeBracesFromArrowFunction",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.removeBracesFromArrowFunction",
           "when": "editorLangId == typescriptreact"
         }
       ]

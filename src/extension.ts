@@ -10,6 +10,7 @@ import inlineVariableCommand from "./refactorings/inline-variable/command";
 import moveStatementDownCommand from "./refactorings/move-statement-down/command";
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
 import negateExpressionCommand from "./refactorings/negate-expression/command";
+import removeBracesFromArrowFunctionCommand from "./refactorings/remove-braces-from-arrow-function/command";
 import removeRedundantElseCommand from "./refactorings/remove-redundant-else/command";
 import renameSymbolCommand from "./refactorings/rename-symbol/command";
 
@@ -19,6 +20,7 @@ import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-tern
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
 import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
+import removeBracesFromArrowFunctionActionProviderFor from "./refactorings/remove-braces-from-arrow-function/action-provider";
 import removeRedundantElseActionProviderFor from "./refactorings/remove-redundant-else/action-provider";
 
 const SUPPORTED_LANGUAGES = [
@@ -40,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     moveStatementDownCommand,
     moveStatementUpCommand,
     negateExpressionCommand,
+    removeBracesFromArrowFunctionCommand,
     removeRedundantElseCommand,
     renameSymbolCommand
   ].forEach(command => context.subscriptions.push(command));
@@ -52,7 +55,8 @@ export function activate(context: vscode.ExtensionContext) {
       flipTernaryActionProviderFor(language),
       negateExpressionActionProviderFor(language),
       removeRedundantElseActionProviderFor(language),
-      addBracesToArrowFunctionActionProviderFor(language)
+      addBracesToArrowFunctionActionProviderFor(language),
+      removeBracesFromArrowFunctionActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
   });
 }
