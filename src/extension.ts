@@ -49,14 +49,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   SUPPORTED_LANGUAGES.forEach(language => {
     [
+      addBracesToArrowFunctionActionProviderFor(language),
       convertIfElseToTernaryActionProviderFor(language),
       convertTernaryToIfElseActionProviderFor(language),
       flipIfElseActionProviderFor(language),
       flipTernaryActionProviderFor(language),
       negateExpressionActionProviderFor(language),
-      removeRedundantElseActionProviderFor(language),
-      addBracesToArrowFunctionActionProviderFor(language),
-      removeBracesFromArrowFunctionActionProviderFor(language)
+      removeBracesFromArrowFunctionActionProviderFor(language),
+      removeRedundantElseActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
   });
 }
