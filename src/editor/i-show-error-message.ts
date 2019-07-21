@@ -13,12 +13,14 @@ enum ErrorReason {
   DidNotFoundIfElseToConvert,
   DidNotFoundTernaryToConvert,
   DidNotFoundArrowFunctionToAddBraces,
+  DidNotFoundBracesToRemoveFromArrowFunction,
   CantMoveStatementUp,
   CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
   CantMoveMultiLinesStatementDown,
   CantInlineExportedVariables,
-  CantInlineRedeclaredVariables
+  CantInlineRedeclaredVariables,
+  CantRemoveBracesFromArrowFunction
 }
 
 function toString(reason: ErrorReason): string {
@@ -53,6 +55,9 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFoundArrowFunctionToAddBraces:
       return didNotFound("an arrow function to add braces");
 
+    case ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction:
+      return didNotFound("braces to remove");
+
     case ErrorReason.CantMoveStatementUp:
       return "I'm sorry, I can't move this statement up 😅";
 
@@ -70,6 +75,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.CantInlineRedeclaredVariables:
       return "I'm sorry, I can't inline redeclared variables yet 😅";
+
+    case ErrorReason.CantRemoveBracesFromArrowFunction:
+      return "I'm sorry, I can't remove braces from this arrow function 😅";
 
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";
