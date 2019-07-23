@@ -44,16 +44,14 @@ async function inlineVariable(
   await readThenWrite(inlinedCodeSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
-      ...idsToReplace.map(
-        ({ loc, isInUnaryExpression: isUnaryExpression, shorthandKey }) => ({
-          code: isUnaryExpression
-            ? `(${inlinedCode})`
-            : shorthandKey
-            ? `${shorthandKey}: ${inlinedCode}`
-            : inlinedCode,
-          selection: Selection.fromAST(loc)
-        })
-      ),
+      ...idsToReplace.map(({ loc, isInUnaryExpression, shorthandKey }) => ({
+        code: isInUnaryExpression
+          ? `(${inlinedCode})`
+          : shorthandKey
+          ? `${shorthandKey}: ${inlinedCode}`
+          : inlinedCode,
+        selection: Selection.fromAST(loc)
+      })),
       // Remove the variable declaration
       {
         code: "",
