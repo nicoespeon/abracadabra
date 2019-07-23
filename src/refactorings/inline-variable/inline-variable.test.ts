@@ -78,6 +78,17 @@ console.log({
 });`
       },
       {
+        description: "property key, shorthand version",
+        code: `const hello = "Hello!";
+console.log({
+  hello
+});`,
+        selection: Selection.cursorAt(0, 14),
+        expected: `console.log({
+  hello: "Hello!"
+});`
+      },
+      {
         description: "member expression with the same name",
         code: `const world = props.world;
 const helloWorld = sayHelloTo(world);

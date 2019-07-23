@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inline Variable with object shorthand properties
+
+### Added
+
 - **[New refactoring]** Remove Braces from Arrow Function
 - **[New refactoring]** Add Braces to Arrow Function
 

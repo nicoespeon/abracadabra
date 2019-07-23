@@ -45,8 +45,12 @@ async function inlineVariable(
     return [
       // Replace all identifiers with inlined code
       ...idsToReplace.map(
-        ({ loc, isInUnaryExpression: isUnaryExpression }) => ({
-          code: isUnaryExpression ? `(${inlinedCode})` : inlinedCode,
+        ({ loc, isInUnaryExpression: isUnaryExpression, shorthandKey }) => ({
+          code: isUnaryExpression
+            ? `(${inlinedCode})`
+            : shorthandKey
+            ? `${shorthandKey}: ${inlinedCode}`
+            : inlinedCode,
           selection: Selection.fromAST(loc)
         })
       ),
@@ -209,7 +213,13 @@ function findIdentifiersToReplace(
 
       result.push({
         loc: node.loc,
-        isInUnaryExpression: ast.isUnaryExpression(parent.node)
+        isInUnaryExpression: ast.isUnaryExpression(parent.node),
+        shorthandKey:
+          ast.isObjectProperty(parent.node) &&
+          parent.node.shorthand &&
+          ast.isIdentifier(node)
+            ? node.name
+            : null
       });
     }
   });
@@ -220,6 +230,7 @@ function findIdentifiersToReplace(
 interface IdentifierToReplace {
   loc: ast.SourceLocation;
   isInUnaryExpression: boolean;
+  shorthandKey: string | null;
 }
 
 function isShadowIn(
