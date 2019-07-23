@@ -46,54 +46,57 @@ function updateCode(
   let newStatementPosition = selection.start;
 
   const result = ast.transform(code, {
-    Statement(path) {
-      if (!matchesSelection(path, selection)) return;
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-      if (typeof path.key !== "number") return;
-
-      const pathBelowKey = path.key + 1;
-      const container = new Array().concat(path.container);
-      const hasPathBelow = pathBelowKey < container.length;
-      if (!hasPathBelow) {
-        isLastStatement = true;
-        return;
-      }
-
-      const pathBelow = path.getSibling(pathBelowKey);
-      if (!ast.isSelectableNode(pathBelow.node)) return;
-
-      newStatementPosition = Position.fromAST(
-        pathBelow.node.loc.end
-      ).putAtSameCharacter(selection.start);
-
-      // If `pathBelow` is a function, it may create new lines when moved.
-      // Adapt the new statement position accordingly.
-      if (ast.isFunction(pathBelow)) {
-        const hasPathAbove = path.key > 0;
-        const extracted = path.getSibling(path.key - 1);
-
-        if (hasPathAbove && !hasSpaceBetweenPaths(extracted, path)) {
-          newStatementPosition = newStatementPosition.putAtNextLine();
-        }
-
-        if (!hasSpaceBetweenPaths(path, pathBelow)) {
-          newStatementPosition = newStatementPosition.putAtNextLine();
-        }
-      }
-
-      // Preserve the `loc` of the below path & reset the one of the moved node.
-      // Use `path.node` intead of `node` or TS won't build. I don't know why.
-      const newNodeBelow = { ...path.node, loc: pathBelow.node.loc };
-      const newNode = { ...pathBelow.node, loc: null };
-      pathBelow.replaceWith(newNodeBelow);
-      path.replaceWith(newNode);
-      path.stop();
-    }
+    Statement: visitPath,
+    ObjectProperty: visitPath
   });
 
   return { ...result, isLastStatement, newStatementPosition };
+
+  function visitPath(path: ast.NodePath) {
+    if (!matchesSelection(path, selection)) return;
+    // Since we visit nodes from parent to children, first check
+    // if a child would match the selection closer.
+    if (hasChildWhichMatchesSelection(path, selection)) return;
+    if (typeof path.key !== "number") return;
+
+    const pathBelowKey = path.key + 1;
+    const container = new Array().concat(path.container);
+    const hasPathBelow = pathBelowKey < container.length;
+    if (!hasPathBelow) {
+      isLastStatement = true;
+      return;
+    }
+
+    const pathBelow = path.getSibling(pathBelowKey);
+    if (!ast.isSelectableNode(pathBelow.node)) return;
+
+    newStatementPosition = Position.fromAST(
+      pathBelow.node.loc.end
+    ).putAtSameCharacter(selection.start);
+
+    // If `pathBelow` is a function, it may create new lines when moved.
+    // Adapt the new statement position accordingly.
+    if (ast.isFunction(pathBelow)) {
+      const hasPathAbove = path.key > 0;
+      const extracted = path.getSibling(path.key - 1);
+
+      if (hasPathAbove && !hasSpaceBetweenPaths(extracted, path)) {
+        newStatementPosition = newStatementPosition.putAtNextLine();
+      }
+
+      if (!hasSpaceBetweenPaths(path, pathBelow)) {
+        newStatementPosition = newStatementPosition.putAtNextLine();
+      }
+    }
+
+    // Preserve the `loc` of the below path & reset the one of the moved node.
+    // Use `path.node` intead of `node` or TS won't build. I don't know why.
+    const newNodeBelow = { ...path.node, loc: pathBelow.node.loc };
+    const newNode = { ...pathBelow.node, loc: null };
+    pathBelow.replaceWith(newNodeBelow);
+    path.replaceWith(newNode);
+    path.stop();
+  }
 }
 
 function hasChildWhichMatchesSelection(
@@ -103,23 +106,26 @@ function hasChildWhichMatchesSelection(
   let result = false;
 
   path.traverse({
-    Statement(childPath) {
-      /**
-       * `if (isValid) {` have 2 statements: `IfStatement` and `BlockStatement`.
-       * `BlockStatement` can be a valid statement to move. But here, we would
-       * want the `IfStatement` to move.
-       *
-       * => don't consider a `BlockStatement` that would be a direct child.
-       */
-      if (isBlockStatementDirectChild(childPath)) return;
-      if (!matchesSelection(childPath, selection)) return;
-
-      result = true;
-      childPath.stop();
-    }
+    Statement: visitPath,
+    ObjectProperty: visitPath
   });
 
   return result;
+
+  function visitPath(childPath: ast.NodePath) {
+    /**
+     * `if (isValid) {` have 2 statements: `IfStatement` and `BlockStatement`.
+     * `BlockStatement` can be a valid statement to move. But here, we would
+     * want the `IfStatement` to move.
+     *
+     * => don't consider a `BlockStatement` that would be a direct child.
+     */
+    if (isBlockStatementDirectChild(childPath)) return;
+    if (!matchesSelection(childPath, selection)) return;
+
+    result = true;
+    childPath.stop();
+  }
 
   function isBlockStatementDirectChild(childPath: ast.NodePath): boolean {
     return childPath.parentPath === path && ast.isBlockStatement(childPath);
@@ -130,7 +136,9 @@ function matchesSelection(path: ast.NodePath, selection: Selection): boolean {
   const { node } = path;
   if (!ast.isSelectableNode(node)) return false;
 
-  const extendedSelection = Selection.fromAST(node.loc).extendToStartOfLine();
+  const extendedSelection = Selection.fromAST(node.loc)
+    .extendToStartOfLine()
+    .extendToEndOfLine();
   if (!selection.isInside(extendedSelection)) return false;
 
   return true;
