@@ -239,7 +239,7 @@ Cons of Abracadabra over these:
 
 ### JS Refactor
 
-The most popular extension for refactoring is called [JS Refactor][js-refactor]. It provides JS automated refactorings for VS Code.
+The most popular extension for JavaScript refactoring is called [JS Refactor][js-refactor]. It provides JS automated refactorings for VS Code.
 
 Pros of Abracadabra over these:
 
