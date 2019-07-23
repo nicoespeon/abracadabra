@@ -14,6 +14,7 @@ enum ErrorReason {
   DidNotFoundTernaryToConvert,
   DidNotFoundArrowFunctionToAddBraces,
   DidNotFoundBracesToRemoveFromArrowFunction,
+  DidNotFoundIfStatementToSplit,
   CantMoveStatementUp,
   CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
@@ -57,6 +58,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction:
       return didNotFound("braces to remove");
+
+    case ErrorReason.DidNotFoundIfStatementToSplit:
+      return didNotFound("an if statement that can be split");
 
     case ErrorReason.CantMoveStatementUp:
       return "I'm sorry, I can't move this statement up 😅";
