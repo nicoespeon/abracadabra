@@ -155,6 +155,10 @@ Same as _Move Statement Up_, but it moves the selected statement down. Like, the
 
 ![][demo-move-statement-down]
 
+_Move Statement Up_ and _Move Statement Down_ also work on object properties. They always produce valid code, so **you don't have to bother with the trailing comma anymore**!
+
+![][demo-move-statement-object-property]
+
 ### Add Braces to Arrow Function
 
 > 💡 Available as Quick Fix
@@ -262,6 +266,7 @@ There is also an extension called [JS Refactor][js-refactor] that provides JS a
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
 [demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true
 [demo-remove-braces-from-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-arrow-function.gif?raw=true
+[demo-move-statement-object-property]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-object-property.gif?raw=true
 
 <!-- Logo -->
 
