@@ -52,6 +52,10 @@ class Selection {
     return Selection.fromPositions(this.start.putAtStartOfLine(), this.end);
   }
 
+  extendToEndOfLine(): Selection {
+    return Selection.fromPositions(this.start, this.end.putAtEndOfLine());
+  }
+
   extendToStartOfNextLine(): Selection {
     return Selection.fromPositions(
       this.start,

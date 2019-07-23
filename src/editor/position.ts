@@ -49,6 +49,12 @@ class Position {
     return new Position(this.line, 0);
   }
 
+  putAtEndOfLine(): Position {
+    // We don't know the exact character of end of line.
+    // Use a very large number for editor to cap at end of line.
+    return new Position(this.line, 999999999);
+  }
+
   putAtNextLine(): Position {
     return new Position(this.line + 1, this.character);
   }

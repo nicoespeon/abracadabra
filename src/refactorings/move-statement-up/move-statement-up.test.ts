@@ -135,6 +135,55 @@ function doSomethingElse() {
   }
 }`,
         expectedPosition: new Position(3, 0)
+      },
+      {
+        description: "object properties",
+        code: `console.log("Should not move");
+const data = {
+  foo: "foo",
+  bar: "bar",
+  baz: "baz"
+};`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `console.log("Should not move");
+const data = {
+  bar: "bar",
+  foo: "foo",
+  baz: "baz"
+};`,
+        expectedPosition: new Position(2, 2)
+      },
+      {
+        description: "object properties, cursor after comma",
+        code: `console.log("Should not move");
+const data = {
+  foo: "foo",
+  bar: "bar",
+  baz: "baz"
+};`,
+        selection: Selection.cursorAt(3, 13),
+        expected: `console.log("Should not move");
+const data = {
+  bar: "bar",
+  foo: "foo",
+  baz: "baz"
+};`,
+        expectedPosition: new Position(2, 13)
+      },
+      {
+        description: "object property, respecting trailing commas",
+        code: `const data = {
+  foo: "foo",
+  bar: "bar",
+  baz: "baz"
+};`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `const data = {
+  foo: "foo",
+  baz: "baz",
+  bar: "bar"
+};`,
+        expectedPosition: new Position(2, 2)
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {

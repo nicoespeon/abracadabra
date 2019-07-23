@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Move Statement Up now works on object properties too
 - **[New refactoring]** Remove Braces from Arrow Function
 - **[New refactoring]** Add Braces to Arrow Function
 
