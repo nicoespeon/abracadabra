@@ -28,6 +28,17 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
+      },
+      {
+        description: "with || logical expression",
+        code: `if (isValid || isCorrect) {
+  doSomething();
+}`,
+        expected: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doSomething();
+}`
       }
     ],
     async ({ code, expected }) => {

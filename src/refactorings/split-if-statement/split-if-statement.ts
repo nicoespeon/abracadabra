@@ -37,10 +37,17 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const test = path.node.test;
       if (!ast.isLogicalExpression(test)) return;
 
+      const splittedIfStatement = ast.ifStatement(
+        test.right,
+        path.node.consequent
+      );
+
+      if (test.operator === "&&") {
+        path.node.consequent = ast.blockStatement([splittedIfStatement]);
+      } else {
+        path.node.alternate = splittedIfStatement;
+      }
       path.node.test = test.left;
-      path.node.consequent = ast.blockStatement([
-        ast.ifStatement(test.right, path.node.consequent)
-      ]);
 
       path.stop();
     }
