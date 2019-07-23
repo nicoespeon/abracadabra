@@ -221,9 +221,40 @@ Contributions of any kind are welcome!
 
 ## Alternatives
 
-VS Code ships with [basic refactoring operations][vscode-refactorings]. But they tend to be limited and we didn't found the UX to be very intuitive.
+### VS Code native refactorings
 
-There is also an extension called [JS Refactor][js-refactor] that provides JS automated refactorings for VS Code. But we didn't like its UX much (e.g. it takes a lot of keystrokes to extract a variable). Also, it didn't support JS class syntax well, nor JSX, TS and TSX when we decided to create **Abracadabra**.
+VS Code ships with [basic refactoring operations][vscode-refactorings].
+
+Pros of Abracadabra over these:
+
+- VS Code refactorings require you to select the code exactly. You can trigger Abracadabra as long as your cursor is in the scope, which is simpler and faster.
+- Abracadabra proposes more refactorings than the VS Code default ones.
+- Abracadabra refactorings are documented.
+- You can assign a shortcut to every Abracadabra refactoring.
+
+Cons of Abracadabra over these:
+
+- Abracadabra refactorings won't be as native as VS Code ones.
+- Abracadabra refactorings are limited to JS, TS, JSX and TSX.
+
+### JS Refactor
+
+The most popular extension for refactoring is called [JS Refactor][js-refactor]. It provides JS automated refactorings for VS Code.
+
+Pros of Abracadabra over these:
+
+- Abracadabra work with TypeScript.
+- Abracadabra proposes refactorings that JS Refactor doesn't.
+- JS Refactor refactorings will work even with partially selected code. Abracadabra ones will also work as long as your cursor is in the scope.
+- Abracadabra refactorings require you less steps to perform. It's faster to use.
+
+Cons of Abracadabra over these:
+
+- Abracadabra refactorings are more opinionated. This makes them faster to use, but might not cover some use cases.
+- JS Refactor proposes code snippets, Abracadabra doesn't.
+- JS Refactor supports Vue single file components and HTML.
+
+---
 
 ![](https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/magic.gif?raw=true)
 
