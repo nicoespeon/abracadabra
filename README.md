@@ -42,6 +42,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Move Statement Down](#move-statement-down)
 1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
 1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
+1. [Split If Statement](#split-if-statement)
 
 ### Rename Symbol
 
@@ -177,6 +178,14 @@ Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Cod
 
 ![][demo-remove-braces-from-arrow-function]
 
+### Split If Statement
+
+> 💡 Available as Quick Fix
+
+Split the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
+
+![][demo-split-if-statement]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -298,6 +307,7 @@ Cons of Abracadabra over these:
 [demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true
 [demo-remove-braces-from-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-arrow-function.gif?raw=true
 [demo-move-statement-object-property]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-object-property.gif?raw=true
+[demo-split-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-if-statement.gif?raw=true
 
 <!-- Logo -->
 
