@@ -39,6 +39,17 @@ describe("Split If Statement", () => {
 } else if (isCorrect) {
   doSomething();
 }`
+      },
+      {
+        description: "multiple parts of logical expression",
+        code: `if (isValid && isCorrect && shouldDoSomething) {
+  doSomething();
+}`,
+        expected: `if (isValid && isCorrect) {
+  if (shouldDoSomething) {
+    doSomething();
+  }
+}`
       }
     ],
     async ({ code, expected }) => {
