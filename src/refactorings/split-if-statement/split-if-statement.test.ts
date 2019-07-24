@@ -15,7 +15,7 @@ describe("Split If Statement", () => {
     showErrorMessage = jest.fn();
   });
 
-  testEach<{ code: Code; expected: Code }>(
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should split if statement",
     [
       {
@@ -61,11 +61,41 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
+      },
+      {
+        description: "with nested ifs, cursor on wrapper",
+        code: `if (isValid && size > 10) {
+  if (isCorrect || shouldDoSomething) {
+    doSomething();
+  }
+}`,
+        selection: Selection.cursorAt(0, 4),
+        expected: `if (isValid) {
+  if (size > 10) {
+    if (isCorrect || shouldDoSomething) {
+      doSomething();
+    }
+  }
+}`
+      },
+      {
+        description: "with nested ifs, cursor on nested",
+        code: `if (isValid && size > 10) {
+  if (isCorrect || shouldDoSomething) {
+    doSomething();
+  }
+}`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `if (isValid && size > 10) {
+  if (isCorrect) {
+    doSomething();
+  } else if (shouldDoSomething) {
+    doSomething();
+  }
+}`
       }
     ],
-    async ({ code, expected }) => {
-      const selection = Selection.cursorAt(0, 0);
-
+    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doSplitIfStatement(code, selection);
 
       expect(result).toBe(expected);

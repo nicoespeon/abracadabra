@@ -37,6 +37,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const test = path.node.test;
       if (!ast.isLogicalExpression(test)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const splittedIfStatement = ast.ifStatement(
         test.right,
         path.node.consequent
@@ -52,4 +56,24 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       path.stop();
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    IfStatement(childPath) {
+      if (!ast.isSelectableNode(childPath.node)) return;
+      if (!selection.isInside(Selection.fromAST(childPath.node.loc))) return;
+      if (!ast.isLogicalExpression(childPath.node.test)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
