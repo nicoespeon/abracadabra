@@ -43,7 +43,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       const splittedIfStatement = ast.ifStatement(
         test.right,
-        path.node.consequent
+        path.node.consequent,
+        path.node.alternate
       );
 
       if (test.operator === "&&") {

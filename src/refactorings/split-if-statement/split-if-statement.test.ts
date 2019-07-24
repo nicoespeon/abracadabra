@@ -93,6 +93,48 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
+      },
+      {
+        description: "if/elseif/else pattern, && logical expression",
+        code: `if (isValid && isCorrect) {
+  doSomething();
+} else if (isSelected) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`,
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  } else if (isSelected) {
+    doAnotherThing();
+  } else {
+    doNothing();
+  }
+} else if (isSelected) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`
+      },
+      {
+        description: "if/elseif/else pattern, || logical expression",
+        code: `if (isValid || isCorrect) {
+  doSomething();
+} else if (isSelected) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`,
+        expected: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doSomething();
+} else if (isSelected) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
