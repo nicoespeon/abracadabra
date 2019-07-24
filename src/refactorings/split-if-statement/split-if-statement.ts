@@ -34,17 +34,20 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!ast.isSelectableNode(path.node)) return;
       if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
 
-      const test = path.node.test;
+      const { test, consequent, alternate } = path.node;
       if (!ast.isLogicalExpression(test)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
+      // Handle logical expressions in `else if` if they're closer to selection.
+      if (hasAlternateWhichMatchesSelection(alternate, selection)) return;
+
       const splittedIfStatement = ast.ifStatement(
         test.right,
-        path.node.consequent,
-        path.node.alternate
+        consequent,
+        alternate
       );
 
       if (test.operator === "&&") {
@@ -77,4 +80,16 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
+}
+
+function hasAlternateWhichMatchesSelection(
+  alternate: ast.IfStatement["alternate"],
+  selection: Selection
+): boolean {
+  if (!ast.isIfStatement(alternate)) return false;
+  if (!ast.isSelectableNode(alternate)) return false;
+  if (!selection.isInside(Selection.fromAST(alternate.loc))) return false;
+  if (!ast.isLogicalExpression(alternate.test)) return false;
+
+  return true;
 }

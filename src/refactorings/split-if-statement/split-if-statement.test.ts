@@ -135,6 +135,68 @@ describe("Split If Statement", () => {
 } else {
   doNothing();
 }`
+      },
+      {
+        description: "logical expression in elseif, cursor outside of elseif",
+        code: `if (isValid || isCorrect) {
+  doSomething();
+} else if (isSelected && shouldDoAnotherThing) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`,
+        selection: Selection.cursorAt(1, 0),
+        expected: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doSomething();
+} else if (isSelected && shouldDoAnotherThing) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`
+      },
+      {
+        description: "logical expression in elseif, cursor in elseif",
+        code: `if (isValid || isCorrect) {
+  doSomething();
+} else if (isSelected && shouldDoAnotherThing) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`,
+        selection: Selection.cursorAt(3, 0),
+        expected: `if (isValid || isCorrect) {
+  doSomething();
+} else if (isSelected) {
+  if (shouldDoAnotherThing) {
+    doAnotherThing();
+  } else {
+    doNothing();
+  }
+} else {
+  doNothing();
+}`
+      },
+      {
+        description: "logical expression in elseif, n-th elseif",
+        code: `if (isValid || isCorrect) {
+  doSomething();
+} else if (isSelected && shouldDoAnotherThing) {
+  doAnotherThing();
+} else if (size === 0 && !canDoSomething) {
+  doNothing();
+}`,
+        selection: Selection.cursorAt(5, 0),
+        expected: `if (isValid || isCorrect) {
+  doSomething();
+} else if (isSelected && shouldDoAnotherThing) {
+  doAnotherThing();
+} else if (size === 0) {
+  if (!canDoSomething) {
+    doNothing();
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
