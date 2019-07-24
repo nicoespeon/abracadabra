@@ -50,6 +50,17 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
+      },
+      {
+        description: "with composed logical expressions",
+        code: `if (isValid && (isCorrect || shouldDoSomething)) {
+  doSomething();
+}`,
+        expected: `if (isValid) {
+  if (isCorrect || shouldDoSomething) {
+    doSomething();
+  }
+}`
       }
     ],
     async ({ code, expected }) => {
