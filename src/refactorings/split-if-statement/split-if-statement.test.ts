@@ -30,7 +30,7 @@ describe("Split If Statement", () => {
 }`
       },
       {
-        description: "with || logical expression",
+        description: "|| logical expression",
         code: `if (isValid || isCorrect) {
   doSomething();
 }`,
@@ -52,7 +52,7 @@ describe("Split If Statement", () => {
 }`
       },
       {
-        description: "with composed logical expressions",
+        description: "composed logical expressions",
         code: `if (isValid && (isCorrect || shouldDoSomething)) {
   doSomething();
 }`,
@@ -63,7 +63,7 @@ describe("Split If Statement", () => {
 }`
       },
       {
-        description: "with nested ifs, cursor on wrapper",
+        description: "nested ifs, cursor on wrapper",
         code: `if (isValid && size > 10) {
   if (isCorrect || shouldDoSomething) {
     doSomething();
@@ -79,7 +79,7 @@ describe("Split If Statement", () => {
 }`
       },
       {
-        description: "with nested ifs, cursor on nested",
+        description: "nested ifs, cursor on nested",
         code: `if (isValid && size > 10) {
   if (isCorrect || shouldDoSomething) {
     doSomething();
