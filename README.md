@@ -43,6 +43,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
 1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
 1. [Split If Statement](#split-if-statement)
+1. [Merge If Statements](#merge-if-statements)
 
 ### Rename Symbol
 
@@ -186,6 +187,14 @@ Split the logical expression of the closest if statement. This is an helpful too
 
 ![][demo-split-if-statement]
 
+### Merge If Statements
+
+> 💡 Available as Quick Fix
+
+This is the opposite of _Split If Statement_. It consolidates nested ifs to clean up the code.
+
+![][demo-merge-if-statements]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -308,6 +317,7 @@ Cons of Abracadabra over these:
 [demo-remove-braces-from-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-arrow-function.gif?raw=true
 [demo-move-statement-object-property]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-object-property.gif?raw=true
 [demo-split-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-if-statement.gif?raw=true
+[demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 
 <!-- Logo -->
 
