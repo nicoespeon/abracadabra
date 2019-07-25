@@ -7,6 +7,7 @@ import extractVariableCommand from "./refactorings/extract-variable/command";
 import flipIfElseCommand from "./refactorings/flip-if-else/command";
 import flipTernaryCommand from "./refactorings/flip-ternary/command";
 import inlineVariableCommand from "./refactorings/inline-variable/command";
+import mergeIfStatementsCommand from "./refactorings/merge-if-statements/command";
 import moveStatementDownCommand from "./refactorings/move-statement-down/command";
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
 import negateExpressionCommand from "./refactorings/negate-expression/command";
@@ -20,6 +21,7 @@ import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-e
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
 import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
+import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statements/action-provider";
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 import removeBracesFromArrowFunctionActionProviderFor from "./refactorings/remove-braces-from-arrow-function/action-provider";
 import removeRedundantElseActionProviderFor from "./refactorings/remove-redundant-else/action-provider";
@@ -41,6 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
     flipIfElseCommand,
     flipTernaryCommand,
     inlineVariableCommand,
+    mergeIfStatementsCommand,
     moveStatementDownCommand,
     moveStatementUpCommand,
     negateExpressionCommand,
@@ -57,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
       convertTernaryToIfElseActionProviderFor(language),
       flipIfElseActionProviderFor(language),
       flipTernaryActionProviderFor(language),
+      mergeIfStatementsActionProviderFor(language),
       negateExpressionActionProviderFor(language),
       removeBracesFromArrowFunctionActionProviderFor(language),
       removeRedundantElseActionProviderFor(language),
