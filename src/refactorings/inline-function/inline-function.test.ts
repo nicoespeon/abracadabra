@@ -66,6 +66,24 @@ sayHello();`,
 }
 
 console.log("Hello!");`
+      },
+      {
+        description: "nested functions, cursor on nested",
+        code: `function doSomething() {
+  function sayHello() {
+    console.log("Hello!");
+  }
+
+  sayHello();
+}
+
+doSomething();`,
+        selection: Selection.cursorAt(1, 14),
+        expected: `function doSomething() {
+  console.log("Hello!");
+}
+
+doSomething();`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
