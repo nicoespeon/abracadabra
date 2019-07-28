@@ -84,6 +84,38 @@ doSomething();`,
 }
 
 doSomething();`
+      },
+      {
+        description: "only call expressions in scope",
+        code: `function doSomething() {
+  if (isValid) {
+    logger("is valid");
+
+    function sayHello() {
+      console.log("Hello!");
+    }
+  }
+
+  sayHello();
+}
+
+function sayHelloToJane() {
+  sayHello();
+  console.log("Jane");
+}`,
+        selection: Selection.cursorAt(5, 0),
+        expected: `function doSomething() {
+  if (isValid) {
+    logger("is valid");
+  }
+
+  console.log("Hello!");
+}
+
+function sayHelloToJane() {
+  sayHello();
+  console.log("Jane");
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

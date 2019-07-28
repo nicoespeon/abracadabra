@@ -34,7 +34,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      replaceAllIdentifiersInScope(path.parentPath, path.node);
+      const parentPath = path.getFunctionParent() || path.parentPath;
+      replaceAllIdentifiersInScopePath(parentPath, path.node);
       path.remove();
     }
   });
@@ -59,7 +60,7 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function replaceAllIdentifiersInScope(
+function replaceAllIdentifiersInScopePath(
   scopePath: ast.NodePath,
   functionDeclaration: ast.FunctionDeclaration
 ) {
