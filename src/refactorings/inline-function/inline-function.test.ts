@@ -116,6 +116,28 @@ function sayHelloToJane() {
   sayHello();
   console.log("Jane");
 }`
+      },
+      {
+        description: "function with top-level if statement",
+        code: `let isMorning = true;
+
+function sayHello() {
+  if (isMorning) {
+    console.log("Good morning.");
+  } else {
+    console.log("Hello World!");
+  }
+}
+
+sayHello();`,
+        selection: Selection.cursorAt(2, 0),
+        expected: `let isMorning = true;
+
+if (isMorning) {
+  console.log("Good morning.");
+} else {
+  console.log("Hello World!");
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

@@ -71,7 +71,8 @@ function replaceAllIdentifiersInScopePath(
       if (!functionDeclaration.id) return;
       if (identifier.name !== functionDeclaration.id.name) return;
 
-      path.replaceWith(functionDeclaration.body);
+      const functionBlockStatement = functionDeclaration.body;
+      path.replaceWithMultiple(functionBlockStatement.body);
     }
   });
 }
