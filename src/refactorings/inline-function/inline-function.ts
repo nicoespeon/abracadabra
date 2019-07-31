@@ -71,8 +71,48 @@ function replaceAllIdentifiersInScopePath(
       if (!functionDeclaration.id) return;
       if (identifier.name !== functionDeclaration.id.name) return;
 
-      const functionBlockStatement = functionDeclaration.body;
-      path.replaceWithMultiple(functionBlockStatement.body);
+      const functionBody = applyArgumentsToFunction(path, functionDeclaration);
+      path.replaceWithMultiple(functionBody);
     }
   });
+}
+
+function applyArgumentsToFunction(
+  callExpressionPath: ast.NodePath<ast.CallExpression>,
+  functionDeclaration: ast.FunctionDeclaration
+): ast.Statement[] {
+  /**
+   * If we try to modify the original function declaration,
+   * we'll impact all other references. A path can't be cloned.
+   *
+   * But if we clone the function node and insert it in the AST,
+   * then we can traverse it and modify its params with the expected values.
+   *
+   * It's temporary though.
+   * After we're done, we remove the inserted path. #magicTrick ✨
+   */
+
+  // We have to cast this one as `insertAfter()` return type is `any`.
+  const [temporaryCopiedPath] = callExpressionPath.insertAfter(
+    ast.cloneDeep(functionDeclaration)
+  ) as [ast.NodePath<ast.FunctionDeclaration>];
+
+  temporaryCopiedPath.traverse({
+    Identifier(idPath) {
+      const paramIndex = functionDeclaration.params.findIndex(
+        param => ast.isIdentifier(param) && param.name === idPath.node.name
+      );
+      if (paramIndex < 0) return;
+
+      const paramValues = callExpressionPath.node.arguments;
+      idPath.replaceWith(paramValues[paramIndex]);
+    }
+  });
+
+  // We need to reference the node before we remove the path.
+  const functionBlockStatement = temporaryCopiedPath.node.body;
+
+  temporaryCopiedPath.remove();
+
+  return functionBlockStatement.body;
 }

@@ -138,6 +138,29 @@ if (isMorning) {
 } else {
   console.log("Hello World!");
 }`
+      },
+      {
+        description: "function with params",
+        code: `function sayHello(firstName, lastName, isMorning) {
+  if (isMorning) {
+    console.log("Good morning ", firstName);
+  } else {
+    console.log(\`Hello \${firstName}, \${lastName}!\`);
+  }
+}
+
+sayHello("Jane", "Doe", false);
+sayHello("John", "Smith", true);`,
+        expected: `if (false) {
+  console.log("Good morning ", "Jane");
+} else {
+  console.log(\`Hello \${"Jane"}, \${"Doe"}!\`);
+}
+if (true) {
+  console.log("Good morning ", "John");
+} else {
+  console.log(\`Hello \${"John"}, \${"Smith"}!\`);
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
