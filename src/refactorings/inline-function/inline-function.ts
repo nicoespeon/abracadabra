@@ -105,7 +105,8 @@ function applyArgumentsToFunction(
       if (paramIndex < 0) return;
 
       const paramValues = callExpressionPath.node.arguments;
-      idPath.replaceWith(paramValues[paramIndex]);
+      const value = paramValues[paramIndex] || ast.identifier("undefined");
+      idPath.replaceWith(value);
     }
   });
 

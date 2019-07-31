@@ -161,6 +161,15 @@ if (true) {
 } else {
   console.log(\`Hello \${"John"}, \${"Smith"}!\`);
 }`
+      },
+      {
+        description: "function with unused params",
+        code: `function sayHello(firstName, lastName) {
+  console.log("Hello", firstName, lastName);
+}
+
+sayHello("Jane");`,
+        expected: `console.log("Hello", "Jane", undefined);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
