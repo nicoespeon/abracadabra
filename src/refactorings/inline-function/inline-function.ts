@@ -121,7 +121,7 @@ function applyArgumentsToFunction(
 
 function findParamMatchingId(
   id: ast.Identifier,
-  params: ast.FunctionDeclaration["params"]
+  params: ast.Node[]
 ): MatchingParam {
   return params.reduce((result: MatchingParam, param, index) => {
     if (result.isMatch) return result;
@@ -134,8 +134,24 @@ function findParamMatchingId(
       return new MatchingArray(index, findParamMatchingId(id, param.elements));
     }
 
+    if (ast.isObjectPattern(param)) {
+      const values = getPropertiesValues(param);
+      return new MatchingObject(index, findParamMatchingId(id, values));
+    }
+
     return result;
   }, new NoMatch());
+}
+
+function getPropertiesValues(
+  param: ast.ObjectPattern
+): ast.ObjectProperty["value"][] {
+  return param.properties
+    .map(property => {
+      if (ast.isRestElement(property)) return null;
+      return property.value;
+    })
+    .filter((el): el is ast.ObjectProperty["value"] => el !== null);
 }
 
 interface MatchingParam {
@@ -175,6 +191,30 @@ class MatchingArray implements MatchingParam {
     const value = args[this.index];
     if (!ast.isArrayExpression(value)) return null;
     return this.matchingParam.resolveValue(value.elements);
+  }
+}
+
+class MatchingObject implements MatchingParam {
+  private index: number;
+  private matchingParam: MatchingParam;
+
+  constructor(index: number, matchingParam: MatchingParam) {
+    this.index = index;
+    this.matchingParam = matchingParam;
+  }
+
+  get isMatch() {
+    return this.matchingParam.isMatch;
+  }
+
+  resolveValue(args: Value[]) {
+    const value = args[this.index];
+    if (!ast.isObjectExpression(value)) return null;
+
+    const property = this.matchingParam.resolveValue(value.properties);
+    if (!ast.isObjectProperty(property)) return null;
+
+    return property.value;
   }
 }
 

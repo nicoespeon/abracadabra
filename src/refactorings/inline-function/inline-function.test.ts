@@ -9,7 +9,7 @@ import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory"
 import { inlineFunction } from "./inline-function";
 import { testEach } from "../../tests-helpers";
 
-describe.only("Inline Function", () => {
+describe("Inline Function", () => {
   let showErrorMessage: ShowErrorMessage;
 
   beforeEach(() => {
@@ -178,6 +178,24 @@ sayHello("Jane");`,
 }
 
 doSomething(["Jane", "Doe"]);`,
+        expected: `console.log("Jane");`
+      },
+      {
+        description: "function with array pattern in params (recursive)",
+        code: `function doSomething([[name]]) {
+  console.log(name);
+}
+
+doSomething([["Jane"], "Doe"]);`,
+        expected: `console.log("Jane");`
+      },
+      {
+        description: "function with object pattern in params",
+        code: `function doSomething({ name }) {
+  console.log(name);
+}
+
+doSomething({ name: "Jane", age: 30 });`,
         expected: `console.log("Jane");`
       }
     ],
