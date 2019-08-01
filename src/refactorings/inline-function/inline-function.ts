@@ -130,6 +130,10 @@ function findParamMatchingId(
       return new MatchingIdentifier(index);
     }
 
+    if (ast.isArrayPattern(param)) {
+      return new MatchingArray(index, findParamMatchingId(id, param.elements));
+    }
+
     return result;
   }, new NoMatch());
 }
@@ -151,6 +155,26 @@ class MatchingIdentifier implements MatchingParam {
 
   resolveValue(args: Value[]) {
     return args[this.index];
+  }
+}
+
+class MatchingArray implements MatchingParam {
+  private matchingParam: MatchingParam;
+  private index: number;
+
+  constructor(index: number, matchingParam: MatchingParam) {
+    this.index = index;
+    this.matchingParam = matchingParam;
+  }
+
+  get isMatch() {
+    return this.matchingParam.isMatch;
+  }
+
+  resolveValue(args: Value[]) {
+    const value = args[this.index];
+    if (!ast.isArrayExpression(value)) return null;
+    return this.matchingParam.resolveValue(value.elements);
   }
 }
 

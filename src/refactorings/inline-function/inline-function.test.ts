@@ -170,6 +170,15 @@ if (true) {
 
 sayHello("Jane");`,
         expected: `console.log("Hello", "Jane", undefined);`
+      },
+      {
+        description: "function with array pattern in params",
+        code: `function doSomething([name]) {
+  console.log(name);
+}
+
+doSomething(["Jane", "Doe"]);`,
+        expected: `console.log("Jane");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
