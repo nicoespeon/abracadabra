@@ -99,13 +99,14 @@ function applyArgumentsToFunction(
 
   temporaryCopiedPath.traverse({
     Identifier(idPath) {
-      const paramIndex = functionDeclaration.params.findIndex(
-        param => ast.isIdentifier(param) && param.name === idPath.node.name
+      const param = findParamMatchingId(
+        idPath.node,
+        functionDeclaration.params
       );
-      if (paramIndex < 0) return;
+      if (!param.isMatch) return;
 
-      const paramValues = callExpressionPath.node.arguments;
-      const value = paramValues[paramIndex] || ast.identifier("undefined");
+      const values = callExpressionPath.node.arguments;
+      const value = param.resolveValue(values) || ast.identifier("undefined");
       idPath.replaceWith(value);
     }
   });
@@ -116,4 +117,47 @@ function applyArgumentsToFunction(
   temporaryCopiedPath.remove();
 
   return functionBlockStatement.body;
+}
+
+function findParamMatchingId(
+  id: ast.Identifier,
+  params: ast.FunctionDeclaration["params"]
+): MatchingParam {
+  return params.reduce((result: MatchingParam, param, index) => {
+    if (result.isMatch) return result;
+
+    if (ast.isIdentifier(param) && param.name === id.name) {
+      return new MatchingIdentifier(index);
+    }
+
+    return result;
+  }, new NoMatch());
+}
+
+interface MatchingParam {
+  isMatch: boolean;
+  resolveValue: (args: Value[]) => Value;
+}
+
+type Value = ast.Node | null;
+
+class MatchingIdentifier implements MatchingParam {
+  isMatch = true;
+  private index: number;
+
+  constructor(index: number) {
+    this.index = index;
+  }
+
+  resolveValue(args: Value[]) {
+    return args[this.index];
+  }
+}
+
+class NoMatch implements MatchingParam {
+  isMatch = false;
+
+  resolveValue() {
+    return null;
+  }
 }
