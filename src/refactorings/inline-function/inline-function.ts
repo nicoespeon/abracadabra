@@ -94,8 +94,8 @@ function applyArgumentsToFunction(
 
   // We have to cast this one as `insertAfter()` return type is `any`.
   const [temporaryCopiedPath] = callExpressionPath.insertAfter(
-    ast.cloneDeep(functionDeclaration)
-  ) as [ast.NodePath<ast.FunctionDeclaration>];
+    ast.cloneDeep(functionDeclaration.body)
+  ) as [ast.NodePath<ast.BlockStatement>];
 
   temporaryCopiedPath.traverse({
     Identifier(idPath) {
@@ -112,7 +112,7 @@ function applyArgumentsToFunction(
   });
 
   // We need to reference the node before we remove the path.
-  const functionBlockStatement = temporaryCopiedPath.node.body;
+  const functionBlockStatement = temporaryCopiedPath.node;
 
   temporaryCopiedPath.remove();
 
