@@ -190,6 +190,15 @@ doSomething([["Jane"], "Doe"]);`,
         expected: `console.log("Jane");`
       },
       {
+        description: "function with array pattern in params (nth element)",
+        code: `function doSomething([[_, name]]) {
+  console.log(name);
+}
+
+doSomething([[30, "Jane"], "Doe"]);`,
+        expected: `console.log("Jane");`
+      },
+      {
         description: "function with object pattern in params",
         code: `function doSomething({ name }) {
   console.log(name);
