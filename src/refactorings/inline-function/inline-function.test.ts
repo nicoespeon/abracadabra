@@ -206,6 +206,15 @@ doSomething({ name: "Jane", age: 30 });`,
 
 doSomething("Jane", "Doe", 30);`,
         expected: `console.log(["Doe", 30]);`
+      },
+      {
+        description: "function with rest element in params (array pattern)",
+        code: `function doSomething(name, ...[lastName]) {
+  console.log(lastName);
+}
+
+doSomething("Jane", "Doe", 30);`,
+        expected: `console.log("Doe");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

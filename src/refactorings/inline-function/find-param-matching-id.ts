@@ -53,9 +53,16 @@ function findParamMatchingId(
     }
 
     if (ast.isRestElement(param)) {
-      if (ast.isIdentifier(param.argument)) {
-        return new MatchingRestIdentifier(index, id, param.argument);
+      const argument = param.argument;
+
+      if (ast.isIdentifier(argument)) {
+        return new MatchingRestIdentifier(index, id, argument);
       }
+
+      return new MatchingRestElement(
+        index,
+        findParamMatchingId(id, [argument])
+      );
     }
 
     return result;
@@ -152,7 +159,7 @@ class MatchingArray implements MatchingParam {
 
   resolveValue(args: Value[]) {
     const value = args[this.index];
-    if (!ast.isArrayExpression(value)) return null;
+    if (!ast.isArrayExpression(value)) return value;
     return this.child.resolveValue(value.elements);
   }
 }
@@ -178,5 +185,24 @@ class MatchingObject implements MatchingParam {
     if (!ast.isObjectProperty(property)) return null;
 
     return property.value;
+  }
+}
+
+class MatchingRestElement implements MatchingParam {
+  private index: number;
+  private child: MatchingParam;
+
+  constructor(index: number, child: MatchingParam) {
+    this.index = index;
+    this.child = child;
+  }
+
+  get isMatch() {
+    return this.child.isMatch;
+  }
+
+  resolveValue(args: Value[]) {
+    const values = args.slice(this.index);
+    return this.child.resolveValue(values);
   }
 }
