@@ -197,6 +197,15 @@ doSomething([["Jane"], "Doe"]);`,
 
 doSomething({ name: "Jane", age: 30 });`,
         expected: `console.log("Jane");`
+      },
+      {
+        description: "function with rest element in params",
+        code: `function doSomething(name, ...others) {
+  console.log(others);
+}
+
+doSomething("Jane", "Doe", 30);`,
+        expected: `console.log(["Doe", 30]);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

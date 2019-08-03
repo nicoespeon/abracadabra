@@ -52,6 +52,12 @@ function findParamMatchingId(
       return new MatchingObject(index, findParamMatchingId(id, values));
     }
 
+    if (ast.isRestElement(param)) {
+      if (ast.isIdentifier(param.argument)) {
+        return new MatchingRestIdentifier(index, id, param.argument);
+      }
+    }
+
     return result;
   }, new NoMatch());
 }
@@ -103,6 +109,29 @@ class MatchingIdentifier implements MatchingParam {
 
   resolveValue(args: Value[]) {
     return args[this.index];
+  }
+}
+
+class MatchingRestIdentifier implements MatchingParam {
+  private index: number;
+  private id: ast.Identifier;
+  private argument: ast.Identifier;
+
+  constructor(index: number, id: ast.Identifier, argument: ast.Identifier) {
+    this.index = index;
+    this.id = id;
+    this.argument = argument;
+  }
+
+  get isMatch() {
+    return this.id.name === this.argument.name;
+  }
+
+  resolveValue(args: Value[]) {
+    const elements = args
+      .slice(this.index)
+      .filter(ast.isArrayExpressionElement);
+    return ast.arrayExpression(elements);
   }
 }
 
