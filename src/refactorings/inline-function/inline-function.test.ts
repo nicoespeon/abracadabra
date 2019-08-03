@@ -258,6 +258,24 @@ doSomething("Jane", "Doe", 30);`,
 
 doSomething("Jane");`,
         expected: `console.log("Jane");`
+      },
+      {
+        description: "function with assignment pattern",
+        code: `function doSomething(name = "John") {
+  console.log(name);
+}
+
+doSomething("Jane");`,
+        expected: `console.log("Jane");`
+      },
+      {
+        description: "function with assignment pattern (fallback on default)",
+        code: `function doSomething(name, lastName = "Smith") {
+  console.log(lastName);
+}
+
+doSomething("Jane");`,
+        expected: `console.log("Smith");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

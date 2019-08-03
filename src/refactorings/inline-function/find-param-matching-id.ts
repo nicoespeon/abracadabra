@@ -43,6 +43,10 @@ function findParamMatchingId(
       return new MatchingIdentifier(index, id, param);
     }
 
+    if (ast.isAssignmentPattern(param)) {
+      return new MatchingAssignment(index, id, param);
+    }
+
     if (ast.isArrayPattern(param)) {
       return new MatchingArray(index, findParamMatchingId(id, param.elements));
     }
@@ -116,6 +120,28 @@ class MatchingIdentifier implements MatchingParam {
 
   resolveValue(args: Value[]) {
     return args[this.index];
+  }
+}
+
+class MatchingAssignment implements MatchingParam {
+  private index: number;
+  private id: ast.Identifier;
+  private param: ast.AssignmentPattern;
+
+  constructor(index: number, id: ast.Identifier, param: ast.AssignmentPattern) {
+    this.index = index;
+    this.id = id;
+    this.param = param;
+  }
+
+  get isMatch() {
+    return (
+      ast.isIdentifier(this.param.left) && this.id.name === this.param.left.name
+    );
+  }
+
+  resolveValue(args: Value[]) {
+    return args[this.index] || this.param.right;
   }
 }
 
