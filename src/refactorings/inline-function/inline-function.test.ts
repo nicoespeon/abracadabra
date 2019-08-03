@@ -276,6 +276,17 @@ doSomething("Jane");`,
 
 doSomething("Jane");`,
         expected: `console.log("Smith");`
+      },
+      {
+        description: "call expression with identifier",
+        code: `function doSomething(name, lastName) {
+  console.log(name, lastName);
+}
+
+const firstName = "Jane";
+doSomething(firstName, "Smith");`,
+        expected: `const firstName = "Jane";
+console.log(firstName, "Smith");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
