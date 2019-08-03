@@ -109,43 +109,43 @@ class MatchingIdentifier implements MatchingParam {
 // 📦 Composites
 
 class MatchingArray implements MatchingParam {
-  private matchingParam: MatchingParam;
   private index: number;
+  private child: MatchingParam;
 
-  constructor(index: number, matchingParam: MatchingParam) {
+  constructor(index: number, child: MatchingParam) {
     this.index = index;
-    this.matchingParam = matchingParam;
+    this.child = child;
   }
 
   get isMatch() {
-    return this.matchingParam.isMatch;
+    return this.child.isMatch;
   }
 
   resolveValue(args: Value[]) {
     const value = args[this.index];
     if (!ast.isArrayExpression(value)) return null;
-    return this.matchingParam.resolveValue(value.elements);
+    return this.child.resolveValue(value.elements);
   }
 }
 
 class MatchingObject implements MatchingParam {
   private index: number;
-  private matchingParam: MatchingParam;
+  private child: MatchingParam;
 
-  constructor(index: number, matchingParam: MatchingParam) {
+  constructor(index: number, child: MatchingParam) {
     this.index = index;
-    this.matchingParam = matchingParam;
+    this.child = child;
   }
 
   get isMatch() {
-    return this.matchingParam.isMatch;
+    return this.child.isMatch;
   }
 
   resolveValue(args: Value[]) {
     const value = args[this.index];
     if (!ast.isObjectExpression(value)) return null;
 
-    const property = this.matchingParam.resolveValue(value.properties);
+    const property = this.child.resolveValue(value.properties);
     if (!ast.isObjectProperty(property)) return null;
 
     return property.value;
