@@ -39,8 +39,8 @@ function findParamMatchingId(
   return params.reduce((result: MatchingParam, param, index) => {
     if (result.isMatch) return result;
 
-    if (ast.isIdentifier(param) && param.name === id.name) {
-      return new MatchingIdentifier(index);
+    if (ast.isIdentifier(param)) {
+      return new MatchingIdentifier(index, id, param);
     }
 
     if (ast.isArrayPattern(param)) {
@@ -87,11 +87,18 @@ class NoMatch implements MatchingParam {
 }
 
 class MatchingIdentifier implements MatchingParam {
-  isMatch = true;
   private index: number;
+  private id: ast.Identifier;
+  private param: ast.Identifier;
 
-  constructor(index: number) {
+  constructor(index: number, id: ast.Identifier, param: ast.Identifier) {
     this.index = index;
+    this.id = id;
+    this.param = param;
+  }
+
+  get isMatch() {
+    return this.id.name === this.param.name;
   }
 
   resolveValue(args: Value[]) {
