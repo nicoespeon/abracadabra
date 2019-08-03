@@ -185,6 +185,16 @@ class MatchingArray implements MatchingParam {
   }
 
   resolveValue(args: Value[]) {
+    return ast.areAllObjectProperties(args)
+      ? this.resolveObjectExpressionValue(args)
+      : this.resolveArrayExpressionValue(args);
+  }
+
+  private resolveObjectExpressionValue(args: ast.ObjectProperty[]): Value {
+    return this.resolveArrayExpressionValue(args.map(arg => arg.value));
+  }
+
+  private resolveArrayExpressionValue(args: Value[]) {
     const value = args[this.index];
     if (!ast.isArrayExpression(value)) return value;
     return this.child.resolveValue(value.elements);

@@ -219,6 +219,20 @@ doSomething({ name: "Jane", age: 30 });`,
 });`
       },
       {
+        description: "function with combination of patterns",
+        code: `function doSomething(name, { identities: [ { lastName } ] }) {
+  console.log(lastName);
+}
+
+doSomething("Jane", {
+  identities: [
+    { lastName: "Doe", age: 30 },
+    { lastName: "Smith", age: 17 }
+  ]
+});`,
+        expected: `console.log("Doe");`
+      },
+      {
         description: "function with rest element in params",
         code: `function doSomething(name, ...others) {
   console.log(others);
