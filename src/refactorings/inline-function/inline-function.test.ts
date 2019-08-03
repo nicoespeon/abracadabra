@@ -249,6 +249,15 @@ doSomething("Jane", "Doe", 30);`,
 
 doSomething("Jane", "Doe", 30);`,
         expected: `console.log("Doe");`
+      },
+      {
+        description: "function with typed params",
+        code: `function doSomething(name: string) {
+  console.log(name);
+}
+
+doSomething("Jane");`,
+        expected: `console.log("Jane");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
