@@ -199,6 +199,17 @@ doSomething({ name: "Jane", age: 30 });`,
         expected: `console.log("Jane");`
       },
       {
+        description: "function with object pattern in params (rest element)",
+        code: `function doSomething({ name, ...others }) {
+  console.log(others);
+}
+
+doSomething({ name: "Jane", age: 30 });`,
+        expected: `console.log({
+  age: 30
+});`
+      },
+      {
         description: "function with rest element in params",
         code: `function doSomething(name, ...others) {
   console.log(others);
