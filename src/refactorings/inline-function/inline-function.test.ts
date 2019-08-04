@@ -287,6 +287,17 @@ const firstName = "Jane";
 doSomething(firstName, "Smith");`,
         expected: `const firstName = "Jane";
 console.log(firstName, "Smith");`
+      },
+      {
+        description: "function assigned to a variable declaration",
+        code: `function doSomething(name, lastName) {
+  console.log(name, lastName);
+}
+
+const sayHi = doSomething;`,
+        expected: `const sayHi = function(name, lastName) {
+  console.log(name, lastName);
+};`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

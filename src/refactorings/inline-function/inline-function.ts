@@ -74,6 +74,19 @@ function replaceAllIdentifiersInScopePath(
 
       const functionBody = applyArgumentsToFunction(path, functionDeclaration);
       path.replaceWithMultiple(functionBody);
+    },
+
+    VariableDeclarator(path) {
+      const init = path.node.init;
+      if (!ast.isIdentifier(init)) return;
+      if (!functionDeclaration.id) return;
+      if (init.name !== functionDeclaration.id.name) return;
+
+      path.node.init = ast.functionExpression(
+        null,
+        functionDeclaration.params,
+        functionDeclaration.body
+      );
     }
   });
 }
