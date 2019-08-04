@@ -6,6 +6,7 @@ import {
 } from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 import { findParamMatchingId } from "./find-param-matching-id";
+import { findExportedIdNames } from "../inline-variable/find-exported-id-names";
 
 export { inlineFunction };
 
@@ -28,7 +29,7 @@ async function inlineFunction(
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   const canInlineFunction = ast.transform(
     code,
-    createVisitorThat(replaceAllIdentifiersWithFunction)
+    createVisitorThat(replaceAllIdentifiersWithFunction, selection)
   ).hasCodeChanged;
 
   if (!canInlineFunction) return { code, hasCodeChanged: false };
@@ -37,26 +38,34 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     code,
     createVisitorThat(path => {
       replaceAllIdentifiersWithFunction(path);
+
+      const { node } = path;
+      const scope = getFunctionScopePath(path).node;
+      const isExported =
+        node.id && findExportedIdNames(scope).includes(node.id.name);
+      if (isExported) return;
+
       path.remove();
-    })
+    }, selection)
   );
+}
 
-  function createVisitorThat(
-    update: (path: ast.NodePath<ast.FunctionDeclaration>) => void
-  ) {
-    return {
-      FunctionDeclaration(path: ast.NodePath<ast.FunctionDeclaration>) {
-        if (!ast.isSelectableNode(path.node)) return;
-        if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+function createVisitorThat(
+  update: (path: ast.NodePath<ast.FunctionDeclaration>) => void,
+  selection: Selection
+) {
+  return {
+    FunctionDeclaration(path: ast.NodePath<ast.FunctionDeclaration>) {
+      if (!ast.isSelectableNode(path.node)) return;
+      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
 
-        // Since we visit nodes from parent to children, first check
-        // if a child would match the selection closer.
-        if (hasChildWhichMatchesSelection(path, selection)) return;
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
-        update(path);
-      }
-    };
-  }
+      update(path);
+    }
+  };
 }
 
 function hasChildWhichMatchesSelection(
@@ -84,7 +93,7 @@ function replaceAllIdentifiersWithFunction(
   const { node } = path;
   if (!node.id) return;
 
-  const parentPath = path.getFunctionParent() || path.parentPath;
+  const parentPath = getFunctionScopePath(path);
   const functionBinding = parentPath.scope.getBinding(node.id.name);
 
   if (functionBinding) {
@@ -99,6 +108,12 @@ function replaceAllIdentifiersWithFunction(
       }
     });
   }
+}
+
+function getFunctionScopePath(
+  path: ast.NodePath<ast.FunctionDeclaration>
+): ast.NodePath {
+  return path.getFunctionParent() || path.parentPath;
 }
 
 function replaceAllIdentifiersInPath(

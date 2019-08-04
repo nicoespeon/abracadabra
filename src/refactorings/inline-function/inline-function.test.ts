@@ -363,6 +363,28 @@ doSomething();`;
     );
   });
 
+  it("should not remove the function if it's exported", async () => {
+    const code = `function sayHello(name) {
+  console.log(name);
+}
+
+sayHello("John");
+
+export { sayHello }`;
+    const invalidSelection = Selection.cursorAt(0, 0);
+
+    const result = await doInlineFunction(code, invalidSelection);
+
+    const expectedCode = `function sayHello(name) {
+  console.log(name);
+}
+
+console.log("John");
+
+export { sayHello }`;
+    expect(result.code).toBe(expectedCode);
+  });
+
   async function doInlineFunction(
     code: Code,
     selection: Selection
