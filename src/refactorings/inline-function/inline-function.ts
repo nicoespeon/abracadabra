@@ -23,31 +23,44 @@ async function inlineFunction(
     return;
   }
 
+  if (updatedCode.isExported) {
+    showErrorMessage(ErrorReason.CantRemoveExportedFunction);
+    // We don't return because we still want to update the code.
+  }
+
   await write(updatedCode.code);
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
+function updateCode(
+  code: Code,
+  selection: Selection
+): ast.Transformed & { isExported: boolean } {
+  let isExported = false;
+
   const canInlineFunction = ast.transform(
     code,
     createVisitorThat(replaceAllIdentifiersWithFunction, selection)
   ).hasCodeChanged;
 
-  if (!canInlineFunction) return { code, hasCodeChanged: false };
+  if (!canInlineFunction) {
+    return { code, hasCodeChanged: false, isExported };
+  }
 
-  return ast.transform(
+  const result = ast.transform(
     code,
     createVisitorThat(path => {
       replaceAllIdentifiersWithFunction(path);
 
       const { node } = path;
       const scope = getFunctionScopePath(path).node;
-      const isExported =
-        node.id && findExportedIdNames(scope).includes(node.id.name);
+      isExported =
+        !!node.id && findExportedIdNames(scope).includes(node.id.name);
       if (isExported) return;
 
       path.remove();
     }, selection)
   );
+  return { ...result, isExported };
 }
 
 function createVisitorThat(

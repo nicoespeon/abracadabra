@@ -22,7 +22,8 @@ enum ErrorReason {
   CantMoveMultiLinesStatementDown,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables,
-  CantRemoveBracesFromArrowFunction
+  CantRemoveBracesFromArrowFunction,
+  CantRemoveExportedFunction
 }
 
 function toString(reason: ErrorReason): string {
@@ -86,6 +87,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.CantRemoveBracesFromArrowFunction:
       return "I'm sorry, I can't remove braces from this arrow function 😅";
+
+    case ErrorReason.CantRemoveExportedFunction:
+      return "I didn't remove the function because it's exported 🤓";
 
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";

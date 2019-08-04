@@ -354,16 +354,16 @@ function doAnotherThing() {
 
 // Not in scope.
 doSomething();`;
-    const invalidSelection = Selection.cursorAt(3, 2);
+    const selection = Selection.cursorAt(3, 2);
 
-    await doInlineFunction(code, invalidSelection);
+    await doInlineFunction(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
       ErrorReason.DidNotFoundInlinableCode
     );
   });
 
-  it("should not remove the function if it's exported", async () => {
+  describe("function is exported", () => {
     const code = `function sayHello(name) {
   console.log(name);
 }
@@ -371,18 +371,28 @@ doSomething();`;
 sayHello("John");
 
 export { sayHello }`;
-    const invalidSelection = Selection.cursorAt(0, 0);
+    const selection = Selection.cursorAt(0, 0);
 
-    const result = await doInlineFunction(code, invalidSelection);
+    it("should not remove the function", async () => {
+      const result = await doInlineFunction(code, selection);
 
-    const expectedCode = `function sayHello(name) {
+      const expectedCode = `function sayHello(name) {
   console.log(name);
 }
 
 console.log("John");
 
 export { sayHello }`;
-    expect(result.code).toBe(expectedCode);
+      expect(result.code).toBe(expectedCode);
+    });
+
+    it("should show an error message to explain", async () => {
+      await doInlineFunction(code, selection);
+
+      expect(showErrorMessage).toBeCalledWith(
+        ErrorReason.CantRemoveExportedFunction
+      );
+    });
   });
 
   async function doInlineFunction(
