@@ -35,8 +35,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const parentPath = path.getFunctionParent() || path.parentPath;
-      replaceAllIdentifiersInScopePath(parentPath, path.node);
+      replaceAllIdentifiersWithFunction(path);
       path.remove();
     }
   });
@@ -61,34 +60,68 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function replaceAllIdentifiersInScopePath(
-  scopePath: ast.NodePath,
+function replaceAllIdentifiersWithFunction(
+  path: ast.NodePath<ast.FunctionDeclaration>
+) {
+  const { node } = path;
+  if (!node.id) return;
+
+  const parentPath = path.getFunctionParent() || path.parentPath;
+  const functionBinding = parentPath.scope.getBinding(node.id.name);
+
+  if (functionBinding) {
+    functionBinding.referencePaths
+      .map(referencePath => referencePath.parentPath)
+      .forEach(scopePath => replaceAllIdentifiersInPath(scopePath, node));
+  } else {
+    // If we don't get the bindings, traverse all the parent nodes.
+    parentPath.traverse({
+      enter(scopePath) {
+        replaceAllIdentifiersInPath(scopePath, node);
+      }
+    });
+  }
+}
+
+function replaceAllIdentifiersInPath(
+  path: ast.NodePath,
   functionDeclaration: ast.FunctionDeclaration
 ) {
-  scopePath.traverse({
-    CallExpression(path) {
-      const identifier = path.node.callee;
-      if (!ast.isIdentifier(identifier)) return;
-      if (!functionDeclaration.id) return;
-      if (identifier.name !== functionDeclaration.id.name) return;
+  const { node } = path;
 
-      const functionBody = applyArgumentsToFunction(path, functionDeclaration);
-      path.replaceWithMultiple(functionBody);
-    },
+  if (ast.isCallExpression(node)) {
+    const identifier = node.callee;
+    if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
-    VariableDeclarator(path) {
-      const init = path.node.init;
-      if (!ast.isIdentifier(init)) return;
-      if (!functionDeclaration.id) return;
-      if (init.name !== functionDeclaration.id.name) return;
+    const functionBody = applyArgumentsToFunction(
+      path as ast.NodePath<ast.CallExpression>,
+      functionDeclaration
+    );
+    path.replaceWithMultiple(functionBody);
+  }
 
-      path.node.init = ast.functionExpression(
-        null,
-        functionDeclaration.params,
-        functionDeclaration.body
-      );
-    }
-  });
+  if (ast.isVariableDeclarator(node)) {
+    const identifier = node.init;
+    if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
+
+    node.init = ast.functionExpression(
+      null,
+      functionDeclaration.params,
+      functionDeclaration.body
+    );
+  }
+}
+
+function isMatchingIdentifier(
+  identifier: ast.Node | null,
+  functionDeclaration: ast.FunctionDeclaration
+): identifier is ast.Identifier {
+  if (!functionDeclaration.id) return false;
+
+  return (
+    ast.isIdentifier(identifier) &&
+    identifier.name === functionDeclaration.id.name
+  );
 }
 
 function applyArgumentsToFunction(

@@ -298,6 +298,31 @@ const sayHi = doSomething;`,
         expected: `const sayHi = function(name, lastName) {
   console.log(name, lastName);
 };`
+      },
+      {
+        description: "limit to non-shadowed bindings",
+        code: `function doSomething(name) {
+  console.log(name);
+}
+
+doSomething("John");
+
+function doAnotherThing() {
+  const doSomething = function(name) {
+    logger(name);
+  };
+
+  doSomething("Jane");
+}`,
+        expected: `console.log("John");
+
+function doAnotherThing() {
+  const doSomething = function(name) {
+    logger(name);
+  };
+
+  doSomething("Jane");
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
