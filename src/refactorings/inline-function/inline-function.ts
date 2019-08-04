@@ -26,19 +26,37 @@ async function inlineFunction(
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
-    FunctionDeclaration(path) {
-      if (!ast.isSelectableNode(path.node)) return;
-      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+  const canInlineFunction = ast.transform(
+    code,
+    createVisitorThat(replaceAllIdentifiersWithFunction)
+  ).hasCodeChanged;
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+  if (!canInlineFunction) return { code, hasCodeChanged: false };
 
+  return ast.transform(
+    code,
+    createVisitorThat(path => {
       replaceAllIdentifiersWithFunction(path);
       path.remove();
-    }
-  });
+    })
+  );
+
+  function createVisitorThat(
+    update: (path: ast.NodePath<ast.FunctionDeclaration>) => void
+  ) {
+    return {
+      FunctionDeclaration(path: ast.NodePath<ast.FunctionDeclaration>) {
+        if (!ast.isSelectableNode(path.node)) return;
+        if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+
+        // Since we visit nodes from parent to children, first check
+        // if a child would match the selection closer.
+        if (hasChildWhichMatchesSelection(path, selection)) return;
+
+        update(path);
+      }
+    };
+  }
 }
 
 function hasChildWhichMatchesSelection(

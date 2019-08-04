@@ -9,7 +9,7 @@ import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory"
 import { inlineFunction } from "./inline-function";
 import { testEach } from "../../tests-helpers";
 
-describe("Inline Function", () => {
+describe.only("Inline Function", () => {
   let showErrorMessage: ShowErrorMessage;
 
   beforeEach(() => {
@@ -335,6 +335,26 @@ function doAnotherThing() {
   it("should show an error message if cursor is not on a function", async () => {
     const code = `const hello = "Hello"`;
     const invalidSelection = Selection.cursorAt(2, 0);
+
+    await doInlineFunction(code, invalidSelection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundInlinableCode
+    );
+  });
+
+  it("should show an error message if function has no reference in scope", async () => {
+    const code = `function limitedScope() {
+  if (isValid) {
+    function doSomething(name) {
+      console.log(name);
+    }
+  }
+}
+
+// Not in scope.
+doSomething();`;
+    const invalidSelection = Selection.cursorAt(3, 2);
 
     await doInlineFunction(code, invalidSelection);
 
