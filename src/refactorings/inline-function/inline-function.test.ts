@@ -40,7 +40,6 @@ function sayHi() {
 
 sayHello();
 sayHi();`,
-        selection: Selection.cursorAt(1, 2),
         expected: `function sayHi() {
   console.log("Hi!");
 }
@@ -103,7 +102,7 @@ function sayHelloToJane() {
   sayHello();
   console.log("Jane");
 }`,
-        selection: Selection.cursorAt(5, 0),
+        selection: Selection.cursorAt(4, 4),
         expected: `function doSomething() {
   if (isValid) {
     logger("is valid");
@@ -343,6 +342,21 @@ function doAnotherThing() {
     );
   });
 
+  it("should show an error message if cursor is not on function word or ID", async () => {
+    const code = `function sayHello(name) {
+  console.log("Hello!", name);
+}
+
+sayHello("Jane");`;
+    const invalidSelection = Selection.cursorAt(0, 18);
+
+    await doInlineFunction(code, invalidSelection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundInlinableCode
+    );
+  });
+
   it("should show an error message if function has no reference in scope", async () => {
     const code = `function limitedScope() {
   if (isValid) {
@@ -354,7 +368,7 @@ function doAnotherThing() {
 
 // Not in scope.
 doSomething();`;
-    const selection = Selection.cursorAt(3, 2);
+    const selection = Selection.cursorAt(2, 4);
 
     await doInlineFunction(code, selection);
 

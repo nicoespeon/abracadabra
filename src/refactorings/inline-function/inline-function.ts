@@ -69,8 +69,22 @@ function createVisitorThat(
 ) {
   return {
     FunctionDeclaration(path: ast.NodePath<ast.FunctionDeclaration>) {
-      if (!ast.isSelectableNode(path.node)) return;
-      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      const { node } = path;
+      if (!node.id) return;
+      if (!ast.isSelectableNode(node)) return;
+      if (!ast.isSelectableNode(node.id)) return;
+
+      // We limit the valid selection to the `function nameOfFunction` part
+      // to avoid conflicts with "Inline Variable" refactoring.
+      const functionStartPosition = Selection.fromAST(node.loc).start;
+      const validSelectionStartPosition = Selection.cursorAt(
+        functionStartPosition.line,
+        functionStartPosition.character
+      );
+      const validSelection = Selection.fromAST(node.id.loc).extendStartTo(
+        validSelectionStartPosition
+      );
+      if (!selection.isInside(validSelection)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
