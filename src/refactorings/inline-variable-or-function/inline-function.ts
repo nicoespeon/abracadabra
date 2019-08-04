@@ -6,7 +6,7 @@ import {
 } from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 import { findParamMatchingId } from "./find-param-matching-id";
-import { findExportedIdNames } from "../inline-variable/find-exported-id-names";
+import { findExportedIdNames } from "./find-exported-id-names";
 
 export { inlineFunction };
 

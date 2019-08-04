@@ -77,7 +77,7 @@
     "onCommand:abracadabra.extractVariable",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
-    "onCommand:abracadabra.inlineVariable",
+    "onCommand:abracadabra.inlineVariableOrFunction",
     "onCommand:abracadabra.mergeIfStatements",
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
@@ -124,8 +124,8 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.inlineVariable",
-        "title": "Inline Variable",
+        "command": "abracadabra.inlineVariableOrFunction",
+        "title": "Inline Variable or Function",
         "category": "Abracadabra"
       },
       {
@@ -177,7 +177,7 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "abracadabra.inlineVariable",
+        "command": "abracadabra.inlineVariableOrFunction",
         "key": "ctrl+alt+n",
         "mac": "cmd+alt+n",
         "when": "editorTextFocus"
@@ -294,19 +294,19 @@
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.inlineVariable",
+          "command": "abracadabra.inlineVariableOrFunction",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "abracadabra.inlineVariable",
+          "command": "abracadabra.inlineVariableOrFunction",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "abracadabra.inlineVariable",
+          "command": "abracadabra.inlineVariableOrFunction",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "abracadabra.inlineVariable",
+          "command": "abracadabra.inlineVariableOrFunction",
           "when": "editorLangId == typescriptreact"
         },
         {
