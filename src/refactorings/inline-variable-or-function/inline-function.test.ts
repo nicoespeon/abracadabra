@@ -353,6 +353,23 @@ function sayHello(name) {
   const a = 1, firstName = name.split(" ")[0];
   console.log("Hello", firstName);
 }`
+      },
+      {
+        description: "function inlined in an assignment expression",
+        code: `function getFirstName(name) {
+  return name.split(" ")[0];
+}
+
+function sayHello(name) {
+  let firstName;
+  firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`,
+        expected: `function sayHello(name) {
+  let firstName;
+  firstName = name.split(" ")[0];
+  console.log("Hello", firstName);
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -454,6 +471,25 @@ function sayHello(name) {
 
 function sayHello(name) {
   const firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineFunction(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.CantInlineAssignedFunctionWithoutReturn
+    );
+  });
+
+  it("should show an error message if function is assigned to expression but has no return statement", async () => {
+    const code = `function getFirstName(name) {
+  console.log(name);
+}
+
+function sayHello(name) {
+  let firstName;
+  firstName = getFirstName(name);
   console.log("Hello", firstName);
 }`;
     const selection = Selection.cursorAt(0, 0);

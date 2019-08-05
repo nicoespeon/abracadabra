@@ -229,6 +229,19 @@ function replaceAllIdentifiersInPath(
       return;
     }
 
+    if (ast.isAssignmentExpression(parentPath.node)) {
+      isFunctionAssignedToVariable = true;
+      const assignmentExpression = parentPath.node;
+      const functionBody = applyArgumentsToFunctionAssignedToExpression(
+        parentPath.parentPath as ast.NodePath<ast.VariableDeclaration>,
+        path as ast.NodePath<ast.CallExpression>,
+        functionDeclaration,
+        assignmentExpression
+      );
+      parentPath.replaceWithMultiple(functionBody);
+      return;
+    }
+
     const functionBody = applyArgumentsToFunction(
       path as ast.NodePath<ast.CallExpression>,
       functionDeclaration
@@ -332,6 +345,50 @@ function applyArgumentsToFunctionAssignedToVariable(
 
       returnPath.replaceWith(
         ast.variableDeclarator(variableDeclarator.id, returnPath.node.argument)
+      );
+    }
+  });
+
+  const functionBlockStatement = temporaryCopiedPath.node;
+
+  temporaryCopiedPath.remove();
+
+  return functionBlockStatement.body;
+}
+
+function applyArgumentsToFunctionAssignedToExpression(
+  variableDeclarationPath: ast.NodePath<ast.VariableDeclaration>,
+  callExpressionPath: ast.NodePath<ast.CallExpression>,
+  functionDeclaration: ast.FunctionDeclaration,
+  assignmentExpression: ast.AssignmentExpression
+): ast.Statement[] {
+  const [temporaryCopiedPath] = variableDeclarationPath.insertAfter(
+    ast.cloneDeep(functionDeclaration.body)
+  ) as [ast.NodePath<ast.BlockStatement>];
+
+  temporaryCopiedPath.traverse({
+    Identifier(idPath) {
+      const param = findParamMatchingId(
+        idPath.node,
+        functionDeclaration.params
+      );
+      if (!param.isMatch) return;
+
+      const values = callExpressionPath.node.arguments;
+      const value = param.resolveValue(values) || ast.identifier("undefined");
+      idPath.replaceWith(value);
+    },
+
+    ReturnStatement(returnPath) {
+      if (isInBranchedLogic(returnPath)) return;
+      if (!returnPath.node.argument) return;
+
+      returnPath.replaceWith(
+        ast.assignmentExpression(
+          assignmentExpression.operator,
+          assignmentExpression.left,
+          returnPath.node.argument
+        )
       );
     }
   });
