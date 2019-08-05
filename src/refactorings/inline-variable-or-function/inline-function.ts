@@ -18,6 +18,16 @@ async function inlineFunction(
 ) {
   const updatedCode = updateCode(code, selection);
 
+  if (updatedCode.hasManyReturns) {
+    showErrorMessage(ErrorReason.CantInlineFunctionWithMultipleReturns);
+    return;
+  }
+
+  if (updatedCode.isAssignedWithoutReturn) {
+    showErrorMessage(ErrorReason.CantInlineAssignedFunctionWithoutReturn);
+    return;
+  }
+
   if (!updatedCode.hasCodeChanged) {
     showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
     return;
@@ -31,11 +41,22 @@ async function inlineFunction(
   await write(updatedCode.code);
 }
 
+// This global variable is set later in the flow.
+// This is not pretty and creates coupling in the code.
+// Don't hesitate to refactor if you have a better design in mind.
+let isFunctionAssignedToVariable: boolean;
 function updateCode(
   code: Code,
   selection: Selection
-): ast.Transformed & { isExported: boolean } {
+): ast.Transformed & {
+  isExported: boolean;
+  hasManyReturns: boolean;
+  isAssignedWithoutReturn: boolean;
+} {
   let isExported = false;
+  let hasManyReturns = false;
+  let isAssignedWithoutReturn = false;
+  isFunctionAssignedToVariable = false;
 
   const canInlineFunction = ast.transform(
     code,
@@ -43,13 +64,28 @@ function updateCode(
   ).hasCodeChanged;
 
   if (!canInlineFunction) {
-    return { code, hasCodeChanged: false, isExported };
+    return {
+      code,
+      hasCodeChanged: false,
+      isExported,
+      hasManyReturns,
+      isAssignedWithoutReturn
+    };
   }
 
   const result = ast.transform(
     code,
     createVisitorThat(path => {
+      const returnStatementsCount = countReturnStatementsIn(path);
+      hasManyReturns = returnStatementsCount === ReturnStatementsCount.Many;
+      if (hasManyReturns) return;
+
       replaceAllIdentifiersWithFunction(path);
+
+      isAssignedWithoutReturn =
+        isFunctionAssignedToVariable &&
+        returnStatementsCount === ReturnStatementsCount.Zero;
+      if (isAssignedWithoutReturn) return;
 
       const { node } = path;
       const scope = getFunctionScopePath(path).node;
@@ -60,7 +96,8 @@ function updateCode(
       path.remove();
     }, selection)
   );
-  return { ...result, isExported };
+
+  return { ...result, isExported, hasManyReturns, isAssignedWithoutReturn };
 }
 
 function createVisitorThat(
@@ -114,6 +151,32 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
+function countReturnStatementsIn(path: ast.NodePath): ReturnStatementsCount {
+  let result = ReturnStatementsCount.Zero;
+
+  path.traverse({
+    ReturnStatement(path) {
+      result =
+        result === ReturnStatementsCount.Zero
+          ? ReturnStatementsCount.One
+          : ReturnStatementsCount.Many;
+
+      // If return is in branched logic, then there is at least 2 returns.
+      if (isInBranchedLogic(path)) {
+        result = ReturnStatementsCount.Many;
+      }
+    }
+  });
+
+  return result;
+}
+
+enum ReturnStatementsCount {
+  Zero,
+  One,
+  Many
+}
+
 function replaceAllIdentifiersWithFunction(
   path: ast.NodePath<ast.FunctionDeclaration>
 ) {
@@ -147,11 +210,24 @@ function replaceAllIdentifiersInPath(
   path: ast.NodePath,
   functionDeclaration: ast.FunctionDeclaration
 ) {
-  const { node } = path;
+  const { node, parentPath } = path;
 
   if (ast.isCallExpression(node)) {
     const identifier = node.callee;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
+
+    if (ast.isVariableDeclarator(parentPath.node)) {
+      isFunctionAssignedToVariable = true;
+      const variableDeclarator = parentPath.node;
+      const functionBody = applyArgumentsToFunctionAssignedToVariable(
+        parentPath.parentPath as ast.NodePath<ast.VariableDeclaration>,
+        path as ast.NodePath<ast.CallExpression>,
+        functionDeclaration,
+        variableDeclarator
+      );
+      parentPath.replaceWithMultiple(functionBody);
+      return;
+    }
 
     const functionBody = applyArgumentsToFunction(
       path as ast.NodePath<ast.CallExpression>,
@@ -224,4 +300,49 @@ function applyArgumentsToFunction(
   temporaryCopiedPath.remove();
 
   return functionBlockStatement.body;
+}
+
+// This one is very similar, but we also replace the return statements
+// with variable declarators. We're OK with this duplication for now.
+function applyArgumentsToFunctionAssignedToVariable(
+  variableDeclarationPath: ast.NodePath<ast.VariableDeclaration>,
+  callExpressionPath: ast.NodePath<ast.CallExpression>,
+  functionDeclaration: ast.FunctionDeclaration,
+  variableDeclarator: ast.VariableDeclarator
+): ast.Statement[] {
+  const [temporaryCopiedPath] = variableDeclarationPath.insertAfter(
+    ast.cloneDeep(functionDeclaration.body)
+  ) as [ast.NodePath<ast.BlockStatement>];
+
+  temporaryCopiedPath.traverse({
+    Identifier(idPath) {
+      const param = findParamMatchingId(
+        idPath.node,
+        functionDeclaration.params
+      );
+      if (!param.isMatch) return;
+
+      const values = callExpressionPath.node.arguments;
+      const value = param.resolveValue(values) || ast.identifier("undefined");
+      idPath.replaceWith(value);
+    },
+
+    ReturnStatement(returnPath) {
+      if (isInBranchedLogic(returnPath)) return;
+
+      returnPath.replaceWith(
+        ast.variableDeclarator(variableDeclarator.id, returnPath.node.argument)
+      );
+    }
+  });
+
+  const functionBlockStatement = temporaryCopiedPath.node;
+
+  temporaryCopiedPath.remove();
+
+  return functionBlockStatement.body;
+}
+
+function isInBranchedLogic(path: ast.NodePath<ast.ReturnStatement>) {
+  return path.getAncestry().some(path => ast.isIfStatement(path));
 }

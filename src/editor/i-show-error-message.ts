@@ -23,7 +23,9 @@ enum ErrorReason {
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables,
   CantRemoveBracesFromArrowFunction,
-  CantRemoveExportedFunction
+  CantRemoveExportedFunction,
+  CantInlineFunctionWithMultipleReturns,
+  CantInlineAssignedFunctionWithoutReturn
 }
 
 function toString(reason: ErrorReason): string {
@@ -90,6 +92,12 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.CantRemoveExportedFunction:
       return "I didn't remove the function because it's exported 🤓";
+
+    case ErrorReason.CantInlineFunctionWithMultipleReturns:
+      return "I'm sorry, I can't inline a function with multiple returns 😅";
+
+    case ErrorReason.CantInlineAssignedFunctionWithoutReturn:
+      return "I'm sorry, I can't inline an assigned function without return 😅";
 
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";

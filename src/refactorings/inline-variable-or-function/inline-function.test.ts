@@ -9,7 +9,7 @@ import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory"
 import { inlineFunction } from "./inline-function";
 import { testEach } from "../../tests-helpers";
 
-describe.only("Inline Function", () => {
+describe("Inline Function", () => {
   let showErrorMessage: ShowErrorMessage;
 
   beforeEach(() => {
@@ -322,6 +322,37 @@ function doAnotherThing() {
 
   doSomething("Jane");
 }`
+      },
+      {
+        description: "function inlined in a variable declaration",
+        code: `function getFirstName(name) {
+  return name.split(" ")[0];
+}
+
+function sayHello(name) {
+  const firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`,
+        expected: `function sayHello(name) {
+  const firstName = name.split(" ")[0];
+  console.log("Hello", firstName);
+}`
+      },
+      {
+        description:
+          "function inlined in a variable declaration (multiple declarations)",
+        code: `function getFirstName(name) {
+  return name.split(" ")[0];
+}
+
+function sayHello(name) {
+  const a = 1, firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`,
+        expected: `function sayHello(name) {
+  const a = 1, firstName = name.split(" ")[0];
+  console.log("Hello", firstName);
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -374,6 +405,63 @@ doSomething();`;
 
     expect(showErrorMessage).toBeCalledWith(
       ErrorReason.DidNotFoundInlinableCode
+    );
+  });
+
+  it("should show an error message if function has multiple return statements", async () => {
+    const code = `function getFirstName(name) {
+  if (!name) return "unknown";
+  return name.split(" ")[0];
+}
+
+function sayHello(name) {
+  const firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineFunction(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.CantInlineFunctionWithMultipleReturns
+    );
+  });
+
+  it("should show an error message if function has implicit return statements", async () => {
+    const code = `function getFirstName(name) {
+  if (!name) {
+    return "unknown";
+  }
+}
+
+function sayHello(name) {
+  const firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineFunction(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.CantInlineFunctionWithMultipleReturns
+    );
+  });
+
+  it("should show an error message if function is assigned to variable but has no return statement", async () => {
+    const code = `function getFirstName(name) {
+  console.log(name);
+}
+
+function sayHello(name) {
+  const firstName = getFirstName(name);
+  console.log("Hello", firstName);
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineFunction(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.CantInlineAssignedFunctionWithoutReturn
     );
   });
 
