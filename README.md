@@ -9,6 +9,10 @@ Abracadabra is a Visual Studio Code extension that brings you automated refactor
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
 
+> **Refactoring** (noun): a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.
+>
+> — _"Refactoring: Improving the Design of Existing Code" by Martin Fowler_
+
 ![Gif showing refactoring operations this extension can do][demo-extension]
 
 ## Installation
@@ -29,22 +33,30 @@ Refactorings that don't have default keybindings are available through [VS Code 
 
 **We recommend you** to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
 
+The Essentials:
+
 1. [Rename Symbol](#rename-symbol)
 1. [Extract Variable](#extract-variable)
 1. [Inline Variable](#inline-variable)
 1. [Inline Function](#inline-function)
+1. [Move Statement Up](#move-statement-up)
+1. [Move Statement Down](#move-statement-down)
+
+Simplifying Conditional Logic:
+
 1. [Negate Expression](#negate-expression)
 1. [Remove Redundant Else](#remove-redundant-else)
 1. [Flip If/Else](#flip-ifelse)
 1. [Flip Ternary](#flip-ternary)
 1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
 1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
-1. [Move Statement Up](#move-statement-up)
-1. [Move Statement Down](#move-statement-down)
-1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
-1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
 1. [Split If Statement](#split-if-statement)
 1. [Merge If Statements](#merge-if-statements)
+
+Working around the syntax:
+
+1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
+1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
 
 ### Rename Symbol
 
@@ -91,6 +103,34 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
 
 ![][demo-inline-function]
+
+### Move Statement Up
+
+| Keybinding          | On Mac  |
+| :------------------ | :------ |
+| `Ctrl + Shift + Up` | `⌘ ⇧ ↑` |
+
+> A `Statement` is typically a variable or a function declaration.
+
+Move the whole selected statement up. If the selected statement and the one above are one-liners, this is the same as doing VS Code _Move Line Up_. But if one of these statements is multi-lines, this refactoring is very handy!
+
+As for all refactorings, it works even if you partially select the statement, or if the cursor is on the statement.
+
+![][demo-move-statement-up]
+
+### Move Statement Down
+
+| Keybinding            | On Mac  |
+| :-------------------- | :------ |
+| `Ctrl + Shift + Down` | `⌘ ⇧ ↓` |
+
+Same as _Move Statement Up_, but it moves the selected statement down. Like, the other direction. That's it.
+
+![][demo-move-statement-down]
+
+_Move Statement Up_ and _Move Statement Down_ also work on object properties. They always produce valid code, so **you don't have to bother with the trailing comma anymore**!
+
+![][demo-move-statement-object-property]
 
 ### Negate Expression
 
@@ -144,33 +184,21 @@ Convert a ternary expression into an if/else statement. It reverses _Convert If/
 
 ![][demo-convert-ternary-to-if-else]
 
-### Move Statement Up
+### Split If Statement
 
-| Keybinding          | On Mac  |
-| :------------------ | :------ |
-| `Ctrl + Shift + Up` | `⌘ ⇧ ↑` |
+> 💡 Available as Quick Fix
 
-> A `Statement` is typically a variable or a function declaration.
+Split the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
 
-Move the whole selected statement up. If the selected statement and the one above are one-liners, this is the same as doing VS Code _Move Line Up_. But if one of these statements is multi-lines, this refactoring is very handy!
+![][demo-split-if-statement]
 
-As for all refactorings, it works even if you partially select the statement, or if the cursor is on the statement.
+### Merge If Statements
 
-![][demo-move-statement-up]
+> 💡 Available as Quick Fix
 
-### Move Statement Down
+This is the opposite of _Split If Statement_. It consolidates nested ifs to clean up the code.
 
-| Keybinding            | On Mac  |
-| :-------------------- | :------ |
-| `Ctrl + Shift + Down` | `⌘ ⇧ ↓` |
-
-Same as _Move Statement Up_, but it moves the selected statement down. Like, the other direction. That's it.
-
-![][demo-move-statement-down]
-
-_Move Statement Up_ and _Move Statement Down_ also work on object properties. They always produce valid code, so **you don't have to bother with the trailing comma anymore**!
-
-![][demo-move-statement-object-property]
+![][demo-merge-if-statements]
 
 ### Add Braces to Arrow Function
 
@@ -189,22 +217,6 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
 
 ![][demo-remove-braces-from-arrow-function]
-
-### Split If Statement
-
-> 💡 Available as Quick Fix
-
-Split the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
-
-![][demo-split-if-statement]
-
-### Merge If Statements
-
-> 💡 Available as Quick Fix
-
-This is the opposite of _Split If Statement_. It consolidates nested ifs to clean up the code.
-
-![][demo-merge-if-statements]
 
 ## Release Notes
 
@@ -250,38 +262,44 @@ Contributions of any kind are welcome!
 
 ## Alternatives
 
-### VS Code native refactorings
+<details>
+<summary>VS Code native refactorings</summary>
 
 VS Code ships with [basic refactoring operations][vscode-refactorings].
 
-Pros of Abracadabra over these:
+**Pros of Abracadabra** over these:
 
 - VS Code refactorings require you to select the code exactly. You can trigger Abracadabra as long as your cursor is in the scope, which is simpler and faster.
 - Abracadabra proposes more refactorings than the VS Code default ones.
 - Abracadabra refactorings are documented.
 - You can assign a shortcut to every Abracadabra refactoring.
 
-Cons of Abracadabra over these:
+**Cons of Abracadabra** over these:
 
 - Abracadabra refactorings won't be as native as VS Code ones.
 - Abracadabra refactorings are limited to JS, TS, JSX and TSX.
 
-### JS Refactor
+</details><br />
+
+<details>
+<summary>JS Refactor</summary>
 
 The most popular extension for JavaScript refactoring is called [JS Refactor][js-refactor]. It provides JS automated refactorings for VS Code.
 
-Pros of Abracadabra over these:
+**Pros of Abracadabra** over these:
 
 - Abracadabra work with TypeScript.
 - Abracadabra proposes refactorings that JS Refactor doesn't.
 - JS Refactor refactorings will work even with partially selected code. Abracadabra ones will also work as long as your cursor is in the scope.
 - Abracadabra refactorings require you less steps to perform. It's faster to use.
 
-Cons of Abracadabra over these:
+**Cons of Abracadabra** over these:
 
 - Abracadabra refactorings are more opinionated. This makes them faster to use, but might not cover some use cases.
 - JS Refactor proposes code snippets, Abracadabra doesn't.
 - JS Refactor supports Vue single file components and HTML.
+
+</details>
 
 ---
 
