@@ -39,10 +39,9 @@ function findNegatableExpression(
 
   ast.traverseAST(code, {
     enter({ node, parent }) {
-      if (!ast.isSelectableNode(node)) return;
       if (!isNegatable(node)) return;
       if (isNegatedIdentifier(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+      if (!selection.isInsideNode(node)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
       if (ast.isUnaryExpression(parent)) return;

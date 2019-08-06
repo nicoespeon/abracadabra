@@ -140,8 +140,7 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     FunctionDeclaration(childPath) {
-      if (!ast.isSelectableNode(childPath.node)) return;
-      if (!selection.isInside(Selection.fromAST(childPath.node.loc))) return;
+      if (!selection.isInsidePath(childPath)) return;
 
       result = true;
       childPath.stop();

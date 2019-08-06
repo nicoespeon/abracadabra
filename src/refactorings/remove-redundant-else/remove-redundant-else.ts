@@ -35,8 +35,7 @@ function removeRedundantElseFrom(
   return ast.transform(code, {
     IfStatement(path) {
       const { node } = path;
-      if (!ast.isSelectableNode(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+      if (!selection.isInsideNode(node)) return;
 
       const ifBranch = node.consequent;
       if (!ast.isBlockStatement(ifBranch)) return;

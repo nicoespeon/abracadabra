@@ -76,8 +76,7 @@ function getMatchingNestedStatement(
   path: ast.NodePath<ast.IfStatement>,
   selection: Selection
 ): ast.IfStatement | null {
-  if (!ast.isSelectableNode(path.node)) return null;
-  if (!selection.isInside(Selection.fromAST(path.node.loc))) return null;
+  if (!selection.isInsidePath(path)) return null;
   if (path.node.alternate) return null;
 
   const { consequent } = path.node;

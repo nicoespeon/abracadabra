@@ -31,8 +31,7 @@ function canSplitIfStatement(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     IfStatement(path) {
-      if (!ast.isSelectableNode(path.node)) return;
-      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      if (!selection.isInsidePath(path)) return;
 
       const { test, consequent, alternate } = path.node;
       if (!ast.isLogicalExpression(test)) return;
@@ -70,8 +69,7 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     IfStatement(childPath) {
-      if (!ast.isSelectableNode(childPath.node)) return;
-      if (!selection.isInside(Selection.fromAST(childPath.node.loc))) return;
+      if (!selection.isInsidePath(childPath)) return;
       if (!ast.isLogicalExpression(childPath.node.test)) return;
 
       result = true;
@@ -87,8 +85,7 @@ function hasAlternateWhichMatchesSelection(
   selection: Selection
 ): boolean {
   if (!ast.isIfStatement(alternate)) return false;
-  if (!ast.isSelectableNode(alternate)) return false;
-  if (!selection.isInside(Selection.fromAST(alternate.loc))) return false;
+  if (!selection.isInsideNode(alternate)) return false;
   if (!ast.isLogicalExpression(alternate.test)) return false;
 
   return true;

@@ -32,8 +32,7 @@ function hasTernaryToFlip(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     ConditionalExpression({ node }) {
-      if (!ast.isSelectableNode(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+      if (!selection.isInsideNode(node)) return;
 
       const ifBranch = node.consequent;
       const elseBranch = node.alternate;

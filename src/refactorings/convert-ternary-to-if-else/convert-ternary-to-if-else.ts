@@ -32,8 +32,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     ConditionalExpression(path) {
       const { parentPath, node } = path;
-      if (!ast.isSelectableNode(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+      if (!selection.isInsidePath(path)) return;
 
       if (ast.isReturnStatement(parentPath.node)) {
         parentPath.replaceWith(
@@ -112,11 +111,7 @@ function isSelectedConditionalExpression(
   node: ast.Node,
   selection: Selection
 ): node is ast.ConditionalExpression {
-  return (
-    ast.isConditionalExpression(node) &&
-    ast.isSelectableNode(node) &&
-    selection.isInside(Selection.fromAST(node.loc))
-  );
+  return ast.isConditionalExpression(node) && selection.isInsideNode(node);
 }
 
 function createLetDeclaration(id: ast.LVal): ast.VariableDeclaration {

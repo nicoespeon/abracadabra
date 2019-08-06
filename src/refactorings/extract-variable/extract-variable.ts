@@ -78,8 +78,7 @@ function findExtractableCode(
       if (ast.isObjectMethod(path)) return;
 
       const { node } = path;
-      if (!ast.isSelectableNode(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+      if (!selection.isInsideNode(node)) return;
 
       result.path = path;
       result.loc = ast.isObjectProperty(node)
@@ -99,11 +98,7 @@ function findObjectPropertyLoc(
   selection: Selection,
   node: ast.SelectableObjectProperty
 ): ast.SourceLocation | null {
-  const isPropertyValueSelected =
-    ast.isSelectableNode(node.value) &&
-    selection.isInside(Selection.fromAST(node.value.loc));
-
-  if (isPropertyValueSelected) return node.value.loc;
+  if (selection.isInsideNode(node.value)) return node.value.loc;
   if (node.computed) return node.key.loc;
 
   // Non-computed properties can't be extracted.

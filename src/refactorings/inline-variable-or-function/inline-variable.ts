@@ -91,9 +91,8 @@ function findInlinableCode(
         node.loc = parent.loc;
       }
 
-      if (!ast.isSelectableNode(node)) return;
       if (!ast.isVariableDeclaration(node)) return;
-      if (!selection.isInside(Selection.fromAST(node.loc))) return;
+      if (!selection.isInsideNode(node)) return;
 
       const declarations = node.declarations.filter(
         ast.isSelectableVariableDeclarator
@@ -113,7 +112,7 @@ function findInlinableCode(
       }
 
       declarations.forEach((declaration, index) => {
-        if (!selection.isInside(Selection.fromAST(declaration.loc))) return;
+        if (!selection.isInsideNode(declaration)) return;
 
         const { id, init } = declaration;
         if (!ast.isSelectableIdentifier(id)) return;
@@ -163,7 +162,7 @@ function findIdentifiersToReplace(
       if (isShadowIn(id, ancestors)) return;
 
       const selection = Selection.fromAST(node.loc);
-      const isSameIdentifier = selection.isInside(Selection.fromAST(id.loc));
+      const isSameIdentifier = selection.isInsideNode(id);
       if (isSameIdentifier) return;
 
       const parent = ancestors[ancestors.length - 1];

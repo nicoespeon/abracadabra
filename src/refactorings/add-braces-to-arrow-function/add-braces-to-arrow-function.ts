@@ -34,8 +34,7 @@ function hasArrowFunctionToAddBraces(
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     ArrowFunctionExpression(path) {
-      if (!ast.isSelectableNode(path.node)) return;
-      if (!selection.isInside(Selection.fromAST(path.node.loc))) return;
+      if (!selection.isInsidePath(path)) return;
       if (ast.isBlockStatement(path.node.body)) return;
 
       // Since we visit nodes from parent to children, first check
@@ -59,8 +58,7 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     ArrowFunctionExpression(childPath) {
-      if (!ast.isSelectableNode(childPath.node)) return;
-      if (!selection.isInside(Selection.fromAST(childPath.node.loc))) return;
+      if (!selection.isInsidePath(childPath)) return;
       if (ast.isBlockStatement(childPath.node.body)) return;
 
       result = true;

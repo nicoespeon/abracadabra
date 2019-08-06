@@ -79,6 +79,16 @@ class Selection {
     return this.getScopeParentPosition(path).character;
   }
 
+  isInsidePath(path: ast.NodePath): path is ast.SelectablePath {
+    return this.isInsideNode(path.node);
+  }
+
+  isInsideNode(node: ast.Node): node is ast.SelectableNode {
+    return (
+      ast.isSelectableNode(node) && this.isInside(Selection.fromAST(node.loc))
+    );
+  }
+
   isInside(selection: Selection): boolean {
     return (
       this.start.isAfter(selection.start) && this.end.isBefore(selection.end)
