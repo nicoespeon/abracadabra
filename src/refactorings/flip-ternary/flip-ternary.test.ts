@@ -35,6 +35,26 @@ describe("Flip Ternary", () => {
         code: `const max = a > b ? a : b;`,
         selection: Selection.cursorAt(0, 16),
         expected: `const max = a <= b ? b : a;`
+      },
+      {
+        description: "nested, cursor on wrapper",
+        code: `const hello = isMorning
+  ? isMonday ? "Good monday morning!" : "Good morning"
+  : "Hello";`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `const hello = !isMorning
+  ? "Hello"
+  : isMonday ? "Good monday morning!" : "Good morning";`
+      },
+      {
+        description: "nested, cursor on nested",
+        code: `const hello = isMorning
+  ? isMonday ? "Good monday morning!" : "Good morning"
+  : "Hello";`,
+        selection: Selection.cursorAt(1, 4),
+        expected: `const hello = isMorning
+  ? !isMonday ? "Good morning" : "Good monday morning!"
+  : "Hello";`
       }
     ],
     async ({ code, selection, expected }) => {

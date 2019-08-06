@@ -31,8 +31,13 @@ function hasTernaryToFlip(code: Code, selection: Selection): boolean {
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
-    ConditionalExpression({ node }) {
+    ConditionalExpression(path) {
+      const { node } = path;
       if (!selection.isInsideNode(node)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       const ifBranch = node.consequent;
       const elseBranch = node.alternate;
@@ -41,6 +46,24 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       node.test = getNegatedIfTest(node.test);
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    ConditionalExpression(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function getNegatedIfTest(

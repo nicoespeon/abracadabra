@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Flip Ternary now handles nested ternaries correctly.
 - Flip If/Else now handles nested _If_ statements correctly.
 
 ## [0.2.0] - 2019-08-05
