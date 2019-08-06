@@ -146,6 +146,88 @@ describe("Remove Redundant Else", () => {
     doAnotherThing();
   }
 }`
+      },
+      {
+        description: "nested, cursor on wrapper",
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    if (shouldShowWarning) {
+      showWarning();
+      return;
+    } else {
+      doNothing();
+    }
+    return;
+  } else {
+    doSomething();
+  }
+}`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    if (shouldShowWarning) {
+      showWarning();
+      return;
+    } else {
+      doNothing();
+    }
+    return;
+  }
+  doSomething();
+}`
+      },
+      {
+        description: "nested, cursor on nested",
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    if (shouldShowWarning) {
+      showWarning();
+      return;
+    } else {
+      doNothing();
+    }
+    return;
+  } else {
+    doSomething();
+  }
+}`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    if (shouldShowWarning) {
+      showWarning();
+      return;
+    }
+    doNothing();
+    return;
+  } else {
+    doSomething();
+  }
+}`
+      },
+
+      {
+        description: "invalid nested, cursor on nested",
+        code: `function doSomethingIfValid() {
+  if (!isValid) {
+    if (shouldShowWarning) {
+      showWarning();
+    }
+    return;
+  } else {
+    doSomething();
+  }
+}`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `function doSomethingIfValid() {
+  if (!isValid) {
+    if (shouldShowWarning) {
+      showWarning();
+    }
+    return;
+  }
+  doSomething();
+}`
       }
     ],
     async ({ code, selection, expected }) => {

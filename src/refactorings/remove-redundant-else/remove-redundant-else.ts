@@ -44,6 +44,10 @@ function removeRedundantElseFrom(
       const elseBranch = node.alternate;
       if (!elseBranch) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const elseBranchNodes = ast.isBlockStatement(elseBranch)
         ? elseBranch.body
         : [elseBranch];
@@ -53,6 +57,32 @@ function removeRedundantElseFrom(
       path.stop();
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    IfStatement(childPath) {
+      const { node } = childPath;
+      if (!selection.isInsidePath(childPath)) return;
+
+      const ifBranch = node.consequent;
+      if (!ast.isBlockStatement(ifBranch)) return;
+      if (!hasExitStatement(ifBranch)) return;
+
+      const elseBranch = node.alternate;
+      if (!elseBranch) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function hasExitStatement(node: ast.BlockStatement): boolean {
