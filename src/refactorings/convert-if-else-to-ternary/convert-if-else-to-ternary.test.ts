@@ -82,6 +82,28 @@ describe("Convert If/Else to Ternary", () => {
   fees += daysInAdvance > 10 ? 2 : 6;
   return fees;
 }`
+      },
+      {
+        description: "nested, cursor on nested",
+        code: `function reservationMode(daysInAdvance) {
+  if (daysInAdvance > 10) {
+    if (isVIP) {
+      return "vip";
+    } else {
+      return "early";
+    }
+  } else {
+    return "normal";
+  }
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `function reservationMode(daysInAdvance) {
+  if (daysInAdvance > 10) {
+    return isVIP ? "vip" : "early";
+  } else {
+    return "normal";
+  }
+}`
       }
     ],
     async ({ code, selection, expected }) => {
@@ -183,6 +205,21 @@ describe("Convert If/Else to Ternary", () => {
     return "early";
   }
   return "normal";
+}`,
+        selection: Selection.cursorAt(1, 6)
+      },
+      {
+        description: "there is a nested if statement inside",
+        code: `function reservationMode(daysInAdvance) {
+  if (daysInAdvance > 10) {
+    if (isVIP) {
+      return "vip";
+    } else {
+      return "early";
+    }
+  } else {
+    return "normal";
+  }
 }`,
         selection: Selection.cursorAt(1, 6)
       }
