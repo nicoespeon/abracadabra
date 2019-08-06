@@ -14,6 +14,8 @@ export {
   isSelectableNode,
   isSelectableVariableDeclarator,
   isSelectableIdentifier,
+  isArrayExpressionElement,
+  areAllObjectProperties,
   SelectablePath,
   SelectableNode,
   SelectableObjectProperty,
@@ -119,4 +121,16 @@ function isSelectableVariableDeclarator(
   declaration: t.VariableDeclarator
 ): declaration is SelectableVariableDeclarator {
   return !!declaration.loc;
+}
+
+function isArrayExpressionElement(
+  node: t.Node | null
+): node is null | t.Expression | t.SpreadElement {
+  return node === null || t.isExpression(node) || t.isSpreadElement(node);
+}
+
+function areAllObjectProperties(
+  nodes: (t.Node | null)[]
+): nodes is t.ObjectProperty[] {
+  return nodes.every(node => t.isObjectProperty(node));
 }

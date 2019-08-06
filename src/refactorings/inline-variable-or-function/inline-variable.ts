@@ -5,6 +5,7 @@ import {
   ErrorReason
 } from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
+import { findExportedIdNames } from "./find-exported-id-names";
 
 export { inlineVariable };
 
@@ -70,40 +71,6 @@ function isRedeclaredIn(scope: ast.Node, id: ast.Identifier): boolean {
       if (!isMatchingIdentifier(id, node.left)) return;
 
       result = true;
-    }
-  });
-
-  return result;
-}
-
-function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
-  let result: ast.Identifier["name"][] = [];
-
-  ast.traverse(scope, {
-    enter(node) {
-      // Pattern `export default foo`
-      if (
-        ast.isExportDefaultDeclaration(node) &&
-        ast.isIdentifier(node.declaration)
-      ) {
-        result.push(node.declaration.name);
-      }
-
-      if (ast.isExportNamedDeclaration(node)) {
-        // Pattern `export const foo = "bar", hello = "world"`
-        if (ast.isVariableDeclaration(node.declaration)) {
-          node.declaration.declarations.forEach(({ id }) => {
-            if (!("name" in id)) return;
-            result.push(id.name);
-          });
-        }
-
-        // Pattern `export { foo, hello }`
-        node.specifiers.forEach(specifier => {
-          if (!ast.isExportSpecifier(specifier)) return;
-          result.push(specifier.local.name);
-        });
-      }
     }
   });
 

@@ -6,7 +6,7 @@ import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-
 import extractVariableCommand from "./refactorings/extract-variable/command";
 import flipIfElseCommand from "./refactorings/flip-if-else/command";
 import flipTernaryCommand from "./refactorings/flip-ternary/command";
-import inlineVariableCommand from "./refactorings/inline-variable/command";
+import inlineVariableOrFunctionCommand from "./refactorings/inline-variable-or-function/command";
 import mergeIfStatementsCommand from "./refactorings/merge-if-statements/command";
 import moveStatementDownCommand from "./refactorings/move-statement-down/command";
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     extractVariableCommand,
     flipIfElseCommand,
     flipTernaryCommand,
-    inlineVariableCommand,
+    inlineVariableOrFunctionCommand,
     mergeIfStatementsCommand,
     moveStatementDownCommand,
     moveStatementUpCommand,
