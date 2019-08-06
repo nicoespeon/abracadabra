@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Flip If/Else now handles nested _If_ statements correctly.
+
 ## [0.2.0] - 2019-08-05
 
 ### Added

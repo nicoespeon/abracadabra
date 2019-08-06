@@ -37,8 +37,13 @@ function hasIfElseToFlip(code: Code, selection: Selection): boolean {
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
-    IfStatement({ node }) {
+    IfStatement(path) {
+      const { node } = path;
       if (!selection.isInsideNode(node)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       const ifBranch = node.consequent;
       const elseBranch = node.alternate || ast.blockStatement([]);
@@ -49,6 +54,24 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       node.test = getNegatedIfTest(node.test);
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    IfStatement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function getNegatedIfTest(

@@ -15,7 +15,7 @@ describe("Flip If/Else", () => {
     showErrorMessage = jest.fn();
   });
 
-  testEach<{ code: Code; expected: Code }>(
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should flip if and else branch",
     [
       {
@@ -88,11 +88,52 @@ describe("Flip If/Else", () => {
 } else {
   doSomething();
 }`
+      },
+      {
+        description: "nested, cursor on wrapper",
+        code: `if (isValid) {
+  if (isVIP) {
+    doSomethingForVIP();
+  } else {
+    doSomething();
+  }
+} else {
+  doAnotherThing();
+}`,
+        expected: `if (!isValid) {
+  doAnotherThing();
+} else {
+  if (isVIP) {
+    doSomethingForVIP();
+  } else {
+    doSomething();
+  }
+}`
+      },
+      {
+        description: "nested, cursor on nested",
+        code: `if (isValid) {
+  if (isVIP) {
+    doSomethingForVIP();
+  } else {
+    doSomething();
+  }
+} else {
+  doAnotherThing();
+}`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `if (isValid) {
+  if (!isVIP) {
+    doSomething();
+  } else {
+    doSomethingForVIP();
+  }
+} else {
+  doAnotherThing();
+}`
       }
     ],
-    async ({ code, expected }) => {
-      const selection = Selection.cursorAt(0, 0);
-
+    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doFlipIfElse(code, selection);
 
       expect(result).toBe(expected);
