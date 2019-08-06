@@ -379,34 +379,28 @@ function sayHello(name) {
     }
   );
 
-  it("should show an error message if cursor is not on a function", async () => {
-    const code = `const hello = "Hello"`;
-    const invalidSelection = Selection.cursorAt(2, 0);
-
-    await doInlineFunction(code, invalidSelection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundInlinableCode
-    );
-  });
-
-  it("should show an error message if cursor is not on function word or ID", async () => {
-    const code = `function sayHello(name) {
+  testEach<{ code: Code; selection?: Selection; expectedError: ErrorReason }>(
+    "should show an error message",
+    [
+      {
+        description: "cursor is not on a function",
+        code: `const hello = "Hello"`,
+        selection: Selection.cursorAt(2, 0),
+        expectedError: ErrorReason.DidNotFoundInlinableCode
+      },
+      {
+        description: "cursor is not on function word or id",
+        code: `function sayHello(name) {
   console.log("Hello!", name);
 }
 
-sayHello("Jane");`;
-    const invalidSelection = Selection.cursorAt(0, 18);
-
-    await doInlineFunction(code, invalidSelection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundInlinableCode
-    );
-  });
-
-  it("should show an error message if function has no reference in scope", async () => {
-    const code = `function limitedScope() {
+sayHello("Jane");`,
+        selection: Selection.cursorAt(0, 18),
+        expectedError: ErrorReason.DidNotFoundInlinableCode
+      },
+      {
+        description: "function has no reference in scope",
+        code: `function limitedScope() {
   if (isValid) {
     function doSomething(name) {
       console.log(name);
@@ -415,18 +409,13 @@ sayHello("Jane");`;
 }
 
 // Not in scope.
-doSomething();`;
-    const selection = Selection.cursorAt(2, 4);
-
-    await doInlineFunction(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundInlinableCode
-    );
-  });
-
-  it("should show an error message if function has multiple return statements", async () => {
-    const code = `function getFirstName(name) {
+doSomething();`,
+        selection: Selection.cursorAt(2, 4),
+        expectedError: ErrorReason.DidNotFoundInlinableCode
+      },
+      {
+        description: "function has multiple return statements",
+        code: `function getFirstName(name) {
   if (!name) return "unknown";
   return name.split(" ")[0];
 }
@@ -434,18 +423,12 @@ doSomething();`;
 function sayHello(name) {
   const firstName = getFirstName(name);
   console.log("Hello", firstName);
-}`;
-    const selection = Selection.cursorAt(0, 0);
-
-    await doInlineFunction(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.CantInlineFunctionWithMultipleReturns
-    );
-  });
-
-  it("should show an error message if function has implicit return statements", async () => {
-    const code = `function getFirstName(name) {
+}`,
+        expectedError: ErrorReason.CantInlineFunctionWithMultipleReturns
+      },
+      {
+        description: "function has implicit return statements",
+        code: `function getFirstName(name) {
   if (!name) {
     return "unknown";
   }
@@ -454,36 +437,26 @@ function sayHello(name) {
 function sayHello(name) {
   const firstName = getFirstName(name);
   console.log("Hello", firstName);
-}`;
-    const selection = Selection.cursorAt(0, 0);
-
-    await doInlineFunction(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.CantInlineFunctionWithMultipleReturns
-    );
-  });
-
-  it("should show an error message if function is assigned to variable but has no return statement", async () => {
-    const code = `function getFirstName(name) {
+}`,
+        expectedError: ErrorReason.CantInlineFunctionWithMultipleReturns
+      },
+      {
+        description:
+          "function is assigned to variable but has no return statement",
+        code: `function getFirstName(name) {
   console.log(name);
 }
 
 function sayHello(name) {
   const firstName = getFirstName(name);
   console.log("Hello", firstName);
-}`;
-    const selection = Selection.cursorAt(0, 0);
-
-    await doInlineFunction(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.CantInlineAssignedFunctionWithoutReturn
-    );
-  });
-
-  it("should show an error message if function is assigned to expression but has no return statement", async () => {
-    const code = `function getFirstName(name) {
+}`,
+        expectedError: ErrorReason.CantInlineAssignedFunctionWithoutReturn
+      },
+      {
+        description:
+          "function is assigned to expression but has no return statement",
+        code: `function getFirstName(name) {
   console.log(name);
 }
 
@@ -491,15 +464,16 @@ function sayHello(name) {
   let firstName;
   firstName = getFirstName(name);
   console.log("Hello", firstName);
-}`;
-    const selection = Selection.cursorAt(0, 0);
+}`,
+        expectedError: ErrorReason.CantInlineAssignedFunctionWithoutReturn
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0), expectedError }) => {
+      await doInlineFunction(code, selection);
 
-    await doInlineFunction(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.CantInlineAssignedFunctionWithoutReturn
-    );
-  });
+      expect(showErrorMessage).toBeCalledWith(expectedError);
+    }
+  );
 
   describe("function is exported", () => {
     const code = `function sayHello(name) {
