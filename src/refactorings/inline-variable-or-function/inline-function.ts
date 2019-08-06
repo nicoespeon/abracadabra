@@ -123,31 +123,9 @@ function createVisitorThat(
       );
       if (!selection.isInside(validSelection)) return;
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
       update(path);
     }
   };
-}
-
-function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  path.traverse({
-    FunctionDeclaration(childPath) {
-      if (!selection.isInsidePath(childPath)) return;
-
-      result = true;
-      childPath.stop();
-    }
-  });
-
-  return result;
 }
 
 function countReturnStatementsIn(path: ast.NodePath): ReturnStatementsCount {
