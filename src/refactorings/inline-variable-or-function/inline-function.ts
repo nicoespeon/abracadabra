@@ -216,37 +216,16 @@ function replaceAllIdentifiersInPath(
     const identifier = node.callee;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
-    if (ast.isVariableDeclarator(parentPath.node)) {
-      isFunctionAssignedToVariable = true;
-      const variableDeclarator = parentPath.node;
-      const functionBody = applyArgumentsToFunctionAssignedToVariable(
-        parentPath.parentPath as ast.NodePath<ast.VariableDeclaration>,
-        path as ast.NodePath<ast.CallExpression>,
-        functionDeclaration,
-        variableDeclarator
-      );
-      parentPath.replaceWithMultiple(functionBody);
-      return;
-    }
+    isFunctionAssignedToVariable =
+      ast.isVariableDeclarator(parentPath.node) ||
+      ast.isAssignmentExpression(parentPath.node);
 
-    if (ast.isAssignmentExpression(parentPath.node)) {
-      isFunctionAssignedToVariable = true;
-      const assignmentExpression = parentPath.node;
-      const functionBody = applyArgumentsToFunctionAssignedToExpression(
-        parentPath.parentPath as ast.NodePath<ast.VariableDeclaration>,
-        path as ast.NodePath<ast.CallExpression>,
-        functionDeclaration,
-        assignmentExpression
-      );
-      parentPath.replaceWithMultiple(functionBody);
-      return;
-    }
-
-    const functionBody = applyArgumentsToFunction(
-      path as ast.NodePath<ast.CallExpression>,
-      functionDeclaration
+    replaceWithFunctionBody(
+      getScopePath(path),
+      node.arguments,
+      functionDeclaration,
+      getOnReturnStatement(path)
     );
-    path.replaceWithMultiple(functionBody);
   }
 
   if (ast.isVariableDeclarator(node)) {
@@ -273,9 +252,81 @@ function isMatchingIdentifier(
   );
 }
 
+function getOnReturnStatement(path: ast.NodePath): OnReturnStatement {
+  const { parentPath } = path;
+
+  switch (parentPath.type) {
+    case "VariableDeclarator":
+      const variableDeclarator = parentPath.node as ast.VariableDeclarator;
+      return returnPath => {
+        if (isInBranchedLogic(returnPath)) return;
+
+        returnPath.replaceWith(
+          ast.variableDeclarator(
+            variableDeclarator.id,
+            returnPath.node.argument
+          )
+        );
+      };
+
+    case "AssignmentExpression":
+      const assignmentExpression = parentPath.node as ast.AssignmentExpression;
+      return returnPath => {
+        if (isInBranchedLogic(returnPath)) return;
+        if (!returnPath.node.argument) return;
+
+        returnPath.replaceWith(
+          ast.assignmentExpression(
+            assignmentExpression.operator,
+            assignmentExpression.left,
+            returnPath.node.argument
+          )
+        );
+      };
+
+    default:
+      return () => {};
+  }
+}
+
+type OnReturnStatement = (path: ast.NodePath<ast.ReturnStatement>) => void;
+
+function getScopePath(path: ast.NodePath): ast.NodePath {
+  const { parentPath } = path;
+
+  switch (parentPath.type) {
+    case "VariableDeclarator":
+      return parentPath;
+
+    case "AssignmentExpression":
+      return parentPath.parentPath;
+
+    default:
+      return path;
+  }
+}
+
+function replaceWithFunctionBody(
+  path: ast.NodePath,
+  values: ast.CallExpression["arguments"],
+  functionDeclaration: ast.FunctionDeclaration,
+  onReturnStatement: (path: ast.NodePath<ast.ReturnStatement>) => void
+) {
+  path.replaceWithMultiple(
+    applyArgumentsToFunction(
+      path,
+      values,
+      functionDeclaration,
+      onReturnStatement
+    )
+  );
+}
+
 function applyArgumentsToFunction(
-  callExpressionPath: ast.NodePath<ast.CallExpression>,
-  functionDeclaration: ast.FunctionDeclaration
+  path: ast.NodePath,
+  values: ast.CallExpression["arguments"],
+  functionDeclaration: ast.FunctionDeclaration,
+  onReturnStatement: (path: ast.NodePath<ast.ReturnStatement>) => void
 ): ast.Statement[] {
   /**
    * If we try to modify the original function declaration,
@@ -289,7 +340,7 @@ function applyArgumentsToFunction(
    */
 
   // We have to cast this one as `insertAfter()` return type is `any`.
-  const [temporaryCopiedPath] = callExpressionPath.insertAfter(
+  const [temporaryCopiedPath] = path.insertAfter(
     ast.cloneDeep(functionDeclaration.body)
   ) as [ast.NodePath<ast.BlockStatement>];
 
@@ -301,98 +352,14 @@ function applyArgumentsToFunction(
       );
       if (!param.isMatch) return;
 
-      const values = callExpressionPath.node.arguments;
       const value = param.resolveValue(values) || ast.identifier("undefined");
       idPath.replaceWith(value);
-    }
+    },
+
+    ReturnStatement: onReturnStatement
   });
 
   // We need to reference the node before we remove the path.
-  const functionBlockStatement = temporaryCopiedPath.node;
-
-  temporaryCopiedPath.remove();
-
-  return functionBlockStatement.body;
-}
-
-// This one is very similar, but we also replace the return statements
-// with variable declarators. We're OK with this duplication for now.
-function applyArgumentsToFunctionAssignedToVariable(
-  variableDeclarationPath: ast.NodePath<ast.VariableDeclaration>,
-  callExpressionPath: ast.NodePath<ast.CallExpression>,
-  functionDeclaration: ast.FunctionDeclaration,
-  variableDeclarator: ast.VariableDeclarator
-): ast.Statement[] {
-  const [temporaryCopiedPath] = variableDeclarationPath.insertAfter(
-    ast.cloneDeep(functionDeclaration.body)
-  ) as [ast.NodePath<ast.BlockStatement>];
-
-  temporaryCopiedPath.traverse({
-    Identifier(idPath) {
-      const param = findParamMatchingId(
-        idPath.node,
-        functionDeclaration.params
-      );
-      if (!param.isMatch) return;
-
-      const values = callExpressionPath.node.arguments;
-      const value = param.resolveValue(values) || ast.identifier("undefined");
-      idPath.replaceWith(value);
-    },
-
-    ReturnStatement(returnPath) {
-      if (isInBranchedLogic(returnPath)) return;
-
-      returnPath.replaceWith(
-        ast.variableDeclarator(variableDeclarator.id, returnPath.node.argument)
-      );
-    }
-  });
-
-  const functionBlockStatement = temporaryCopiedPath.node;
-
-  temporaryCopiedPath.remove();
-
-  return functionBlockStatement.body;
-}
-
-function applyArgumentsToFunctionAssignedToExpression(
-  variableDeclarationPath: ast.NodePath<ast.VariableDeclaration>,
-  callExpressionPath: ast.NodePath<ast.CallExpression>,
-  functionDeclaration: ast.FunctionDeclaration,
-  assignmentExpression: ast.AssignmentExpression
-): ast.Statement[] {
-  const [temporaryCopiedPath] = variableDeclarationPath.insertAfter(
-    ast.cloneDeep(functionDeclaration.body)
-  ) as [ast.NodePath<ast.BlockStatement>];
-
-  temporaryCopiedPath.traverse({
-    Identifier(idPath) {
-      const param = findParamMatchingId(
-        idPath.node,
-        functionDeclaration.params
-      );
-      if (!param.isMatch) return;
-
-      const values = callExpressionPath.node.arguments;
-      const value = param.resolveValue(values) || ast.identifier("undefined");
-      idPath.replaceWith(value);
-    },
-
-    ReturnStatement(returnPath) {
-      if (isInBranchedLogic(returnPath)) return;
-      if (!returnPath.node.argument) return;
-
-      returnPath.replaceWith(
-        ast.assignmentExpression(
-          assignmentExpression.operator,
-          assignmentExpression.left,
-          returnPath.node.argument
-        )
-      );
-    }
-  });
-
   const functionBlockStatement = temporaryCopiedPath.node;
 
   temporaryCopiedPath.remove();
