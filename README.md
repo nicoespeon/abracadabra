@@ -32,6 +32,7 @@ Refactorings that don't have default keybindings are available through [VS Code 
 1. [Rename Symbol](#rename-symbol)
 1. [Extract Variable](#extract-variable)
 1. [Inline Variable](#inline-variable)
+1. [Inline Function](#inline-function)
 1. [Negate Expression](#negate-expression)
 1. [Remove Redundant Else](#remove-redundant-else)
 1. [Flip If/Else](#flip-ifelse)
@@ -80,6 +81,16 @@ It will extract the closest element from your cursor or partial selection.
 This refactoring is the opposite of _Extract Variable_. It replaces a redundant usage of a variable or a constant with its initializer. It's usually helpful to inline things so you can extract them differently.
 
 ![][demo-inline-variable]
+
+### Inline Function
+
+| Keybinding       | On Mac  |
+| :--------------- | :------ |
+| `Ctrl + Alt + N` | `⌥ ⌘ N` |
+
+This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
+
+![][demo-inline-function]
 
 ### Negate Expression
 
@@ -304,6 +315,7 @@ Cons of Abracadabra over these:
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-partial.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-variable.gif?raw=true
+[demo-inline-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-function.gif?raw=true
 [demo-negate-expression]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression.gif?raw=true
 [demo-negate-expression-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression-partial.gif?raw=true
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-redundant-else.gif?raw=true
