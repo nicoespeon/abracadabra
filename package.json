@@ -85,6 +85,7 @@
     "onCommand:abracadabra.removeBracesFromArrowFunction",
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.renameSymbol",
+    "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
@@ -161,6 +162,11 @@
       {
         "command": "abracadabra.renameSymbol",
         "title": "Rename Symbol",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.splitDeclarationAndInitialization",
+        "title": "Split Declaration and Initialization",
         "category": "Abracadabra"
       },
       {
@@ -419,6 +425,22 @@
         },
         {
           "command": "abracadabra.renameSymbol",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.splitDeclarationAndInitialization",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.splitDeclarationAndInitialization",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.splitDeclarationAndInitialization",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.splitDeclarationAndInitialization",
           "when": "editorLangId == typescriptreact"
         },
         {

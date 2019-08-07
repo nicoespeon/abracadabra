@@ -14,6 +14,7 @@ import negateExpressionCommand from "./refactorings/negate-expression/command";
 import removeBracesFromArrowFunctionCommand from "./refactorings/remove-braces-from-arrow-function/command";
 import removeRedundantElseCommand from "./refactorings/remove-redundant-else/command";
 import renameSymbolCommand from "./refactorings/rename-symbol/command";
+import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 import splitIfStatementCommand from "./refactorings/split-if-statement/command";
 
 import addBracesToArrowFunctionActionProviderFor from "./refactorings/add-braces-to-arrow-function/action-provider";
@@ -25,6 +26,7 @@ import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statemen
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 import removeBracesFromArrowFunctionActionProviderFor from "./refactorings/remove-braces-from-arrow-function/action-provider";
 import removeRedundantElseActionProviderFor from "./refactorings/remove-redundant-else/action-provider";
+import splitDeclarationAndInitializationActionProviderFor from "./refactorings/split-declaration-and-initialization/action-provider";
 import splitIfStatementActionProviderFor from "./refactorings/split-if-statement/action-provider";
 
 const SUPPORTED_LANGUAGES = [
@@ -50,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
     removeBracesFromArrowFunctionCommand,
     removeRedundantElseCommand,
     renameSymbolCommand,
+    splitDeclarationAndInitializationCommand,
     splitIfStatementCommand
   ].forEach(command => context.subscriptions.push(command));
 
@@ -64,6 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
       negateExpressionActionProviderFor(language),
       removeBracesFromArrowFunctionActionProviderFor(language),
       removeRedundantElseActionProviderFor(language),
+      splitDeclarationAndInitializationActionProviderFor(language),
       splitIfStatementActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
   });
