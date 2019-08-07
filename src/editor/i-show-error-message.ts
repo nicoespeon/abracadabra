@@ -16,6 +16,7 @@ enum ErrorReason {
   DidNotFoundBracesToRemoveFromArrowFunction,
   DidNotFoundIfStatementToSplit,
   DidNotFoundIfStatementsToMerge,
+  DidNotFoundDeclarationToSplit,
   CantMoveStatementUp,
   CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
@@ -68,6 +69,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundIfStatementsToMerge:
       return didNotFound("if statements that can be merged");
+
+    case ErrorReason.DidNotFoundDeclarationToSplit:
+      return didNotFound("a declaration that can be splitted");
 
     case ErrorReason.CantMoveStatementUp:
       return "I'm sorry, I can't move this statement up 😅";
