@@ -40,23 +40,31 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!selection.isInsidePath(path)) return;
 
       const declarations = path.node.declarations;
-      if (!allDeclarationsAreInitialized(declarations)) return;
+      if (!hasInitializedDeclaration(declarations)) return;
 
       path.replaceWithMultiple([
         ast.variableDeclaration(
           "let",
           declarations.map(({ id }) => ast.variableDeclarator(id))
         ),
-        ...declarations.map(({ id, init }) =>
-          ast.expressionStatement(ast.assignmentExpression("=", id, init))
-        )
+        ...declarations
+          .filter(isDeclarationInitialized)
+          .map(({ id, init }) =>
+            ast.expressionStatement(ast.assignmentExpression("=", id, init))
+          )
       ]);
     }
   });
 }
 
-function allDeclarationsAreInitialized(
+function hasInitializedDeclaration(
   declarations: ast.VariableDeclarator[]
-): declarations is (ast.VariableDeclarator & { init: ast.Expression })[] {
-  return declarations.every(({ init }) => init !== null);
+): boolean {
+  return declarations.some(isDeclarationInitialized);
+}
+
+function isDeclarationInitialized(
+  declaration: ast.VariableDeclarator
+): declaration is ast.VariableDeclarator & { init: ast.Expression } {
+  return declaration.init !== null;
 }

@@ -58,6 +58,13 @@ firstName = "Jane";`
         expected: `let firstName, lastName;
 firstName = "Jane";
 lastName = "Doe";`
+      },
+      {
+        description: "some declarations without initialization",
+        code: `const firstName = "Jane", lastName = "Doe", age;`,
+        expected: `let firstName, lastName, age;
+firstName = "Jane";
+lastName = "Doe";`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -69,6 +76,17 @@ lastName = "Doe";`
 
   it("should throw an error if there is nothing to split", async () => {
     const code = `passengersCount = 1;`;
+    const selection = Selection.cursorAt(0, 4);
+
+    await doSplitDeclarationAndInitialization(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundDeclarationToSplit
+    );
+  });
+
+  it("should throw an error if variable is not initialized", async () => {
+    const code = `var firstName;`;
     const selection = Selection.cursorAt(0, 4);
 
     await doSplitDeclarationAndInitialization(code, selection);
