@@ -36,17 +36,27 @@ function canSplitDeclarationAndInitialization(
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
-    VariableDeclarator(path) {
-      const variableDeclarationPath = path.parentPath;
-      if (!selection.isInsidePath(variableDeclarationPath)) return;
-      if (!path.node.init) return;
+    VariableDeclaration(path) {
+      if (!selection.isInsidePath(path)) return;
 
-      variableDeclarationPath.replaceWithMultiple([
-        ast.variableDeclaration("let", [ast.variableDeclarator(path.node.id)]),
-        ast.expressionStatement(
-          ast.assignmentExpression("=", path.node.id, path.node.init)
+      const declarations = path.node.declarations;
+      if (!allDeclarationsAreInitialized(declarations)) return;
+
+      path.replaceWithMultiple([
+        ast.variableDeclaration(
+          "let",
+          declarations.map(({ id }) => ast.variableDeclarator(id))
+        ),
+        ...declarations.map(({ id, init }) =>
+          ast.expressionStatement(ast.assignmentExpression("=", id, init))
         )
       ]);
     }
   });
+}
+
+function allDeclarationsAreInitialized(
+  declarations: ast.VariableDeclarator[]
+): declarations is (ast.VariableDeclarator & { init: ast.Expression })[] {
+  return declarations.every(({ init }) => init !== null);
 }

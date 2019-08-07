@@ -51,6 +51,13 @@ const lastName = "Doe";`
         selection: Selection.cursorAt(1, 2),
         expected: `let firstName;
 firstName = "Jane";`
+      },
+      {
+        description: "multiple declarations",
+        code: `const firstName = "Jane", lastName = "Doe";`,
+        expected: `let firstName, lastName;
+firstName = "Jane";
+lastName = "Doe";`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
