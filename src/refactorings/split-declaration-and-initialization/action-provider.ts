@@ -23,7 +23,7 @@ class SplitDeclarationAndInitializationActionProvider
     if (!canSplitDeclarationAndInitialization(code, selection)) return;
 
     const action = new vscode.CodeAction(
-      "✨ Replace with 'let', split declaration and initialization",
+      "✨ Split declaration and initialization",
       this.kind
     );
     action.isPreferred = false;
