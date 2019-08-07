@@ -701,6 +701,17 @@ console.log(
   currentValue >
   extracted
 );`
+      },
+      {
+        description: "an arrow function (cursor on params)",
+        code: `const sayHello = (name) => {
+  console.log(name);
+};`,
+        selection: Selection.cursorAt(0, 20),
+        expected: `const extracted = (name) => {
+  console.log(name);
+};
+const sayHello = extracted;`
       }
     ],
     async ({ code, selection, expected }) => {

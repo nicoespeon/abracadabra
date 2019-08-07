@@ -108,7 +108,7 @@ function findObjectPropertyLoc(
 
 function isExtractableContext(node: ast.Node): boolean {
   return (
-    ast.isExpression(node) ||
+    (ast.isExpression(node) && !ast.isArrowFunctionExpression(node)) ||
     ast.isReturnStatement(node) ||
     ast.isVariableDeclarator(node) ||
     ast.isClassProperty(node) ||
