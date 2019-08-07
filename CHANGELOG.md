@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Don't add unnecessary braces when extracting JSX elements.
 - Don't extract arrow function expressions params.
 - Remove Redundant Else now handles nested _If_ statements correctly.
 - Flip Ternary now handles nested ternaries correctly.

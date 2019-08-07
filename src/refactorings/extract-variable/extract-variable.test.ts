@@ -572,7 +572,7 @@ if (
         expected: `function render() {
   const extracted = this.props.location.name;
   return <div className="text-lg font-weight-bold">
-    {{extracted}}
+    {extracted}
   </div>;
 }`
       },
@@ -604,6 +604,21 @@ if (
     {this.props.location.name}
   </div>;
   return extracted;
+}`
+      },
+      {
+        description: "a nested JSX element",
+        code: `function render() {
+  return <div className="text-lg font-weight-bold">
+    <p>{this.props.location.name}</p>
+  </div>;
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `function render() {
+  const extracted = <p>{this.props.location.name}</p>;
+  return <div className="text-lg font-weight-bold">
+    {extracted}
+  </div>;
 }`
       },
       {

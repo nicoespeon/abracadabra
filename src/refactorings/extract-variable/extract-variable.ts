@@ -87,7 +87,7 @@ function findExtractableCode(
         ? node.expression.loc || result.loc
         : node.loc;
       result.shouldWrapInJSXExpressionContainer =
-        ast.isJSX(node) && ast.isJSX(path.parent);
+        ast.isJSXElement(node) && ast.isJSX(path.parent);
     }
   });
 
