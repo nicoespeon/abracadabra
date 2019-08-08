@@ -43,6 +43,3 @@ class <%= pascalName %>ActionProvider implements CodeActionProvider {
 }
 
 export default createActionProviderFor(new <%= pascalName %>ActionProvider());
-
-
-

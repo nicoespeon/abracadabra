@@ -46,6 +46,3 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     // TODO: implement the transformation here 🧙‍
   });
 }
-
-
-

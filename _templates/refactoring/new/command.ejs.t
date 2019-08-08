@@ -17,6 +17,3 @@ export default vscode.commands.registerCommand(
   commandKey,
   createCommand(<%= camelName %>)
 );
-
-
-
