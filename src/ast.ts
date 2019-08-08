@@ -23,6 +23,7 @@ export {
   SelectableVariableDeclarator,
   Selectable
 };
+export { templateElement };
 
 interface ASTSelection {
   start: ASTPosition;
@@ -133,4 +134,15 @@ function areAllObjectProperties(
   nodes: (t.Node | null)[]
 ): nodes is t.ObjectProperty[] {
   return nodes.every(node => t.isObjectProperty(node));
+}
+
+/**
+ * Override babel `templateElement()` because they expose unnecessary implementation details
+ * and they
+ */
+function templateElement(value: string): t.TemplateElement {
+  return t.templateElement({
+    raw: value,
+    cooked: value
+  });
 }

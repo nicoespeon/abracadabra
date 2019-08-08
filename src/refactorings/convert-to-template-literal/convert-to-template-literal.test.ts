@@ -15,12 +15,23 @@ describe("Convert To Template Literal", () => {
     showErrorMessage = jest.fn();
   });
 
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should convert to template literal",
     [
-      // TODO: write successful test cases here
+      {
+        description: "a simple string",
+        code: `const name = "Jane";`,
+        expected: "const name = `Jane`;"
+      },
+      {
+        description: "only selected string",
+        code: `const name = "Jane";
+const lastName = "Doe";`,
+        expected: `const name = \`Jane\`;
+const lastName = "Doe";`
+      }
     ],
-    async ({ code, selection, expected }) => {
+    async ({ code, selection = Selection.cursorAt(0, 13), expected }) => {
       const result = await doConvertToTemplateLiteral(code, selection);
 
       expect(result).toBe(expected);

@@ -33,6 +33,12 @@ function canConvertToTemplateLiteral(
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
-    // TODO: implement the transformation here 🧙‍
+    StringLiteral(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      path.replaceWith(
+        ast.templateLiteral([ast.templateElement(path.node.value)], [])
+      );
+    }
   });
 }
