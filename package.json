@@ -32,6 +32,7 @@
   "main": "./out/extension.js",
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
+    "hygen": "hygen",
     "test": "jest",
     "build": "webpack --mode none",
     "watch": "webpack --mode none --watch",
@@ -51,6 +52,7 @@
     "@types/jest": "24.0.13",
     "@types/node": "10.12.21",
     "husky": "2.3.0",
+    "hygen": "4.0.8",
     "jest": "24.8.0",
     "prettier": "1.17.1",
     "pretty-quick": "1.11.0",
