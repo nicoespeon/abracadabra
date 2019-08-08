@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New refactoring]** Split Declaration and Initialization
+
 ### Fixed
 
 - Don't add unnecessary braces when extracting JSX elements.
