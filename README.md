@@ -53,6 +53,10 @@ Simplifying Conditional Logic:
 1. [Split If Statement](#split-if-statement)
 1. [Merge If Statements](#merge-if-statements)
 
+Organizing data:
+
+1. [Split Declaration and Initialization](#split-declaration-and-initialization)
+
 Working around the syntax:
 
 1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
@@ -199,6 +203,14 @@ Split the logical expression of the closest if statement. This is an helpful too
 This is the opposite of _Split If Statement_. It consolidates nested ifs to clean up the code.
 
 ![][demo-merge-if-statements]
+
+### Split Declaration and Initialization
+
+> 💡 Available as Quick Fix
+
+Split the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
+
+![][demo-split-declaration-and-initialization]
 
 ### Add Braces to Arrow Function
 
@@ -348,6 +360,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-move-statement-object-property]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-object-property.gif?raw=true
 [demo-split-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-if-statement.gif?raw=true
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
+[demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
 
 <!-- Logo -->
 
