@@ -27,6 +27,12 @@ firstName = "Jane";`
       {
         description: "basic var assignment",
         code: `var firstName = "Jane";`,
+        expected: `var firstName;
+firstName = "Jane";`
+      },
+      {
+        description: "basic let assignment",
+        code: `let firstName = "Jane";`,
         expected: `let firstName;
 firstName = "Jane";`
       },

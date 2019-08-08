@@ -42,9 +42,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const declarations = path.node.declarations;
       if (!hasInitializedDeclaration(declarations)) return;
 
+      const kind = path.node.kind === "const" ? "let" : path.node.kind;
       path.replaceWithMultiple([
         ast.variableDeclaration(
-          "let",
+          kind,
           declarations.map(({ id }) => ast.variableDeclarator(id))
         ),
         ...declarations
