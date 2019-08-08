@@ -1,0 +1,49 @@
+import { Code } from "../../editor/i-write-code";
+import { Selection } from "../../editor/selection";
+import {
+  ShowErrorMessage,
+  ErrorReason
+} from "../../editor/i-show-error-message";
+import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
+import { testEach } from "../../tests-helpers";
+import { convertToTemplateLiteral } from "./convert-to-template-literal";
+
+describe("Convert To Template Literal", () => {
+  let showErrorMessage: ShowErrorMessage;
+
+  beforeEach(() => {
+    showErrorMessage = jest.fn();
+  });
+
+  testEach<{ code: Code; selection: Selection; expected: Code }>(
+    "should convert to template literal",
+    [
+      // TODO: write successful test cases here
+    ],
+    async ({ code, selection, expected }) => {
+      const result = await doConvertToTemplateLiteral(code, selection);
+
+      expect(result).toBe(expected);
+    }
+  );
+
+  it("should show an error message if refactoring can't be made", async () => {
+    const code = `// This is a comment, can't be refactored`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doConvertToTemplateLiteral(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundStringToConvert
+    );
+  });
+
+  async function doConvertToTemplateLiteral(
+    code: Code,
+    selection: Selection
+  ): Promise<Code> {
+    const [write, getState] = createWriteInMemory(code);
+    await convertToTemplateLiteral(code, selection, write, showErrorMessage);
+    return getState().code;
+  }
+});
