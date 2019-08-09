@@ -58,6 +58,11 @@ const lastName = "Doe";`
         expected: "const name = `Jane-Doe`;"
       },
       {
+        description: "concatenation with another template literal",
+        code: `const name = "Jane-" + \`Doe-\${12}\`;`,
+        expected: "const name = `Jane-Doe-${12}`;"
+      },
+      {
         description: "concatenation with null",
         code: `const name = "Jane-" + null;`,
         expected: "const name = `Jane-null`;"

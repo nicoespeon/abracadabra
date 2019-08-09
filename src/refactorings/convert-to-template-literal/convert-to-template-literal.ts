@@ -57,6 +57,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function getTemplate(node: ast.BinaryExpression["left"]): Template {
+  if (ast.isTemplateLiteral(node)) return node;
   if ("value" in node) return new PrimitiveTemplate(node);
   if (ast.isNullLiteral(node)) return new NullTemplate();
   if (ast.isUndefinedLiteral(node)) return new UndefinedTemplate();
@@ -84,12 +85,30 @@ class CompositeTemplate implements Template {
   }
 
   get quasis() {
-    return [...this.left.quasis, ...this.right.quasis];
+    return [...this.left.quasis, ...this.right.quasis].reduce(
+      (result, quasi) => {
+        if (isInterpolated(quasi)) return [...result, quasi];
+
+        const lastQuasi = result.pop();
+        if (!lastQuasi) return [...result, quasi];
+        if (isInterpolated(lastQuasi)) return [...result, lastQuasi, quasi];
+
+        const consolidatedQuasi = ast.templateElement(
+          lastQuasi.value.raw + quasi.value.raw
+        );
+        return [...result, consolidatedQuasi];
+      },
+      [] as ast.TemplateElement[]
+    );
   }
 
   get expressions() {
     return [...this.left.expressions, ...this.right.expressions];
   }
+}
+
+function isInterpolated(quasi: ast.TemplateElement): boolean {
+  return quasi.value.raw === "";
 }
 
 class NoneTemplate implements Template {
