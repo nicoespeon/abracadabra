@@ -137,10 +137,10 @@ function areAllObjectProperties(
 }
 
 /**
- * Override babel `templateElement()` because they expose unnecessary implementation details
- * and they
+ * Override babel `templateElement()` because it exposes
+ * unnecessary implementation details and it's not type-safe.
  */
-function templateElement(value: string): t.TemplateElement {
+function templateElement(value: string | number | boolean): t.TemplateElement {
   return t.templateElement({
     raw: value,
     cooked: value

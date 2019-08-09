@@ -33,6 +33,26 @@ function canConvertToTemplateLiteral(
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
+    BinaryExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const { left, right } = path.node;
+      if (!ast.isStringLiteral(left) && !ast.isStringLiteral(right)) return;
+
+      const leftValue = getValue(left);
+      if (!leftValue) return;
+
+      const rightValue = getValue(right);
+      if (!rightValue) return;
+
+      path.replaceWith(
+        ast.templateLiteral(
+          [ast.templateElement(leftValue), ast.templateElement(rightValue)],
+          []
+        )
+      );
+    },
+
     StringLiteral(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -41,4 +61,22 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       );
     }
   });
+}
+
+function getValue(
+  node: ast.BinaryExpression["left"]
+): string | number | boolean | null {
+  if ("value" in node) {
+    return node.value;
+  }
+
+  if (ast.isNullLiteral(node)) {
+    return "null";
+  }
+
+  if (ast.isUndefinedLiteral(node)) {
+    return "undefined";
+  }
+
+  return null;
 }

@@ -29,6 +29,43 @@ describe("Convert To Template Literal", () => {
 const lastName = "Doe";`,
         expected: `const name = \`Jane\`;
 const lastName = "Doe";`
+      },
+      {
+        description: "concatenation with number, cursor on string",
+        code: `const name = "Jane" + 1;`,
+        expected: "const name = `Jane1`;"
+      },
+      {
+        description: "concatenation with number, cursor on the other node",
+        code: `const name = "Jane-" + 1;`,
+        selection: Selection.cursorAt(0, 23),
+        expected: "const name = `Jane-1`;"
+      },
+      {
+        description: "concatenation with number, cursor on operator",
+        code: `const name = "Jane-" + 1;`,
+        selection: Selection.cursorAt(0, 20),
+        expected: "const name = `Jane-1`;"
+      },
+      {
+        description: "concatenation with boolean",
+        code: `const name = "Jane-" + true;`,
+        expected: "const name = `Jane-true`;"
+      },
+      {
+        description: "concatenation with another string",
+        code: `const name = "Jane-" + "Doe";`,
+        expected: "const name = `Jane-Doe`;"
+      },
+      {
+        description: "concatenation with null",
+        code: `const name = "Jane-" + null;`,
+        expected: "const name = `Jane-null`;"
+      },
+      {
+        description: "concatenation with undefined",
+        code: `const name = "Jane-" + undefined;`,
+        expected: "const name = `Jane-undefined`;"
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 13), expected }) => {
