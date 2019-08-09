@@ -47,6 +47,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       const templateLiteral = createTemplateLiteral([leftValue, rightValue]);
       path.replaceWith(templateLiteral);
+      path.stop();
     },
 
     StringLiteral(path) {
@@ -56,6 +57,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         new ElementValue(path.node)
       ]);
       path.replaceWith(templateLiteral);
+      path.stop();
     }
   });
 }
