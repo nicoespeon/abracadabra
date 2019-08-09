@@ -67,7 +67,11 @@ function getTemplate(node: ast.BinaryExpression["left"]): Template {
 }
 
 function createTemplateLiteral(template: Template): ast.TemplateLiteral {
-  return ast.templateLiteral(template.quasis, template.expressions);
+  return ast.templateLiteral(
+    // Intermediate interpolated quasis shouldn't be part of the final template.
+    template.quasis.filter(quasi => !isInterpolated(quasi) || quasi.tail),
+    template.expressions
+  );
 }
 
 interface Template {
@@ -142,7 +146,7 @@ class UndefinedTemplate implements Template {
 }
 
 class IdentifierTemplate implements Template {
-  quasis: ast.TemplateElement[] = [];
+  quasis: ast.TemplateElement[] = [ast.templateElement("")];
   expressions: ast.Expression[];
 
   constructor(node: ast.Identifier) {

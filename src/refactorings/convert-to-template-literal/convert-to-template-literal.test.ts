@@ -79,6 +79,16 @@ const name = "Jane " + lastName;`,
         selection: Selection.cursorAt(1, 20),
         expected: `const lastName = "Doe";
 const name = \`Jane \${lastName}\`;`
+      },
+      {
+        description: "concatenation with many elements",
+        code: `const lastName = "Doe";
+const age = 30;
+const name = "Jane " + lastName + " / " + age;`,
+        selection: Selection.cursorAt(2, 20),
+        expected: `const lastName = "Doe";
+const age = 30;
+const name = \`Jane \${lastName} / \${age}\`;`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 13), expected }) => {
