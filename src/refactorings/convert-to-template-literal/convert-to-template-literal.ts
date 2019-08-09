@@ -59,17 +59,9 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 function getValue(
   node: ast.BinaryExpression["left"]
 ): string | number | boolean | null {
-  if ("value" in node) {
-    return node.value;
-  }
-
-  if (ast.isNullLiteral(node)) {
-    return "null";
-  }
-
-  if (ast.isUndefinedLiteral(node)) {
-    return "undefined";
-  }
+  if ("value" in node) return node.value;
+  if (ast.isNullLiteral(node)) return "null";
+  if (ast.isUndefinedLiteral(node)) return "undefined";
 
   return null;
 }
