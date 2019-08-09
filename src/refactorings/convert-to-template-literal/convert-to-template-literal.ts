@@ -45,20 +45,13 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const rightValue = getValue(right);
       if (!rightValue) return;
 
-      path.replaceWith(
-        ast.templateLiteral(
-          [ast.templateElement(leftValue), ast.templateElement(rightValue)],
-          []
-        )
-      );
+      path.replaceWith(createTemplateLiteral([leftValue, rightValue]));
     },
 
     StringLiteral(path) {
       if (!selection.isInsidePath(path)) return;
 
-      path.replaceWith(
-        ast.templateLiteral([ast.templateElement(path.node.value)], [])
-      );
+      path.replaceWith(createTemplateLiteral([path.node.value]));
     }
   });
 }
@@ -79,4 +72,10 @@ function getValue(
   }
 
   return null;
+}
+
+function createTemplateLiteral(
+  values: (string | number | boolean)[]
+): ast.TemplateLiteral {
+  return ast.templateLiteral(values.map(ast.templateElement), []);
 }
