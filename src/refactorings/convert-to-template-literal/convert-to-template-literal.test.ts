@@ -113,11 +113,19 @@ const name = \`Jane \${lastName} / \${age}\`;`
     [
       {
         description: "other binary expression operators",
-        code: `const name = "Jane" - 12 + " Doe";`
+        code: `const name = "Jane-" - 12 + "Doe";`
       },
       {
         description: "binary expression without string",
         code: "const total = price + 10 + 20;"
+      },
+      {
+        description: "concatenation with array",
+        code: `const name = "Jane-" + ["Doe"];`
+      },
+      {
+        description: "concatenation with object",
+        code: `const name = "Jane-" + { lastName: "Doe" };`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 14) }) => {
