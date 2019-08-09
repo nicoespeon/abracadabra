@@ -36,21 +36,14 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     BinaryExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const { left, right } = path.node;
-      const templateLiteral = createTemplateLiteral(
-        new CompositeTemplate(getTemplate(left), getTemplate(right))
-      );
-      path.replaceWith(templateLiteral);
+      path.replaceWith(createTemplateLiteral(getTemplate(path.node)));
       path.stop();
     },
 
     StringLiteral(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const templateLiteral = createTemplateLiteral(
-        new PrimitiveTemplate(path.node)
-      );
-      path.replaceWith(templateLiteral);
+      path.replaceWith(createTemplateLiteral(getTemplate(path.node)));
       path.stop();
     }
   });
@@ -62,6 +55,13 @@ function getTemplate(node: ast.BinaryExpression["left"]): Template {
   if (ast.isNullLiteral(node)) return new NullTemplate();
   if (ast.isUndefinedLiteral(node)) return new UndefinedTemplate();
   if (ast.isIdentifier(node)) return new IdentifierTemplate(node);
+
+  if (ast.isBinaryExpression(node)) {
+    return new CompositeTemplate(
+      getTemplate(node.left),
+      getTemplate(node.right)
+    );
+  }
 
   return new NoneTemplate();
 }
