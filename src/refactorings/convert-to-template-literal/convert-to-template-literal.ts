@@ -37,15 +37,9 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!selection.isInsidePath(path)) return;
 
       const { left, right } = path.node;
-      if (!ast.isStringLiteral(left) && !ast.isStringLiteral(right)) return;
-
-      const leftValue = getValue(left);
-      if (!leftValue) return;
-
-      const rightValue = getValue(right);
-      if (!rightValue) return;
-
-      const templateLiteral = createTemplateLiteral([leftValue, rightValue]);
+      const templateLiteral = createTemplateLiteral(
+        new CompositeTemplate(getTemplate(left), getTemplate(right))
+      );
       path.replaceWith(templateLiteral);
       path.stop();
     },
@@ -53,41 +47,59 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     StringLiteral(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const templateLiteral = createTemplateLiteral([
-        new ElementValue(path.node)
-      ]);
+      const templateLiteral = createTemplateLiteral(
+        new PrimitiveTemplate(path.node)
+      );
       path.replaceWith(templateLiteral);
       path.stop();
     }
   });
 }
 
-function getValue(node: ast.BinaryExpression["left"]): Value | null {
-  if ("value" in node) return new ElementValue(node);
-  if (ast.isNullLiteral(node)) return new NullValue();
-  if (ast.isUndefinedLiteral(node)) return new UndefinedValue();
-  if (ast.isIdentifier(node)) return new IdentifierValue(node);
+function getTemplate(node: ast.BinaryExpression["left"]): Template {
+  if ("value" in node) return new PrimitiveTemplate(node);
+  if (ast.isNullLiteral(node)) return new NullTemplate();
+  if (ast.isUndefinedLiteral(node)) return new UndefinedTemplate();
+  if (ast.isIdentifier(node)) return new IdentifierTemplate(node);
 
-  return null;
+  return new NoneTemplate();
 }
 
-function createTemplateLiteral(values: Value[]): ast.TemplateLiteral {
-  const quasis = values.map(value => ast.templateElement(value.element));
-  const expressions = values
-    .map(value => value.expression)
-    .filter((expression): expression is ast.Identifier => expression !== null);
-
-  return ast.templateLiteral(quasis, expressions);
+function createTemplateLiteral(template: Template): ast.TemplateLiteral {
+  return ast.templateLiteral(template.quasis, template.expressions);
 }
 
-interface Value {
-  element: string | number | boolean;
-  expression: ast.Identifier | null;
+interface Template {
+  quasis: ast.TemplateElement[];
+  expressions: ast.Expression[];
 }
 
-class ElementValue implements Value {
-  element: string | number | boolean;
-  expression = null;
+class CompositeTemplate implements Template {
+  private left: Template;
+  private right: Template;
+
+  constructor(left: Template, right: Template) {
+    this.left = left;
+    this.right = right;
+  }
+
+  get quasis() {
+    return [...this.left.quasis, ...this.right.quasis];
+  }
+
+  get expressions() {
+    return [...this.left.expressions, ...this.right.expressions];
+  }
+}
+
+class NoneTemplate implements Template {
+  quasis: ast.TemplateElement[] = [];
+  expressions: ast.Expression[] = [];
+}
+
+class PrimitiveTemplate implements Template {
+  quasis: ast.TemplateElement[];
+  expressions: ast.Expression[] = [];
 
   constructor(
     node:
@@ -96,25 +108,25 @@ class ElementValue implements Value {
       | ast.BooleanLiteral
       | ast.BigIntLiteral
   ) {
-    this.element = node.value;
+    this.quasis = [ast.templateElement(node.value)];
   }
 }
 
-class NullValue implements Value {
-  element = "null";
-  expression = null;
+class NullTemplate implements Template {
+  quasis: ast.TemplateElement[] = [ast.templateElement("null")];
+  expressions: ast.Expression[] = [];
 }
 
-class UndefinedValue implements Value {
-  element = "undefined";
-  expression = null;
+class UndefinedTemplate implements Template {
+  quasis: ast.TemplateElement[] = [ast.templateElement("undefined")];
+  expressions: ast.Expression[] = [];
 }
 
-class IdentifierValue implements Value {
-  element = "";
-  expression: ast.Identifier;
+class IdentifierTemplate implements Template {
+  quasis: ast.TemplateElement[] = [];
+  expressions: ast.Expression[];
 
   constructor(node: ast.Identifier) {
-    this.expression = node;
+    this.expressions = [node];
   }
 }
