@@ -4,8 +4,9 @@ export * from "@babel/types";
 export {
   isArrayExpressionElement,
   areAllObjectProperties,
-  templateElement,
   isUndefinedLiteral,
+  isTemplateExpression,
+  templateElement,
   Primitive
 };
 
@@ -23,6 +24,23 @@ function areAllObjectProperties(
   return nodes.every(node => t.isObjectProperty(node));
 }
 
+function isUndefinedLiteral(
+  node: object | null | undefined,
+  opts?: object | null
+): node is t.Identifier {
+  return t.isIdentifier(node, opts) && node.name === "undefined";
+}
+
+function isTemplateExpression(node: t.Node): node is TemplateExpression {
+  return (
+    t.isIdentifier(node) ||
+    t.isCallExpression(node) ||
+    t.isMemberExpression(node)
+  );
+}
+
+type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
+
 /**
  * Override babel `templateElement()` because it exposes
  * unnecessary implementation details and it's not type-safe.
@@ -32,13 +50,6 @@ function templateElement(value: string | number | boolean): t.TemplateElement {
     raw: value,
     cooked: value
   });
-}
-
-function isUndefinedLiteral(
-  node: object | null | undefined,
-  opts?: object | null
-): node is t.Identifier {
-  return t.isIdentifier(node, opts) && node.name === "undefined";
 }
 
 type Primitive =

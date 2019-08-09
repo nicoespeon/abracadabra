@@ -61,7 +61,7 @@ function getTemplate(node: ast.BinaryExpression["left"]): Template {
   if ("value" in node) return new PrimitiveTemplate(node);
   if (ast.isNullLiteral(node)) return new NullTemplate();
   if (ast.isUndefinedLiteral(node)) return new UndefinedTemplate();
-  if (ast.isIdentifier(node)) return new IdentifierTemplate(node);
+  if (ast.isTemplateExpression(node)) return new ExpressionTemplate(node);
 
   if (ast.isBinaryExpression(node) && node.operator === "+") {
     return new CompositeTemplate(
@@ -171,13 +171,13 @@ class UndefinedTemplate implements Template {
   expressions: ast.Expression[] = [];
 }
 
-class IdentifierTemplate implements Template {
+class ExpressionTemplate implements Template {
   isValid = true;
   hasString = false;
   quasis: ast.TemplateElement[] = [ast.templateElement("")];
   expressions: ast.Expression[];
 
-  constructor(node: ast.Identifier) {
+  constructor(node: ast.Expression) {
     this.expressions = [node];
   }
 }

@@ -73,6 +73,16 @@ const lastName = "Doe";`
         expected: "const name = `Jane-undefined`;"
       },
       {
+        description: "concatenation with call expression",
+        code: `const name = "Jane-" + getLastNameOf(jane);`,
+        expected: "const name = `Jane-${getLastNameOf(jane)}`;"
+      },
+      {
+        description: "concatenation with member expression",
+        code: `const name = "Jane-" + lastNames[1];`,
+        expected: "const name = `Jane-${lastNames[1]}`;"
+      },
+      {
         description: "concatenation with identifier",
         code: `const lastName = "Doe";
 const name = "Jane " + lastName;`,
