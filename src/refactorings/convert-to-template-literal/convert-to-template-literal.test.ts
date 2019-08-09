@@ -66,6 +66,14 @@ const lastName = "Doe";`
         description: "concatenation with undefined",
         code: `const name = "Jane-" + undefined;`,
         expected: "const name = `Jane-undefined`;"
+      },
+      {
+        description: "concatenation with identifier",
+        code: `const lastName = "Doe";
+const name = "Jane " + lastName;`,
+        selection: Selection.cursorAt(1, 20),
+        expected: `const lastName = "Doe";
+const name = \`Jane \${lastName}\`;`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 13), expected }) => {

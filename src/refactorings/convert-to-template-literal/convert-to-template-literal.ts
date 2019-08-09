@@ -45,29 +45,74 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const rightValue = getValue(right);
       if (!rightValue) return;
 
-      path.replaceWith(createTemplateLiteral([leftValue, rightValue]));
+      const templateLiteral = createTemplateLiteral([leftValue, rightValue]);
+      path.replaceWith(templateLiteral);
     },
 
     StringLiteral(path) {
       if (!selection.isInsidePath(path)) return;
 
-      path.replaceWith(createTemplateLiteral([path.node.value]));
+      const templateLiteral = createTemplateLiteral([
+        new ElementValue(path.node)
+      ]);
+      path.replaceWith(templateLiteral);
     }
   });
 }
 
-function getValue(
-  node: ast.BinaryExpression["left"]
-): string | number | boolean | null {
-  if ("value" in node) return node.value;
-  if (ast.isNullLiteral(node)) return "null";
-  if (ast.isUndefinedLiteral(node)) return "undefined";
+function getValue(node: ast.BinaryExpression["left"]): Value | null {
+  if ("value" in node) return new ElementValue(node);
+  if (ast.isNullLiteral(node)) return new NullValue();
+  if (ast.isUndefinedLiteral(node)) return new UndefinedValue();
+  if (ast.isIdentifier(node)) return new IdentifierValue(node);
 
   return null;
 }
 
-function createTemplateLiteral(
-  values: (string | number | boolean)[]
-): ast.TemplateLiteral {
-  return ast.templateLiteral(values.map(ast.templateElement), []);
+function createTemplateLiteral(values: Value[]): ast.TemplateLiteral {
+  const quasis = values.map(value => ast.templateElement(value.element));
+  const expressions = values
+    .map(value => value.expression)
+    .filter((expression): expression is ast.Identifier => expression !== null);
+
+  return ast.templateLiteral(quasis, expressions);
+}
+
+interface Value {
+  element: string | number | boolean;
+  expression: ast.Identifier | null;
+}
+
+class ElementValue implements Value {
+  element: string | number | boolean;
+  expression = null;
+
+  constructor(
+    node:
+      | ast.StringLiteral
+      | ast.NumberLiteral
+      | ast.BooleanLiteral
+      | ast.BigIntLiteral
+  ) {
+    this.element = node.value;
+  }
+}
+
+class NullValue implements Value {
+  element = "null";
+  expression = null;
+}
+
+class UndefinedValue implements Value {
+  element = "undefined";
+  expression = null;
+}
+
+class IdentifierValue implements Value {
+  element = "";
+  expression: ast.Identifier;
+
+  constructor(node: ast.Identifier) {
+    this.expression = node;
+  }
 }
