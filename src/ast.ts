@@ -7,15 +7,13 @@ import { Code } from "./editor/i-write-code";
 
 export { NodePath } from "@babel/traverse";
 export * from "@babel/types";
-export { ASTSelection, ASTPosition };
 export { traverseAST, transform, Transformed };
-export { isUndefinedLiteral };
 export {
+  ASTSelection,
+  ASTPosition,
   isSelectableNode,
   isSelectableVariableDeclarator,
   isSelectableIdentifier,
-  isArrayExpressionElement,
-  areAllObjectProperties,
   SelectablePath,
   SelectableNode,
   SelectableObjectProperty,
@@ -23,17 +21,15 @@ export {
   SelectableVariableDeclarator,
   Selectable
 };
-export { templateElement };
+export {
+  isArrayExpressionElement,
+  areAllObjectProperties,
+  templateElement,
+  isUndefinedLiteral,
+  Primitive
+};
 
-interface ASTSelection {
-  start: ASTPosition;
-  end: ASTPosition;
-}
-
-interface ASTPosition {
-  line: number;
-  column: number;
-}
+// === TRANSFORMATION ===
 
 function traverseAST(code: Code, opts: TraverseOptions): t.File {
   const ast: t.File = recast.parse(code, {
@@ -96,11 +92,16 @@ interface Transformed {
   hasCodeChanged: boolean;
 }
 
-function isUndefinedLiteral(
-  node: object | null | undefined,
-  opts?: object | null
-): node is t.Identifier {
-  return t.isIdentifier(node, opts) && node.name === "undefined";
+// === SELECTION ===
+
+interface ASTSelection {
+  start: ASTPosition;
+  end: ASTPosition;
+}
+
+interface ASTPosition {
+  line: number;
+  column: number;
 }
 
 type SelectablePath = NodePath<SelectableNode>;
@@ -124,6 +125,8 @@ function isSelectableVariableDeclarator(
   return !!declaration.loc;
 }
 
+// === AST DOMAIN ===
+
 function isArrayExpressionElement(
   node: t.Node | null
 ): node is null | t.Expression | t.SpreadElement {
@@ -146,3 +149,16 @@ function templateElement(value: string | number | boolean): t.TemplateElement {
     cooked: value
   });
 }
+
+function isUndefinedLiteral(
+  node: object | null | undefined,
+  opts?: object | null
+): node is t.Identifier {
+  return t.isIdentifier(node, opts) && node.name === "undefined";
+}
+
+type Primitive =
+  | t.StringLiteral
+  | t.NumberLiteral
+  | t.BooleanLiteral
+  | t.BigIntLiteral;

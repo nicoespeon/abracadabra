@@ -98,6 +98,25 @@ const name = \`Jane \${lastName} / \${age}\`;`
     }
   );
 
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not convert",
+    [
+      {
+        description: "other binary expression operators",
+        code: `const name = "Jane" - 12 + " Doe";`
+      },
+      {
+        description: "binary expression without string",
+        code: "const total = price + 10 + 20;"
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 14) }) => {
+      const result = await doConvertToTemplateLiteral(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
