@@ -17,6 +17,7 @@ enum ErrorReason {
   DidNotFoundIfStatementToSplit,
   DidNotFoundIfStatementsToMerge,
   DidNotFoundDeclarationToSplit,
+  DidNotFoundStringToConvert,
   CantMoveStatementUp,
   CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
@@ -72,6 +73,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundDeclarationToSplit:
       return didNotFound("a declaration that can be splitted");
+
+    case ErrorReason.DidNotFoundStringToConvert:
+      return didNotFound("a string to convert into template literal");
 
     case ErrorReason.CantMoveStatementUp:
       return "I'm sorry, I can't move this statement up 😅";
