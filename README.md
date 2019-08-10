@@ -61,6 +61,7 @@ Working around the syntax:
 
 1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
 1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
+1. [Convert to Template Literal](#convert-to-template-literal)
 
 ### Rename Symbol
 
@@ -230,6 +231,16 @@ Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Cod
 
 ![][demo-remove-braces-from-arrow-function]
 
+### Convert to Template Literal
+
+> 💡 Available as Quick Fix
+
+Have you ever worked on an old JavaScript code which used to concatenate strings with `+`? This refactoring will save you the energy of converting it to a template string.
+
+It's also useful when you want to turn a string into a template string.
+
+![][demo-convert-to-template-literal]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -361,6 +372,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-split-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-if-statement.gif?raw=true
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
+[demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 
 <!-- Logo -->
 
