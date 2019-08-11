@@ -147,9 +147,13 @@ console.log(extracted);`
         description: "an object",
         code: `console.log({ one: 1, foo: true, hello: 'World!' });`,
         selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = { one: 1, foo: true, hello: 'World!' };
-console.log(extracted);`,
-        skip: true
+        expected: `const extracted = {
+  one: 1,
+  foo: true,
+  hello: 'World!'
+};
+
+console.log(extracted);`
       },
       {
         description: "an object (multi-lines)",
@@ -164,8 +168,8 @@ console.log(extracted);`,
   foo: true,
   hello: 'World!'
 };
-console.log(extracted);`,
-        skip: true
+
+console.log(extracted);`
       },
       {
         description: "a named function",
@@ -176,24 +180,22 @@ console.log(extracted);`,
         expected: `const extracted = function sayHello() {
   return "Hello!";
 };
-console.log(extracted);`,
-        skip: true
+
+console.log(extracted);`
       },
       {
         description: "an arrow function",
         code: `console.log(() => "Hello!");`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = () => "Hello!";
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "a function call",
         code: `console.log(sayHello("World"));`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = sayHello("World");
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "the correct variable when we have many",
@@ -204,8 +206,7 @@ console.log("How are you doing?");`,
         expected: `console.log("Hello");
 const extracted = "World!";
 console.log("the", extracted, "Alright.");
-console.log("How are you doing?");`,
-        skip: true
+console.log("How are you doing?");`
       },
       {
         description: "a multi-lines object when cursor is inside",
@@ -220,8 +221,8 @@ console.log("How are you doing?");`,
   foo: true,
   hello: 'World!'
 };
-console.log(extracted);`,
-        skip: true
+
+console.log(extracted);`
       },
       {
         description: "an element nested in a multi-lines object",
@@ -238,8 +239,7 @@ console.log({
   foo: {
     bar: extracted
   }
-});`,
-        skip: true
+});`
       },
       {
         description:
@@ -257,8 +257,7 @@ const a = {
   foo: {
     bar: extracted
   }
-};`,
-        skip: true
+};`
       },
       {
         description: "an element in a multi-lines array",
@@ -275,8 +274,7 @@ const SUPPORTED_LANGUAGES = [
   extracted,
   "typescript",
   "typescriptreact"
-];`,
-        skip: true
+];`
       },
       {
         description: "an element nested in a multi-lines array",
@@ -297,32 +295,32 @@ console.log([
       hello: extracted
     }
   ]
-]);`,
-        skip: true
+]);`
       },
       {
         description: "the whole object when cursor is on its property",
         code: `console.log({ foo: "bar", one: true });`,
         selection: Selection.cursorAt(0, 16),
-        expected: `const extracted = { foo: "bar", one: true };
-console.log(extracted);`,
-        skip: true
+        expected: `const extracted = {
+  foo: "bar",
+  one: true
+};
+
+console.log(extracted);`
       },
       {
         description: "a computed object property",
         code: `const a = { [key]: "value" };`,
         selection: Selection.cursorAt(0, 13),
         expected: `const extracted = key;
-const a = { [extracted]: "value" };`,
-        skip: true
+const a = { [extracted]: "value" };`
       },
       {
         description: "a computed object property value when cursor is on value",
         code: `const a = { [key]: "value" };`,
         selection: Selection.cursorAt(0, 19),
         expected: `const extracted = "value";
-const a = { [key]: extracted };`,
-        skip: true
+const a = { [key]: extracted };`
       },
       {
         description: "the whole object when cursor is on a method declaration",
@@ -346,8 +344,7 @@ console.log(extracted);`,
         code: `console.log({ foo: { bar: true } });`,
         selection: Selection.cursorAt(0, 21),
         expected: `const extracted = { bar: true };
-console.log({ foo: extracted });`,
-        skip: true
+console.log({ foo: extracted });`
       },
       {
         description: "a spread variable",
@@ -397,8 +394,7 @@ console.log(extracted.name);`,
         code: `const message = "Hello!";`,
         selection: Selection.cursorAt(0, 16),
         expected: `const extracted = "Hello!";
-const message = extracted;`,
-        skip: true
+const message = extracted;`
       },
       {
         description: "a class property assignment",
@@ -823,16 +819,14 @@ const sayHello = extracted;`,
         code: `function sayHello() {
   console.log("hello");
 }`,
-        selection: new Selection([0, 0], [2, 1]),
-        skip: true
+        selection: new Selection([0, 0], [2, 1])
       },
       {
         description: "a class property identifier",
         code: `class Logger {
   message = "Hello!";
 }`,
-        selection: new Selection([1, 2], [1, 9]),
-        skip: true
+        selection: new Selection([1, 2], [1, 9])
       },
       {
         description: "the identifier from a variable declaration",

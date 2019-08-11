@@ -31,27 +31,172 @@ async function extractVariable(
 }
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
+  const extractInSelectedNode = (
+    path: ast.NodePath<ast.VariableDeclarator["init"]>
+  ) => extractInNode(path, selection);
+
   return ast.transform(code, {
-    StringLiteral: visitor,
-    NumericLiteral: visitor,
-    BooleanLiteral: visitor,
-    NullLiteral: visitor,
-    Identifier: visitor,
-    ArrayExpression: visitor
+    StringLiteral: extractInSelectedNode,
+    NumericLiteral: extractInSelectedNode,
+    BooleanLiteral: extractInSelectedNode,
+    NullLiteral: extractInSelectedNode,
+    Identifier: extractInSelectedNode,
+    ArrayExpression: extractInSelectedNode,
+    ObjectExpression: extractInSelectedNode,
+    ObjectProperty(path) {
+      if (isInsideValue(path, selection)) {
+        return extractInObjectProperty("value", path, selection);
+      }
+
+      if (isInsideExtractableKey(path, selection)) {
+        return extractInObjectProperty("key", path, selection);
+      }
+    },
+    FunctionExpression: extractInSelectedNode,
+    ArrowFunctionExpression: extractInSelectedNode,
+    CallExpression: extractInSelectedNode
+  });
+}
+
+function extractInNode(
+  path: ast.NodePath<ast.VariableDeclarator["init"]>,
+  selection: Selection
+) {
+  const { node } = path;
+  if (!node) return;
+  if (!selection.isInsideNode(node)) return;
+  if (!isExtractableContext(path.parent)) return;
+  if (hasChildWhichMatchesSelection(path, selection)) return;
+
+  const scopePath = findScopePath(path);
+  if (!scopePath) return;
+
+  insertVariableBefore(scopePath, node);
+  path.replaceWith(variableId());
+
+  scopePath.stop();
+  path.stop();
+}
+
+function extractInObjectProperty(
+  nodeKey: "key" | "value",
+  path: ast.NodePath<ast.ObjectProperty>,
+  selection: Selection
+) {
+  const node = path.node[nodeKey];
+  if (!ast.isExpression(node)) return;
+  if (hasChildWhichMatchesSelection(path, selection)) return;
+
+  const scopePath = findScopePath(path);
+  if (!scopePath) return;
+
+  insertVariableBefore(scopePath, node);
+  path.node[nodeKey] = variableId();
+
+  scopePath.stop();
+}
+
+function insertVariableBefore(
+  path: ast.NodePath,
+  init: ast.VariableDeclarator["init"]
+) {
+  path.insertBefore([
+    ast.variableDeclaration("const", [
+      ast.variableDeclarator(variableId(), init)
+    ])
+  ]);
+}
+
+function variableId(): ast.Identifier {
+  return ast.identifier("extracted");
+}
+
+// Since we visit nodes from parent to children, first check
+// if a child would match the selection closer.
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath<ast.Node | null>,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    StringLiteral: checkIfMatches,
+    NumericLiteral: checkIfMatches,
+    BooleanLiteral: checkIfMatches,
+    NullLiteral: checkIfMatches,
+    Identifier(childPath) {
+      if (isFunctionCallIdentifier(childPath)) return;
+      if (isPartOfMemberExpression(childPath)) return;
+      checkIfMatches(childPath);
+    },
+    ArrayExpression: checkIfMatches,
+    ObjectExpression: checkIfMatches,
+    ObjectProperty: childPath => {
+      if (
+        !isInsideExtractableKey(childPath, selection) &&
+        !isInsideValue(childPath, selection)
+      ) {
+        return;
+      }
+      checkIfMatches(childPath);
+    },
+    FunctionExpression: checkIfMatches,
+    ArrowFunctionExpression: checkIfMatches,
+    CallExpression: checkIfMatches
   });
 
-  function visitor(path: ast.NodePath<ast.VariableDeclarator["init"]>) {
-    if (!path.node) return;
-    if (!selection.isInsideNode(path.node)) return;
+  return result;
 
-    const variableId = ast.identifier("extracted");
-    const scopePath = path.parentPath;
-    scopePath.insertBefore([
-      ast.variableDeclaration("const", [
-        ast.variableDeclarator(variableId, path.node)
-      ])
-    ]);
-    path.replaceWith(variableId);
-    scopePath.parentPath.stop();
+  function checkIfMatches(childPath: ast.NodePath) {
+    if (!childPath.node) return;
+    if (!selection.isInsideNode(childPath.node)) return;
+    if (!isExtractableContext(childPath.parent)) return;
+
+    result = true;
+    childPath.stop();
   }
+}
+
+function findScopePath(
+  path: ast.NodePath<ast.Node | null>
+): ast.NodePath | undefined {
+  return path.findParent(
+    parentPath =>
+      ast.isExpressionStatement(parentPath) ||
+      ast.isVariableDeclaration(parentPath)
+  );
+}
+
+function isInsideExtractableKey(
+  path: ast.NodePath<ast.ObjectProperty>,
+  selection: Selection
+): boolean {
+  return selection.isInsideNode(path.node.key) && path.node.computed;
+}
+
+function isInsideValue(
+  path: ast.NodePath<ast.ObjectProperty>,
+  selection: Selection
+): boolean {
+  return selection.isInsideNode(path.node.value);
+}
+
+function isExtractableContext(node: ast.Node): boolean {
+  return (
+    (ast.isExpression(node) && !ast.isArrowFunctionExpression(node)) ||
+    ast.isReturnStatement(node) ||
+    ast.isVariableDeclarator(node) ||
+    ast.isClassProperty(node) ||
+    ast.isIfStatement(node) ||
+    ast.isWhileStatement(node) ||
+    ast.isSwitchCase(node)
+  );
+}
+
+function isFunctionCallIdentifier(path: ast.NodePath): boolean {
+  return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
+}
+
+function isPartOfMemberExpression(path: ast.NodePath): boolean {
+  return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
