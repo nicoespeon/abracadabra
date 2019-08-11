@@ -36,7 +36,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     NumericLiteral: visitor,
     BooleanLiteral: visitor,
     NullLiteral: visitor,
-    Identifier: visitor
+    Identifier: visitor,
+    ArrayExpression: visitor
   });
 
   function visitor(path: ast.NodePath<ast.VariableDeclarator["init"]>) {

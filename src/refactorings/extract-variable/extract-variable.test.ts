@@ -130,8 +130,7 @@ console.log(extracted);`
         code: `console.log([1, 2, 'three', [true, null]]);`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = [1, 2, 'three', [true, null]];
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "an array (multi-lines)",
@@ -141,13 +140,8 @@ console.log(extracted);`,
   [true, null]
 ]);`,
         selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = [
-  1,
-  'Two',
-  [true, null]
-];
-console.log(extracted);`,
-        skip: true
+        expected: `const extracted = [1, 'Two', [true, null]];
+console.log(extracted);`
       },
       {
         description: "an object",
