@@ -28,6 +28,14 @@ In short, most of our tests are unit tests. We test business logic in isolation 
 
 We don't have VS Code integration tests. [We've documented why in this ADR][adr-no-integration-tests].
 
+## Create a new refactoring
+
+Run `yarn new` and follow the tool, it will ask you the relevant questions.
+
+[We've documented the context of this decision in this ADR][adr-create-generator].
+
+If you want to change how code scaffolding works, check [hygen documentation][hygen-documentation].
+
 ## Useful resources to start changing the code
 
 - [VS Code Extension API documentation][vscode-extension-docs] is a good start
@@ -105,8 +113,10 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 [babel-handbook-transformation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-transformation-operations
 [babel-handbook-manipulation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#manipulation
 [all-contributors-bot-command]: https://allcontributors.org/docs/en/bot/usage#all-contributors-add
+[hygen-documentation]: https://www.hygen.io/quick-start
 
 <!-- Repo links -->
 
-[adr-no-integration-tests]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0002-no-integration-test.md
 [adrs]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr
+[adr-no-integration-tests]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0002-no-integration-test.md
+[adr-create-generator]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0006-create-generator-to-bootstrap-new-refactorings.md
