@@ -25,12 +25,12 @@ describe("<%= titleName %>", () => {
     showErrorMessage = jest.fn();
   });
 
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should <%= noCaseName %>",
     [
       // TODO: write successful test cases here
     ],
-    async ({ code, selection, expected }) => {
+    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await do<%= pascalName %>(code, selection);
 
       expect(result).toBe(expected);
