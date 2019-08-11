@@ -7,6 +7,8 @@ to: "<%= hasActionProvider ? 'src/refactorings/' + h.changeCase.param(name) + '/
   dashedName = h.changeCase.param(name)
   titleName = h.changeCase.titleCase(name)
   sentenceName = h.changeCase.sentenceCase(name)
+
+  camelActionProviderName = h.changeCase.camel(actionProviderName)
 -%>
 import * as vscode from "vscode";
 
@@ -17,7 +19,7 @@ import {
 import { createSelectionFromVSCode } from "../../editor/adapters/write-code-in-vscode";
 
 import { commandKey } from "./command";
-import { <%= actionProviderName %> } from "./<%= dashedName %>";
+import { <%= camelActionProviderName %> } from "./<%= dashedName %>";
 
 class <%= pascalName %>ActionProvider implements CodeActionProvider {
   public readonly kind = vscode.CodeActionKind.RefactorRewrite;
@@ -29,7 +31,7 @@ class <%= pascalName %>ActionProvider implements CodeActionProvider {
     const code = document.getText();
     const selection = createSelectionFromVSCode(range);
 
-    if (!<%= actionProviderName %>(code, selection)) return;
+    if (!<%= camelActionProviderName %>(code, selection)) return;
 
     const action = new vscode.CodeAction("✨ <%= sentenceName %>", this.kind);
     action.isPreferred = true;

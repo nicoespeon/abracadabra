@@ -3,6 +3,7 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 ---
 <%
   camelName = h.changeCase.camel(name)
+  camelActionProviderName = h.changeCase.camel(actionProviderName)
 -%>
 import { Code, Write } from "../../editor/i-write-code";
 import { Selection } from "../../editor/selection";
@@ -13,7 +14,7 @@ import {
 import * as ast from "../../ast";
 
 <% if (hasActionProvider){ -%>
-export { <%= camelName %>, <%= actionProviderName %> };
+export { <%= camelName %>, <%= camelActionProviderName %> };
 <% } else { -%>
 export { <%= camelName %> };
 <% } -%>
@@ -36,7 +37,7 @@ async function <%= camelName %>(
 }
 
 <% if (hasActionProvider){ -%>
-function <%= actionProviderName %>(code: Code, selection: Selection): boolean {
+function <%= camelActionProviderName %>(code: Code, selection: Selection): boolean {
   return updateCode(code, selection).hasCodeChanged;
 }
 <% } -%>
