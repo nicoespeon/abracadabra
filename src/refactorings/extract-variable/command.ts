@@ -6,7 +6,7 @@ import { extractVariable } from "./extract-variable";
 import { delegateToVSCode } from "../../editor/adapters/delegate-to-vscode";
 import { showErrorMessageInVSCode } from "../../editor/adapters/show-error-message-in-vscode";
 import {
-  createReadThenWriteInVSCode,
+  createWriteInVSCode,
   createSelectionFromVSCode
 } from "../../editor/adapters/write-code-in-vscode";
 
@@ -30,7 +30,7 @@ async function extractVariableCommand() {
     extractVariable(
       document.getText(),
       createSelectionFromVSCode(selection),
-      createReadThenWriteInVSCode(document),
+      createWriteInVSCode(activeTextEditor),
       showErrorMessageInVSCode,
       delegateToVSCode
     )
