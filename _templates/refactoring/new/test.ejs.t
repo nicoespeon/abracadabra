@@ -7,6 +7,8 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
   dashedName = h.changeCase.param(name)
   titleName = h.changeCase.titleCase(name)
   noCaseName = h.changeCase.noCase(name)
+
+  pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
 import { Code } from "../../editor/i-write-code";
 import { Selection } from "../../editor/selection";
@@ -43,8 +45,7 @@ describe("<%= titleName %>", () => {
 
     await do<%= pascalName %>(code, selection);
 
-    // TODO: test the error when code has not been updated
-    // expect(showErrorMessage).toBeCalledWith(ErrorReason.???);
+    expect(showErrorMessage).toBeCalledWith(ErrorReason.<%= pascalErrorName %>);
   });
 
   async function do<%= pascalName %>(

@@ -4,6 +4,7 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 <%
   camelName = h.changeCase.camel(name)
   camelActionProviderName = h.changeCase.camel(actionProviderName)
+  pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
 import { Code, Write } from "../../editor/i-write-code";
 import { Selection } from "../../editor/selection";
@@ -28,8 +29,7 @@ async function <%= camelName %>(
   const updatedCode = updateCode(code, selection);
 
   if (!updatedCode.hasCodeChanged) {
-    // TODO: create an error reason and use it here
-    // showErrorMessage(ErrorReason.???);
+    showErrorMessage(ErrorReason.<%= pascalErrorName %>);
     return;
   }
 
