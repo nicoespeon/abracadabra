@@ -95,40 +95,35 @@ console.log(extracted);`);
         code: `console.log("Hello!");`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = "Hello!";
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "a number",
         code: `console.log(12.5);`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = 12.5;
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "a boolean",
         code: `console.log(false);`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = false;
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "null",
         code: `console.log(null);`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = null;
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "undefined",
         code: `console.log(undefined);`,
         selection: Selection.cursorAt(0, 12),
         expected: `const extracted = undefined;
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "an array",

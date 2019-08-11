@@ -32,18 +32,25 @@ async function extractVariable(
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
-    StringLiteral(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      const variableId = ast.identifier("extracted");
-      const scopePath = path.parentPath;
-      scopePath.insertBefore([
-        ast.variableDeclaration("const", [
-          ast.variableDeclarator(variableId, path.node)
-        ])
-      ]);
-      path.replaceWith(variableId);
-      scopePath.parentPath.stop();
-    }
+    StringLiteral: visitor,
+    NumericLiteral: visitor,
+    BooleanLiteral: visitor,
+    NullLiteral: visitor,
+    Identifier: visitor
   });
+
+  function visitor(path: ast.NodePath<ast.VariableDeclarator["init"]>) {
+    if (!path.node) return;
+    if (!selection.isInsideNode(path.node)) return;
+
+    const variableId = ast.identifier("extracted");
+    const scopePath = path.parentPath;
+    scopePath.insertBefore([
+      ast.variableDeclaration("const", [
+        ast.variableDeclarator(variableId, path.node)
+      ])
+    ]);
+    path.replaceWith(variableId);
+    scopePath.parentPath.stop();
+  }
 }
