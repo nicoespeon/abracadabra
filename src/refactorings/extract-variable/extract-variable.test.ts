@@ -808,8 +808,8 @@ const sayHello = extracted;`
       code,
       selection,
       readThenWrite,
-      delegateToEditor,
-      showErrorMessage
+      showErrorMessage,
+      delegateToEditor
     );
     return getCode();
   }

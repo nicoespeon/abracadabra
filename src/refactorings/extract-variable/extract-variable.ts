@@ -14,8 +14,8 @@ async function extractVariable(
   code: Code,
   selection: Selection,
   readThenWrite: ReadThenWrite,
-  delegateToEditor: DelegateToEditor,
-  showErrorMessage: ShowErrorMessage
+  showErrorMessage: ShowErrorMessage,
+  delegateToEditor: DelegateToEditor
 ) {
   const { path, loc, shouldWrapInJSXExpressionContainer } = findExtractableCode(
     code,

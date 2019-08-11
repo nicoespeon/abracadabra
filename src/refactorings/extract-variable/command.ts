@@ -31,8 +31,8 @@ async function extractVariableCommand() {
       document.getText(),
       createSelectionFromVSCode(selection),
       createReadThenWriteInVSCode(document),
-      delegateToVSCode,
-      showErrorMessageInVSCode
+      showErrorMessageInVSCode,
+      delegateToVSCode
     )
   );
 }
