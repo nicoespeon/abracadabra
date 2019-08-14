@@ -493,11 +493,11 @@ switch (text) {
   return "Hello!";
 });`,
         selection: Selection.cursorAt(1, 0),
-        expected: `const extracted = function () {
+        expected: `const extracted = function() {
   return "Hello!";
 };
-console.log(extracted);`,
-        skip: true
+
+console.log(extracted);`
       },
       {
         description: "an exported variable declaration",
@@ -508,8 +508,7 @@ console.log(extracted);`,
         expected: `const extracted = "bar";
 export const something = {
   foo: extracted
-};`,
-        skip: true
+};`
       },
       {
         description: "an object returned from arrow function",
@@ -520,8 +519,7 @@ export const something = {
         expected: `const extracted = "bar";
 const something = () => ({
   foo: extracted
-});`,
-        skip: true
+});`
       },
       {
         description: "a value inside an arrow function",
@@ -532,8 +530,7 @@ const something = () => ({
         expected: `const extracted = "Hello";
 () => (
   console.log(extracted)
-)`,
-        skip: true
+)`
       },
       {
         description: "an object from a nested call expression",
@@ -541,11 +538,13 @@ const something = () => ({
   getError({ context: ["value"] })
 );`,
         selection: Selection.cursorAt(1, 15),
-        expected: `const extracted = { context: ["value"] };
+        expected: `const extracted = {
+  context: ["value"]
+};
+
 assert.isTrue(
   getError(extracted)
-);`,
-        skip: true
+);`
       },
       {
         description: "a multi-lines ternary",
@@ -560,8 +559,7 @@ assert.isTrue(
   return isValid
     ? extracted
     : "no";
-}`,
-        skip: true
+}`
       },
       {
         description: "a multi-lines unary expression",
@@ -576,8 +574,7 @@ if (
   !(threshold > extracted || isPaused)
 ) {
   console.log("Ship it");
-}`,
-        skip: true
+}`
       },
       {
         description: "a variable in a JSX element",

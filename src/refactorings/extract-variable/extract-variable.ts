@@ -101,6 +101,7 @@ function extractInObjectProperty(
   path.node[nodeKey] = variableId();
 
   scopePath.stop();
+  scopePath.parentPath.stop();
 }
 
 function insertVariableBefore(
