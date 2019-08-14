@@ -405,8 +405,7 @@ const message = extracted;`
         expected: `const extracted = "Hello!";
 class Logger {
   message = extracted;
-}`,
-        skip: true
+}`
       },
       {
         description: "a computed class property",
@@ -417,8 +416,7 @@ class Logger {
         expected: `const extracted = key;
 class Logger {
   [extracted] = "value";
-}`,
-        skip: true
+}`
       },
       {
         description: "an interpolated string when cursor is on a subpart of it",

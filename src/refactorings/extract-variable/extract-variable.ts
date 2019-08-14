@@ -40,7 +40,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     NumericLiteral: extractInSelectedNode,
     BooleanLiteral: extractInSelectedNode,
     NullLiteral: extractInSelectedNode,
-    Identifier: extractInSelectedNode,
+    Identifier(path) {
+      if (isClassPropertyIdentifier(path)) return;
+      extractInSelectedNode(path);
+    },
     ArrayExpression: extractInSelectedNode,
     ObjectExpression: extractInSelectedNode,
     ObjectProperty(path) {
@@ -166,7 +169,8 @@ function findScopePath(
     parentPath =>
       ast.isExpressionStatement(parentPath) ||
       ast.isVariableDeclaration(parentPath) ||
-      ast.isReturnStatement(parentPath)
+      ast.isReturnStatement(parentPath) ||
+      ast.isClassDeclaration(parentPath)
   );
 }
 
@@ -198,4 +202,12 @@ function isExtractableContext(node: ast.Node): boolean {
 
 function isFunctionCallIdentifier(path: ast.NodePath): boolean {
   return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
+}
+
+function isClassPropertyIdentifier(path: ast.NodePath): boolean {
+  return (
+    ast.isClassProperty(path.parent) &&
+    !path.parent.computed &&
+    ast.isIdentifier(path.node)
+  );
 }
