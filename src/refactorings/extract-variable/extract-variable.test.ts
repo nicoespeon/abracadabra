@@ -678,8 +678,7 @@ createIfStatement(
 const type = !!(
   extracted > 0
 ) ? "with-loc"
-  : "without-loc";`,
-        skip: true
+  : "without-loc";`
       },
       {
         description: "a value in a JSXExpressionContainer",
@@ -694,8 +693,7 @@ const type = !!(
   text={getTextForPerson({
     name: extracted
   })}
-/>`,
-        skip: true
+/>`
       },
       {
         description: "a value in a new Expression",
@@ -718,8 +716,7 @@ new Author(
         expected: `const extracted = getValueOf("name");
 doSomething([
   extracted
-]);`,
-        skip: true
+]);`
       },
       {
         description: "a new Expression in an Array argument of a function",
@@ -744,8 +741,7 @@ doSomething([
 console.log(
   currentValue >
   extracted
-);`,
-        skip: true
+);`
       },
       {
         description: "an arrow function (cursor on params)",
@@ -784,7 +780,7 @@ const sayHello = extracted;`,
 }`);
   });
 
-  it.skip("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
+  it("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
     const code = `function render() {
   return <p>{name}</p>;
 }`;
