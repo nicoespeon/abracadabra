@@ -165,7 +165,8 @@ function findScopePath(
   return path.findParent(
     parentPath =>
       ast.isExpressionStatement(parentPath) ||
-      ast.isVariableDeclaration(parentPath)
+      ast.isVariableDeclaration(parentPath) ||
+      ast.isReturnStatement(parentPath)
   );
 }
 

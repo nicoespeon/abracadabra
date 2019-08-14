@@ -387,8 +387,7 @@ console.log(extracted.name);`
         expected: `function getMessage() {
   const extracted = "Hello!";
   return extracted;
-}`,
-        skip: true
+}`
       },
       {
         description: "an assigned variable",
