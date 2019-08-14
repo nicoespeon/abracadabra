@@ -423,8 +423,7 @@ class Logger {
         code: "console.log(`Hello ${world}! How are you doing?`);",
         selection: Selection.cursorAt(0, 15),
         expected: `const extracted = \`Hello \${world}! How are you doing?\`;
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "an if statement (whole statement)",

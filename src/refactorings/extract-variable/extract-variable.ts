@@ -58,7 +58,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     FunctionExpression: extractInSelectedNode,
     ArrowFunctionExpression: extractInSelectedNode,
     CallExpression: extractInSelectedNode,
-    MemberExpression: extractInSelectedNode
+    MemberExpression: extractInSelectedNode,
+    TemplateLiteral: extractInSelectedNode
   });
 }
 
