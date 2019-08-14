@@ -335,8 +335,8 @@ const a = { [key]: extracted };`
     return "bar";
   }
 };
-console.log(extracted);`,
-        skip: true
+
+console.log(extracted);`
       },
       {
         description:
@@ -350,9 +350,11 @@ console.log({ foo: extracted });`
         description: "a spread variable",
         code: `console.log({ ...foo.bar });`,
         selection: Selection.cursorAt(0, 22),
-        expected: `const extracted = { ...foo.bar };
-console.log(extracted);`,
-        skip: true
+        expected: `const extracted = {
+  ...foo.bar
+};
+
+console.log(extracted);`
       },
       {
         description: "a spread function result",
@@ -365,8 +367,8 @@ console.log(extracted);`,
   ...getInlinableCode(declaration),
   id: "name"
 };
-console.log(extracted);`,
-        skip: true
+
+console.log(extracted);`
       },
       {
         description:
@@ -374,8 +376,7 @@ console.log(extracted);`,
         code: `console.log(path.node.name);`,
         selection: Selection.cursorAt(0, 17),
         expected: `const extracted = path.node;
-console.log(extracted.name);`,
-        skip: true
+console.log(extracted.name);`
       },
       {
         description: "a return value of a function",

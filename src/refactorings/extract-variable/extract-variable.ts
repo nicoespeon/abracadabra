@@ -54,7 +54,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     },
     FunctionExpression: extractInSelectedNode,
     ArrowFunctionExpression: extractInSelectedNode,
-    CallExpression: extractInSelectedNode
+    CallExpression: extractInSelectedNode,
+    MemberExpression: extractInSelectedNode
   });
 }
 
@@ -126,7 +127,7 @@ function hasChildWhichMatchesSelection(
     NullLiteral: checkIfMatches,
     Identifier(childPath) {
       if (isFunctionCallIdentifier(childPath)) return;
-      if (isPartOfMemberExpression(childPath)) return;
+      if (ast.isMemberExpression(childPath.parent)) return;
       checkIfMatches(childPath);
     },
     ArrayExpression: checkIfMatches,
@@ -142,7 +143,8 @@ function hasChildWhichMatchesSelection(
     },
     FunctionExpression: checkIfMatches,
     ArrowFunctionExpression: checkIfMatches,
-    CallExpression: checkIfMatches
+    CallExpression: checkIfMatches,
+    MemberExpression: checkIfMatches
   });
 
   return result;
@@ -195,8 +197,4 @@ function isExtractableContext(node: ast.Node): boolean {
 
 function isFunctionCallIdentifier(path: ast.NodePath): boolean {
   return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
-}
-
-function isPartOfMemberExpression(path: ast.NodePath): boolean {
-  return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
