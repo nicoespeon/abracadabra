@@ -1,3 +1,4 @@
+import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 export * from "@babel/types";
@@ -6,11 +7,12 @@ export {
   areAllObjectProperties,
   isUndefinedLiteral,
   isTemplateExpression,
+  isFunctionCallIdentifier,
+  isClassPropertyIdentifier,
+  isVariableDeclarationIdentifier,
   templateElement,
   Primitive
 };
-
-// === AST DOMAIN ===
 
 function isArrayExpressionElement(
   node: t.Node | null
@@ -40,6 +42,22 @@ function isTemplateExpression(node: t.Node): node is TemplateExpression {
 }
 
 type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
+
+function isFunctionCallIdentifier(path: NodePath): boolean {
+  return t.isCallExpression(path.parent) && path.parent.callee === path.node;
+}
+
+function isClassPropertyIdentifier(path: NodePath): boolean {
+  return (
+    t.isClassProperty(path.parent) &&
+    !path.parent.computed &&
+    t.isIdentifier(path.node)
+  );
+}
+
+function isVariableDeclarationIdentifier(path: NodePath): boolean {
+  return t.isVariableDeclarator(path.parent) && t.isIdentifier(path.node);
+}
 
 /**
  * Override babel `templateElement()` because it exposes

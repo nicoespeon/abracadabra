@@ -41,8 +41,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     BooleanLiteral: extractInSelectedNode,
     NullLiteral: extractInSelectedNode,
     Identifier(path) {
-      if (isClassPropertyIdentifier(path)) return;
-      if (isVariableDeclarationIdentifier(path)) return;
+      if (ast.isClassPropertyIdentifier(path)) return;
+      if (ast.isVariableDeclarationIdentifier(path)) return;
       extractInSelectedNode(path);
     },
     ArrayExpression: extractInSelectedNode,
@@ -144,7 +144,7 @@ function hasChildWhichMatchesSelection(
     BooleanLiteral: checkIfMatches,
     NullLiteral: checkIfMatches,
     Identifier(childPath) {
-      if (isFunctionCallIdentifier(childPath)) return;
+      if (ast.isFunctionCallIdentifier(childPath)) return;
       if (ast.isMemberExpression(childPath.parent)) return;
       checkIfMatches(childPath);
     },
@@ -220,20 +220,4 @@ function isExtractableContext(node: ast.Node): boolean {
     ast.isSwitchCase(node) ||
     ast.isJSXExpressionContainer(node)
   );
-}
-
-function isFunctionCallIdentifier(path: ast.NodePath): boolean {
-  return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
-}
-
-function isClassPropertyIdentifier(path: ast.NodePath): boolean {
-  return (
-    ast.isClassProperty(path.parent) &&
-    !path.parent.computed &&
-    ast.isIdentifier(path.node)
-  );
-}
-
-function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
-  return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
 }
