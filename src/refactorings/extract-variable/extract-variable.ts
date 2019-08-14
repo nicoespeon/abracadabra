@@ -42,6 +42,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     NullLiteral: extractInSelectedNode,
     Identifier(path) {
       if (isClassPropertyIdentifier(path)) return;
+      if (isVariableDeclarationIdentifier(path)) return;
       extractInSelectedNode(path);
     },
     ArrayExpression: extractInSelectedNode,
@@ -231,4 +232,8 @@ function isClassPropertyIdentifier(path: ast.NodePath): boolean {
     !path.parent.computed &&
     ast.isIdentifier(path.node)
   );
+}
+
+function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
+  return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
 }

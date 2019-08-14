@@ -745,11 +745,11 @@ console.log(
   console.log(name);
 };`,
         selection: Selection.cursorAt(0, 20),
-        expected: `const extracted = (name) => {
+        expected: `const extracted = name => {
   console.log(name);
 };
-const sayHello = extracted;`,
-        skip: true
+
+const sayHello = extracted;`
       }
     ],
     async ({ code, selection, expected }) => {
@@ -758,7 +758,7 @@ const sayHello = extracted;`,
     }
   );
 
-  it.skip("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
+  it("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
     const code = `function render() {
   return <div className="text-lg font-weight-bold">
     <p>{name}</p>
@@ -770,9 +770,11 @@ const sayHello = extracted;`,
 
     expect(result).toBe(`function render() {
   const extracted = <p>{name}</p>;
-  return <div className="text-lg font-weight-bold">
-    {extracted}
-  </div>
+  return (
+    <div className="text-lg font-weight-bold">
+      {extracted}
+    </div>
+  );
 }`);
   });
 
@@ -812,8 +814,7 @@ const sayHello = extracted;`,
       {
         description: "the identifier from a variable declaration",
         code: `const foo = "bar";`,
-        selection: new Selection([0, 6], [0, 9]),
-        skip: true
+        selection: new Selection([0, 6], [0, 9])
       }
     ],
     async ({ code, selection }) => {
