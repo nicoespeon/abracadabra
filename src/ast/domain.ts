@@ -10,8 +10,6 @@ export {
   Primitive
 };
 
-// === AST DOMAIN ===
-
 function isArrayExpressionElement(
   node: t.Node | null
 ): node is null | t.Expression | t.SpreadElement {
