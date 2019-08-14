@@ -62,7 +62,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     TemplateLiteral: extractInSelectedNode,
     LogicalExpression: extractInSelectedNode,
     BinaryExpression: extractInSelectedNode,
-    JSXElement: extractInSelectedNode
+    JSXElement: extractInSelectedNode,
+    NewExpression: extractInSelectedNode
   });
 }
 
@@ -162,7 +163,8 @@ function hasChildWhichMatchesSelection(
     CallExpression: checkIfMatches,
     MemberExpression: checkIfMatches,
     BinaryExpression: checkIfMatches,
-    JSXElement: checkIfMatches
+    JSXElement: checkIfMatches,
+    NewExpression: checkIfMatches
   });
 
   return result;

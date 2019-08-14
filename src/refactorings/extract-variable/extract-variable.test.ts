@@ -648,8 +648,7 @@ if (
         code: `console.log(new Error("It failed"));`,
         selection: Selection.cursorAt(0, 14),
         expected: `const extracted = new Error("It failed");
-console.log(extracted);`,
-        skip: true
+console.log(extracted);`
       },
       {
         description: "a call expression parameter (multi-lines)",
@@ -664,8 +663,7 @@ createIfStatement(
   extracted,
   parentPath.node.left,
   node.consequent
-);`,
-        skip: true
+);`
       },
       {
         description: "a conditional expression (multi-lines)",
@@ -704,8 +702,7 @@ const type = !!(
         expected: `const extracted = "name";
 new Author(
   extracted
-);`,
-        skip: true
+);`
       },
       {
         description: "a value in an Array argument of a function",
@@ -727,8 +724,7 @@ doSomething([
         expected: `const extracted = new Author("Eliott");
 doSomething([
   extracted
-]);`,
-        skip: true
+]);`
       },
       {
         description: "a value in a binary expression",
