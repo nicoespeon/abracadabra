@@ -430,16 +430,14 @@ console.log(extracted);`
         code: "if (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 4], [0, 45]),
         expected: `const extracted = parents.length > 0 && type === 'refactor';
-if (extracted) doSomething();`,
-        skip: true
+if (extracted) doSomething();`
       },
       {
         description: "an if statement (part of it)",
         code: "if (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 4], [0, 22]),
         expected: `const extracted = parents.length > 0;
-if (extracted && type === 'refactor') doSomething();`,
-        skip: true
+if (extracted && type === 'refactor') doSomething();`
       },
       {
         description: "a multi-lines if statement (whole statement)",
@@ -448,12 +446,10 @@ if (extracted && type === 'refactor') doSomething();`,
   type === 'refactor'
 ) doSomething();`,
         selection: new Selection([1, 2], [2, 21]),
-        expected: `const extracted = parents.length > 0 &&
-  type === 'refactor';
+        expected: `const extracted = parents.length > 0 && type === 'refactor';
 if (
   extracted
-) doSomething();`,
-        skip: true
+) doSomething();`
       },
       {
         description: "a multi-lines if statement (part of it)",
@@ -466,8 +462,7 @@ if (
 if (
   parents.length > 0 &&
   extracted
-) doSomething();`,
-        skip: true
+) doSomething();`
       },
       {
         description: "a while statement",
@@ -475,8 +470,7 @@ if (
           "while (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 7], [0, 48]),
         expected: `const extracted = parents.length > 0 && type === 'refactor';
-while (extracted) doSomething();`,
-        skip: true
+while (extracted) doSomething();`
       },
       {
         description: "a case statement",
@@ -491,8 +485,7 @@ switch (text) {
   case extracted:
   default:
     break;
-}`,
-        skip: true
+}`
       },
       {
         description: "an unamed function parameter when cursor is inside",

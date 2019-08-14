@@ -59,7 +59,9 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     ArrowFunctionExpression: extractInSelectedNode,
     CallExpression: extractInSelectedNode,
     MemberExpression: extractInSelectedNode,
-    TemplateLiteral: extractInSelectedNode
+    TemplateLiteral: extractInSelectedNode,
+    LogicalExpression: extractInSelectedNode,
+    BinaryExpression: extractInSelectedNode
   });
 }
 
@@ -148,7 +150,8 @@ function hasChildWhichMatchesSelection(
     FunctionExpression: checkIfMatches,
     ArrowFunctionExpression: checkIfMatches,
     CallExpression: checkIfMatches,
-    MemberExpression: checkIfMatches
+    MemberExpression: checkIfMatches,
+    BinaryExpression: checkIfMatches
   });
 
   return result;
@@ -171,7 +174,10 @@ function findScopePath(
       ast.isExpressionStatement(parentPath) ||
       ast.isVariableDeclaration(parentPath) ||
       ast.isReturnStatement(parentPath) ||
-      ast.isClassDeclaration(parentPath)
+      ast.isClassDeclaration(parentPath) ||
+      ast.isIfStatement(parentPath) ||
+      ast.isWhileStatement(parentPath) ||
+      ast.isSwitchStatement(parentPath)
   );
 }
 
