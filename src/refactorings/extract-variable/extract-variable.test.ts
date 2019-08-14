@@ -587,11 +587,12 @@ if (
         // Note: maybe we'd like to improve this one (double `{}`)
         expected: `function render() {
   const extracted = this.props.location.name;
-  return <div className="text-lg font-weight-bold">
-    {extracted}
-  </div>;
-}`,
-        skip: true
+  return (
+    <div className="text-lg font-weight-bold">
+      {extracted}
+    </div>
+  );
+}`
       },
       {
         description: "a JSX element (cursor on opening tag)",
@@ -605,9 +606,9 @@ if (
   const extracted = <div className="text-lg font-weight-bold">
     {this.props.location.name}
   </div>;
+
   return extracted;
-}`,
-        skip: true
+}`
       },
       {
         description: "a JSX element (cursor on closing tag)",
@@ -621,9 +622,9 @@ if (
   const extracted = <div className="text-lg font-weight-bold">
     {this.props.location.name}
   </div>;
+
   return extracted;
-}`,
-        skip: true
+}`
       },
       {
         description: "a nested JSX element",
@@ -635,11 +636,12 @@ if (
         selection: Selection.cursorAt(2, 6),
         expected: `function render() {
   const extracted = <p>{this.props.location.name}</p>;
-  return <div className="text-lg font-weight-bold">
-    {extracted}
-  </div>;
-}`,
-        skip: true
+  return (
+    <div className="text-lg font-weight-bold">
+      {extracted}
+    </div>
+  );
+}`
       },
       {
         description: "an error instance",

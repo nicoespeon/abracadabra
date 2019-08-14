@@ -61,7 +61,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     MemberExpression: extractInSelectedNode,
     TemplateLiteral: extractInSelectedNode,
     LogicalExpression: extractInSelectedNode,
-    BinaryExpression: extractInSelectedNode
+    BinaryExpression: extractInSelectedNode,
+    JSXElement: extractInSelectedNode
   });
 }
 
@@ -79,7 +80,7 @@ function extractInNode(
   if (!scopePath) return;
 
   insertVariableBefore(scopePath, node);
-  path.replaceWith(variableId());
+  path.replaceWith(variable(path));
 
   scopePath.stop();
   path.stop();
@@ -98,7 +99,7 @@ function extractInObjectProperty(
   if (!scopePath) return;
 
   insertVariableBefore(scopePath, node);
-  path.node[nodeKey] = variableId();
+  path.node[nodeKey] = variable(path);
 
   scopePath.stop();
   scopePath.parentPath.stop();
@@ -117,6 +118,14 @@ function insertVariableBefore(
 
 function variableId(): ast.Identifier {
   return ast.identifier("extracted");
+}
+
+function variable(
+  path: ast.NodePath<ast.Node | null>
+): ast.Identifier | ast.JSXExpressionContainer {
+  return ast.isJSXElement(path) && ast.isJSX(path.parent)
+    ? ast.jsxExpressionContainer(variableId())
+    : variableId();
 }
 
 // Since we visit nodes from parent to children, first check
@@ -152,7 +161,8 @@ function hasChildWhichMatchesSelection(
     ArrowFunctionExpression: checkIfMatches,
     CallExpression: checkIfMatches,
     MemberExpression: checkIfMatches,
-    BinaryExpression: checkIfMatches
+    BinaryExpression: checkIfMatches,
+    JSXElement: checkIfMatches
   });
 
   return result;
@@ -204,7 +214,8 @@ function isExtractableContext(node: ast.Node): boolean {
     ast.isClassProperty(node) ||
     ast.isIfStatement(node) ||
     ast.isWhileStatement(node) ||
-    ast.isSwitchCase(node)
+    ast.isSwitchCase(node) ||
+    ast.isJSXExpressionContainer(node)
   );
 }
 
