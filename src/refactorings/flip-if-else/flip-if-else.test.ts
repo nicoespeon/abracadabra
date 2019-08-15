@@ -197,9 +197,24 @@ doSomethingElse();`,
   doSomething();
   doSomethingElse();
 } else {
-  return null
-}`,
-        skip: true
+  return null;
+}`
+      },
+      {
+        description: "guard clause with returned value in block",
+        code: `if (!isValid) {
+  return null;
+}
+
+doSomething();
+doSomethingElse();`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  return null;
+}`
       }
       // TODO: other nodes than statements after the guard?
     ],

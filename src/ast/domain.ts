@@ -10,7 +10,7 @@ export {
   isUndefinedLiteral,
   isGuardClause,
   isGuardConsequentBlock,
-  isEmptyReturn,
+  isNonEmptyReturn,
   isTemplateExpression,
   templateElement,
   Primitive
@@ -48,8 +48,8 @@ function isGuardConsequentBlock(
   );
 }
 
-function isEmptyReturn(node: t.Node) {
-  return t.isReturnStatement(node) && node.argument === null;
+function isNonEmptyReturn(node: t.Node) {
+  return t.isReturnStatement(node) && node.argument !== null;
 }
 
 function isTemplateExpression(node: t.Node): node is TemplateExpression {

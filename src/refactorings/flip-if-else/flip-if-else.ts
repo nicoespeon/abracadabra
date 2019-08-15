@@ -1,6 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
+import { last, allButLast } from "../../array-helpers";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
@@ -73,14 +74,22 @@ function flipGuardClause(path: ast.NodePath<ast.IfStatement>) {
 }
 
 function flipToGuardAlternate(
-  ifBranch: ast.Statement
+  consequent: ast.Statement
 ): ast.BlockStatement | null {
-  if (!ast.isGuardConsequentBlock(ifBranch)) return null;
+  if (ast.isNonEmptyReturn(consequent)) {
+    return ast.blockStatement([consequent]);
+  }
 
-  const body = ifBranch.body.slice(0, -1);
-  if (body.length === 0) return null;
+  if (!ast.isGuardConsequentBlock(consequent)) return null;
 
-  return ast.blockStatement(body);
+  const finalReturnStatement = last(consequent.body);
+  const alternateBody = ast.isNonEmptyReturn(finalReturnStatement)
+    ? consequent.body
+    : allButLast(consequent.body);
+
+  if (alternateBody.length === 0) return null;
+
+  return ast.blockStatement(alternateBody);
 }
 
 function hasChildWhichMatchesSelection(
