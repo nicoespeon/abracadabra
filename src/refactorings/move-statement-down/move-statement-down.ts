@@ -1,10 +1,6 @@
-import { Code, Write } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 
 export { moveStatementDown };
@@ -12,13 +8,12 @@ export { moveStatementDown };
 async function moveStatementDown(
   code: Code,
   selection: Selection,
-  write: Write,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   if (selection.isMultiLines) {
     // This should be implemented.
     // But it requires collecting all statements to move down to update the AST.
-    showErrorMessage(ErrorReason.CantMoveMultiLinesStatementDown);
+    editor.showError(ErrorReason.CantMoveMultiLinesStatementDown);
     return;
   }
 
@@ -28,11 +23,11 @@ async function moveStatementDown(
     // Don't bother the user with an error message for this.
     if (updatedCode.isLastStatement) return;
 
-    showErrorMessage(ErrorReason.CantMoveStatementDown);
+    editor.showError(ErrorReason.CantMoveStatementDown);
     return;
   }
 
-  await write(updatedCode.code, updatedCode.newStatementPosition);
+  await editor.write(updatedCode.code, updatedCode.newStatementPosition);
 }
 
 function updateCode(
