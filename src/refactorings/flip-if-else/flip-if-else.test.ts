@@ -135,7 +135,6 @@ describe("Flip If/Else", () => {
 
 doSomething();
 doSomethingElse();`,
-        selection: Selection.cursorAt(0, 16),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -149,7 +148,6 @@ doSomethingElse();`,
 
 doSomething();
 doSomethingElse();`,
-        selection: Selection.cursorAt(0, 16),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -164,7 +162,6 @@ doSomethingElse();`,
 
 doSomething();
 doSomethingElse();`,
-        selection: Selection.cursorAt(0, 16),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -192,7 +189,6 @@ if (isValid) {
 
 doSomething();
 doSomethingElse();`,
-        selection: Selection.cursorAt(0, 16),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -208,7 +204,6 @@ doSomethingElse();`,
 
 doSomething();
 doSomethingElse();`,
-        selection: Selection.cursorAt(0, 16),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
