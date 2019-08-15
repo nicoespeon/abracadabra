@@ -7,6 +7,8 @@ export {
   areAllObjectProperties,
   isUndefinedLiteral,
   isGuardClause,
+  isGuardConsequentBlock,
+  isEmptyReturn,
   isTemplateExpression,
   templateElement,
   Primitive
@@ -32,7 +34,21 @@ function isUndefinedLiteral(
 }
 
 function isGuardClause(path: NodePath<t.IfStatement>) {
-  return t.isReturnStatement(path.node.consequent);
+  const { consequent } = path.node;
+  return t.isReturnStatement(consequent) || isGuardConsequentBlock(consequent);
+}
+
+function isGuardConsequentBlock(
+  consequent: t.IfStatement["consequent"]
+): consequent is t.BlockStatement {
+  return (
+    t.isBlockStatement(consequent) &&
+    t.isReturnStatement(consequent.body[consequent.body.length - 1])
+  );
+}
+
+function isEmptyReturn(node: t.Node) {
+  return t.isReturnStatement(node) && node.argument === null;
 }
 
 function isTemplateExpression(node: t.Node): node is TemplateExpression {

@@ -59,6 +59,7 @@ function flipIfStatement(path: ast.NodePath<ast.IfStatement>) {
 }
 
 function flipGuardClause(path: ast.NodePath<ast.IfStatement>) {
+  const ifBranch = path.node.consequent;
   const pathsBelow = path
     .getAllNextSiblings()
     .filter(
@@ -67,8 +68,19 @@ function flipGuardClause(path: ast.NodePath<ast.IfStatement>) {
   const nodesBelow: ast.Statement[] = pathsBelow.map(path => path.node);
 
   path.node.consequent = ast.blockStatement(nodesBelow);
-  path.node.alternate = null;
+  path.node.alternate = flipToGuardAlternate(ifBranch);
   pathsBelow.forEach(path => path.remove());
+}
+
+function flipToGuardAlternate(
+  ifBranch: ast.Statement
+): ast.BlockStatement | null {
+  if (!ast.isGuardConsequentBlock(ifBranch)) return null;
+
+  const body = ifBranch.body.slice(0, -1);
+  if (body.length === 0) return null;
+
+  return ast.blockStatement(body);
 }
 
 function hasChildWhichMatchesSelection(

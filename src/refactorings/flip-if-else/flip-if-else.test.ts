@@ -140,7 +140,68 @@ doSomethingElse();`,
   doSomething();
   doSomethingElse();
 }`
+      },
+      {
+        description: "guard clause with block statement",
+        code: `if (!isValid) {
+  return;
+}
+
+doSomething();
+doSomethingElse();`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
+      },
+      {
+        description: "guard clause with other statements in block",
+        code: `if (!isValid) {
+  console.log("Hello");
+  return;
+}
+
+doSomething();
+doSomethingElse();`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  console.log("Hello");
+}`
+      },
+      {
+        description: "guard clause with other statements above",
+        code: `console.log("Hello");
+if (!isValid) return;
+
+doSomething();
+doSomethingElse();`,
+        selection: Selection.cursorAt(1, 16),
+        expected: `console.log("Hello");
+if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
+      },
+      {
+        description: "guard clause with returned value",
+        code: `if (!isValid) return null;
+
+doSomething();
+doSomethingElse();`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  return null
+}`,
+        skip: true
       }
+      // TODO: other nodes than statements after the guard?
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doFlipIfElse(code, selection);
