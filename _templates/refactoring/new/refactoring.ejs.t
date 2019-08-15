@@ -6,12 +6,8 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
   camelActionProviderName = h.changeCase.camel(actionProviderName)
   pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
-import { Code, Write } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 
 <% if (hasActionProvider){ -%>
@@ -23,17 +19,16 @@ export { <%= camelName %> };
 async function <%= camelName %>(
   code: Code,
   selection: Selection,
-  write: Write,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const updatedCode = updateCode(code, selection);
 
   if (!updatedCode.hasCodeChanged) {
-    showErrorMessage(ErrorReason.<%= pascalErrorName %>);
+    editor.showError(ErrorReason.<%= pascalErrorName %>);
     return;
   }
 
-  await write(updatedCode.code);
+  await editor.write(updatedCode.code);
 }
 
 <% if (hasActionProvider){ -%>
