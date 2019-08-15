@@ -1,10 +1,7 @@
-import { Code, ReadThenWrite } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
+
 import { findExportedIdNames } from "./find-exported-id-names";
 
 export { inlineVariable };
@@ -12,37 +9,36 @@ export { inlineVariable };
 async function inlineVariable(
   code: Code,
   selection: Selection,
-  readThenWrite: ReadThenWrite,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const inlinableCode = findInlinableCode(code, selection);
 
   if (!inlinableCode) {
-    showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
+    editor.showError(ErrorReason.DidNotFoundInlinableCode);
     return;
   }
 
   const { scope, id } = inlinableCode;
 
   if (isRedeclaredIn(scope, id)) {
-    showErrorMessage(ErrorReason.CantInlineRedeclaredVariables);
+    editor.showError(ErrorReason.CantInlineRedeclaredVariables);
     return;
   }
 
   if (findExportedIdNames(scope).includes(id.name)) {
-    showErrorMessage(ErrorReason.CantInlineExportedVariables);
+    editor.showError(ErrorReason.CantInlineExportedVariables);
     return;
   }
 
   const idsToReplace = findIdentifiersToReplace(scope, id);
 
   if (idsToReplace.length === 0) {
-    showErrorMessage(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
+    editor.showError(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
     return;
   }
 
   const inlinedCodeSelection = Selection.fromAST(inlinableCode.valueLoc);
-  await readThenWrite(inlinedCodeSelection, inlinedCode => {
+  await editor.readThenWrite(inlinedCodeSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
       ...idsToReplace.map(({ loc, isInUnaryExpression, shorthandKey }) => ({

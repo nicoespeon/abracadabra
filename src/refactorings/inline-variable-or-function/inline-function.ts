@@ -1,10 +1,7 @@
-import { Code, Write } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
+
 import { findParamMatchingId } from "./find-param-matching-id";
 import { findExportedIdNames } from "./find-exported-id-names";
 
@@ -13,32 +10,31 @@ export { inlineFunction };
 async function inlineFunction(
   code: Code,
   selection: Selection,
-  write: Write,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const updatedCode = updateCode(code, selection);
 
   if (updatedCode.hasManyReturns) {
-    showErrorMessage(ErrorReason.CantInlineFunctionWithMultipleReturns);
+    editor.showError(ErrorReason.CantInlineFunctionWithMultipleReturns);
     return;
   }
 
   if (updatedCode.isAssignedWithoutReturn) {
-    showErrorMessage(ErrorReason.CantInlineAssignedFunctionWithoutReturn);
+    editor.showError(ErrorReason.CantInlineAssignedFunctionWithoutReturn);
     return;
   }
 
   if (!updatedCode.hasCodeChanged) {
-    showErrorMessage(ErrorReason.DidNotFoundInlinableCode);
+    editor.showError(ErrorReason.DidNotFoundInlinableCode);
     return;
   }
 
   if (updatedCode.isExported) {
-    showErrorMessage(ErrorReason.CantRemoveExportedFunction);
+    editor.showError(ErrorReason.CantRemoveExportedFunction);
     // We don't return because we still want to update the code.
   }
 
-  await write(updatedCode.code);
+  await editor.write(updatedCode.code);
 }
 
 // This global variable is set later in the flow.

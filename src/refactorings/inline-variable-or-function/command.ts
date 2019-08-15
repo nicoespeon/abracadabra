@@ -4,13 +4,11 @@ import { executeSafely } from "../../commands";
 import { inlineFunction } from "./inline-function";
 import { inlineVariable } from "./inline-variable";
 
-import { showErrorMessageInVSCode } from "../../editor/adapters/show-error-message-in-vscode";
+import { ErrorReason } from "../../editor/editor";
 import {
-  createReadThenWriteInVSCode,
-  createSelectionFromVSCode,
-  createWriteInVSCode
-} from "../../editor/adapters/write-code-in-vscode";
-import { ErrorReason } from "../../editor/i-show-error-message";
+  VSCodeEditor,
+  createSelectionFromVSCode
+} from "../../editor/adapters/vscode-editor";
 
 // Must match `command` field in `package.json`
 export const commandKey = "abracadabra.inlineVariableOrFunction";
@@ -32,43 +30,28 @@ async function inlineVariableOrFunctionCommand() {
     const code = document.getText();
     const selectionFromVSCode = createSelectionFromVSCode(selection);
 
-    /**
-     * We start trying to inline a variable.
-     *
-     * If it can't be inlined, we don't show an error yet
-     * and try to inline a function instead.
-     *
-     * If it also can't be inlined, then we show the error.
-     */
-    let couldInlineCode = true;
-    const showErrorIfCouldInlineCode = (reason: ErrorReason) => {
-      if (reason === ErrorReason.DidNotFoundInlinableCode) {
-        couldInlineCode = false;
-        return Promise.resolve();
-      }
+    const editor = new VSCodeEditorAttemptingInlining(activeTextEditor);
+    await inlineVariable(code, selectionFromVSCode, editor);
 
-      return showErrorMessageInVSCode(reason);
-    };
-
-    await inlineVariable(
-      code,
-      selectionFromVSCode,
-      createReadThenWriteInVSCode(document),
-      showErrorIfCouldInlineCode
-    );
-
-    if (!couldInlineCode) {
-      couldInlineCode = true;
+    if (!editor.couldInlineCode) {
       await inlineFunction(
         code,
         selectionFromVSCode,
-        createWriteInVSCode(activeTextEditor),
-        showErrorIfCouldInlineCode
+        new VSCodeEditor(activeTextEditor)
       );
     }
-
-    if (!couldInlineCode) {
-      await showErrorMessageInVSCode(ErrorReason.DidNotFoundInlinableCode);
-    }
   });
+}
+
+class VSCodeEditorAttemptingInlining extends VSCodeEditor {
+  couldInlineCode = true;
+
+  async showError(reason: ErrorReason) {
+    if (reason === ErrorReason.DidNotFoundInlinableCode) {
+      this.couldInlineCode = false;
+      return Promise.resolve();
+    }
+
+    await super.showError(reason);
+  }
 }

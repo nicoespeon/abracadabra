@@ -1,16 +1,13 @@
-import { Code } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import { inlineFunction } from "./inline-function";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { inlineFunction } from "./inline-function";
+
 describe("Inline Function", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -511,8 +508,9 @@ export { sayHello }`;
     code: Code,
     selection: Selection
   ): Promise<{ code: Code; position: Position }> {
-    const [write, getState] = createWriteInMemory(code);
-    await inlineFunction(code, selection, write, showErrorMessage);
-    return getState();
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await inlineFunction(code, selection, editor);
+    return { code: editor.code, position: editor.position };
   }
 });

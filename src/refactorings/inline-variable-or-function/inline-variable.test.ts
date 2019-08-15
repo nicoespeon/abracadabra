@@ -1,15 +1,12 @@
-import { Code } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createReadThenWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import { inlineVariable } from "./inline-variable";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { inlineVariable } from "./inline-variable";
+
 describe("Inline Variable", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -351,8 +348,9 @@ hello = "World!";`;
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [readThenWrite, getCode] = createReadThenWriteInMemory(code);
-    await inlineVariable(code, selection, readThenWrite, showErrorMessage);
-    return getCode();
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await inlineVariable(code, selection, editor);
+    return editor.code;
   }
 });
