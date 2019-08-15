@@ -5593,10 +5593,6 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-ts-functionaltypes@1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/ts-functionaltypes/-/ts-functionaltypes-1.0.6.tgz#ee026aa26179d78c9ff93473334d24016bb93e3f"
-
 ts-jest@24.0.2:
   version "24.0.2"
   resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-24.0.2.tgz#8dde6cece97c31c03e80e474c749753ffd27194d"
