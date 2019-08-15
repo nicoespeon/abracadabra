@@ -1,9 +1,5 @@
-import { Code, ReadThenWrite } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 
 export { findNegatableExpression, negateExpression };
@@ -12,18 +8,17 @@ export { getNegatedBinaryOperator };
 async function negateExpression(
   code: Code,
   selection: Selection,
-  readThenWrite: ReadThenWrite,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const expression = findNegatableExpression(code, selection);
 
   if (!expression) {
-    showErrorMessage(ErrorReason.DidNotFoundNegatableExpression);
+    editor.showError(ErrorReason.DidNotFoundNegatableExpression);
     return;
   }
 
   const expressionSelection = Selection.fromAST(expression.loc);
-  await readThenWrite(expressionSelection, code => [
+  await editor.readThenWrite(expressionSelection, code => [
     {
       code: negate(code),
       selection: expressionSelection
