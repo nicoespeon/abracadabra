@@ -1,5 +1,6 @@
 import { Editor, Code, Command, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -21,7 +22,7 @@ describe("Extract Variable", () => {
     it("should update code with extractable selection", async () => {
       const result = await doExtractVariable(code, extractableSelection);
 
-      expect(result).toBe(`const extracted = "Hello!";
+      expect(result.code).toBe(`const extracted = "Hello!";
 console.log(extracted);`);
     });
 
@@ -30,7 +31,7 @@ console.log(extracted);`);
 
       const result = await doExtractVariable(code, selectionInExtractableCode);
 
-      expect(result).toBe(`const extracted = "Hello!";
+      expect(result.code).toBe(`const extracted = "Hello!";
 console.log(extracted);`);
     });
 
@@ -49,7 +50,7 @@ console.log(extracted);`);
 
       const result = await doExtractVariable(code, extractableSelection);
 
-      expect(result).toBe(`    function sayHello() {
+      expect(result.code).toBe(`    function sayHello() {
       const extracted = "Hello!";
       console.log(extracted);
     }`);
@@ -61,7 +62,7 @@ console.log(extracted);`);
       it("should not extract anything", async () => {
         const result = await doExtractVariable(code, invalidSelection);
 
-        expect(result).toBe(code);
+        expect(result.code).toBe(code);
       });
 
       it("should show an error message", async () => {
@@ -79,7 +80,8 @@ console.log(extracted);`);
   testEach<{
     code: Code;
     selection: Selection;
-    expected?: Code;
+    expected: Code;
+    expectedPosition?: Position;
   }>(
     "should extract",
     [
@@ -733,9 +735,13 @@ console.log(
 const sayHello = extracted;`
       }
     ],
-    async ({ code, selection, expected }) => {
+    async ({ code, selection, expected, expectedPosition }) => {
       const result = await doExtractVariable(code, selection);
-      expect(result).toBe(expected);
+      expect(result.code).toBe(expected);
+
+      if (expectedPosition) {
+        expect(result.position).toBe(expectedPosition);
+      }
     }
   );
 
@@ -749,7 +755,7 @@ const sayHello = extracted;`
 
     const result = await doExtractVariable(code, selection);
 
-    expect(result).toBe(`function render() {
+    expect(result.code).toBe(`function render() {
   const extracted = <p>{name}</p>;
   return <div className="text-lg font-weight-bold">
     {extracted}
@@ -765,7 +771,7 @@ const sayHello = extracted;`
 
     const result = await doExtractVariable(code, selection);
 
-    expect(result).toBe(`function render() {
+    expect(result.code).toBe(`function render() {
   const extracted = <p>{name}</p>;
   return extracted;
 }`);
@@ -799,18 +805,18 @@ const sayHello = extracted;`
     async ({ code, selection }) => {
       const result = await doExtractVariable(code, selection);
 
-      expect(result).toBe(code);
+      expect(result.code).toBe(code);
     }
   );
 
   async function doExtractVariable(
     code: Code,
     selection: Selection
-  ): Promise<Code> {
+  ): Promise<{ code: Code; position: Position }> {
     const editor = new InMemoryEditor(code);
     editor.showError = showErrorMessage;
     editor.delegate = delegateToEditor;
     await extractVariable(code, selection, editor);
-    return editor.code;
+    return { code: editor.code, position: editor.position };
   }
 });
