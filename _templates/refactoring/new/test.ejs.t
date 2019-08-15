@@ -10,18 +10,15 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 
   pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
-import { Code } from "../../editor/i-write-code";
+import { Editor, ErrorReason, Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
+
 import { <%= camelName %> } from "./<%= dashedName %>";
 
 describe("<%= titleName %>", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -52,8 +49,9 @@ describe("<%= titleName %>", () => {
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getState] = createWriteInMemory(code);
-    await <%= camelName %>(code, selection, write, showErrorMessage);
-    return getState().code;
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await <%= camelName %>(code, selection, editor);
+    return editor.code;
   }
 });
