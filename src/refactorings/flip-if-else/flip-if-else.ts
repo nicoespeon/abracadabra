@@ -1,28 +1,20 @@
-import { Code, Write } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
+
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
 export { flipIfElse, hasIfElseToFlip };
 
-async function flipIfElse(
-  code: Code,
-  selection: Selection,
-  write: Write,
-  showErrorMessage: ShowErrorMessage
-) {
+async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(code, selection);
 
   if (!updatedCode.hasCodeChanged) {
-    showErrorMessage(ErrorReason.DidNotFoundIfElseToFlip);
+    editor.showError(ErrorReason.DidNotFoundIfElseToFlip);
     return;
   }
 
-  await write(
+  await editor.write(
     updatedCode.code
       // Recast doesn't format empty block statement as expected
       // Until it's fixed, parse this pattern manually
