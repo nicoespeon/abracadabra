@@ -4,7 +4,7 @@ import {
   CodeActionProvider,
   createActionProviderFor
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/write-code-in-vscode";
+import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { hasIfElseToConvert } from "./convert-if-else-to-ternary";

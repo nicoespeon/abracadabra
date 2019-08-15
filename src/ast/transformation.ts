@@ -3,7 +3,7 @@ import traverse, { TraverseOptions } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
 
-import { Code } from "../editor/i-write-code";
+import { Code } from "../editor/editor";
 
 export { NodePath } from "@babel/traverse";
 export { traverseAST, transform, Transformed };

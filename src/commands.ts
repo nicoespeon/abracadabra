@@ -3,8 +3,10 @@ import * as vscode from "vscode";
 import { Editor, Code } from "./editor/editor";
 import { Selection } from "./editor/selection";
 
-import { createSelectionFromVSCode } from "./editor/adapters/write-code-in-vscode";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import {
+  VSCodeEditor,
+  createSelectionFromVSCode
+} from "./editor/adapters/vscode-editor";
 
 export { createCommand, executeSafely };
 
