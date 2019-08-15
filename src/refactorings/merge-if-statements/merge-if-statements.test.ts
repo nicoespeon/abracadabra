@@ -1,15 +1,12 @@
-import { Code } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import { mergeIfStatements } from "./merge-if-statements";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { mergeIfStatements } from "./merge-if-statements";
+
 describe("Split If Statement", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -173,8 +170,9 @@ describe("Split If Statement", () => {
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getState] = createWriteInMemory(code);
-    await mergeIfStatements(code, selection, write, showErrorMessage);
-    return getState().code;
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await mergeIfStatements(code, selection, editor);
+    return editor.code;
   }
 });
