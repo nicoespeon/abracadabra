@@ -1,12 +1,9 @@
-import {
-  createWriteCodeContractTests,
-  createReadThenWriteCodeContractTests
-} from "../i-write-code-contract-test";
+import { createEditorContractTests } from "../editor-contract-test";
+import { Position } from "../position";
 
-import {
-  createWriteInMemory,
-  createReadThenWriteInMemory
-} from "./write-code-in-memory";
+import { InMemoryEditor } from "./in-memory-editor";
 
-createWriteCodeContractTests("InMemory", createWriteInMemory);
-createReadThenWriteCodeContractTests("InMemory", createReadThenWriteInMemory);
+createEditorContractTests("InMemory", (code, position = new Position(0, 0)) => {
+  const editor = new InMemoryEditor(code, position);
+  return [editor, () => ({ code: editor.code, position: editor.position })];
+});
