@@ -740,7 +740,7 @@ const sayHello = extracted;`
       expect(result.code).toBe(expected);
 
       if (expectedPosition) {
-        expect(result.position).toBe(expectedPosition);
+        expect(result.position).toStrictEqual(expectedPosition);
       }
     }
   );
