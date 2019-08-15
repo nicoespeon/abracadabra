@@ -1,15 +1,15 @@
-import {
-  DelegateToEditor,
-  EditorCommand
-} from "../../editor/i-delegate-to-editor";
+import { Command } from "../../editor/editor";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+
 import { renameSymbol } from "./rename-symbol";
 
 describe("Rename Symbol", () => {
   it("should delegate the work to the editor", async () => {
-    const delegateToEditor: DelegateToEditor = jest.fn();
+    const editor = new InMemoryEditor("");
+    jest.spyOn(editor, "delegate");
 
-    await renameSymbol(delegateToEditor);
+    await renameSymbol(editor);
 
-    expect(delegateToEditor).toBeCalledWith(EditorCommand.RenameSymbol);
+    expect(editor.delegate).toBeCalledWith(Command.RenameSymbol);
   });
 });

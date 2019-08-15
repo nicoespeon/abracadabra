@@ -1,20 +1,13 @@
-import {
-  DelegateToEditor,
-  EditorCommand
-} from "../../editor/i-delegate-to-editor";
-import { Code } from "../../editor/i-write-code";
+import { Editor, Code, Command, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { createReadThenWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { extractVariable } from "./extract-variable";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { extractVariable } from "./extract-variable";
+
 describe("Extract Variable", () => {
-  let delegateToEditor: DelegateToEditor;
-  let showErrorMessage: ShowErrorMessage;
+  let delegateToEditor: Editor["delegate"];
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     delegateToEditor = jest.fn();
@@ -45,7 +38,7 @@ console.log(extracted);`);
       await doExtractVariable(code, extractableSelection);
 
       expect(delegateToEditor).toBeCalledTimes(1);
-      expect(delegateToEditor).toBeCalledWith(EditorCommand.RenameSymbol);
+      expect(delegateToEditor).toBeCalledWith(Command.RenameSymbol);
     });
 
     it("should extract with correct indentation", async () => {
@@ -803,14 +796,10 @@ const sayHello = extracted;`
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [readThenWrite, getCode] = createReadThenWriteInMemory(code);
-    await extractVariable(
-      code,
-      selection,
-      readThenWrite,
-      delegateToEditor,
-      showErrorMessage
-    );
-    return getCode();
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    editor.delegate = delegateToEditor;
+    await extractVariable(code, selection, editor);
+    return editor.code;
   }
 });

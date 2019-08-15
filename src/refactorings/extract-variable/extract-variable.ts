@@ -1,11 +1,7 @@
-import { ReadThenWrite, Code } from "../../editor/i-write-code";
-import { DelegateToEditor } from "../../editor/i-delegate-to-editor";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
+
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export { extractVariable };
@@ -13,9 +9,7 @@ export { extractVariable };
 async function extractVariable(
   code: Code,
   selection: Selection,
-  readThenWrite: ReadThenWrite,
-  delegateToEditor: DelegateToEditor,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const { path, loc, shouldWrapInJSXExpressionContainer } = findExtractableCode(
     code,
@@ -23,7 +17,7 @@ async function extractVariable(
   );
 
   if (!path || !loc) {
-    showErrorMessage(ErrorReason.DidNotFoundExtractableCode);
+    editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
   }
 
@@ -33,7 +27,7 @@ async function extractVariable(
     extractedCodeSelection.getIndentationLevel(path)
   );
 
-  await readThenWrite(extractedCodeSelection, extractedCode => [
+  await editor.readThenWrite(extractedCodeSelection, extractedCode => [
     // Insert new variable declaration.
     {
       code: `const ${variableName} = ${extractedCode};\n${indentation}`,
@@ -49,7 +43,7 @@ async function extractVariable(
   ]);
 
   // Extracted symbol is located at `selection` => just trigger a rename.
-  await renameSymbol(delegateToEditor);
+  await renameSymbol(editor);
 }
 
 function findExtractableCode(
