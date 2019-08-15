@@ -1,15 +1,12 @@
-import { Code } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import { removeRedundantElse } from "./remove-redundant-else";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { removeRedundantElse } from "./remove-redundant-else";
+
 describe("Remove Redundant Else", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -257,8 +254,9 @@ describe("Remove Redundant Else", () => {
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getState] = createWriteInMemory(code);
-    await removeRedundantElse(code, selection, write, showErrorMessage);
-    return getState().code;
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await removeRedundantElse(code, selection, editor);
+    return editor.code;
   }
 });
