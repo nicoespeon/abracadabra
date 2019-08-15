@@ -1,9 +1,5 @@
-import { Code, Write } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 
 export { splitIfStatement, canSplitIfStatement };
@@ -11,17 +7,16 @@ export { splitIfStatement, canSplitIfStatement };
 async function splitIfStatement(
   code: Code,
   selection: Selection,
-  write: Write,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const updatedCode = updateCode(code, selection);
 
   if (!updatedCode.hasCodeChanged) {
-    showErrorMessage(ErrorReason.DidNotFoundIfStatementToSplit);
+    editor.showError(ErrorReason.DidNotFoundIfStatementToSplit);
     return;
   }
 
-  await write(updatedCode.code);
+  await editor.write(updatedCode.code);
 }
 
 function canSplitIfStatement(code: Code, selection: Selection): boolean {
