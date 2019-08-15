@@ -296,6 +296,34 @@ console.log(extracted);`);
 ];
 console.log(extracted);`);
       });
+
+      it("should set position to the given one", async () => {
+        const code = `function sayHello() {
+  // Replace me with some code
+}`;
+        const newPosition = new Position(2, 1);
+
+        const [editor, getState] = createEditorOn(code);
+        await editor.readThenWrite(
+          new Selection([1, 2], [1, 30]),
+          () => [],
+          newPosition
+        );
+
+        expect(getState().position).toEqual(newPosition);
+      });
+
+      it("should default to initial position if no position is given", async () => {
+        const code = `function sayHello() {
+  // Replace me with some code
+}`;
+        const position = new Position(1, 2);
+
+        const [editor, getState] = createEditorOn(code, position);
+        await editor.readThenWrite(new Selection([1, 2], [1, 30]), () => []);
+
+        expect(getState().position).toEqual(position);
+      });
     });
   });
 }

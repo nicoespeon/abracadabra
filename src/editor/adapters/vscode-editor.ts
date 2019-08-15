@@ -45,7 +45,8 @@ class VSCodeEditor implements Editor {
 
   async readThenWrite(
     selection: Selection,
-    getUpdates: (code: Code) => Update[]
+    getUpdates: (code: Code) => Update[],
+    newCursorPosition?: Position
   ): Promise<void> {
     const startPosition = toVSCodePosition(selection.start);
     const endPosition = toVSCodePosition(selection.end);
@@ -68,6 +69,10 @@ class VSCodeEditor implements Editor {
     edit.set(this.document.uri, textEdits);
 
     await vscode.workspace.applyEdit(edit);
+
+    if (newCursorPosition) {
+      this.editor.selection = toVSCodeCursor(newCursorPosition);
+    }
   }
 
   async delegate(command: Command) {

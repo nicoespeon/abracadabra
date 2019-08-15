@@ -9,7 +9,8 @@ interface Editor {
   write: (code: Code, newCursorPosition?: Position) => Promise<void>;
   readThenWrite: (
     selection: Selection,
-    getUpdates: (code: Code) => Update[]
+    getUpdates: (code: Code) => Update[],
+    newCursorPosition?: Position
   ) => Promise<void>;
   delegate: (command: Command) => Promise<void>;
   showError: (reason: ErrorReason) => Promise<void>;

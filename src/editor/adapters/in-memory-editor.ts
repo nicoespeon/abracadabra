@@ -33,8 +33,10 @@ class InMemoryEditor implements Editor {
 
   readThenWrite(
     selection: Selection,
-    getUpdates: (code: Code) => Update[]
+    getUpdates: (code: Code) => Update[],
+    newCursorPosition?: Position
   ): Promise<void> {
+    if (newCursorPosition) this._position = newCursorPosition;
     const { start, end } = selection;
 
     let readCodeMatrix: CodeMatrix = [];
