@@ -1,15 +1,12 @@
-import { Code } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import { splitDeclarationAndInitialization } from "./split-declaration-and-initialization";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { splitDeclarationAndInitialization } from "./split-declaration-and-initialization";
+
 describe("Split Declaration and Initialization", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -106,13 +103,9 @@ lastName = "Doe";`
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getState] = createWriteInMemory(code);
-    await splitDeclarationAndInitialization(
-      code,
-      selection,
-      write,
-      showErrorMessage
-    );
-    return getState().code;
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await splitDeclarationAndInitialization(code, selection, editor);
+    return editor.code;
   }
 });
