@@ -1,15 +1,12 @@
-import { Code } from "../../editor/i-write-code";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
-import { createWriteInMemory } from "../../editor/adapters/write-code-in-memory";
-import { convertIfElseToTernary } from "./convert-if-else-to-ternary";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
+import { convertIfElseToTernary } from "./convert-if-else-to-ternary";
+
 describe("Convert If/Else to Ternary", () => {
-  let showErrorMessage: ShowErrorMessage;
+  let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
@@ -247,8 +244,9 @@ describe("Convert If/Else to Ternary", () => {
     code: Code,
     selection: Selection
   ): Promise<Code> {
-    const [write, getState] = createWriteInMemory(code);
-    await convertIfElseToTernary(code, selection, write, showErrorMessage);
-    return getState().code;
+    const editor = new InMemoryEditor(code);
+    editor.showError = showErrorMessage;
+    await convertIfElseToTernary(code, selection, editor);
+    return editor.code;
   }
 });
