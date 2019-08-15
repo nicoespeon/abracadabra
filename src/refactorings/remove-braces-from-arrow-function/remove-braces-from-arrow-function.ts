@@ -1,9 +1,5 @@
-import { Code, Write } from "../../editor/i-write-code";
+import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import {
-  ShowErrorMessage,
-  ErrorReason
-} from "../../editor/i-show-error-message";
 import * as ast from "../../ast";
 
 export { removeBracesFromArrowFunction, hasBracesToRemoveFromArrowFunction };
@@ -11,22 +7,21 @@ export { removeBracesFromArrowFunction, hasBracesToRemoveFromArrowFunction };
 async function removeBracesFromArrowFunction(
   code: Code,
   selection: Selection,
-  write: Write,
-  showErrorMessage: ShowErrorMessage
+  editor: Editor
 ) {
   const updatedCode = updateCode(code, selection);
 
   if (updatedCode.isPatternInvalid) {
-    showErrorMessage(ErrorReason.CantRemoveBracesFromArrowFunction);
+    editor.showError(ErrorReason.CantRemoveBracesFromArrowFunction);
     return;
   }
 
   if (!updatedCode.hasCodeChanged) {
-    showErrorMessage(ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction);
+    editor.showError(ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction);
     return;
   }
 
-  await write(updatedCode.code);
+  await editor.write(updatedCode.code);
 }
 
 function hasBracesToRemoveFromArrowFunction(
