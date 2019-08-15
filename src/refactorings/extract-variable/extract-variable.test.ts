@@ -615,6 +615,17 @@ if (
 }`
       },
       {
+        description: "a JSXText",
+        code: `const body = <div className="text-lg font-weight-bold">
+  <p>Hello there!</p>
+</div>;`,
+        selection: Selection.cursorAt(1, 6),
+        expected: `const extracted = "Hello there!";
+const body = <div className="text-lg font-weight-bold">
+  <p>{extracted}</p>
+</div>;`
+      },
+      {
         description: "an error instance",
         code: `console.log(new Error("It failed"));`,
         selection: Selection.cursorAt(0, 14),

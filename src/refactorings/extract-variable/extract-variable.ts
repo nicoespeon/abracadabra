@@ -11,7 +11,7 @@ async function extractVariable(
   selection: Selection,
   editor: Editor
 ) {
-  const { path, loc, shouldWrapInJSXExpressionContainer } = findExtractableCode(
+  const { path, loc, parseId, parseCode } = findExtractableCode(
     code,
     selection
   );
@@ -30,14 +30,14 @@ async function extractVariable(
   await editor.readThenWrite(extractedCodeSelection, extractedCode => [
     // Insert new variable declaration.
     {
-      code: `const ${variableName} = ${extractedCode};\n${indentation}`,
+      code: `const ${variableName} = ${parseCode(
+        extractedCode
+      )};\n${indentation}`,
       selection: extractedCodeSelection.putCursorAtScopeParentPosition(path)
     },
     // Replace extracted code with new variable.
     {
-      code: shouldWrapInJSXExpressionContainer
-        ? `{${variableName}}`
-        : variableName,
+      code: parseId(variableName),
       selection: extractedCodeSelection
     }
   ]);
@@ -53,7 +53,8 @@ function findExtractableCode(
   let result: ExtractableCode = {
     path: undefined,
     loc: undefined,
-    shouldWrapInJSXExpressionContainer: false
+    parseId: id => id,
+    parseCode: code => code
   };
 
   ast.traverseAST(code, {
@@ -80,8 +81,16 @@ function findExtractableCode(
         : ast.isJSXExpressionContainer(node)
         ? node.expression.loc || result.loc
         : node.loc;
-      result.shouldWrapInJSXExpressionContainer =
-        ast.isJSXElement(node) && ast.isJSX(path.parent);
+
+      result.parseId =
+        (ast.isJSXElement(node) || ast.isJSXText(node)) &&
+        ast.isJSX(path.parent)
+          ? id => `{${id}}`
+          : id => id;
+
+      result.parseCode = ast.isJSXText(node)
+        ? code => `"${code}"`
+        : code => code;
     }
   });
 
@@ -139,5 +148,6 @@ function isPartOfMemberExpression(path: ast.NodePath): boolean {
 type ExtractableCode = {
   path: ast.NodePath | undefined;
   loc: ast.SourceLocation | undefined;
-  shouldWrapInJSXExpressionContainer: boolean;
+  parseId: (id: Code) => Code;
+  parseCode: (code: Code) => Code;
 };
