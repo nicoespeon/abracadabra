@@ -128,6 +128,18 @@ describe("Flip If/Else", () => {
 } else {
   doAnotherThing();
 }`
+      },
+      {
+        description: "guard clause",
+        code: `if (!isValid) return;
+
+doSomething();
+doSomethingElse();`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

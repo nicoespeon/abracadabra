@@ -37,15 +37,38 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const ifBranch = node.consequent;
-      const elseBranch = node.alternate || ast.blockStatement([]);
-      node.consequent = ast.isIfStatement(elseBranch)
-        ? ast.blockStatement([elseBranch])
-        : elseBranch;
-      node.alternate = ifBranch;
+      if (ast.isGuardClause(path)) {
+        flipGuardClause(path);
+      } else {
+        flipIfStatement(path);
+      }
+
       node.test = getNegatedIfTest(node.test);
     }
   });
+}
+
+function flipIfStatement(path: ast.NodePath<ast.IfStatement>) {
+  const ifBranch = path.node.consequent;
+  const elseBranch = path.node.alternate || ast.blockStatement([]);
+
+  path.node.consequent = ast.isIfStatement(elseBranch)
+    ? ast.blockStatement([elseBranch])
+    : elseBranch;
+  path.node.alternate = ifBranch;
+}
+
+function flipGuardClause(path: ast.NodePath<ast.IfStatement>) {
+  const pathsBelow = path
+    .getAllNextSiblings()
+    .filter(
+      (path): path is ast.NodePath<ast.Statement> => ast.isStatement(path)
+    );
+  const nodesBelow: ast.Statement[] = pathsBelow.map(path => path.node);
+
+  path.node.consequent = ast.blockStatement(nodesBelow);
+  path.node.alternate = null;
+  pathsBelow.forEach(path => path.remove());
 }
 
 function hasChildWhichMatchesSelection(
