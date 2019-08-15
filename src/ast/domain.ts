@@ -1,6 +1,8 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
+import { last } from "../array-helpers";
+
 export * from "@babel/types";
 export {
   isArrayExpressionElement,
@@ -42,8 +44,7 @@ function isGuardConsequentBlock(
   consequent: t.IfStatement["consequent"]
 ): consequent is t.BlockStatement {
   return (
-    t.isBlockStatement(consequent) &&
-    t.isReturnStatement(consequent.body[consequent.body.length - 1])
+    t.isBlockStatement(consequent) && t.isReturnStatement(last(consequent.body))
   );
 }
 
