@@ -614,7 +614,10 @@ if (
   return <div className="text-lg font-weight-bold">
     {extracted}
   </div>;
-}`
+}`,
+        // We're 1 character off because of the initial `{`,
+        // but rename will still work so it's fine.
+        expectedPosition: new Position(3, 13)
       },
       {
         description: "a JSXText",

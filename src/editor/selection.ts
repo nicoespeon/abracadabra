@@ -43,6 +43,10 @@ class Selection {
     return !this.start.isSameLineThan(this.end);
   }
 
+  get height(): number {
+    return this.end.line - this.start.line;
+  }
+
   putCursorAtScopeParentPosition(path: NodePath): Selection {
     const position = this.getScopeParentPosition(path);
     return Selection.fromPositions(position, position);

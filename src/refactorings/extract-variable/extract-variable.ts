@@ -1,5 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { Position } from "../../editor/position";
 import * as ast from "../../ast";
 
 import { renameSymbol } from "../rename-symbol/rename-symbol";
@@ -22,25 +23,32 @@ async function extractVariable(
   }
 
   const variableName = "extracted";
-  const extractedCodeSelection = Selection.fromAST(loc);
-  const indentation = " ".repeat(
-    extractedCodeSelection.getIndentationLevel(path)
+  const extractedSelection = Selection.fromAST(loc);
+  const indentation = " ".repeat(extractedSelection.getIndentationLevel(path));
+
+  const cursorOnExtractedId = new Position(
+    extractedSelection.start.line + extractedSelection.height + 1,
+    extractedSelection.start.character + variableName.length
   );
 
-  await editor.readThenWrite(extractedCodeSelection, extractedCode => [
-    // Insert new variable declaration.
-    {
-      code: `const ${variableName} = ${parseCode(
-        extractedCode
-      )};\n${indentation}`,
-      selection: extractedCodeSelection.putCursorAtScopeParentPosition(path)
-    },
-    // Replace extracted code with new variable.
-    {
-      code: parseId(variableName),
-      selection: extractedCodeSelection
-    }
-  ]);
+  await editor.readThenWrite(
+    extractedSelection,
+    extractedCode => [
+      // Insert new variable declaration.
+      {
+        code: `const ${variableName} = ${parseCode(
+          extractedCode
+        )};\n${indentation}`,
+        selection: extractedSelection.putCursorAtScopeParentPosition(path)
+      },
+      // Replace extracted code with new variable.
+      {
+        code: parseId(variableName),
+        selection: extractedSelection
+      }
+    ],
+    cursorOnExtractedId
+  );
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);

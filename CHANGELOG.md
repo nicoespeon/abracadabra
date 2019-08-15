@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Extract Variable on JSX Elements now triggers symbol rename as expected
 - Extract Variable now works on `JSXText`s
 
 ## [0.3.0] - 2019-08-10
