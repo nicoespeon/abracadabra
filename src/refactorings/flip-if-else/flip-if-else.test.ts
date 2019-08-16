@@ -211,7 +211,6 @@ doSomethingElse();`,
   return null;
 }`
       }
-      // TODO: other nodes than statements after the guard?
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doFlipIfElse(code, selection);
