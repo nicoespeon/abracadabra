@@ -5,7 +5,7 @@ import * as recast from "recast";
 
 import { Code } from "../editor/editor";
 
-export { NodePath } from "@babel/traverse";
+export { NodePath, Visitor } from "@babel/traverse";
 export { traverseAST, transform, Transformed };
 
 function transform(code: Code, options: TraverseOptions): Transformed {

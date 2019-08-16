@@ -249,82 +249,71 @@ function applyArgumentsToFunction(
   values: ast.CallExpression["arguments"],
   functionDeclaration: ast.FunctionDeclaration
 ): ast.Statement[] {
-  /**
-   * If we try to modify the original function declaration,
-   * we'll impact all other references. A path can't be cloned.
-   *
-   * But if we clone the function node and insert it in the AST,
-   * then we can traverse it and modify its params with the expected values.
-   *
-   * It's temporary though.
-   * After we're done, we remove the inserted path. #magicTrick ✨
-   */
+  const functionBodyWithValuesApplied = transformCopy(
+    path,
+    functionDeclaration.body,
+    {
+      Identifier(idPath) {
+        const param = findParamMatchingId(
+          idPath.node,
+          functionDeclaration.params
+        );
+        if (!param.isMatch) return;
 
-  // We have to cast this one as `insertAfter()` return type is `any`.
-  const [temporaryCopiedPath] = path.insertAfter(
-    ast.cloneDeep(functionDeclaration.body)
-  ) as [ast.NodePath<ast.BlockStatement>];
+        const value = param.resolveValue(values) || ast.identifier("undefined");
+        idPath.replaceWith(value);
+      },
 
-  temporaryCopiedPath.traverse({
-    Identifier(idPath) {
-      const param = findParamMatchingId(
-        idPath.node,
-        functionDeclaration.params
-      );
-      if (!param.isMatch) return;
-
-      const value = param.resolveValue(values) || ast.identifier("undefined");
-      idPath.replaceWith(value);
-    },
-
-    ReturnStatement: getOnReturnStatement(path)
-  });
-
-  // We need to reference the node before we remove the path.
-  const functionBlockStatement = temporaryCopiedPath.node;
-
-  temporaryCopiedPath.remove();
-
-  return functionBlockStatement.body;
-}
-
-function getOnReturnStatement(scopePath: ast.NodePath): OnReturnStatement {
-  switch (scopePath.type) {
-    case "VariableDeclarator":
-      const variableDeclarator = scopePath.node as ast.VariableDeclarator;
-      return returnPath => {
+      ReturnStatement(returnPath) {
         if (isInBranchedLogic(returnPath)) return;
 
-        returnPath.replaceWith(
-          ast.variableDeclarator(
-            variableDeclarator.id,
-            returnPath.node.argument
-          )
-        );
-      };
+        const scopeWithReturnValueApplied = transformCopy(path, path.node, {
+          CallExpression(childPath) {
+            const identifier = childPath.node.callee;
+            if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
+            if (!returnPath.node.argument) return;
 
-    case "AssignmentExpression":
-      const assignmentExpression = scopePath.node as ast.AssignmentExpression;
-      return returnPath => {
-        if (isInBranchedLogic(returnPath)) return;
-        if (!returnPath.node.argument) return;
+            childPath.replaceWith(returnPath.node.argument);
+          }
+        });
 
-        returnPath.replaceWith(
-          ast.assignmentExpression(
-            assignmentExpression.operator,
-            assignmentExpression.left,
-            returnPath.node.argument
-          )
-        );
-      };
+        returnPath.replaceWith(scopeWithReturnValueApplied);
+      }
+    }
+  );
 
-    default:
-      return () => {};
-  }
+  return functionBodyWithValuesApplied.body;
 }
-
-type OnReturnStatement = (path: ast.NodePath<ast.ReturnStatement>) => void;
 
 function isInBranchedLogic(path: ast.NodePath<ast.ReturnStatement>) {
   return path.getAncestry().some(path => ast.isIfStatement(path));
+}
+
+/**
+ * If we try to modify the original path, we'll impact all other references.
+ * A path can't be cloned.
+ *
+ * But if we clone the node and insert it in the AST,
+ * then we can traverse it and modify it in isolation.
+ *
+ * It's temporary though.
+ * After we're done, we remove the inserted path. #magicTrick ✨
+ */
+function transformCopy<T extends ast.Node>(
+  path: ast.NodePath,
+  node: T,
+  traverseOptions: ast.Visitor
+): T {
+  // Cast the type because `insertAfter()` return type is `any`.
+  const [temporaryCopiedPath] = path.insertAfter(ast.cloneDeep(node)) as [
+    ast.NodePath<T>
+  ];
+  temporaryCopiedPath.traverse(traverseOptions);
+
+  // We need to reference the node before we remove the path.
+  const result = temporaryCopiedPath.node;
+
+  temporaryCopiedPath.remove();
+
+  return result;
 }

@@ -367,6 +367,15 @@ function sayHello(name) {
   firstName = name.split(" ")[0];
   console.log("Hello", firstName);
 }`
+      },
+      {
+        description: "function inlined in a conditional expression",
+        code: `function getFirstName() {
+  return "Smith";
+}
+
+const firstName = hasName ? getFirstName() : null;`,
+        expected: `const firstName = hasName ? "Smith" : null;`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
