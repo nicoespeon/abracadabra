@@ -36,7 +36,7 @@ function doSomething(someData) {
 }
 ```
 
-Which is valid, but probably not what had in mind.
+Which is valid, but probably not what you had in mind.
 
 Now, it would produce the following result:
 
