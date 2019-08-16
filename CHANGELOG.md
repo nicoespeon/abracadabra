@@ -50,6 +50,7 @@ function doSomething(someData) {
 
 ### Fixed
 
+- Inline Function now says it can't inline function with many statements to assigned call expressions
 - Inline Function now works on every call expression assigned to a variable (e.g. it works on ternaries)
 - Extract Variable on JSX Elements now triggers symbol rename as expected
 - Extract Variable now works on `JSXText`s

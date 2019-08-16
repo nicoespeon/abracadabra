@@ -472,6 +472,16 @@ function sayHello(name) {
   console.log("Hello", firstName);
 }`,
         expectedError: ErrorReason.CantInlineAssignedFunctionWithoutReturn
+      },
+      {
+        description: "function is assigned and has many statements",
+        code: `function getFirstName() {
+  console.log("Here's a side effect");
+  return "Smith";
+}
+
+const firstName = hasName ? getFirstName() : null;`,
+        expectedError: ErrorReason.CantInlineAssignedFunctionWithManyStatements
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expectedError }) => {

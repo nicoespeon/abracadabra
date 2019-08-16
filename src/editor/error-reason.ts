@@ -25,7 +25,8 @@ enum ErrorReason {
   CantRemoveBracesFromArrowFunction,
   CantRemoveExportedFunction,
   CantInlineFunctionWithMultipleReturns,
-  CantInlineAssignedFunctionWithoutReturn
+  CantInlineAssignedFunctionWithoutReturn,
+  CantInlineAssignedFunctionWithManyStatements
 }
 
 function toString(reason: ErrorReason): string {
@@ -104,6 +105,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.CantInlineAssignedFunctionWithoutReturn:
       return "I'm sorry, I can't inline an assigned function without return 😅";
+
+    case ErrorReason.CantInlineAssignedFunctionWithManyStatements:
+      return "I'm sorry, I can't inline an assigned function with many statements 😅";
 
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";

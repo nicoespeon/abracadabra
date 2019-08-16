@@ -24,6 +24,11 @@ async function inlineFunction(
     return;
   }
 
+  if (updatedCode.isAssignedWithManyStatements) {
+    editor.showError(ErrorReason.CantInlineAssignedFunctionWithManyStatements);
+    return;
+  }
+
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundInlinableCode);
     return;
@@ -49,10 +54,12 @@ function updateCode(
   isExported: boolean;
   hasManyReturns: boolean;
   isAssignedWithoutReturn: boolean;
+  isAssignedWithManyStatements: boolean;
 } {
   let isExported = false;
   let hasManyReturns = false;
   let isAssignedWithoutReturn = false;
+  let isAssignedWithManyStatements = false;
   isFunctionAssignedToVariable = false;
 
   const canInlineFunction = ast.transform(
@@ -66,7 +73,8 @@ function updateCode(
       hasCodeChanged: false,
       isExported,
       hasManyReturns,
-      isAssignedWithoutReturn
+      isAssignedWithoutReturn,
+      isAssignedWithManyStatements
     };
   }
 
@@ -74,14 +82,19 @@ function updateCode(
     code,
     createVisitorThat(path => {
       const returnStatementsCount = countReturnStatementsIn(path);
-      hasManyReturns = returnStatementsCount === ReturnStatementsCount.Many;
+      hasManyReturns = returnStatementsCount === StatementsCount.Many;
       if (hasManyReturns) return;
 
       replaceAllIdentifiersWithFunction(path);
 
       isAssignedWithoutReturn =
         isFunctionAssignedToVariable &&
-        returnStatementsCount === ReturnStatementsCount.Zero;
+        returnStatementsCount === StatementsCount.Zero;
+      if (isAssignedWithoutReturn) return;
+
+      isAssignedWithManyStatements =
+        isFunctionAssignedToVariable &&
+        countStatementsIn(path) === StatementsCount.Many;
       if (isAssignedWithoutReturn) return;
 
       const { node } = path;
@@ -94,7 +107,13 @@ function updateCode(
     }, selection)
   );
 
-  return { ...result, isExported, hasManyReturns, isAssignedWithoutReturn };
+  return {
+    ...result,
+    isExported,
+    hasManyReturns,
+    isAssignedWithoutReturn,
+    isAssignedWithManyStatements
+  };
 }
 
 function createVisitorThat(
@@ -125,19 +144,36 @@ function createVisitorThat(
   };
 }
 
-function countReturnStatementsIn(path: ast.NodePath): ReturnStatementsCount {
-  let result = ReturnStatementsCount.Zero;
+function countStatementsIn(path: ast.NodePath): StatementsCount {
+  let result = StatementsCount.Zero;
+
+  path.traverse({
+    Statement(path) {
+      if (ast.isBlockStatement(path)) return;
+
+      result =
+        result === StatementsCount.Zero
+          ? StatementsCount.One
+          : StatementsCount.Many;
+    }
+  });
+
+  return result;
+}
+
+function countReturnStatementsIn(path: ast.NodePath): StatementsCount {
+  let result = StatementsCount.Zero;
 
   path.traverse({
     ReturnStatement(path) {
       result =
-        result === ReturnStatementsCount.Zero
-          ? ReturnStatementsCount.One
-          : ReturnStatementsCount.Many;
+        result === StatementsCount.Zero
+          ? StatementsCount.One
+          : StatementsCount.Many;
 
       // If return is in branched logic, then there is at least 2 returns.
       if (ast.isInBranchedLogic(path)) {
-        result = ReturnStatementsCount.Many;
+        result = StatementsCount.Many;
       }
     }
   });
@@ -145,7 +181,7 @@ function countReturnStatementsIn(path: ast.NodePath): ReturnStatementsCount {
   return result;
 }
 
-enum ReturnStatementsCount {
+enum StatementsCount {
   Zero,
   One,
   Many
