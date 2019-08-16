@@ -376,6 +376,15 @@ function sayHello(name) {
 
 const firstName = hasName ? getFirstName() : null;`,
         expected: `const firstName = hasName ? "Smith" : null;`
+      },
+      {
+        description: "function inlined in a call expression",
+        code: `function getFirstName() {
+  return "Smith";
+}
+
+console.log(getFirstName());`,
+        expected: `console.log("Smith");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

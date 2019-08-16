@@ -223,7 +223,8 @@ function replaceAllIdentifiersInPath(
     const scopePath = path.findParent(
       parentPath =>
         ast.isVariableDeclarator(parentPath) ||
-        ast.isAssignmentExpression(parentPath)
+        ast.isAssignmentExpression(parentPath) ||
+        ast.isCallExpression(parentPath)
     );
 
     // Set the global variable, as we know it's assigned.
