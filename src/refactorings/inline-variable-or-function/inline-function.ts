@@ -226,11 +226,11 @@ function isMatchingIdentifier(
 }
 
 function getOnReturnStatement(path: ast.NodePath): OnReturnStatement {
-  const { parentPath } = path;
+  const scopePath = getScopePath(path);
 
-  switch (parentPath.type) {
+  switch (scopePath.type) {
     case "VariableDeclarator":
-      const variableDeclarator = parentPath.node as ast.VariableDeclarator;
+      const variableDeclarator = scopePath.node as ast.VariableDeclarator;
       return returnPath => {
         if (isInBranchedLogic(returnPath)) return;
 
@@ -243,7 +243,7 @@ function getOnReturnStatement(path: ast.NodePath): OnReturnStatement {
       };
 
     case "AssignmentExpression":
-      const assignmentExpression = parentPath.node as ast.AssignmentExpression;
+      const assignmentExpression = scopePath.node as ast.AssignmentExpression;
       return returnPath => {
         if (isInBranchedLogic(returnPath)) return;
         if (!returnPath.node.argument) return;
@@ -265,18 +265,13 @@ function getOnReturnStatement(path: ast.NodePath): OnReturnStatement {
 type OnReturnStatement = (path: ast.NodePath<ast.ReturnStatement>) => void;
 
 function getScopePath(path: ast.NodePath): ast.NodePath {
-  const { parentPath } = path;
+  const result = path.findParent(
+    parentPath =>
+      ast.isVariableDeclarator(parentPath) ||
+      ast.isAssignmentExpression(parentPath)
+  );
 
-  switch (parentPath.type) {
-    case "VariableDeclarator":
-      return parentPath;
-
-    case "AssignmentExpression":
-      return parentPath.parentPath;
-
-    default:
-      return path;
-  }
+  return result || path;
 }
 
 function replaceWithFunctionBody(
