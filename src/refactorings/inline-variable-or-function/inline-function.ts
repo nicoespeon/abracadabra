@@ -45,7 +45,7 @@ async function inlineFunction(
 // This global variable is set later in the flow.
 // This is not pretty and creates coupling in the code.
 // Don't hesitate to refactor if you have a better design in mind.
-let isFunctionAssignedToVariable: boolean;
+let isFunctionAssigned: boolean;
 
 function updateCode(
   code: Code,
@@ -60,7 +60,7 @@ function updateCode(
   let hasManyReturns = false;
   let isAssignedWithoutReturn = false;
   let isAssignedWithManyStatements = false;
-  isFunctionAssignedToVariable = false;
+  isFunctionAssigned = false;
 
   const canInlineFunction = ast.transform(
     code,
@@ -88,13 +88,11 @@ function updateCode(
       replaceAllIdentifiersWithFunction(path);
 
       isAssignedWithoutReturn =
-        isFunctionAssignedToVariable &&
-        returnStatementsCount === StatementsCount.Zero;
+        isFunctionAssigned && returnStatementsCount === StatementsCount.Zero;
       if (isAssignedWithoutReturn) return;
 
       isAssignedWithManyStatements =
-        isFunctionAssignedToVariable &&
-        countStatementsIn(path) === StatementsCount.Many;
+        isFunctionAssigned && countStatementsIn(path) === StatementsCount.Many;
       if (isAssignedWithoutReturn) return;
 
       const { node } = path;
@@ -227,8 +225,8 @@ function replaceAllIdentifiersInPath(
         ast.isCallExpression(parentPath)
     );
 
-    // Set the global variable, as we know it's assigned.
-    isFunctionAssignedToVariable = Boolean(scopePath);
+    // Set the global variable, as we know if it's assigned.
+    isFunctionAssigned = Boolean(scopePath);
 
     replaceWithFunctionBody(
       scopePath || path,
