@@ -1,6 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
+import { last } from "../../array-helpers";
 
 export { removeRedundantElse, hasRedundantElse };
 
@@ -81,7 +82,7 @@ function hasChildWhichMatchesSelection(
 }
 
 function hasExitStatement(node: ast.BlockStatement): boolean {
-  const lastStatement = node.body[node.body.length - 1];
+  const lastStatement = last(node.body);
 
   return (
     ast.isReturnStatement(lastStatement) || ast.isThrowStatement(lastStatement)

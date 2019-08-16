@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Flip If/Else now works better on [guard clause][guard-clause] patterns
+
+Consider this guard clause example:
+
+```js
+function doSomething(someData) {
+  if (!isValid(someData)) {
+    return;
+  }
+
+  // … rest of the code
+}
+```
+
+Before, running _Flip If/Else_ would have produced:
+
+```js
+function doSomething(someData) {
+  if (isValid(someData)) {
+  } else {
+    return;
+  }
+
+  // … rest of the code
+}
+```
+
+Which is valid, but probably not what had in mind.
+
+Now, it would produce the following result:
+
+```js
+function doSomething(someData) {
+  if (isValid(someData)) {
+    // … rest of the code
+  }
+}
+```
+
 ### Fixed
 
 - Extract Variable on JSX Elements now triggers symbol rename as expected
@@ -68,3 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.2.0]: https://github.com/nicoespeon/abracadabra/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/nicoespeon/abracadabra/compare/0.0.1...0.1.0
 [0.0.1]: https://github.com/nicoespeon/abracadabra/compare/224558fafc2c9247b637a74a7f17fe3c62140d47...0.0.1
+
+<!-- Links -->
+
+[guard-clause]: https://deviq.com/guard-clause/

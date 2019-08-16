@@ -1,6 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
+import { last } from "../../array-helpers";
 
 import { findExportedIdNames } from "./find-exported-id-names";
 
@@ -161,7 +162,7 @@ function findIdentifiersToReplace(
       const isSameIdentifier = selection.isInsideNode(id);
       if (isSameIdentifier) return;
 
-      const parent = ancestors[ancestors.length - 1];
+      const parent = last(ancestors);
       if (ast.isFunctionDeclaration(parent)) return;
       if (ast.isObjectProperty(parent.node) && parent.node.key === node) return;
       if (
