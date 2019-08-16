@@ -77,37 +77,37 @@ function toString(reason: ErrorReason): string {
       return didNotFound("a string to convert into template literal");
 
     case ErrorReason.CantMoveStatementUp:
-      return "I'm sorry, I can't move this statement up 😅";
+      return cantDoIt("move this statement up");
 
     case ErrorReason.CantMoveMultiLinesStatementUp:
-      return "I'm sorry, I can't move up a multi-lines selection yet 😅";
+      return cantDoIt("move up a multi-lines selection yet");
 
     case ErrorReason.CantMoveStatementDown:
-      return "I'm sorry, I can't move this statement down 😅";
+      return cantDoIt("move this statement down");
 
     case ErrorReason.CantMoveMultiLinesStatementDown:
-      return "I'm sorry, I can't move down a multi-lines selection yet 😅";
+      return cantDoIt("move down a multi-lines selection yet");
 
     case ErrorReason.CantInlineExportedVariables:
-      return "I'm sorry, I can't inline exported variables yet 😅";
+      return cantDoIt("inline exported variables yet");
 
     case ErrorReason.CantInlineRedeclaredVariables:
-      return "I'm sorry, I can't inline redeclared variables yet 😅";
+      return cantDoIt("inline redeclared variables yet");
 
     case ErrorReason.CantRemoveBracesFromArrowFunction:
-      return "I'm sorry, I can't remove braces from this arrow function 😅";
+      return cantDoIt("remove braces from this arrow function");
 
     case ErrorReason.CantRemoveExportedFunction:
       return "I didn't remove the function because it's exported 🤓";
 
     case ErrorReason.CantInlineFunctionWithMultipleReturns:
-      return "I'm sorry, I can't inline a function with multiple returns 😅";
+      return cantDoIt("inline a function with multiple returns");
 
     case ErrorReason.CantInlineAssignedFunctionWithoutReturn:
-      return "I'm sorry, I can't inline an assigned function without return 😅";
+      return cantDoIt("inline an assigned function without return");
 
     case ErrorReason.CantInlineAssignedFunctionWithManyStatements:
-      return "I'm sorry, I can't inline an assigned function with many statements 😅";
+      return cantDoIt("inline an assigned function with many statements");
 
     default:
       return "I'm sorry, something went wrong but I'm not sure what 😅";
@@ -116,4 +116,8 @@ function toString(reason: ErrorReason): string {
 
 function didNotFound(element: string): string {
   return `I didn't found ${element} from current selection 🤔`;
+}
+
+function cantDoIt(element: string): string {
+  return `I'm sorry, I can't ${element} 😅`;
 }
