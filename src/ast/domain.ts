@@ -12,6 +12,7 @@ export {
   isGuardConsequentBlock,
   isNonEmptyReturn,
   isTemplateExpression,
+  isInBranchedLogic,
   templateElement,
   Primitive
 };
@@ -61,6 +62,10 @@ function isTemplateExpression(node: t.Node): node is TemplateExpression {
 }
 
 type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
+
+function isInBranchedLogic(path: NodePath<t.ReturnStatement>) {
+  return path.getAncestry().some(path => t.isIfStatement(path));
+}
 
 /**
  * Override babel `templateElement()` because it exposes

@@ -1,12 +1,12 @@
 import { parse } from "@babel/parser";
-import traverse, { TraverseOptions } from "@babel/traverse";
+import traverse, { TraverseOptions, NodePath, Visitor } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
 
 import { Code } from "../editor/editor";
 
 export { NodePath, Visitor } from "@babel/traverse";
-export { traverseAST, transform, Transformed };
+export { traverseAST, transform, transformCopy, Transformed };
 
 function transform(code: Code, options: TraverseOptions): Transformed {
   const ast = traverseAST(code, options);
@@ -62,6 +62,35 @@ function traverseAST(code: Code, opts: TraverseOptions): t.File {
   traverse(ast, opts);
 
   return ast;
+}
+
+/**
+ * If we try to modify the original path, we'll impact all other references.
+ * A path can't be cloned.
+ *
+ * But if we clone the node and insert it in the AST,
+ * then we can traverse it and modify it in isolation.
+ *
+ * It's temporary though.
+ * After we're done, we remove the inserted path. #magicTrick ✨
+ */
+function transformCopy<T extends t.Node>(
+  path: NodePath,
+  node: T,
+  traverseOptions: Visitor
+): T {
+  // Cast the type because `insertAfter()` return type is `any`.
+  const [temporaryCopiedPath] = path.insertAfter(t.cloneDeep(node)) as [
+    NodePath<T>
+  ];
+  temporaryCopiedPath.traverse(traverseOptions);
+
+  // We need to reference the node before we remove the path.
+  const result = temporaryCopiedPath.node;
+
+  temporaryCopiedPath.remove();
+
+  return result;
 }
 
 interface Transformed {

@@ -1,7 +1,7 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-export { findScopePath };
+export { findScopePath, getFunctionScopePath };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
   return path.findParent(
@@ -16,4 +16,8 @@ function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
       t.isSwitchStatement(parentPath) ||
       t.isExportDeclaration(parentPath)
   );
+}
+
+function getFunctionScopePath(path: NodePath<t.FunctionDeclaration>): NodePath {
+  return path.getFunctionParent() || path.parentPath;
 }

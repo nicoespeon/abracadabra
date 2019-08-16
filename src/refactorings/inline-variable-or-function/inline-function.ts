@@ -41,6 +41,7 @@ async function inlineFunction(
 // This is not pretty and creates coupling in the code.
 // Don't hesitate to refactor if you have a better design in mind.
 let isFunctionAssignedToVariable: boolean;
+
 function updateCode(
   code: Code,
   selection: Selection
@@ -84,7 +85,7 @@ function updateCode(
       if (isAssignedWithoutReturn) return;
 
       const { node } = path;
-      const scope = getFunctionScopePath(path).node;
+      const scope = ast.getFunctionScopePath(path).node;
       isExported =
         !!node.id && findExportedIdNames(scope).includes(node.id.name);
       if (isExported) return;
@@ -135,7 +136,7 @@ function countReturnStatementsIn(path: ast.NodePath): ReturnStatementsCount {
           : ReturnStatementsCount.Many;
 
       // If return is in branched logic, then there is at least 2 returns.
-      if (isInBranchedLogic(path)) {
+      if (ast.isInBranchedLogic(path)) {
         result = ReturnStatementsCount.Many;
       }
     }
@@ -156,7 +157,7 @@ function replaceAllIdentifiersWithFunction(
   const { node } = path;
   if (!node.id) return;
 
-  const parentPath = getFunctionScopePath(path);
+  const parentPath = ast.getFunctionScopePath(path);
   const functionBinding = parentPath.scope.getBinding(node.id.name);
 
   if (functionBinding) {
@@ -173,28 +174,27 @@ function replaceAllIdentifiersWithFunction(
   }
 }
 
-function getFunctionScopePath(
-  path: ast.NodePath<ast.FunctionDeclaration>
-): ast.NodePath {
-  return path.getFunctionParent() || path.parentPath;
-}
-
 function replaceAllIdentifiersInPath(
   path: ast.NodePath,
   functionDeclaration: ast.FunctionDeclaration
 ) {
-  const { node, parentPath } = path;
+  const { node } = path;
 
   if (ast.isCallExpression(node)) {
     const identifier = node.callee;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
-    isFunctionAssignedToVariable =
-      ast.isVariableDeclarator(parentPath.node) ||
-      ast.isAssignmentExpression(parentPath.node);
+    const scopePath = path.findParent(
+      parentPath =>
+        ast.isVariableDeclarator(parentPath) ||
+        ast.isAssignmentExpression(parentPath)
+    );
+
+    // Set the global variable, as we know it's assigned.
+    isFunctionAssignedToVariable = Boolean(scopePath);
 
     replaceWithFunctionBody(
-      getScopePath(path),
+      scopePath || path,
       node.arguments,
       functionDeclaration
     );
@@ -224,16 +224,6 @@ function isMatchingIdentifier(
   );
 }
 
-function getScopePath(path: ast.NodePath): ast.NodePath {
-  const result = path.findParent(
-    parentPath =>
-      ast.isVariableDeclarator(parentPath) ||
-      ast.isAssignmentExpression(parentPath)
-  );
-
-  return result || path;
-}
-
 function replaceWithFunctionBody(
   path: ast.NodePath,
   values: ast.CallExpression["arguments"],
@@ -249,7 +239,7 @@ function applyArgumentsToFunction(
   values: ast.CallExpression["arguments"],
   functionDeclaration: ast.FunctionDeclaration
 ): ast.Statement[] {
-  const functionBodyWithValuesApplied = transformCopy(
+  const functionBodyWithValuesApplied = ast.transformCopy(
     path,
     functionDeclaration.body,
     {
@@ -265,9 +255,9 @@ function applyArgumentsToFunction(
       },
 
       ReturnStatement(returnPath) {
-        if (isInBranchedLogic(returnPath)) return;
+        if (ast.isInBranchedLogic(returnPath)) return;
 
-        const scopeWithReturnValueApplied = transformCopy(path, path.node, {
+        const scopeWithReturnValueApplied = ast.transformCopy(path, path.node, {
           CallExpression(childPath) {
             const identifier = childPath.node.callee;
             if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
@@ -283,37 +273,4 @@ function applyArgumentsToFunction(
   );
 
   return functionBodyWithValuesApplied.body;
-}
-
-function isInBranchedLogic(path: ast.NodePath<ast.ReturnStatement>) {
-  return path.getAncestry().some(path => ast.isIfStatement(path));
-}
-
-/**
- * If we try to modify the original path, we'll impact all other references.
- * A path can't be cloned.
- *
- * But if we clone the node and insert it in the AST,
- * then we can traverse it and modify it in isolation.
- *
- * It's temporary though.
- * After we're done, we remove the inserted path. #magicTrick ✨
- */
-function transformCopy<T extends ast.Node>(
-  path: ast.NodePath,
-  node: T,
-  traverseOptions: ast.Visitor
-): T {
-  // Cast the type because `insertAfter()` return type is `any`.
-  const [temporaryCopiedPath] = path.insertAfter(ast.cloneDeep(node)) as [
-    ast.NodePath<T>
-  ];
-  temporaryCopiedPath.traverse(traverseOptions);
-
-  // We need to reference the node before we remove the path.
-  const result = temporaryCopiedPath.node;
-
-  temporaryCopiedPath.remove();
-
-  return result;
 }
