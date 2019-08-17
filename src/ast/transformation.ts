@@ -4,6 +4,7 @@ import * as t from "@babel/types";
 import * as recast from "recast";
 
 import { Code } from "../editor/editor";
+import { findScopePath } from "./scope";
 
 export { NodePath, Visitor } from "@babel/traverse";
 export { traverseAST, transform, transformCopy, Transformed };
@@ -79,10 +80,13 @@ function transformCopy<T extends t.Node>(
   node: T,
   traverseOptions: Visitor
 ): T {
+  const scopePath = findScopePath(path) || path;
+
   // Cast the type because `insertAfter()` return type is `any`.
-  const [temporaryCopiedPath] = path.insertAfter(t.cloneDeep(node)) as [
-    NodePath<T>
-  ];
+  const temporaryCopiedPath = scopePath.insertAfter(
+    t.cloneDeep(node)
+  )[0] as NodePath<T>;
+
   temporaryCopiedPath.traverse(traverseOptions);
 
   // We need to reference the node before we remove the path.

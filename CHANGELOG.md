@@ -55,6 +55,7 @@ function doSomething(someData) {
 - Inline Function now works on every call expression that is:
   - assigned to a variable (e.g. `const result = isValid ? inlineMe() : "default";`)
   - inside another call expression (e.g. `console.log(inlineMe())`)
+  - inside an arrow function expression (e.g. `() => inlineMe()`)
 - Extract Variable on JSX Elements now triggers symbol rename as expected
 - Extract Variable now works on `JSXText`s
 

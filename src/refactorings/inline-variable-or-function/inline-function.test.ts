@@ -400,6 +400,19 @@ function createSayHello() {
     console.log("Hello");
   };
 }`
+      },
+      {
+        description: "function inlined in an arrow function expression",
+        code: `function sayHello(name) {
+  console.log(\`Hello \${name}\`);
+}
+
+function sayHelloToJohn() {
+  return () => sayHello("John");
+}`,
+        expected: `function sayHelloToJohn() {
+  return () => console.log(\`Hello \${"John"}\`);
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
