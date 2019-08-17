@@ -321,7 +321,7 @@ function doAnotherThing() {
 }`
       },
       {
-        description: "function inlined in a variable declaration",
+        description: "in a variable declaration",
         code: `function getFirstName(name) {
   return name.split(" ")[0];
 }
@@ -336,8 +336,7 @@ function sayHello(name) {
 }`
       },
       {
-        description:
-          "function inlined in a variable declaration (multiple declarations)",
+        description: "in a variable declaration (multiple declarations)",
         code: `function getFirstName(name) {
   return name.split(" ")[0];
 }
@@ -352,7 +351,7 @@ function sayHello(name) {
 }`
       },
       {
-        description: "function inlined in an assignment expression",
+        description: "in an assignment expression",
         code: `function getFirstName(name) {
   return name.split(" ")[0];
 }
@@ -369,7 +368,7 @@ function sayHello(name) {
 }`
       },
       {
-        description: "function inlined in a conditional expression",
+        description: "in a conditional expression",
         code: `function getFirstName() {
   return "Smith";
 }
@@ -378,7 +377,7 @@ const firstName = hasName ? getFirstName() : null;`,
         expected: `const firstName = hasName ? "Smith" : null;`
       },
       {
-        description: "function inlined in a call expression",
+        description: "in a call expression",
         code: `function getFirstName() {
   return "Smith";
 }
@@ -387,7 +386,7 @@ console.log(getFirstName());`,
         expected: `console.log("Smith");`
       },
       {
-        description: "function inlined in a return statement",
+        description: "in a return statement",
         code: `function sayHello() {
   console.log("Hello");
 }
@@ -402,7 +401,7 @@ function createSayHello() {
 }`
       },
       {
-        description: "function inlined in an arrow function expression",
+        description: "in an arrow function expression",
         code: `function sayHello(name) {
   console.log(\`Hello \${name}\`);
 }
