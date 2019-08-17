@@ -385,6 +385,21 @@ const firstName = hasName ? getFirstName() : null;`,
 
 console.log(getFirstName());`,
         expected: `console.log("Smith");`
+      },
+      {
+        description: "function inlined in a return statement",
+        code: `function sayHello() {
+  console.log("Hello");
+}
+
+function createSayHello() {
+  return sayHello;
+}`,
+        expected: `function createSayHello() {
+  return function() {
+    console.log("Hello");
+  };
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

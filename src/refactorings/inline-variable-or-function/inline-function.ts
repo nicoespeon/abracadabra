@@ -245,6 +245,17 @@ function replaceAllIdentifiersInPath(
       functionDeclaration.body
     );
   }
+
+  if (ast.isReturnStatement(node)) {
+    const identifier = node.argument;
+    if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
+
+    node.argument = ast.functionExpression(
+      null,
+      functionDeclaration.params,
+      functionDeclaration.body
+    );
+  }
 }
 
 function isMatchingIdentifier(

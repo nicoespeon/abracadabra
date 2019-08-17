@@ -51,6 +51,7 @@ function doSomething(someData) {
 ### Fixed
 
 - Inline Function now says it can't inline function with many statements to assigned call expressions
+- Inline Function now works on return statements identifiers (e.g. `return inlineMe;`)
 - Inline Function now works on every call expression that is:
   - assigned to a variable (e.g. `const result = isValid ? inlineMe() : "default";`)
   - inside another call expression (e.g. `console.log(inlineMe())`)
