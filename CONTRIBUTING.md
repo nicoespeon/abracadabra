@@ -98,7 +98,6 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 
 <!-- Links -->
 
-[mocha]: https://mochajs.org/
 [jest]: https://jestjs.io/
 [typescript]: https://www.typescriptlang.org/
 [prettier]: https://prettier.io
