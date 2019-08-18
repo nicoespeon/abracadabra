@@ -16,10 +16,10 @@ interface Editor {
   showError(reason: ErrorReason): Promise<void>;
 }
 
-interface Update {
+type Update = {
   code: Code;
   selection: Selection;
-}
+};
 
 type Code = string;
 
