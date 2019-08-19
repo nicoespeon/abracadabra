@@ -12,14 +12,21 @@ async function extractVariable(
   selection: Selection,
   editor: Editor
 ) {
-  const { path, loc, parseId, parseCode } = findExtractableCode(
-    code,
-    selection
-  );
+  const {
+    path,
+    loc,
+    parseId,
+    parseCode,
+    hasMultipleOccurrences
+  } = findExtractableCode(code, selection);
 
   if (!path || !loc) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
+  }
+
+  if (hasMultipleOccurrences) {
+    await editor.askUser([]);
   }
 
   const variableName = "extracted";
@@ -62,7 +69,8 @@ function findExtractableCode(
     path: undefined,
     loc: undefined,
     parseId: id => id,
-    parseCode: code => code
+    parseCode: code => code,
+    hasMultipleOccurrences: false
   };
 
   ast.traverseAST(code, {
@@ -101,6 +109,25 @@ function findExtractableCode(
         : code => code;
     }
   });
+
+  const foundPath = result.path;
+  if (foundPath) {
+    let occurrencesCount = 0;
+    ast.traverseAST(code, {
+      enter(path) {
+        // TODO: extract as "areEqual(pathA, pathB)" in AST
+        if (path.type !== foundPath.type) return;
+        if (
+          ast.isStringLiteral(path.node) &&
+          ast.isStringLiteral(foundPath.node) &&
+          path.node.value === foundPath.node.value
+        ) {
+          occurrencesCount += 1;
+        }
+      }
+    });
+    result.hasMultipleOccurrences = occurrencesCount > 1;
+  }
 
   return result;
 }
@@ -158,4 +185,5 @@ type ExtractableCode = {
   loc: ast.SourceLocation | undefined;
   parseId: (id: Code) => Code;
   parseCode: (code: Code) => Code;
+  hasMultipleOccurrences: boolean;
 };

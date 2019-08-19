@@ -9,10 +9,12 @@ import { extractVariable } from "./extract-variable";
 describe("Extract Variable", () => {
   let delegateToEditor: Editor["delegate"];
   let showErrorMessage: Editor["showError"];
+  let askUser: Editor["askUser"];
 
   beforeEach(() => {
     delegateToEditor = jest.fn();
     showErrorMessage = jest.fn();
+    askUser = jest.fn();
   });
 
   describe("basic extraction behaviour", () => {
@@ -73,6 +75,32 @@ console.log(extracted);`);
         );
       });
     });
+  });
+
+  describe("asking user for multiple occurrences", () => {
+    it("should not ask the user if there is only one occurrence", async () => {
+      const code = `console.log("Hello");`;
+      const selection = Selection.cursorAt(0, 15);
+
+      await doExtractVariable(code, selection);
+
+      expect(askUser).not.toBeCalled();
+    });
+
+    it("should ask the user if there are multiple occurrences", async () => {
+      const code = `console.log("Hello");
+sendMessage("Hello");`;
+      const selection = Selection.cursorAt(0, 15);
+
+      await doExtractVariable(code, selection);
+
+      expect(askUser).toBeCalled();
+    });
+
+    // TODO: test resulting code if user says "1 occurrence"
+    // TODO: test resulting code if user says "all occurrences"
+    // TODO: test all types of extracted variables
+    // TODO: selection on Nth occurrence => extracted at correct position
   });
 
   // 👩‍🌾 All patterns we can extract
@@ -819,6 +847,7 @@ const sayHello = extracted;`
     const editor = new InMemoryEditor(code);
     editor.showError = showErrorMessage;
     editor.delegate = delegateToEditor;
+    editor.askUser = askUser;
     await extractVariable(code, selection, editor);
     return { code: editor.code, position: editor.position };
   }
