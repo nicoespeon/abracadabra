@@ -99,6 +99,12 @@ class Selection {
     );
   }
 
+  isEqualTo(selection: Selection): boolean {
+    return (
+      this.start.isEqualTo(selection.start) && this.end.isEqualTo(selection.end)
+    );
+  }
+
   private getScopeParentPosition(path: NodePath): Position {
     const parentPath = ast.findScopePath(path);
     const parent = parentPath ? parentPath.node : path.node;
