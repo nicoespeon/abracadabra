@@ -13,12 +13,12 @@ async function extractVariable(
   editor: Editor
 ) {
   const {
-    path,
-    loc,
+    occurrence,
+    hasMultipleOccurrences,
     parseId,
-    parseCode,
-    hasMultipleOccurrences
+    parseCode
   } = findExtractableCode(code, selection);
+  const { path, loc } = occurrence;
 
   if (!path || !loc) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
@@ -66,8 +66,10 @@ function findExtractableCode(
   selection: Selection
 ): ExtractableCode {
   let result: ExtractableCode = {
-    path: undefined,
-    loc: undefined,
+    occurrence: {
+      path: undefined,
+      loc: undefined
+    },
     parseId: id => id,
     parseCode: code => code,
     hasMultipleOccurrences: false
@@ -91,11 +93,11 @@ function findExtractableCode(
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      result.path = path;
-      result.loc = ast.isObjectProperty(node)
-        ? findObjectPropertyLoc(selection, node) || result.loc
+      result.occurrence.path = path;
+      result.occurrence.loc = ast.isObjectProperty(node)
+        ? findObjectPropertyLoc(selection, node) || result.occurrence.loc
         : ast.isJSXExpressionContainer(node)
-        ? node.expression.loc || result.loc
+        ? node.expression.loc || result.occurrence.loc
         : node.loc;
 
       result.parseId =
@@ -110,7 +112,7 @@ function findExtractableCode(
     }
   });
 
-  const foundPath = result.path;
+  const foundPath = result.occurrence.path;
   if (foundPath) {
     let occurrencesCount = 0;
     ast.traverseAST(code, {
@@ -181,9 +183,13 @@ function isPartOfMemberExpression(path: ast.NodePath): boolean {
 }
 
 type ExtractableCode = {
-  path: ast.NodePath | undefined;
-  loc: ast.SourceLocation | undefined;
+  occurrence: Occurrence;
+  hasMultipleOccurrences: boolean;
   parseId: (id: Code) => Code;
   parseCode: (code: Code) => Code;
-  hasMultipleOccurrences: boolean;
+};
+
+type Occurrence = {
+  path: ast.NodePath | undefined;
+  loc: ast.SourceLocation | undefined;
 };
