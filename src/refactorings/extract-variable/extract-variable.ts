@@ -13,18 +13,19 @@ async function extractVariable(
   editor: Editor
 ) {
   const {
-    occurrence,
-    hasMultipleOccurrences,
+    selected_occurrence,
+    other_occurrences,
     parseId,
     parseCode
   } = findExtractableCode(code, selection);
-  const { path, loc } = occurrence;
+  const { path, loc } = selected_occurrence;
 
   if (!path || !loc) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
   }
 
+  const hasMultipleOccurrences = other_occurrences.length > 0;
   if (hasMultipleOccurrences) {
     await editor.askUser([]);
   }
@@ -66,13 +67,13 @@ function findExtractableCode(
   selection: Selection
 ): ExtractableCode {
   let result: ExtractableCode = {
-    occurrence: {
+    selected_occurrence: {
       path: undefined,
-      loc: undefined
+      loc: null
     },
+    other_occurrences: [],
     parseId: id => id,
-    parseCode: code => code,
-    hasMultipleOccurrences: false
+    parseCode: code => code
   };
 
   ast.traverseAST(code, {
@@ -93,11 +94,12 @@ function findExtractableCode(
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      result.occurrence.path = path;
-      result.occurrence.loc = ast.isObjectProperty(node)
-        ? findObjectPropertyLoc(selection, node) || result.occurrence.loc
+      result.selected_occurrence.path = path;
+      result.selected_occurrence.loc = ast.isObjectProperty(node)
+        ? findObjectPropertyLoc(selection, node) ||
+          result.selected_occurrence.loc
         : ast.isJSXExpressionContainer(node)
-        ? node.expression.loc || result.occurrence.loc
+        ? node.expression.loc || result.selected_occurrence.loc
         : node.loc;
 
       result.parseId =
@@ -112,23 +114,31 @@ function findExtractableCode(
     }
   });
 
-  const foundPath = result.occurrence.path;
+  const foundPath = result.selected_occurrence.path;
   if (foundPath) {
-    let occurrencesCount = 0;
     ast.traverseAST(code, {
       enter(path) {
-        // TODO: extract as "areEqual(pathA, pathB)" in AST
         if (path.type !== foundPath.type) return;
+        if (!ast.isSelectableNode(path.node)) return;
+        if (!ast.isSelectableNode(foundPath.node)) return;
+
+        const pathSelection = Selection.fromAST(path.node.loc);
+        const foundPathSelection = Selection.fromAST(foundPath.node.loc);
+        if (pathSelection.isEqualTo(foundPathSelection)) return;
+
+        // TODO: extract as "areEqual(pathA, pathB)" in AST
         if (
           ast.isStringLiteral(path.node) &&
           ast.isStringLiteral(foundPath.node) &&
           path.node.value === foundPath.node.value
         ) {
-          occurrencesCount += 1;
+          result.other_occurrences.push({
+            path,
+            loc: path.node.loc
+          });
         }
       }
     });
-    result.hasMultipleOccurrences = occurrencesCount > 1;
   }
 
   return result;
@@ -183,13 +193,13 @@ function isPartOfMemberExpression(path: ast.NodePath): boolean {
 }
 
 type ExtractableCode = {
-  occurrence: Occurrence;
-  hasMultipleOccurrences: boolean;
+  selected_occurrence: Occurrence;
+  other_occurrences: Occurrence[];
   parseId: (id: Code) => Code;
   parseCode: (code: Code) => Code;
 };
 
 type Occurrence = {
   path: ast.NodePath | undefined;
-  loc: ast.SourceLocation | undefined;
+  loc: ast.SourceLocation | null;
 };
