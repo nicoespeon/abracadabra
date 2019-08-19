@@ -6,7 +6,8 @@ import {
   Update,
   Command,
   ErrorReason,
-  errorReasonToString
+  errorReasonToString,
+  Choice
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -81,6 +82,11 @@ class VSCodeEditor implements Editor {
 
   async showError(reason: ErrorReason) {
     await vscode.window.showErrorMessage(errorReasonToString(reason));
+  }
+
+  async askUser<T>(choices: Choice<T>[]) {
+    // TODO: implement
+    return await Promise.resolve(choices[0]);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Editor, Code, Update, Command, ErrorReason } from "../editor";
+import { Editor, Code, Update, Command, ErrorReason, Choice } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
 
@@ -103,6 +103,10 @@ class InMemoryEditor implements Editor {
 
   showError(_reason: ErrorReason) {
     return Promise.resolve();
+  }
+
+  askUser<T>(choices: Choice<T>[]) {
+    return Promise.resolve(choices[0]);
   }
 
   private setCodeMatrix(code: Code) {
