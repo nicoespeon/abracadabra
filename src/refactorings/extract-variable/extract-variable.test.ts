@@ -4,7 +4,7 @@ import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { extractVariable } from "./extract-variable";
+import { extractVariable, ReplaceChoice } from "./extract-variable";
 
 describe("Extract Variable", () => {
   let delegateToEditor: Editor["delegate"];
@@ -87,14 +87,23 @@ console.log(extracted);`);
       expect(askUser).not.toBeCalled();
     });
 
-    it("should ask the user if there are multiple occurrences", async () => {
+    it("should ask the user what to replace if there are multiple occurrences", async () => {
       const code = `console.log("Hello");
 sendMessage("Hello");`;
       const selection = Selection.cursorAt(0, 15);
 
       await doExtractVariable(code, selection);
 
-      expect(askUser).toBeCalled();
+      expect(askUser).toBeCalledWith([
+        {
+          value: ReplaceChoice.AllOccurrences,
+          label: "Replace all 2 occurrences"
+        },
+        {
+          value: ReplaceChoice.ThisOccurrence,
+          label: "Replace this occurrence only"
+        }
+      ]);
     });
 
     // TODO: test resulting code if user says "1 occurrence"

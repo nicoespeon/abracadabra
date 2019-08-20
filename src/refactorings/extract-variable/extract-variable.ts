@@ -5,7 +5,7 @@ import * as ast from "../../ast";
 
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
-export { extractVariable };
+export { extractVariable, ReplaceChoice };
 
 async function extractVariable(
   code: Code,
@@ -25,9 +25,18 @@ async function extractVariable(
     return;
   }
 
-  const hasMultipleOccurrences = other_occurrences.length > 0;
-  if (hasMultipleOccurrences) {
-    await editor.askUser([]);
+  const occurrencesCount = other_occurrences.length;
+  if (occurrencesCount > 0) {
+    await editor.askUser([
+      {
+        value: ReplaceChoice.AllOccurrences,
+        label: `Replace all ${occurrencesCount + 1} occurrences`
+      },
+      {
+        value: ReplaceChoice.ThisOccurrence,
+        label: "Replace this occurrence only"
+      }
+    ]);
   }
 
   const variableName = "extracted";
@@ -60,6 +69,11 @@ async function extractVariable(
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);
+}
+
+enum ReplaceChoice {
+  AllOccurrences,
+  ThisOccurrence
 }
 
 function findExtractableCode(
