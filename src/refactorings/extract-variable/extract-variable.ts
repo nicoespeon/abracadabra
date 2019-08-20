@@ -109,17 +109,7 @@ function findExtractableCode(
   ast.traverseAST(code, {
     enter(path) {
       if (!isExtractableContext(path.parent)) return;
-
-      if (isPartOfMemberExpression(path)) return;
-      if (isClassPropertyIdentifier(path)) return;
-      if (isVariableDeclarationIdentifier(path)) return;
-      if (isFunctionCallIdentifier(path)) return;
-      if (isJSXPartialElement(path)) return;
-      if (ast.isTemplateElement(path)) return;
-      if (ast.isBlockStatement(path)) return;
-      if (ast.isSpreadElement(path)) return;
-      // Don't extract object method because we don't handle `this`.
-      if (ast.isObjectMethod(path)) return;
+      if (!isExtractable(path)) return;
 
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -195,28 +185,19 @@ function isExtractableContext(node: ast.Node): boolean {
   );
 }
 
-function isClassPropertyIdentifier(path: ast.NodePath): boolean {
+function isExtractable(path: ast.NodePath): boolean {
   return (
-    ast.isClassProperty(path.parent) &&
-    !path.parent.computed &&
-    ast.isIdentifier(path.node)
+    !ast.isPartOfMemberExpression(path) &&
+    !ast.isClassPropertyIdentifier(path) &&
+    !ast.isVariableDeclarationIdentifier(path) &&
+    !ast.isFunctionCallIdentifier(path) &&
+    !ast.isJSXPartialElement(path) &&
+    !ast.isTemplateElement(path) &&
+    !ast.isBlockStatement(path) &&
+    !ast.isSpreadElement(path) &&
+    // Don't extract object method because we don't handle `this`.
+    !ast.isObjectMethod(path)
   );
-}
-
-function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
-  return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
-}
-
-function isFunctionCallIdentifier(path: ast.NodePath): boolean {
-  return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
-}
-
-function isJSXPartialElement(path: ast.NodePath): boolean {
-  return ast.isJSXOpeningElement(path) || ast.isJSXClosingElement(path);
-}
-
-function isPartOfMemberExpression(path: ast.NodePath): boolean {
-  return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
 }
 
 type ExtractableCode = {

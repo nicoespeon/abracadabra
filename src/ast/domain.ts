@@ -5,6 +5,11 @@ import { last } from "../array-helpers";
 
 export * from "@babel/types";
 export {
+  isClassPropertyIdentifier,
+  isVariableDeclarationIdentifier,
+  isFunctionCallIdentifier,
+  isJSXPartialElement,
+  isPartOfMemberExpression,
   isArrayExpressionElement,
   areAllObjectProperties,
   isUndefinedLiteral,
@@ -16,6 +21,30 @@ export {
   templateElement,
   Primitive
 };
+
+function isClassPropertyIdentifier(path: NodePath): boolean {
+  return (
+    t.isClassProperty(path.parent) &&
+    !path.parent.computed &&
+    t.isIdentifier(path)
+  );
+}
+
+function isVariableDeclarationIdentifier(path: NodePath): boolean {
+  return t.isVariableDeclarator(path.parent) && t.isIdentifier(path);
+}
+
+function isFunctionCallIdentifier(path: NodePath): boolean {
+  return t.isCallExpression(path.parent) && path.parent.callee === path.node;
+}
+
+function isJSXPartialElement(path: NodePath): boolean {
+  return t.isJSXOpeningElement(path) || t.isJSXClosingElement(path);
+}
+
+function isPartOfMemberExpression(path: NodePath): boolean {
+  return t.isMemberExpression(path.parent) && t.isIdentifier(path);
+}
 
 function isArrayExpressionElement(
   node: t.Node | null
