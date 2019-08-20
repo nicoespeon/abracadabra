@@ -18,12 +18,13 @@ async function extractVariable(
     parseId,
     parseCode
   } = findExtractableCode(code, selection);
-  const { path, loc } = selectedOccurrence;
 
-  if (!path || !loc) {
+  if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
   }
+
+  const { path, loc } = selectedOccurrence;
 
   const choice = await getChoice(otherOccurrencesLocs, editor);
   if (choice === ReplaceChoice.None) return;
@@ -97,10 +98,7 @@ function findExtractableCode(
   selection: Selection
 ): ExtractableCode {
   let result: ExtractableCode = {
-    selectedOccurrence: {
-      path: undefined,
-      loc: null
-    },
+    selectedOccurrence: null,
     otherOccurrencesLocs: [],
     parseId: id => id,
     parseCode: code => code
@@ -114,13 +112,17 @@ function findExtractableCode(
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      result.selectedOccurrence.path = path;
-      result.selectedOccurrence.loc = ast.isObjectProperty(node)
-        ? findObjectPropertyLoc(selection, node) ||
-          result.selectedOccurrence.loc
+      const currentLoc = result.selectedOccurrence
+        ? result.selectedOccurrence.loc
+        : null;
+      const loc = ast.isObjectProperty(node)
+        ? findObjectPropertyLoc(selection, node) || currentLoc
         : ast.isJSXExpressionContainer(node)
-        ? node.expression.loc || result.selectedOccurrence.loc
+        ? node.expression.loc || currentLoc
         : node.loc;
+      if (!loc) return;
+
+      result.selectedOccurrence = { path, loc };
 
       result.parseId =
         (ast.isJSXElement(node) || ast.isJSXText(node)) &&
@@ -134,8 +136,8 @@ function findExtractableCode(
     }
   });
 
-  const foundPath = result.selectedOccurrence.path;
-  if (foundPath) {
+  if (result.selectedOccurrence) {
+    const foundPath = result.selectedOccurrence.path;
     ast.traverseAST(code, {
       enter(path) {
         if (path.type !== foundPath.type) return;
@@ -201,13 +203,13 @@ function isExtractable(path: ast.NodePath): boolean {
 }
 
 type ExtractableCode = {
-  selectedOccurrence: Occurrence;
+  selectedOccurrence: Occurrence | null;
   otherOccurrencesLocs: ast.SourceLocation[];
   parseId: (id: Code) => Code;
   parseCode: (code: Code) => Code;
 };
 
 type Occurrence = {
-  path: ast.NodePath | undefined;
-  loc: ast.SourceLocation | null;
+  path: ast.NodePath;
+  loc: ast.SourceLocation;
 };
