@@ -14,7 +14,7 @@ async function extractVariable(
 ) {
   const {
     selectedOccurrence,
-    otherOccurrences,
+    otherOccurrencesLocs,
     parseId,
     parseCode
   } = findExtractableCode(code, selection);
@@ -25,20 +25,8 @@ async function extractVariable(
     return;
   }
 
-  const occurrencesCount = otherOccurrences.length;
-  if (occurrencesCount > 0) {
-    const choice = await editor.askUser([
-      {
-        value: ReplaceChoice.AllOccurrences,
-        label: `Replace all ${occurrencesCount + 1} occurrences`
-      },
-      {
-        value: ReplaceChoice.ThisOccurrence,
-        label: "Replace this occurrence only"
-      }
-    ]);
-    if (!choice) return;
-  }
+  const choice = await getChoice(otherOccurrencesLocs, editor);
+  if (choice === ReplaceChoice.None) return;
 
   const variableName = "extracted";
   const extractedSelection = Selection.fromAST(loc);
@@ -48,6 +36,11 @@ async function extractVariable(
     extractedSelection.start.line + extractedSelection.height + 1,
     extractedSelection.start.character + variableName.length
   );
+
+  const occurrencesSelections =
+    choice === ReplaceChoice.AllOccurrences
+      ? [extractedSelection].concat(otherOccurrencesLocs.map(Selection.fromAST))
+      : [extractedSelection];
 
   await editor.readThenWrite(
     extractedSelection,
@@ -60,10 +53,10 @@ async function extractVariable(
         selection: extractedSelection.putCursorAtScopeParentPosition(path)
       },
       // Replace extracted code with new variable.
-      {
+      ...occurrencesSelections.map(selection => ({
         code: parseId(variableName),
-        selection: extractedSelection
-      }
+        selection
+      }))
     ],
     cursorOnExtractedId
   );
@@ -72,9 +65,31 @@ async function extractVariable(
   await renameSymbol(editor);
 }
 
+async function getChoice(
+  otherOccurrencesLocs: ast.SourceLocation[],
+  editor: Editor
+): Promise<ReplaceChoice> {
+  const occurrencesCount = otherOccurrencesLocs.length;
+  if (occurrencesCount <= 0) return ReplaceChoice.ThisOccurrence;
+
+  const choice = await editor.askUser([
+    {
+      value: ReplaceChoice.AllOccurrences,
+      label: `Replace all ${occurrencesCount + 1} occurrences`
+    },
+    {
+      value: ReplaceChoice.ThisOccurrence,
+      label: "Replace this occurrence only"
+    }
+  ]);
+
+  return choice ? choice.value : ReplaceChoice.None;
+}
+
 enum ReplaceChoice {
   AllOccurrences,
-  ThisOccurrence
+  ThisOccurrence,
+  None
 }
 
 function findExtractableCode(
@@ -86,7 +101,7 @@ function findExtractableCode(
       path: undefined,
       loc: null
     },
-    otherOccurrences: [],
+    otherOccurrencesLocs: [],
     parseId: id => id,
     parseCode: code => code
   };
@@ -147,10 +162,7 @@ function findExtractableCode(
           ast.isStringLiteral(foundPath.node) &&
           path.node.value === foundPath.node.value
         ) {
-          result.otherOccurrences.push({
-            path,
-            loc: path.node.loc
-          });
+          result.otherOccurrencesLocs.push(path.node.loc);
         }
       }
     });
@@ -209,7 +221,7 @@ function isPartOfMemberExpression(path: ast.NodePath): boolean {
 
 type ExtractableCode = {
   selectedOccurrence: Occurrence;
-  otherOccurrences: Occurrence[];
+  otherOccurrencesLocs: ast.SourceLocation[];
   parseId: (id: Code) => Code;
   parseCode: (code: Code) => Code;
 };

@@ -133,9 +133,22 @@ sendMessage("Hello");`;
       expect(result.code).toBe(expectedCode);
     });
 
-    // TODO: test resulting code if user says "all occurrences"
-    // TODO: test all types of extracted variables
+    it("should extract all occurrences if user says so", async () => {
+      const code = `console.log("Hello");
+sendMessage("Hello");`;
+      const selection = Selection.cursorAt(0, 15);
+      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+
+      const result = await doExtractVariable(code, selection);
+
+      const expectedCode = `const extracted = "Hello";
+console.log(extracted);
+sendMessage(extracted);`;
+      expect(result.code).toBe(expectedCode);
+    });
+
     // TODO: selection on Nth occurrence => extracted at correct position
+    // TODO: test all types of extracted variables
   });
 
   // 👩‍🌾 All patterns we can extract
