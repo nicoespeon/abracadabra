@@ -106,7 +106,33 @@ sendMessage("Hello");`;
       ]);
     });
 
-    // TODO: test resulting code if user says "1 occurrence"
+    it("should stop extraction if user doesn't select a choice", async () => {
+      const code = `console.log("Hello");
+sendMessage("Hello");`;
+      const selection = Selection.cursorAt(0, 15);
+      askUser = jest.fn(() => Promise.resolve(undefined));
+
+      const result = await doExtractVariable(code, selection);
+
+      expect(result.code).toBe(code);
+    });
+
+    it("should extract only selected occurrence if user says so", async () => {
+      const code = `console.log("Hello");
+sendMessage("Hello");`;
+      const selection = Selection.cursorAt(0, 15);
+      askUser = jest.fn(([_, this_occurrence]) =>
+        Promise.resolve(this_occurrence)
+      );
+
+      const result = await doExtractVariable(code, selection);
+
+      const expectedCode = `const extracted = "Hello";
+console.log(extracted);
+sendMessage("Hello");`;
+      expect(result.code).toBe(expectedCode);
+    });
+
     // TODO: test resulting code if user says "all occurrences"
     // TODO: test all types of extracted variables
     // TODO: selection on Nth occurrence => extracted at correct position

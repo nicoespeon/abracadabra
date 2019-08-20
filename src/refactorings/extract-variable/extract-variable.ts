@@ -27,7 +27,7 @@ async function extractVariable(
 
   const occurrencesCount = other_occurrences.length;
   if (occurrencesCount > 0) {
-    await editor.askUser([
+    const choice = await editor.askUser([
       {
         value: ReplaceChoice.AllOccurrences,
         label: `Replace all ${occurrencesCount + 1} occurrences`
@@ -37,6 +37,7 @@ async function extractVariable(
         label: "Replace this occurrence only"
       }
     ]);
+    if (!choice) return;
   }
 
   const variableName = "extracted";
