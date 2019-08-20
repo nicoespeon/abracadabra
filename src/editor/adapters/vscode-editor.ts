@@ -85,8 +85,7 @@ class VSCodeEditor implements Editor {
   }
 
   async askUser<T>(choices: Choice<T>[]) {
-    // TODO: implement
-    return await Promise.resolve(choices[0]);
+    return await vscode.window.showQuickPick(choices);
   }
 }
 
