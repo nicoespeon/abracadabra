@@ -12,7 +12,7 @@ async function extractVariable(
   selection: Selection,
   editor: Editor
 ) {
-  const { selectedOccurrence, otherOccurrencesLocs } = findExtractableCode(
+  const { selectedOccurrence, otherOccurrences } = findExtractableCode(
     code,
     selection
   );
@@ -22,7 +22,7 @@ async function extractVariable(
     return;
   }
 
-  const choice = await getChoice(otherOccurrencesLocs, editor);
+  const choice = await getChoice(otherOccurrences, editor);
   if (choice === ReplaceChoice.None) return;
 
   const variableName = "extracted";
@@ -35,7 +35,9 @@ async function extractVariable(
 
   const occurrencesSelections =
     choice === ReplaceChoice.AllOccurrences
-      ? [extractedSelection].concat(otherOccurrencesLocs.map(Selection.fromAST))
+      ? [extractedSelection].concat(
+          otherOccurrences.map(({ selection }) => selection)
+        )
       : [extractedSelection];
 
   await editor.readThenWrite(
@@ -60,10 +62,10 @@ async function extractVariable(
 }
 
 async function getChoice(
-  otherOccurrencesLocs: ast.SourceLocation[],
+  otherOccurrences: Occurrence[],
   editor: Editor
 ): Promise<ReplaceChoice> {
-  const occurrencesCount = otherOccurrencesLocs.length;
+  const occurrencesCount = otherOccurrences.length;
   if (occurrencesCount <= 0) return ReplaceChoice.ThisOccurrence;
 
   const choice = await editor.askUser([
@@ -92,7 +94,7 @@ function findExtractableCode(
 ): ExtractableCode {
   let result: ExtractableCode = {
     selectedOccurrence: null,
-    otherOccurrencesLocs: []
+    otherOccurrences: []
   };
 
   ast.traverseAST(code, {
@@ -134,7 +136,7 @@ function findExtractableCode(
           ast.isStringLiteral(found.path.node) &&
           path.node.value === found.path.node.value
         ) {
-          result.otherOccurrencesLocs.push(path.node.loc);
+          result.otherOccurrences.push(new Occurrence(path, path.node.loc));
         }
       }
     });
@@ -184,7 +186,7 @@ function isExtractable(path: ast.NodePath): boolean {
 
 type ExtractableCode = {
   selectedOccurrence: Occurrence | null;
-  otherOccurrencesLocs: ast.SourceLocation[];
+  otherOccurrences: Occurrence[];
 };
 
 class Occurrence {
