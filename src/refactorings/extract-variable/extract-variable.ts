@@ -12,26 +12,21 @@ async function extractVariable(
   selection: Selection,
   editor: Editor
 ) {
-  const {
-    selectedOccurrence,
-    otherOccurrencesLocs,
-    parseId,
-    parseCode
-  } = findExtractableCode(code, selection);
+  const { selectedOccurrence, otherOccurrencesLocs } = findExtractableCode(
+    code,
+    selection
+  );
 
   if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
   }
 
-  const { path, loc } = selectedOccurrence;
-
   const choice = await getChoice(otherOccurrencesLocs, editor);
   if (choice === ReplaceChoice.None) return;
 
   const variableName = "extracted";
-  const extractedSelection = Selection.fromAST(loc);
-  const indentation = " ".repeat(extractedSelection.getIndentationLevel(path));
+  const extractedSelection = selectedOccurrence.selection;
 
   const cursorOnExtractedId = new Position(
     extractedSelection.start.line + extractedSelection.height + 1,
@@ -48,14 +43,12 @@ async function extractVariable(
     extractedCode => [
       // Insert new variable declaration.
       {
-        code: `const ${variableName} = ${parseCode(
-          extractedCode
-        )};\n${indentation}`,
-        selection: extractedSelection.putCursorAtScopeParentPosition(path)
+        code: selectedOccurrence.toVariableDeclaration(extractedCode),
+        selection: selectedOccurrence.getScopeParentCursor()
       },
       // Replace extracted code with new variable.
       ...occurrencesSelections.map(selection => ({
-        code: parseId(variableName),
+        code: selectedOccurrence.toVariableId(variableName),
         selection
       }))
     ],
@@ -99,9 +92,7 @@ function findExtractableCode(
 ): ExtractableCode {
   let result: ExtractableCode = {
     selectedOccurrence: null,
-    otherOccurrencesLocs: [],
-    parseId: id => id,
-    parseCode: code => code
+    otherOccurrencesLocs: []
   };
 
   ast.traverseAST(code, {
@@ -122,37 +113,26 @@ function findExtractableCode(
         : node.loc;
       if (!loc) return;
 
-      result.selectedOccurrence = { path, loc };
-
-      result.parseId =
-        (ast.isJSXElement(node) || ast.isJSXText(node)) &&
-        ast.isJSX(path.parent)
-          ? id => `{${id}}`
-          : id => id;
-
-      result.parseCode = ast.isJSXText(node)
-        ? code => `"${code}"`
-        : code => code;
+      result.selectedOccurrence = new Occurrence(path, loc);
     }
   });
 
-  if (result.selectedOccurrence) {
-    const foundPath = result.selectedOccurrence.path;
+  const found = result.selectedOccurrence;
+  if (found) {
     ast.traverseAST(code, {
       enter(path) {
-        if (path.type !== foundPath.type) return;
+        if (path.type !== found.path.type) return;
         if (!ast.isSelectableNode(path.node)) return;
-        if (!ast.isSelectableNode(foundPath.node)) return;
+        if (!ast.isSelectableNode(found.path.node)) return;
 
         const pathSelection = Selection.fromAST(path.node.loc);
-        const foundPathSelection = Selection.fromAST(foundPath.node.loc);
-        if (pathSelection.isEqualTo(foundPathSelection)) return;
+        if (pathSelection.isEqualTo(found.selection)) return;
 
         // TODO: extract as "areEqual(pathA, pathB)" in AST
         if (
           ast.isStringLiteral(path.node) &&
-          ast.isStringLiteral(foundPath.node) &&
-          path.node.value === foundPath.node.value
+          ast.isStringLiteral(found.path.node) &&
+          path.node.value === found.path.node.value
         ) {
           result.otherOccurrencesLocs.push(path.node.loc);
         }
@@ -205,11 +185,54 @@ function isExtractable(path: ast.NodePath): boolean {
 type ExtractableCode = {
   selectedOccurrence: Occurrence | null;
   otherOccurrencesLocs: ast.SourceLocation[];
-  parseId: (id: Code) => Code;
-  parseCode: (code: Code) => Code;
 };
 
-type Occurrence = {
+class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
-};
+
+  constructor(path: ast.NodePath, loc: ast.SourceLocation) {
+    this.path = path;
+    this.loc = loc;
+  }
+
+  get selection() {
+    return Selection.fromAST(this.loc);
+  }
+
+  get indentation(): Code {
+    return " ".repeat(this.getIndentationLevel());
+  }
+
+  getScopeParentCursor(): Selection {
+    const position = this.getScopeParentPosition();
+    return Selection.fromPositions(position, position);
+  }
+
+  toVariableDeclaration(code: Code): Code {
+    const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
+    return `const extracted = ${extractedCode};\n${this.indentation}`;
+  }
+
+  toVariableId(id: Code): Code {
+    const shouldWrapInBraces =
+      (ast.isJSXElement(this.path.node) || ast.isJSXText(this.path.node)) &&
+      ast.isJSX(this.path.parent);
+
+    return shouldWrapInBraces ? `{${id}}` : id;
+  }
+
+  private getIndentationLevel(): IndentationLevel {
+    return this.getScopeParentPosition().character;
+  }
+
+  private getScopeParentPosition(): Position {
+    const parentPath = ast.findScopePath(this.path);
+    const parent = parentPath ? parentPath.node : this.path.node;
+    if (!parent.loc) return this.selection.start;
+
+    return Position.fromAST(parent.loc.start);
+  }
+}
+
+type IndentationLevel = number;
