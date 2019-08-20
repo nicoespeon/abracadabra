@@ -161,6 +161,28 @@ sendMessage(extracted);`;
       expect(result.code).toBe(expectedCode);
     });
 
+    it("should only extract occurrences in the scope of selected one", async () => {
+      const code = `function sayHello() {
+  track("said", "Hello");
+  console.log("Hello");
+}
+
+sendMessage("Hello");`;
+      const selection = Selection.cursorAt(1, 18);
+      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+
+      const result = await doExtractVariable(code, selection);
+
+      const expectedCode = `function sayHello() {
+  const extracted = "Hello";
+  track("said", extracted);
+  console.log(extracted);
+}
+
+sendMessage("Hello");`;
+      expect(result.code).toBe(expectedCode);
+    });
+
     // TODO: test all types of extracted variables
   });
 

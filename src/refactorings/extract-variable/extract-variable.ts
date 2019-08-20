@@ -114,28 +114,46 @@ function findExtractableCode(
     }
   });
 
-  const found = result.selectedOccurrence;
-  if (found) {
-    ast.traverseAST(code, {
-      enter(path) {
-        if (path.type !== found.path.type) return;
-        if (!ast.isSelectableNode(path.node)) return;
-        if (!ast.isSelectableNode(found.path.node)) return;
-
-        const pathSelection = Selection.fromAST(path.node.loc);
-        if (pathSelection.isEqualTo(found.selection)) return;
-
-        // TODO: extract as "areEqual(pathA, pathB)" in AST
-        if (
-          ast.isStringLiteral(path.node) &&
-          ast.isStringLiteral(found.path.node) &&
-          path.node.value === found.path.node.value
-        ) {
-          result.otherOccurrences.push(new Occurrence(path, path.node.loc));
-        }
-      }
-    });
+  if (result.selectedOccurrence) {
+    result.otherOccurrences = findOtherOccurrences(
+      result.selectedOccurrence,
+      code
+    );
   }
+
+  return result;
+}
+
+function findOtherOccurrences(
+  occurrence: Occurrence,
+  code: string
+): Occurrence[] {
+  let result: Occurrence[] = [];
+
+  const visitor = {
+    enter(path: ast.NodePath) {
+      const { node } = path;
+
+      if (path.type !== occurrence.path.type) return;
+      if (!ast.isSelectableNode(node)) return;
+      if (!ast.isSelectableNode(occurrence.path.node)) return;
+
+      const pathSelection = Selection.fromAST(node.loc);
+      if (pathSelection.isEqualTo(occurrence.selection)) return;
+
+      // TODO: extract as "areEqual(pathA, pathB)" in AST
+      if (
+        ast.isStringLiteral(path.node) &&
+        ast.isStringLiteral(occurrence.path.node) &&
+        path.node.value === occurrence.path.node.value
+      ) {
+        result.push(new Occurrence(path, node.loc));
+      }
+    }
+  };
+
+  const scopePath = occurrence.path.getFunctionParent();
+  scopePath ? scopePath.traverse(visitor) : ast.traverseAST(code, visitor);
 
   return result;
 }
