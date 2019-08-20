@@ -90,6 +90,10 @@ class Selection {
     );
   }
 
+  startsBefore(selection: Selection): boolean {
+    return this.start.isBefore(selection.start);
+  }
+
   isEqualTo(selection: Selection): boolean {
     return (
       this.start.isEqualTo(selection.start) && this.end.isEqualTo(selection.end)

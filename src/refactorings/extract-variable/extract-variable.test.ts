@@ -147,7 +147,20 @@ sendMessage(extracted);`;
       expect(result.code).toBe(expectedCode);
     });
 
-    // TODO: selection on Nth occurrence => extracted at correct position
+    it("should put the extraction above the top most occurrence", async () => {
+      const code = `console.log("Hello");
+sendMessage("Hello");`;
+      const selection = Selection.cursorAt(1, 15);
+      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+
+      const result = await doExtractVariable(code, selection);
+
+      const expectedCode = `const extracted = "Hello";
+console.log(extracted);
+sendMessage(extracted);`;
+      expect(result.code).toBe(expectedCode);
+    });
+
     // TODO: test all types of extracted variables
   });
 

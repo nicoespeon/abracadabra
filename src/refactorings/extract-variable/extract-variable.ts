@@ -29,6 +29,7 @@ async function extractVariable(
     choice === ReplaceChoice.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
+  const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
 
   await editor.readThenWrite(
     selectedOccurrence.selection,
@@ -36,7 +37,7 @@ async function extractVariable(
       // Insert new variable declaration.
       {
         code: selectedOccurrence.toVariableDeclaration(extractedCode),
-        selection: selectedOccurrence.getScopeParentCursor()
+        selection: topMostOccurrence.getScopeParentCursor()
       },
       // Replace extracted code with new variable.
       ...extractedOccurrences.map(occurrence => ({
@@ -49,6 +50,10 @@ async function extractVariable(
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);
+}
+
+function topToBottom(a: Occurrence, b: Occurrence): number {
+  return a.selection.startsBefore(b.selection) ? -1 : 1;
 }
 
 async function getChoice(
