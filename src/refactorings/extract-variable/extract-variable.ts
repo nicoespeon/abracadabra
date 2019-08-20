@@ -25,23 +25,13 @@ async function extractVariable(
   const choice = await getChoice(otherOccurrences, editor);
   if (choice === ReplaceChoice.None) return;
 
-  const variableName = "extracted";
-  const extractedSelection = selectedOccurrence.selection;
-
-  const cursorOnExtractedId = new Position(
-    extractedSelection.start.line + extractedSelection.height + 1,
-    extractedSelection.start.character + variableName.length
-  );
-
-  const occurrencesSelections =
+  const extractedOccurrences =
     choice === ReplaceChoice.AllOccurrences
-      ? [extractedSelection].concat(
-          otherOccurrences.map(({ selection }) => selection)
-        )
-      : [extractedSelection];
+      ? [selectedOccurrence].concat(otherOccurrences)
+      : [selectedOccurrence];
 
   await editor.readThenWrite(
-    extractedSelection,
+    selectedOccurrence.selection,
     extractedCode => [
       // Insert new variable declaration.
       {
@@ -49,12 +39,12 @@ async function extractVariable(
         selection: selectedOccurrence.getScopeParentCursor()
       },
       // Replace extracted code with new variable.
-      ...occurrencesSelections.map(selection => ({
-        code: selectedOccurrence.toVariableId(variableName),
-        selection
+      ...extractedOccurrences.map(occurrence => ({
+        code: occurrence.toVariableId(),
+        selection: occurrence.selection
       }))
     ],
-    cursorOnExtractedId
+    selectedOccurrence.positionOnExtractedId()
   );
 
   // Extracted symbol is located at `selection` => just trigger a rename.
@@ -192,6 +182,7 @@ type ExtractableCode = {
 class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
+  private variableName = "extracted";
 
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
@@ -206,6 +197,13 @@ class Occurrence {
     return " ".repeat(this.getIndentationLevel());
   }
 
+  positionOnExtractedId(): Position {
+    return new Position(
+      this.selection.start.line + this.selection.height + 1,
+      this.selection.start.character + this.variableName.length
+    );
+  }
+
   getScopeParentCursor(): Selection {
     const position = this.getScopeParentPosition();
     return Selection.fromPositions(position, position);
@@ -213,15 +211,17 @@ class Occurrence {
 
   toVariableDeclaration(code: Code): Code {
     const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
-    return `const extracted = ${extractedCode};\n${this.indentation}`;
+    return `const ${this.variableName} = ${extractedCode};\n${
+      this.indentation
+    }`;
   }
 
-  toVariableId(id: Code): Code {
+  toVariableId(): Code {
     const shouldWrapInBraces =
       (ast.isJSXElement(this.path.node) || ast.isJSXText(this.path.node)) &&
       ast.isJSX(this.path.parent);
 
-    return shouldWrapInBraces ? `{${id}}` : id;
+    return shouldWrapInBraces ? `{${this.variableName}}` : this.variableName;
   }
 
   private getIndentationLevel(): IndentationLevel {
