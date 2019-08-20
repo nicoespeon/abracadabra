@@ -13,19 +13,19 @@ async function extractVariable(
   editor: Editor
 ) {
   const {
-    selected_occurrence,
-    other_occurrences,
+    selectedOccurrence,
+    otherOccurrences,
     parseId,
     parseCode
   } = findExtractableCode(code, selection);
-  const { path, loc } = selected_occurrence;
+  const { path, loc } = selectedOccurrence;
 
   if (!path || !loc) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
   }
 
-  const occurrencesCount = other_occurrences.length;
+  const occurrencesCount = otherOccurrences.length;
   if (occurrencesCount > 0) {
     const choice = await editor.askUser([
       {
@@ -82,11 +82,11 @@ function findExtractableCode(
   selection: Selection
 ): ExtractableCode {
   let result: ExtractableCode = {
-    selected_occurrence: {
+    selectedOccurrence: {
       path: undefined,
       loc: null
     },
-    other_occurrences: [],
+    otherOccurrences: [],
     parseId: id => id,
     parseCode: code => code
   };
@@ -109,12 +109,12 @@ function findExtractableCode(
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      result.selected_occurrence.path = path;
-      result.selected_occurrence.loc = ast.isObjectProperty(node)
+      result.selectedOccurrence.path = path;
+      result.selectedOccurrence.loc = ast.isObjectProperty(node)
         ? findObjectPropertyLoc(selection, node) ||
-          result.selected_occurrence.loc
+          result.selectedOccurrence.loc
         : ast.isJSXExpressionContainer(node)
-        ? node.expression.loc || result.selected_occurrence.loc
+        ? node.expression.loc || result.selectedOccurrence.loc
         : node.loc;
 
       result.parseId =
@@ -129,7 +129,7 @@ function findExtractableCode(
     }
   });
 
-  const foundPath = result.selected_occurrence.path;
+  const foundPath = result.selectedOccurrence.path;
   if (foundPath) {
     ast.traverseAST(code, {
       enter(path) {
@@ -147,7 +147,7 @@ function findExtractableCode(
           ast.isStringLiteral(foundPath.node) &&
           path.node.value === foundPath.node.value
         ) {
-          result.other_occurrences.push({
+          result.otherOccurrences.push({
             path,
             loc: path.node.loc
           });
@@ -208,8 +208,8 @@ function isPartOfMemberExpression(path: ast.NodePath): boolean {
 }
 
 type ExtractableCode = {
-  selected_occurrence: Occurrence;
-  other_occurrences: Occurrence[];
+  selectedOccurrence: Occurrence;
+  otherOccurrences: Occurrence[];
   parseId: (id: Code) => Code;
   parseCode: (code: Code) => Code;
 };
