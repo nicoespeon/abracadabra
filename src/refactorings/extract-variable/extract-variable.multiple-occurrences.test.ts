@@ -4,6 +4,7 @@ import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 
 import { extractVariable, ReplaceChoice } from "./extract-variable";
+import { testEach } from "../../tests-helpers";
 
 describe("Extract Variable - Multiple occurrences", () => {
   let askUser: Editor["askUser"];
@@ -117,7 +118,42 @@ sendMessage("Hello");`;
     expect(result.code).toBe(expectedCode);
   });
 
-  // TODO: test all types of extracted variables
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+    "should extract variables of type",
+    [
+      {
+        description: "string",
+        code: `console.log("Hello");
+sendMessage("Hello");`,
+        expected: `const extracted = "Hello";
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "number",
+        code: `console.log(10);
+sendMessage(10);`,
+        expected: `const extracted = 10;
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "boolean",
+        code: `console.log(true);
+sendMessage(true);`,
+        expected: `const extracted = true;
+console.log(extracted);
+sendMessage(extracted);`
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {
+      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+
+      const result = await doExtractVariable(code, selection);
+
+      expect(result.code).toBe(expected);
+    }
+  );
 
   async function doExtractVariable(
     code: Code,

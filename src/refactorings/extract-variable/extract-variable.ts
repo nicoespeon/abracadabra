@@ -110,7 +110,8 @@ function findExtractableCode(
   if (result.selectedOccurrence) {
     result.otherOccurrences = findOtherOccurrences(
       result.selectedOccurrence,
-      code
+      code,
+      selection
     );
   }
 
@@ -119,7 +120,8 @@ function findExtractableCode(
 
 function findOtherOccurrences(
   occurrence: Occurrence,
-  code: string
+  code: string,
+  selection: Selection
 ): Occurrence[] {
   let result: Occurrence[] = [];
 
@@ -131,7 +133,10 @@ function findOtherOccurrences(
       if (!ast.isSelectableNode(node)) return;
       if (!ast.isSelectableNode(occurrence.path.node)) return;
 
-      const pathSelection = Selection.fromAST(node.loc);
+      const loc = getOccurrenceLoc(node, selection);
+      if (!loc) return;
+
+      const pathSelection = Selection.fromAST(loc);
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
       if (ast.areEqual(path, occurrence.path)) {
