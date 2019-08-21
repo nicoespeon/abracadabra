@@ -7,11 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Extract Variable now handles extraction of multiple occurrences!
+
+If the extracted variable has no other occurrence in scope, it will just perform the extraction as it does today.
+
+But if we can find other occurrences of the variable in the scope, then it will ask you what you want to do:
+
+1. "Replace all N occurrences". This is the default since it's what we want to do most of the time.
+1. "Replace this occurrence only". In case you only want to extract this one.
+
+![][demo-extract-variable-multiple-occurrences]
+
 ## [0.4.0] - 2019-08-18
 
 ### Changed
 
-- Flip If/Else now works better on [guard clause][guard-clause] patterns
+#### Flip If/Else now works better on [guard clause][guard-clause] patterns
 
 Consider this guard clause example:
 
@@ -118,6 +131,10 @@ function doSomething(someData) {
 [0.2.0]: https://github.com/nicoespeon/abracadabra/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/nicoespeon/abracadabra/compare/0.0.1...0.1.0
 [0.0.1]: https://github.com/nicoespeon/abracadabra/compare/224558fafc2c9247b637a74a7f17fe3c62140d47...0.0.1
+
+<!-- Demo images -->
+
+[demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 
 <!-- Links -->
 
