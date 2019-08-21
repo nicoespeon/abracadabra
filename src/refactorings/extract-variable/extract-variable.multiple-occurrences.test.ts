@@ -261,6 +261,14 @@ sendMessage(this.items[i]);`,
         expected: `const extracted = this.items[i];
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "new expression",
+        code: `console.log(new Actor("John"));
+sendMessage(new Actor("John"));`,
+        expected: `const extracted = new Actor("John");
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {

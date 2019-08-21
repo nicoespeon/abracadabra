@@ -153,6 +153,14 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     );
   }
 
+  // New Expressions
+  if (t.isNewExpression(nodeA) && t.isNewExpression(nodeB)) {
+    return (
+      areEqual(nodeA.callee, nodeB.callee) &&
+      areAllEqual(nodeA.arguments, nodeB.arguments)
+    );
+  }
+
   // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }
