@@ -5,53 +5,82 @@ import * as ast from "../../ast";
 
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
-export { extractVariable };
+export { extractVariable, ReplaceChoice };
 
 async function extractVariable(
   code: Code,
   selection: Selection,
   editor: Editor
 ) {
-  const { path, loc, parseId, parseCode } = findExtractableCode(
+  const { selectedOccurrence, otherOccurrences } = findExtractableCode(
     code,
     selection
   );
 
-  if (!path || !loc) {
+  if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFoundExtractableCode);
     return;
   }
 
-  const variableName = "extracted";
-  const extractedSelection = Selection.fromAST(loc);
-  const indentation = " ".repeat(extractedSelection.getIndentationLevel(path));
+  const choice = await getChoice(otherOccurrences, editor);
+  if (choice === ReplaceChoice.None) return;
 
-  const cursorOnExtractedId = new Position(
-    extractedSelection.start.line + extractedSelection.height + 1,
-    extractedSelection.start.character + variableName.length
-  );
+  const extractedOccurrences =
+    choice === ReplaceChoice.AllOccurrences
+      ? [selectedOccurrence].concat(otherOccurrences)
+      : [selectedOccurrence];
+  const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
 
   await editor.readThenWrite(
-    extractedSelection,
+    selectedOccurrence.selection,
     extractedCode => [
       // Insert new variable declaration.
       {
-        code: `const ${variableName} = ${parseCode(
-          extractedCode
-        )};\n${indentation}`,
-        selection: extractedSelection.putCursorAtScopeParentPosition(path)
+        code: selectedOccurrence.toVariableDeclaration(extractedCode),
+        selection: topMostOccurrence.getScopeParentCursor()
       },
       // Replace extracted code with new variable.
-      {
-        code: parseId(variableName),
-        selection: extractedSelection
-      }
+      ...extractedOccurrences.map(occurrence => ({
+        code: occurrence.toVariableId(),
+        selection: occurrence.selection
+      }))
     ],
-    cursorOnExtractedId
+    selectedOccurrence.positionOnExtractedId()
   );
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);
+}
+
+function topToBottom(a: Occurrence, b: Occurrence): number {
+  return a.selection.startsBefore(b.selection) ? -1 : 1;
+}
+
+async function getChoice(
+  otherOccurrences: Occurrence[],
+  editor: Editor
+): Promise<ReplaceChoice> {
+  const occurrencesCount = otherOccurrences.length;
+  if (occurrencesCount <= 0) return ReplaceChoice.ThisOccurrence;
+
+  const choice = await editor.askUser([
+    {
+      value: ReplaceChoice.AllOccurrences,
+      label: `Replace all ${occurrencesCount + 1} occurrences`
+    },
+    {
+      value: ReplaceChoice.ThisOccurrence,
+      label: "Replace this occurrence only"
+    }
+  ]);
+
+  return choice ? choice.value : ReplaceChoice.None;
+}
+
+enum ReplaceChoice {
+  AllOccurrences,
+  ThisOccurrence,
+  None
 }
 
 function findExtractableCode(
@@ -59,50 +88,78 @@ function findExtractableCode(
   selection: Selection
 ): ExtractableCode {
   let result: ExtractableCode = {
-    path: undefined,
-    loc: undefined,
-    parseId: id => id,
-    parseCode: code => code
+    selectedOccurrence: null,
+    otherOccurrences: []
   };
 
   ast.traverseAST(code, {
     enter(path) {
       if (!isExtractableContext(path.parent)) return;
-
-      if (isPartOfMemberExpression(path)) return;
-      if (isClassPropertyIdentifier(path)) return;
-      if (isVariableDeclarationIdentifier(path)) return;
-      if (isFunctionCallIdentifier(path)) return;
-      if (isJSXPartialElement(path)) return;
-      if (ast.isTemplateElement(path)) return;
-      if (ast.isBlockStatement(path)) return;
-      if (ast.isSpreadElement(path)) return;
-      // Don't extract object method because we don't handle `this`.
-      if (ast.isObjectMethod(path)) return;
+      if (!isExtractable(path)) return;
 
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      result.path = path;
-      result.loc = ast.isObjectProperty(node)
-        ? findObjectPropertyLoc(selection, node) || result.loc
-        : ast.isJSXExpressionContainer(node)
-        ? node.expression.loc || result.loc
-        : node.loc;
+      const loc = getOccurrenceLoc(node, selection);
+      if (!loc) return;
 
-      result.parseId =
-        (ast.isJSXElement(node) || ast.isJSXText(node)) &&
-        ast.isJSX(path.parent)
-          ? id => `{${id}}`
-          : id => id;
-
-      result.parseCode = ast.isJSXText(node)
-        ? code => `"${code}"`
-        : code => code;
+      result.selectedOccurrence = new Occurrence(path, loc);
     }
   });
 
+  if (result.selectedOccurrence) {
+    result.otherOccurrences = findOtherOccurrences(
+      result.selectedOccurrence,
+      code,
+      selection
+    );
+  }
+
   return result;
+}
+
+function findOtherOccurrences(
+  occurrence: Occurrence,
+  code: string,
+  selection: Selection
+): Occurrence[] {
+  let result: Occurrence[] = [];
+
+  const visitor = {
+    enter(path: ast.NodePath) {
+      const { node } = path;
+
+      if (path.type !== occurrence.path.type) return;
+      if (!ast.isSelectableNode(node)) return;
+      if (!ast.isSelectableNode(occurrence.path.node)) return;
+
+      const loc = getOccurrenceLoc(node, selection);
+      if (!loc) return;
+
+      const pathSelection = Selection.fromAST(loc);
+      if (pathSelection.isEqualTo(occurrence.selection)) return;
+
+      if (ast.areEqual(path.node, occurrence.path.node)) {
+        result.push(new Occurrence(path, node.loc));
+      }
+    }
+  };
+
+  const scopePath = occurrence.path.getFunctionParent();
+  scopePath ? scopePath.traverse(visitor) : ast.traverseAST(code, visitor);
+
+  return result;
+}
+
+function getOccurrenceLoc(
+  node: ast.SelectableNode,
+  selection: Selection
+): ast.SourceLocation | null {
+  return ast.isObjectProperty(node)
+    ? findObjectPropertyLoc(selection, node)
+    : ast.isJSXExpressionContainer(node)
+    ? node.expression.loc
+    : node.loc;
 }
 
 function findObjectPropertyLoc(
@@ -129,33 +186,82 @@ function isExtractableContext(node: ast.Node): boolean {
   );
 }
 
-function isClassPropertyIdentifier(path: ast.NodePath): boolean {
+function isExtractable(path: ast.NodePath): boolean {
   return (
-    ast.isClassProperty(path.parent) &&
-    !path.parent.computed &&
-    ast.isIdentifier(path.node)
+    !ast.isPartOfMemberExpression(path) &&
+    !ast.isClassPropertyIdentifier(path) &&
+    !ast.isVariableDeclarationIdentifier(path) &&
+    !ast.isFunctionCallIdentifier(path) &&
+    !ast.isJSXPartialElement(path) &&
+    !ast.isTemplateElement(path) &&
+    !ast.isBlockStatement(path) &&
+    !ast.isSpreadElement(path) &&
+    // Don't extract object method because we don't handle `this`.
+    !ast.isObjectMethod(path)
   );
 }
 
-function isVariableDeclarationIdentifier(path: ast.NodePath): boolean {
-  return ast.isVariableDeclarator(path.parent) && ast.isIdentifier(path.node);
-}
-
-function isFunctionCallIdentifier(path: ast.NodePath): boolean {
-  return ast.isCallExpression(path.parent) && path.parent.callee === path.node;
-}
-
-function isJSXPartialElement(path: ast.NodePath): boolean {
-  return ast.isJSXOpeningElement(path) || ast.isJSXClosingElement(path);
-}
-
-function isPartOfMemberExpression(path: ast.NodePath): boolean {
-  return ast.isIdentifier(path.node) && ast.isMemberExpression(path.parent);
-}
-
 type ExtractableCode = {
-  path: ast.NodePath | undefined;
-  loc: ast.SourceLocation | undefined;
-  parseId: (id: Code) => Code;
-  parseCode: (code: Code) => Code;
+  selectedOccurrence: Occurrence | null;
+  otherOccurrences: Occurrence[];
 };
+
+class Occurrence {
+  path: ast.NodePath;
+  loc: ast.SourceLocation;
+  private variableName = "extracted";
+
+  constructor(path: ast.NodePath, loc: ast.SourceLocation) {
+    this.path = path;
+    this.loc = loc;
+  }
+
+  get selection() {
+    return Selection.fromAST(this.loc);
+  }
+
+  get indentation(): Code {
+    return " ".repeat(this.getIndentationLevel());
+  }
+
+  positionOnExtractedId(): Position {
+    return new Position(
+      this.selection.start.line + this.selection.height + 1,
+      this.selection.start.character + this.variableName.length
+    );
+  }
+
+  getScopeParentCursor(): Selection {
+    const position = this.getScopeParentPosition();
+    return Selection.fromPositions(position, position);
+  }
+
+  toVariableDeclaration(code: Code): Code {
+    const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
+    return `const ${this.variableName} = ${extractedCode};\n${
+      this.indentation
+    }`;
+  }
+
+  toVariableId(): Code {
+    const shouldWrapInBraces =
+      (ast.isJSXElement(this.path.node) || ast.isJSXText(this.path.node)) &&
+      ast.isJSX(this.path.parent);
+
+    return shouldWrapInBraces ? `{${this.variableName}}` : this.variableName;
+  }
+
+  private getIndentationLevel(): IndentationLevel {
+    return this.getScopeParentPosition().character;
+  }
+
+  private getScopeParentPosition(): Position {
+    const parentPath = ast.findScopePath(this.path);
+    const parent = parentPath ? parentPath.node : this.path.node;
+    if (!parent.loc) return this.selection.start;
+
+    return Position.fromAST(parent.loc.start);
+  }
+}
+
+type IndentationLevel = number;

@@ -1,6 +1,6 @@
 import { Position } from "./position";
 import * as ast from "../ast";
-import { NodePath, ASTSelection } from "../ast";
+import { ASTSelection } from "../ast";
 
 export { Selection };
 
@@ -47,11 +47,6 @@ class Selection {
     return this.end.line - this.start.line;
   }
 
-  putCursorAtScopeParentPosition(path: NodePath): Selection {
-    const position = this.getScopeParentPosition(path);
-    return Selection.fromPositions(position, position);
-  }
-
   extendToStartOfLine(): Selection {
     return Selection.fromPositions(this.start.putAtStartOfLine(), this.end);
   }
@@ -79,10 +74,6 @@ class Selection {
       : this;
   }
 
-  getIndentationLevel(path: NodePath): IndentationLevel {
-    return this.getScopeParentPosition(path).character;
-  }
-
   isInsidePath(path: ast.NodePath): path is ast.SelectablePath {
     return this.isInsideNode(path.node);
   }
@@ -99,13 +90,13 @@ class Selection {
     );
   }
 
-  private getScopeParentPosition(path: NodePath): Position {
-    const parentPath = ast.findScopePath(path);
-    const parent = parentPath ? parentPath.node : path.node;
-    if (!parent.loc) return this.start;
+  startsBefore(selection: Selection): boolean {
+    return this.start.isBefore(selection.start);
+  }
 
-    return Position.fromAST(parent.loc.start);
+  isEqualTo(selection: Selection): boolean {
+    return (
+      this.start.isEqualTo(selection.start) && this.end.isEqualTo(selection.end)
+    );
   }
 }
-
-type IndentationLevel = number;

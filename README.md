@@ -91,6 +91,10 @@ It will extract the closest element from your cursor or partial selection.
 
 ![][demo-extract-variable-partial]
 
+It will also handle multiple occurrences.
+
+![][demo-extract-variable-multiple-occurrences]
+
 ### Inline Variable
 
 | Keybinding       | On Mac  |
@@ -358,6 +362,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/command-palette.png?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-partial.gif?raw=true
+[demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-variable.gif?raw=true
 [demo-inline-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-function.gif?raw=true
 [demo-negate-expression]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression.gif?raw=true
