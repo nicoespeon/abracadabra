@@ -160,6 +160,48 @@ sendMessage(undefined);`,
         expected: `const extracted = undefined;
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "array",
+        code: `console.log([1, 3, 4]);
+sendMessage([1, 3, 4]);`,
+        expected: `const extracted = [1, 3, 4];
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "object",
+        code: `console.log({ one: 1, foo: "bar" });
+sendMessage({ one: 1, foo: "bar" });`,
+        expected: `const extracted = { one: 1, foo: "bar" };
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "object",
+        code: `console.log([
+  {
+    one: 1,
+    foo: "bar",
+    elements: [[1, 2], "hello"]
+  }
+]);
+sendMessage([
+  {
+    one: 1,
+    foo: "bar",
+    elements: [[1, 2], "hello"]
+  }
+]);`,
+        expected: `const extracted = [
+  {
+    one: 1,
+    foo: "bar",
+    elements: [[1, 2], "hello"]
+  }
+];
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {

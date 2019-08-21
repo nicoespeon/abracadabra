@@ -139,7 +139,7 @@ function findOtherOccurrences(
       const pathSelection = Selection.fromAST(loc);
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
-      if (ast.areEqual(path, occurrence.path)) {
+      if (ast.areEqual(path.node, occurrence.path.node)) {
         result.push(new Occurrence(path, node.loc));
       }
     }

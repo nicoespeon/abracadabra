@@ -83,13 +83,36 @@ function isNonEmptyReturn(node: t.Node) {
   return t.isReturnStatement(node) && node.argument !== null;
 }
 
-function areEqual(pathA: NodePath, pathB: NodePath): boolean {
-  const nodeA = pathA.node;
-  const nodeB = pathB.node;
+function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
+  if (nodeA === null) return false;
+  if (nodeB === null) return false;
 
   if (t.isNullLiteral(nodeA) && t.isNullLiteral(nodeB)) return true;
   if (isUndefinedLiteral(nodeA) && isUndefinedLiteral(nodeB)) return true;
 
+  // Arrays
+  if (t.isArrayExpression(nodeA) && t.isArrayExpression(nodeB)) {
+    return nodeA.elements.every((element, i) =>
+      areEqual(element, nodeB.elements[i])
+    );
+  }
+
+  // Objects
+  if (t.isObjectExpression(nodeA) && t.isObjectExpression(nodeB)) {
+    return nodeA.properties.every((property, i) =>
+      areEqual(property, nodeB.properties[i])
+    );
+  }
+  if (t.isObjectProperty(nodeA) && t.isObjectProperty(nodeB)) {
+    return areEqual(nodeA.key, nodeB.key) && areEqual(nodeA.value, nodeB.value);
+  }
+
+  // Identifiers
+  if (t.isIdentifier(nodeA) && t.isIdentifier(nodeB)) {
+    return nodeA.name === nodeB.name;
+  }
+
+  // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }
 
