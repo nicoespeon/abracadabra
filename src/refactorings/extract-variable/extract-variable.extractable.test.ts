@@ -1,193 +1,12 @@
-import { Editor, Code, Command, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { extractVariable, ReplaceChoice } from "./extract-variable";
+import { extractVariable } from "./extract-variable";
 
-describe("Extract Variable", () => {
-  let delegateToEditor: Editor["delegate"];
-  let showErrorMessage: Editor["showError"];
-  let askUser: Editor["askUser"];
-
-  beforeEach(() => {
-    delegateToEditor = jest.fn();
-    showErrorMessage = jest.fn();
-    askUser = jest.fn();
-  });
-
-  describe("basic extraction behaviour", () => {
-    const code = `console.log("Hello!");`;
-    const extractableSelection = new Selection([0, 12], [0, 20]);
-
-    it("should update code with extractable selection", async () => {
-      const result = await doExtractVariable(code, extractableSelection);
-
-      expect(result.code).toBe(`const extracted = "Hello!";
-console.log(extracted);`);
-    });
-
-    it("should expand selection to the nearest extractable code", async () => {
-      const selectionInExtractableCode = Selection.cursorAt(0, 15);
-
-      const result = await doExtractVariable(code, selectionInExtractableCode);
-
-      expect(result.code).toBe(`const extracted = "Hello!";
-console.log(extracted);`);
-    });
-
-    it("should rename extracted symbol", async () => {
-      await doExtractVariable(code, extractableSelection);
-
-      expect(delegateToEditor).toBeCalledTimes(1);
-      expect(delegateToEditor).toBeCalledWith(Command.RenameSymbol);
-    });
-
-    it("should extract with correct indentation", async () => {
-      const code = `    function sayHello() {
-      console.log("Hello!");
-    }`;
-      const extractableSelection = new Selection([1, 18], [1, 26]);
-
-      const result = await doExtractVariable(code, extractableSelection);
-
-      expect(result.code).toBe(`    function sayHello() {
-      const extracted = "Hello!";
-      console.log(extracted);
-    }`);
-    });
-
-    describe("invalid selection", () => {
-      const invalidSelection = new Selection([0, 10], [0, 14]);
-
-      it("should not extract anything", async () => {
-        const result = await doExtractVariable(code, invalidSelection);
-
-        expect(result.code).toBe(code);
-      });
-
-      it("should show an error message", async () => {
-        await doExtractVariable(code, invalidSelection);
-
-        expect(showErrorMessage).toBeCalledWith(
-          ErrorReason.DidNotFoundExtractableCode
-        );
-      });
-    });
-  });
-
-  describe("asking user for multiple occurrences", () => {
-    it("should not ask the user if there is only one occurrence", async () => {
-      const code = `console.log("Hello");`;
-      const selection = Selection.cursorAt(0, 15);
-
-      await doExtractVariable(code, selection);
-
-      expect(askUser).not.toBeCalled();
-    });
-
-    it("should ask the user what to replace if there are multiple occurrences", async () => {
-      const code = `console.log("Hello");
-sendMessage("Hello");`;
-      const selection = Selection.cursorAt(0, 15);
-
-      await doExtractVariable(code, selection);
-
-      expect(askUser).toBeCalledWith([
-        {
-          value: ReplaceChoice.AllOccurrences,
-          label: "Replace all 2 occurrences"
-        },
-        {
-          value: ReplaceChoice.ThisOccurrence,
-          label: "Replace this occurrence only"
-        }
-      ]);
-    });
-
-    it("should stop extraction if user doesn't select a choice", async () => {
-      const code = `console.log("Hello");
-sendMessage("Hello");`;
-      const selection = Selection.cursorAt(0, 15);
-      askUser = jest.fn(() => Promise.resolve(undefined));
-
-      const result = await doExtractVariable(code, selection);
-
-      expect(result.code).toBe(code);
-    });
-
-    it("should extract only selected occurrence if user says so", async () => {
-      const code = `console.log("Hello");
-sendMessage("Hello");`;
-      const selection = Selection.cursorAt(0, 15);
-      askUser = jest.fn(([_, this_occurrence]) =>
-        Promise.resolve(this_occurrence)
-      );
-
-      const result = await doExtractVariable(code, selection);
-
-      const expectedCode = `const extracted = "Hello";
-console.log(extracted);
-sendMessage("Hello");`;
-      expect(result.code).toBe(expectedCode);
-    });
-
-    it("should extract all occurrences if user says so", async () => {
-      const code = `console.log("Hello");
-sendMessage("Hello");`;
-      const selection = Selection.cursorAt(0, 15);
-      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
-
-      const result = await doExtractVariable(code, selection);
-
-      const expectedCode = `const extracted = "Hello";
-console.log(extracted);
-sendMessage(extracted);`;
-      expect(result.code).toBe(expectedCode);
-    });
-
-    it("should put the extraction above the top most occurrence", async () => {
-      const code = `console.log("Hello");
-sendMessage("Hello");`;
-      const selection = Selection.cursorAt(1, 15);
-      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
-
-      const result = await doExtractVariable(code, selection);
-
-      const expectedCode = `const extracted = "Hello";
-console.log(extracted);
-sendMessage(extracted);`;
-      expect(result.code).toBe(expectedCode);
-    });
-
-    it("should only extract occurrences in the scope of selected one", async () => {
-      const code = `function sayHello() {
-  track("said", "Hello");
-  console.log("Hello");
-}
-
-sendMessage("Hello");`;
-      const selection = Selection.cursorAt(1, 18);
-      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
-
-      const result = await doExtractVariable(code, selection);
-
-      const expectedCode = `function sayHello() {
-  const extracted = "Hello";
-  track("said", extracted);
-  console.log(extracted);
-}
-
-sendMessage("Hello");`;
-      expect(result.code).toBe(expectedCode);
-    });
-
-    // TODO: test all types of extracted variables
-  });
-
-  // 👩‍🌾 All patterns we can extract
-
+describe("Extract Variable - Patterns we can extract", () => {
   testEach<{
     code: Code;
     selection: Selection;
@@ -891,46 +710,11 @@ const sayHello = extracted;`
 }`);
   });
 
-  // ✋ Patterns that can't be extracted
-
-  testEach<{ code: Code; selection: Selection }>(
-    "should not extract",
-    [
-      {
-        description: "a function declaration",
-        code: `function sayHello() {
-  console.log("hello");
-}`,
-        selection: new Selection([0, 0], [2, 1])
-      },
-      {
-        description: "a class property identifier",
-        code: `class Logger {
-  message = "Hello!";
-}`,
-        selection: new Selection([1, 2], [1, 9])
-      },
-      {
-        description: "the identifier from a variable declaration",
-        code: `const foo = "bar";`,
-        selection: new Selection([0, 6], [0, 9])
-      }
-    ],
-    async ({ code, selection }) => {
-      const result = await doExtractVariable(code, selection);
-
-      expect(result.code).toBe(code);
-    }
-  );
-
   async function doExtractVariable(
     code: Code,
     selection: Selection
   ): Promise<{ code: Code; position: Position }> {
     const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    editor.delegate = delegateToEditor;
-    editor.askUser = askUser;
     await extractVariable(code, selection, editor);
     return { code: editor.code, position: editor.position };
   }
