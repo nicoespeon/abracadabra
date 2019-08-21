@@ -100,14 +100,7 @@ function findExtractableCode(
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      const currentLoc = result.selectedOccurrence
-        ? result.selectedOccurrence.loc
-        : null;
-      const loc = ast.isObjectProperty(node)
-        ? findObjectPropertyLoc(selection, node) || currentLoc
-        : ast.isJSXExpressionContainer(node)
-        ? node.expression.loc || currentLoc
-        : node.loc;
+      const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
 
       result.selectedOccurrence = new Occurrence(path, loc);
@@ -151,6 +144,17 @@ function findOtherOccurrences(
   scopePath ? scopePath.traverse(visitor) : ast.traverseAST(code, visitor);
 
   return result;
+}
+
+function getOccurrenceLoc(
+  node: ast.SelectableNode,
+  selection: Selection
+): ast.SourceLocation | null {
+  return ast.isObjectProperty(node)
+    ? findObjectPropertyLoc(selection, node)
+    : ast.isJSXExpressionContainer(node)
+    ? node.expression.loc
+    : node.loc;
 }
 
 function findObjectPropertyLoc(
