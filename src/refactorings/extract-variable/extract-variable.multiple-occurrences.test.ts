@@ -252,6 +252,15 @@ sendMessage(!(isValid && days > 10));`,
         expected: `const extracted = !(isValid && days > 10);
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "member expression",
+        code: `console.log(this.items[i]);
+sendMessage(this.items[i]);`,
+        selection: Selection.cursorAt(0, 25),
+        expected: `const extracted = this.items[i];
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {

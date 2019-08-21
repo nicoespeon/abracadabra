@@ -89,6 +89,7 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
 
   if (t.isNullLiteral(nodeA) && t.isNullLiteral(nodeB)) return true;
   if (isUndefinedLiteral(nodeA) && isUndefinedLiteral(nodeB)) return true;
+  if (t.isThisExpression(nodeA) && t.isThisExpression(nodeB)) return true;
 
   // Arrays
   if (t.isArrayExpression(nodeA) && t.isArrayExpression(nodeB)) {
@@ -141,6 +142,14 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     return (
       nodeA.operator === nodeB.operator &&
       areEqual(nodeA.argument, nodeB.argument)
+    );
+  }
+
+  // Member Expressions
+  if (t.isMemberExpression(nodeA) && t.isMemberExpression(nodeB)) {
+    return (
+      areEqual(nodeA.property, nodeB.property) &&
+      areEqual(nodeA.object, nodeB.object)
     );
   }
 
