@@ -92,16 +92,12 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
 
   // Arrays
   if (t.isArrayExpression(nodeA) && t.isArrayExpression(nodeB)) {
-    return nodeA.elements.every((element, i) =>
-      areEqual(element, nodeB.elements[i])
-    );
+    return areAllEqual(nodeA.elements, nodeB.elements);
   }
 
   // Objects
   if (t.isObjectExpression(nodeA) && t.isObjectExpression(nodeB)) {
-    return nodeA.properties.every((property, i) =>
-      areEqual(property, nodeB.properties[i])
-    );
+    return areAllEqual(nodeA.properties, nodeB.properties);
   }
   if (t.isObjectProperty(nodeA) && t.isObjectProperty(nodeB)) {
     return areEqual(nodeA.key, nodeB.key) && areEqual(nodeA.value, nodeB.value);
@@ -112,8 +108,31 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     return nodeA.name === nodeB.name;
   }
 
+  // Functions
+  if (
+    t.isArrowFunctionExpression(nodeA) &&
+    t.isArrowFunctionExpression(nodeB)
+  ) {
+    return areEqual(nodeA.body, nodeB.body);
+  }
+
+  // Call Expressions
+  if (t.isCallExpression(nodeA) && t.isCallExpression(nodeB)) {
+    return (
+      areEqual(nodeA.callee, nodeB.callee) &&
+      areAllEqual(nodeA.arguments, nodeB.arguments)
+    );
+  }
+
   // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
+}
+
+function areAllEqual(
+  nodesA: (t.Node | null)[],
+  nodesB: (t.Node | null)[]
+): boolean {
+  return nodesA.every((node, i) => areEqual(node, nodesB[i]));
 }
 
 function isTemplateExpression(node: t.Node): node is TemplateExpression {

@@ -202,6 +202,30 @@ sendMessage([
 ];
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "arrow function expression",
+        code: `console.log(() => "Hello");
+sendMessage(() => "Hello");`,
+        expected: `const extracted = () => "Hello";
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "call expression",
+        code: `console.log(sayHello());
+sendMessage(sayHello());`,
+        expected: `const extracted = sayHello();
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "call expression with arguments",
+        code: `console.log(sayHello(name));
+sendMessage(sayHello(name));`,
+        expected: `const extracted = sayHello(name);
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {
