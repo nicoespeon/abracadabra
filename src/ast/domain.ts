@@ -161,6 +161,36 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     );
   }
 
+  // JSX Elements
+  if (t.isJSXElement(nodeA) && t.isJSXElement(nodeB)) {
+    const areClosingElementsEqual =
+      (nodeA.closingElement === null && nodeB.closingElement === null) ||
+      areEqual(nodeA.closingElement, nodeB.closingElement);
+
+    return (
+      areEqual(nodeA.openingElement, nodeB.openingElement) &&
+      areClosingElementsEqual &&
+      areAllEqual(nodeA.children, nodeB.children)
+    );
+  }
+  if (t.isJSXOpeningElement(nodeA) && t.isJSXOpeningElement(nodeB)) {
+    return (
+      areEqual(nodeA.name, nodeB.name) &&
+      areAllEqual(nodeA.attributes, nodeB.attributes)
+    );
+  }
+  if (t.isJSXClosingElement(nodeA) && t.isJSXClosingElement(nodeB)) {
+    return areEqual(nodeA.name, nodeB.name);
+  }
+  if (t.isJSXAttribute(nodeA) && t.isJSXAttribute(nodeB)) {
+    return (
+      areEqual(nodeA.name, nodeB.name) && areEqual(nodeA.value, nodeB.value)
+    );
+  }
+  if (t.isJSXIdentifier(nodeA) && t.isJSXIdentifier(nodeB)) {
+    return nodeA.name === nodeB.name;
+  }
+
   // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }

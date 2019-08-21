@@ -269,6 +269,30 @@ sendMessage(new Actor("John"));`,
         expected: `const extracted = new Actor("John");
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "JSX Element",
+        code: `console.log(<p>Hello</p>);
+sendMessage(<p>Hello</p>);`,
+        expected: `const extracted = <p>Hello</p>;
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "JSX Element with attributes",
+        code: `console.log(<p color="black">Hello</p>);
+sendMessage(<p color="black">Hello</p>);`,
+        expected: `const extracted = <p color="black">Hello</p>;
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "self-closing JSX Element",
+        code: `console.log(<Dialog color="black" />);
+sendMessage(<Dialog color="black" />);`,
+        expected: `const extracted = <Dialog color="black" />;
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {
