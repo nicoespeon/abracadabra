@@ -16,6 +16,7 @@ export {
   isGuardClause,
   isGuardConsequentBlock,
   isNonEmptyReturn,
+  areEqual,
   isTemplateExpression,
   isInBranchedLogic,
   templateElement,
@@ -80,6 +81,17 @@ function isGuardConsequentBlock(
 
 function isNonEmptyReturn(node: t.Node) {
   return t.isReturnStatement(node) && node.argument !== null;
+}
+
+function areEqual(pathA: NodePath, pathB: NodePath): boolean {
+  const nodeA = pathA.node;
+  const nodeB = pathB.node;
+
+  return (
+    t.isStringLiteral(nodeA) &&
+    t.isStringLiteral(nodeB) &&
+    nodeA.value === nodeB.value
+  );
 }
 
 function isTemplateExpression(node: t.Node): node is TemplateExpression {

@@ -141,12 +141,7 @@ function findOtherOccurrences(
       const pathSelection = Selection.fromAST(node.loc);
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
-      // TODO: extract as "areEqual(pathA, pathB)" in AST
-      if (
-        ast.isStringLiteral(path.node) &&
-        ast.isStringLiteral(occurrence.path.node) &&
-        path.node.value === occurrence.path.node.value
-      ) {
+      if (ast.areEqual(path, occurrence.path)) {
         result.push(new Occurrence(path, node.loc));
       }
     }
