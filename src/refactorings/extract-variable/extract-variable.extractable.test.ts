@@ -666,6 +666,13 @@ console.log(
   console.log(name);
 };
 const sayHello = extracted;`
+      },
+      {
+        description: "a for statement",
+        code: `for (var i = 0; i < this.items.length; i++) {}`,
+        selection: Selection.cursorAt(0, 27),
+        expected: `const extracted = this.items;
+for (var i = 0; i < extracted.length; i++) {}`
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {

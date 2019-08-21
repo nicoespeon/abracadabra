@@ -20,6 +20,10 @@ But if we can find other occurrences of the variable in the scope, then it will 
 
 ![][demo-extract-variable-multiple-occurrences]
 
+### Fixed
+
+- Extract Variable now works in for statements
+
 ## [0.4.0] - 2019-08-18
 
 ### Changed
