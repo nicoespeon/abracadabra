@@ -144,6 +144,22 @@ sendMessage(true);`,
         expected: `const extracted = true;
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "null",
+        code: `console.log(null);
+sendMessage(null);`,
+        expected: `const extracted = null;
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "undefined",
+        code: `console.log(undefined);
+sendMessage(undefined);`,
+        expected: `const extracted = undefined;
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {

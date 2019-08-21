@@ -87,6 +87,9 @@ function areEqual(pathA: NodePath, pathB: NodePath): boolean {
   const nodeA = pathA.node;
   const nodeB = pathB.node;
 
+  if (t.isNullLiteral(nodeA) && t.isNullLiteral(nodeB)) return true;
+  if (isUndefinedLiteral(nodeA) && isUndefinedLiteral(nodeB)) return true;
+
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }
 
