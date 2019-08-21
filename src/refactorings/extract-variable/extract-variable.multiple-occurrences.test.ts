@@ -226,6 +226,32 @@ sendMessage(sayHello(name));`,
         expected: `const extracted = sayHello(name);
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "binary expression",
+        code: `console.log(days <= 10);
+sendMessage(days <= 10);`,
+        selection: Selection.cursorAt(0, 18),
+        expected: `const extracted = days <= 10;
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "logical expression",
+        code: `console.log(isValid && days > 10);
+sendMessage(isValid && days > 10);`,
+        selection: Selection.cursorAt(0, 21),
+        expected: `const extracted = isValid && days > 10;
+console.log(extracted);
+sendMessage(extracted);`
+      },
+      {
+        description: "unary expression",
+        code: `console.log(!(isValid && days > 10));
+sendMessage(!(isValid && days > 10));`,
+        expected: `const extracted = !(isValid && days > 10);
+console.log(extracted);
+sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {

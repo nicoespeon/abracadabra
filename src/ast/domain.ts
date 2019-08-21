@@ -124,6 +124,26 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     );
   }
 
+  // Binary & Logical Expressions
+  if (
+    (t.isLogicalExpression(nodeA) && t.isLogicalExpression(nodeB)) ||
+    (t.isBinaryExpression(nodeA) && t.isBinaryExpression(nodeB))
+  ) {
+    return (
+      nodeA.operator === nodeB.operator &&
+      areEqual(nodeA.left, nodeB.left) &&
+      areEqual(nodeA.right, nodeB.right)
+    );
+  }
+
+  // Unary Expressions
+  if (t.isUnaryExpression(nodeA) && t.isUnaryExpression(nodeB)) {
+    return (
+      nodeA.operator === nodeB.operator &&
+      areEqual(nodeA.argument, nodeB.argument)
+    );
+  }
+
   // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }
