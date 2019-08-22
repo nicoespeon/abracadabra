@@ -22,6 +22,7 @@ But if we can find other occurrences of the variable in the scope, then it will 
 
 ### Fixed
 
+- Extract Variable now works for call expressions in JSX Elements (e.g. `<Button onClick={this.extractMe()} />`)
 - Extract Variable now works in for statements
 
 ## [0.4.0] - 2019-08-18

@@ -673,6 +673,17 @@ const sayHello = extracted;`
         selection: Selection.cursorAt(0, 27),
         expected: `const extracted = this.items;
 for (var i = 0; i < extracted.length; i++) {}`
+      },
+      {
+        description: "a call expression in a JSX Element",
+        code: `function render() {
+  return <Button onClick={this.onClick()} />;
+}`,
+        selection: Selection.cursorAt(1, 34),
+        expected: `function render() {
+  const extracted = this.onClick();
+  return <Button onClick={extracted} />;
+}`
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {
