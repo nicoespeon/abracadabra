@@ -88,6 +88,7 @@
     "onCommand:abracadabra.removeBracesFromArrowFunction",
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.renameSymbol",
+    "onCommand:abracadabra.replaceBinaryWithAssignment",
     "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
     "onLanguage:javascript",
@@ -170,6 +171,11 @@
       {
         "command": "abracadabra.renameSymbol",
         "title": "Rename Symbol",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.replaceBinaryWithAssignment",
+        "title": "Replace Binary with Expression",
         "category": "Abracadabra"
       },
       {
@@ -449,6 +455,22 @@
         },
         {
           "command": "abracadabra.renameSymbol",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.replaceBinaryWithAssignment",
           "when": "editorLangId == typescriptreact"
         },
         {

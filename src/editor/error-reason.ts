@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFoundBinaryExpression,
   DidNotFoundExtractableCode,
   DidNotFoundInlinableCode,
   DidNotFoundInlinableCodeIdentifiers,
@@ -31,6 +32,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFoundBinaryExpression:
+      return didNotFound("a binary expression to convert");
+
     case ErrorReason.DidNotFoundExtractableCode:
       return didNotFound("a valid code to extract");
 
