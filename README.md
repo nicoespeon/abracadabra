@@ -64,6 +64,7 @@ Working around the syntax:
 1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
 1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
 1. [Convert to Template Literal](#convert-to-template-literal)
+1. [Replace Binary with Assignment](#replace-binary-with-assignment)
 
 ### Rename Symbol
 
@@ -247,6 +248,14 @@ It's also useful when you want to turn a string into a template string.
 
 ![][demo-convert-to-template-literal]
 
+### Replace Binary with Assignment
+
+> 💡 Available as Quick Fix
+
+This one might seem obscure, but it's really replacing `+` with `+=`. Whenever it's possible, Abracadabra will propose you to refactor the code for a shorter (assignment) syntax.
+
+![][demo-replace-binary-with-assignment]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -381,6 +390,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
+[demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 
 <!-- Logo -->
 
