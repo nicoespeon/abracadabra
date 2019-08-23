@@ -166,6 +166,10 @@ fees = fees + 10;`
       {
         description: "array pattern",
         code: `[total] = total + 1;`
+      },
+      {
+        description: "substraction (identifier on the right)",
+        code: `total = 1 - total;`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0) }) => {

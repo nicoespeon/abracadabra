@@ -32,16 +32,13 @@ function tryToReplaceBinaryWithAssignment(
   };
 }
 
+const symmetricOperators = ["+", "*", "|", "&", "^"];
 const assignableOperators = [
-  "+",
+  ...symmetricOperators,
   "-",
   "/",
-  "*",
   "**",
   "%",
-  "&",
-  "|",
-  "^",
   ">>",
   "<<",
   ">>>"
@@ -61,24 +58,32 @@ function updateCode(
 
       const identifier = node.left;
       const binaryExpression = node.right;
+      operator = binaryExpression.operator;
 
-      const isIdentifierOnTheRight = ast.areEqual(
-        identifier,
-        binaryExpression.right
-      );
       const isIdentifierOnTheLeft = ast.areEqual(
         identifier,
         binaryExpression.left
       );
 
-      if (!isIdentifierOnTheRight && !isIdentifierOnTheLeft) return;
+      // If the operator is symmetric, the identifier can be on the right.
+      const isSymmetricOperator = symmetricOperators.includes(operator);
+      const isIdentifierOnTheRight = ast.areEqual(
+        identifier,
+        binaryExpression.right
+      );
+
+      if (
+        !isIdentifierOnTheLeft &&
+        (!isSymmetricOperator || !isIdentifierOnTheRight)
+      ) {
+        return;
+      }
       if (!assignableOperators.includes(binaryExpression.operator)) return;
 
       const newRight = isIdentifierOnTheRight
         ? binaryExpression.left
         : binaryExpression.right;
 
-      operator = binaryExpression.operator;
       path.replaceWith(
         ast.assignmentExpression(`${operator}=`, identifier, newRight)
       );
