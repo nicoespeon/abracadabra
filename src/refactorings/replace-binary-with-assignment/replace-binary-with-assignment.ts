@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
 
-export { replaceBinaryWithAssignment, canReplaceBinaryWithAssignment };
+export { replaceBinaryWithAssignment, tryToReplaceBinaryWithAssignment };
 
 async function replaceBinaryWithAssignment(
   code: Code,
@@ -11,7 +11,7 @@ async function replaceBinaryWithAssignment(
 ) {
   const updatedCode = updateCode(code, selection);
 
-  if (!updatedCode.hasCodeChanged) {
+  if (!updatedCode || !updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundBinaryExpression);
     return;
   }
@@ -19,11 +19,17 @@ async function replaceBinaryWithAssignment(
   await editor.write(updatedCode.code);
 }
 
-function canReplaceBinaryWithAssignment(
+function tryToReplaceBinaryWithAssignment(
   code: Code,
   selection: Selection
-): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+): { canReplace: boolean; operator: ast.BinaryExpression["operator"] } {
+  const updatedCode = updateCode(code, selection);
+  if (!updatedCode) return { canReplace: false, operator: "+" };
+
+  return {
+    canReplace: updatedCode.hasCodeChanged,
+    operator: updatedCode.operator
+  };
 }
 
 const assignableOperators = [
@@ -41,8 +47,13 @@ const assignableOperators = [
   ">>>"
 ];
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(
+  code: Code,
+  selection: Selection
+): ast.Transformed & { operator: ast.BinaryExpression["operator"] } | null {
+  let operator: ast.BinaryExpression["operator"] | undefined;
+
+  const result = ast.transform(code, {
     AssignmentExpression(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -67,14 +78,15 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         ? binaryExpression.left
         : binaryExpression.right;
 
+      operator = binaryExpression.operator;
       path.replaceWith(
-        ast.assignmentExpression(
-          `${binaryExpression.operator}=`,
-          identifier,
-          newRight
-        )
+        ast.assignmentExpression(`${operator}=`, identifier, newRight)
       );
       path.stop();
     }
   });
+
+  if (!operator) return null;
+
+  return { ...result, operator };
 }

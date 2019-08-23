@@ -7,7 +7,7 @@ import {
 import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
-import { canReplaceBinaryWithAssignment } from "./replace-binary-with-assignment";
+import { tryToReplaceBinaryWithAssignment } from "./replace-binary-with-assignment";
 
 class ReplaceBinaryWithAssignmentActionProvider implements CodeActionProvider {
   public readonly kind = vscode.CodeActionKind.RefactorRewrite;
@@ -19,10 +19,11 @@ class ReplaceBinaryWithAssignmentActionProvider implements CodeActionProvider {
     const code = document.getText();
     const selection = createSelectionFromVSCode(range);
 
-    if (!canReplaceBinaryWithAssignment(code, selection)) return;
+    const attempt = tryToReplaceBinaryWithAssignment(code, selection);
+    if (!attempt.canReplace) return;
 
     const action = new vscode.CodeAction(
-      "✨ Replace binary with assignment",
+      `✨ Replace = with ${attempt.operator}=`,
       this.kind
     );
     action.isPreferred = true;
