@@ -164,7 +164,7 @@ class InlinableIdentifier implements InlinableCode {
     ast.traverse(this.scope, {
       enter(node) {
         if (!ast.isAssignmentExpression(node)) return;
-        if (!isMatchingIdentifier(id, node.left)) return;
+        if (!ast.areEqual(id, node.left)) return;
 
         result = true;
       }
@@ -237,7 +237,7 @@ function isShadowIn(
   function isDeclaredInFunction(node: ast.Node): boolean {
     return (
       ast.isFunctionDeclaration(node) &&
-      node.params.some(node => isMatchingIdentifier(id, node))
+      node.params.some(node => ast.areEqual(id, node))
     );
   }
 
@@ -250,17 +250,13 @@ function isShadowIn(
           child.declarations.some(
             declaration =>
               ast.isVariableDeclarator(declaration) &&
-              isMatchingIdentifier(id, declaration.id) &&
+              ast.areEqual(id, declaration.id) &&
               // Of course, if it's the inlined variable it's not a shadow!
               declaration.id !== id
           )
       )
     );
   }
-}
-
-function isMatchingIdentifier(id: ast.Identifier, node: ast.Node): boolean {
-  return ast.isIdentifier(node) && node.name === id.name;
 }
 
 function getCodeToRemoveSelection(inlinableCode: InlinableCode): Selection {
