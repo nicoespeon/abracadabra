@@ -100,11 +100,7 @@ function findInlinableCode(
         if (!ast.isSelectableIdentifier(id)) return;
         if (!ast.isSelectableNode(init)) return;
 
-        result = {
-          id,
-          valueLoc: init.loc,
-          scope: parent
-        };
+        result = new InlinableIdentifier(id, parent, init.loc);
         return;
       }
 
@@ -133,12 +129,12 @@ function findInlinableCode(
               other: previousDeclaration.loc
             };
 
-        result = {
+        result = new InlinableIdentifier(
           id,
-          valueLoc: init.loc,
-          multiDeclarationsLocs,
-          scope: parent
-        };
+          parent,
+          init.loc,
+          multiDeclarationsLocs
+        );
       });
     }
   });
@@ -253,6 +249,25 @@ interface InlinableCode {
   id: ast.SelectableIdentifier;
   valueLoc: ast.SourceLocation;
   multiDeclarationsLocs?: MultiDeclarationsLocs;
+}
+
+class InlinableIdentifier implements InlinableCode {
+  id: ast.SelectableIdentifier;
+  scope: ast.Node;
+  valueLoc: ast.SourceLocation;
+  multiDeclarationsLocs?: MultiDeclarationsLocs;
+
+  constructor(
+    id: ast.SelectableIdentifier,
+    scope: ast.Node,
+    valueLoc: ast.SourceLocation,
+    multiDeclarationsLocs?: MultiDeclarationsLocs
+  ) {
+    this.id = id;
+    this.scope = scope;
+    this.valueLoc = valueLoc;
+    this.multiDeclarationsLocs = multiDeclarationsLocs;
+  }
 }
 
 interface MultiDeclarationsLocs {
