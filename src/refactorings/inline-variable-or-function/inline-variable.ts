@@ -89,17 +89,13 @@ function findInlinableCode(
       declarations.forEach((declaration, index) => {
         if (!selection.isInsideNode(declaration)) return;
 
-        const { id, init } = declaration;
-        if (!ast.isSelectableIdentifier(id)) return;
-        if (!ast.isSelectableNode(init)) return;
-
         const previousDeclaration = declarations[index - 1];
         const nextDeclaration = declarations[index + 1];
         if (!previousDeclaration && !nextDeclaration) return;
 
         // We prefer to use the next declaration by default.
         // Fallback on previous declaration when current is the last one.
-        const multiDeclarationsLocs = !!nextDeclaration
+        const declarationsLocs = !!nextDeclaration
           ? {
               isOtherAfterCurrent: true,
               current: declaration.loc,
@@ -111,12 +107,13 @@ function findInlinableCode(
               other: previousDeclaration.loc
             };
 
-        result = new InlinableIdentifier(
-          id,
-          parent,
-          init.loc,
-          multiDeclarationsLocs
-        );
+        const { id, init } = declaration;
+        if (!ast.isSelectableIdentifier(id)) return;
+        if (!ast.isSelectableNode(init)) return;
+
+        const inlinableId = new InlinableIdentifier(id, parent, init.loc);
+
+        result = new InlinableDeclarations(inlinableId, declarationsLocs);
       });
     }
   });
@@ -141,18 +138,15 @@ class InlinableIdentifier implements InlinableCode {
 
   private id: ast.SelectableIdentifier;
   private scope: ast.Node;
-  private multiDeclarationsLocs?: MultiDeclarationsLocs;
 
   constructor(
     id: ast.SelectableIdentifier,
     scope: ast.Node,
-    valueLoc: ast.SourceLocation,
-    multiDeclarationsLocs?: MultiDeclarationsLocs
+    valueLoc: ast.SourceLocation
   ) {
     this.id = id;
     this.scope = scope;
     this.selection = Selection.fromAST(valueLoc);
-    this.multiDeclarationsLocs = multiDeclarationsLocs;
   }
 
   get isRedeclared(): boolean {
@@ -217,14 +211,45 @@ class InlinableIdentifier implements InlinableCode {
   }
 
   get codeToRemoveSelection(): Selection {
-    if (!this.multiDeclarationsLocs) {
-      return this.selection
-        .extendStartTo(Selection.fromAST(this.id.loc))
-        .extendToStartOfLine()
-        .extendToStartOfNextLine();
-    }
+    return this.selection
+      .extendStartTo(Selection.fromAST(this.id.loc))
+      .extendToStartOfLine()
+      .extendToStartOfNextLine();
+  }
+}
 
-    const { isOtherAfterCurrent, current, other } = this.multiDeclarationsLocs;
+// 📦 Composites
+
+class InlinableDeclarations implements InlinableCode {
+  private child: InlinableCode;
+  private declarationsLocs: MultiDeclarationsLocs;
+
+  constructor(
+    child: InlinableCode,
+    multiDeclarationsLocs: MultiDeclarationsLocs
+  ) {
+    this.child = child;
+    this.declarationsLocs = multiDeclarationsLocs;
+  }
+
+  get selection(): Selection {
+    return this.child.selection;
+  }
+
+  get isRedeclared(): boolean {
+    return this.child.isRedeclared;
+  }
+
+  get isExported(): boolean {
+    return this.child.isExported;
+  }
+
+  get identifiersToReplace(): IdentifierToReplace[] {
+    return this.child.identifiersToReplace;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    const { isOtherAfterCurrent, current, other } = this.declarationsLocs;
     return isOtherAfterCurrent
       ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
       : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
