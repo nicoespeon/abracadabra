@@ -19,19 +19,17 @@ async function inlineVariable(
     return;
   }
 
-  const { scope, id } = inlinableCode;
-
-  if (isRedeclaredIn(scope, id)) {
+  if (inlinableCode.isRedeclared) {
     editor.showError(ErrorReason.CantInlineRedeclaredVariables);
     return;
   }
 
-  if (findExportedIdNames(scope).includes(id.name)) {
+  if (inlinableCode.isExported) {
     editor.showError(ErrorReason.CantInlineExportedVariables);
     return;
   }
 
-  const idsToReplace = findIdentifiersToReplace(scope, id);
+  const idsToReplace = inlinableCode.identifiersToReplace;
 
   if (idsToReplace.length === 0) {
     editor.showError(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
@@ -57,21 +55,6 @@ async function inlineVariable(
       }
     ];
   });
-}
-
-function isRedeclaredIn(scope: ast.Node, id: ast.Identifier): boolean {
-  let result = false;
-
-  ast.traverse(scope, {
-    enter(node) {
-      if (!ast.isAssignmentExpression(node)) return;
-      if (!isMatchingIdentifier(id, node.left)) return;
-
-      result = true;
-    }
-  });
-
-  return result;
 }
 
 function findInlinableCode(
@@ -142,46 +125,98 @@ function findInlinableCode(
   return result;
 }
 
-function findIdentifiersToReplace(
-  scope: ast.Node,
-  id: ast.SelectableIdentifier
-): IdentifierToReplace[] {
-  let result: IdentifierToReplace[] = [];
+// 🎭 Component interface
 
-  ast.traverse(scope, {
-    enter(node, ancestors) {
-      if (!ast.isSelectableNode(node)) return;
-      if (!isMatchingIdentifier(id, node)) return;
-      if (isShadowIn(id, ancestors)) return;
+interface InlinableCode {
+  id: ast.SelectableIdentifier;
+  valueLoc: ast.SourceLocation;
+  multiDeclarationsLocs?: MultiDeclarationsLocs;
+  isRedeclared: boolean;
+  isExported: boolean;
+  identifiersToReplace: IdentifierToReplace[];
+}
 
-      const selection = Selection.fromAST(node.loc);
-      const isSameIdentifier = selection.isInsideNode(id);
-      if (isSameIdentifier) return;
+// 🍂 Leaves
 
-      const parent = last(ancestors);
-      if (ast.isFunctionDeclaration(parent)) return;
-      if (ast.isObjectProperty(parent.node) && parent.node.key === node) return;
-      if (
-        ast.isMemberExpression(parent.node) &&
-        parent.node.property === node
-      ) {
-        return;
+class InlinableIdentifier implements InlinableCode {
+  id: ast.SelectableIdentifier;
+  valueLoc: ast.SourceLocation;
+  multiDeclarationsLocs?: MultiDeclarationsLocs;
+
+  private scope: ast.Node;
+
+  constructor(
+    id: ast.SelectableIdentifier,
+    scope: ast.Node,
+    valueLoc: ast.SourceLocation,
+    multiDeclarationsLocs?: MultiDeclarationsLocs
+  ) {
+    this.id = id;
+    this.scope = scope;
+    this.valueLoc = valueLoc;
+    this.multiDeclarationsLocs = multiDeclarationsLocs;
+  }
+
+  get isRedeclared(): boolean {
+    let result = false;
+
+    const id = this.id;
+    ast.traverse(this.scope, {
+      enter(node) {
+        if (!ast.isAssignmentExpression(node)) return;
+        if (!isMatchingIdentifier(id, node.left)) return;
+
+        result = true;
       }
+    });
 
-      result.push({
-        loc: node.loc,
-        isInUnaryExpression: ast.isUnaryExpression(parent.node),
-        shorthandKey:
-          ast.isObjectProperty(parent.node) &&
-          parent.node.shorthand &&
-          ast.isIdentifier(node)
-            ? node.name
-            : null
-      });
-    }
-  });
+    return result;
+  }
 
-  return result;
+  get isExported(): boolean {
+    return findExportedIdNames(this.scope).includes(this.id.name);
+  }
+
+  get identifiersToReplace(): IdentifierToReplace[] {
+    let result: IdentifierToReplace[] = [];
+
+    const id = this.id;
+    ast.traverse(this.scope, {
+      enter(node, ancestors) {
+        if (!ast.isSelectableNode(node)) return;
+        if (!ast.areEqual(id, node)) return;
+        if (isShadowIn(id, ancestors)) return;
+
+        const selection = Selection.fromAST(node.loc);
+        const isSameIdentifier = selection.isInsideNode(id);
+        if (isSameIdentifier) return;
+
+        const parent = last(ancestors);
+        if (ast.isFunctionDeclaration(parent)) return;
+        if (ast.isObjectProperty(parent.node) && parent.node.key === node)
+          return;
+        if (
+          ast.isMemberExpression(parent.node) &&
+          parent.node.property === node
+        ) {
+          return;
+        }
+
+        result.push({
+          loc: node.loc,
+          isInUnaryExpression: ast.isUnaryExpression(parent.node),
+          shorthandKey:
+            ast.isObjectProperty(parent.node) &&
+            parent.node.shorthand &&
+            ast.isIdentifier(node)
+              ? node.name
+              : null
+        });
+      }
+    });
+
+    return result;
+  }
 }
 
 interface IdentifierToReplace {
@@ -242,32 +277,6 @@ function getCodeToRemoveSelection(inlinableCode: InlinableCode): Selection {
   return isOtherAfterCurrent
     ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
     : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
-}
-
-interface InlinableCode {
-  scope: ast.Node;
-  id: ast.SelectableIdentifier;
-  valueLoc: ast.SourceLocation;
-  multiDeclarationsLocs?: MultiDeclarationsLocs;
-}
-
-class InlinableIdentifier implements InlinableCode {
-  id: ast.SelectableIdentifier;
-  scope: ast.Node;
-  valueLoc: ast.SourceLocation;
-  multiDeclarationsLocs?: MultiDeclarationsLocs;
-
-  constructor(
-    id: ast.SelectableIdentifier,
-    scope: ast.Node,
-    valueLoc: ast.SourceLocation,
-    multiDeclarationsLocs?: MultiDeclarationsLocs
-  ) {
-    this.id = id;
-    this.scope = scope;
-    this.valueLoc = valueLoc;
-    this.multiDeclarationsLocs = multiDeclarationsLocs;
-  }
 }
 
 interface MultiDeclarationsLocs {
