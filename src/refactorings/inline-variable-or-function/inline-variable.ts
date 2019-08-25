@@ -36,8 +36,7 @@ async function inlineVariable(
     return;
   }
 
-  const inlinedCodeSelection = Selection.fromAST(inlinableCode.valueLoc);
-  await editor.readThenWrite(inlinedCodeSelection, inlinedCode => {
+  await editor.readThenWrite(inlinableCode.selection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
       ...idsToReplace.map(({ loc, isInUnaryExpression, shorthandKey }) => ({
@@ -51,7 +50,7 @@ async function inlineVariable(
       // Remove the variable declaration
       {
         code: "",
-        selection: getCodeToRemoveSelection(inlinableCode)
+        selection: inlinableCode.codeToRemoveSelection
       }
     ];
   });
@@ -128,22 +127,21 @@ function findInlinableCode(
 // 🎭 Component interface
 
 interface InlinableCode {
-  id: ast.SelectableIdentifier;
-  valueLoc: ast.SourceLocation;
-  multiDeclarationsLocs?: MultiDeclarationsLocs;
   isRedeclared: boolean;
   isExported: boolean;
   identifiersToReplace: IdentifierToReplace[];
+  selection: Selection;
+  codeToRemoveSelection: Selection;
 }
 
 // 🍂 Leaves
 
 class InlinableIdentifier implements InlinableCode {
-  id: ast.SelectableIdentifier;
-  valueLoc: ast.SourceLocation;
-  multiDeclarationsLocs?: MultiDeclarationsLocs;
+  selection: Selection;
 
+  private id: ast.SelectableIdentifier;
   private scope: ast.Node;
+  private multiDeclarationsLocs?: MultiDeclarationsLocs;
 
   constructor(
     id: ast.SelectableIdentifier,
@@ -153,7 +151,7 @@ class InlinableIdentifier implements InlinableCode {
   ) {
     this.id = id;
     this.scope = scope;
-    this.valueLoc = valueLoc;
+    this.selection = Selection.fromAST(valueLoc);
     this.multiDeclarationsLocs = multiDeclarationsLocs;
   }
 
@@ -217,6 +215,20 @@ class InlinableIdentifier implements InlinableCode {
 
     return result;
   }
+
+  get codeToRemoveSelection(): Selection {
+    if (!this.multiDeclarationsLocs) {
+      return this.selection
+        .extendStartTo(Selection.fromAST(this.id.loc))
+        .extendToStartOfLine()
+        .extendToStartOfNextLine();
+    }
+
+    const { isOtherAfterCurrent, current, other } = this.multiDeclarationsLocs;
+    return isOtherAfterCurrent
+      ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
+      : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
+  }
 }
 
 interface IdentifierToReplace {
@@ -257,22 +269,6 @@ function isShadowIn(
       )
     );
   }
-}
-
-function getCodeToRemoveSelection(inlinableCode: InlinableCode): Selection {
-  const { multiDeclarationsLocs } = inlinableCode;
-
-  if (!multiDeclarationsLocs) {
-    return Selection.fromAST(inlinableCode.valueLoc)
-      .extendStartTo(Selection.fromAST(inlinableCode.id.loc))
-      .extendToStartOfLine()
-      .extendToStartOfNextLine();
-  }
-
-  const { isOtherAfterCurrent, current, other } = multiDeclarationsLocs;
-  return isOtherAfterCurrent
-    ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
-    : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
 }
 
 interface MultiDeclarationsLocs {
