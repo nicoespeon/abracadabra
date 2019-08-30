@@ -74,9 +74,29 @@ function findInlinableCode(
         const { id, init } = declarations[0];
         if (!ast.isSelectableNode(init)) return;
         if (!ast.isSelectableNode(id)) return;
-        if (!ast.isIdentifier(id)) return;
 
-        result = new InlinableIdentifier(id, parent, init.loc);
+        if (ast.isIdentifier(id)) {
+          result = new InlinableIdentifier(id, parent, init.loc);
+        } else if (ast.isObjectPattern(id)) {
+          if (!ast.isSelectableIdentifier(init)) return;
+
+          const property = id.properties[0];
+          if (ast.isRestElement(property)) return;
+
+          const propertyId = property.key;
+          const propertyInit = property.value;
+          if (!ast.isSelectableIdentifier(propertyInit)) return;
+          if (!ast.isSelectableNode(propertyId)) return;
+          if (!ast.isIdentifier(propertyId)) return;
+
+          const child = new InlinableIdentifier(
+            propertyId,
+            parent,
+            propertyInit.loc
+          );
+
+          result = new InlinableObjectPattern(child, init.name);
+        }
         return;
       }
 
@@ -318,4 +338,48 @@ interface MultiDeclarationsLocs {
   isOtherAfterCurrent: boolean;
   current: ast.SourceLocation;
   other: ast.SourceLocation;
+}
+
+class InlinableObjectPattern implements InlinableCode {
+  private child: InlinableCode;
+  private initName: string;
+
+  constructor(child: InlinableCode, initName: string) {
+    this.child = child;
+    this.initName = initName;
+  }
+
+  get isRedeclared(): boolean {
+    return this.child.isRedeclared;
+  }
+
+  get isExported(): boolean {
+    return this.child.isExported;
+  }
+
+  get hasIdentifiersToUpdate(): boolean {
+    return this.child.hasIdentifiersToUpdate;
+  }
+
+  get selection(): Selection {
+    return this.child.selection;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    return this.child.codeToRemoveSelection;
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return this.child.updateIdentifiersWith(inlinedCode).map(update => ({
+      ...update,
+      code: this.prependObjectValueWithInitName(update.code)
+    }));
+  }
+
+  private prependObjectValueWithInitName(code: Code): Code {
+    const separator = ": ";
+    const [key, value] = code.split(separator);
+
+    return [key, separator, this.initName, ".", value].join("");
+  }
 }

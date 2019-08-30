@@ -182,6 +182,13 @@ export { hello };`,
 
 const hello = "Some other thing";
 export { hello };`
+      },
+      {
+        description: "a destructured variable",
+        code: `const { userId } = session;
+messages.map(message => ({ userId }));`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `messages.map(message => ({ userId: session.userId }));`
       }
     ],
     async ({ code, selection, expected }) => {
