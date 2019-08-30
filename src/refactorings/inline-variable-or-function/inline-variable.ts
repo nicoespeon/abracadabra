@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, Code, ErrorReason, Update } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
 import { last } from "../../array-helpers";
@@ -29,9 +29,7 @@ async function inlineVariable(
     return;
   }
 
-  const idsToReplace = inlinableCode.identifiersToReplace;
-
-  if (idsToReplace.length === 0) {
+  if (!inlinableCode.hasIdentifiersToUpdate) {
     editor.showError(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
     return;
   }
@@ -39,14 +37,7 @@ async function inlineVariable(
   await editor.readThenWrite(inlinableCode.selection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
-      ...idsToReplace.map(({ loc, isInUnaryExpression, shorthandKey }) => ({
-        code: isInUnaryExpression
-          ? `(${inlinedCode})`
-          : shorthandKey
-          ? `${shorthandKey}: ${inlinedCode}`
-          : inlinedCode,
-        selection: Selection.fromAST(loc)
-      })),
+      ...inlinableCode.updateIdentifiersWith(inlinedCode),
       // Remove the variable declaration
       {
         code: "",
@@ -130,9 +121,10 @@ function findInlinableCode(
 interface InlinableCode {
   isRedeclared: boolean;
   isExported: boolean;
-  identifiersToReplace: IdentifierToReplace[];
+  hasIdentifiersToUpdate: boolean;
   selection: Selection;
   codeToRemoveSelection: Selection;
+  updateIdentifiersWith: (inlinedCode: Code) => Update[];
 }
 
 // 🍂 Leaves
@@ -142,6 +134,7 @@ class InlinableIdentifier implements InlinableCode {
 
   private id: ast.SelectableIdentifier;
   private scope: ast.Node;
+  private identifiersToReplace: IdentifierToReplace[] = [];
 
   constructor(
     id: ast.SelectableIdentifier,
@@ -151,16 +144,18 @@ class InlinableIdentifier implements InlinableCode {
     this.id = id;
     this.scope = scope;
     this.selection = Selection.fromAST(valueLoc);
+    this.computeIdentifiersToReplace();
   }
 
   get isRedeclared(): boolean {
     let result = false;
 
-    const id = this.id;
+    // We have to alias `this` because traversal rebinds the context of the options.
+    const self = this;
     ast.traverse(this.scope, {
       enter(node) {
         if (!ast.isAssignmentExpression(node)) return;
-        if (!ast.areEqual(id, node.left)) return;
+        if (!ast.areEqual(self.id, node.left)) return;
 
         result = true;
       }
@@ -173,18 +168,41 @@ class InlinableIdentifier implements InlinableCode {
     return findExportedIdNames(this.scope).includes(this.id.name);
   }
 
-  get identifiersToReplace(): IdentifierToReplace[] {
-    let result: IdentifierToReplace[] = [];
+  get hasIdentifiersToUpdate(): boolean {
+    return this.identifiersToReplace.length > 0;
+  }
 
-    const id = this.id;
+  get codeToRemoveSelection(): Selection {
+    return this.selection
+      .extendStartTo(Selection.fromAST(this.id.loc))
+      .extendToStartOfLine()
+      .extendToStartOfNextLine();
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return this.identifiersToReplace.map(
+      ({ loc, isInUnaryExpression, shorthandKey }) => ({
+        code: isInUnaryExpression
+          ? `(${inlinedCode})`
+          : shorthandKey
+          ? `${shorthandKey}: ${inlinedCode}`
+          : inlinedCode,
+        selection: Selection.fromAST(loc)
+      })
+    );
+  }
+
+  private computeIdentifiersToReplace() {
+    // We have to alias `this` because traversal rebinds the context of the options.
+    const self = this;
     ast.traverse(this.scope, {
       enter(node, ancestors) {
         if (!ast.isSelectableNode(node)) return;
-        if (!ast.areEqual(id, node)) return;
-        if (isShadowIn(id, ancestors)) return;
+        if (!ast.areEqual(self.id, node)) return;
+        if (isShadowIn(self.id, ancestors)) return;
 
         const selection = Selection.fromAST(node.loc);
-        const isSameIdentifier = selection.isInsideNode(id);
+        const isSameIdentifier = selection.isInsideNode(self.id);
         if (isSameIdentifier) return;
 
         const parent = last(ancestors);
@@ -198,7 +216,7 @@ class InlinableIdentifier implements InlinableCode {
           return;
         }
 
-        result.push({
+        self.identifiersToReplace.push({
           loc: node.loc,
           isInUnaryExpression: ast.isUnaryExpression(parent.node),
           shorthandKey:
@@ -210,53 +228,6 @@ class InlinableIdentifier implements InlinableCode {
         });
       }
     });
-
-    return result;
-  }
-
-  get codeToRemoveSelection(): Selection {
-    return this.selection
-      .extendStartTo(Selection.fromAST(this.id.loc))
-      .extendToStartOfLine()
-      .extendToStartOfNextLine();
-  }
-}
-
-// 📦 Composites
-
-class InlinableDeclarations implements InlinableCode {
-  private child: InlinableCode;
-  private declarationsLocs: MultiDeclarationsLocs;
-
-  constructor(
-    child: InlinableCode,
-    multiDeclarationsLocs: MultiDeclarationsLocs
-  ) {
-    this.child = child;
-    this.declarationsLocs = multiDeclarationsLocs;
-  }
-
-  get selection(): Selection {
-    return this.child.selection;
-  }
-
-  get isRedeclared(): boolean {
-    return this.child.isRedeclared;
-  }
-
-  get isExported(): boolean {
-    return this.child.isExported;
-  }
-
-  get identifiersToReplace(): IdentifierToReplace[] {
-    return this.child.identifiersToReplace;
-  }
-
-  get codeToRemoveSelection(): Selection {
-    const { isOtherAfterCurrent, current, other } = this.declarationsLocs;
-    return isOtherAfterCurrent
-      ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
-      : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
   }
 }
 
@@ -297,6 +268,48 @@ function isShadowIn(
           )
       )
     );
+  }
+}
+
+// 📦 Composites
+
+class InlinableDeclarations implements InlinableCode {
+  private child: InlinableCode;
+  private declarationsLocs: MultiDeclarationsLocs;
+
+  constructor(
+    child: InlinableCode,
+    multiDeclarationsLocs: MultiDeclarationsLocs
+  ) {
+    this.child = child;
+    this.declarationsLocs = multiDeclarationsLocs;
+  }
+
+  get isRedeclared(): boolean {
+    return this.child.isRedeclared;
+  }
+
+  get isExported(): boolean {
+    return this.child.isExported;
+  }
+
+  get hasIdentifiersToUpdate(): boolean {
+    return this.child.hasIdentifiersToUpdate;
+  }
+
+  get selection(): Selection {
+    return this.child.selection;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    const { isOtherAfterCurrent, current, other } = this.declarationsLocs;
+    return isOtherAfterCurrent
+      ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
+      : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return this.child.updateIdentifiersWith(inlinedCode);
   }
 }
 
