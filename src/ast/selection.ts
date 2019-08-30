@@ -36,7 +36,9 @@ function isSelectableNode(node: t.Node | null): node is SelectableNode {
   return !!node && !!node.loc;
 }
 
-function isSelectableIdentifier(node: t.Node): node is SelectableIdentifier {
+function isSelectableIdentifier(
+  node: t.Node | null
+): node is SelectableIdentifier {
   return t.isIdentifier(node) && isSelectableNode(node);
 }
 
