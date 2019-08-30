@@ -63,7 +63,9 @@ function findInlinableCode(
   let result: InlinableCode | null = null;
 
   ast.traverseAST(code, {
-    enter({ node, parent }) {
+    enter(path) {
+      const { node, parent } = path;
+
       // It seems variable declaration inside a named export may have no loc.
       // Use the named export loc in that situation.
       if (ast.isExportNamedDeclaration(parent) && !ast.isSelectableNode(node)) {
