@@ -1,6 +1,6 @@
 ---
 name: ✨ Feature request
-about: Suggest an idea for this project (e.g. a new refactoring)
+about: When a refactoring doesn't exist or you want to suggest a new idea
 title: ""
 labels: ":sparkles: Feature"
 assignees: ""
