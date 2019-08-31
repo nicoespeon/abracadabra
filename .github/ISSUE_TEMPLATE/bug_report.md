@@ -1,6 +1,6 @@
 ---
 name: 🐛 Bug report
-about: Create a report to help us improve
+about: When a refactoring changes existing behaviour, it's a bug
 title: ""
 labels: ":bug: Bug"
 assignees: ""
