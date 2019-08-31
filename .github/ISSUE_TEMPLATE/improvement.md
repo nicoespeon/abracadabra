@@ -1,5 +1,5 @@
 ---
-name: 💪 Improvement
+name: 💪 Improvement suggestion
 about: When a refactoring doesn't run on a specific case or the result could be optimized
 title: ""
 labels: ":muscle: Improvement"
