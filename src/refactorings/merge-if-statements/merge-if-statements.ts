@@ -26,7 +26,13 @@ function canMergeIfStatements(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     IfStatement(path) {
-      const nestedStatement = getMatchingNestedStatement(path, selection);
+      if (!selection.isInsidePath(path)) return;
+
+      const { alternate, consequent } = path.node;
+
+      if (alternate) return;
+
+      const nestedStatement = getNestedIfStatementIn(consequent);
       if (!nestedStatement) return;
 
       // Since we visit nodes from parent to children, first check
@@ -58,7 +64,12 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     IfStatement(childPath) {
-      if (!getMatchingNestedStatement(childPath, selection)) return;
+      if (!selection.isInsidePath(childPath)) return;
+
+      const { alternate, consequent } = childPath.node;
+      if (alternate) return;
+      if (!getNestedIfStatementIn(consequent)) return;
+
       result = true;
       childPath.stop();
     }
@@ -67,23 +78,18 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function getMatchingNestedStatement(
-  path: ast.NodePath<ast.IfStatement>,
-  selection: Selection
+function getNestedIfStatementIn(
+  statement: ast.Statement
 ): ast.IfStatement | null {
-  if (!selection.isInsidePath(path)) return null;
-  if (path.node.alternate) return null;
-
-  const { consequent } = path.node;
-  if (ast.isBlockStatement(consequent) && consequent.body.length > 1) {
+  if (ast.isBlockStatement(statement) && statement.body.length > 1) {
     return null;
   }
 
-  const nestedStatement = ast.isBlockStatement(consequent)
-    ? consequent.body[0] // We tested there is no other element in body.
-    : consequent;
-  if (!ast.isIfStatement(nestedStatement)) return null;
-  if (nestedStatement.alternate) return null;
+  const nestedIfStatement = ast.isBlockStatement(statement)
+    ? statement.body[0] // We tested there is no other element in body.
+    : statement;
+  if (!ast.isIfStatement(nestedIfStatement)) return null;
+  if (nestedIfStatement.alternate) return null;
 
-  return nestedStatement;
+  return nestedIfStatement;
 }
