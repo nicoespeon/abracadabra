@@ -85,7 +85,7 @@ describe("Split If Statement", () => {
       },
       {
         description:
-          "nested if statements, cursor on nested, deepest nested doesn't match",
+          "nested if statements, cursor on nested, deepest nested has an alternate node",
         code: `if (isValid) {
   if (isCorrect) {
     if (shouldDoSomething) {
