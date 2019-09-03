@@ -30,26 +30,33 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       const { alternate, consequent } = path.node;
 
-      if (alternate) return;
+      if (alternate) {
+        const nestedStatement = getNestedIfStatementIn(alternate);
+        if (!nestedStatement) return;
 
-      const nestedStatement = getNestedIfStatementIn(consequent);
-      if (!nestedStatement) return;
+        path.node.alternate = nestedStatement;
+      } else {
+        const nestedStatement = getNestedIfStatementIn(consequent);
+        if (!nestedStatement) return;
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+        // Since we visit nodes from parent to children, first check
+        // if a child would match the selection closer.
+        if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const nestedConsequent = nestedStatement.consequent;
-      const nestedConsequentStatements = ast.isBlockStatement(nestedConsequent)
-        ? nestedConsequent.body
-        : [nestedConsequent];
+        const nestedConsequent = nestedStatement.consequent;
+        const nestedConsequentStatements = ast.isBlockStatement(
+          nestedConsequent
+        )
+          ? nestedConsequent.body
+          : [nestedConsequent];
 
-      path.node.test = ast.logicalExpression(
-        "&&",
-        path.node.test,
-        nestedStatement.test
-      );
-      path.node.consequent = ast.blockStatement(nestedConsequentStatements);
+        path.node.test = ast.logicalExpression(
+          "&&",
+          path.node.test,
+          nestedStatement.test
+        );
+        path.node.consequent = ast.blockStatement(nestedConsequentStatements);
+      }
 
       path.stop();
     }
