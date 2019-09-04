@@ -7,7 +7,7 @@ import {
 import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
-import { canMergeIfStatements } from "./merge-if-statements";
+import { tryMergeIfStatements } from "./merge-if-statements";
 
 class MergeIfStatementsActionProvider implements CodeActionProvider {
   public readonly kind = vscode.CodeActionKind.RefactorRewrite;
@@ -19,9 +19,14 @@ class MergeIfStatementsActionProvider implements CodeActionProvider {
     const code = document.getText();
     const selection = createSelectionFromVSCode(range);
 
-    if (!canMergeIfStatements(code, selection)) return;
+    const attempt = tryMergeIfStatements(code, selection);
+    if (!attempt.canMerge) return;
 
-    const action = new vscode.CodeAction("✨ Merge if statements", this.kind);
+    const title = attempt.mergeAlternate
+      ? "✨ Merge else-if"
+      : "✨ Merge if statements";
+
+    const action = new vscode.CodeAction(title, this.kind);
     action.isPreferred = false;
     action.command = {
       command: commandKey,

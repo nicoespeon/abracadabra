@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
 
-export { mergeIfStatements, canMergeIfStatements };
+export { mergeIfStatements, tryMergeIfStatements };
 
 async function mergeIfStatements(
   code: Code,
@@ -19,35 +19,87 @@ async function mergeIfStatements(
   await editor.write(updatedCode.code);
 }
 
-function canMergeIfStatements(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function tryMergeIfStatements(
+  code: Code,
+  selection: Selection
+): { canMerge: boolean; mergeAlternate: boolean } {
+  const updatedCode = updateCode(code, selection);
+
+  return {
+    canMerge: updatedCode.hasCodeChanged,
+    mergeAlternate: updatedCode.mergeAlternate
+  };
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(
+  code: Code,
+  selection: Selection
+): ast.Transformed & { mergeAlternate: boolean } {
+  let mergeAlternate = false;
+
+  const result = ast.transform(code, {
     IfStatement(path) {
-      const nestedStatement = getMatchingNestedStatement(path, selection);
-      if (!nestedStatement) return;
+      if (!selection.isInsidePath(path)) return;
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+      const { alternate, consequent } = path.node;
 
-      const nestedConsequent = nestedStatement.consequent;
-      const nestedConsequentStatements = ast.isBlockStatement(nestedConsequent)
-        ? nestedConsequent.body
-        : [nestedConsequent];
-
-      path.node.test = ast.logicalExpression(
-        "&&",
-        path.node.test,
-        nestedStatement.test
-      );
-      path.node.consequent = ast.blockStatement(nestedConsequentStatements);
-
-      path.stop();
+      if (alternate) {
+        mergeAlternate = true;
+        mergeAlternateWithNestedIf(path, alternate, selection);
+      } else {
+        mergeAlternate = false;
+        mergeConsequentWithNestedIf(path, consequent, selection);
+      }
     }
   });
+
+  return { ...result, mergeAlternate };
+}
+
+function mergeAlternateWithNestedIf(
+  path: ast.NodePath<ast.IfStatement>,
+  alternate: ast.IfStatement["alternate"],
+  selection: Selection
+) {
+  // Since we visit nodes from parent to children, first check
+  // if a child would match the selection closer.
+  if (hasChildWhichMatchesSelection(path, selection)) return;
+
+  if (!ast.isBlockStatement(alternate)) return;
+
+  const nestedStatement = getNestedIfStatementIn(alternate);
+  if (!nestedStatement) return;
+
+  path.node.alternate = nestedStatement;
+  path.stop();
+}
+
+function mergeConsequentWithNestedIf(
+  path: ast.NodePath<ast.IfStatement>,
+  consequent: ast.IfStatement["consequent"],
+  selection: Selection
+) {
+  // Since we visit nodes from parent to children, first check
+  // if a child would match the selection closer.
+  if (hasChildWhichMatchesSelection(path, selection)) return;
+
+  const nestedIfStatement = getNestedIfStatementIn(consequent);
+  if (!nestedIfStatement) return;
+  if (nestedIfStatement.alternate) return;
+
+  const nestedConsequent = nestedIfStatement.consequent;
+  const nestedConsequentStatements = ast.isBlockStatement(nestedConsequent)
+    ? nestedConsequent.body
+    : [nestedConsequent];
+
+  path.node.test = ast.logicalExpression(
+    "&&",
+    path.node.test,
+    nestedIfStatement.test
+  );
+  path.node.consequent = ast.blockStatement(nestedConsequentStatements);
+
+  path.stop();
 }
 
 function hasChildWhichMatchesSelection(
@@ -58,7 +110,21 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     IfStatement(childPath) {
-      if (!getMatchingNestedStatement(childPath, selection)) return;
+      if (!selection.isInsidePath(childPath)) return;
+
+      const { alternate, consequent } = childPath.node;
+
+      if (alternate) {
+        if (!ast.isBlockStatement(alternate)) return;
+
+        const nestedIfStatement = getNestedIfStatementIn(alternate);
+        if (!nestedIfStatement) return;
+      } else {
+        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        if (!nestedIfStatement) return;
+        if (nestedIfStatement.alternate) return;
+      }
+
       result = true;
       childPath.stop();
     }
@@ -67,23 +133,17 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function getMatchingNestedStatement(
-  path: ast.NodePath<ast.IfStatement>,
-  selection: Selection
+function getNestedIfStatementIn(
+  statement: ast.Statement
 ): ast.IfStatement | null {
-  if (!selection.isInsidePath(path)) return null;
-  if (path.node.alternate) return null;
-
-  const { consequent } = path.node;
-  if (ast.isBlockStatement(consequent) && consequent.body.length > 1) {
+  if (ast.isBlockStatement(statement) && statement.body.length > 1) {
     return null;
   }
 
-  const nestedStatement = ast.isBlockStatement(consequent)
-    ? consequent.body[0] // We tested there is no other element in body.
-    : consequent;
-  if (!ast.isIfStatement(nestedStatement)) return null;
-  if (nestedStatement.alternate) return null;
+  const nestedIfStatement = ast.isBlockStatement(statement)
+    ? statement.body[0] // We tested there is no other element in body.
+    : statement;
+  if (!ast.isIfStatement(nestedIfStatement)) return null;
 
-  return nestedStatement;
+  return nestedIfStatement;
 }
