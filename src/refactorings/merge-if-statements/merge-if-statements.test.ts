@@ -119,6 +119,26 @@ describe("Split If Statement", () => {
 } else if (isCorrect) {
   doAnotherThing();
 }`
+      },
+      {
+        description: "nested if-else statement in else, cursor on nested",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  if (isCorrect) {
+    doAnotherThing();
+  } else {
+    doNothing();
+  }
+}`,
+        selection: Selection.cursorAt(3, 6),
+        expected: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doAnotherThing();
+} else {
+  doNothing();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

@@ -36,14 +36,15 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
         path.node.alternate = nestedStatement;
       } else {
-        const nestedStatement = getNestedIfStatementIn(consequent);
-        if (!nestedStatement) return;
+        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        if (!nestedIfStatement) return;
+        if (nestedIfStatement.alternate) return;
 
         // Since we visit nodes from parent to children, first check
         // if a child would match the selection closer.
         if (hasChildWhichMatchesSelection(path, selection)) return;
 
-        const nestedConsequent = nestedStatement.consequent;
+        const nestedConsequent = nestedIfStatement.consequent;
         const nestedConsequentStatements = ast.isBlockStatement(
           nestedConsequent
         )
@@ -53,7 +54,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         path.node.test = ast.logicalExpression(
           "&&",
           path.node.test,
-          nestedStatement.test
+          nestedIfStatement.test
         );
         path.node.consequent = ast.blockStatement(nestedConsequentStatements);
       }
@@ -75,7 +76,10 @@ function hasChildWhichMatchesSelection(
 
       const { alternate, consequent } = childPath.node;
       if (alternate) return;
-      if (!getNestedIfStatementIn(consequent)) return;
+
+      const nestedIfStatement = getNestedIfStatementIn(consequent);
+      if (!nestedIfStatement) return;
+      if (nestedIfStatement.alternate) return;
 
       result = true;
       childPath.stop();
@@ -96,7 +100,6 @@ function getNestedIfStatementIn(
     ? statement.body[0] // We tested there is no other element in body.
     : statement;
   if (!ast.isIfStatement(nestedIfStatement)) return null;
-  if (nestedIfStatement.alternate) return null;
 
   return nestedIfStatement;
 }
