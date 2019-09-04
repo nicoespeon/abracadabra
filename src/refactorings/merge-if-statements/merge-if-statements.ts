@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
 
-export { mergeIfStatements, canMergeIfStatements };
+export { mergeIfStatements, tryMergeIfStatements };
 
 async function mergeIfStatements(
   code: Code,
@@ -19,24 +19,40 @@ async function mergeIfStatements(
   await editor.write(updatedCode.code);
 }
 
-function canMergeIfStatements(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function tryMergeIfStatements(
+  code: Code,
+  selection: Selection
+): { canMerge: boolean; mergeAlternate: boolean } {
+  const updatedCode = updateCode(code, selection);
+
+  return {
+    canMerge: updatedCode.hasCodeChanged,
+    mergeAlternate: updatedCode.mergeAlternate
+  };
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(
+  code: Code,
+  selection: Selection
+): ast.Transformed & { mergeAlternate: boolean } {
+  let mergeAlternate = false;
+
+  const result = ast.transform(code, {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
       const { alternate, consequent } = path.node;
 
       if (alternate) {
+        mergeAlternate = true;
         mergeAlternateWithNestedIf(path, alternate, selection);
       } else {
         mergeConsequentWithNestedIf(path, consequent, selection);
       }
     }
   });
+
+  return { ...result, mergeAlternate };
 }
 
 function mergeAlternateWithNestedIf(
