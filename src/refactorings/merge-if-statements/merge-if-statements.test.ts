@@ -192,6 +192,46 @@ describe("Split If Statement", () => {
 } else {
   doNothing();
 }`
+      },
+      {
+        description: "nested if statements in if & else, cursor on wrapper",
+        code: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+} else {
+  if (shouldDoSomething) {
+    doAnotherThing();
+  }
+}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+} else if (shouldDoSomething) {
+  doAnotherThing();
+}`
+      },
+      {
+        description: "nested if statements in if & else, cursor on alternate",
+        code: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+} else {
+  if (shouldDoSomething) {
+    doAnotherThing();
+  }
+}`,
+        selection: Selection.cursorAt(5, 0),
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+} else if (shouldDoSomething) {
+  doAnotherThing();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
