@@ -62,7 +62,7 @@ function mergeAlternateWithNestedIf(
 ) {
   // Since we visit nodes from parent to children, first check
   // if a child would match the selection closer.
-  if (hasAlternateChildWhichMatchesSelection(path, selection)) return;
+  if (hasChildWhichMatchesSelection(path, selection)) return;
 
   if (!alternate) return;
 
@@ -73,30 +73,6 @@ function mergeAlternateWithNestedIf(
   path.stop();
 }
 
-function hasAlternateChildWhichMatchesSelection(
-  path: ast.NodePath,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  path.traverse({
-    IfStatement(childPath) {
-      if (!selection.isInsidePath(childPath)) return;
-
-      const { alternate } = childPath.node;
-      if (!alternate) return;
-
-      const nestedIfStatement = getNestedIfStatementIn(alternate);
-      if (!nestedIfStatement) return;
-
-      result = true;
-      childPath.stop();
-    }
-  });
-
-  return result;
-}
-
 function mergeConsequentWithNestedIf(
   path: ast.NodePath<ast.IfStatement>,
   consequent: ast.IfStatement["consequent"],
@@ -104,7 +80,7 @@ function mergeConsequentWithNestedIf(
 ) {
   // Since we visit nodes from parent to children, first check
   // if a child would match the selection closer.
-  if (hasConsequentChildWhichMatchesSelection(path, selection)) return;
+  if (hasChildWhichMatchesSelection(path, selection)) return;
 
   const nestedIfStatement = getNestedIfStatementIn(consequent);
   if (!nestedIfStatement) return;
@@ -125,7 +101,7 @@ function mergeConsequentWithNestedIf(
   path.stop();
 }
 
-function hasConsequentChildWhichMatchesSelection(
+function hasChildWhichMatchesSelection(
   path: ast.NodePath,
   selection: Selection
 ): boolean {
@@ -136,11 +112,15 @@ function hasConsequentChildWhichMatchesSelection(
       if (!selection.isInsidePath(childPath)) return;
 
       const { alternate, consequent } = childPath.node;
-      if (alternate) return;
 
-      const nestedIfStatement = getNestedIfStatementIn(consequent);
-      if (!nestedIfStatement) return;
-      if (nestedIfStatement.alternate) return;
+      if (alternate) {
+        const nestedIfStatement = getNestedIfStatementIn(alternate);
+        if (!nestedIfStatement) return;
+      } else {
+        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        if (!nestedIfStatement) return;
+        if (nestedIfStatement.alternate) return;
+      }
 
       result = true;
       childPath.stop();
