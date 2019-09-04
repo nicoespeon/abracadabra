@@ -34,6 +34,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         const nestedStatement = getNestedIfStatementIn(alternate);
         if (!nestedStatement) return;
 
+        // Since we visit nodes from parent to children, first check
+        // if a child would match the selection closer.
+        if (hasAlternateChildWhichMatchesSelection(path, selection)) return;
+
         path.node.alternate = nestedStatement;
       } else {
         const nestedIfStatement = getNestedIfStatementIn(consequent);
@@ -42,7 +46,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
         // Since we visit nodes from parent to children, first check
         // if a child would match the selection closer.
-        if (hasChildWhichMatchesSelection(path, selection)) return;
+        if (hasConsequentChildWhichMatchesSelection(path, selection)) return;
 
         const nestedConsequent = nestedIfStatement.consequent;
         const nestedConsequentStatements = ast.isBlockStatement(
@@ -64,7 +68,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
   });
 }
 
-function hasChildWhichMatchesSelection(
+function hasConsequentChildWhichMatchesSelection(
   path: ast.NodePath,
   selection: Selection
 ): boolean {
@@ -80,6 +84,30 @@ function hasChildWhichMatchesSelection(
       const nestedIfStatement = getNestedIfStatementIn(consequent);
       if (!nestedIfStatement) return;
       if (nestedIfStatement.alternate) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
+}
+
+function hasAlternateChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    IfStatement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const { alternate } = childPath.node;
+      if (!alternate) return;
+
+      const nestedIfStatement = getNestedIfStatementIn(alternate);
+      if (!nestedIfStatement) return;
 
       result = true;
       childPath.stop();
