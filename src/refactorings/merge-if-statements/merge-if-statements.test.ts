@@ -201,7 +201,7 @@ describe("Split If Statement", () => {
     }
   );
 
-  testEach<{ code: Code }>(
+  testEach<{ code: Code; selection?: Selection }>(
     "should not merge if statements",
     [
       {
@@ -233,11 +233,22 @@ describe("Split If Statement", () => {
 
   doAnotherThing();
 }`
+      },
+      {
+        description: "nested if in alternate has a sibling node",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  if (isCorrect) {
+    doSomethingElse();
+  }
+
+  doAnotherThing();
+}`,
+        selection: Selection.cursorAt(3, 4)
       }
     ],
-    async ({ code }) => {
-      const selection = Selection.cursorAt(0, 0);
-
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
       const result = await doMergeIfStatements(code, selection);
 
       expect(result).toBe(code);
