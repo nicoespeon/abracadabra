@@ -65,7 +65,7 @@ function mergeAlternateWithNestedIf(
   // if a child would match the selection closer.
   if (hasChildWhichMatchesSelection(path, selection)) return;
 
-  if (!alternate) return;
+  if (!ast.isBlockStatement(alternate)) return;
 
   const nestedStatement = getNestedIfStatementIn(alternate);
   if (!nestedStatement) return;
@@ -115,6 +115,8 @@ function hasChildWhichMatchesSelection(
       const { alternate, consequent } = childPath.node;
 
       if (alternate) {
+        if (!ast.isBlockStatement(alternate)) return;
+
         const nestedIfStatement = getNestedIfStatementIn(alternate);
         if (!nestedIfStatement) return;
       } else {
