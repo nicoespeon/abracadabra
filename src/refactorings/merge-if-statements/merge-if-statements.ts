@@ -47,6 +47,7 @@ function updateCode(
         mergeAlternate = true;
         mergeAlternateWithNestedIf(path, alternate, selection);
       } else {
+        mergeAlternate = false;
         mergeConsequentWithNestedIf(path, consequent, selection);
       }
     }
