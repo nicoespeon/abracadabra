@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Merge If Statements now handles `else-if`s
+
+![][demo-merge-if-statements-else-if]
+
 ## [0.5.0] - 2019-08-25
 
 ### Added
@@ -147,6 +153,7 @@ function doSomething(someData) {
 <!-- Demo images -->
 
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
+[demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 
 <!-- Links -->
 
