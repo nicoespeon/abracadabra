@@ -26,27 +26,26 @@ function canBubbleUpIfStatement(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     IfStatement(path) {
+      const { node } = path;
+
       const parentIfPath = ast.findParentIfPath(path);
       if (!parentIfPath) return;
 
-      const parentTest = parentIfPath.node.test;
-      const parentAlternate = parentIfPath.node.alternate;
+      const parentIf = parentIfPath.node;
+      const parentTest = parentIf.test;
+      const parentAlternate = parentIf.alternate;
 
-      const newParentIfAlternate = path.node.alternate
-        ? ast.blockStatement([ast.ifStatement(parentTest, path.node.alternate)])
-        : parentIfPath.node.alternate;
+      const newParentIfAlternate = node.alternate
+        ? ast.blockStatement([ast.ifStatement(parentTest, node.alternate)])
+        : parentIf.alternate;
 
       parentIfPath.replaceWith(
-        ast.ifStatement(
-          path.node.test,
-          parentIfPath.node.consequent,
-          newParentIfAlternate
-        )
+        ast.ifStatement(node.test, parentIf.consequent, newParentIfAlternate)
       );
       parentIfPath.stop();
 
       path.replaceWith(
-        ast.ifStatement(parentTest, path.node.consequent, parentAlternate)
+        ast.ifStatement(parentTest, node.consequent, parentAlternate)
       );
       path.stop();
     }
