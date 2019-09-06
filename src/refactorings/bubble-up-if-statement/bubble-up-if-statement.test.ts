@@ -90,6 +90,41 @@ describe("Bubble Up If Statement", () => {
     doNothing();
   }
 }`
+      },
+      {
+        description: "deeply nested if, cursor on intermediate if",
+        code: `if (isValid) {
+  if (isCorrect) {
+    if (shouldDoSomething) {
+      doSomething();
+    }
+  }
+}`,
+        expected: `if (isCorrect) {
+  if (isValid) {
+    if (shouldDoSomething) {
+      doSomething();
+    }
+  }
+}`
+      },
+      {
+        description: "deeply nested if, cursor on deepest if",
+        code: `if (isValid) {
+  if (isCorrect) {
+    if (shouldDoSomething) {
+      doSomething();
+    }
+  }
+}`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `if (isValid) {
+  if (shouldDoSomething) {
+    if (isCorrect) {
+      doSomething();
+    }
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 2), expected }) => {
