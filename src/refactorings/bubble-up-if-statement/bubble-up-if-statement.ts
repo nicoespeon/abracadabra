@@ -30,9 +30,20 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!parentIfPath) return;
 
       const parentTest = parentIfPath.node.test;
-      parentIfPath.node.test = path.node.test;
-      path.node.test = parentTest;
-      path.node.alternate = parentIfPath.node.alternate;
+      const parentAlternate = parentIfPath.node.alternate;
+
+      parentIfPath.replaceWith(
+        ast.ifStatement(
+          path.node.test,
+          parentIfPath.node.consequent,
+          parentIfPath.node.alternate
+        )
+      );
+      parentIfPath.stop();
+
+      path.replaceWith(
+        ast.ifStatement(parentTest, path.node.consequent, parentAlternate)
+      );
       path.stop();
     }
   });
