@@ -125,6 +125,32 @@ describe("Bubble Up If Statement", () => {
     }
   }
 }`
+      },
+      {
+        description: "selected if only",
+        code: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+}
+
+if (shouldLog) {
+  if (canLog) {
+    logData();
+  }
+}`,
+        selection: Selection.cursorAt(7, 2),
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+}
+
+if (canLog) {
+  if (shouldLog) {
+    logData();
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 2), expected }) => {

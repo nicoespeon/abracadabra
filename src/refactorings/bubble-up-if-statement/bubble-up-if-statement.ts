@@ -28,6 +28,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     IfStatement(path) {
       const { node } = path;
 
+      if (!selection.isInsidePath(path)) return;
+
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
