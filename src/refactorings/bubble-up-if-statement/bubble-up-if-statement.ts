@@ -32,6 +32,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const parentTest = parentIfPath.node.test;
       parentIfPath.node.test = path.node.test;
       path.node.test = parentTest;
+      path.node.alternate = parentIfPath.node.alternate;
       path.stop();
     }
   });

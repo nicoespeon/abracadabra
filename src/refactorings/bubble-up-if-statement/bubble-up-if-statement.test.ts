@@ -27,6 +27,25 @@ describe("Bubble Up If Statement", () => {
     doSomething();
   }
 }`
+      },
+      {
+        description: "simple if nested in another if with else",
+        code: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+} else {
+  doAnotherThing();
+}`,
+        expected: `if (isCorrect) {
+  if (isValid) {
+    doSomething();
+  } else {
+    doAnotherThing();
+  }
+} else {
+  doAnotherThing();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 2), expected }) => {
