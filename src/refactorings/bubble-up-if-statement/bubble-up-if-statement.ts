@@ -36,7 +36,9 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const parentAlternate = parentIf.alternate;
 
       const newParentIfAlternate = node.alternate
-        ? ast.blockStatement([ast.ifStatement(parentTest, node.alternate)])
+        ? ast.blockStatement([
+            ast.ifStatement(parentTest, node.alternate, parentAlternate)
+          ])
         : parentIf.alternate;
 
       parentIfPath.replaceWith(
