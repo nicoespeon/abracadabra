@@ -54,6 +54,7 @@ Simplifying Conditional Logic:
 1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
 1. [Split If Statement](#split-if-statement)
 1. [Merge If Statements](#merge-if-statements)
+1. [Bubble up If Statement](#bubble-up-if-statement)
 
 Organizing data:
 
@@ -124,7 +125,7 @@ This refactoring is similar to _Inline Variable_, but for functions. It replaces
 
 > A `Statement` is typically a variable or a function declaration.
 
-Move the whole selected statement up. If the selected statement and the one above are one-liners, this is the same as doing VS Code _Move Line Up_. But if one of these statements is multi-lines, this refactoring is very handy!
+Moves the whole selected statement up. If the selected statement and the one above are one-liners, this is the same as doing VS Code _Move Line Up_. But if one of these statements is multi-lines, this refactoring is very handy!
 
 As for all refactorings, it works even if you partially select the statement, or if the cursor is on the statement.
 
@@ -168,7 +169,7 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 
 > 💡 Available as Quick Fix
 
-Flip the `if` and `else` statements. It's a useful refactoring to have in your toolbelt to simplify logical expressions.
+Flips the `if` and `else` statements. It's a useful refactoring to have in your toolbelt to simplify logical expressions.
 
 ![][demo-flip-if-else]
 
@@ -176,7 +177,7 @@ Flip the `if` and `else` statements. It's a useful refactoring to have in your t
 
 > 💡 Available as Quick Fix
 
-Flip a ternary statement. It's really similar to _Flip If/Else_ refactoring.
+Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 ![][demo-flip-ternary]
 
@@ -184,7 +185,7 @@ Flip a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 > 💡 Available as Quick Fix
 
-Convert an if/else statement into a (shorter) ternary expression. This is very handy to improve code readability.
+Converts an if/else statement into a (shorter) ternary expression. This is very handy to improve code readability.
 
 ![][demo-convert-if-else-to-ternary]
 
@@ -192,7 +193,7 @@ Convert an if/else statement into a (shorter) ternary expression. This is very h
 
 > 💡 Available as Quick Fix
 
-Convert a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
+Converts a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
 
 ![][demo-convert-ternary-to-if-else]
 
@@ -200,7 +201,7 @@ Convert a ternary expression into an if/else statement. It reverses _Convert If/
 
 > 💡 Available as Quick Fix
 
-Split the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
+Splits the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
 
 ![][demo-split-if-statement]
 
@@ -216,11 +217,21 @@ It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
 
+### Bubble up If Statement
+
+> 💡 Available as Quick Fix
+
+Useful when you need to have the similar conditionals at the top level. If you get there, you'll be able to convert them into a top-level `switch` statement, which you can easily refactor with polymorphism.
+
+Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting code will have the same behaviour.
+
+![][demo-bubble-up-if-statement]
+
 ### Split Declaration and Initialization
 
 > 💡 Available as Quick Fix
 
-Split the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
+Splits the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
 
 ![][demo-split-declaration-and-initialization]
 
@@ -396,6 +407,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
+[demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
 
 <!-- Logo -->
 

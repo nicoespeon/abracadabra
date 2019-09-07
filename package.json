@@ -74,6 +74,7 @@
   },
   "activationEvents": [
     "onCommand:abracadabra.addBracesToArrowFunction",
+    "onCommand:abracadabra.bubbleUpIfStatement",
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
@@ -101,6 +102,11 @@
       {
         "command": "abracadabra.addBracesToArrowFunction",
         "title": "Add Braces to Arrow Function",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.bubbleUpIfStatement",
+        "title": "Bubble up If Statement",
         "category": "Abracadabra"
       },
       {
@@ -231,6 +237,22 @@
         },
         {
           "command": "abracadabra.addBracesToArrowFunction",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.bubbleUpIfStatement",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.bubbleUpIfStatement",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.bubbleUpIfStatement",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.bubbleUpIfStatement",
           "when": "editorLangId == typescriptreact"
         },
         {

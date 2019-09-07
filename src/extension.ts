@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
+import bubbleUpIfStatementCommand from "./refactorings/bubble-up-if-statement/command";
 import convertIfElseToTernaryCommand from "./refactorings/convert-if-else-to-ternary/command";
 import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-else/command";
 import convertToTemplateLiteralCommand from "./refactorings/convert-to-template-literal/command";
@@ -20,6 +21,7 @@ import splitDeclarationAndInitializationCommand from "./refactorings/split-decla
 import splitIfStatementCommand from "./refactorings/split-if-statement/command";
 
 import addBracesToArrowFunctionActionProviderFor from "./refactorings/add-braces-to-arrow-function/action-provider";
+import bubbleUpIfStatementActionProviderFor from "./refactorings/bubble-up-if-statement/action-provider";
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
 import convertToTemplateLiteralActionProviderFor from "./refactorings/convert-to-template-literal/action-provider";
@@ -43,6 +45,7 @@ const SUPPORTED_LANGUAGES = [
 export function activate(context: vscode.ExtensionContext) {
   [
     addBracesToArrowFunctionCommand,
+    bubbleUpIfStatementCommand,
     convertIfElseToTernaryCommand,
     convertTernaryToIfElseCommand,
     convertToTemplateLiteralCommand,
@@ -65,6 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
   SUPPORTED_LANGUAGES.forEach(language => {
     [
       addBracesToArrowFunctionActionProviderFor(language),
+      bubbleUpIfStatementActionProviderFor(language),
       convertIfElseToTernaryActionProviderFor(language),
       convertTernaryToIfElseActionProviderFor(language),
       convertToTemplateLiteralActionProviderFor(language),
