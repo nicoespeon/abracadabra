@@ -64,18 +64,12 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       );
       parentIfPath.stop();
 
-      const consequentBody = ast.isBlockStatement(node.consequent)
-        ? node.consequent.body
-        : [node.consequent];
-
       path.replaceWith(
-        ast.ifStatement(
+        buildNestedIfStatement(
+          node.consequent,
+          ast.getPreviousSiblingStatements(path),
+          ast.getNextSiblingStatements(path),
           parentTest,
-          ast.blockStatement([
-            ...ast.getPreviousSiblingStatements(path),
-            ...consequentBody,
-            ...ast.getNextSiblingStatements(path)
-          ]),
           parentAlternate
         )
       );
@@ -104,4 +98,24 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
+}
+
+function buildNestedIfStatement(
+  branch: ast.Statement,
+  previousSiblingStatements: ast.Statement[],
+  nextSiblingStatements: ast.Statement[],
+  test: ast.IfStatement["test"],
+  alternate: ast.IfStatement["alternate"]
+): ast.IfStatement {
+  const body = ast.isBlockStatement(branch) ? branch.body : [branch];
+
+  return ast.ifStatement(
+    test,
+    ast.blockStatement([
+      ...previousSiblingStatements,
+      ...body,
+      ...nextSiblingStatements
+    ]),
+    alternate
+  );
 }
