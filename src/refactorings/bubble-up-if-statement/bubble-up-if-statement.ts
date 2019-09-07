@@ -52,8 +52,16 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       );
       parentIfPath.stop();
 
+      const consequentBody = ast.isBlockStatement(node.consequent)
+        ? node.consequent.body
+        : [node.consequent];
+
       path.replaceWith(
-        ast.ifStatement(parentTest, node.consequent, parentAlternate)
+        ast.ifStatement(
+          parentTest,
+          ast.blockStatement(consequentBody),
+          parentAlternate
+        )
       );
       path.stop();
     }
