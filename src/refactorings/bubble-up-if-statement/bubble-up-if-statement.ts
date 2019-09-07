@@ -37,6 +37,11 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const parentIfPath = ast.findParentIfPath(path);
       if (!parentIfPath) return;
 
+      if (ast.isInAlternate(path)) {
+        // We don't handle this scenario for now. It'd be an improvement.
+        return;
+      }
+
       const parentIf = parentIfPath.node;
       const parentTest = parentIf.test;
       const parentAlternate = parentIf.alternate;

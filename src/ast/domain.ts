@@ -19,6 +19,7 @@ export {
   areEqual,
   isTemplateExpression,
   isInBranchedLogic,
+  isInAlternate,
   templateElement,
   Primitive
 };
@@ -214,6 +215,16 @@ type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
 
 function isInBranchedLogic(path: NodePath<t.ReturnStatement>) {
   return path.getAncestry().some(path => t.isIfStatement(path));
+}
+
+function isInAlternate(path: NodePath<t.IfStatement>): boolean {
+  const { parentPath } = path;
+
+  return t.isBlockStatement(parentPath)
+    ? t.isIfStatement(parentPath.parent) &&
+        parentPath.parent.alternate === path.parent
+    : t.isIfStatement(parentPath.node) &&
+        parentPath.node.alternate === path.node;
 }
 
 /**

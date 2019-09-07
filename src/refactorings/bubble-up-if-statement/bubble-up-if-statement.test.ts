@@ -259,6 +259,30 @@ if (canLog) {
     }
   );
 
+  testEach<{ code: Code; selection: Selection }>(
+    "should not bubble up",
+    [
+      // We don't handle scenarios where nested if is in the else node.
+      // This would be an improvement: handle if & if-else nested in else node.
+      {
+        description: "simple if in else",
+        code: `if (isCorrect) {
+  doSomething();
+} else {
+  if (isValid) {
+    doSomethingElse();
+  }
+}`,
+        selection: Selection.cursorAt(3, 2)
+      }
+    ],
+    async ({ code, selection }) => {
+      const result = await doBubbleUpIfStatement(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
