@@ -1,7 +1,20 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-export { getPreviousSiblingStatements, getNextSiblingStatements };
+export {
+  hasSiblingStatement,
+  getPreviousSiblingStatements,
+  getNextSiblingStatements
+};
+
+function hasSiblingStatement(path: NodePath): boolean {
+  const allSiblingStatements = [
+    ...getPreviousSiblingStatements(path),
+    ...getNextSiblingStatements(path)
+  ];
+
+  return allSiblingStatements.length > 0;
+}
 
 function getPreviousSiblingStatements(path: NodePath): t.Statement[] {
   return path

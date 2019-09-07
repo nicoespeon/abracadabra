@@ -50,20 +50,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
           parentAlternate
         );
 
-      const allSiblingStatements = [
-        ...ast.getPreviousSiblingStatements(path),
-        ...ast.getNextSiblingStatements(path)
-      ];
-
       const newParentIfAlternate = node.alternate
         ? ast.blockStatement([buildNestedIfStatementFor(node.alternate)])
-        : allSiblingStatements.length > 0
-        ? ast.blockStatement([
-            ast.ifStatement(
-              parentTest,
-              ast.blockStatement(allSiblingStatements)
-            )
-          ])
+        : ast.hasSiblingStatement(path)
+        ? ast.blockStatement([buildNestedIfStatementFor(ast.emptyStatement())])
         : parentIf.alternate;
 
       parentIfPath.replaceWith(
