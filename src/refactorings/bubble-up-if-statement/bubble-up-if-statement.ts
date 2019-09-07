@@ -41,15 +41,22 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const parentTest = parentIf.test;
       const parentAlternate = parentIf.alternate;
 
+      const buildNestedIfStatementFor = (node: ast.Statement) =>
+        buildNestedIfStatement(
+          node,
+          ast.getPreviousSiblingStatements(path),
+          ast.getNextSiblingStatements(path),
+          parentTest,
+          parentAlternate
+        );
+
       const allSiblingStatements = [
         ...ast.getPreviousSiblingStatements(path),
         ...ast.getNextSiblingStatements(path)
       ];
 
       const newParentIfAlternate = node.alternate
-        ? ast.blockStatement([
-            ast.ifStatement(parentTest, node.alternate, parentAlternate)
-          ])
+        ? ast.blockStatement([buildNestedIfStatementFor(node.alternate)])
         : allSiblingStatements.length > 0
         ? ast.blockStatement([
             ast.ifStatement(
@@ -64,15 +71,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       );
       parentIfPath.stop();
 
-      path.replaceWith(
-        buildNestedIfStatement(
-          node.consequent,
-          ast.getPreviousSiblingStatements(path),
-          ast.getNextSiblingStatements(path),
-          parentTest,
-          parentAlternate
-        )
-      );
+      path.replaceWith(buildNestedIfStatementFor(node.consequent));
       path.stop();
 
       path.getAllPrevSiblings().forEach(path => path.remove());

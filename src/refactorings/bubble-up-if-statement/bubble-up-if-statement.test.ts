@@ -179,6 +179,77 @@ if (canLog) {
     logData();
   }
 }`
+      },
+      {
+        description: "if-else nested with sibling statements",
+        code: `if (isCorrect) {
+  doSomething();
+
+  if (isValid) {
+    doSomethingElse();
+  } else {
+    doNothing();
+  }
+
+  logData();
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+
+    doSomethingElse();
+
+    logData();
+  }
+} else {
+  if (isCorrect) {
+    doSomething();
+
+    doNothing();
+
+    logData();
+  }
+}`
+      },
+      {
+        description:
+          "if-else nested in another if-else, with sibling statements",
+        code: `if (isCorrect) {
+  doSomething();
+
+  if (isValid) {
+    doSomethingElse();
+  } else {
+    doNothing();
+  }
+
+  logData();
+} else {
+  doAnotherThing();
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+
+    doSomethingElse();
+
+    logData();
+  } else {
+    doAnotherThing();
+  }
+} else {
+  if (isCorrect) {
+    doSomething();
+
+    doNothing();
+
+    logData();
+  } else {
+    doAnotherThing();
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 2), expected }) => {
