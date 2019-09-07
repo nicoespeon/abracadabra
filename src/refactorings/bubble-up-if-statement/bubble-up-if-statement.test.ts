@@ -151,6 +151,34 @@ if (canLog) {
     logData();
   }
 }`
+      },
+      {
+        description: "simple if nested with sibling statements",
+        code: `if (isCorrect) {
+  doSomething();
+
+  if (isValid) {
+    doSomethingElse();
+  }
+
+  logData();
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `if (isValid) {
+  if (isCorrect) {
+    doSomething();
+
+    doSomethingElse();
+
+    logData();
+  }
+} else {
+  if (isCorrect) {
+    doSomething();
+
+    logData();
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 2), expected }) => {

@@ -41,9 +41,21 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const parentTest = parentIf.test;
       const parentAlternate = parentIf.alternate;
 
+      const allSiblingStatements = [
+        ...ast.getPreviousSiblingStatements(path),
+        ...ast.getNextSiblingStatements(path)
+      ];
+
       const newParentIfAlternate = node.alternate
         ? ast.blockStatement([
             ast.ifStatement(parentTest, node.alternate, parentAlternate)
+          ])
+        : allSiblingStatements.length > 0
+        ? ast.blockStatement([
+            ast.ifStatement(
+              parentTest,
+              ast.blockStatement(allSiblingStatements)
+            )
           ])
         : parentIf.alternate;
 
@@ -59,11 +71,18 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       path.replaceWith(
         ast.ifStatement(
           parentTest,
-          ast.blockStatement(consequentBody),
+          ast.blockStatement([
+            ...ast.getPreviousSiblingStatements(path),
+            ...consequentBody,
+            ...ast.getNextSiblingStatements(path)
+          ]),
           parentAlternate
         )
       );
       path.stop();
+
+      path.getAllPrevSiblings().forEach(path => path.remove());
+      path.getAllNextSiblings().forEach(path => path.remove());
     }
   });
 }
