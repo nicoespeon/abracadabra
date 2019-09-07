@@ -54,6 +54,7 @@ Simplifying Conditional Logic:
 1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
 1. [Split If Statement](#split-if-statement)
 1. [Merge If Statements](#merge-if-statements)
+1. [Bubble up If Statement](#bubble-up-if-statement)
 
 Organizing data:
 
@@ -215,6 +216,16 @@ This is the opposite of _Split If Statement_. It consolidates nested ifs to clea
 It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
+
+### Bubble up If Statement
+
+> 💡 Available as Quick Fix
+
+Useful when you need to have the similar conditionals at the top level. If you get there, you'll be able to convert them into a top-level `switch` statement, which you can easily refactor with polymorphism.
+
+Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting code will have the same behaviour.
+
+![][demo-bubble-up-if-statement]
 
 ### Split Declaration and Initialization
 
@@ -396,6 +407,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
+[demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
 
 <!-- Logo -->
 
