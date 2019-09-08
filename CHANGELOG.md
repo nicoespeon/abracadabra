@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ![][demo-merge-if-statements-else-if]
 
-### Extract Variable handles Spread Elements better
+#### Extract Variable handles Spread Elements better
 
 Consider the following snippet:
 
@@ -36,7 +36,7 @@ Now, you can extract the Spread Element. The result will be:
 
 ```js
 const extracted = foo.bar;
-console.log({ ...foo.bar });
+console.log({ ...extracted });
 ```
 
 If your cursor is on the `...` symbol however, you will still extract the whole thing.
