@@ -183,7 +183,8 @@ function isExtractableContext(node: ast.Node): boolean {
     ast.isIfStatement(node) ||
     ast.isWhileStatement(node) ||
     ast.isSwitchCase(node) ||
-    ast.isJSXExpressionContainer(node)
+    ast.isJSXExpressionContainer(node) ||
+    ast.isSpreadElement(node)
   );
 }
 

@@ -266,6 +266,13 @@ console.log({ foo: extracted });`
         description: "a spread variable",
         code: `console.log({ ...foo.bar });`,
         selection: Selection.cursorAt(0, 22),
+        expected: `const extracted = foo.bar;
+console.log({ ...extracted });`
+      },
+      {
+        description: "a spread variable, cursor on spread",
+        code: `console.log({ ...foo.bar });`,
+        selection: Selection.cursorAt(0, 16),
         expected: `const extracted = { ...foo.bar };
 console.log(extracted);`
       },
@@ -276,11 +283,11 @@ console.log(extracted);`
   id: "name"
 });`,
         selection: Selection.cursorAt(1, 11),
-        expected: `const extracted = {
-  ...getInlinableCode(declaration),
+        expected: `const extracted = getInlinableCode(declaration);
+console.log({
+  ...extracted,
   id: "name"
-};
-console.log(extracted);`
+});`
       },
       {
         description:

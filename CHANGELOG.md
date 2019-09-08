@@ -17,6 +17,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ![][demo-merge-if-statements-else-if]
 
+### Extract Variable handles Spread Elements better
+
+Consider the following snippet:
+
+```js
+console.log({ ...foo.bar });
+```
+
+Before, executing _Extract Variable_ with the cursor of `foo` would have produced:
+
+```js
+const extracted = { ...foo.bar };
+console.log(extracted);
+```
+
+Now, you can extract the Spread Element. The result will be:
+
+```js
+const extracted = foo.bar;
+console.log({ ...foo.bar });
+```
+
+If your cursor is on the `...` symbol however, you will still extract the whole thing.
+
 ## [0.5.0] - 2019-08-25
 
 ### Added
