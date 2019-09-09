@@ -1,3 +1,4 @@
+export * from "./discriminant";
 export * from "./domain";
 export * from "./scope";
 export * from "./selection";
