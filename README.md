@@ -52,6 +52,7 @@ Simplifying Conditional Logic:
 1. [Flip Ternary](#flip-ternary)
 1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
 1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
+1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
 1. [Split If Statement](#split-if-statement)
 1. [Merge If Statements](#merge-if-statements)
 1. [Bubble up If Statement](#bubble-up-if-statement)
@@ -196,6 +197,14 @@ Converts an if/else statement into a (shorter) ternary expression. This is very 
 Converts a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
 
 ![][demo-convert-ternary-to-if-else]
+
+### Convert If/Else to Switch
+
+> 💡 Available as Quick Fix
+
+Converts an if/else statement into a switch statement. This is typically what you do before introducing polymorphism to clean object-oriented code.
+
+![][demo-convert-if-else-to-switch]
 
 ### Split If Statement
 
@@ -396,6 +405,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
+[demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-switch.gif?raw=true
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
 [demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true

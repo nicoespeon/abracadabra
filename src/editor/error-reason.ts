@@ -61,7 +61,7 @@ function toString(reason: ErrorReason): string {
       return didNotFound("a ternary to flip");
 
     case ErrorReason.DidNotFoundIfElseToConvert:
-      return didNotFound("a valid if statement to convert into ternary");
+      return didNotFound("a valid if statement to convert");
 
     case ErrorReason.DidNotFoundTernaryToConvert:
       return didNotFound("a ternary to convert into if statement");
