@@ -76,6 +76,7 @@
     "onCommand:abracadabra.addBracesToArrowFunction",
     "onCommand:abracadabra.bubbleUpIfStatement",
     "onCommand:abracadabra.convertIfElseToTernary",
+    "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.extractVariable",
@@ -112,6 +113,11 @@
       {
         "command": "abracadabra.convertIfElseToTernary",
         "title": "Convert If/Else to Ternary",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertIfElseToSwitch",
+        "title": "Convert If/Else to Switch",
         "category": "Abracadabra"
       },
       {
@@ -269,6 +275,22 @@
         },
         {
           "command": "abracadabra.convertIfElseToTernary",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertIfElseToSwitch",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertIfElseToSwitch",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertIfElseToSwitch",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertIfElseToSwitch",
           "when": "editorLangId == typescriptreact"
         },
         {
