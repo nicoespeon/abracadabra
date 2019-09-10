@@ -79,6 +79,27 @@ default:
 }`
       },
       {
+        description: "simple conditional, inverted discriminant & test",
+        code: `if (name === "Jane") {
+  sayHelloToJane();
+} else if ("John" === name) {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`,
+        expected: `switch (name) {
+case "Jane":
+  sayHelloToJane();
+  break;
+case "John":
+  sayHelloToJohn();
+  break;
+default:
+  sayHello();
+  break;
+}`
+      },
+      {
         description: "convert the selected if-else only",
         code: `if (name === "Jane") {
   sayHelloToJane();
