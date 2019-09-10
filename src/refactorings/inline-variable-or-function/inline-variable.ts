@@ -206,6 +206,7 @@ class InlinableIdentifier implements InlinableCode {
         if (isSameIdentifier) return;
 
         const parent = last(ancestors);
+        if (!parent) return;
         if (ast.isFunctionDeclaration(parent)) return;
         if (ast.isObjectProperty(parent.node) && parent.node.key === node)
           return;

@@ -83,6 +83,8 @@ function flipToGuardAlternate(
   if (!ast.isGuardConsequentBlock(consequent)) return null;
 
   const finalReturnStatement = last(consequent.body);
+  if (!finalReturnStatement) return null;
+
   const alternateBody = ast.isNonEmptyReturn(finalReturnStatement)
     ? consequent.body
     : allButLast(consequent.body);

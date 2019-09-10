@@ -1,6 +1,6 @@
 export { last, allButLast };
 
-function last<T>(array: T[] | ReadonlyArray<T>): T {
+function last<T>(array: T[] | ReadonlyArray<T>): T | undefined {
   return array[array.length - 1];
 }
 
