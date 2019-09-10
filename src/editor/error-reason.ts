@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFoundStatementToMerge,
   DidNotFoundNestedIf,
   DidNotFoundBinaryExpression,
   DidNotFoundExtractableCode,
@@ -33,6 +34,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFoundStatementToMerge:
+      return didNotFound("a statement to merge with");
+
     case ErrorReason.DidNotFoundNestedIf:
       return didNotFound("a nested if to bubble up");
 
