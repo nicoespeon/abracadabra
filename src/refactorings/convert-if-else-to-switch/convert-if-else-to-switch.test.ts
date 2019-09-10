@@ -5,6 +5,9 @@ import { testEach } from "../../tests-helpers";
 
 import { convertIfElseToSwitch } from "./convert-if-else-to-switch";
 
+// Compact indentation of generated switch statement is due to recast behaviour:
+// https://github.com/benjamn/recast/issues/180
+
 describe("Convert If/Else to Switch", () => {
   let showErrorMessage: Editor["showError"];
 
