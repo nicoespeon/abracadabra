@@ -44,12 +44,8 @@ function removeRedundantElseFrom(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const elseBranchNodes = ast.isBlockStatement(elseBranch)
-        ? elseBranch.body
-        : [elseBranch];
-
       node.alternate = null;
-      path.replaceWithMultiple([node, ...elseBranchNodes]);
+      path.replaceWithMultiple([node, ...ast.getConsequentNodes(elseBranch)]);
       path.stop();
     }
   });
