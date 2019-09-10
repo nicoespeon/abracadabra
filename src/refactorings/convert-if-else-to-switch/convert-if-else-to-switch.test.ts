@@ -218,6 +218,67 @@ default:
     }
   );
 
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not convert",
+    [
+      {
+        description: "different discriminants",
+        code: `if (name === "Jane") {
+  sayHelloToJane();
+} else if (surname === "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`
+      },
+      {
+        description: "invalid operators",
+        code: `if (name >= "Jane") {
+  sayHelloToJane();
+} else if (name >= "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`
+      },
+      {
+        description: "different operators",
+        code: `if (name !== "Jane") {
+  sayHelloToJane();
+} else if (name === "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`
+      },
+      {
+        description: "unary expressions",
+        code: `if (!(name === "Jane")) {
+  sayHelloToJane();
+} else if (!(name === "John")) {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`
+      },
+      {
+        description: "logical expressions",
+        code: `if (name === "Jane" && age > 10) {
+  sayHelloToJane();
+} else if (name === "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
+      const result = await doConvertIfElseToSwitch(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);

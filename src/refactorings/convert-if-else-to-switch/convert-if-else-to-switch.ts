@@ -63,6 +63,7 @@ class IfElseToSwitch {
   private path: ast.NodePath<ast.IfStatement>;
   private discriminant: ast.Expression | undefined;
   private cases: ast.SwitchCase[] = [];
+  private canConvertAllBranches = true;
 
   constructor(path: ast.NodePath<ast.IfStatement>) {
     this.path = path;
@@ -71,7 +72,7 @@ class IfElseToSwitch {
   convert(): ast.Node {
     this.convertNode(this.path.node);
 
-    return this.discriminant
+    return this.discriminant && this.canConvertAllBranches
       ? ast.switchStatement(this.discriminant, this.cases)
       : this.path.node;
   }
@@ -83,11 +84,22 @@ class IfElseToSwitch {
 
   private convertConsequent(statement: ast.IfStatement) {
     const switchStatement = ast.toSwitch(statement.test);
-    if (!switchStatement) return;
+
+    if (!switchStatement) {
+      this.canConvertAllBranches = false;
+      return;
+    }
 
     const { discriminant, test } = switchStatement;
 
-    this.discriminant = discriminant;
+    if (!this.discriminant) {
+      this.discriminant = discriminant;
+    }
+
+    if (!ast.areEqual(this.discriminant, discriminant)) {
+      this.canConvertAllBranches = false;
+    }
+
     this.addCase(test, statement.consequent);
   }
 
