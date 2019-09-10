@@ -1,14 +1,14 @@
 import * as t from "@babel/types";
 
-import { getDiscriminantFrom, VALID_OPERATORS } from "./discriminant";
+import { toSwitch, VALID_OPERATORS } from "./switch";
 
-describe("AST Discriminant", () => {
+describe("AST Switch", () => {
   it("should return null if given expression is null", () => {
     const expression = t.nullLiteral();
 
-    const discriminant = getDiscriminantFrom(expression);
+    const result = toSwitch(expression);
 
-    expect(discriminant).toBe(null);
+    expect(result).toBe(null);
   });
 
   describe("BinaryExpression", () => {
@@ -46,41 +46,44 @@ describe("AST Discriminant", () => {
       describe(`Operator "${operator}"`, () => {
         it("should return the identifier when it's on the left", () => {
           const name = t.identifier("name");
-          const expression = t.binaryExpression(
-            operator,
-            name,
-            t.stringLiteral("John")
-          );
+          const john = t.stringLiteral("John");
+          const expression = t.binaryExpression(operator, name, john);
 
-          const discriminant = getDiscriminantFrom(expression);
+          const result = toSwitch(expression);
+          if (!result) {
+            fail("No discriminant found in expression");
+            return;
+          }
 
-          expect(discriminant).toBe(name);
+          expect(result).toEqual({ discriminant: name, test: john });
         });
 
         it("should return the identifier when it's on the right", () => {
           const name = t.identifier("name");
-          const expression = t.binaryExpression(
-            operator,
-            t.stringLiteral("John"),
-            name
-          );
+          const john = t.stringLiteral("John");
+          const expression = t.binaryExpression(operator, john, name);
 
-          const discriminant = getDiscriminantFrom(expression);
+          const result = toSwitch(expression);
+          if (!result) {
+            fail("No discriminant found in expression");
+            return;
+          }
 
-          expect(discriminant).toBe(name);
+          expect(result).toEqual({ discriminant: name, test: john });
         });
 
         it("should return the left identifier when both nodes are identifiers", () => {
           const john = t.identifier("john");
-          const expression = t.binaryExpression(
-            operator,
-            john,
-            t.identifier("name")
-          );
+          const name = t.identifier("name");
+          const expression = t.binaryExpression(operator, john, name);
 
-          const discriminant = getDiscriminantFrom(expression);
+          const result = toSwitch(expression);
+          if (!result) {
+            fail("No discriminant found in expression");
+            return;
+          }
 
-          expect(discriminant).toBe(john);
+          expect(result).toEqual({ discriminant: john, test: name });
         });
       });
     }
@@ -94,9 +97,9 @@ describe("AST Discriminant", () => {
             t.stringLiteral("John")
           );
 
-          const discriminant = getDiscriminantFrom(expression);
+          const result = toSwitch(expression);
 
-          expect(discriminant).toBe(null);
+          expect(result).toBe(null);
         });
 
         it("should return null when identifier is on the right", () => {
@@ -106,9 +109,9 @@ describe("AST Discriminant", () => {
             t.identifier("name")
           );
 
-          const discriminant = getDiscriminantFrom(expression);
+          const result = toSwitch(expression);
 
-          expect(discriminant).toBe(null);
+          expect(result).toBe(null);
         });
 
         it("should return null when both nodes are identifiers", () => {
@@ -118,9 +121,9 @@ describe("AST Discriminant", () => {
             t.identifier("name")
           );
 
-          const discriminant = getDiscriminantFrom(expression);
+          const result = toSwitch(expression);
 
-          expect(discriminant).toBe(null);
+          expect(result).toBe(null);
         });
       });
     }
