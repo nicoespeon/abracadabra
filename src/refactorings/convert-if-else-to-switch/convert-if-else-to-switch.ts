@@ -26,6 +26,8 @@ function hasIfElseToConvert(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
       const convertedNode = new IfElseToSwitch(path).convert();
       path.replaceWith(convertedNode);
     }

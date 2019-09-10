@@ -77,6 +77,34 @@ default:
   sayHello();
   break;
 }`
+      },
+      {
+        description: "convert the selected if-else only",
+        code: `if (name === "Jane") {
+  sayHelloToJane();
+} else {
+  sayHello();
+}
+
+if (name === "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`,
+        expected: `switch (name) {
+case "Jane":
+  sayHelloToJane();
+  break;
+default:
+  sayHello();
+  break;
+}
+
+if (name === "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
