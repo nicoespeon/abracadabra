@@ -30,11 +30,37 @@ doSomethingElse();`,
 }`
       },
       {
+        description: "selected statement only",
+        code: `if (isCorrect) {
+  doAnotherThing();
+}
+
+sayHello();
+
+if (isValid) {
+  doSomething();
+}
+
+doSomethingElse();`,
+        selection: Selection.cursorAt(10, 0),
+        expected: `if (isCorrect) {
+  doAnotherThing();
+}
+
+sayHello();
+
+if (isValid) {
+  doSomething();
+
+  doSomethingElse();
+}`
+      },
+      {
         description: "if has no block statement",
         code: `if (isValid) doSomething();
 
 doSomethingElse();`,
-        selection: Selection.cursorAt(3, 0),
+        selection: Selection.cursorAt(2, 0),
         expected: `if (isValid) {
   doSomething();
 

@@ -26,6 +26,8 @@ function canMergeWithPreviousIf(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     Statement(path) {
+      if (!selection.isInsidePath(path)) return;
+
       const previousSibling = ast.getPreviousSibling(path);
       if (!previousSibling) return;
 
