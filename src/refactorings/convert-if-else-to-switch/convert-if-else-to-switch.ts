@@ -69,7 +69,7 @@ class IfElseToSwitch {
     this.path = path;
   }
 
-  convert(): ast.Node {
+  convert(): ast.SwitchStatement | ast.IfStatement {
     this.convertNode(this.path.node);
 
     return this.discriminant && this.canConvertAllBranches
