@@ -32,13 +32,21 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const previousNode = previousSibling.node;
       if (!ast.isIfStatement(previousNode)) return;
 
-      previousNode.consequent = ast.blockStatement([
-        ...ast.getStatements(previousNode.consequent),
-        path.node
-      ]);
+      previousNode.consequent = mergeWith(previousNode.consequent, path.node);
+
+      if (previousNode.alternate) {
+        previousNode.alternate = mergeWith(previousNode.alternate, path.node);
+      }
 
       path.remove();
       path.stop();
     }
   });
+}
+
+function mergeWith(
+  branch: ast.Statement,
+  statement: ast.Statement
+): ast.BlockStatement {
+  return ast.blockStatement([...ast.getStatements(branch), statement]);
 }

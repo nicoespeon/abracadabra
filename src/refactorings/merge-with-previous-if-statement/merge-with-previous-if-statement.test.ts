@@ -40,6 +40,26 @@ doSomethingElse();`,
 
   doSomethingElse();
 }`
+      },
+      {
+        description: "merge with if-else",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  doAnotherThing();
+}
+
+doSomethingElse();`,
+        selection: Selection.cursorAt(6, 0),
+        expected: `if (isValid) {
+  doSomething();
+
+  doSomethingElse();
+} else {
+  doAnotherThing();
+
+  doSomethingElse();
+}`
       }
     ],
     async ({ code, selection, expected }) => {
