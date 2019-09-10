@@ -33,7 +33,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!ast.isIfStatement(previousNode)) return;
 
       previousNode.consequent = ast.blockStatement([
-        ...ast.getConsequentNodes(previousNode.consequent),
+        ...ast.getStatements(previousNode.consequent),
         path.node
       ]);
 

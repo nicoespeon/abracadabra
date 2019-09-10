@@ -45,7 +45,7 @@ function removeRedundantElseFrom(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       node.alternate = null;
-      path.replaceWithMultiple([node, ...ast.getConsequentNodes(elseBranch)]);
+      path.replaceWithMultiple([node, ...ast.getStatements(elseBranch)]);
       path.stop();
     }
   });

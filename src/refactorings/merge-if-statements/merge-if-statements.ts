@@ -93,7 +93,7 @@ function mergeConsequentWithNestedIf(
     nestedIfStatement.test
   );
   path.node.consequent = ast.blockStatement(
-    ast.getConsequentNodes(nestedIfStatement.consequent)
+    ast.getStatements(nestedIfStatement.consequent)
   );
 
   path.stop();

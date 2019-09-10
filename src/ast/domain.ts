@@ -21,6 +21,7 @@ export {
   isTemplateExpression,
   isInBranchedLogic,
   isInAlternate,
+  getStatements,
   templateElement,
   Primitive
 };
@@ -228,6 +229,10 @@ function isInAlternate(path: NodePath<t.IfStatement>): boolean {
         parentPath.parent.alternate === path.parent
     : t.isIfStatement(parentPath.node) &&
         parentPath.node.alternate === path.node;
+}
+
+function getStatements(statement: t.Statement): t.Statement[] {
+  return t.isBlockStatement(statement) ? statement.body : [statement];
 }
 
 /**
