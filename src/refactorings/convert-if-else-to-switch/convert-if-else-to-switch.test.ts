@@ -154,6 +154,22 @@ default:
 } else {
   sayHello();
 }`
+      },
+      {
+        description: "without final else",
+        code: `if (name === "Jane") {
+  sayHelloToJane();
+} else if (name === "John") {
+  sayHelloToJohn();
+}`,
+        expected: `switch (name) {
+case "Jane":
+  sayHelloToJane();
+  break;
+case "John":
+  sayHelloToJohn();
+  break;
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
