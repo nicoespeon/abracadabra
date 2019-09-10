@@ -1,8 +1,6 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-import { last } from "../array-helpers";
-
 export {
   getPreviousSibling,
   hasSiblingStatement,
@@ -11,7 +9,7 @@ export {
 };
 
 function getPreviousSibling(path: NodePath): NodePath | undefined {
-  return last(path.getAllPrevSiblings());
+  return path.getAllPrevSiblings()[0];
 }
 
 function hasSiblingStatement(path: NodePath): boolean {
