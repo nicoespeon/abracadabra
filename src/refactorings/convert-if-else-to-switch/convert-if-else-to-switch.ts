@@ -28,10 +28,35 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const convertedNode = new IfElseToSwitch(path).convert();
       path.replaceWith(convertedNode);
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    IfStatement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const convertedNode = new IfElseToSwitch(childPath).convert();
+      if (convertedNode === childPath.node) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 class IfElseToSwitch {

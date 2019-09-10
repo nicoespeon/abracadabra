@@ -105,6 +105,55 @@ if (name === "John") {
 } else {
   sayHello();
 }`
+      },
+      {
+        description: "nested if-else, cursor on wrapper",
+        code: `if (name === "Jane") {
+  if (name === "John") {
+    sayHelloToJohn();
+  } else {
+    sayHelloToJane();
+  }
+} else {
+  sayHello();
+}`,
+        expected: `switch (name) {
+case "Jane":
+  if (name === "John") {
+    sayHelloToJohn();
+  } else {
+    sayHelloToJane();
+  }
+  break;
+default:
+  sayHello();
+  break;
+}`
+      },
+      {
+        description: "nested if-else, cursor on nested",
+        code: `if (name === "Jane") {
+  if (name === "John") {
+    sayHelloToJohn();
+  } else {
+    sayHelloToJane();
+  }
+} else {
+  sayHello();
+}`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `if (name === "Jane") {
+  switch (name) {
+  case "John":
+    sayHelloToJohn();
+    break;
+  default:
+    sayHelloToJane();
+    break;
+  }
+} else {
+  sayHello();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
