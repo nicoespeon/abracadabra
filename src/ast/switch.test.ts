@@ -85,6 +85,23 @@ describe("AST Switch", () => {
 
           expect(result).toEqual({ discriminant: john, test: name });
         });
+
+        it("should return a member expression as the discriminant", () => {
+          const itemName = t.memberExpression(
+            t.identifier("item"),
+            t.identifier("name")
+          );
+          const john = t.stringLiteral("John");
+          const expression = t.binaryExpression(operator, itemName, john);
+
+          const result = toSwitch(expression);
+          if (!result) {
+            fail("No discriminant found in expression");
+            return;
+          }
+
+          expect(result).toEqual({ discriminant: itemName, test: john });
+        });
       });
     }
 

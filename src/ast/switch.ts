@@ -10,7 +10,7 @@ function toSwitch(expression: t.Expression): Switch | null {
 
   const { left, right } = expression;
 
-  return t.isIdentifier(left)
+  return t.isIdentifier(left) || t.isMemberExpression(left)
     ? { discriminant: left, test: right }
     : { discriminant: right, test: left };
 }

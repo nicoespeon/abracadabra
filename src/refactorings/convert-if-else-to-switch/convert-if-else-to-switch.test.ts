@@ -209,6 +209,24 @@ case "John":
 default:
   return sayHello();
 }`
+      },
+      {
+        description: "with member expression as discriminant",
+        code: `if (item.name === "Jane") {
+  return sayHelloToJane();
+} else if (item.name === "John") {
+  return sayHelloToJohn();
+} else {
+  return sayHello();
+}`,
+        expected: `switch (item.name) {
+case "Jane":
+  return sayHelloToJane();
+case "John":
+  return sayHelloToJohn();
+default:
+  return sayHello();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
