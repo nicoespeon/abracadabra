@@ -170,6 +170,24 @@ case "John":
   sayHelloToJohn();
   break;
 }`
+      },
+      {
+        description: "with return statements",
+        code: `if (name === "Jane") {
+  return sayHelloToJane();
+} else if (name === "John") {
+  return sayHelloToJohn();
+} else {
+  return sayHello();
+}`,
+        expected: `switch (name) {
+case "Jane":
+  return sayHelloToJane();
+case "John":
+  return sayHelloToJohn();
+default:
+  return sayHello();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

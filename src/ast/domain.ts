@@ -16,6 +16,7 @@ export {
   isGuardClause,
   isGuardConsequentBlock,
   isNonEmptyReturn,
+  hasFinalReturn,
   areEqual,
   isTemplateExpression,
   isInBranchedLogic,
@@ -75,13 +76,15 @@ function isGuardClause(path: NodePath<t.IfStatement>) {
 function isGuardConsequentBlock(
   consequent: t.IfStatement["consequent"]
 ): consequent is t.BlockStatement {
-  return (
-    t.isBlockStatement(consequent) && t.isReturnStatement(last(consequent.body))
-  );
+  return t.isBlockStatement(consequent) && hasFinalReturn(consequent.body);
 }
 
 function isNonEmptyReturn(node: t.Node) {
   return t.isReturnStatement(node) && node.argument !== null;
+}
+
+function hasFinalReturn(statements: t.Statement[]): boolean {
+  return t.isReturnStatement(last(statements));
 }
 
 function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {

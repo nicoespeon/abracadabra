@@ -107,11 +107,14 @@ class IfElseToSwitch {
   }
 
   private addCase(test: ast.SwitchCase["test"], statement: ast.Statement) {
-    const consequent = ast.isBlockStatement(statement)
+    const statements = ast.isBlockStatement(statement)
       ? statement.body
       : [statement];
 
-    const newCase = ast.switchCase(test, [...consequent, ast.breakStatement()]);
-    this.cases.push(newCase);
+    const consequent = ast.hasFinalReturn(statements)
+      ? statements
+      : [...statements, ast.breakStatement()];
+
+    this.cases.push(ast.switchCase(test, consequent));
   }
 }
