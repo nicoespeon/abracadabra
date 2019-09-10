@@ -1,7 +1,6 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
-  DidNotFoundIfElseToConvert,
   DidNotFoundNestedIf,
   DidNotFoundBinaryExpression,
   DidNotFoundExtractableCode,
@@ -34,9 +33,6 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
-    case ErrorReason.DidNotFoundIfElseToConvert:
-      return didNotFound("an if else to convert");
-
     case ErrorReason.DidNotFoundNestedIf:
       return didNotFound("a nested if to bubble up");
 
@@ -65,7 +61,7 @@ function toString(reason: ErrorReason): string {
       return didNotFound("a ternary to flip");
 
     case ErrorReason.DidNotFoundIfElseToConvert:
-      return didNotFound("a valid if statement to convert into ternary");
+      return didNotFound("a valid if statement to convert");
 
     case ErrorReason.DidNotFoundTernaryToConvert:
       return didNotFound("a ternary to convert into if statement");
