@@ -28,6 +28,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     Statement(path) {
       if (!selection.isInsidePath(path)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const previousSibling = ast.getPreviousSibling(path);
       if (!previousSibling) return;
 
@@ -40,6 +44,30 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       path.stop();
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    Statement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const previousSibling = ast.getPreviousSibling(childPath);
+      if (!previousSibling) return;
+
+      const previousNode = previousSibling.node;
+      if (!ast.isIfStatement(previousNode)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function mergeWithIfStatement(

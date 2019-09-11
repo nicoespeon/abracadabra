@@ -56,6 +56,58 @@ if (isValid) {
 }`
       },
       {
+        description: "nested statement",
+        code: `if (isCorrect) {
+  doAnotherThing();
+}
+
+{
+  if (isValid) {
+    doSomething();
+  }
+
+  doSomethingElse();
+}`,
+        selection: Selection.cursorAt(9, 2),
+        expected: `if (isCorrect) {
+  doAnotherThing();
+}
+
+{
+  if (isValid) {
+    doSomething();
+
+    doSomethingElse();
+  }
+}`
+      },
+      {
+        description: "nested statement, nested doesn't match",
+        code: `if (isCorrect) {
+  doAnotherThing();
+}
+
+{
+  if (isValid) {
+    doSomething();
+
+    doSomethingElse();
+  }
+}`,
+        selection: Selection.cursorAt(8, 2),
+        expected: `if (isCorrect) {
+  doAnotherThing();
+
+  {
+    if (isValid) {
+      doSomething();
+
+      doSomethingElse();
+    }
+  }
+}`
+      },
+      {
         description: "if has no block statement",
         code: `if (isValid) doSomething();
 
@@ -99,7 +151,6 @@ doSomethingElse();`,
 
 doSomethingElse();`,
         selection: Selection.cursorAt(8, 0),
-        only: true,
         expected: `if (isValid) {
   doSomething();
 
