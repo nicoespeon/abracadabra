@@ -34,16 +34,29 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const previousNode = previousSibling.node;
       if (!ast.isIfStatement(previousNode)) return;
 
-      previousNode.consequent = mergeWith(previousNode.consequent, path.node);
-
-      if (previousNode.alternate) {
-        previousNode.alternate = mergeWith(previousNode.alternate, path.node);
-      }
+      mergeWithIfStatement(previousNode, path.node);
 
       path.remove();
       path.stop();
     }
   });
+}
+
+function mergeWithIfStatement(
+  ifStatement: ast.IfStatement,
+  node: ast.Statement
+) {
+  const { consequent, alternate } = ifStatement;
+
+  ifStatement.consequent = mergeWith(consequent, node);
+
+  if (!alternate) return;
+
+  if (ast.isIfStatement(alternate)) {
+    mergeWithIfStatement(alternate, node);
+  } else {
+    ifStatement.alternate = mergeWith(alternate, node);
+  }
 }
 
 function mergeWith(

@@ -86,6 +86,33 @@ doSomethingElse();`,
 
   doSomethingElse();
 }`
+      },
+      {
+        description: "merge with if-elseif-else",
+        code: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  sayHello();
+} else {
+  doAnotherThing();
+}
+
+doSomethingElse();`,
+        selection: Selection.cursorAt(8, 0),
+        only: true,
+        expected: `if (isValid) {
+  doSomething();
+
+  doSomethingElse();
+} else if (isCorrect) {
+  sayHello();
+
+  doSomethingElse();
+} else {
+  doAnotherThing();
+
+  doSomethingElse();
+}`
       }
     ],
     async ({ code, selection, expected }) => {
