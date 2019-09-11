@@ -94,10 +94,15 @@ function mergeIfStatementWithIfStatement(
 
   if (!node.alternate) return;
 
-  ifStatement.alternate = mergeWith(
-    alternate || ast.emptyStatement(),
-    ast.getStatements(node.alternate)
-  );
+  const nodesToMerge = ast.getStatements(node.alternate);
+
+  if (ast.isIfStatement(alternate)) {
+    nodesToMerge.forEach(node => mergeWithIfStatement(alternate, node));
+  } else {
+    ifStatement.alternate = alternate
+      ? mergeWith(alternate, nodesToMerge)
+      : node.alternate;
+  }
 }
 
 function mergeStatementWithIfStatement(

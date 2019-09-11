@@ -272,6 +272,124 @@ if (isValid) {
 } else {
   sayHello();
 }`
+      },
+      {
+        description: "merge if-else with if-elseif-else, same tests",
+        code: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doAnotherThing();
+} else {
+  doNothing();
+}
+
+if (isValid) {
+  doSomethingElse();
+} else {
+  sayHello();
+}`,
+        selection: Selection.cursorAt(8, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else if (isCorrect) {
+  doAnotherThing();
+  sayHello();
+} else {
+  doNothing();
+  sayHello();
+}`
+      },
+      {
+        description: "merge if-elseif-else with if-elseif-else, same tests",
+        code: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doAnotherThing();
+} else {
+  doNothing();
+}
+
+if (isValid) {
+  doSomethingElse();
+} else if (isCorrect) {
+  sayHello();
+} else {
+  sayGoodbye();
+}`,
+        selection: Selection.cursorAt(8, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else if (isCorrect) {
+  doAnotherThing();
+  sayHello();
+} else {
+  doNothing();
+  sayGoodbye();
+}`
+      },
+
+      {
+        description:
+          "merge if-elseif-else with if-elseif-else, different tests",
+        code: `if (isValid) {
+  doSomething();
+} else if (isCorrect) {
+  doAnotherThing();
+} else {
+  doNothing();
+}
+
+if (isValid) {
+  doSomethingElse();
+} else if (shouldSayHello) {
+  sayHello();
+} else {
+  sayGoodbye();
+}`,
+        selection: Selection.cursorAt(8, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else if (isCorrect) {
+  doAnotherThing();
+  if (shouldSayHello) {
+    sayHello();
+  } else {
+    sayGoodbye();
+  }
+} else {
+  doNothing();
+  if (shouldSayHello) {
+    sayHello();
+  } else {
+    sayGoodbye();
+  }
+}`
+      },
+      {
+        description: "merge if-elseif-else with if, same tests",
+        code: `if (isValid) {
+  doSomething();
+}
+
+if (isValid) {
+  doSomethingElse();
+} else if (isCorrect) {
+  sayHello();
+} else {
+  sayGoodbye();
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else if (isCorrect) {
+  sayHello();
+} else {
+  sayGoodbye();
+}`
       }
     ],
     async ({ code, selection, expected }) => {
