@@ -164,6 +164,54 @@ doSomethingElse();`,
 
   doSomethingElse();
 }`
+      },
+      {
+        description: "merge 2 simple if statements, different tests",
+        code: `if (isValid) {
+  doSomething();
+}
+
+if (isCorrect) {
+  doSomethingElse();
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `if (isValid) {
+  doSomething();
+
+  if (isCorrect) {
+    doSomethingElse();
+  }
+}`
+      },
+      {
+        description: "merge 2 simple if statements, same tests",
+        code: `if (isValid) {
+  doSomething();
+}
+
+if (isValid) {
+  doSomethingElse();
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
+      },
+      {
+        description: "merge 2 simple if statements, same complex tests",
+        code: `if (name === "John" && age > 10) {
+  doSomething();
+}
+
+if (name === "John" && age > 10) {
+  doSomethingElse();
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `if (name === "John" && age > 10) {
+  doSomething();
+  doSomethingElse();
+}`
       }
     ],
     async ({ code, selection, expected }) => {

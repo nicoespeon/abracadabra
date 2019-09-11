@@ -76,20 +76,24 @@ function mergeWithIfStatement(
 ) {
   const { consequent, alternate } = ifStatement;
 
-  ifStatement.consequent = mergeWith(consequent, node);
+  const nodesToMerge =
+    ast.isIfStatement(node) && ast.areEqual(ifStatement.test, node.test)
+      ? ast.getStatements(node.consequent)
+      : [node];
+  ifStatement.consequent = mergeWith(consequent, nodesToMerge);
 
   if (!alternate) return;
 
   if (ast.isIfStatement(alternate)) {
     mergeWithIfStatement(alternate, node);
   } else {
-    ifStatement.alternate = mergeWith(alternate, node);
+    ifStatement.alternate = mergeWith(alternate, [node]);
   }
 }
 
 function mergeWith(
   branch: ast.Statement,
-  statement: ast.Statement
+  statements: ast.Statement[]
 ): ast.BlockStatement {
-  return ast.blockStatement([...ast.getStatements(branch), statement]);
+  return ast.blockStatement([...ast.getStatements(branch), ...statements]);
 }
