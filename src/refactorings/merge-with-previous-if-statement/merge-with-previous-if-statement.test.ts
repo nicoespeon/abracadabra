@@ -231,6 +231,47 @@ if (isValid) {
 } else {
   doAnotherThing();
 }`
+      },
+      {
+        description: "merge if-else with if-else, same tests",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  doAnotherThing();
+}
+
+if (isValid) {
+  doSomethingElse();
+} else {
+  sayHello();
+}`,
+        selection: Selection.cursorAt(6, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  doAnotherThing();
+  sayHello();
+}`
+      },
+      {
+        description: "merge if-else with if, same tests",
+        code: `if (isValid) {
+  doSomething();
+}
+
+if (isValid) {
+  doSomethingElse();
+} else {
+  sayHello();
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  sayHello();
+}`
       }
     ],
     async ({ code, selection, expected }) => {

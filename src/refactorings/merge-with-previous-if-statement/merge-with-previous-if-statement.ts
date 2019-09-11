@@ -85,9 +85,18 @@ function mergeIfStatementWithIfStatement(
   ifStatement: ast.IfStatement,
   node: ast.IfStatement
 ) {
+  const { consequent, alternate } = ifStatement;
+
   ifStatement.consequent = mergeWith(
-    ifStatement.consequent,
+    consequent,
     ast.getStatements(node.consequent)
+  );
+
+  if (!node.alternate) return;
+
+  ifStatement.alternate = mergeWith(
+    alternate || ast.emptyStatement(),
+    ast.getStatements(node.alternate)
   );
 }
 
@@ -96,6 +105,7 @@ function mergeStatementWithIfStatement(
   node: ast.Statement
 ) {
   const { consequent, alternate } = ifStatement;
+
   ifStatement.consequent = mergeWith(consequent, [node]);
 
   if (!alternate) return;
