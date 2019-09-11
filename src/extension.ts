@@ -11,6 +11,7 @@ import flipIfElseCommand from "./refactorings/flip-if-else/command";
 import flipTernaryCommand from "./refactorings/flip-ternary/command";
 import inlineVariableOrFunctionCommand from "./refactorings/inline-variable-or-function/command";
 import mergeIfStatementsCommand from "./refactorings/merge-if-statements/command";
+import mergeWithPreviousIfStatementCommand from "./refactorings/merge-with-previous-if-statement/command";
 import moveStatementDownCommand from "./refactorings/move-statement-down/command";
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
 import negateExpressionCommand from "./refactorings/negate-expression/command";
@@ -30,6 +31,7 @@ import convertToTemplateLiteralActionProviderFor from "./refactorings/convert-to
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
 import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
 import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statements/action-provider";
+import mergeWithPreviousIfStatementActionProviderFor from "./refactorings/merge-with-previous-if-statement/action-provider";
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 import removeBracesFromArrowFunctionActionProviderFor from "./refactorings/remove-braces-from-arrow-function/action-provider";
 import removeRedundantElseActionProviderFor from "./refactorings/remove-redundant-else/action-provider";
@@ -57,6 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
     flipTernaryCommand,
     inlineVariableOrFunctionCommand,
     mergeIfStatementsCommand,
+    mergeWithPreviousIfStatementCommand,
     moveStatementDownCommand,
     moveStatementUpCommand,
     negateExpressionCommand,
@@ -79,6 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
       flipIfElseActionProviderFor(language),
       flipTernaryActionProviderFor(language),
       mergeIfStatementsActionProviderFor(language),
+      mergeWithPreviousIfStatementActionProviderFor(language),
       negateExpressionActionProviderFor(language),
       removeBracesFromArrowFunctionActionProviderFor(language),
       removeRedundantElseActionProviderFor(language),

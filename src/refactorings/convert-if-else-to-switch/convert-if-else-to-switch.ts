@@ -119,9 +119,7 @@ class IfElseToSwitch {
   }
 
   private addCase(test: ast.SwitchCase["test"], statement: ast.Statement) {
-    const statements = ast.isBlockStatement(statement)
-      ? statement.body
-      : [statement];
+    const statements = ast.getStatements(statement);
 
     const consequent = ast.hasFinalReturn(statements)
       ? statements

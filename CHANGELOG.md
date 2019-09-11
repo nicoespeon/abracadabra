@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **[New Refactoring]** Convert If/Else to Switch
+- **[New Refactoring]** Merge With Previous If Statement
 
 ## [0.6.0] - 2019-09-08
 

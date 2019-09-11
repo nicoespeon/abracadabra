@@ -2,10 +2,15 @@ import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 export {
+  getPreviousSibling,
   hasSiblingStatement,
   getPreviousSiblingStatements,
   getNextSiblingStatements
 };
+
+function getPreviousSibling(path: NodePath): NodePath | undefined {
+  return path.getAllPrevSiblings()[0];
+}
 
 function hasSiblingStatement(path: NodePath): boolean {
   const allSiblingStatements = [

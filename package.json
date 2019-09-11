@@ -84,6 +84,7 @@
     "onCommand:abracadabra.flipTernary",
     "onCommand:abracadabra.inlineVariableOrFunction",
     "onCommand:abracadabra.mergeIfStatements",
+    "onCommand:abracadabra.mergeWithPreviousIfStatement",
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.negateExpression",
@@ -153,6 +154,11 @@
       {
         "command": "abracadabra.mergeIfStatements",
         "title": "Merge If Statements",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.mergeWithPreviousIfStatement",
+        "title": "Merge With Previous If Statement",
         "category": "Abracadabra"
       },
       {
@@ -403,6 +409,22 @@
         },
         {
           "command": "abracadabra.mergeIfStatements",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.mergeWithPreviousIfStatement",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.mergeWithPreviousIfStatement",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.mergeWithPreviousIfStatement",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.mergeWithPreviousIfStatement",
           "when": "editorLangId == typescriptreact"
         },
         {

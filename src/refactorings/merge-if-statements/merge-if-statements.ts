@@ -87,17 +87,14 @@ function mergeConsequentWithNestedIf(
   if (!nestedIfStatement) return;
   if (nestedIfStatement.alternate) return;
 
-  const nestedConsequent = nestedIfStatement.consequent;
-  const nestedConsequentStatements = ast.isBlockStatement(nestedConsequent)
-    ? nestedConsequent.body
-    : [nestedConsequent];
-
   path.node.test = ast.logicalExpression(
     "&&",
     path.node.test,
     nestedIfStatement.test
   );
-  path.node.consequent = ast.blockStatement(nestedConsequentStatements);
+  path.node.consequent = ast.blockStatement(
+    ast.getStatements(nestedIfStatement.consequent)
+  );
 
   path.stop();
 }

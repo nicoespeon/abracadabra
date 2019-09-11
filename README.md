@@ -55,6 +55,7 @@ Simplifying Conditional Logic:
 1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
 1. [Split If Statement](#split-if-statement)
 1. [Merge If Statements](#merge-if-statements)
+1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
 1. [Bubble up If Statement](#bubble-up-if-statement)
 
 Organizing data:
@@ -218,13 +219,25 @@ Splits the logical expression of the closest if statement. This is an helpful to
 
 > 💡 Available as Quick Fix
 
-This is the opposite of _Split If Statement_. It consolidates nested ifs to clean up the code.
+This is the opposite of _Split If Statement_. It consolidates **nested** ifs to clean up the code.
 
 ![][demo-merge-if-statements]
 
 It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
+
+### Merge With Previous If Statement
+
+> 💡 Available as Quick Fix
+
+Merges selected statement with the if statement that is above. This is handy when you want to [decompose a conditional][decompose-conditional] to clean the code.
+
+![][demo-merge-with-previous-if-statement]
+
+If you want to merge 2 consecutive if statements, it will resolve the dead code for you:
+
+![][demo-merge-if-with-previous-if-statement]
 
 ### Bubble up If Statement
 
@@ -384,6 +397,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [license]: https://github.com/nicoespeon/abracadabra/blob/master/LICENSE.md
 [good-first-issues]: https://github.com/nicoespeon/abracadabra/issues?q=is%3Aissue+is%3Aopen+label%3A%22%3Awave%3A+Good+first+issue%22
 [replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
+[decompose-conditional]: https://refactoring.guru/decompose-conditional
 [semver]: http://semver.org/
 [all-contributors]: https://allcontributors.org
 [all-contributors-emoji]: https://allcontributors.org/docs/en/emoji-key
@@ -418,6 +432,8 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 [demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
+[demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true
+[demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
 
 <!-- Logo -->
 
