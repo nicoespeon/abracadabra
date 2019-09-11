@@ -212,6 +212,25 @@ if (name === "John" && age > 10) {
   doSomething();
   doSomethingElse();
 }`
+      },
+      {
+        description: "merge simple if statement with if-else, same tests",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  doAnotherThing();
+}
+
+if (isValid) {
+  doSomethingElse();
+}`,
+        selection: Selection.cursorAt(6, 0),
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  doAnotherThing();
+}`
       }
     ],
     async ({ code, selection, expected }) => {

@@ -74,13 +74,29 @@ function mergeWithIfStatement(
   ifStatement: ast.IfStatement,
   node: ast.Statement
 ) {
-  const { consequent, alternate } = ifStatement;
+  if (ast.isIfStatement(node) && ast.areEqual(ifStatement.test, node.test)) {
+    mergeIfStatementWithIfStatement(ifStatement, node);
+  } else {
+    mergeStatementWithIfStatement(ifStatement, node);
+  }
+}
 
-  const nodesToMerge =
-    ast.isIfStatement(node) && ast.areEqual(ifStatement.test, node.test)
-      ? ast.getStatements(node.consequent)
-      : [node];
-  ifStatement.consequent = mergeWith(consequent, nodesToMerge);
+function mergeIfStatementWithIfStatement(
+  ifStatement: ast.IfStatement,
+  node: ast.IfStatement
+) {
+  ifStatement.consequent = mergeWith(
+    ifStatement.consequent,
+    ast.getStatements(node.consequent)
+  );
+}
+
+function mergeStatementWithIfStatement(
+  ifStatement: ast.IfStatement,
+  node: ast.Statement
+) {
+  const { consequent, alternate } = ifStatement;
+  ifStatement.consequent = mergeWith(consequent, [node]);
 
   if (!alternate) return;
 
