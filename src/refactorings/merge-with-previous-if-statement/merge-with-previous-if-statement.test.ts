@@ -173,6 +173,45 @@ doSomethingElse();`,
     }
   );
 
+  testEach<{ code: Code; selection: Selection }>(
+    "should not merge",
+    [
+      {
+        description: "previous statement is not an if",
+        code: `while (isValid) {
+  doSomething();
+}
+
+doSomethingElse();`,
+        selection: Selection.cursorAt(4, 0)
+      },
+      {
+        description: "has no statement before",
+        code: `doSomethingElse();
+
+if (isValid) {
+  doSomething();
+}`,
+        selection: Selection.cursorAt(0, 0)
+      },
+      {
+        description: "if statement is 2 nodes above",
+        code: `if (isValid) {
+  doSomething();
+}
+
+doSomethingElse();
+doAnotherThing();`,
+        selection: Selection.cursorAt(5, 0)
+      }
+    ],
+    async ({ code, selection }) => {
+      const result = await doMergeWithPreviousIfStatement(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
