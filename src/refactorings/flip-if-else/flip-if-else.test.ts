@@ -210,6 +210,19 @@ doSomethingElse();`,
 } else {
   return null;
 }`
+      },
+      {
+        description: "if-else with return statements",
+        code: `if (!isValid) {
+  return doSomething();
+} else {
+  return doAnotherThing();
+}`,
+        expected: `if (isValid) {
+  return doAnotherThing();
+} else {
+  return doSomething();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

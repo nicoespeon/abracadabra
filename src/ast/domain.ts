@@ -70,7 +70,9 @@ function isUndefinedLiteral(
 }
 
 function isGuardClause(path: NodePath<t.IfStatement>) {
-  const { consequent } = path.node;
+  const { consequent, alternate } = path.node;
+  if (Boolean(alternate)) return false;
+
   return t.isReturnStatement(consequent) || isGuardConsequentBlock(consequent);
 }
 

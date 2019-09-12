@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[New Refactoring]** Convert If/Else to Switch
 - **[New Refactoring]** Merge With Previous If Statement
 
+### Fixed
+
+- Flip If/Else now works when both if and else branches have return statements
+
 ## [0.6.0] - 2019-09-08
 
 ### Added
