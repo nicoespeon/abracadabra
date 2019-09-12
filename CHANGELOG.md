@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Flip If/Else now works when both if and else branches have return statements
+- Inline Function now preserves comments as much as possible
 
 ## [0.6.0] - 2019-09-08
 

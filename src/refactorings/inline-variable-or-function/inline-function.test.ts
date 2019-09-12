@@ -412,6 +412,37 @@ function sayHelloToJohn() {
         expected: `function sayHelloToJohn() {
   return () => console.log(\`Hello \${"John"}\`);
 }`
+      },
+      {
+        description: "function with comments",
+        code: `function sayHello() {
+  // Say hello to the user.
+  console.log("Hello!");
+
+  if (isCorrect) {
+    // Do something clever.
+    doSomething();
+  }
+
+  /**
+   * Log some data
+   */
+  logData(); // => logged
+}
+
+sayHello();`,
+        expected: `// Say hello to the user.
+console.log("Hello!");
+
+if (isCorrect) {
+  // Do something clever.
+  doSomething();
+}
+
+/**
+ * Log some data
+ */
+logData(); // => logged`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

@@ -87,7 +87,13 @@ function transformCopy<T extends t.Node>(
     t.cloneDeep(node)
   )[0] as NodePath<T>;
 
-  temporaryCopiedPath.traverse(traverseOptions);
+  temporaryCopiedPath.traverse({
+    ...traverseOptions,
+
+    exit(path) {
+      preserveCommentsForRecast(path);
+    }
+  });
 
   // We need to reference the node before we remove the path.
   const result = temporaryCopiedPath.node;
@@ -95,6 +101,26 @@ function transformCopy<T extends t.Node>(
   temporaryCopiedPath.remove();
 
   return result;
+}
+
+// Recast use a custom `comments` attribute to print comments.
+// We need to copy {leading,trailing}Comments to preserve them.
+// See: https://github.com/benjamn/recast/issues/572
+function preserveCommentsForRecast(path: NodePath) {
+  // @ts-ignore Recast does use a `comment` attribute.
+  path.node.comments = path.node.leadingComments;
+
+  if (!path.isBlockStatement() && isLastNode()) {
+    // @ts-ignore Recast does use a `comment` attribute.
+    path.node.comments = [
+      ...(path.node.leadingComments || []),
+      ...(path.node.trailingComments || [])
+    ];
+  }
+
+  function isLastNode(): boolean {
+    return path.getAllNextSiblings().length === 0;
+  }
 }
 
 interface Transformed {
