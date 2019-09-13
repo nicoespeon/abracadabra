@@ -83,16 +83,13 @@ function findInlinableCode(
           const property = id.properties[0];
           if (ast.isRestElement(property)) return;
 
-          const propertyId = property.key;
-          const propertyInit = property.value;
-          if (!ast.isSelectableIdentifier(propertyInit)) return;
-          if (!ast.isSelectableNode(propertyId)) return;
-          if (!ast.isIdentifier(propertyId)) return;
+          const propertyId = property.value;
+          if (!ast.isSelectableIdentifier(propertyId)) return;
 
           const child = new InlinableIdentifier(
             propertyId,
             parent,
-            propertyInit.loc
+            propertyId.loc
           );
 
           result = new InlinableObjectPattern(child, init.name);
@@ -228,8 +225,9 @@ class InlinableIdentifier implements InlinableCode {
         const parent = last(ancestors);
         if (!parent) return;
         if (ast.isFunctionDeclaration(parent)) return;
-        if (ast.isObjectProperty(parent.node) && parent.node.key === node)
+        if (ast.isObjectProperty(parent.node) && parent.node.key === node) {
           return;
+        }
         if (
           ast.isMemberExpression(parent.node) &&
           parent.node.property === node
