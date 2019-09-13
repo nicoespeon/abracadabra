@@ -78,21 +78,22 @@ function findInlinableCode(
         if (ast.isIdentifier(id)) {
           result = new InlinableIdentifier(id, parent, init.loc);
         } else if (ast.isObjectPattern(id)) {
-          if (!ast.isSelectableIdentifier(init)) return;
+          if (!ast.isIdentifier(init)) return;
 
           const property = id.properties[0];
           if (ast.isRestElement(property)) return;
 
-          const propertyId = property.value;
-          if (!ast.isSelectableIdentifier(propertyId)) return;
+          if (!ast.isSelectableNode(property)) return;
 
-          const child = new InlinableIdentifier(
-            propertyId,
+          const value = property.value;
+          if (!ast.isSelectableIdentifier(value)) return;
+
+          result = new InlinableObjectPattern(
+            value,
             parent,
-            propertyId.loc
+            property.loc,
+            init.name
           );
-
-          result = new InlinableObjectPattern(child, init.name);
         }
         return;
       }
@@ -342,8 +343,13 @@ class InlinableObjectPattern implements InlinableCode {
   private child: InlinableCode;
   private initName: string;
 
-  constructor(child: InlinableCode, initName: string) {
-    this.child = child;
+  constructor(
+    value: ast.SelectableIdentifier,
+    scope: ast.Node,
+    loc: ast.SourceLocation,
+    initName: string
+  ) {
+    this.child = new InlinableIdentifier(value, scope, loc);
     this.initName = initName;
   }
 

@@ -189,6 +189,20 @@ export { hello };`
 messages.map(message => ({ userId }));`,
         selection: Selection.cursorAt(0, 9),
         expected: `messages.map(message => ({ userId: session.userId }));`
+      },
+      {
+        description: "a destructured variable, renamed, cursor on key",
+        code: `const { userId: id } = session;
+messages.map(message => ({ id }));`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `messages.map(message => ({ id: session.userId }));`
+      },
+      {
+        description: "a destructured variable, renamed, cursor on value",
+        code: `const { userId: id } = session;
+messages.map(message => ({ id }));`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `messages.map(message => ({ id: session.userId }));`
       }
     ],
     async ({ code, selection, expected }) => {
