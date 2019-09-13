@@ -68,6 +68,33 @@ lastName = "Doe";`
         expected: `let firstName, lastName, age;
 firstName = "Jane";
 lastName = "Doe";`
+      },
+      {
+        description: "nested declaration, cursor on wrapper",
+        code: `const getLastName = () => {
+  const lastName = "Doe";
+  return lastName;
+};`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `let getLastName;
+
+getLastName = () => {
+  const lastName = "Doe";
+  return lastName;
+};`
+      },
+      {
+        description: "nested declaration, cursor on nested",
+        code: `const getLastName = () => {
+  const lastName = "Doe";
+  return lastName;
+};`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `const getLastName = () => {
+  let lastName;
+  lastName = "Doe";
+  return lastName;
+};`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

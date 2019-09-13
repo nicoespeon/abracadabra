@@ -34,6 +34,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     VariableDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const declarations = path.node.declarations;
       if (!hasInitializedDeclaration(declarations)) return;
 
@@ -51,6 +55,24 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       ]);
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    VariableDeclaration(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function hasInitializedDeclaration(

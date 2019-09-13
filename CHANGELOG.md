@@ -12,6 +12,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[New Refactoring]** Convert If/Else to Switch
 - **[New Refactoring]** Merge With Previous If Statement
 
+### Changed
+
+#### Split Declaration and Initialization now handles nested declarations
+
+Consider the following code:
+
+```js
+const getLastName = () => {
+  const lastName = "Doe";
+  return lastName;
+};
+```
+
+If your cursor is on `const lastName`, executing the refactoring would have produced this result before:
+
+```js
+let getLastName;
+
+getLastName = () => {
+  let lastName;
+  lastName = "Doe";
+  return lastName;
+};
+```
+
+Refactoring would have been applied to both declarations. It's valid, but probably not want you wanted to do.
+
+Now it will produce the following, expected output:
+
+```js
+const getLastName = () => {
+  let lastName;
+  lastName = "Doe";
+  return lastName;
+};
+```
+
 ### Fixed
 
 - Flip If/Else now works when both if and else branches have return statements
