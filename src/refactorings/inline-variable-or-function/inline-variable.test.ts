@@ -210,6 +210,29 @@ messages.map(message => ({ id }));`,
 console.log(userId);`,
         selection: Selection.cursorAt(0, 9),
         expected: `console.log(session.userId);`
+      },
+      {
+        description: "a destructured variable, init being a member expression",
+        code: `const { id } = session.user;
+console.log(id);`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `console.log(session.user.id);`
+      },
+      {
+        description:
+          "a destructured variable, init being a member expression with a numeric literal",
+        code: `const { id } = session.users[0];
+console.log(id);`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `console.log(session.users[0].id);`
+      },
+      {
+        description:
+          "a destructured variable, init being a member expression with a string literal",
+        code: `const { id } = session.users["first"];
+console.log(id);`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `console.log(session.users["first"].id);`
       }
     ],
     async ({ code, selection, expected }) => {

@@ -78,8 +78,6 @@ function findInlinableCode(
         if (ast.isIdentifier(id)) {
           result = new InlinableIdentifier(id, parent, init.loc);
         } else if (ast.isObjectPattern(id)) {
-          if (!ast.isIdentifier(init)) return;
-
           const property = id.properties[0];
           if (ast.isRestElement(property)) return;
 
@@ -88,11 +86,14 @@ function findInlinableCode(
           const value = property.value;
           if (!ast.isSelectableIdentifier(value)) return;
 
+          const initName = getInitName(init);
+          if (!initName) return;
+
           result = new InlinableObjectPattern(
             value,
             parent,
             property.loc,
-            init.name
+            initName
           );
         }
         return;
@@ -132,6 +133,29 @@ function findInlinableCode(
   });
 
   return result;
+}
+
+function getInitName(init: ast.VariableDeclarator["init"]): string | null {
+  if (ast.isIdentifier(init)) return init.name;
+
+  if (ast.isMemberExpression(init)) {
+    const { property } = init;
+
+    const propertyName = ast.isNumericLiteral(property)
+      ? `[${property.value}]`
+      : ast.isStringLiteral(property)
+      ? `["${property.value}"]`
+      : `.${getInitName(property)}`;
+
+    if (property.value === null && getInitName(property) === null) {
+      // We can't resolve property name. Stop here.
+      return null;
+    }
+
+    return `${getInitName(init.object)}${propertyName}`;
+  }
+
+  return null;
 }
 
 // 🎭 Component interface
