@@ -6,21 +6,19 @@ import { testEach } from "../../tests-helpers";
 import { inlineVariable } from "./inline-variable";
 
 describe("Inline Variable - Object Pattern", () => {
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should inline the destructured variable value",
     [
       {
         description: "basic scenario",
         code: `const { userId } = session;
 messages.map(message => ({ userId }));`,
-        selection: Selection.cursorAt(0, 9),
         expected: `messages.map(message => ({ userId: session.userId }));`
       },
       {
         description: "renamed, cursor on key",
         code: `const { userId: id } = session;
 messages.map(message => ({ id }));`,
-        selection: Selection.cursorAt(0, 9),
         expected: `messages.map(message => ({ id: session.userId }));`
       },
       {
@@ -34,28 +32,24 @@ messages.map(message => ({ id }));`,
         description: "not assigned to another object",
         code: `const { userId } = session;
 console.log(userId);`,
-        selection: Selection.cursorAt(0, 9),
         expected: `console.log(session.userId);`
       },
       {
         description: "init being a member expression",
         code: `const { id } = session.user;
 console.log(id);`,
-        selection: Selection.cursorAt(0, 9),
         expected: `console.log(session.user.id);`
       },
       {
         description: "init being a member expression with a numeric literal",
         code: `const { id } = session.users[0];
 console.log(id);`,
-        selection: Selection.cursorAt(0, 9),
         expected: `console.log(session.users[0].id);`
       },
       {
         description: "init being a member expression with a string literal",
         code: `const { id } = session.users["first"];
 console.log(id);`,
-        selection: Selection.cursorAt(0, 9),
         expected: `console.log(session.users["first"].id);`
       },
       {
@@ -73,7 +67,7 @@ console.log(firstName);`,
         expected: `console.log(session.data[0].user.data.n);`
       }
     ],
-    async ({ code, selection, expected }) => {
+    async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {
       const result = await doInlineVariable(code, selection);
       expect(result).toBe(expected);
     }
