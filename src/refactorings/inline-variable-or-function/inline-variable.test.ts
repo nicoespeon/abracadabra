@@ -233,6 +233,13 @@ console.log(id);`,
 console.log(id);`,
         selection: Selection.cursorAt(0, 9),
         expected: `console.log(session.users["first"].id);`
+      },
+      {
+        description: "a destructured variable, nested",
+        code: `const { user: { id } } = session;
+console.log(id);`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `console.log(session.user.id);`
       }
     ],
     async ({ code, selection, expected }) => {

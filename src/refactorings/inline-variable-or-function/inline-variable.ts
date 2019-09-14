@@ -114,7 +114,7 @@ function findInlinableCode(
 function getInlinableCodeFromDeclaration(
   parent: ast.Node,
   id: ast.LVal,
-  init: ast.VariableDeclarator["init"]
+  init: ast.Node | null
 ): InlinableCode | null {
   if (!ast.isSelectableNode(init)) return null;
 
@@ -127,9 +127,12 @@ function getInlinableCodeFromDeclaration(
     if (ast.isRestElement(property)) return null;
     if (!ast.isSelectableNode(property)) return null;
 
-    const value = property.value;
-    if (!ast.isSelectableIdentifier(value)) return null;
-    const child = new InlinableIdentifier(value, parent, property.loc);
+    const child = getInlinableCodeFromDeclaration(
+      parent,
+      property.value,
+      property
+    );
+    if (!child) return null;
 
     const initName = getInitName(init);
     if (!initName) return null;
@@ -140,7 +143,7 @@ function getInlinableCodeFromDeclaration(
   return null;
 }
 
-function getInitName(init: ast.VariableDeclarator["init"]): string | null {
+function getInitName(init: ast.Node): string | null {
   if (ast.isIdentifier(init)) return init.name;
 
   if (ast.isMemberExpression(init)) {
@@ -158,6 +161,10 @@ function getInitName(init: ast.VariableDeclarator["init"]): string | null {
     }
 
     return `${getInitName(init.object)}${propertyName}`;
+  }
+
+  if (ast.isObjectProperty(init)) {
+    return getInitName(init.key);
   }
 
   return null;
@@ -408,6 +415,13 @@ class InlinableObjectPattern implements InlinableCode {
     // In that case, we only want to retrieve the `userId` part
     const objectValue = code.split(":")[0];
 
-    return `${this.initName}.${objectValue}`;
+    // If child is another object composite, we need to insert `initName`
+    // in the middle to resolve the correct path.
+    const isObjectPath = objectValue.includes(".");
+    const [left, right] = objectValue.split(".");
+
+    return isObjectPath
+      ? `${left}.${this.initName}.${right}`
+      : `${this.initName}.${objectValue}`;
   }
 }
