@@ -72,29 +72,7 @@ function findInlinableCode(
 
       if (declarations.length === 1) {
         const { id, init } = declarations[0];
-        if (!ast.isSelectableNode(init)) return;
-
-        if (ast.isSelectableIdentifier(id)) {
-          result = new InlinableIdentifier(id, parent, init.loc);
-        } else if (ast.isObjectPattern(id)) {
-          const property = id.properties[0];
-          if (ast.isRestElement(property)) return;
-
-          if (!ast.isSelectableNode(property)) return;
-
-          const value = property.value;
-          if (!ast.isSelectableIdentifier(value)) return;
-
-          const initName = getInitName(init);
-          if (!initName) return;
-
-          result = new InlinableObjectPattern(
-            value,
-            parent,
-            property.loc,
-            initName
-          );
-        }
+        result = getInlinableCodeFromDeclaration(parent, id, init);
         return;
       }
 
@@ -131,6 +109,34 @@ function findInlinableCode(
   });
 
   return result;
+}
+
+function getInlinableCodeFromDeclaration(
+  parent: ast.Node,
+  id: ast.LVal,
+  init: ast.VariableDeclarator["init"]
+): InlinableCode | null {
+  if (!ast.isSelectableNode(init)) return null;
+
+  if (ast.isSelectableIdentifier(id)) {
+    return new InlinableIdentifier(id, parent, init.loc);
+  }
+
+  if (ast.isObjectPattern(id)) {
+    const property = id.properties[0];
+    if (ast.isRestElement(property)) return null;
+    if (!ast.isSelectableNode(property)) return null;
+
+    const value = property.value;
+    if (!ast.isSelectableIdentifier(value)) return null;
+
+    const initName = getInitName(init);
+    if (!initName) return null;
+
+    return new InlinableObjectPattern(value, parent, property.loc, initName);
+  }
+
+  return null;
 }
 
 function getInitName(init: ast.VariableDeclarator["init"]): string | null {
