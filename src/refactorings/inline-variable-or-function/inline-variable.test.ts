@@ -203,6 +203,13 @@ messages.map(message => ({ id }));`,
 messages.map(message => ({ id }));`,
         selection: Selection.cursorAt(0, 17),
         expected: `messages.map(message => ({ id: session.userId }));`
+      },
+      {
+        description: "a destructured variable, not assigned to another object",
+        code: `const { userId } = session;
+console.log(userId);`,
+        selection: Selection.cursorAt(0, 9),
+        expected: `console.log(session.userId);`
       }
     ],
     async ({ code, selection, expected }) => {

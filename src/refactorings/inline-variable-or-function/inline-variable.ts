@@ -374,16 +374,16 @@ class InlinableObjectPattern implements InlinableCode {
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
-    return this.child.updateIdentifiersWith(inlinedCode).map(update => ({
-      ...update,
-      code: this.prependObjectValueWithInitName(update.code)
-    }));
+    return this.child.updateIdentifiersWith(
+      this.prependObjectValueWithInitName(inlinedCode)
+    );
   }
 
   private prependObjectValueWithInitName(code: Code): Code {
-    const separator = ": ";
-    const [key, value] = code.split(separator);
+    // If destructured variable was renamed, `code` would be `userId: id`.
+    // In that case, we only want to retrieve the `userId` part
+    const objectValue = code.split(":")[0];
 
-    return [key, separator, this.initName, ".", value].join("");
+    return `${this.initName}.${objectValue}`;
   }
 }
