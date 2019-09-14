@@ -73,9 +73,8 @@ function findInlinableCode(
       if (declarations.length === 1) {
         const { id, init } = declarations[0];
         if (!ast.isSelectableNode(init)) return;
-        if (!ast.isSelectableNode(id)) return;
 
-        if (ast.isIdentifier(id)) {
+        if (ast.isSelectableIdentifier(id)) {
           result = new InlinableIdentifier(id, parent, init.loc);
         } else if (ast.isObjectPattern(id)) {
           const property = id.properties[0];
@@ -122,8 +121,7 @@ function findInlinableCode(
 
         const { id, init } = declaration;
         if (!ast.isSelectableNode(init)) return;
-        if (!ast.isSelectableNode(id)) return;
-        if (!ast.isIdentifier(id)) return;
+        if (!ast.isSelectableIdentifier(id)) return;
 
         const inlinableId = new InlinableIdentifier(id, parent, init.loc);
 
