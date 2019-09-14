@@ -9,7 +9,8 @@ export {
   findInlinableCode,
   InlinableCode,
   InlinableIdentifier,
-  InlinableDeclarations
+  InlinableDeclarations,
+  InlinableObjectPattern
 };
 
 function findInlinableCode(
