@@ -129,11 +129,12 @@ function getInlinableCodeFromDeclaration(
 
     const value = property.value;
     if (!ast.isSelectableIdentifier(value)) return null;
+    const child = new InlinableIdentifier(value, parent, property.loc);
 
     const initName = getInitName(init);
     if (!initName) return null;
 
-    return new InlinableObjectPattern(value, parent, property.loc, initName);
+    return new InlinableObjectPattern(child, initName);
   }
 
   return null;
@@ -371,13 +372,8 @@ class InlinableObjectPattern implements InlinableCode {
   private child: InlinableCode;
   private initName: string;
 
-  constructor(
-    value: ast.SelectableIdentifier,
-    scope: ast.Node,
-    loc: ast.SourceLocation,
-    initName: string
-  ) {
-    this.child = new InlinableIdentifier(value, scope, loc);
+  constructor(child: InlinableCode, initName: string) {
+    this.child = child;
     this.initName = initName;
   }
 
