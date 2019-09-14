@@ -1,9 +1,15 @@
+import * as ast from "../../ast";
+
 import { Selection } from "../../editor/selection";
 import { Update } from "../../editor/editor";
 
 import { InlinableCode, InlinableObjectPattern } from "./find-inlinable-code";
 
 const ANY_SELECTION = Selection.cursorAt(0, 0);
+const ANY_LOC: ast.SourceLocation = {
+  start: { line: 0, column: 0 },
+  end: { line: 0, column: 0 }
+};
 
 class FakeInlinable implements InlinableCode {
   isRedeclared = false;
@@ -35,7 +41,8 @@ describe("InlinableObjectPattern", () => {
     ];
     const inlinable = new InlinableObjectPattern(
       new FakeInlinable(updates),
-      ""
+      "",
+      ANY_LOC
     );
 
     const result = inlinable.updateIdentifiersWith("");
@@ -46,7 +53,7 @@ describe("InlinableObjectPattern", () => {
   it("should prepend inlined code with init name before forwarding it to child", () => {
     const child = new FakeInlinable();
     jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "user");
+    const inlinable = new InlinableObjectPattern(child, "user", ANY_LOC);
 
     inlinable.updateIdentifiersWith("name");
 
@@ -56,7 +63,7 @@ describe("InlinableObjectPattern", () => {
   it("should resolve inlined code path if inlined code is already a member expression", () => {
     const child = new FakeInlinable();
     jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "names");
+    const inlinable = new InlinableObjectPattern(child, "names", ANY_LOC);
 
     inlinable.updateIdentifiersWith("user.first");
 
@@ -66,7 +73,7 @@ describe("InlinableObjectPattern", () => {
   it("should resolve inlined code path if inlined code is an object property", () => {
     const child = new FakeInlinable();
     jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "user");
+    const inlinable = new InlinableObjectPattern(child, "user", ANY_LOC);
 
     inlinable.updateIdentifiersWith("n: name");
 
@@ -76,7 +83,7 @@ describe("InlinableObjectPattern", () => {
   it("should resolve inlined code path if inlined code is a complex member expression", () => {
     const child = new FakeInlinable();
     jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "user");
+    const inlinable = new InlinableObjectPattern(child, "user", ANY_LOC);
 
     inlinable.updateIdentifiersWith("session.data[0].first");
 

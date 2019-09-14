@@ -25,6 +25,8 @@ function findInlinableCode(
   }
 
   if (ast.isObjectPattern(id)) {
+    if (!ast.isSelectableNode(id)) return null;
+
     const property = id.properties[0];
     if (ast.isRestElement(property)) return null;
     if (!ast.isSelectableNode(property)) return null;
@@ -35,7 +37,7 @@ function findInlinableCode(
     const initName = getInitName(init);
     if (!initName) return null;
 
-    return new InlinableObjectPattern(child, initName);
+    return new InlinableObjectPattern(child, initName, id.loc);
   }
 
   return null;
@@ -252,10 +254,22 @@ interface MultiDeclarationsLocs {
 
 class InlinableObjectPattern extends CompositeInlinable {
   private initName: string;
+  private valueLoc: ast.SourceLocation;
 
-  constructor(child: InlinableCode, initName: string) {
+  constructor(
+    child: InlinableCode,
+    initName: string,
+    valueLoc: ast.SourceLocation
+  ) {
     super(child);
     this.initName = initName;
+    this.valueLoc = valueLoc;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    return Selection.fromAST(this.valueLoc)
+      .extendToStartOfLine()
+      .extendToStartOfNextLine();
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
