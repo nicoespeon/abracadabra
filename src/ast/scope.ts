@@ -1,7 +1,9 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-export { findScopePath, findParentIfPath, getFunctionScopePath };
+import { areEqual } from "./domain";
+
+export { findScopePath, findParentIfPath, getFunctionScopePath, isShadowIn };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
   return path.findParent(
@@ -29,4 +31,38 @@ function findParentIfPath(
 
 function getFunctionScopePath(path: NodePath<t.FunctionDeclaration>): NodePath {
   return path.getFunctionParent() || path.parentPath;
+}
+
+function isShadowIn(
+  id: t.Identifier,
+  ancestors: t.TraversalAncestors
+): boolean {
+  // A variable is "shadow" if one of its ancestor redefines the Identifier.
+  return ancestors.some(
+    ({ node }) => isDeclaredInFunction(node) || isDeclaredInScope(node)
+  );
+
+  function isDeclaredInFunction(node: t.Node): boolean {
+    return (
+      t.isFunctionDeclaration(node) &&
+      node.params.some(node => areEqual(id, node))
+    );
+  }
+
+  function isDeclaredInScope(node: t.Node): boolean {
+    return (
+      t.isBlockStatement(node) &&
+      node.body.some(
+        child =>
+          t.isVariableDeclaration(child) &&
+          child.declarations.some(
+            declaration =>
+              t.isVariableDeclarator(declaration) &&
+              areEqual(id, declaration.id) &&
+              // Of course, if it's the inlined variable it's not a shadow!
+              declaration.id !== id
+          )
+      )
+    );
+  }
 }
