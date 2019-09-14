@@ -269,13 +269,10 @@ class InlinableObjectPattern extends CompositeInlinable {
     // In that case, we only want to retrieve the `userId` part
     const objectValue = code.split(":")[0];
 
-    // If child is another object composite, we need to insert `initName`
-    // in the middle to resolve the correct path.
-    const isObjectPath = objectValue.includes(".");
-    const [left, right] = objectValue.split(".");
+    const OBJECT_SEPARATOR = ".";
+    const parts = objectValue.split(OBJECT_SEPARATOR);
+    const lastPart = parts.pop();
 
-    return isObjectPath
-      ? `${left}.${this.initName}.${right}`
-      : `${this.initName}.${objectValue}`;
+    return [...parts, this.initName, lastPart].join(OBJECT_SEPARATOR);
   }
 }

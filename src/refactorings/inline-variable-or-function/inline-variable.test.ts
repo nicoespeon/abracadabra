@@ -240,6 +240,14 @@ console.log(id);`,
 console.log(id);`,
         selection: Selection.cursorAt(0, 17),
         expected: `console.log(session.user.id);`
+      },
+      {
+        description:
+          "a destructured variable, nested, init being a member expression",
+        code: `const { user: { data: { n: firstName} } } = session.data[0];
+console.log(firstName);`,
+        selection: Selection.cursorAt(0, 28),
+        expected: `console.log(session.data[0].user.data.n);`
       }
     ],
     async ({ code, selection, expected }) => {

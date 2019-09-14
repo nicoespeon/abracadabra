@@ -72,4 +72,16 @@ describe("InlinableObjectPattern", () => {
 
     expect(child.updateIdentifiersWith).toBeCalledWith("user.n");
   });
+
+  it("should resolve inlined code path if inlined code is a complex member expression", () => {
+    const child = new FakeInlinable();
+    jest.spyOn(child, "updateIdentifiersWith");
+    const inlinable = new InlinableObjectPattern(child, "user");
+
+    inlinable.updateIdentifiersWith("session.data[0].first");
+
+    expect(child.updateIdentifiersWith).toBeCalledWith(
+      "session.data[0].user.first"
+    );
+  });
 });
