@@ -192,59 +192,11 @@ interface IdentifierToReplace {
 
 // 📦 Composites
 
-class InlinableDeclarations implements InlinableCode {
+class CompositeInlinable implements InlinableCode {
   private child: InlinableCode;
-  private declarationsLocs: MultiDeclarationsLocs;
 
-  constructor(
-    child: InlinableCode,
-    multiDeclarationsLocs: MultiDeclarationsLocs
-  ) {
+  constructor(child: InlinableCode) {
     this.child = child;
-    this.declarationsLocs = multiDeclarationsLocs;
-  }
-
-  get isRedeclared(): boolean {
-    return this.child.isRedeclared;
-  }
-
-  get isExported(): boolean {
-    return this.child.isExported;
-  }
-
-  get hasIdentifiersToUpdate(): boolean {
-    return this.child.hasIdentifiersToUpdate;
-  }
-
-  get selection(): Selection {
-    return this.child.selection;
-  }
-
-  get codeToRemoveSelection(): Selection {
-    const { isOtherAfterCurrent, current, other } = this.declarationsLocs;
-    return isOtherAfterCurrent
-      ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
-      : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
-  }
-
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
-    return this.child.updateIdentifiersWith(inlinedCode);
-  }
-}
-
-interface MultiDeclarationsLocs {
-  isOtherAfterCurrent: boolean;
-  current: ast.SourceLocation;
-  other: ast.SourceLocation;
-}
-
-class InlinableObjectPattern implements InlinableCode {
-  private child: InlinableCode;
-  private initName: string;
-
-  constructor(child: InlinableCode, initName: string) {
-    this.child = child;
-    this.initName = initName;
   }
 
   get isRedeclared(): boolean {
@@ -268,7 +220,45 @@ class InlinableObjectPattern implements InlinableCode {
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
-    return this.child.updateIdentifiersWith(
+    return this.child.updateIdentifiersWith(inlinedCode);
+  }
+}
+
+class InlinableDeclarations extends CompositeInlinable {
+  private declarationsLocs: MultiDeclarationsLocs;
+
+  constructor(
+    child: InlinableCode,
+    multiDeclarationsLocs: MultiDeclarationsLocs
+  ) {
+    super(child);
+    this.declarationsLocs = multiDeclarationsLocs;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    const { isOtherAfterCurrent, current, other } = this.declarationsLocs;
+    return isOtherAfterCurrent
+      ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
+      : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
+  }
+}
+
+interface MultiDeclarationsLocs {
+  isOtherAfterCurrent: boolean;
+  current: ast.SourceLocation;
+  other: ast.SourceLocation;
+}
+
+class InlinableObjectPattern extends CompositeInlinable {
+  private initName: string;
+
+  constructor(child: InlinableCode, initName: string) {
+    super(child);
+    this.initName = initName;
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return super.updateIdentifiersWith(
       this.prependObjectValueWithInitName(inlinedCode)
     );
   }
