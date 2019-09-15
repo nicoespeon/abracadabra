@@ -27,22 +27,27 @@ function findInlinableCode(
   if (ast.isObjectPattern(id)) {
     if (!ast.isSelectableNode(id)) return null;
 
-    const property = id.properties[0];
-    if (ast.isRestElement(property)) return null;
-    if (!ast.isSelectableNode(property)) return null;
+    let result: InlinableCode | null = null;
+    id.properties.forEach(property => {
+      if (!selection.isInsideNode(property)) return;
+      if (ast.isRestElement(property)) return;
+      if (!ast.isSelectableNode(property)) return;
 
-    const child = findInlinableCode(
-      selection,
-      parent,
-      property.value,
-      property
-    );
-    if (!child) return null;
+      const child = findInlinableCode(
+        selection,
+        parent,
+        property.value,
+        property
+      );
+      if (!child) return;
 
-    const initName = getInitName(init);
-    if (!initName) return null;
+      const initName = getInitName(init);
+      if (!initName) return;
 
-    return new InlinableObjectPattern(child, initName, id.loc);
+      result = new InlinableObjectPattern(child, initName, id.loc);
+    });
+
+    return result;
   }
 
   return null;
