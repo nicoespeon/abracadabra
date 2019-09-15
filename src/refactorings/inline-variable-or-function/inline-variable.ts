@@ -5,7 +5,6 @@ import * as ast from "../../ast";
 import {
   findInlinableCode,
   InlinableCode,
-  InlinableIdentifier,
   InlinableDeclarations
 } from "./find-inlinable-code";
 
@@ -83,6 +82,10 @@ function findInlinableCodeInAST(
       declarations.forEach((declaration, index) => {
         if (!selection.isInsideNode(declaration)) return;
 
+        const { id, init } = declaration;
+        const child = findInlinableCode(parent, id, init);
+        if (!child) return;
+
         const previousDeclaration = declarations[index - 1];
         const nextDeclaration = declarations[index + 1];
         if (!previousDeclaration && !nextDeclaration) return;
@@ -101,13 +104,7 @@ function findInlinableCodeInAST(
               other: previousDeclaration.loc
             };
 
-        const { id, init } = declaration;
-        if (!ast.isSelectableNode(init)) return;
-        if (!ast.isSelectableIdentifier(id)) return;
-
-        const inlinableId = new InlinableIdentifier(id, parent, init.loc);
-
-        result = new InlinableDeclarations(inlinableId, declarationsLocs);
+        result = new InlinableDeclarations(child, declarationsLocs);
       });
     }
   });

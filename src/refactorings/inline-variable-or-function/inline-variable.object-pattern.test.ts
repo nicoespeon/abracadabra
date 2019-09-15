@@ -76,6 +76,14 @@ console.log(firstName);`,
 console.log(name);`,
         selection: Selection.cursorAt(2, 4),
         expected: `console.log(session.user.n);`
+      },
+      {
+        description: "in a multiple declaration",
+        code: `const name = "John", { userId } = session, age = 12;
+console.log(userId);`,
+        selection: Selection.cursorAt(0, 24),
+        expected: `const name = "John", age = 12;
+console.log(session.userId);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {

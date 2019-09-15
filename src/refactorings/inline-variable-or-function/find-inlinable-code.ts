@@ -8,7 +8,6 @@ import { findExportedIdNames } from "./find-exported-id-names";
 export {
   findInlinableCode,
   InlinableCode,
-  InlinableIdentifier,
   InlinableDeclarations,
   InlinableObjectPattern
 };
