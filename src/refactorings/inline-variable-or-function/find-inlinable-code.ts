@@ -13,6 +13,7 @@ export {
 };
 
 function findInlinableCode(
+  selection: Selection,
   parent: ast.Node,
   id: ast.LVal,
   init: ast.Node | null
@@ -30,7 +31,12 @@ function findInlinableCode(
     if (ast.isRestElement(property)) return null;
     if (!ast.isSelectableNode(property)) return null;
 
-    const child = findInlinableCode(parent, property.value, property);
+    const child = findInlinableCode(
+      selection,
+      parent,
+      property.value,
+      property
+    );
     if (!child) return null;
 
     const initName = getInitName(init);

@@ -75,7 +75,7 @@ function findInlinableCodeInAST(
 
       if (declarations.length === 1) {
         const { id, init } = declarations[0];
-        result = findInlinableCode(parent, id, init);
+        result = findInlinableCode(selection, parent, id, init);
         return;
       }
 
@@ -83,7 +83,7 @@ function findInlinableCodeInAST(
         if (!selection.isInsideNode(declaration)) return;
 
         const { id, init } = declaration;
-        const child = findInlinableCode(parent, id, init);
+        const child = findInlinableCode(selection, parent, id, init);
         if (!child) return;
 
         const previousDeclaration = declarations[index - 1];
