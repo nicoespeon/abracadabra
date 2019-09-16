@@ -338,7 +338,7 @@ Contributions of any kind are welcome!
 ## Alternatives
 
 <details>
-<summary>VS Code native refactorings</summary>
+<summary>VS Code native refactorings</summary><br />
 
 VS Code ships with [basic refactoring operations][vscode-refactorings].
 
@@ -357,24 +357,45 @@ VS Code ships with [basic refactoring operations][vscode-refactorings].
 </details><br />
 
 <details>
-<summary>JS Refactor</summary>
+<summary>JS Refactor</summary><br />
 
 The most popular extension for JavaScript refactoring is called [JS Refactor][js-refactor]. It provides JS automated refactorings for VS Code.
 
-**Pros of Abracadabra** over these:
+Abracadabra is quite similar. The differences are:
 
-- Abracadabra work with TypeScript.
-- Abracadabra proposes refactorings that JS Refactor doesn't.
-- JS Refactor refactorings will work even with partially selected code. Abracadabra ones will also work as long as your cursor is in the scope.
-- Abracadabra refactorings require you less steps to perform. It's faster to use.
+- Abracadabra refactorings are more opinionated. It makes the extension smoother and faster to use (less questions asked), but might not cover some use cases.
+- Abracadabra only focus on refactorings. JS Refactor proposes code snippets and other code transformations.
+- JS Refactor has less pure "refactorings" operations.
+- Abracadabra uses VS Code Quick Fixes a lot to provide insights to the end user.
+- JS Refactor is the most popular extension for JavaScript refactoring in VS Code.
 
-**Cons of Abracadabra** over these:
+</details><br />
 
-- Abracadabra refactorings are more opinionated. This makes them faster to use, but might not cover some use cases.
-- JS Refactor proposes code snippets, Abracadabra doesn't.
-- JS Refactor supports Vue single file components and HTML.
+<details>
+<summary>JavaScript Booster</summary><br />
+
+Another JavaScript refactoring extension for VS Code is [JavaScript Booster][js-booster]. It boosts your productivity with advanced JavaScript refactorings and commands.
+
+Abracadabra is very similar to this one. They both rely on VS Code Quick Fixes. The few differences are:
+
+- the proposed set of refactorings
+- JavaScript Booster has a custom "Extend/Shrink selections" feature
 
 </details>
+
+### Why building yet another refactoring extension then?
+
+Good question. The best move would surely have been to reach out one of the author of existing extensions to see how we could have improved them, instead of creating a new one.
+
+But the motivations to build **Abracadabra** instead were:
+
+- starting from scratch to poke around and move fast, without risking to break things
+- scratch our own itch without having to make a case for it
+- the curiosity of solving this problem with our vision (code architecture, what a great UX would be, etc.)
+
+For now, we have fun and do our best to build a great extension!
+
+When we'll have more experience, we'll probably ping the authors of other extensions to see how we could consolidate our efforts for the community. That's why we encourage you to test **Abracadabra** and [give us your feedback][create-new-issue]!
 
 ---
 
@@ -392,6 +413,7 @@ The most popular extension for JavaScript refactoring is called [JS Refactor][js
 [vscode-quick-fixes]: https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings
 [vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
+[js-booster]: https://marketplace.visualstudio.com/items?itemName=sburg.vscode-javascript-booster
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
 [contributing]: https://github.com/nicoespeon/abracadabra/blob/master/CONTRIBUTING.md
 [license]: https://github.com/nicoespeon/abracadabra/blob/master/LICENSE.md
