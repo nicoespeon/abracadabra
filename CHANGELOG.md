@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2019-09-16
+
 ### Added
 
 - **[New Refactoring]** Convert If/Else to Switch
@@ -219,7 +221,8 @@ function doSomething(someData) {
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.6.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/nicoespeon/abracadabra/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/nicoespeon/abracadabra/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/nicoespeon/abracadabra/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/nicoespeon/abracadabra/compare/0.3.0...0.4.0
