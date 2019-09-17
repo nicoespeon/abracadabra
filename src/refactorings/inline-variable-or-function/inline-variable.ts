@@ -5,7 +5,8 @@ import * as ast from "../../ast";
 import {
   findInlinableCode,
   InlinableCode,
-  InlinableDeclarations
+  SingleDeclaration,
+  MultipleDeclarations
 } from "./find-inlinable-code";
 
 export { inlineVariable };
@@ -37,7 +38,7 @@ async function inlineVariable(
     return;
   }
 
-  await editor.readThenWrite(inlinableCode.selection, inlinedCode => {
+  await editor.readThenWrite(inlinableCode.valueSelection, inlinedCode => {
     return [
       // Replace all identifiers with inlined code
       ...inlinableCode.updateIdentifiersWith(inlinedCode),
@@ -75,37 +76,25 @@ function findInlinableCodeInAST(
 
       if (declarations.length === 1) {
         const { id, init } = declarations[0];
-        result = findInlinableCode(selection, parent, id, init);
-        return;
+        const inlinableCode = findInlinableCode(selection, parent, id, init);
+        if (!inlinableCode) return;
+
+        result = new SingleDeclaration(inlinableCode);
+      } else {
+        declarations.forEach((declaration, index) => {
+          if (!selection.isInsideNode(declaration)) return;
+
+          const { id, init } = declaration;
+          const inlinableCode = findInlinableCode(selection, parent, id, init);
+          if (!inlinableCode) return;
+
+          const previous = declarations[index - 1];
+          const next = declarations[index + 1];
+          if (!previous && !next) return;
+
+          result = new MultipleDeclarations(inlinableCode, previous, next);
+        });
       }
-
-      declarations.forEach((declaration, index) => {
-        if (!selection.isInsideNode(declaration)) return;
-
-        const { id, init } = declaration;
-        const child = findInlinableCode(selection, parent, id, init);
-        if (!child) return;
-
-        const previousDeclaration = declarations[index - 1];
-        const nextDeclaration = declarations[index + 1];
-        if (!previousDeclaration && !nextDeclaration) return;
-
-        // We prefer to use the next declaration by default.
-        // Fallback on previous declaration when current is the last one.
-        const declarationsLocs = !!nextDeclaration
-          ? {
-              isOtherAfterCurrent: true,
-              current: declaration.loc,
-              other: nextDeclaration.loc
-            }
-          : {
-              isOtherAfterCurrent: false,
-              current: declaration.loc,
-              other: previousDeclaration.loc
-            };
-
-        result = new InlinableDeclarations(child, declarationsLocs);
-      });
     }
   });
 

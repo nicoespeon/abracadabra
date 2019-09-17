@@ -8,7 +8,8 @@ import { findExportedIdNames } from "./find-exported-id-names";
 export {
   findInlinableCode,
   InlinableCode,
-  InlinableDeclarations,
+  SingleDeclaration,
+  MultipleDeclarations,
   InlinableObjectPattern
 };
 
@@ -86,7 +87,7 @@ interface InlinableCode {
   isRedeclared: boolean;
   isExported: boolean;
   hasIdentifiersToUpdate: boolean;
-  selection: Selection;
+  valueSelection: Selection;
   codeToRemoveSelection: Selection;
   updateIdentifiersWith: (inlinedCode: Code) => Update[];
 }
@@ -94,7 +95,7 @@ interface InlinableCode {
 // 🍂 Leaves
 
 class InlinableIdentifier implements InlinableCode {
-  selection: Selection;
+  valueSelection: Selection;
 
   private id: ast.SelectableIdentifier;
   private scope: ast.Node;
@@ -107,7 +108,7 @@ class InlinableIdentifier implements InlinableCode {
   ) {
     this.id = id;
     this.scope = scope;
-    this.selection = Selection.fromAST(valueLoc);
+    this.valueSelection = Selection.fromAST(valueLoc);
     this.computeIdentifiersToReplace();
   }
 
@@ -137,10 +138,9 @@ class InlinableIdentifier implements InlinableCode {
   }
 
   get codeToRemoveSelection(): Selection {
-    return this.selection
-      .extendStartTo(Selection.fromAST(this.id.loc))
-      .extendToStartOfLine()
-      .extendToStartOfNextLine();
+    return this.valueSelection.extendStartToStartOf(
+      Selection.fromAST(this.id.loc)
+    );
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
@@ -206,7 +206,7 @@ interface IdentifierToReplace {
 // 📦 Composites
 
 class CompositeInlinable implements InlinableCode {
-  private child: InlinableCode;
+  protected child: InlinableCode;
 
   constructor(child: InlinableCode) {
     this.child = child;
@@ -224,8 +224,8 @@ class CompositeInlinable implements InlinableCode {
     return this.child.hasIdentifiersToUpdate;
   }
 
-  get selection(): Selection {
-    return this.child.selection;
+  get valueSelection(): Selection {
+    return this.child.valueSelection;
   }
 
   get codeToRemoveSelection(): Selection {
@@ -237,29 +237,35 @@ class CompositeInlinable implements InlinableCode {
   }
 }
 
-class InlinableDeclarations extends CompositeInlinable {
-  private declarationsLocs: MultiDeclarationsLocs;
-
-  constructor(
-    child: InlinableCode,
-    multiDeclarationsLocs: MultiDeclarationsLocs
-  ) {
-    super(child);
-    this.declarationsLocs = multiDeclarationsLocs;
-  }
-
+class SingleDeclaration extends CompositeInlinable {
   get codeToRemoveSelection(): Selection {
-    const { isOtherAfterCurrent, current, other } = this.declarationsLocs;
-    return isOtherAfterCurrent
-      ? Selection.fromAST(current).extendEndTo(Selection.fromAST(other))
-      : Selection.fromAST(current).extendStartTo(Selection.fromAST(other));
+    return this.child.codeToRemoveSelection
+      .extendToStartOfLine()
+      .extendToStartOfNextLine();
   }
 }
 
-interface MultiDeclarationsLocs {
-  isOtherAfterCurrent: boolean;
-  current: ast.SourceLocation;
-  other: ast.SourceLocation;
+class MultipleDeclarations extends CompositeInlinable {
+  private previous: ast.SelectableNode;
+  private next: ast.SelectableNode | undefined;
+
+  constructor(
+    child: InlinableCode,
+    previous: ast.SelectableNode,
+    next?: ast.SelectableNode
+  ) {
+    super(child);
+    this.previous = previous;
+    this.next = next;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    const childSelection = this.child.codeToRemoveSelection;
+
+    return this.next
+      ? childSelection.extendEndToStartOf(Selection.fromAST(this.next.loc))
+      : childSelection.extendStartToEndOf(Selection.fromAST(this.previous.loc));
+  }
 }
 
 class InlinableObjectPattern extends CompositeInlinable {
@@ -277,9 +283,7 @@ class InlinableObjectPattern extends CompositeInlinable {
   }
 
   get codeToRemoveSelection(): Selection {
-    return Selection.fromAST(this.valueLoc)
-      .extendToStartOfLine()
-      .extendToStartOfNextLine();
+    return Selection.fromAST(this.valueLoc);
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
