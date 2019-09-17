@@ -8,21 +8,22 @@ import { findExportedIdNames } from "./find-exported-id-names";
 export {
   findInlinableCode,
   InlinableCode,
+  InlinableObjectPattern,
   SingleDeclaration,
-  MultipleDeclarations,
-  InlinableObjectPattern
+  MultipleDeclarations
 };
 
 function findInlinableCode(
   selection: Selection,
   parent: ast.Node,
-  id: ast.LVal,
-  init: ast.Node | null
+  declarationSelection: DeclarationSelection,
+  declaration: { id: ast.LVal; init: ast.Node | null }
 ): InlinableCode | null {
+  const { id, init } = declaration;
   if (!ast.isSelectableNode(init)) return null;
 
   if (ast.isSelectableIdentifier(id)) {
-    return new InlinableIdentifier(id, parent, init.loc);
+    return new InlinableIdentifier(id, parent, init.loc, declarationSelection);
   }
 
   if (ast.isObjectPattern(id)) {
@@ -34,18 +35,21 @@ function findInlinableCode(
       if (ast.isRestElement(property)) return;
       if (!ast.isSelectableNode(property)) return;
 
-      const child = findInlinableCode(
-        selection,
-        parent,
-        property.value,
-        property
-      );
+      const child = findInlinableCode(selection, parent, declarationSelection, {
+        id: property.value,
+        init: property
+      });
       if (!child) return;
 
       const initName = getInitName(init);
       if (!initName) return;
 
-      result = new InlinableObjectPattern(child, initName, id.loc);
+      result = new InlinableObjectPattern(
+        child,
+        initName,
+        id.loc,
+        declarationSelection
+      );
     });
 
     return result;
@@ -100,15 +104,18 @@ class InlinableIdentifier implements InlinableCode {
   private id: ast.SelectableIdentifier;
   private scope: ast.Node;
   private identifiersToReplace: IdentifierToReplace[] = [];
+  private declarationSelection: DeclarationSelection;
 
   constructor(
     id: ast.SelectableIdentifier,
     scope: ast.Node,
-    valueLoc: ast.SourceLocation
+    valueLoc: ast.SourceLocation,
+    declarationSelection: DeclarationSelection
   ) {
     this.id = id;
     this.scope = scope;
     this.valueSelection = Selection.fromAST(valueLoc);
+    this.declarationSelection = declarationSelection;
     this.computeIdentifiersToReplace();
   }
 
@@ -138,9 +145,11 @@ class InlinableIdentifier implements InlinableCode {
   }
 
   get codeToRemoveSelection(): Selection {
-    return this.valueSelection.extendStartToStartOf(
+    const selection = this.valueSelection.extendStartToStartOf(
       Selection.fromAST(this.id.loc)
     );
+
+    return this.declarationSelection.extendToDeclaration(selection);
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
@@ -205,11 +214,22 @@ interface IdentifierToReplace {
 
 // 📦 Composites
 
-class CompositeInlinable implements InlinableCode {
+class InlinableObjectPattern implements InlinableCode {
   protected child: InlinableCode;
+  private initName: string;
+  private valueLoc: ast.SourceLocation;
+  private declarationSelection: DeclarationSelection;
 
-  constructor(child: InlinableCode) {
+  constructor(
+    child: InlinableCode,
+    initName: string,
+    valueLoc: ast.SourceLocation,
+    declarationSelection: DeclarationSelection
+  ) {
     this.child = child;
+    this.initName = initName;
+    this.valueLoc = valueLoc;
+    this.declarationSelection = declarationSelection;
   }
 
   get isRedeclared(): boolean {
@@ -229,65 +249,13 @@ class CompositeInlinable implements InlinableCode {
   }
 
   get codeToRemoveSelection(): Selection {
-    return this.child.codeToRemoveSelection;
+    return this.declarationSelection.extendToDeclaration(
+      Selection.fromAST(this.valueLoc)
+    );
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
-    return this.child.updateIdentifiersWith(inlinedCode);
-  }
-}
-
-class SingleDeclaration extends CompositeInlinable {
-  get codeToRemoveSelection(): Selection {
-    return this.child.codeToRemoveSelection
-      .extendToStartOfLine()
-      .extendToStartOfNextLine();
-  }
-}
-
-class MultipleDeclarations extends CompositeInlinable {
-  private previous: ast.SelectableNode;
-  private next: ast.SelectableNode | undefined;
-
-  constructor(
-    child: InlinableCode,
-    previous: ast.SelectableNode,
-    next?: ast.SelectableNode
-  ) {
-    super(child);
-    this.previous = previous;
-    this.next = next;
-  }
-
-  get codeToRemoveSelection(): Selection {
-    const childSelection = this.child.codeToRemoveSelection;
-
-    return this.next
-      ? childSelection.extendEndToStartOf(Selection.fromAST(this.next.loc))
-      : childSelection.extendStartToEndOf(Selection.fromAST(this.previous.loc));
-  }
-}
-
-class InlinableObjectPattern extends CompositeInlinable {
-  private initName: string;
-  private valueLoc: ast.SourceLocation;
-
-  constructor(
-    child: InlinableCode,
-    initName: string,
-    valueLoc: ast.SourceLocation
-  ) {
-    super(child);
-    this.initName = initName;
-    this.valueLoc = valueLoc;
-  }
-
-  get codeToRemoveSelection(): Selection {
-    return Selection.fromAST(this.valueLoc);
-  }
-
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
-    return super.updateIdentifiersWith(
+    return this.child.updateIdentifiersWith(
       this.prependObjectValueWithInitName(inlinedCode)
     );
   }
@@ -302,5 +270,31 @@ class InlinableObjectPattern extends CompositeInlinable {
     const lastPart = parts.pop();
 
     return [...parts, this.initName, lastPart].join(OBJECT_SEPARATOR);
+  }
+}
+
+interface DeclarationSelection {
+  extendToDeclaration(selection: Selection): Selection;
+}
+
+class SingleDeclaration implements DeclarationSelection {
+  extendToDeclaration(selection: Selection): Selection {
+    return selection.extendToStartOfLine().extendToStartOfNextLine();
+  }
+}
+
+class MultipleDeclarations implements DeclarationSelection {
+  private previous: ast.SelectableNode;
+  private next: ast.SelectableNode | undefined;
+
+  constructor(previous: ast.SelectableNode, next?: ast.SelectableNode) {
+    this.previous = previous;
+    this.next = next;
+  }
+
+  extendToDeclaration(selection: Selection): Selection {
+    return this.next
+      ? selection.extendEndToStartOf(Selection.fromAST(this.next.loc))
+      : selection.extendStartToEndOf(Selection.fromAST(this.previous.loc));
   }
 }

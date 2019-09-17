@@ -75,24 +75,26 @@ function findInlinableCodeInAST(
       );
 
       if (declarations.length === 1) {
-        const { id, init } = declarations[0];
-        const inlinableCode = findInlinableCode(selection, parent, id, init);
-        if (!inlinableCode) return;
-
-        result = new SingleDeclaration(inlinableCode);
+        result = findInlinableCode(
+          selection,
+          parent,
+          new SingleDeclaration(),
+          declarations[0]
+        );
       } else {
         declarations.forEach((declaration, index) => {
           if (!selection.isInsideNode(declaration)) return;
-
-          const { id, init } = declaration;
-          const inlinableCode = findInlinableCode(selection, parent, id, init);
-          if (!inlinableCode) return;
 
           const previous = declarations[index - 1];
           const next = declarations[index + 1];
           if (!previous && !next) return;
 
-          result = new MultipleDeclarations(inlinableCode, previous, next);
+          result = findInlinableCode(
+            selection,
+            parent,
+            new MultipleDeclarations(previous, next),
+            declaration
+          );
         });
       }
     }
