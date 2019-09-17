@@ -15,6 +15,7 @@ class FakeInlinable implements InlinableCode {
   isRedeclared = false;
   isExported = false;
   hasIdentifiersToUpdate = false;
+  shouldExtendSelectionToDeclaration = false;
   valueSelection = ANY_SELECTION;
   codeToRemoveSelection = ANY_SELECTION;
 

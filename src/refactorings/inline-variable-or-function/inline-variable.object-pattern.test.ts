@@ -84,6 +84,53 @@ console.log(userId);`,
         selection: Selection.cursorAt(0, 24),
         expected: `const name = "John", age = 12;
 console.log(session.userId);`
+      },
+      {
+        description: "with other elements destructured, before",
+        code: `const { user: { id, name } } = session;
+console.log(name);`,
+        selection: Selection.cursorAt(0, 21),
+        expected: `const { user: { id } } = session;
+console.log(session.user.name);`
+      },
+      {
+        description: "with other elements destructured, after",
+        code: `const { user: { id, name } } = session;
+console.log(id);`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const { user: { name } } = session;
+console.log(session.user.id);`
+      },
+      {
+        description: "with other elements destructured, before & after",
+        code: `const { user: { id, name, age }, date } = session;
+console.log(name);`,
+        selection: Selection.cursorAt(0, 21),
+        expected: `const { user: { id, age }, date } = session;
+console.log(session.user.name);`
+      },
+      {
+        description: "with other elements destructured, multi-lines",
+        code: `const {
+  user: {
+    id,
+    n: name,
+    age
+  },
+  date
+} = session,
+  lastName = "Smith";
+console.log(name);`,
+        selection: Selection.cursorAt(3, 4),
+        expected: `const {
+  user: {
+    id,
+    age
+  },
+  date
+} = session,
+  lastName = "Smith";
+console.log(session.user.n);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {

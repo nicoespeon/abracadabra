@@ -49,11 +49,16 @@ function findInlinableCode(
       result = new InlinableObjectPattern(
         child,
         initName,
-        id.loc,
+        property.loc,
         previous,
         next
       );
     });
+
+    const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
+    if (result && isTopLevelObjectPattern) {
+      result = new InlinableTopLevelObjectPattern(result, id.loc);
+    }
 
     return result;
   }
@@ -94,6 +99,7 @@ interface InlinableCode {
   isRedeclared: boolean;
   isExported: boolean;
   hasIdentifiersToUpdate: boolean;
+  shouldExtendSelectionToDeclaration: boolean;
   valueSelection: Selection;
   codeToRemoveSelection: Selection;
   updateIdentifiersWith: (inlinedCode: Code) => Update[];
@@ -102,6 +108,7 @@ interface InlinableCode {
 // 🍂 Leaves
 
 class InlinableIdentifier implements InlinableCode {
+  shouldExtendSelectionToDeclaration = true;
   valueSelection: Selection;
 
   private id: ast.SelectableIdentifier;
@@ -231,6 +238,10 @@ class CompositeInlinable implements InlinableCode {
     return this.child.hasIdentifiersToUpdate;
   }
 
+  get shouldExtendSelectionToDeclaration(): boolean {
+    return this.child.shouldExtendSelectionToDeclaration;
+  }
+
   get valueSelection(): Selection {
     return this.child.valueSelection;
   }
@@ -245,9 +256,13 @@ class CompositeInlinable implements InlinableCode {
 }
 class SingleDeclaration extends CompositeInlinable {
   get codeToRemoveSelection(): Selection {
-    return super.codeToRemoveSelection
-      .extendToStartOfLine()
-      .extendToStartOfNextLine();
+    const selection = super.codeToRemoveSelection;
+
+    if (!super.shouldExtendSelectionToDeclaration) {
+      return selection;
+    }
+
+    return selection.extendToStartOfLine().extendToStartOfNextLine();
   }
 }
 
@@ -267,6 +282,10 @@ class MultipleDeclarations extends CompositeInlinable {
 
   get codeToRemoveSelection(): Selection {
     const selection = super.codeToRemoveSelection;
+
+    if (!super.shouldExtendSelectionToDeclaration) {
+      return selection;
+    }
 
     return this.next
       ? selection.extendEndToStartOf(Selection.fromAST(this.next.loc))
@@ -300,9 +319,18 @@ class InlinableObjectPattern extends CompositeInlinable {
     }
   }
 
+  get shouldExtendSelectionToDeclaration(): boolean {
+    if (!super.shouldExtendSelectionToDeclaration) return false;
+
+    return !this.next && !this.previous;
+  }
+
   get codeToRemoveSelection(): Selection {
+    if (!super.shouldExtendSelectionToDeclaration) {
+      return super.codeToRemoveSelection;
+    }
+
     const selection = Selection.fromAST(this.valueLoc);
-    return selection;
 
     if (this.next) {
       return selection.extendEndToStartOf(Selection.fromAST(this.next.loc));
@@ -331,5 +359,20 @@ class InlinableObjectPattern extends CompositeInlinable {
     const lastPart = parts.pop();
 
     return [...parts, this.initName, lastPart].join(OBJECT_SEPARATOR);
+  }
+}
+
+class InlinableTopLevelObjectPattern extends CompositeInlinable {
+  private loc: ast.SourceLocation;
+
+  constructor(child: InlinableCode, loc: ast.SourceLocation) {
+    super(child);
+    this.loc = loc;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    return super.shouldExtendSelectionToDeclaration
+      ? Selection.fromAST(this.loc)
+      : super.codeToRemoveSelection;
   }
 }
