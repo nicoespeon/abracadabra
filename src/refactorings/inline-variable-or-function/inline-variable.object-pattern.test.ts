@@ -139,6 +139,27 @@ console.log(session.user.n);`
     }
   );
 
+  testEach<{ code: Code; selection?: Selection }>(
+    "should should not inline the destructured variable value",
+    [
+      {
+        description: "selected value is not referenced",
+        code: `const { userId } = session;
+messages.map(message => ({ name }));`
+      },
+      {
+        description: "many destructured elements selected",
+        code: `const { userId, name } = session;
+console.log(userId);`,
+        selection: new Selection([0, 13], [0, 15])
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 9) }) => {
+      const result = await doInlineVariable(code, selection);
+      expect(result).toBe(code);
+    }
+  );
+
   async function doInlineVariable(
     code: Code,
     selection: Selection
