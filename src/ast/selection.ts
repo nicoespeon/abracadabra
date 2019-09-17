@@ -12,7 +12,8 @@ export {
   Selectable,
   isSelectableNode,
   isSelectableVariableDeclarator,
-  isSelectableIdentifier
+  isSelectableIdentifier,
+  isSelectableObjectProperty
 };
 
 interface ASTSelection {
@@ -46,4 +47,10 @@ function isSelectableVariableDeclarator(
   declaration: t.VariableDeclarator
 ): declaration is SelectableVariableDeclarator {
   return !!declaration.loc;
+}
+
+function isSelectableObjectProperty(
+  property: t.Node | null
+): property is SelectableObjectProperty {
+  return t.isObjectProperty(property) && isSelectableNode(property);
 }

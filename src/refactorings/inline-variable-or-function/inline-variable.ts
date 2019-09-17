@@ -75,12 +75,10 @@ function findInlinableCodeInAST(
       );
 
       if (declarations.length === 1) {
-        result = findInlinableCode(
-          selection,
-          parent,
-          new SingleDeclaration(),
-          declarations[0]
-        );
+        const child = findInlinableCode(selection, parent, declarations[0]);
+        if (!child) return;
+
+        result = new SingleDeclaration(child);
       } else {
         declarations.forEach((declaration, index) => {
           if (!selection.isInsideNode(declaration)) return;
@@ -89,12 +87,10 @@ function findInlinableCodeInAST(
           const next = declarations[index + 1];
           if (!previous && !next) return;
 
-          result = findInlinableCode(
-            selection,
-            parent,
-            new MultipleDeclarations(previous, next),
-            declaration
-          );
+          const child = findInlinableCode(selection, parent, declaration);
+          if (!child) return;
+
+          result = new MultipleDeclarations(child, previous, next);
         });
       }
     }
