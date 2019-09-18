@@ -28,10 +28,15 @@ interface ASTPosition {
 
 type SelectablePath = NodePath<SelectableNode>;
 type SelectableNode = Selectable<t.Node>;
-type SelectableObjectProperty = Selectable<t.ObjectProperty>;
 type SelectableIdentifier = Selectable<t.Identifier>;
 type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
 type Selectable<T> = T & { loc: t.SourceLocation };
+
+interface SelectableObjectProperty extends t.ObjectProperty {
+  loc: t.SourceLocation;
+  key: Selectable<t.ObjectProperty["key"]>;
+  value: Selectable<t.ObjectProperty["value"]>;
+}
 
 function isSelectableNode(node: t.Node | null): node is SelectableNode {
   return !!node && !!node.loc;
@@ -52,5 +57,10 @@ function isSelectableVariableDeclarator(
 function isSelectableObjectProperty(
   property: t.Node | null
 ): property is SelectableObjectProperty {
-  return t.isObjectProperty(property) && isSelectableNode(property);
+  return (
+    t.isObjectProperty(property) &&
+    isSelectableNode(property) &&
+    isSelectableNode(property.value) &&
+    isSelectableNode(property.key)
+  );
 }
