@@ -33,7 +33,7 @@ describe("Selection", () => {
     it("should return selection that ends at given selection start", () => {
       const selection = new Selection([0, 10], [3, 10]);
 
-      const extendedSelection = selection.extendEndTo(
+      const extendedSelection = selection.extendEndToStartOf(
         new Selection([3, 12], [3, 15])
       );
 
@@ -43,7 +43,7 @@ describe("Selection", () => {
     it("should not change selection if the given one starts before our selection ends", () => {
       const selection = new Selection([0, 10], [3, 10]);
 
-      const extendedSelection = selection.extendEndTo(
+      const extendedSelection = selection.extendEndToStartOf(
         new Selection([2, 12], [3, 15])
       );
 
@@ -55,7 +55,7 @@ describe("Selection", () => {
     it("should return selection that starts at given selection end", () => {
       const selection = new Selection([0, 10], [3, 10]);
 
-      const extendedSelection = selection.extendStartTo(
+      const extendedSelection = selection.extendStartToEndOf(
         new Selection([0, 0], [0, 3])
       );
 
@@ -65,7 +65,7 @@ describe("Selection", () => {
     it("should not change selection if the given one ends after our selection starts", () => {
       const selection = new Selection([0, 10], [3, 10]);
 
-      const extendedSelection = selection.extendStartTo(
+      const extendedSelection = selection.extendStartToEndOf(
         new Selection([0, 0], [1, 3])
       );
 

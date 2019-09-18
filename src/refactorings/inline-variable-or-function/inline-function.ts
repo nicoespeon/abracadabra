@@ -132,7 +132,7 @@ function createVisitorThat(
         functionStartPosition.line,
         functionStartPosition.character
       );
-      const validSelection = Selection.fromAST(node.id.loc).extendStartTo(
+      const validSelection = Selection.fromAST(node.id.loc).extendStartToEndOf(
         validSelectionStartPosition
       );
       if (!selection.isInside(validSelection)) return;

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Inline Variable now handles destructured object patterns
+
+Consider the following code:
+
+```js
+const { userId } = session;
+messages.map(message => ({ userId }));
+```
+
+If you tried to inline `userId`, it wouldn't work because destructured object patterns were not supported.
+
+Now it would work as expected:
+
+```js
+messages.map(message => ({ userId: session.userId }));
+```
+
+Thanks to @noway for [bringing this one up](https://github.com/nicoespeon/abracadabra/issues/25).
+
+Destructured array patterns (e.g. `const [userId] = session`) are still not supported, but we're working on it.
+
 ## [0.7.0] - 2019-09-16
 
 ### Added
