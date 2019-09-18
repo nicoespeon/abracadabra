@@ -5,11 +5,72 @@ import { Update } from "../../editor/editor";
 
 import { InlinableCode, InlinableObjectPattern } from "./find-inlinable-code";
 
+describe("InlinableObjectPattern", () => {
+  it("should return child code updates", () => {
+    const updates = [
+      {
+        code: "userId",
+        selection: ANY_SELECTION
+      },
+      {
+        code: "player.state",
+        selection: ANY_SELECTION
+      }
+    ];
+    const inlinable = createInlinableObjectPattern(
+      new FakeInlinable(updates),
+      ""
+    );
+
+    const result = inlinable.updateIdentifiersWith("");
+
+    expect(result).toEqual(updates);
+  });
+
+  it("should prepend inlined code with init name before forwarding it to child", () => {
+    const child = new FakeInlinable();
+    jest.spyOn(child, "updateIdentifiersWith");
+    const inlinable = createInlinableObjectPattern(child, "user");
+
+    inlinable.updateIdentifiersWith("name");
+
+    expect(child.updateIdentifiersWith).toBeCalledWith("user.name");
+  });
+
+  it("should resolve inlined code path if inlined code is already a member expression", () => {
+    const child = new FakeInlinable();
+    jest.spyOn(child, "updateIdentifiersWith");
+    const inlinable = createInlinableObjectPattern(child, "names");
+
+    inlinable.updateIdentifiersWith("user.first");
+
+    expect(child.updateIdentifiersWith).toBeCalledWith("user.names.first");
+  });
+
+  it("should resolve inlined code path if inlined code is an object property", () => {
+    const child = new FakeInlinable();
+    jest.spyOn(child, "updateIdentifiersWith");
+    const inlinable = createInlinableObjectPattern(child, "user");
+
+    inlinable.updateIdentifiersWith("n: name");
+
+    expect(child.updateIdentifiersWith).toBeCalledWith("user.n");
+  });
+
+  it("should resolve inlined code path if inlined code is a complex member expression", () => {
+    const child = new FakeInlinable();
+    jest.spyOn(child, "updateIdentifiersWith");
+    const inlinable = createInlinableObjectPattern(child, "user");
+
+    inlinable.updateIdentifiersWith("session.data[0].first");
+
+    expect(child.updateIdentifiersWith).toBeCalledWith(
+      "session.data[0].user.first"
+    );
+  });
+});
+
 const ANY_SELECTION = Selection.cursorAt(0, 0);
-const ANY_LOC: ast.SourceLocation = {
-  start: { line: 0, column: 0 },
-  end: { line: 0, column: 0 }
-};
 
 class FakeInlinable implements InlinableCode {
   isRedeclared = false;
@@ -28,68 +89,32 @@ class FakeInlinable implements InlinableCode {
   updateIdentifiersWith = () => this.updates;
 }
 
-describe("InlinableObjectPattern", () => {
-  it("should return child code updates", () => {
-    const updates = [
-      {
-        code: "userId",
-        selection: ANY_SELECTION
-      },
-      {
-        code: "player.state",
-        selection: ANY_SELECTION
-      }
-    ];
-    const inlinable = new InlinableObjectPattern(
-      new FakeInlinable(updates),
-      "",
-      ANY_LOC
-    );
+function createInlinableObjectPattern(child: InlinableCode, initName: string) {
+  const ANY_LOC: ast.SourceLocation = {
+    start: { line: 0, column: 0 },
+    end: { line: 0, column: 0 }
+  };
+  const ANY_PROPERTY = ast.objectProperty(
+    ast.identifier(""),
+    ast.identifier("")
+  );
+  const ANY_SELECTABLE_PROPERTY: ast.SelectableObjectProperty = {
+    ...ANY_PROPERTY,
+    loc: ANY_LOC,
+    key: {
+      ...ANY_PROPERTY.key,
+      loc: ANY_LOC
+    },
+    value: {
+      ...ANY_PROPERTY.value,
+      loc: ANY_LOC
+    }
+  };
 
-    const result = inlinable.updateIdentifiersWith("");
-
-    expect(result).toEqual(updates);
-  });
-
-  it("should prepend inlined code with init name before forwarding it to child", () => {
-    const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "user", ANY_LOC);
-
-    inlinable.updateIdentifiersWith("name");
-
-    expect(child.updateIdentifiersWith).toBeCalledWith("user.name");
-  });
-
-  it("should resolve inlined code path if inlined code is already a member expression", () => {
-    const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "names", ANY_LOC);
-
-    inlinable.updateIdentifiersWith("user.first");
-
-    expect(child.updateIdentifiersWith).toBeCalledWith("user.names.first");
-  });
-
-  it("should resolve inlined code path if inlined code is an object property", () => {
-    const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "user", ANY_LOC);
-
-    inlinable.updateIdentifiersWith("n: name");
-
-    expect(child.updateIdentifiersWith).toBeCalledWith("user.n");
-  });
-
-  it("should resolve inlined code path if inlined code is a complex member expression", () => {
-    const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
-    const inlinable = new InlinableObjectPattern(child, "user", ANY_LOC);
-
-    inlinable.updateIdentifiersWith("session.data[0].first");
-
-    expect(child.updateIdentifiersWith).toBeCalledWith(
-      "session.data[0].user.first"
-    );
-  });
-});
+  return new InlinableObjectPattern(
+    child,
+    initName,
+    ANY_SELECTABLE_PROPERTY,
+    false
+  );
+}

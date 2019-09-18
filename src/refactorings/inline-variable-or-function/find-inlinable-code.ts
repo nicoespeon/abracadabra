@@ -16,7 +16,7 @@ export {
 function findInlinableCode(
   selection: Selection,
   parent: ast.Node,
-  declaration: { id: ast.LVal; init: ast.Node | null }
+  declaration: { id: ast.Node; init: ast.Node | null }
 ): InlinableCode | null {
   const { id, init } = declaration;
   if (!ast.isSelectableNode(init)) return null;
@@ -32,7 +32,7 @@ function findInlinableCode(
     id.properties.forEach((property, index) => {
       if (!selection.isInsideNode(property)) return;
       if (ast.isRestElement(property)) return;
-      if (!ast.isSelectableNode(property)) return;
+      if (!ast.isSelectableObjectProperty(property)) return;
 
       const child = findInlinableCode(selection, parent, {
         id: property.value,
@@ -45,11 +45,13 @@ function findInlinableCode(
 
       const previous = id.properties[index - 1];
       const next = id.properties[index + 1];
+      const hasRestSibling = id.properties.some(p => ast.isRestElement(p));
 
       result = new InlinableObjectPattern(
         child,
         initName,
-        property.loc,
+        property,
+        hasRestSibling,
         previous,
         next
       );
@@ -295,20 +297,23 @@ class MultipleDeclarations extends CompositeInlinable {
 
 class InlinableObjectPattern extends CompositeInlinable {
   private initName: string;
-  private valueLoc: ast.SourceLocation;
+  private property: ast.SelectableObjectProperty;
   private previous: ast.SelectableObjectProperty | undefined;
   private next: ast.SelectableObjectProperty | undefined;
+  private hasRestSibling: boolean;
 
   constructor(
     child: InlinableCode,
     initName: string,
-    valueLoc: ast.SourceLocation,
+    property: ast.SelectableObjectProperty,
+    hasRestSibling: boolean,
     previous?: ast.Node | null,
     next?: ast.Node | null
   ) {
     super(child);
     this.initName = initName;
-    this.valueLoc = valueLoc;
+    this.property = property;
+    this.hasRestSibling = hasRestSibling;
 
     if (previous && ast.isSelectableObjectProperty(previous)) {
       this.previous = previous;
@@ -322,6 +327,10 @@ class InlinableObjectPattern extends CompositeInlinable {
   get shouldExtendSelectionToDeclaration(): boolean {
     if (!super.shouldExtendSelectionToDeclaration) return false;
 
+    if (this.hasRestSibling) {
+      return false;
+    }
+
     return !this.next && !this.previous;
   }
 
@@ -330,7 +339,17 @@ class InlinableObjectPattern extends CompositeInlinable {
       return super.codeToRemoveSelection;
     }
 
-    const selection = Selection.fromAST(this.valueLoc);
+    if (this.hasRestSibling) {
+      const valueSelection = Selection.fromAST(this.property.value.loc);
+      const keySelection = Selection.fromAST(this.property.key.loc);
+      const NO_SELECTION = Selection.cursorAt(0, 0);
+
+      return ast.isObjectPattern(this.property.value)
+        ? valueSelection.extendStartToEndOf(keySelection)
+        : NO_SELECTION;
+    }
+
+    const selection = Selection.fromAST(this.property.loc);
 
     if (this.next) {
       return selection.extendEndToStartOf(Selection.fromAST(this.next.loc));
@@ -340,7 +359,7 @@ class InlinableObjectPattern extends CompositeInlinable {
       return selection.extendStartToEndOf(Selection.fromAST(this.previous.loc));
     }
 
-    return super.codeToRemoveSelection;
+    return selection;
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {
