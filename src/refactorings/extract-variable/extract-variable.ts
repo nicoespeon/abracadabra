@@ -155,7 +155,7 @@ function getOccurrenceLoc(
   node: ast.SelectableNode,
   selection: Selection
 ): ast.SourceLocation | null {
-  return ast.isObjectProperty(node)
+  return ast.isSelectableObjectProperty(node)
     ? findObjectPropertyLoc(selection, node)
     : ast.isJSXExpressionContainer(node)
     ? node.expression.loc
