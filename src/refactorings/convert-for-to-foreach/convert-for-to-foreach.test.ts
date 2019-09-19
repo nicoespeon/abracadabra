@@ -106,6 +106,14 @@ items.forEach(item => {
     console.log(items[j]);
   }
 });`
+      },
+      {
+        description: "for-loop without block statement",
+        code: `for (let i = 0; i < items.length; i++)
+  console.log(items[i]);`,
+        expected: `items.forEach(item => {
+  console.log(item);
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
