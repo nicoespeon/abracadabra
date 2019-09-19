@@ -23,6 +23,17 @@ describe("Convert For To Foreach", () => {
         expected: `items.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "for-loop with member expressions we can't replace",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+  console.log(items[3]);
+}`,
+        expected: `items.forEach(item => {
+  console.log(item);
+  console.log(items[3]);
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
