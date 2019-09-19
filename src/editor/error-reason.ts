@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFoundForLoopToConvert,
   DidNotFoundStatementToMerge,
   DidNotFoundNestedIf,
   DidNotFoundBinaryExpression,
@@ -34,6 +35,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFoundForLoopToConvert:
+      return didNotFound("a valid for loop to convert");
+
     case ErrorReason.DidNotFoundStatementToMerge:
       return didNotFound("a statement to merge with");
 
