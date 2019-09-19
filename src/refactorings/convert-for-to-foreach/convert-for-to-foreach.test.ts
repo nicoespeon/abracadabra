@@ -34,6 +34,78 @@ describe("Convert For To Foreach", () => {
   console.log(item);
   console.log(items[3]);
 });`
+      },
+      {
+        description: "selected for-loop only",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+
+items.forEach(item => {
+  console.log(item);
+});`
+      },
+      {
+        description: "nested for-loop, cursor on wrapper",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+
+  for (let j = 0; j < items.length; j++) {
+    console.log(items[j]);
+  }
+}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `items.forEach(item => {
+  console.log(item);
+
+  for (let j = 0; j < items.length; j++) {
+    console.log(items[j]);
+  }
+});`
+      },
+      {
+        description: "nested for-loop, cursor on nested",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+
+  for (let j = 0; j < items.length; j++) {
+    console.log(items[j]);
+  }
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+
+  items.forEach(item => {
+    console.log(item);
+  });
+}`
+      },
+      {
+        description: "nested for-loop, cursor on nested, nested invalid",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+
+  for (let j = 0; j < 10; j++) {
+    console.log(items[j]);
+  }
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `items.forEach(item => {
+  console.log(item);
+
+  for (let j = 0; j < 10; j++) {
+    console.log(items[j]);
+  }
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

@@ -28,6 +28,12 @@ function canConvertForLoop(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     ForStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const { test, body } = path.node;
       if (!ast.isBinaryExpression(test)) return;
 
@@ -51,6 +57,34 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       path.stop();
     }
   });
+}
+
+function hasChildWhichMatchesSelection(
+  path: ast.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    ForStatement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const { test } = childPath.node;
+      if (!ast.isBinaryExpression(test)) return;
+
+      const left = test.left;
+      if (!ast.isIdentifier(left)) return;
+
+      const right = test.right;
+      if (!ast.isMemberExpression(right)) return;
+      if (!ast.isIdentifier(right.object)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function replaceListWithItemIn(
