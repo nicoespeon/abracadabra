@@ -23,7 +23,8 @@ export {
   isInAlternate,
   getStatements,
   templateElement,
-  Primitive
+  Primitive,
+  forEach
 };
 
 function isClassPropertyIdentifier(path: NodePath): boolean {
@@ -253,3 +254,15 @@ type Primitive =
   | t.NumberLiteral
   | t.BooleanLiteral
   | t.BigIntLiteral;
+
+function forEach(
+  object: t.Expression,
+  params: t.ArrowFunctionExpression["params"],
+  body: t.BlockStatement
+): t.ExpressionStatement {
+  return t.expressionStatement(
+    t.callExpression(t.memberExpression(object, t.identifier("forEach")), [
+      t.arrowFunctionExpression(params, body)
+    ])
+  );
+}

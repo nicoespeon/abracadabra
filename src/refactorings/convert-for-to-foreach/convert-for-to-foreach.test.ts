@@ -15,7 +15,15 @@ describe("Convert For To Foreach", () => {
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should convert for to foreach",
     [
-      // TODO: write successful test cases here
+      {
+        description: "basic for-loop",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}`,
+        expected: `items.forEach(item => {
+  console.log(item);
+});`
+      }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doConvertForToForeach(code, selection);

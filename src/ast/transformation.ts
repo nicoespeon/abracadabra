@@ -6,7 +6,7 @@ import * as recast from "recast";
 import { Code } from "../editor/editor";
 import { findScopePath } from "./scope";
 
-export { NodePath, Visitor } from "@babel/traverse";
+export { NodePath, Visitor, Scope } from "@babel/traverse";
 export {
   traverse as traverseAST,
   traverseCode,
