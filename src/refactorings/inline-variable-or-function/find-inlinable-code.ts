@@ -133,7 +133,7 @@ class InlinableIdentifier implements InlinableCode {
 
     // We have to alias `this` because traversal rebinds the context of the options.
     const self = this;
-    ast.traverse(this.scope, {
+    ast.traverseAST(this.scope, {
       enter(node) {
         if (!ast.isAssignmentExpression(node)) return;
         if (!ast.areEqual(self.id, node.left)) return;

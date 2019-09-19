@@ -32,7 +32,7 @@ function findNegatableExpression(
 ): NegatableExpression | undefined {
   let result: NegatableExpression | undefined;
 
-  ast.traverseAST(code, {
+  ast.traverseCode(code, {
     enter({ node, parent }) {
       if (!isNegatable(node)) return;
       if (isNegatedIdentifier(node)) return;
