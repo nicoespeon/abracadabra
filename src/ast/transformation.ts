@@ -18,6 +18,7 @@ export {
   transformCopy,
   Transformed
 };
+export { mergeCommentsInto };
 
 function transform(code: Code, options: TraverseOptions): Transformed {
   const ast = traverseCode(code, options);
@@ -121,7 +122,7 @@ function preserveCommentsForRecast(path: NodePath) {
   path.node.comments = path.node.leadingComments;
 
   if (!path.isBlockStatement() && isLastNode()) {
-    // @ts-ignore Recast does use a `comment` attribute.
+    // @ts-ignore Recast does use a `comments` attribute.
     path.node.comments = [
       ...(path.node.leadingComments || []),
       ...(path.node.trailingComments || [])
@@ -136,4 +137,18 @@ function preserveCommentsForRecast(path: NodePath) {
 interface Transformed {
   code: Code;
   hasCodeChanged: boolean;
+}
+
+function mergeCommentsInto<T extends t.Node>(
+  node: T,
+  commentedNodes: t.Node[]
+): T {
+  return {
+    ...node,
+    comments: commentedNodes.reduce(
+      // @ts-ignore Recast does use a `comments` attribute.
+      (memo, { comments }) => memo.concat(comments),
+      []
+    )
+  };
 }
