@@ -128,6 +128,7 @@ function getMemberExpressionIdentifier(
 ): ast.Identifier | undefined {
   if (!ast.isMemberExpression(node)) return;
   if (!ast.isIdentifier(node.object)) return;
+  if (!ast.areEqual(node.property, ast.identifier("length"))) return;
 
   return node.object;
 }

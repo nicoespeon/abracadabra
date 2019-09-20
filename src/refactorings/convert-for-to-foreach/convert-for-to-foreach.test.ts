@@ -161,6 +161,31 @@ items.forEach(item => {
     }
   );
 
+  testEach<{ code: Code }>(
+    "should not convert",
+    [
+      {
+        description: "standard for-loop",
+        code: `for (let i = 0; i < 10; i++) {
+  console.log(items[i]);
+}`
+      },
+      {
+        description: "not using the list length to iterate",
+        code: `for (let i = 0; i < items.count; i++) {
+  console.log(items[i]);
+}`
+      }
+    ],
+    async ({ code }) => {
+      const selection = Selection.cursorAt(0, 0);
+
+      const result = await doConvertForToForeach(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
