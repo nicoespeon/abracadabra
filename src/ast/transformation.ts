@@ -6,11 +6,21 @@ import * as recast from "recast";
 import { Code } from "../editor/editor";
 import { findScopePath } from "./scope";
 
-export { NodePath, Visitor } from "@babel/traverse";
-export { traverseAST, transform, transformCopy, Transformed };
+const traverseNode = t.traverse;
+const traversePath = traverse;
+
+export { NodePath, Visitor, Scope } from "@babel/traverse";
+export {
+  traverseNode,
+  traversePath,
+  traverseCode,
+  transform,
+  transformCopy,
+  Transformed
+};
 
 function transform(code: Code, options: TraverseOptions): Transformed {
-  const ast = traverseAST(code, options);
+  const ast = traverseCode(code, options);
   const newCode = recast.print(ast).code;
 
   return {
@@ -19,7 +29,7 @@ function transform(code: Code, options: TraverseOptions): Transformed {
   };
 }
 
-function traverseAST(code: Code, opts: TraverseOptions): t.File {
+function traverseCode(code: Code, opts: TraverseOptions): t.File {
   const ast: t.File = recast.parse(code, {
     parser: {
       parse: (source: Code) =>

@@ -52,6 +52,7 @@
     "@types/babel__traverse": "7.0.6",
     "@types/jest": "24.0.13",
     "@types/node": "10.12.21",
+    "@types/pluralize": "0.0.29",
     "husky": "2.3.0",
     "hygen": "4.0.8",
     "jest": "24.8.0",
@@ -70,11 +71,13 @@
     "@babel/parser": "7.4.5",
     "@babel/traverse": "7.4.5",
     "@babel/types": "7.4.4",
+    "pluralize": "8.0.0",
     "recast": "0.18.1"
   },
   "activationEvents": [
     "onCommand:abracadabra.addBracesToArrowFunction",
     "onCommand:abracadabra.bubbleUpIfStatement",
+    "onCommand:abracadabra.convertForToForeach",
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
@@ -109,6 +112,11 @@
       {
         "command": "abracadabra.bubbleUpIfStatement",
         "title": "Bubble up If Statement",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertForToForeach",
+        "title": "Convert For-Loop To ForEach",
         "category": "Abracadabra"
       },
       {
@@ -265,6 +273,22 @@
         },
         {
           "command": "abracadabra.bubbleUpIfStatement",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
           "when": "editorLangId == typescriptreact"
         },
         {

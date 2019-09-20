@@ -133,7 +133,7 @@ class InlinableIdentifier implements InlinableCode {
 
     // We have to alias `this` because traversal rebinds the context of the options.
     const self = this;
-    ast.traverse(this.scope, {
+    ast.traverseNode(this.scope, {
       enter(node) {
         if (!ast.isAssignmentExpression(node)) return;
         if (!ast.areEqual(self.id, node.left)) return;
@@ -175,7 +175,7 @@ class InlinableIdentifier implements InlinableCode {
   private computeIdentifiersToReplace() {
     // We have to alias `this` because traversal rebinds the context of the options.
     const self = this;
-    ast.traverse(this.scope, {
+    ast.traverseNode(this.scope, {
       enter(node, ancestors) {
         if (!ast.isSelectableNode(node)) return;
         if (!ast.areEqual(self.id, node)) return;

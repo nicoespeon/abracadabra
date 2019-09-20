@@ -57,7 +57,7 @@ function findInlinableCodeInAST(
 ): InlinableCode | null {
   let result: InlinableCode | null = null;
 
-  ast.traverseAST(code, {
+  ast.traverseCode(code, {
     enter(path) {
       const { node, parent } = path;
 
