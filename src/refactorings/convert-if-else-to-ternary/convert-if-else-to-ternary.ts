@@ -42,67 +42,88 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 function getReturnStatementTernary(
   node: ast.IfStatement
 ): ast.ReturnStatement | undefined {
-  const ifReturnedArgument = getReturnedArgument(node.consequent);
-  if (!ifReturnedArgument) return;
+  const ifReturnedStatement = getReturnedStatement(node.consequent);
+  if (!ifReturnedStatement) return;
+  if (!ifReturnedStatement.argument) return;
 
-  const elseReturnedArgument = getReturnedArgument(node.alternate);
-  if (!elseReturnedArgument) return;
+  const elseReturnedStatement = getReturnedStatement(node.alternate);
+  if (!elseReturnedStatement) return;
+  if (!elseReturnedStatement.argument) return;
 
-  return ast.returnStatement(
+  let result = ast.returnStatement(
     ast.conditionalExpression(
       node.test,
-      ifReturnedArgument,
-      elseReturnedArgument
+      ifReturnedStatement.argument,
+      elseReturnedStatement.argument
     )
   );
+
+  result = ast.mergeCommentsInto(result, [
+    ifReturnedStatement,
+    elseReturnedStatement
+  ]);
+
+  return result;
 }
 
-function getReturnedArgument(
+function getReturnedStatement(
   node: ast.Statement | null
-): ast.ReturnStatement["argument"] {
+): ast.ReturnStatement | null {
   if (!ast.isBlockStatement(node)) return null;
 
   const firstChild = node.body[0];
   if (!ast.isReturnStatement(firstChild)) return null;
 
-  return firstChild.argument;
+  return firstChild;
 }
 
 function getAssignmentExpressionTernary(
   node: ast.IfStatement
 ): ast.AssignmentExpression | undefined {
-  const ifAssignedArgument = getAssignedArgument(node.consequent);
-  if (!ifAssignedArgument) return;
+  const ifAssignedStatement = getAssignedStatement(node.consequent);
+  if (!ifAssignedStatement) return;
 
-  const elseAssignedArgument = getAssignedArgument(node.alternate);
-  if (!elseAssignedArgument) return;
+  const elseAssignedStatement = getAssignedStatement(node.alternate);
+  if (!elseAssignedStatement) return;
 
-  if (!areSameAssignments(ifAssignedArgument, elseAssignedArgument)) {
+  const ifAssignment = ifAssignedStatement.expression;
+  const elseAssignment = elseAssignedStatement.expression;
+
+  if (!areSameAssignments(ifAssignment, elseAssignment)) {
     return;
   }
 
-  return ast.assignmentExpression(
-    ifAssignedArgument.operator,
-    ifAssignedArgument.left,
+  let result = ast.assignmentExpression(
+    ifAssignment.operator,
+    ifAssignment.left,
     ast.conditionalExpression(
       node.test,
-      ifAssignedArgument.right,
-      elseAssignedArgument.right
+      ifAssignment.right,
+      elseAssignment.right
     )
   );
+
+  result = ast.mergeCommentsInto(result, [
+    ifAssignedStatement,
+    elseAssignedStatement
+  ]);
+
+  return result;
 }
 
-function getAssignedArgument(
+function getAssignedStatement(
   node: ast.Statement | null
-): ast.AssignmentExpression | null {
+): ast.ExpressionStatement & { expression: ast.AssignmentExpression } | null {
   if (!ast.isBlockStatement(node)) return null;
   if (node.body.length > 1) return null;
 
   const firstChild = node.body[0];
   if (!ast.isExpressionStatement(firstChild)) return null;
-  if (!ast.isAssignmentExpression(firstChild.expression)) return null;
 
-  return firstChild.expression;
+  const expression = firstChild.expression;
+  if (!ast.isAssignmentExpression(expression)) return null;
+
+  return { ...firstChild, expression };
 }
 
 function areSameAssignments(

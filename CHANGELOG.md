@@ -34,6 +34,10 @@ Thanks to @noway for [bringing this one up](https://github.com/nicoespeon/abraca
 
 Destructured array patterns (e.g. `const [userId] = session`) are still not supported, but we're working on it.
 
+### Fixed
+
+- Convert If/Else to Ternary now preserve comments that were inside each branches.
+
 ## [0.7.0] - 2019-09-16
 
 ### Added

@@ -101,6 +101,48 @@ describe("Convert If/Else to Ternary", () => {
     return "normal";
   }
 }`
+      },
+      {
+        description: "preserve comments for returned values",
+        code: `function reservationMode(daysInAdvance) {
+  if (daysInAdvance > 10) {
+    // Early scenario.
+    return "early";
+  } else {
+    // Normal scenario.
+    return "normal";
+  }
+}`,
+        selection: Selection.cursorAt(1, 6),
+        expected: `function reservationMode(daysInAdvance) {
+  // Early scenario.
+  // Normal scenario.
+  return daysInAdvance > 10 ? "early" : "normal";
+}`
+      },
+      {
+        description: "preserve comments for assigned values",
+        code: `function reservationMode(daysInAdvance) {
+  let mode;
+  if (daysInAdvance > 10) {
+    // Early scenario.
+    mode = "early";
+  } else {
+    // Normal scenario.
+    mode = "normal";
+  }
+  return \`reserve-\${mode}\`;
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `function reservationMode(daysInAdvance) {
+  let mode;
+
+  // Early scenario.
+  // Normal scenario.
+  mode = daysInAdvance > 10 ? "early" : "normal";
+
+  return \`reserve-\${mode}\`;
+}`
       }
     ],
     async ({ code, selection, expected }) => {
