@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
 import bubbleUpIfStatementCommand from "./refactorings/bubble-up-if-statement/command";
+import convertForToForeachCommand from "./refactorings/convert-for-to-foreach/command";
 import convertIfElseToTernaryCommand from "./refactorings/convert-if-else-to-ternary/command";
 import convertIfElseToSwitchCommand from "./refactorings/convert-if-else-to-switch/command";
 import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-else/command";
@@ -24,6 +25,7 @@ import splitIfStatementCommand from "./refactorings/split-if-statement/command";
 
 import addBracesToArrowFunctionActionProviderFor from "./refactorings/add-braces-to-arrow-function/action-provider";
 import bubbleUpIfStatementActionProviderFor from "./refactorings/bubble-up-if-statement/action-provider";
+import convertForToForeachActionProviderFor from "./refactorings/convert-for-to-foreach/action-provider";
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
 import convertIfElseToSwitchActionProviderFor from "./refactorings/convert-if-else-to-switch/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
@@ -50,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
   [
     addBracesToArrowFunctionCommand,
     bubbleUpIfStatementCommand,
+    convertForToForeachCommand,
     convertIfElseToTernaryCommand,
     convertIfElseToSwitchCommand,
     convertTernaryToIfElseCommand,
@@ -75,6 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
     [
       addBracesToArrowFunctionActionProviderFor(language),
       bubbleUpIfStatementActionProviderFor(language),
+      convertForToForeachActionProviderFor(language),
       convertIfElseToTernaryActionProviderFor(language),
       convertIfElseToSwitchActionProviderFor(language),
       convertTernaryToIfElseActionProviderFor(language),

@@ -77,6 +77,7 @@
   "activationEvents": [
     "onCommand:abracadabra.addBracesToArrowFunction",
     "onCommand:abracadabra.bubbleUpIfStatement",
+    "onCommand:abracadabra.convertForToForeach",
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
@@ -111,6 +112,11 @@
       {
         "command": "abracadabra.bubbleUpIfStatement",
         "title": "Bubble up If Statement",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertForToForeach",
+        "title": "Convert For-Loop To ForEach",
         "category": "Abracadabra"
       },
       {
@@ -267,6 +273,22 @@
         },
         {
           "command": "abracadabra.bubbleUpIfStatement",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertForToForeach",
           "when": "editorLangId == typescriptreact"
         },
         {

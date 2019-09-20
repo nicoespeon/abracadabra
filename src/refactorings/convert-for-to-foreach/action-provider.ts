@@ -21,14 +21,11 @@ class ConvertForToForeachActionProvider implements CodeActionProvider {
 
     if (!canConvertForLoop(code, selection)) return;
 
-    const action = new vscode.CodeAction(
-      "✨ Convert for to foreach",
-      this.kind
-    );
+    const action = new vscode.CodeAction("✨ Convert to forEach", this.kind);
     action.isPreferred = true;
     action.command = {
       command: commandKey,
-      title: "Convert For To Foreach"
+      title: "Convert For-Loop To ForEach"
     };
 
     return [action];
