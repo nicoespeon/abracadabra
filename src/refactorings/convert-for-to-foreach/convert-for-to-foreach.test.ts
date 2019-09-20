@@ -152,6 +152,15 @@ items.forEach(item => {
         expected: `items.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "list is a member expression itself",
+        code: `for (let i = 0; i < this.data[0].items.length; i++) {
+  console.log(this.data[0].items[i]);
+}`,
+        expected: `this.data[0].items.forEach(item => {
+  console.log(item);
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

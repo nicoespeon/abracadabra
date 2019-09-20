@@ -45,7 +45,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!list) return;
 
       const accessor = left;
-      const item = ast.identifier(singular(list.name));
+      const item = ast.identifier(singular(getListName(list)));
       const forEachBody = ast.isBlockStatement(body)
         ? body
         : ast.blockStatement([body]);
@@ -92,7 +92,7 @@ function hasChildWhichMatchesSelection(
 function getList(
   expression: ast.BinaryExpression,
   variableDeclaration: ast.VariableDeclaration
-): ast.Identifier | undefined {
+): List | undefined {
   return (
     getListFromBinaryExpression(expression) ||
     getListFromVariableDeclaration(variableDeclaration)
@@ -101,41 +101,45 @@ function getList(
 
 function getListFromBinaryExpression(
   expression: ast.BinaryExpression
-): ast.Identifier | undefined {
+): List | undefined {
   const { right } = expression;
 
   return ast.isBinaryExpression(right)
-    ? getMemberExpressionIdentifier(right.left)
-    : getMemberExpressionIdentifier(right);
+    ? getListFromMemberExpression(right.left)
+    : getListFromMemberExpression(right);
 }
 
 function getListFromVariableDeclaration(
   variableDeclaration: ast.VariableDeclaration
-): ast.Identifier | undefined {
-  let result: ast.Identifier | undefined;
+): List | undefined {
+  let result: List | undefined;
 
   variableDeclaration.declarations.forEach(({ init }) => {
     if (ast.isBinaryExpression(init)) {
-      result = getMemberExpressionIdentifier(init.left);
+      result = getListFromMemberExpression(init.left);
     }
   });
 
   return result;
 }
 
-function getMemberExpressionIdentifier(
-  node: ast.Node
-): ast.Identifier | undefined {
+function getListFromMemberExpression(node: ast.Node): List | undefined {
   if (!ast.isMemberExpression(node)) return;
-  if (!ast.isIdentifier(node.object)) return;
-  if (!ast.areEqual(node.property, ast.identifier("length"))) return;
 
-  return node.object;
+  const { object, property } = node;
+  if (!ast.areEqual(property, ast.identifier("length"))) return;
+  if (!(ast.isIdentifier(object) || ast.isMemberExpression(object))) return;
+
+  return object;
+}
+
+function getListName(list: List): string {
+  return ast.isIdentifier(list) ? list.name : getListName(list.property);
 }
 
 function replaceListWithItemIn(
   statement: ast.BlockStatement,
-  list: ast.Identifier,
+  list: List,
   accessor: ast.Identifier,
   item: ast.Identifier,
   scope: ast.Scope
@@ -173,3 +177,5 @@ function isAccessorReferencedIn(
 
   return result;
 }
+
+type List = ast.Identifier | ast.MemberExpression;
