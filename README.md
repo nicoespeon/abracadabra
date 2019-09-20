@@ -68,6 +68,7 @@ Working around the syntax:
 1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
 1. [Convert to Template Literal](#convert-to-template-literal)
 1. [Replace Binary with Assignment](#replace-binary-with-assignment)
+1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
 
 ### Rename Symbol
 
@@ -293,6 +294,14 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 
 ![][demo-replace-binary-with-assignment]
 
+### Convert For-Loop to Foreach
+
+> 💡 Available as Quick Fix
+
+When it's possible, it converts an old-school for-loop into a `forEach()` call.
+
+![][demo-convert-for-to-foreach]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -456,6 +465,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
+[demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-for-to-foreach.gif?raw=true
 
 <!-- Logo -->
 
