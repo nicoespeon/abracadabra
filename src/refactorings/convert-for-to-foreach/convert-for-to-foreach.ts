@@ -53,7 +53,12 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
 
-      path.replaceWith(ast.forEach(list, [item], forEachBody));
+      // After we replaced, we check if there are remaining accessors.
+      const params = isAccessorReferencedIn(forEachBody, accessor, path.scope)
+        ? [item, accessor]
+        : [item];
+
+      path.replaceWith(ast.forEach(list, params, forEachBody));
       path.stop();
     }
   });
@@ -105,4 +110,25 @@ function replaceListWithItemIn(
     },
     scope
   );
+}
+
+function isAccessorReferencedIn(
+  statement: ast.BlockStatement,
+  accessor: ast.Identifier,
+  scope: ast.Scope
+): boolean {
+  let result = false;
+
+  ast.traverseAST(
+    statement,
+    {
+      enter(path) {
+        if (!ast.areEqual(path.node, accessor)) return;
+        result = true;
+      }
+    },
+    scope
+  );
+
+  return result;
 }

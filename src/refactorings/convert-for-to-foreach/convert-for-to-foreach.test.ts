@@ -114,6 +114,17 @@ items.forEach(item => {
         expected: `items.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "accessor referenced inside the body",
+        code: `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+  console.log(i);
+}`,
+        expected: `items.forEach((item, i) => {
+  console.log(item);
+  console.log(i);
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
