@@ -40,13 +40,11 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const left = test.left;
       if (!ast.isIdentifier(left)) return;
 
-      const right = test.right;
-      if (!ast.isMemberExpression(right)) return;
-      if (!ast.isIdentifier(right.object)) return;
+      const list = getList(test);
+      if (!list) return;
 
-      const list = right.object;
       const accessor = left;
-      const item = ast.identifier(singular(right.object.name));
+      const item = ast.identifier(singular(list.name));
       const forEachBody = ast.isBlockStatement(body)
         ? body
         : ast.blockStatement([body]);
@@ -76,13 +74,8 @@ function hasChildWhichMatchesSelection(
 
       const { test } = childPath.node;
       if (!ast.isBinaryExpression(test)) return;
-
-      const left = test.left;
-      if (!ast.isIdentifier(left)) return;
-
-      const right = test.right;
-      if (!ast.isMemberExpression(right)) return;
-      if (!ast.isIdentifier(right.object)) return;
+      if (!ast.isIdentifier(test.left)) return;
+      if (!getList(test)) return;
 
       result = true;
       childPath.stop();
@@ -90,6 +83,15 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
+}
+
+function getList(test: ast.BinaryExpression): ast.Identifier | undefined {
+  const { right } = test;
+
+  if (!ast.isMemberExpression(right)) return;
+  if (!ast.isIdentifier(right.object)) return;
+
+  return right.object;
 }
 
 function replaceListWithItemIn(
