@@ -85,13 +85,21 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function getList(test: ast.BinaryExpression): ast.Identifier | undefined {
-  const { right } = test;
+function getList(expression: ast.BinaryExpression): ast.Identifier | undefined {
+  const { right } = expression;
 
-  if (!ast.isMemberExpression(right)) return;
-  if (!ast.isIdentifier(right.object)) return;
+  return ast.isBinaryExpression(right)
+    ? getMemberExpressionIdentifier(right.left)
+    : getMemberExpressionIdentifier(right);
+}
 
-  return right.object;
+function getMemberExpressionIdentifier(
+  node: ast.Node
+): ast.Identifier | undefined {
+  if (!ast.isMemberExpression(node)) return;
+  if (!ast.isIdentifier(node.object)) return;
+
+  return node.object;
 }
 
 function replaceListWithItemIn(

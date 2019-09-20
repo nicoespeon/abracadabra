@@ -125,6 +125,15 @@ items.forEach(item => {
   console.log(item);
   console.log(i);
 });`
+      },
+      {
+        description: "lesser or equal",
+        code: `for (let i = 0; i <= items.length - 1; i++) {
+  console.log(items[i]);
+}`,
+        expected: `items.forEach(item => {
+  console.log(item);
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
