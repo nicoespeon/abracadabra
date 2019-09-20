@@ -34,13 +34,14 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const { test, body } = path.node;
+      const { init, test, body } = path.node;
       if (!ast.isBinaryExpression(test)) return;
+      if (!ast.isVariableDeclaration(init)) return;
 
       const left = test.left;
       if (!ast.isIdentifier(left)) return;
 
-      const list = getList(test);
+      const list = getList(test, init);
       if (!list) return;
 
       const accessor = left;
@@ -72,10 +73,13 @@ function hasChildWhichMatchesSelection(
     ForStatement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
 
-      const { test } = childPath.node;
+      const { init, test } = childPath.node;
       if (!ast.isBinaryExpression(test)) return;
+      if (!ast.isVariableDeclaration(init)) return;
+
       if (!ast.isIdentifier(test.left)) return;
-      if (!getList(test)) return;
+
+      if (!getList(test, init)) return;
 
       result = true;
       childPath.stop();
@@ -85,12 +89,38 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function getList(expression: ast.BinaryExpression): ast.Identifier | undefined {
+function getList(
+  expression: ast.BinaryExpression,
+  variableDeclaration: ast.VariableDeclaration
+): ast.Identifier | undefined {
+  return (
+    getListFromBinaryExpression(expression) ||
+    getListFromVariableDeclaration(variableDeclaration)
+  );
+}
+
+function getListFromBinaryExpression(
+  expression: ast.BinaryExpression
+): ast.Identifier | undefined {
   const { right } = expression;
 
   return ast.isBinaryExpression(right)
     ? getMemberExpressionIdentifier(right.left)
     : getMemberExpressionIdentifier(right);
+}
+
+function getListFromVariableDeclaration(
+  variableDeclaration: ast.VariableDeclaration
+): ast.Identifier | undefined {
+  let result: ast.Identifier | undefined;
+
+  variableDeclaration.declarations.forEach(({ init }) => {
+    if (ast.isBinaryExpression(init)) {
+      result = getMemberExpressionIdentifier(init.left);
+    }
+  });
+
+  return result;
 }
 
 function getMemberExpressionIdentifier(

@@ -134,6 +134,24 @@ items.forEach(item => {
         expected: `items.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "decrementing accessor",
+        code: `for (let i = items.length - 1; i >= 0; i--) {
+  console.log(items[i]);
+}`,
+        expected: `items.forEach(item => {
+  console.log(item);
+});`
+      },
+      {
+        description: "decrementing accessor, strict greater than",
+        code: `for (let i = items.length - 1; i > -1; i--) {
+  console.log(items[i]);
+}`,
+        expected: `items.forEach(item => {
+  console.log(item);
+});`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
