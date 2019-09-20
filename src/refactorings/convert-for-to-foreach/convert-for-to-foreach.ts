@@ -53,7 +53,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
 
       // After we replaced, we check if there are remaining accessors.
-      const params = isAccessorReferencedIn(forEachBody, accessor, path.scope)
+      const params = isAccessorReferencedIn(forEachBody, accessor)
         ? [item, accessor]
         : [item];
 
@@ -144,7 +144,7 @@ function replaceListWithItemIn(
   item: ast.Identifier,
   scope: ast.Scope
 ) {
-  ast.traverseAST(
+  ast.traversePath(
     statement,
     {
       MemberExpression(path) {
@@ -159,21 +159,16 @@ function replaceListWithItemIn(
 
 function isAccessorReferencedIn(
   statement: ast.BlockStatement,
-  accessor: ast.Identifier,
-  scope: ast.Scope
+  accessor: ast.Identifier
 ): boolean {
   let result = false;
 
-  ast.traverseAST(
-    statement,
-    {
-      enter(path) {
-        if (!ast.areEqual(path.node, accessor)) return;
-        result = true;
-      }
-    },
-    scope
-  );
+  ast.traverseNode(statement, {
+    enter(node) {
+      if (!ast.areEqual(node, accessor)) return;
+      result = true;
+    }
+  });
 
   return result;
 }

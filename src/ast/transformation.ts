@@ -6,9 +6,13 @@ import * as recast from "recast";
 import { Code } from "../editor/editor";
 import { findScopePath } from "./scope";
 
+const traverseNode = t.traverse;
+const traversePath = traverse;
+
 export { NodePath, Visitor, Scope } from "@babel/traverse";
 export {
-  traverse as traverseAST,
+  traverseNode,
+  traversePath,
   traverseCode,
   transform,
   transformCopy,

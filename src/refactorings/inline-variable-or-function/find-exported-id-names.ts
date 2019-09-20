@@ -5,7 +5,7 @@ export { findExportedIdNames };
 function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
   let result: ast.Identifier["name"][] = [];
 
-  ast.traverseAST(scope, {
+  ast.traverseNode(scope, {
     enter(node) {
       // Pattern `export default foo`
       if (
