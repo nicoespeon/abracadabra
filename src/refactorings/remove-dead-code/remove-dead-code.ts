@@ -29,13 +29,15 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const { test, consequent, alternate } = path.node;
 
       if (ast.isFalsy(test)) {
-        return alternate
-          ? ast.replaceWithBodyOf(path, alternate)
-          : path.remove();
+        alternate ? ast.replaceWithBodyOf(path, alternate) : path.remove();
+        path.stop();
+        return;
       }
 
       if (ast.isTruthy(test)) {
-        return ast.replaceWithBodyOf(path, consequent);
+        ast.replaceWithBodyOf(path, consequent);
+        path.stop();
+        return;
       }
     }
   });
