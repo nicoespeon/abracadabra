@@ -1,7 +1,72 @@
 import { testEach } from "../tests-helpers";
 
 import * as t from "./domain";
-import { areOppositeOperators } from "./identity";
+import { areOpposite, areOppositeOperators } from "./identity";
+
+describe("Identity - Are opposite expressions", () => {
+  it("should return false if we pass non binary expressions", () => {
+    const testA = t.stringLiteral("John");
+    const testB = t.stringLiteral("Jane");
+
+    const result = areOpposite(testA, testB);
+
+    expect(result).toBe(false);
+  });
+
+  describe("binary expressions", () => {
+    const name = t.identifier("name");
+    const itemName = t.memberExpression(t.identifier("item"), name);
+    const john = t.stringLiteral("John");
+
+    testEach<{ testA: t.BinaryExpression; testB: t.BinaryExpression }>(
+      "should return true",
+      [
+        {
+          description: "same operator & left, but different right",
+          testA: t.binaryExpression("===", name, john),
+          testB: t.binaryExpression("===", name, t.stringLiteral("Jane"))
+        },
+        {
+          description: "same left & right, but opposite operators",
+          testA: t.binaryExpression("===", name, john),
+          testB: t.binaryExpression("!==", name, john)
+        },
+        {
+          description: "left is a member expression",
+          testA: t.binaryExpression("===", itemName, john),
+          testB: t.binaryExpression("!==", itemName, john)
+        }
+      ],
+      ({ testA, testB }) => {
+        expect(areOpposite(testA, testB)).toBe(true);
+      }
+    );
+
+    testEach<{ testA: t.BinaryExpression; testB: t.BinaryExpression }>(
+      "should return false",
+      [
+        {
+          description: "identical expressions",
+          testA: t.binaryExpression("===", name, john),
+          testB: t.binaryExpression("===", name, john)
+        },
+        {
+          description: "different left",
+          testA: t.binaryExpression("===", name, john),
+          testB: t.binaryExpression("===", t.identifier("lastName"), john)
+        },
+        {
+          description: "different (non-opposite) operators",
+          testA: t.binaryExpression("===", name, john),
+          testB: t.binaryExpression(">", name, john)
+        }
+      ],
+      ({ testA, testB }) => {
+        expect(areOpposite(testA, testB)).toBe(false);
+      }
+    );
+  });
+});
 
 describe("Identity - Are opposite operators", () => {
   testEach<{

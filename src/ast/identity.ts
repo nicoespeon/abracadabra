@@ -22,6 +22,7 @@ export {
   isTemplateExpression,
   isInBranchedLogic,
   isInAlternate,
+  areOpposite,
   areOppositeOperators
 };
 
@@ -238,6 +239,25 @@ function isInAlternate(path: NodePath<t.IfStatement>): boolean {
         parentPath.parent.alternate === path.parent
     : t.isIfStatement(parentPath.node) &&
         parentPath.node.alternate === path.node;
+}
+
+function areOpposite(testA: t.Expression, testB: t.Expression): boolean {
+  if (!t.isBinaryExpression(testA)) return false;
+  if (!t.isBinaryExpression(testB)) return false;
+
+  if (testA.operator === testB.operator) {
+    return (
+      areEqual(testA.left, testB.left) && !areEqual(testA.right, testB.right)
+    );
+  }
+
+  if (areOppositeOperators(testA.operator, testB.operator)) {
+    return (
+      areEqual(testA.left, testB.left) && areEqual(testA.right, testB.right)
+    );
+  }
+
+  return false;
 }
 
 function areOppositeOperators(
