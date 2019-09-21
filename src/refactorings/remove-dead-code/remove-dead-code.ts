@@ -28,33 +28,44 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const { test, consequent, alternate } = path.node;
+      const { test } = path.node;
 
       if (ast.isFalsy(test)) {
-        alternate ? ast.replaceWithBodyOf(path, alternate) : path.remove();
+        replaceWithAlternate(path);
         path.stop();
         return;
       }
 
       if (ast.isTruthy(test)) {
-        ast.replaceWithBodyOf(path, consequent);
+        replaceWithConsequent(path);
         path.stop();
         return;
       }
 
       path.traverse({
         IfStatement(childPath) {
-          if (ast.areOpposite(test, childPath.node.test)) {
-            childPath.remove();
+          const { test: childTest } = childPath.node;
+
+          if (ast.areOpposite(test, childTest)) {
+            replaceWithAlternate(childPath);
             return;
           }
 
-          if (ast.areEqual(test, childPath.node.test)) {
-            ast.replaceWithBodyOf(childPath, childPath.node.consequent);
+          if (ast.areEqual(test, childTest)) {
+            replaceWithConsequent(childPath);
             return;
           }
         }
       });
     }
   });
+}
+
+function replaceWithAlternate(path: ast.NodePath<ast.IfStatement>) {
+  const { alternate } = path.node;
+  alternate ? ast.replaceWithBodyOf(path, alternate) : path.remove();
+}
+
+function replaceWithConsequent(path: ast.NodePath<ast.IfStatement>) {
+  ast.replaceWithBodyOf(path, path.node.consequent);
 }
