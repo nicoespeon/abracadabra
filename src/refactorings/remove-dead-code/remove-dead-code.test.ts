@@ -15,9 +15,16 @@ describe("Remove Dead Code", () => {
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should remove dead code",
     [
-      // TODO: write successful test cases here
+      {
+        description: "if(false)",
+        code: `console.log("I'm alive");
+if (false) {
+  console.log("I'm dead");
+}`,
+        expected: `console.log("I'm alive");`
+      }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
+    async ({ code, selection = Selection.cursorAt(1, 0), expected }) => {
       const result = await doRemoveDeadCode(code, selection);
 
       expect(result).toBe(expected);

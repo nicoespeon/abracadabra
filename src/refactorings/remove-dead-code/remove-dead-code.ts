@@ -25,6 +25,10 @@ function hasDeadCode(code: Code, selection: Selection): boolean {
 
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
-    // TODO: implement the transformation here 🧙‍
+    IfStatement(path) {
+      if (ast.areEqual(path.node.test, ast.booleanLiteral(false))) {
+        path.remove();
+      }
+    }
   });
 }
