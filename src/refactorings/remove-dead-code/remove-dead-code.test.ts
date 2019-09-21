@@ -98,6 +98,46 @@ if (false) {
 if (false) {
   console.log("I'm dead");
 }`
+      },
+      {
+        description: "nested ifs with opposite tests",
+        code: `if (item.name === "Aged Brie") {
+  item.quality += 1;
+
+  if (item.name === "Backstage") {
+    item.quality += 1;
+  }
+
+  if (item.name !== "Aged Brie") {
+    item.quality -= 1;
+  }
+}`,
+        expected: `if (item.name === "Aged Brie") {
+  item.quality += 1;
+}`
+      },
+      {
+        description: "nested ifs with identical tests",
+        code: `if (item.name === "Aged Brie") {
+  item.quality += 1;
+
+  if (item.name === "Aged Brie") {
+    item.quality += 1;
+  }
+
+  if (item.quality > 0) {
+    item.quality -= 1;
+  }
+}`,
+        expected: `if (item.name === "Aged Brie") {
+  item.quality += 1;
+
+  item.quality += 1;
+
+  if (item.quality > 0) {
+    item.quality -= 1;
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 0), expected }) => {

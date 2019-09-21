@@ -41,6 +41,20 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         path.stop();
         return;
       }
+
+      path.traverse({
+        IfStatement(childPath) {
+          if (ast.areOpposite(test, childPath.node.test)) {
+            childPath.remove();
+            return;
+          }
+
+          if (ast.areEqual(test, childPath.node.test)) {
+            ast.replaceWithBodyOf(childPath, childPath.node.consequent);
+            return;
+          }
+        }
+      });
     }
   });
 }
