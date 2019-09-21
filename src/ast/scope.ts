@@ -1,7 +1,7 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-import { areEqual } from "./domain";
+import { areEqual } from "./identity";
 
 export { findScopePath, findParentIfPath, getFunctionScopePath, isShadowIn };
 
