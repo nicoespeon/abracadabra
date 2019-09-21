@@ -21,7 +21,8 @@ export {
   areEqual,
   isTemplateExpression,
   isInBranchedLogic,
-  isInAlternate
+  isInAlternate,
+  areOppositeOperators
 };
 
 function isClassPropertyIdentifier(path: NodePath): boolean {
@@ -237,4 +238,23 @@ function isInAlternate(path: NodePath<t.IfStatement>): boolean {
         parentPath.parent.alternate === path.parent
     : t.isIfStatement(parentPath.node) &&
         parentPath.node.alternate === path.node;
+}
+
+function areOppositeOperators(
+  operatorA: t.BinaryExpression["operator"],
+  operatorB: t.BinaryExpression["operator"]
+): boolean {
+  const OPPOSITE_OPERATORS = [
+    ["===", "!=="],
+    ["==", "!="],
+    [">", "<="],
+    [">", "<"],
+    [">=", "<"]
+  ];
+
+  return OPPOSITE_OPERATORS.some(
+    ([left, right]) =>
+      (operatorA === left && operatorB === right) ||
+      (operatorA === right && operatorB === left)
+  );
 }
