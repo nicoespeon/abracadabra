@@ -83,6 +83,21 @@ if (true) {
 }`,
         expected: `console.log("I'm alive");
 console.log("I'm alive too");`
+      },
+      {
+        description: "selected code only",
+        code: `console.log("I'm alive");
+if (false) {
+  console.log("I'm dead");
+}
+if (false) {
+  console.log("I'm also dead");
+}`,
+        selection: Selection.cursorAt(4, 0),
+        expected: `console.log("I'm alive");
+if (false) {
+  console.log("I'm dead");
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 0), expected }) => {
