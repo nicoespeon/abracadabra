@@ -17,11 +17,14 @@ export {
   isGuardConsequentBlock,
   isNonEmptyReturn,
   hasFinalReturn,
+  isTruthy,
+  isFalsy,
   areEqual,
   isTemplateExpression,
   isInBranchedLogic,
   isInAlternate,
   getStatements,
+  replaceWithBodyOf,
   templateElement,
   Primitive,
   forEach
@@ -75,6 +78,14 @@ function isGuardClause(path: NodePath<t.IfStatement>) {
   if (Boolean(alternate)) return false;
 
   return t.isReturnStatement(consequent) || isGuardConsequentBlock(consequent);
+}
+
+function isTruthy(test: t.Expression): boolean {
+  return areEqual(test, t.booleanLiteral(true));
+}
+
+function isFalsy(test: t.Expression): boolean {
+  return areEqual(test, t.booleanLiteral(false));
 }
 
 function isGuardConsequentBlock(
@@ -236,6 +247,10 @@ function isInAlternate(path: NodePath<t.IfStatement>): boolean {
 
 function getStatements(statement: t.Statement): t.Statement[] {
   return t.isBlockStatement(statement) ? statement.body : [statement];
+}
+
+function replaceWithBodyOf(path: NodePath, node: t.Statement) {
+  path.replaceWithMultiple(getStatements(node));
 }
 
 /**

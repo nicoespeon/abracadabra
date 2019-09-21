@@ -26,18 +26,16 @@ function hasDeadCode(code: Code, selection: Selection): boolean {
 function updateCode(code: Code, selection: Selection): ast.Transformed {
   return ast.transform(code, {
     IfStatement(path) {
-      if (ast.areEqual(path.node.test, ast.booleanLiteral(false))) {
-        if (path.node.alternate) {
-          path.replaceWithMultiple(ast.getStatements(path.node.alternate));
-        } else {
-          path.remove();
-        }
-        return;
+      const { test, consequent, alternate } = path.node;
+
+      if (ast.isFalsy(test)) {
+        return alternate
+          ? ast.replaceWithBodyOf(path, alternate)
+          : path.remove();
       }
 
-      if (ast.areEqual(path.node.test, ast.booleanLiteral(true))) {
-        path.replaceWithMultiple(ast.getStatements(path.node.consequent));
-        return;
+      if (ast.isTruthy(test)) {
+        return ast.replaceWithBodyOf(path, consequent);
       }
     }
   });
