@@ -22,6 +22,15 @@ if (false) {
   console.log("I'm dead");
 }`,
         expected: `console.log("I'm alive");`
+      },
+      {
+        description: "if(true)",
+        code: `console.log("I'm alive");
+if (true) {
+  console.log("I'm alive too");
+}`,
+        expected: `console.log("I'm alive");
+console.log("I'm alive too");`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 0), expected }) => {

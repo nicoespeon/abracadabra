@@ -28,6 +28,12 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
     IfStatement(path) {
       if (ast.areEqual(path.node.test, ast.booleanLiteral(false))) {
         path.remove();
+        return;
+      }
+
+      if (ast.areEqual(path.node.test, ast.booleanLiteral(true))) {
+        path.replaceWithMultiple(ast.getStatements(path.node.consequent));
+        return;
       }
     }
   });
