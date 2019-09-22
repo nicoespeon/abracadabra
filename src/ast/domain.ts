@@ -4,6 +4,7 @@ import * as t from "@babel/types";
 export * from "@babel/types";
 export {
   getStatements,
+  isEmpty,
   replaceWithBodyOf,
   templateElement,
   Primitive,
@@ -12,6 +13,14 @@ export {
 
 function getStatements(statement: t.Statement): t.Statement[] {
   return t.isBlockStatement(statement) ? statement.body : [statement];
+}
+
+function isEmpty(statement: t.Statement): boolean {
+  const statements = getStatements(statement).filter(
+    child => child !== statement
+  );
+
+  return statements.length === 0;
 }
 
 function replaceWithBodyOf(path: NodePath, node: t.Statement) {

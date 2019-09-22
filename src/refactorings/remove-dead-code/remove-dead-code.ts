@@ -42,24 +42,40 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         return;
       }
 
-      path.get("consequent").traverse({
-        IfStatement(childPath) {
-          removeDeadCodeFromNestedIf(test, childPath);
-        }
-      });
+      if (isEmptyIfStatement(path.node)) {
+        path.remove();
+        path.stop();
+        return;
+      }
 
-      path.get("alternate").traverse({
-        IfStatement(childPath) {
-          const oppositeTest = ast.isBinaryExpression(test)
-            ? {
-                ...test,
-                operator: ast.getOppositeOperator(test.operator)
-              }
-            : test;
+      if (hasEmptyAlternate(path.node)) {
+        path.node.alternate = null;
+      }
 
-          removeDeadCodeFromNestedIf(oppositeTest, childPath);
-        }
-      });
+      removeDeadCodeFromBranches(path);
+    }
+  });
+}
+
+function removeDeadCodeFromBranches(path: ast.NodePath<ast.IfStatement>) {
+  const { test } = path.node;
+
+  path.get("consequent").traverse({
+    IfStatement(childPath) {
+      removeDeadCodeFromNestedIf(test, childPath);
+    }
+  });
+
+  path.get("alternate").traverse({
+    IfStatement(childPath) {
+      const oppositeTest = ast.isBinaryExpression(test)
+        ? {
+            ...test,
+            operator: ast.getOppositeOperator(test.operator)
+          }
+        : test;
+
+      removeDeadCodeFromNestedIf(oppositeTest, childPath);
     }
   });
 }
@@ -70,6 +86,15 @@ function removeDeadCodeFromNestedIf(
 ) {
   const { test: nestedTest } = nestedPath.node;
 
+  if (isEmptyIfStatement(nestedPath.node)) {
+    nestedPath.remove();
+    return;
+  }
+
+  if (hasEmptyAlternate(nestedPath.node)) {
+    nestedPath.node.alternate = null;
+  }
+
   if (ast.areOpposite(test, nestedTest)) {
     replaceWithAlternate(nestedPath);
     return;
@@ -79,6 +104,28 @@ function removeDeadCodeFromNestedIf(
     replaceWithConsequent(nestedPath);
     return;
   }
+}
+
+function hasEmptyAlternate({ alternate }: ast.IfStatement): boolean {
+  if (!alternate) return true;
+
+  if (ast.isIfStatement(alternate)) {
+    return isEmptyIfStatement(alternate);
+  }
+
+  return ast.isEmpty(alternate);
+}
+
+function hasEmptyConsequent({ consequent }: ast.IfStatement): boolean {
+  if (ast.isIfStatement(consequent)) {
+    return isEmptyIfStatement(consequent);
+  }
+
+  return ast.isEmpty(consequent);
+}
+
+function isEmptyIfStatement(node: ast.IfStatement): boolean {
+  return hasEmptyConsequent(node) && hasEmptyAlternate(node);
 }
 
 function replaceWithAlternate(path: ast.NodePath<ast.IfStatement>) {

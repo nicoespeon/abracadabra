@@ -247,6 +247,37 @@ if (false) {
 
   item.quality += 2;
 }`
+      },
+      {
+        description: "empty ifs",
+        code: `if (item.name === "Aged Brie") {
+  item.quality += 1;
+
+  if (item.quality < 50) {
+  }
+
+  if (item.sellIn > 10) {
+  } else if (item.sellIn > 5) {
+  } else {
+  }
+
+  if (item.quality > 0) {
+  } else if (item.quality > 10) {
+    if (item.sellIn > 10) {
+    }
+  } else {
+    item.quality -= 1;
+  }
+} else {
+}`,
+        expected: `if (item.name === "Aged Brie") {
+  item.quality += 1;
+
+  if (item.quality > 0) {
+  } else if (item.quality > 10) {} else {
+    item.quality -= 1;
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 0), expected }) => {
