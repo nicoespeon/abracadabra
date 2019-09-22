@@ -17,6 +17,7 @@ describe("Identity - Are opposite expressions", () => {
     const name = t.identifier("name");
     const itemName = t.memberExpression(t.identifier("item"), name);
     const john = t.stringLiteral("John");
+    const martin = t.stringLiteral("Martin");
 
     testEach<{ testA: t.BinaryExpression; testB: t.BinaryExpression }>(
       "should return true",
@@ -24,7 +25,7 @@ describe("Identity - Are opposite expressions", () => {
         {
           description: "same operator & left, but different right",
           testA: t.binaryExpression("===", name, john),
-          testB: t.binaryExpression("===", name, t.stringLiteral("Jane"))
+          testB: t.binaryExpression("===", name, martin)
         },
         {
           description: "same left & right, but opposite operators",
@@ -35,6 +36,11 @@ describe("Identity - Are opposite expressions", () => {
           description: "left is a member expression",
           testA: t.binaryExpression("===", itemName, john),
           testB: t.binaryExpression("!==", itemName, john)
+        },
+        {
+          description: "== operator",
+          testA: t.binaryExpression("==", name, john),
+          testB: t.binaryExpression("==", name, martin)
         }
       ],
       ({ testA, testB }) => {
@@ -59,6 +65,11 @@ describe("Identity - Are opposite expressions", () => {
           description: "different (non-opposite) operators",
           testA: t.binaryExpression("===", name, john),
           testB: t.binaryExpression(">", name, john)
+        },
+        {
+          description: "different right, but !== operator",
+          testA: t.binaryExpression("!==", name, john),
+          testB: t.binaryExpression("!==", name, martin)
         }
       ],
       ({ testA, testB }) => {

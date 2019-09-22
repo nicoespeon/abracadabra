@@ -187,6 +187,35 @@ if (false) {
     item.quality -= 1;
   }
 }`
+      },
+      {
+        description: "nested if-elses, != operator on wrapper",
+        code: `if (item.name != "Aged Brie") {
+  item.quality += 1;
+
+  if (item.name != "Backstage") {
+    item.quality += 2;
+  } else {
+    item.quality -= 2;
+  }
+
+  if (item.name != "Aged Brie") {
+    item.quality += 3;
+  } else {
+    item.quality -= 3;
+  }
+}`,
+        expected: `if (item.name != "Aged Brie") {
+  item.quality += 1;
+
+  if (item.name != "Backstage") {
+    item.quality += 2;
+  } else {
+    item.quality -= 2;
+  }
+
+  item.quality += 3;
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(1, 0), expected }) => {

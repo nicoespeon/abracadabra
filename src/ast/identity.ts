@@ -245,7 +245,12 @@ function areOpposite(testA: t.Expression, testB: t.Expression): boolean {
   if (!t.isBinaryExpression(testA)) return false;
   if (!t.isBinaryExpression(testB)) return false;
 
-  if (testA.operator === testB.operator) {
+  const EQUALS_OPERATORS = ["==", "==="];
+
+  if (
+    EQUALS_OPERATORS.includes(testA.operator) &&
+    EQUALS_OPERATORS.includes(testB.operator)
+  ) {
     return (
       areEqual(testA.left, testB.left) && !areEqual(testA.right, testB.right)
     );
