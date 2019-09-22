@@ -6,7 +6,10 @@
   "description": "Automated refactorings for VS Code (JS & TS)",
   "author": "Nicolas Carlo <nicolascarlo.espeon@gmail.com>",
   "license": "MIT",
-  "repository": "nicoespeon/abracadabra",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicoespeon/abracadabra.git"
+  },
   "homepage": "https://github.com/nicoespeon/abracadabra",
   "bugs": "https://github.com/nicoespeon/abracadabra/issues",
   "keywords": [
