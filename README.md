@@ -58,6 +58,10 @@ Simplifying Conditional Logic:
 1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
 1. [Bubble up If Statement](#bubble-up-if-statement)
 
+Moving Features:
+
+1. [Remove Dead Code](#remove-dead-code)
+
 Organizing data:
 
 1. [Split Declaration and Initialization](#split-declaration-and-initialization)
@@ -249,6 +253,14 @@ Useful when you need to have the similar conditionals at the top level. If you g
 Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting code will have the same behaviour.
 
 ![][demo-bubble-up-if-statement]
+
+### Remove Dead Code
+
+> 💡 Available as Quick Fix
+
+Sometimes, Abracadabra can determine that some code can't be reached. If so, it can also get rid of the dead code for you.
+
+![][demo-remove-dead-code]
 
 ### Split Declaration and Initialization
 
@@ -466,6 +478,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
 [demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-for-to-foreach.gif?raw=true
+[demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-dead-code.gif?raw=true
 
 <!-- Logo -->
 
