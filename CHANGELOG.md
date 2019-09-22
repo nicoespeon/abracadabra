@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2019-09-22
+
 ### Added
 
 - **[New Refactoring]** Remove Dead Code
@@ -253,7 +255,8 @@ function doSomething(someData) {
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.7.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/nicoespeon/abracadabra/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/nicoespeon/abracadabra/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/nicoespeon/abracadabra/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/nicoespeon/abracadabra/compare/0.4.0...0.5.0
