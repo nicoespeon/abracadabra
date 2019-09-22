@@ -42,23 +42,43 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
         return;
       }
 
-      path.traverse({
+      path.get("consequent").traverse({
         IfStatement(childPath) {
-          const { test: childTest } = childPath.node;
+          removeDeadCodeFromNestedIf(test, childPath);
+        }
+      });
 
-          if (ast.areOpposite(test, childTest)) {
-            replaceWithAlternate(childPath);
-            return;
-          }
+      path.get("alternate").traverse({
+        IfStatement(childPath) {
+          const oppositeTest = ast.isBinaryExpression(test)
+            ? {
+                ...test,
+                operator: ast.getOppositeOperator(test.operator)
+              }
+            : test;
 
-          if (ast.areEqual(test, childTest)) {
-            replaceWithConsequent(childPath);
-            return;
-          }
+          removeDeadCodeFromNestedIf(oppositeTest, childPath);
         }
       });
     }
   });
+}
+
+function removeDeadCodeFromNestedIf(
+  test: ast.IfStatement["test"],
+  nestedPath: ast.NodePath<ast.IfStatement>
+) {
+  const { test: nestedTest } = nestedPath.node;
+
+  if (ast.areOpposite(test, nestedTest)) {
+    replaceWithAlternate(nestedPath);
+    return;
+  }
+
+  if (ast.areEqual(test, nestedTest)) {
+    replaceWithConsequent(nestedPath);
+    return;
+  }
 }
 
 function replaceWithAlternate(path: ast.NodePath<ast.IfStatement>) {

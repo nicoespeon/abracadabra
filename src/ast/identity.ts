@@ -23,7 +23,8 @@ export {
   isInBranchedLogic,
   isInAlternate,
   areOpposite,
-  areOppositeOperators
+  areOppositeOperators,
+  getOppositeOperator
 };
 
 function isClassPropertyIdentifier(path: NodePath): boolean {
@@ -265,21 +266,34 @@ function areOpposite(testA: t.Expression, testB: t.Expression): boolean {
   return false;
 }
 
+const OPPOSITE_OPERATORS: t.BinaryExpression["operator"][][] = [
+  ["===", "!=="],
+  ["==", "!="],
+  [">", "<="],
+  [">", "<"],
+  [">=", "<"]
+];
+
 function areOppositeOperators(
   operatorA: t.BinaryExpression["operator"],
   operatorB: t.BinaryExpression["operator"]
 ): boolean {
-  const OPPOSITE_OPERATORS = [
-    ["===", "!=="],
-    ["==", "!="],
-    [">", "<="],
-    [">", "<"],
-    [">=", "<"]
-  ];
-
   return OPPOSITE_OPERATORS.some(
     ([left, right]) =>
       (operatorA === left && operatorB === right) ||
       (operatorA === right && operatorB === left)
   );
+}
+
+function getOppositeOperator(
+  operator: t.BinaryExpression["operator"]
+): t.BinaryExpression["operator"] {
+  let result: t.BinaryExpression["operator"] | undefined;
+
+  OPPOSITE_OPERATORS.forEach(([left, right]) => {
+    if (operator === left) result = right;
+    if (operator === right) result = left;
+  });
+
+  return result || operator;
 }
