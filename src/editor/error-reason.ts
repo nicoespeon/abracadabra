@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFoundDeadCode,
   DidNotFoundForLoopToConvert,
   DidNotFoundStatementToMerge,
   DidNotFoundNestedIf,
@@ -35,6 +36,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFoundDeadCode:
+      return didNotFound("dead code to delete");
+
     case ErrorReason.DidNotFoundForLoopToConvert:
       return didNotFound("a valid for loop to convert");
 

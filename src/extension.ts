@@ -17,6 +17,7 @@ import moveStatementDownCommand from "./refactorings/move-statement-down/command
 import moveStatementUpCommand from "./refactorings/move-statement-up/command";
 import negateExpressionCommand from "./refactorings/negate-expression/command";
 import removeBracesFromArrowFunctionCommand from "./refactorings/remove-braces-from-arrow-function/command";
+import removeDeadCodeCommand from "./refactorings/remove-dead-code/command";
 import removeRedundantElseCommand from "./refactorings/remove-redundant-else/command";
 import renameSymbolCommand from "./refactorings/rename-symbol/command";
 import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
@@ -36,6 +37,7 @@ import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statemen
 import mergeWithPreviousIfStatementActionProviderFor from "./refactorings/merge-with-previous-if-statement/action-provider";
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 import removeBracesFromArrowFunctionActionProviderFor from "./refactorings/remove-braces-from-arrow-function/action-provider";
+import removeDeadCodeActionProviderFor from "./refactorings/remove-dead-code/action-provider";
 import removeRedundantElseActionProviderFor from "./refactorings/remove-redundant-else/action-provider";
 import replaceBinaryWithAssignmentActionProviderFor from "./refactorings/replace-binary-with-assignment/action-provider";
 import splitDeclarationAndInitializationActionProviderFor from "./refactorings/split-declaration-and-initialization/action-provider";
@@ -67,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
     moveStatementUpCommand,
     negateExpressionCommand,
     removeBracesFromArrowFunctionCommand,
+    removeDeadCodeCommand,
     removeRedundantElseCommand,
     renameSymbolCommand,
     replaceBinaryWithAssignmentCommand,
@@ -89,6 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
       mergeWithPreviousIfStatementActionProviderFor(language),
       negateExpressionActionProviderFor(language),
       removeBracesFromArrowFunctionActionProviderFor(language),
+      removeDeadCodeActionProviderFor(language),
       removeRedundantElseActionProviderFor(language),
       replaceBinaryWithAssignmentActionProviderFor(language),
       splitDeclarationAndInitializationActionProviderFor(language),

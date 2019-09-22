@@ -6,7 +6,10 @@
   "description": "Automated refactorings for VS Code (JS & TS)",
   "author": "Nicolas Carlo <nicolascarlo.espeon@gmail.com>",
   "license": "MIT",
-  "repository": "nicoespeon/abracadabra",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicoespeon/abracadabra.git"
+  },
   "homepage": "https://github.com/nicoespeon/abracadabra",
   "bugs": "https://github.com/nicoespeon/abracadabra/issues",
   "keywords": [
@@ -92,6 +95,7 @@
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.negateExpression",
     "onCommand:abracadabra.removeBracesFromArrowFunction",
+    "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.renameSymbol",
     "onCommand:abracadabra.replaceBinaryWithAssignment",
@@ -187,6 +191,11 @@
       {
         "command": "abracadabra.removeBracesFromArrowFunction",
         "title": "Remove Braces from Arrow Function",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.removeDeadCode",
+        "title": "Remove Dead Code",
         "category": "Abracadabra"
       },
       {
@@ -513,6 +522,22 @@
         },
         {
           "command": "abracadabra.removeBracesFromArrowFunction",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.removeDeadCode",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.removeDeadCode",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.removeDeadCode",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.removeDeadCode",
           "when": "editorLangId == typescriptreact"
         },
         {
