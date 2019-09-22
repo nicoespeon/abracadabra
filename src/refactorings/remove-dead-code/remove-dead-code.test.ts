@@ -287,6 +287,36 @@ if (false) {
     }
   );
 
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not remove code",
+    [
+      {
+        description: "test variable is re-assigned",
+        code: `if (item.quality > 50) {
+  item.quality += 1;
+  if (item.quality > 50) {
+    console.log("High quality");
+  }
+}`
+      },
+      {
+        description: "test variable is re-assigned, else branch",
+        code: `if (item.quality > 50) {
+} else {
+  item.quality += 1;
+  if (item.quality < 50) {
+    console.log("High quality");
+  }
+}`
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
+      const result = await doRemoveDeadCode(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);

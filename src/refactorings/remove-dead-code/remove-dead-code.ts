@@ -60,14 +60,25 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 function removeDeadCodeFromBranches(path: ast.NodePath<ast.IfStatement>) {
   const { test } = path.node;
 
+  const target = ast.isBinaryExpression(test)
+    ? new BinaryExpressionTarget(test)
+    : new NoopTarget();
+
   path.get("consequent").traverse({
+    AssignmentExpression: target.checkAssignment.bind(target),
+
     IfStatement(childPath) {
+      if (target.isReassigned) return;
       removeDeadCodeFromNestedIf(test, childPath);
     }
   });
 
   path.get("alternate").traverse({
+    AssignmentExpression: target.checkAssignment.bind(target),
+
     IfStatement(childPath) {
+      if (target.isReassigned) return;
+
       const oppositeTest = ast.isBinaryExpression(test)
         ? {
             ...test,
@@ -78,6 +89,35 @@ function removeDeadCodeFromBranches(path: ast.NodePath<ast.IfStatement>) {
       removeDeadCodeFromNestedIf(oppositeTest, childPath);
     }
   });
+}
+
+interface Target {
+  isReassigned: boolean;
+  checkAssignment(path: ast.NodePath<ast.AssignmentExpression>): void;
+}
+
+class BinaryExpressionTarget implements Target {
+  private target: ast.Node;
+  private _isReassigned = false;
+
+  constructor(expression: ast.BinaryExpression) {
+    this.target = expression.left;
+  }
+
+  get isReassigned() {
+    return this._isReassigned;
+  }
+
+  checkAssignment(path: ast.NodePath<ast.AssignmentExpression>) {
+    if (ast.areEqual(this.target, path.node.left)) {
+      this._isReassigned = true;
+    }
+  }
+}
+
+class NoopTarget implements Target {
+  isReassigned = false;
+  checkAssignment() {}
 }
 
 function removeDeadCodeFromNestedIf(
