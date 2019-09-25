@@ -32,6 +32,13 @@ console.log(id);`,
         code: `const [ id ] = session.users["first"];
 console.log(id);`,
         expected: `console.log(session.users["first"][0]);`
+      },
+      {
+        description: "nested",
+        code: `const [ [ id ] ] = session;
+console.log(id);`,
+        selection: Selection.cursorAt(0, 11),
+        expected: `console.log(session[0][0]);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {
