@@ -65,6 +65,21 @@ function findInlinableCode(
     return result;
   }
 
+  if (ast.isArrayPattern(id)) {
+    const index = 0;
+    const element = id.elements[index];
+
+    if (!selection.isInsideNode(element)) return null;
+
+    const child = findInlinableCode(selection, parent, {
+      id: element,
+      init
+    });
+    if (!child) return null;
+
+    return new InlinableArrayPattern(child, index);
+  }
+
   return null;
 }
 
@@ -393,5 +408,18 @@ class InlinableTopLevelObjectPattern extends CompositeInlinable {
     return super.shouldExtendSelectionToDeclaration
       ? Selection.fromAST(this.loc)
       : super.codeToRemoveSelection;
+  }
+}
+
+class InlinableArrayPattern extends CompositeInlinable {
+  private index: number;
+
+  constructor(child: InlinableCode, index: number) {
+    super(child);
+    this.index = index;
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return super.updateIdentifiersWith(`${inlinedCode}[${this.index}]`);
   }
 }
