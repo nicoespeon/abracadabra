@@ -26,7 +26,8 @@ function transform(code: Code, options: TraverseOptions): Transformed {
 
   return {
     code: newCode,
-    hasCodeChanged: newCode !== code
+    // Avoid false positive on windows
+    hasCodeChanged: newCode.replace(/\r/g, "") !== code.replace(/\r/g, "")
   };
 }
 
