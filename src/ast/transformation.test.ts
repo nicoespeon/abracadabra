@@ -1,10 +1,21 @@
 import { transform } from "./transformation";
 
-describe("transformation", () => {
+describe("Transformation", () => {
   describe("transform", () => {
-    it("should deal with windows eol style", () => {
-      const code = "console.log('hello windows')\n";
-      expect(transform(code, {}).hasCodeChanged).toBe(false);
+    it("should not consider code changed with Windows EOL", () => {
+      const code = "console.log('Hello Windows')\r\n";
+
+      const { hasCodeChanged } = transform(code, {});
+
+      expect(hasCodeChanged).toBe(false);
+    });
+
+    it("should not consider code changed with Unix EOL", () => {
+      const code = "console.log('Hello UNIX')\n";
+
+      const { hasCodeChanged } = transform(code, {});
+
+      expect(hasCodeChanged).toBe(false);
     });
   });
 });
