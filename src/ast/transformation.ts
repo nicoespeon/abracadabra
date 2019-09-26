@@ -26,8 +26,12 @@ function transform(code: Code, options: TraverseOptions): Transformed {
 
   return {
     code: newCode,
-    hasCodeChanged: newCode !== code
+    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
   };
+}
+
+function standardizeEOL(code: Code): Code {
+  return code.replace(/\r/g, "");
 }
 
 function traverseCode(code: Code, opts: TraverseOptions): t.File {

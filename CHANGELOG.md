@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- All refactorings Quick Fixes used to appear on Windows because of EOL. Not anymore!
+
 ## [0.8.0] - 2019-09-22
 
 ### Added
