@@ -59,13 +59,15 @@ function findInlinableCode(
 
     const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
     if (result && isTopLevelObjectPattern) {
-      result = new InlinableTopLevelObjectPattern(result, id.loc);
+      result = new InlinableTopLevelPattern(result, id.loc);
     }
 
     return result;
   }
 
   if (ast.isArrayPattern(id)) {
+    if (!ast.isSelectableNode(id)) return null;
+
     const index = 0;
     const element = id.elements[index];
 
@@ -77,7 +79,14 @@ function findInlinableCode(
     });
     if (!child) return null;
 
-    return new InlinableArrayPattern(child, index);
+    let result: InlinableCode = new InlinableArrayPattern(child, index);
+
+    const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
+    if (result && isTopLevelObjectPattern) {
+      result = new InlinableTopLevelPattern(result, id.loc);
+    }
+
+    return result;
   }
 
   return null;
@@ -396,7 +405,20 @@ class InlinableObjectPattern extends CompositeInlinable {
   }
 }
 
-class InlinableTopLevelObjectPattern extends CompositeInlinable {
+class InlinableArrayPattern extends CompositeInlinable {
+  private index: number;
+
+  constructor(child: InlinableCode, index: number) {
+    super(child);
+    this.index = index;
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return super.updateIdentifiersWith(`${inlinedCode}[${this.index}]`);
+  }
+}
+
+class InlinableTopLevelPattern extends CompositeInlinable {
   private loc: ast.SourceLocation;
 
   constructor(child: InlinableCode, loc: ast.SourceLocation) {
@@ -408,18 +430,5 @@ class InlinableTopLevelObjectPattern extends CompositeInlinable {
     return super.shouldExtendSelectionToDeclaration
       ? Selection.fromAST(this.loc)
       : super.codeToRemoveSelection;
-  }
-}
-
-class InlinableArrayPattern extends CompositeInlinable {
-  private index: number;
-
-  constructor(child: InlinableCode, index: number) {
-    super(child);
-    this.index = index;
-  }
-
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
-    return super.updateIdentifiersWith(`${inlinedCode}[${this.index}]`);
   }
 }

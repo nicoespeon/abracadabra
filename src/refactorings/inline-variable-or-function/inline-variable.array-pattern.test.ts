@@ -39,6 +39,17 @@ console.log(id);`,
 console.log(id);`,
         selection: Selection.cursorAt(0, 11),
         expected: `console.log(session[0][0]);`
+      },
+      {
+        description: "multi-line",
+        code: `const [
+  [
+    name
+  ]
+] = session;
+console.log(name);`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `console.log(session[0][0]);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {
