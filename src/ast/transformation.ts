@@ -26,9 +26,12 @@ function transform(code: Code, options: TraverseOptions): Transformed {
 
   return {
     code: newCode,
-    // Avoid false positive on windows
-    hasCodeChanged: newCode.replace(/\r/g, "") !== code.replace(/\r/g, "")
+    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
   };
+}
+
+function standardizeEOL(code: Code): Code {
+  return code.replace(/\r/g, "");
 }
 
 function traverseCode(code: Code, opts: TraverseOptions): t.File {
