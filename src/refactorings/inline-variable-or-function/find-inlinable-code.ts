@@ -16,7 +16,7 @@ export {
 function findInlinableCode(
   selection: Selection,
   parent: ast.Node,
-  declaration: { id: ast.Node; init: ast.Node | null }
+  declaration: Declaration
 ): InlinableCode | null {
   const { id, init } = declaration;
   if (!ast.isSelectableNode(init)) return null;
@@ -57,15 +57,12 @@ function findInlinableCode(
       );
     });
 
-    const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
-    if (result && isTopLevelObjectPattern) {
-      result = new InlinableTopLevelPattern(result, id.loc);
-    }
-
-    return result;
+    return wrapInTopLevelPattern(result, declaration, id.loc);
   }
 
   if (ast.isArrayPattern(id)) {
+    let result: InlinableCode | null = null;
+
     if (!ast.isSelectableNode(id)) return null;
 
     const index = 0;
@@ -79,14 +76,9 @@ function findInlinableCode(
     });
     if (!child) return null;
 
-    let result: InlinableCode = new InlinableArrayPattern(child, index);
+    result = new InlinableArrayPattern(child, index);
 
-    const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
-    if (result && isTopLevelObjectPattern) {
-      result = new InlinableTopLevelPattern(result, id.loc);
-    }
-
-    return result;
+    return wrapInTopLevelPattern(result, declaration, id.loc);
   }
 
   return null;
@@ -118,6 +110,22 @@ function getInitName(init: ast.Node): string | null {
 
   return null;
 }
+
+function wrapInTopLevelPattern(
+  child: InlinableCode | null,
+  declaration: Declaration,
+  loc: ast.SourceLocation
+): InlinableCode | null {
+  if (!child) return child;
+
+  const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
+
+  return isTopLevelObjectPattern
+    ? new InlinableTopLevelPattern(child, loc)
+    : child;
+}
+
+type Declaration = { id: ast.Node; init: ast.Node | null };
 
 // 🎭 Component interface
 
