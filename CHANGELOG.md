@@ -28,6 +28,36 @@ console.log(names[0]);
 
 That means Inline Variable now handles all kind of destructured variables. Making it much more flexible and handy!
 
+### Extract Variable infers variable name on String Literals
+
+Consider the following code:
+
+```js
+console.log("Hello World!");
+```
+
+If you extracted `"Hello World!"`, you would end up with the following code:
+
+```js
+const extracted = "Hello World!";
+console.log(extracted);
+```
+
+And you'll be renaming the `extracted` symbol. Which is a quick and efficient way to extract the variable.
+
+But now, it'll try to do a bit better. Now, you'll end up with:
+
+```js
+const helloWorld = "Hello World!";
+console.log(helloWorld);
+```
+
+Which would make sense in that case, saving you the trouble of naming it!
+
+Now, predicting the variable name is **hard**. Thus, you'll still be in "renaming mode", so it doesn't really matter if the guess is wrong. If it's correct though, it will certainly save you some more time in your refactoring, and that's the goal!
+
+One last thing: if the inferred name is too long (> 20 characters), it will default on `"extracted"` because it's probably not a good name for your variable.
+
 ### Fixed
 
 - All refactorings Quick Fixes used to appear on Windows because of EOL. Not anymore!
