@@ -62,8 +62,8 @@ sendMessage("Hello");`;
 
     const result = await doExtractVariable(code, selection);
 
-    const expectedCode = `const extracted = "Hello";
-console.log(extracted);
+    const expectedCode = `const hello = "Hello";
+console.log(hello);
 sendMessage("Hello");`;
     expect(result.code).toBe(expectedCode);
   });
@@ -76,9 +76,9 @@ sendMessage("Hello");`;
 
     const result = await doExtractVariable(code, selection);
 
-    const expectedCode = `const extracted = "Hello";
-console.log(extracted);
-sendMessage(extracted);`;
+    const expectedCode = `const hello = "Hello";
+console.log(hello);
+sendMessage(hello);`;
     expect(result.code).toBe(expectedCode);
   });
 
@@ -90,9 +90,9 @@ sendMessage("Hello");`;
 
     const result = await doExtractVariable(code, selection);
 
-    const expectedCode = `const extracted = "Hello";
-console.log(extracted);
-sendMessage(extracted);`;
+    const expectedCode = `const hello = "Hello";
+console.log(hello);
+sendMessage(hello);`;
     expect(result.code).toBe(expectedCode);
   });
 
@@ -109,9 +109,9 @@ sendMessage("Hello");`;
     const result = await doExtractVariable(code, selection);
 
     const expectedCode = `function sayHello() {
-  const extracted = "Hello";
-  track("said", extracted);
-  console.log(extracted);
+  const hello = "Hello";
+  track("said", hello);
+  console.log(hello);
 }
 
 sendMessage("Hello");`;
@@ -125,9 +125,9 @@ sendMessage("Hello");`;
         description: "string",
         code: `console.log("Hello");
 sendMessage("Hello");`,
-        expected: `const extracted = "Hello";
-console.log(extracted);
-sendMessage(extracted);`
+        expected: `const hello = "Hello";
+console.log(hello);
+sendMessage(hello);`
       },
       {
         description: "number",

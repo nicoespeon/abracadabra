@@ -20,8 +20,8 @@ describe("Extract Variable - Basic extraction behaviour", () => {
   it("should update code with extractable selection", async () => {
     const result = await doExtractVariable(code, extractableSelection);
 
-    expect(result.code).toBe(`const extracted = "Hello!";
-console.log(extracted);`);
+    expect(result.code).toBe(`const hello = "Hello!";
+console.log(hello);`);
   });
 
   it("should expand selection to the nearest extractable code", async () => {
@@ -29,8 +29,8 @@ console.log(extracted);`);
 
     const result = await doExtractVariable(code, selectionInExtractableCode);
 
-    expect(result.code).toBe(`const extracted = "Hello!";
-console.log(extracted);`);
+    expect(result.code).toBe(`const hello = "Hello!";
+console.log(hello);`);
   });
 
   it("should rename extracted symbol", async () => {
@@ -49,8 +49,8 @@ console.log(extracted);`);
     const result = await doExtractVariable(code, extractableSelection);
 
     expect(result.code).toBe(`    function sayHello() {
-      const extracted = "Hello!";
-      console.log(extracted);
+      const hello = "Hello!";
+      console.log(hello);
     }`);
   });
 

@@ -1,3 +1,5 @@
+import { camel } from "change-case";
+
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
@@ -216,6 +218,10 @@ class Occurrence {
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
     this.loc = loc;
+
+    if (ast.isStringLiteral(path.node)) {
+      this.variableName = camel(path.node.value);
+    }
   }
 
   get selection() {
