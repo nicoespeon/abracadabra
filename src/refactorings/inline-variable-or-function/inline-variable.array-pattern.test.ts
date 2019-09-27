@@ -104,6 +104,37 @@ console.log(userId);`,
         selection: Selection.cursorAt(0, 24),
         expected: `const name = "John", age = 12;
 console.log(session[0]);`
+      },
+      {
+        description: "with rest element",
+        code: `const [ user, ...others ] = session;
+console.log(user);`,
+        expected: `const [ , ...others ] = session;
+console.log(session[0]);`
+      },
+      {
+        description: "with rest element and nesting",
+        code: `const [ [ [ name ] ], ...others ] = session;
+console.log(name);`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const [ , ...others ] = session;
+console.log(session[0][0][0]);`
+      },
+      {
+        description: "with rest element not being a direct sibling",
+        code: `const [ [ [ name ] ], player, ...others ] = session;
+console.log(name);`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const [ , player, ...others ] = session;
+console.log(session[0][0][0]);`
+      },
+      {
+        description: "with rest elements at different levels",
+        code: `const [ [ [ name ], ...userData ], player, ...others ] = session;
+console.log(name);`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const [ [ , ...userData ], player, ...others ] = session;
+console.log(session[0][0][0]);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {
