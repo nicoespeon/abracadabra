@@ -76,6 +76,28 @@ console.log(userId, firstName);`,
 console.log(userId, session[1]);`
       },
       {
+        description: "with other elements destructured, multi-lines",
+        code: `const [
+  userId,
+  [
+    firstName,
+    lastName
+  ],
+  age
+] = session;
+console.log(userId, firstName);`,
+        selection: Selection.cursorAt(3, 4),
+        expected: `const [
+  userId,
+  [
+    ,
+    lastName
+  ],
+  age
+] = session;
+console.log(userId, session[1][0]);`
+      },
+      {
         description: "in a multiple declaration",
         code: `const name = "John", [ userId ] = session, age = 12;
 console.log(userId);`,
