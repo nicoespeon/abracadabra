@@ -61,22 +61,24 @@ function findInlinableCode(
   }
 
   if (ast.isArrayPattern(id)) {
-    let result: InlinableCode | null = null;
-
     if (!ast.isSelectableNode(id)) return null;
 
-    const index = 0;
-    const element = id.elements[index];
+    let result: InlinableCode | null = null;
+    id.elements.forEach((element, index) => {
+      if (!selection.isInsideNode(element)) return;
+      if (!ast.isSelectableNode(element)) return;
 
-    if (!selection.isInsideNode(element)) return null;
+      const child = findInlinableCode(selection, parent, {
+        id: element,
+        init
+      });
+      if (!child) return;
 
-    const child = findInlinableCode(selection, parent, {
-      id: element,
-      init
+      const previous = id.elements[index - 1];
+      const next = id.elements[index + 1];
+
+      result = new InlinableArrayPattern(child, index, element, previous, next);
     });
-    if (!child) return null;
-
-    result = new InlinableArrayPattern(child, index);
 
     return wrapInTopLevelPattern(result, declaration, id.loc);
   }
@@ -415,10 +417,48 @@ class InlinableObjectPattern extends CompositeInlinable {
 
 class InlinableArrayPattern extends CompositeInlinable {
   private index: number;
+  private element: ast.SelectableNode;
+  private previous: ast.SelectableNode | undefined;
+  private next: ast.SelectableNode | undefined;
 
-  constructor(child: InlinableCode, index: number) {
+  constructor(
+    child: InlinableCode,
+    index: number,
+    element: ast.SelectableNode,
+    previous?: ast.Node | null,
+    next?: ast.Node | null
+  ) {
     super(child);
     this.index = index;
+    this.element = element;
+
+    if (previous && ast.isSelectableNode(previous)) {
+      this.previous = previous;
+    }
+
+    if (next && ast.isSelectableNode(next)) {
+      this.next = next;
+    }
+  }
+
+  get shouldExtendSelectionToDeclaration(): boolean {
+    if (!super.shouldExtendSelectionToDeclaration) return false;
+
+    return !this.next && !this.previous;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    if (!super.shouldExtendSelectionToDeclaration) {
+      return super.codeToRemoveSelection;
+    }
+
+    const selection = Selection.fromAST(this.element.loc);
+
+    if (this.previous && !this.next) {
+      return selection.extendStartToEndOf(Selection.fromAST(this.previous.loc));
+    }
+
+    return selection;
   }
 
   updateIdentifiersWith(inlinedCode: Code): Update[] {

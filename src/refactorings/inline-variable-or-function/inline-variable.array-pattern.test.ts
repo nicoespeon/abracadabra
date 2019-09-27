@@ -50,6 +50,30 @@ console.log(id);`,
 console.log(name);`,
         selection: Selection.cursorAt(2, 4),
         expected: `console.log(session[0][0]);`
+      },
+      {
+        description: "with other elements destructured, before",
+        code: `const [ userId, firstName ] = session;
+console.log(userId, firstName);`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const [ userId ] = session;
+console.log(userId, session[1]);`
+      },
+      {
+        description: "with other elements destructured, after",
+        code: `const [ userId, firstName ] = session;
+console.log(userId, firstName);`,
+        selection: Selection.cursorAt(0, 8),
+        expected: `const [ , firstName ] = session;
+console.log(session[0], firstName);`
+      },
+      {
+        description: "with other elements destructured, before & after",
+        code: `const [ userId, firstName, lastName ] = session;
+console.log(userId, firstName);`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const [ userId, , lastName ] = session;
+console.log(userId, session[1]);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 9), expected }) => {
