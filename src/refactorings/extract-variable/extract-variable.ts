@@ -213,7 +213,8 @@ type ExtractableCode = {
 class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
-  private variableName = "extracted";
+
+  private variableName: string = "";
 
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
@@ -221,6 +222,10 @@ class Occurrence {
 
     if (ast.isStringLiteral(path.node)) {
       this.variableName = camel(path.node.value);
+    }
+
+    if (!this.variableName || this.variableName.length > 20) {
+      this.variableName = "extracted";
     }
   }
 
