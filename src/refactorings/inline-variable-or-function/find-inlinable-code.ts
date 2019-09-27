@@ -16,7 +16,7 @@ export {
 function findInlinableCode(
   selection: Selection,
   parent: ast.Node,
-  declaration: { id: ast.Node; init: ast.Node | null }
+  declaration: Declaration
 ): InlinableCode | null {
   const { id, init } = declaration;
   if (!ast.isSelectableNode(init)) return null;
@@ -57,12 +57,30 @@ function findInlinableCode(
       );
     });
 
-    const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
-    if (result && isTopLevelObjectPattern) {
-      result = new InlinableTopLevelObjectPattern(result, id.loc);
-    }
+    return wrapInTopLevelPattern(result, declaration, id.loc);
+  }
 
-    return result;
+  if (ast.isArrayPattern(id)) {
+    if (!ast.isSelectableNode(id)) return null;
+
+    let result: InlinableCode | null = null;
+    id.elements.forEach((element, index) => {
+      if (!selection.isInsideNode(element)) return;
+      if (!ast.isSelectableNode(element)) return;
+
+      const child = findInlinableCode(selection, parent, {
+        id: element,
+        init
+      });
+      if (!child) return;
+
+      const previous = id.elements[index - 1];
+      const next = id.elements[index + 1];
+
+      result = new InlinableArrayPattern(child, index, element, previous, next);
+    });
+
+    return wrapInTopLevelPattern(result, declaration, id.loc);
   }
 
   return null;
@@ -94,6 +112,22 @@ function getInitName(init: ast.Node): string | null {
 
   return null;
 }
+
+function wrapInTopLevelPattern(
+  child: InlinableCode | null,
+  declaration: Declaration,
+  loc: ast.SourceLocation
+): InlinableCode | null {
+  if (!child) return child;
+
+  const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
+
+  return isTopLevelObjectPattern
+    ? new InlinableTopLevelPattern(child, loc)
+    : child;
+}
+
+type Declaration = { id: ast.Node; init: ast.Node | null };
 
 // 🎭 Component interface
 
@@ -381,7 +415,58 @@ class InlinableObjectPattern extends CompositeInlinable {
   }
 }
 
-class InlinableTopLevelObjectPattern extends CompositeInlinable {
+class InlinableArrayPattern extends CompositeInlinable {
+  private index: number;
+  private element: ast.SelectableNode;
+  private previous: ast.SelectableNode | undefined;
+  private next: ast.SelectableNode | undefined;
+
+  constructor(
+    child: InlinableCode,
+    index: number,
+    element: ast.SelectableNode,
+    previous?: ast.Node | null,
+    next?: ast.Node | null
+  ) {
+    super(child);
+    this.index = index;
+    this.element = element;
+
+    if (previous && ast.isSelectableNode(previous)) {
+      this.previous = previous;
+    }
+
+    if (next && ast.isSelectableNode(next)) {
+      this.next = next;
+    }
+  }
+
+  get shouldExtendSelectionToDeclaration(): boolean {
+    if (!super.shouldExtendSelectionToDeclaration) return false;
+
+    return !this.next && !this.previous;
+  }
+
+  get codeToRemoveSelection(): Selection {
+    if (!super.shouldExtendSelectionToDeclaration) {
+      return super.codeToRemoveSelection;
+    }
+
+    const selection = Selection.fromAST(this.element.loc);
+
+    if (this.previous && !this.next) {
+      return selection.extendStartToEndOf(Selection.fromAST(this.previous.loc));
+    }
+
+    return selection;
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return super.updateIdentifiersWith(`${inlinedCode}[${this.index}]`);
+  }
+}
+
+class InlinableTopLevelPattern extends CompositeInlinable {
   private loc: ast.SourceLocation;
 
   constructor(child: InlinableCode, loc: ast.SourceLocation) {

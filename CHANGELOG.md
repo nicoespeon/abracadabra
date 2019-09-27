@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Inline Variable now handles destructured array patterns
+
+Consider the following code:
+
+```js
+const [firstName] = names;
+console.log(firstName);
+```
+
+If you tried to inline `firstName`, it wouldn't work because destructured array patterns were not supported.
+
+Now it would work as expected:
+
+```js
+console.log(names[0]);
+```
+
+That means Inline Variable now handles all kind of destructured variables. Making it much more flexible and handy!
+
 ### Fixed
 
 - All refactorings Quick Fixes used to appear on Windows because of EOL. Not anymore!
