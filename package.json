@@ -74,6 +74,7 @@
     "@babel/parser": "7.4.5",
     "@babel/traverse": "7.4.5",
     "@babel/types": "7.4.4",
+    "change-case": "3.1.0",
     "pluralize": "8.0.0",
     "recast": "0.18.1"
   },

@@ -19,8 +19,8 @@ describe("Extract Variable - Patterns we can extract", () => {
         description: "a string",
         code: `console.log("Hello!");`,
         selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = "Hello!";
-console.log(extracted);`
+        expected: `const hello = "Hello!";
+console.log(hello);`
       },
       {
         description: "a number",
@@ -126,8 +126,8 @@ console.log("the", "World!", "Alright.");
 console.log("How are you doing?");`,
         selection: Selection.cursorAt(1, 19),
         expected: `console.log("Hello");
-const extracted = "World!";
-console.log("the", extracted, "Alright.");
+const world = "World!";
+console.log("the", world, "Alright.");
 console.log("How are you doing?");`
       },
       {
@@ -189,10 +189,10 @@ const a = {
   "typescriptreact"
 ];`,
         selection: Selection.cursorAt(2, 2),
-        expected: `const extracted = "javascriptreact";
+        expected: `const javascriptreact = "javascriptreact";
 const SUPPORTED_LANGUAGES = [
   "javascript",
-  extracted,
+  javascriptreact,
   "typescript",
   "typescriptreact"
 ];`
@@ -304,16 +304,16 @@ console.log(extracted.name);`
 }`,
         selection: Selection.cursorAt(1, 9),
         expected: `function getMessage() {
-  const extracted = "Hello!";
-  return extracted;
+  const hello = "Hello!";
+  return hello;
 }`
       },
       {
         description: "an assigned variable",
         code: `const message = "Hello!";`,
         selection: Selection.cursorAt(0, 16),
-        expected: `const extracted = "Hello!";
-const message = extracted;`
+        expected: `const hello = "Hello!";
+const message = hello;`
       },
       {
         description: "a class property assignment",
@@ -321,9 +321,9 @@ const message = extracted;`
   message = "Hello!";
 }`,
         selection: Selection.cursorAt(1, 12),
-        expected: `const extracted = "Hello!";
+        expected: `const hello = "Hello!";
 class Logger {
-  message = extracted;
+  message = hello;
 }`
       },
       {
@@ -400,9 +400,9 @@ while (extracted) doSomething();`
     break;
 }`,
         selection: Selection.cursorAt(1, 7),
-        expected: `const extracted = "Hello!";
+        expected: `const hello = "Hello!";
 switch (text) {
-  case extracted:
+  case hello:
   default:
     break;
 }`
@@ -446,9 +446,9 @@ const something = () => ({
   console.log("Hello")
 )`,
         selection: Selection.cursorAt(1, 16),
-        expected: `const extracted = "Hello";
+        expected: `const hello = "Hello";
 () => (
-  console.log(extracted)
+  console.log(hello)
 )`
       },
       {
@@ -471,9 +471,9 @@ assert.isTrue(
 }`,
         selection: Selection.cursorAt(2, 8),
         expected: `function getText() {
-  const extracted = "yes";
+  const yes = "yes";
   return isValid
-    ? extracted
+    ? yes
     : "no";
 }`
       },
@@ -623,9 +623,9 @@ const type = !!(
   "name"
 );`,
         selection: Selection.cursorAt(1, 2),
-        expected: `const extracted = "name";
+        expected: `const name = "name";
 new Author(
-  extracted
+  name
 );`
       },
       {

@@ -1,3 +1,5 @@
+import { camel } from "change-case";
+
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
@@ -211,11 +213,20 @@ type ExtractableCode = {
 class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
-  private variableName = "extracted";
+
+  private variableName: string = "";
 
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
     this.loc = loc;
+
+    if (ast.isStringLiteral(path.node)) {
+      this.variableName = camel(path.node.value);
+    }
+
+    if (!this.variableName || this.variableName.length > 20) {
+      this.variableName = "extracted";
+    }
   }
 
   get selection() {
