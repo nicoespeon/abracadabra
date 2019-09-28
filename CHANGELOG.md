@@ -28,7 +28,7 @@ console.log(names[0]);
 
 That means Inline Variable now handles all kind of destructured variables. Making it much more flexible and handy!
 
-### Extract Variable infers variable name on String Literals
+#### Extract Variable infers variable name on String Literals
 
 Consider the following code:
 
