@@ -8,6 +8,7 @@ import { findExportedIdNames } from "./find-exported-id-names";
 export {
   findInlinableCode,
   InlinableCode,
+  InlinableTSTypeAlias,
   InlinableObjectPattern,
   SingleDeclaration,
   MultipleDeclarations
@@ -242,6 +243,58 @@ class InlinableIdentifier implements InlinableCode {
               ? node.name
               : null
         });
+      }
+    });
+  }
+}
+
+class InlinableTSTypeAlias implements InlinableCode {
+  shouldExtendSelectionToDeclaration = true;
+  codeToRemoveSelection: Selection;
+  valueSelection: Selection;
+
+  // Type aliases can't be redeclared.
+  isRedeclared = false;
+
+  private path: ast.SelectablePath<ast.TSTypeAliasDeclaration>;
+  private refToReplaceLocs: ast.SourceLocation[] = [];
+
+  constructor(
+    path: ast.SelectablePath<ast.TSTypeAliasDeclaration>,
+    valueLoc: ast.SourceLocation
+  ) {
+    this.path = path;
+    this.codeToRemoveSelection = Selection.fromAST(path.node.loc);
+    this.valueSelection = Selection.fromAST(valueLoc);
+    this.computeIdentifiersToReplace();
+  }
+
+  get isExported(): boolean {
+    return findExportedIdNames(this.path.parent).includes(
+      this.path.node.id.name
+    );
+  }
+
+  get hasIdentifiersToUpdate(): boolean {
+    return this.refToReplaceLocs.length > 0;
+  }
+
+  updateIdentifiersWith(inlinedCode: Code): Update[] {
+    return this.refToReplaceLocs.map(loc => ({
+      code: inlinedCode,
+      selection: Selection.fromAST(loc)
+    }));
+  }
+
+  private computeIdentifiersToReplace() {
+    // Alias `this` because traversal rebinds the context of the options.
+    const self = this;
+    this.path.parentPath.traverse({
+      TSTypeReference(path) {
+        if (!ast.isSelectablePath(path)) return;
+        if (!ast.areEqual(self.path.node.id, path.node.typeName)) return;
+
+        self.refToReplaceLocs.push(path.node.loc);
       }
     });
   }

@@ -6,7 +6,8 @@ import {
   findInlinableCode,
   InlinableCode,
   SingleDeclaration,
-  MultipleDeclarations
+  MultipleDeclarations,
+  InlinableTSTypeAlias
 } from "./find-inlinable-code";
 
 export { inlineVariable };
@@ -58,7 +59,7 @@ function findInlinableCodeInAST(
   let result: InlinableCode | null = null;
 
   ast.traverseCode(code, {
-    enter(path) {
+    VariableDeclaration(path) {
       const { node, parent } = path;
 
       // It seems variable declaration inside a named export may have no loc.
@@ -67,7 +68,6 @@ function findInlinableCodeInAST(
         node.loc = parent.loc;
       }
 
-      if (!ast.isVariableDeclaration(node)) return;
       if (!selection.isInsideNode(node)) return;
 
       const declarations = node.declarations.filter(
@@ -93,6 +93,31 @@ function findInlinableCodeInAST(
           result = new MultipleDeclarations(child, previous, next);
         });
       }
+    },
+    TSTypeAliasDeclaration(path) {
+      const { node, parent } = path;
+
+      // It seems variable declaration inside a named export may have no loc.
+      // Use the named export loc in that situation.
+      if (ast.isExportNamedDeclaration(parent) && !ast.isSelectableNode(node)) {
+        node.loc = parent.loc;
+      }
+
+      if (!selection.isInsideNode(node)) return;
+
+      const { typeAnnotation } = node;
+      if (!ast.isSelectablePath(path)) return;
+
+      // So, this one is funny 🤡
+      // We can't use `ast.isSelectableNode(typeAnnotation)` guard clause.
+      // That's because `typeAnnotation` type is a union of 1939+ types.
+      // So when TS tries to infer the type after the guard clause, it freezes.
+      // Since we just want to get the `SourceLocation`, a simple check will do.
+      if (!typeAnnotation.loc) return;
+
+      result = new SingleDeclaration(
+        new InlinableTSTypeAlias(path, typeAnnotation.loc)
+      );
     }
   });
 

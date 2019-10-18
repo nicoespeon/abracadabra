@@ -24,6 +24,11 @@ function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
           });
         }
 
+        // Pattern `export type Value = "one" | "many" | "none";`
+        if (ast.isTSTypeAliasDeclaration(node.declaration)) {
+          result.push(node.declaration.id.name);
+        }
+
         // Pattern `export { foo, hello }`
         node.specifiers.forEach(specifier => {
           if (!ast.isExportSpecifier(specifier)) return;
