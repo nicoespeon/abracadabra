@@ -182,6 +182,45 @@ export { hello };`,
 
 const hello = "Some other thing";
 export { hello };`
+      },
+      {
+        description: "type alias",
+        code: `type Value = "one" | "many" | "none";
+interface Something {
+  value: Value;
+}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `interface Something {
+  value: "one" | "many" | "none";
+}`
+      },
+      {
+        description: "type alias, many references",
+        code: `type Value = "one" | "many" | "none";
+interface Something {
+  value: Value;
+  otherValue: Value;
+}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `interface Something {
+  value: "one" | "many" | "none";
+  otherValue: "one" | "many" | "none";
+}`
+      },
+      {
+        description: "selected type alias only",
+        code: `type Value = "one" | "many" | "none";
+type Key = string;
+interface Something {
+  value: Value;
+  key: Key;
+}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `type Key = string;
+interface Something {
+  value: "one" | "many" | "none";
+  key: Key;
+}`
       }
     ],
     async ({ code, selection, expected }) => {
@@ -289,8 +328,19 @@ const result = one + 2 + three;`);
     );
   });
 
+  it("should show an error message if type alias is not used", async () => {
+    const code = `type Value = "one" | "many" | "none";`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doInlineVariable(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundInlinableCodeIdentifiers
+    );
+  });
+
   testEach<{ code: Code; selection: Selection }>(
-    "should not inline an exported variable if",
+    "should not inline an exported variable",
     [
       {
         description: "export declaration",
@@ -320,6 +370,56 @@ console.log(foo);
 
 export default foo;`,
         selection: Selection.cursorAt(0, 12)
+      }
+    ],
+    async ({ code, selection }) => {
+      await doInlineVariable(code, selection);
+
+      expect(showErrorMessage).toBeCalledWith(
+        ErrorReason.CantInlineExportedVariables
+      );
+    }
+  );
+
+  testEach<{ code: Code; selection: Selection }>(
+    "should not inline an exported type alias",
+    [
+      {
+        description: "export declaration",
+        code: `export type Value = "one" | "many" | "none";
+interface Something {
+  value: Value;
+}`,
+        selection: Selection.cursorAt(0, 12)
+      },
+      {
+        description: "export after declaration",
+        code: `type Value = "one" | "many" | "none";
+interface Something {
+  value: Value;
+}
+
+export { Value };`,
+        selection: Selection.cursorAt(0, 0)
+      },
+      {
+        description: "export before declaration",
+        code: `export { Value };
+type Value = "one" | "many" | "none";
+interface Something {
+  value: Value;
+}`,
+        selection: Selection.cursorAt(1, 0)
+      },
+      {
+        description: "default export after declaration",
+        code: `type Value = "one" | "many" | "none";
+interface Something {
+  value: Value;
+}
+
+export default Value;`,
+        selection: Selection.cursorAt(0, 0)
       }
     ],
     async ({ code, selection }) => {
