@@ -107,7 +107,13 @@ function findInlinableCodeInAST(
 
       const { typeAnnotation } = node;
       if (!ast.isSelectablePath(path)) return;
-      if (!ast.isSelectableNode(typeAnnotation)) return;
+
+      // So, this one is funny 🤡
+      // We can't use `ast.isSelectableNode(typeAnnotation)` guard clause.
+      // That's because `typeAnnotation` type is a union of 1939+ types.
+      // So when TS tries to infer the type after the guard clause, it freezes.
+      // Since we just want to get the `SourceLocation`, a simple check will do.
+      if (!typeAnnotation.loc) return;
 
       result = new SingleDeclaration(
         new InlinableTSTypeAlias(path, typeAnnotation.loc)
