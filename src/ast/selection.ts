@@ -10,6 +10,7 @@ export {
   SelectableIdentifier,
   SelectableVariableDeclarator,
   Selectable,
+  isSelectablePath,
   isSelectableNode,
   isSelectableVariableDeclarator,
   isSelectableIdentifier,
@@ -26,7 +27,7 @@ interface ASTPosition {
   column: number;
 }
 
-type SelectablePath = NodePath<SelectableNode>;
+type SelectablePath<T = t.Node> = NodePath<Selectable<T>>;
 type SelectableNode = Selectable<t.Node>;
 type SelectableIdentifier = Selectable<t.Identifier>;
 type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
@@ -36,6 +37,12 @@ interface SelectableObjectProperty extends t.ObjectProperty {
   loc: t.SourceLocation;
   key: Selectable<t.ObjectProperty["key"]>;
   value: Selectable<t.ObjectProperty["value"]>;
+}
+
+function isSelectablePath<T extends t.Node>(
+  path: NodePath<T>
+): path is SelectablePath<T> {
+  return !!path.node.loc;
 }
 
 function isSelectableNode(node: t.Node | null): node is SelectableNode {
