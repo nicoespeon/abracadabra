@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Inline Variable now handles Type Aliases
+
+Consider the following TypeScript code:
+
+```ts
+type Value = "one" | "many" | "none";
+
+interface Something {
+  value: Value;
+}
+```
+
+You can now inline the `Value` type just like a regular variable. Inlining it will result in following code:
+
+```ts
+interface Something {
+  value: "one" | "many" | "none";
+}
+```
+
 ## [0.9.0] - 2019-10-17
 
 ### Changed
