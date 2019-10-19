@@ -29,6 +29,54 @@ interface Something {
 }
 ```
 
+#### Merge else-if is more intuitive
+
+Consider the following nested if statements:
+
+```js
+if (isValid) {
+  doSomething();
+} else {
+  if (shouldDoSomething) {
+    doSomethingElse();
+  } else {
+    if (isCorrect) {
+      doAnotherThing();
+    }
+  }
+}
+```
+
+If your cursor is on the nested `if (shouldDoSomething)` and you want to execute "✨ Merge else-if" quick fix, then you'd expect this if to be merged with the previous one.
+
+However, because of the nested `if (isCorrect)`, the actual output would have been:
+
+```js
+if (isValid) {
+  doSomething();
+} else {
+  if (shouldDoSomething) {
+    doSomethingElse();
+  } else if (isCorrect) {
+    doAnotherThing();
+  }
+}
+```
+
+We improved the UX to be more intuitive. So if your cursor is on `if (shouldDoSomething)`, we'll prioritize the parent merge and the result would be:
+
+```js
+if (isValid) {
+  doSomething();
+} else if (shouldDoSomething) {
+  doSomethingElse();
+} else {
+  if (isCorrect) {
+    doAnotherThing();
+  }
+}
+```
+
 ## [0.9.0] - 2019-10-17
 
 ### Changed
