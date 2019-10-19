@@ -309,6 +309,54 @@ describe("Split If Statement", () => {
 } else if (isCorrect) {
   doAnotherThing();
 }`
+      },
+      {
+        description: "deeply nested if, cursor on intermediate if",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  if (shouldDoSomething) {
+    doSomethingElse();
+  } else {
+    if (isCorrect) {
+      doAnotherThing();
+    }
+  }
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `if (isValid) {
+  doSomething();
+} else if (shouldDoSomething) {
+  doSomethingElse();
+} else {
+  if (isCorrect) {
+    doAnotherThing();
+  }
+}`
+      },
+      {
+        description: "deeply nested if, cursor on intermediate else",
+        code: `if (isValid) {
+  doSomething();
+} else {
+  if (shouldDoSomething) {
+    doSomethingElse();
+  } else {
+    if (isCorrect) {
+      doAnotherThing();
+    }
+  }
+}`,
+        selection: Selection.cursorAt(5, 4),
+        expected: `if (isValid) {
+  doSomething();
+} else {
+  if (shouldDoSomething) {
+    doSomethingElse();
+  } else if (isCorrect) {
+    doAnotherThing();
+  }
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

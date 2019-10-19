@@ -106,6 +106,26 @@ function hasChildWhichMatchesSelection(
       const { alternate, consequent } = childPath.node;
 
       if (alternate) {
+        /**
+         * When cursor is on child `if`, like here:
+         *
+         *     else {
+         *       if (isValid) {
+         *       ^^^^^^^^^^^^
+         *         doSomething();
+         *       } else {
+         *         if (isCorrect) {}
+         *       }
+         *     }
+         *
+         * It's more intuitive to merge the parent `else` with `if (isValid)`,
+         * not the child `else` with `if (isCorrect)` in this situation.
+         */
+        const selectionOnChildIfKeyword =
+          consequent.loc &&
+          selection.startsBefore(Selection.fromAST(consequent.loc));
+        if (selectionOnChildIfKeyword) return;
+
         if (!ast.isBlockStatement(alternate)) return;
 
         const nestedIfStatement = getNestedIfStatementIn(alternate);
