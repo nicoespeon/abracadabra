@@ -41,14 +41,18 @@ function updateCode(
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const { alternate, consequent } = path.node;
 
       if (alternate) {
         mergeAlternate = true;
-        mergeAlternateWithNestedIf(path, alternate, selection);
+        mergeAlternateWithNestedIf(path, alternate);
       } else {
         mergeAlternate = false;
-        mergeConsequentWithNestedIf(path, consequent, selection);
+        mergeConsequentWithNestedIf(path, consequent);
       }
     }
   });
@@ -58,13 +62,8 @@ function updateCode(
 
 function mergeAlternateWithNestedIf(
   path: ast.NodePath<ast.IfStatement>,
-  alternate: ast.IfStatement["alternate"],
-  selection: Selection
+  alternate: ast.IfStatement["alternate"]
 ) {
-  // Since we visit nodes from parent to children, first check
-  // if a child would match the selection closer.
-  if (hasChildWhichMatchesSelection(path, selection)) return;
-
   if (!ast.isBlockStatement(alternate)) return;
 
   const nestedStatement = getNestedIfStatementIn(alternate);
@@ -76,13 +75,8 @@ function mergeAlternateWithNestedIf(
 
 function mergeConsequentWithNestedIf(
   path: ast.NodePath<ast.IfStatement>,
-  consequent: ast.IfStatement["consequent"],
-  selection: Selection
+  consequent: ast.IfStatement["consequent"]
 ) {
-  // Since we visit nodes from parent to children, first check
-  // if a child would match the selection closer.
-  if (hasChildWhichMatchesSelection(path, selection)) return;
-
   const nestedIfStatement = getNestedIfStatementIn(consequent);
   if (!nestedIfStatement) return;
   if (nestedIfStatement.alternate) return;
