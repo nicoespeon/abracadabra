@@ -77,6 +77,10 @@ if (isValid) {
 }
 ```
 
+### Fixed
+
+- Extract Variable with arrays of different length now matches other occurrences correctly.
+
 ## [0.9.0] - 2019-10-17
 
 ### Changed

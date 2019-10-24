@@ -170,6 +170,16 @@ console.log(extracted);
 sendMessage(extracted);`
       },
       {
+        description: "only identical arrays",
+        code: `console.log([1, 3, 4]);
+sendMessage([1, 3, 4]);
+const dontExtract = [];`,
+        expected: `const extracted = [1, 3, 4];
+console.log(extracted);
+sendMessage(extracted);
+const dontExtract = [];`
+      },
+      {
         description: "object",
         code: `console.log({ one: 1, foo: "bar" });
 sendMessage({ one: 1, foo: "bar" });`,

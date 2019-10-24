@@ -215,7 +215,10 @@ function areAllEqual(
   nodesA: (t.Node | null)[],
   nodesB: (t.Node | null)[]
 ): boolean {
-  return nodesA.every((node, i) => areEqual(node, nodesB[i]));
+  return (
+    nodesA.length === nodesB.length &&
+    nodesA.every((node, i) => areEqual(node, nodesB[i]))
+  );
 }
 
 function isTemplateExpression(node: t.Node): node is TemplateExpression {
