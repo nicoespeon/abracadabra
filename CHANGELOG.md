@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2019-10-27
+
 ### Changed
 
 #### Inline Variable now handles Type Aliases
@@ -386,7 +388,8 @@ function doSomething(someData) {
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.9.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/nicoespeon/abracadabra/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/nicoespeon/abracadabra/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/nicoespeon/abracadabra/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/nicoespeon/abracadabra/compare/0.6.0...0.7.0
