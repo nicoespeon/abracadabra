@@ -1,38 +1,16 @@
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
-  createActionProviderFor
+  createActionProviderFor,
+  RefactoringActionProvider
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { hasArrowFunctionToAddBraces } from "./add-braces-to-arrow-function";
 
-class AddBracesToArrowFunctionActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!hasArrowFunctionToAddBraces(code, selection)) return;
-
-    const action = new vscode.CodeAction(
-      "✨ Add braces to arrow function",
-      this.kind
-    );
-    action.isPreferred = false;
-    action.command = {
-      command: commandKey,
-      title: "Add Braces to Arrow Function"
-    };
-
-    return [action];
-  }
+class AddBracesToArrowFunctionActionProvider extends RefactoringActionProvider {
+  actionMessage = "Add braces to arrow function";
+  commandKey = commandKey;
+  title = "Add Braces to Arrow Function";
+  canPerformRefactoring = hasArrowFunctionToAddBraces;
 }
 
 export default createActionProviderFor(
