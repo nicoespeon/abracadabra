@@ -10,38 +10,19 @@ to: "<%= hasActionProvider ? 'src/refactorings/' + h.changeCase.param(name) + '/
 
   camelActionProviderName = h.changeCase.camel(actionProviderName)
 -%>
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
+  RefactoringActionProvider,
   createActionProviderFor
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { <%= camelActionProviderName %> } from "./<%= dashedName %>";
 
-class <%= pascalName %>ActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!<%= camelActionProviderName %>(code, selection)) return;
-
-    const action = new vscode.CodeAction("✨ <%= sentenceName %>", this.kind);
-    action.isPreferred = true;
-    action.command = {
-      command: commandKey,
-      title: "<%= titleName %>"
-    };
-
-    return [action];
-  }
+class <%= pascalName %>ActionProvider extends RefactoringActionProvider {
+  actionMessage = "<%= sentenceName %>";
+  commandKey = commandKey;
+  title = "<%= titleName %>";
+  canPerformRefactoring = <%= camelActionProviderName %>;
 }
 
 export default createActionProviderFor(new <%= pascalName %>ActionProvider());
