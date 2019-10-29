@@ -1,39 +1,16 @@
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
-  createActionProviderFor
+  createActionProviderFor,
+  RefactoringActionProvider
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { canSplitDeclarationAndInitialization } from "./split-declaration-and-initialization";
 
-class SplitDeclarationAndInitializationActionProvider
-  implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!canSplitDeclarationAndInitialization(code, selection)) return;
-
-    const action = new vscode.CodeAction(
-      "✨ Split declaration and initialization",
-      this.kind
-    );
-    action.isPreferred = false;
-    action.command = {
-      command: commandKey,
-      title: "Split Declaration and Initialization"
-    };
-
-    return [action];
-  }
+class SplitDeclarationAndInitializationActionProvider extends RefactoringActionProvider {
+  actionMessage = "Split declaration and initialization";
+  commandKey = commandKey;
+  title = "Split Declaration and Initialization";
+  canPerformRefactoring = canSplitDeclarationAndInitialization;
 }
 
 export default createActionProviderFor(
