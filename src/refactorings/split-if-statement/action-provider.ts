@@ -1,35 +1,16 @@
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
-  createActionProviderFor
+  createActionProviderFor,
+  RefactoringActionProvider
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { canSplitIfStatement } from "./split-if-statement";
 
-class SplitIfStatementActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!canSplitIfStatement(code, selection)) return;
-
-    const action = new vscode.CodeAction("✨ Split if statement", this.kind);
-    action.isPreferred = false;
-    action.command = {
-      command: commandKey,
-      title: "Split If Statement"
-    };
-
-    return [action];
-  }
+class SplitIfStatementActionProvider extends RefactoringActionProvider {
+  actionMessage = "Split if statement";
+  commandKey = commandKey;
+  title = "Split If Statement";
+  canPerformRefactoring = canSplitIfStatement;
 }
 
 export default createActionProviderFor(new SplitIfStatementActionProvider());
