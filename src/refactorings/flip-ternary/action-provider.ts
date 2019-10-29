@@ -1,35 +1,17 @@
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
-  createActionProviderFor
+  createActionProviderFor,
+  RefactoringActionProvider
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { hasTernaryToFlip } from "./flip-ternary";
 
-class FlipTernaryActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
-
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    if (!hasTernaryToFlip(code, selection)) return;
-
-    const action = new vscode.CodeAction("✨ Flip ternary", this.kind);
-    action.isPreferred = true;
-    action.command = {
-      command: commandKey,
-      title: "Flip Ternary"
-    };
-
-    return [action];
-  }
+class FlipTernaryActionProvider extends RefactoringActionProvider {
+  actionMessage = "Flip ternary";
+  commandKey = commandKey;
+  title = "Flip Ternary";
+  canPerformRefactoring = hasTernaryToFlip;
+  isPreferred = true;
 }
 
 export default createActionProviderFor(new FlipTernaryActionProvider());
