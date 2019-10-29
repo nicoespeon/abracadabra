@@ -1,39 +1,24 @@
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
-  createActionProviderFor
+  createActionProviderFor,
+  RefactoringActionProvider
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { tryMergeIfStatements } from "./merge-if-statements";
+import { Code } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 
-class MergeIfStatementsActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
+class MergeIfStatementsActionProvider extends RefactoringActionProvider {
+  title = "Merge If Statements";
+  commandKey = commandKey;
 
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
+  canPerformRefactoring(code: Code, selection: Selection) {
+    const { mergeAlternate, canMerge } = tryMergeIfStatements(code, selection);
+    this.actionMessage = mergeAlternate
+      ? "Merge else-if"
+      : "Merge if statements";
 
-    const attempt = tryMergeIfStatements(code, selection);
-    if (!attempt.canMerge) return;
-
-    const title = attempt.mergeAlternate
-      ? "✨ Merge else-if"
-      : "✨ Merge if statements";
-
-    const action = new vscode.CodeAction(title, this.kind);
-    action.isPreferred = false;
-    action.command = {
-      command: commandKey,
-      title: "Merge If Statements"
-    };
-
-    return [action];
+    return canMerge;
   }
 }
 
