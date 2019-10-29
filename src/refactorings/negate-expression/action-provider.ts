@@ -1,40 +1,27 @@
-import * as vscode from "vscode";
-
 import {
-  CodeActionProvider,
-  createActionProviderFor
+  createActionProviderFor,
+  RefactoringActionProvider
 } from "../../action-providers";
-import { createSelectionFromVSCode } from "../../editor/adapters/vscode-editor";
 
 import { commandKey } from "./command";
 import { findNegatableExpression } from "./negate-expression";
+import { Code } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 
-class NegateExpressionActionProvider implements CodeActionProvider {
-  public readonly kind = vscode.CodeActionKind.RefactorRewrite;
+class NegateExpressionActionProvider extends RefactoringActionProvider {
+  actionMessage = "Convert to forEach";
+  commandKey = commandKey;
+  title = "Negate Expression";
 
-  public provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
+  canPerformRefactoring(code: Code, selection: Selection) {
     const expression = findNegatableExpression(code, selection);
-    if (!expression) return;
 
-    let actionText = "✨ Negate the expression";
-    if (expression.negatedOperator) {
-      actionText += ` (use ${expression.negatedOperator} instead)`;
+    this.actionMessage = "Negate the expression";
+    if (expression && expression.negatedOperator) {
+      this.actionMessage += ` (use ${expression.negatedOperator} instead)`;
     }
 
-    const action = new vscode.CodeAction(actionText, this.kind);
-    action.isPreferred = false;
-    action.command = {
-      command: commandKey,
-      title: "Negate Expression"
-    };
-
-    return [action];
+    return Boolean(expression);
   }
 }
 
