@@ -111,4 +111,11 @@ class Selection {
       this.start.isEqualTo(selection.start) && this.end.isEqualTo(selection.end)
     );
   }
+
+  isSameLineThan(selection: Selection): boolean {
+    return (
+      this.start.isSameLineThan(selection.start) &&
+      this.end.isSameLineThan(selection.end)
+    );
+  }
 }
