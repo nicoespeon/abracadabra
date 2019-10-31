@@ -152,11 +152,11 @@ const data = {
       },
       {
         description: "object properties, one-liner",
-        code: `console.log("Should not move");
+        code: `console.log("Should move in this scenario");
 const data = { foo: "foo", bar: "bar" };`,
         selection: Selection.cursorAt(1, 16),
         expected: `const data = { foo: "foo", bar: "bar" };
-console.log("Should not move");`,
+console.log("Should move in this scenario");`,
         expectedPosition: new Position(0, 16)
       },
       {

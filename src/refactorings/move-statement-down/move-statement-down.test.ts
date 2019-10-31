@@ -200,9 +200,9 @@ console.log("Should not move");`,
       {
         description: "object properties, one-liner",
         code: `const data = { foo: "foo", bar: "bar" };
-console.log("Should not move");`,
+console.log("Should move in this scenario");`,
         selection: Selection.cursorAt(0, 16),
-        expected: `console.log("Should not move");
+        expected: `console.log("Should move in this scenario");
 const data = { foo: "foo", bar: "bar" };`,
         expectedPosition: new Position(1, 16)
       },
