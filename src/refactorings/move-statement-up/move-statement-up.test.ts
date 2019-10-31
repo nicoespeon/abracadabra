@@ -151,6 +151,15 @@ const data = {
         expectedPosition: new Position(2, 2)
       },
       {
+        description: "object properties, one-liner",
+        code: `console.log("Should not move");
+const data = { foo: "foo", bar: "bar" };`,
+        selection: Selection.cursorAt(1, 16),
+        expected: `const data = { foo: "foo", bar: "bar" };
+console.log("Should not move");`,
+        expectedPosition: new Position(0, 16)
+      },
+      {
         description: "object properties, cursor after comma",
         code: `console.log("Should not move");
 const data = {
