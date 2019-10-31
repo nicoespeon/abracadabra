@@ -198,6 +198,15 @@ console.log("Should not move");`,
         expectedPosition: new Position(2, 2)
       },
       {
+        description: "object properties, one-liner",
+        code: `const data = { foo: "foo", bar: "bar" };
+console.log("Should move in this scenario");`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `console.log("Should move in this scenario");
+const data = { foo: "foo", bar: "bar" };`,
+        expectedPosition: new Position(1, 16)
+      },
+      {
         description: "object properties, cursor after comma",
         code: `const data = {
   foo: "foo",
