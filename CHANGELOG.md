@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Move Statements now handles one-liners more intuitively
+
+Consider following code:
+
+```js
+const user = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 24
+};
+const rights = { admin: false, moderator: true };
+```
+
+Before, if you had the cursor on `admin` and you tried to move the statement up, you'd have swapped the parameters:
+
+```js
+const user = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 24
+};
+const rights = { moderator: true, admin: false };
+```
+
+But what you probably intended to do was to swap the two variable declarations. From usage, we think "Move Statements" more as something you'd like to use to move things up or down. If things are at the same line, you certainly don't expect them to move.
+
+The behaviour was surprising, so it was improved. Now, the same operation will generate:
+
+```js
+const rights = { admin: false, moderator: true };
+const user = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 24
+};
+```
+
+However, if your cursor is now on `lastName` and you move the statement down, it will still produce the following code since statements are on different lines:
+
+```js
+const rights = { admin: false, moderator: true };
+const user = {
+  firstName: "John",
+  age: 24,
+  lastName: "Doe"
+};
+```
+
+Noticed how it handles the trailing comma? Ok, that was already here. But it's still super neat!
+
 ## [0.10.0] - 2019-10-27
 
 ### Changed
