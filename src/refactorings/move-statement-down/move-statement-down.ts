@@ -119,7 +119,6 @@ function hasChildWhichMatchesSelection(
     if (!matchesSelection(childPath, selection)) return;
 
     if (typeof childPath.key !== "number") return;
-
     const childPathBelowKey = childPath.key + 1;
     const container = new Array().concat(childPath.container);
     const hasPathBelow = childPathBelowKey < container.length;

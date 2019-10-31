@@ -102,11 +102,8 @@ function hasChildWhichMatchesSelection(
     if (!matchesSelection(childPath, selection)) return;
 
     if (typeof childPath.key !== "number") return;
-
     const childPathAboveKey = childPath.key - 1;
-    if (childPathAboveKey < 0) {
-      return;
-    }
+    if (childPathAboveKey < 0) return;
 
     const { node: childNode } = childPath;
     const { node: childNodeAbove } = childPath.getSibling(childPathAboveKey);
