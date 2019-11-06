@@ -1,5 +1,9 @@
 import * as vscode from "vscode";
 
+import { xxxnew_RefactoringActionProvider } from "./action-providers";
+
+import splitIfStatement from "./refactorings/split-if-statement";
+
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
 import bubbleUpIfStatementCommand from "./refactorings/bubble-up-if-statement/command";
 import convertForToForeachCommand from "./refactorings/convert-for-to-foreach/command";
@@ -41,7 +45,6 @@ import removeDeadCodeActionProviderFor from "./refactorings/remove-dead-code/act
 import removeRedundantElseActionProviderFor from "./refactorings/remove-redundant-else/action-provider";
 import replaceBinaryWithAssignmentActionProviderFor from "./refactorings/replace-binary-with-assignment/action-provider";
 import splitDeclarationAndInitializationActionProviderFor from "./refactorings/split-declaration-and-initialization/action-provider";
-import splitIfStatementActionProviderFor from "./refactorings/split-if-statement/action-provider";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -95,9 +98,16 @@ export function activate(context: vscode.ExtensionContext) {
       removeDeadCodeActionProviderFor(language),
       removeRedundantElseActionProviderFor(language),
       replaceBinaryWithAssignmentActionProviderFor(language),
-      splitDeclarationAndInitializationActionProviderFor(language),
-      splitIfStatementActionProviderFor(language)
+      splitDeclarationAndInitializationActionProviderFor(language)
     ].forEach(actionProvider => context.subscriptions.push(actionProvider));
+
+    vscode.languages.registerCodeActionsProvider(
+      language,
+      new xxxnew_RefactoringActionProvider([splitIfStatement]),
+      {
+        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
+      }
+    );
   });
 }
 
