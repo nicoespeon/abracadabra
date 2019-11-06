@@ -6,15 +6,12 @@ import { Selection } from "./editor/selection";
 import { RefactoringWithActionProvider } from "./types";
 
 export {
-  CodeActionProvider,
   RefactoringActionProvider,
   xxxnew_RefactoringActionProvider,
   createActionProviderFor
 };
 
-interface CodeActionProvider extends vscode.CodeActionProvider {}
-
-class RefactoringActionProvider implements CodeActionProvider {
+class RefactoringActionProvider implements vscode.CodeActionProvider {
   actionMessage = "";
   commandKey = "";
   title = "";
@@ -54,7 +51,7 @@ class RefactoringActionProvider implements CodeActionProvider {
   }
 }
 
-class xxxnew_RefactoringActionProvider implements CodeActionProvider {
+class xxxnew_RefactoringActionProvider implements vscode.CodeActionProvider {
   private refactorings: RefactoringWithActionProvider[];
 
   constructor(refactorings: RefactoringWithActionProvider[]) {
@@ -103,7 +100,7 @@ class xxxnew_RefactoringActionProvider implements CodeActionProvider {
 }
 
 function createActionProviderFor(
-  actionProvider: CodeActionProvider
+  actionProvider: vscode.CodeActionProvider
 ): (selector: vscode.DocumentSelector) => vscode.Disposable {
   return selector =>
     vscode.languages.registerCodeActionsProvider(selector, actionProvider, {
