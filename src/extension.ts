@@ -9,6 +9,7 @@ import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import flipIfElse from "./refactorings/flip-if-else";
 import splitIfStatement from "./refactorings/split-if-statement";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
@@ -34,7 +35,6 @@ import renameSymbolCommand from "./refactorings/rename-symbol/command";
 import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 
-import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
 import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
 import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statements/action-provider";
 import mergeWithPreviousIfStatementActionProviderFor from "./refactorings/merge-with-previous-if-statement/action-provider";
@@ -81,7 +81,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   SUPPORTED_LANGUAGES.forEach(language => {
     [
-      flipIfElseActionProviderFor(language),
       flipTernaryActionProviderFor(language),
       mergeIfStatementsActionProviderFor(language),
       mergeWithPreviousIfStatementActionProviderFor(language),
@@ -103,6 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
         convertIfElseToTernary,
         convertTernaryToIfElse,
         convertToTemplateLiteral,
+        flipIfElse,
         splitIfStatement
       ]),
       {
