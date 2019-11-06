@@ -5,6 +5,7 @@ import { xxxnew_RefactoringActionProvider } from "./action-providers";
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
 import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
+import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import splitIfStatement from "./refactorings/split-if-statement";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
@@ -31,7 +32,6 @@ import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-wi
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
-import convertIfElseToSwitchActionProviderFor from "./refactorings/convert-if-else-to-switch/action-provider";
 import convertTernaryToIfElseActionProviderFor from "./refactorings/convert-ternary-to-if-else/action-provider";
 import convertToTemplateLiteralActionProviderFor from "./refactorings/convert-to-template-literal/action-provider";
 import flipIfElseActionProviderFor from "./refactorings/flip-if-else/action-provider";
@@ -82,7 +82,6 @@ export function activate(context: vscode.ExtensionContext) {
   SUPPORTED_LANGUAGES.forEach(language => {
     [
       convertIfElseToTernaryActionProviderFor(language),
-      convertIfElseToSwitchActionProviderFor(language),
       convertTernaryToIfElseActionProviderFor(language),
       convertToTemplateLiteralActionProviderFor(language),
       flipIfElseActionProviderFor(language),
@@ -103,6 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
         addBracesToArrowFunction,
         bubbleUpIfStatement,
         convertForToForeach,
+        convertIfElseToSwitch,
         splitIfStatement
       ]),
       {
