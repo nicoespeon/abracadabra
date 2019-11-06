@@ -10,12 +10,9 @@ export {
   createActionProviderFor
 };
 
-interface CodeActionProvider extends vscode.CodeActionProvider {
-  readonly kind: vscode.CodeActionKind;
-}
+interface CodeActionProvider extends vscode.CodeActionProvider {}
 
 class RefactoringActionProvider implements CodeActionProvider {
-  readonly kind = vscode.CodeActionKind.RefactorRewrite;
   actionMessage = "";
   commandKey = "";
   title = "";
@@ -37,7 +34,10 @@ class RefactoringActionProvider implements CodeActionProvider {
 
     if (!canPerformRefactoring) return;
 
-    const action = new vscode.CodeAction(`✨ ${this.actionMessage}`, this.kind);
+    const action = new vscode.CodeAction(
+      `✨ ${this.actionMessage}`,
+      vscode.CodeActionKind.RefactorRewrite
+    );
     action.isPreferred = this.isPreferred;
     action.command = {
       command: this.commandKey,
@@ -57,6 +57,6 @@ function createActionProviderFor(
 ): (selector: vscode.DocumentSelector) => vscode.Disposable {
   return selector =>
     vscode.languages.registerCodeActionsProvider(selector, actionProvider, {
-      providedCodeActionKinds: [actionProvider.kind]
+      providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
     });
 }
