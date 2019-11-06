@@ -11,6 +11,7 @@ import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
+import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import splitIfStatement from "./refactorings/split-if-statement";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
@@ -37,7 +38,6 @@ import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-wi
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 
 import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statements/action-provider";
-import mergeWithPreviousIfStatementActionProviderFor from "./refactorings/merge-with-previous-if-statement/action-provider";
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 import removeBracesFromArrowFunctionActionProviderFor from "./refactorings/remove-braces-from-arrow-function/action-provider";
 import removeDeadCodeActionProviderFor from "./refactorings/remove-dead-code/action-provider";
@@ -82,7 +82,6 @@ export function activate(context: vscode.ExtensionContext) {
   SUPPORTED_LANGUAGES.forEach(language => {
     [
       mergeIfStatementsActionProviderFor(language),
-      mergeWithPreviousIfStatementActionProviderFor(language),
       negateExpressionActionProviderFor(language),
       removeBracesFromArrowFunctionActionProviderFor(language),
       removeDeadCodeActionProviderFor(language),
@@ -103,6 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
         convertToTemplateLiteral,
         flipIfElse,
         flipTernary,
+        mergeWithPreviousIfStatement,
         splitIfStatement
       ]),
       {
