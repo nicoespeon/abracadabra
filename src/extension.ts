@@ -10,6 +10,7 @@ import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import flipIfElse from "./refactorings/flip-if-else";
+import flipTernary from "./refactorings/flip-ternary";
 import splitIfStatement from "./refactorings/split-if-statement";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
@@ -35,7 +36,6 @@ import renameSymbolCommand from "./refactorings/rename-symbol/command";
 import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 
-import flipTernaryActionProviderFor from "./refactorings/flip-ternary/action-provider";
 import mergeIfStatementsActionProviderFor from "./refactorings/merge-if-statements/action-provider";
 import mergeWithPreviousIfStatementActionProviderFor from "./refactorings/merge-with-previous-if-statement/action-provider";
 import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
@@ -81,7 +81,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   SUPPORTED_LANGUAGES.forEach(language => {
     [
-      flipTernaryActionProviderFor(language),
       mergeIfStatementsActionProviderFor(language),
       mergeWithPreviousIfStatementActionProviderFor(language),
       negateExpressionActionProviderFor(language),
@@ -103,6 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
         convertTernaryToIfElse,
         convertToTemplateLiteral,
         flipIfElse,
+        flipTernary,
         splitIfStatement
       ]),
       {
