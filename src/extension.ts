@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import { xxxnew_RefactoringActionProvider } from "./action-providers";
 
+import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
 import splitIfStatement from "./refactorings/split-if-statement";
 
 import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
@@ -26,9 +27,7 @@ import removeRedundantElseCommand from "./refactorings/remove-redundant-else/com
 import renameSymbolCommand from "./refactorings/rename-symbol/command";
 import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
-import splitIfStatementCommand from "./refactorings/split-if-statement/command";
 
-import addBracesToArrowFunctionActionProviderFor from "./refactorings/add-braces-to-arrow-function/action-provider";
 import bubbleUpIfStatementActionProviderFor from "./refactorings/bubble-up-if-statement/action-provider";
 import convertForToForeachActionProviderFor from "./refactorings/convert-for-to-foreach/action-provider";
 import convertIfElseToTernaryActionProviderFor from "./refactorings/convert-if-else-to-ternary/action-provider";
@@ -77,12 +76,11 @@ export function activate(context: vscode.ExtensionContext) {
     renameSymbolCommand,
     replaceBinaryWithAssignmentCommand,
     splitDeclarationAndInitializationCommand,
-    splitIfStatementCommand
+    addBracesToArrowFunctionCommand
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
     [
-      addBracesToArrowFunctionActionProviderFor(language),
       bubbleUpIfStatementActionProviderFor(language),
       convertForToForeachActionProviderFor(language),
       convertIfElseToTernaryActionProviderFor(language),
@@ -103,7 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.languages.registerCodeActionsProvider(
       language,
-      new xxxnew_RefactoringActionProvider([splitIfStatement]),
+      new xxxnew_RefactoringActionProvider([
+        addBracesToArrowFunction,
+        splitIfStatement
+      ]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
       }
