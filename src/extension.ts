@@ -17,6 +17,7 @@ import negateExpression from "./refactorings/negate-expression";
 import removeBracesFromArrowFunction from "./refactorings/remove-braces-from-arrow-function";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
+import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assignment";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 
@@ -42,8 +43,6 @@ import removeRedundantElseCommand from "./refactorings/remove-redundant-else/com
 import renameSymbolCommand from "./refactorings/rename-symbol/command";
 import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
-
-import replaceBinaryWithAssignmentActionProviderFor from "./refactorings/replace-binary-with-assignment/action-provider";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -80,10 +79,6 @@ export function activate(context: vscode.ExtensionContext) {
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
-    [replaceBinaryWithAssignmentActionProviderFor(language)].forEach(
-      actionProvider => context.subscriptions.push(actionProvider)
-    );
-
     vscode.languages.registerCodeActionsProvider(
       language,
       new xxxnew_RefactoringActionProvider([
@@ -102,6 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
         removeBracesFromArrowFunction,
         removeDeadCode,
         removeRedundantElse,
+        replaceBinaryWithAssignment,
         splitDeclarationAndInitialization,
         splitIfStatement
       ]),
