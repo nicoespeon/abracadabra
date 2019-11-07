@@ -5,53 +5,9 @@ import { Code } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { RefactoringWithActionProvider } from "./types";
 
-export {
-  RefactoringActionProvider,
-  xxxnew_RefactoringActionProvider,
-  createActionProviderFor
-};
+export { RefactoringActionProvider };
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  actionMessage = "";
-  commandKey = "";
-  title = "";
-  isPreferred = false;
-
-  provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const code = document.getText();
-    const selection = createSelectionFromVSCode(range);
-
-    let canPerformRefactoring = false;
-    try {
-      canPerformRefactoring = this.canPerformRefactoring(code, selection);
-    } catch (_) {
-      // Silently fail so it stops here (e.g. code can't be parsed)
-    }
-
-    if (!canPerformRefactoring) return;
-
-    const action = new vscode.CodeAction(
-      `✨ ${this.actionMessage}`,
-      vscode.CodeActionKind.RefactorRewrite
-    );
-    action.isPreferred = this.isPreferred;
-    action.command = {
-      command: this.commandKey,
-      title: this.title
-    };
-
-    return [action];
-  }
-
-  canPerformRefactoring(_code: Code, _selection: Selection): boolean {
-    return false;
-  }
-}
-
-class xxxnew_RefactoringActionProvider implements vscode.CodeActionProvider {
   private refactorings: RefactoringWithActionProvider[];
 
   constructor(refactorings: RefactoringWithActionProvider[]) {
@@ -97,13 +53,4 @@ class xxxnew_RefactoringActionProvider implements vscode.CodeActionProvider {
 
     return action;
   }
-}
-
-function createActionProviderFor(
-  actionProvider: vscode.CodeActionProvider
-): (selector: vscode.DocumentSelector) => vscode.Disposable {
-  return selector =>
-    vscode.languages.registerCodeActionsProvider(selector, actionProvider, {
-      providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
-    });
 }

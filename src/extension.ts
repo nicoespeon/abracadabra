@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { xxxnew_RefactoringActionProvider } from "./action-providers";
+import { RefactoringActionProvider } from "./action-providers";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
 import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
@@ -81,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
   SUPPORTED_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
-      new xxxnew_RefactoringActionProvider([
+      new RefactoringActionProvider([
         addBracesToArrowFunction,
         bubbleUpIfStatement,
         convertForToForeach,
