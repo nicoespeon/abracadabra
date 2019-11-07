@@ -13,6 +13,7 @@ import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
+import negateExpression from "./refactorings/negate-expression";
 import removeBracesFromArrowFunction from "./refactorings/remove-braces-from-arrow-function";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
@@ -42,7 +43,6 @@ import renameSymbolCommand from "./refactorings/rename-symbol/command";
 import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
 import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 
-import negateExpressionActionProviderFor from "./refactorings/negate-expression/action-provider";
 import replaceBinaryWithAssignmentActionProviderFor from "./refactorings/replace-binary-with-assignment/action-provider";
 
 const SUPPORTED_LANGUAGES = [
@@ -80,10 +80,9 @@ export function activate(context: vscode.ExtensionContext) {
   ].forEach(command => context.subscriptions.push(command));
 
   SUPPORTED_LANGUAGES.forEach(language => {
-    [
-      negateExpressionActionProviderFor(language),
-      replaceBinaryWithAssignmentActionProviderFor(language)
-    ].forEach(actionProvider => context.subscriptions.push(actionProvider));
+    [replaceBinaryWithAssignmentActionProviderFor(language)].forEach(
+      actionProvider => context.subscriptions.push(actionProvider)
+    );
 
     vscode.languages.registerCodeActionsProvider(
       language,
@@ -99,6 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
         flipTernary,
         mergeIfStatements,
         mergeWithPreviousIfStatement,
+        negateExpression,
         removeBracesFromArrowFunction,
         removeDeadCode,
         removeRedundantElse,
