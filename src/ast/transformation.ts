@@ -1,4 +1,4 @@
-import { parse } from "@babel/parser";
+import { parse as babelParse } from "@babel/parser";
 import traverse, { TraverseOptions, NodePath, Visitor } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
@@ -38,7 +38,7 @@ function traverseCode(code: Code, opts: TraverseOptions): t.File {
   const ast: t.File = recast.parse(code, {
     parser: {
       parse: (source: Code) =>
-        parse(source, {
+        babelParse(source, {
           sourceType: "module",
           allowImportExportEverywhere: true,
           allowReturnOutsideFunction: true,
