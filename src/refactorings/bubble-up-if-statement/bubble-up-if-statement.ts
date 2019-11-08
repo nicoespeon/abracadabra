@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { bubbleUpIfStatement, canBubbleUpIfStatement };
 
@@ -9,7 +9,7 @@ async function bubbleUpIfStatement(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundNestedIf);
@@ -19,12 +19,12 @@ async function bubbleUpIfStatement(
   await editor.write(updatedCode.code);
 }
 
-function canBubbleUpIfStatement(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function canBubbleUpIfStatement(ast: t.AST, selection: Selection): boolean {
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     IfStatement(path) {
       const { node } = path;
 
@@ -34,10 +34,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const parentIfPath = ast.findParentIfPath(path);
+      const parentIfPath = t.findParentIfPath(path);
       if (!parentIfPath) return;
 
-      if (ast.isInAlternate(path)) {
+      if (t.isInAlternate(path)) {
         // We don't handle this scenario for now. It'd be an improvement.
         return;
       }
@@ -46,23 +46,23 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       const parentTest = parentIf.test;
       const parentAlternate = parentIf.alternate;
 
-      const buildNestedIfStatementFor = (node: ast.Statement) =>
+      const buildNestedIfStatementFor = (node: t.Statement) =>
         buildNestedIfStatement(
           node,
-          ast.getPreviousSiblingStatements(path),
-          ast.getNextSiblingStatements(path),
+          t.getPreviousSiblingStatements(path),
+          t.getNextSiblingStatements(path),
           parentTest,
           parentAlternate
         );
 
       const newParentIfAlternate = node.alternate
-        ? ast.blockStatement([buildNestedIfStatementFor(node.alternate)])
-        : ast.hasSiblingStatement(path)
-        ? ast.blockStatement([buildNestedIfStatementFor(ast.emptyStatement())])
+        ? t.blockStatement([buildNestedIfStatementFor(node.alternate)])
+        : t.hasSiblingStatement(path)
+        ? t.blockStatement([buildNestedIfStatementFor(t.emptyStatement())])
         : parentIf.alternate;
 
       parentIfPath.replaceWith(
-        ast.ifStatement(node.test, parentIf.consequent, newParentIfAlternate)
+        t.ifStatement(node.test, parentIf.consequent, newParentIfAlternate)
       );
       parentIfPath.stop();
 
@@ -76,7 +76,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -84,7 +84,7 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     IfStatement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
-      if (!ast.findParentIfPath(childPath)) return;
+      if (!t.findParentIfPath(childPath)) return;
 
       result = true;
       childPath.stop();
@@ -95,17 +95,17 @@ function hasChildWhichMatchesSelection(
 }
 
 function buildNestedIfStatement(
-  branch: ast.Statement,
-  previousSiblingStatements: ast.Statement[],
-  nextSiblingStatements: ast.Statement[],
-  test: ast.IfStatement["test"],
-  alternate: ast.IfStatement["alternate"]
-): ast.IfStatement {
-  const body = ast.isBlockStatement(branch) ? branch.body : [branch];
+  branch: t.Statement,
+  previousSiblingStatements: t.Statement[],
+  nextSiblingStatements: t.Statement[],
+  test: t.IfStatement["test"],
+  alternate: t.IfStatement["alternate"]
+): t.IfStatement {
+  const body = t.isBlockStatement(branch) ? branch.body : [branch];
 
-  return ast.ifStatement(
+  return t.ifStatement(
     test,
-    ast.blockStatement([
+    t.blockStatement([
       ...previousSiblingStatements,
       ...body,
       ...nextSiblingStatements
