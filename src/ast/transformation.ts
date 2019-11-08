@@ -13,6 +13,7 @@ export { NodePath, Visitor, Scope } from "@babel/traverse";
 export {
   traverseNode,
   traversePath,
+  traverseAST,
   parseAndTraverseCode,
   parse,
   transform,
