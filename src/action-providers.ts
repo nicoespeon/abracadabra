@@ -47,7 +47,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
     action.isPreferred = refactoring.isPreferred;
     action.command = {
-      command: refactoring.commandKey,
+      command: `abracadabra.${refactoring.commandKey}`,
       title: refactoring.title
     };
 

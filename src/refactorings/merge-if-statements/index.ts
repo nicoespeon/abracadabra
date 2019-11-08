@@ -5,7 +5,7 @@ import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.mergeIfStatements",
+  commandKey: "mergeIfStatements",
   operation: mergeIfStatements,
   title: "Merge If Statements",
   actionProviderMessage: "Merge if statements",

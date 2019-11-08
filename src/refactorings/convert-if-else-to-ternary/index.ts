@@ -6,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.convertIfElseToTernary",
+  commandKey: "convertIfElseToTernary",
   operation: convertIfElseToTernary,
   actionProviderMessage: "Convert if/else to ternary",
   title: "Convert If/Else to Ternary",

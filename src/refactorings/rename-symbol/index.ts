@@ -8,7 +8,7 @@ import { renameSymbol } from "./rename-symbol";
 import { Refactoring } from "../../types";
 
 const config: Refactoring = {
-  commandKey: "abracadabra.renameSymbol",
+  commandKey: "renameSymbol",
   async operation() {
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) {

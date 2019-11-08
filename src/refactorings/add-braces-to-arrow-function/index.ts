@@ -6,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.addBracesToArrowFunction",
+  commandKey: "addBracesToArrowFunction",
   operation: addBracesToArrowFunction,
   title: "Add Braces to Arrow Function",
   actionProviderMessage: "Add braces to arrow function",

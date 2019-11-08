@@ -6,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.convertToTemplateLiteral",
+  commandKey: "convertToTemplateLiteral",
   operation: convertToTemplateLiteral,
   title: "Convert to Template Literal",
   actionProviderMessage: "Convert to template literal",

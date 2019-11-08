@@ -8,7 +8,7 @@ import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.replaceBinaryWithAssignment",
+  commandKey: "replaceBinaryWithAssignment",
   operation: replaceBinaryWithAssignment,
   title: "Replace Binary With Assignment",
   actionProviderMessage: "Replace binary with assignment",

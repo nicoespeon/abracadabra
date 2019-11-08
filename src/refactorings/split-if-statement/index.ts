@@ -3,7 +3,7 @@ import { canSplitIfStatement, splitIfStatement } from "./split-if-statement";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.splitIfStatement",
+  commandKey: "splitIfStatement",
   operation: splitIfStatement,
   title: "Split If Statement",
   actionProviderMessage: "Split if statement",

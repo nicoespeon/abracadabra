@@ -60,7 +60,10 @@ export function activate(context: vscode.ExtensionContext) {
     splitDeclarationAndInitialization
   ].forEach(({ commandKey, operation }) =>
     context.subscriptions.push(
-      vscode.commands.registerCommand(commandKey, createCommand(operation))
+      vscode.commands.registerCommand(
+        `abracadabra.${commandKey}`,
+        createCommand(operation)
+      )
     )
   );
 

@@ -5,7 +5,7 @@ import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.negateExpression",
+  commandKey: "negateExpression",
   operation: negateExpression,
   title: "Negate Expression",
   actionProviderMessage: "Negate the expression",

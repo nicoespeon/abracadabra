@@ -6,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.bubbleUpIfStatement",
+  commandKey: "bubbleUpIfStatement",
   operation: bubbleUpIfStatement,
   title: "Bubble Up If Statement",
   actionProviderMessage: "Bubble up if statement",

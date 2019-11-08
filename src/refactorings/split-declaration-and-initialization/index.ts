@@ -6,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.splitDeclarationAndInitialization",
+  commandKey: "splitDeclarationAndInitialization",
   operation: splitDeclarationAndInitialization,
   title: "Split Declaration and Initialization",
   actionProviderMessage: "Split declaration and initialization",

@@ -6,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "abracadabra.convertForToForeach",
+  commandKey: "convertForToForeach",
   operation: convertForToForeach,
   title: "Convert For-Loop to ForEach",
   actionProviderMessage: "Convert to forEach",

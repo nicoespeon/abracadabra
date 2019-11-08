@@ -13,7 +13,7 @@ import {
 import { Refactoring } from "../../types";
 
 const config: Refactoring = {
-  commandKey: "abracadabra.inlineVariableOrFunction",
+  commandKey: "inlineVariableOrFunction",
   operation: inlineVariableOrFunction
 };
 
