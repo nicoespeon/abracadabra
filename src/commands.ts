@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 
-import { Editor, Code } from "./editor/editor";
-import { Selection } from "./editor/selection";
+import { Operation } from "./types";
 
 import {
   VSCodeEditor,
@@ -9,7 +8,6 @@ import {
 } from "./editor/adapters/vscode-editor";
 
 export { createCommand, executeSafely };
-export { Operation };
 
 function createCommand(execute: Operation) {
   return async () => {
@@ -29,12 +27,6 @@ function createCommand(execute: Operation) {
     );
   };
 }
-
-type Operation = (
-  code: Code,
-  selection: Selection,
-  write: Editor
-) => Promise<void>;
 
 async function executeSafely(command: () => Promise<any>): Promise<void> {
   try {

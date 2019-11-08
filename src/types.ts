@@ -1,9 +1,7 @@
-import { Code } from "./editor/editor";
+import { Code, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 
-import { Operation } from "./commands";
-
-export { Refactoring, RefactoringWithActionProvider };
+export { Refactoring, RefactoringWithActionProvider, Operation };
 
 interface Refactoring {
   commandKey: string;
@@ -16,3 +14,9 @@ interface RefactoringWithActionProvider extends Refactoring {
   canPerformRefactoring: (code: Code, selection: Selection) => boolean;
   isPreferred?: boolean;
 }
+
+type Operation = (
+  code: Code,
+  selection: Selection,
+  write: Editor
+) => Promise<void>;
