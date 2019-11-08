@@ -1,8 +1,8 @@
 import { hasRedundantElse, removeRedundantElse } from "./remove-redundant-else";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { xxxnew_RefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: xxxnew_RefactoringWithActionProvider = {
   command: {
     key: "removeRedundantElse",
     operation: removeRedundantElse,

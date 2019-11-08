@@ -1,7 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
 import { last } from "../../array-helpers";
+import * as t from "../../ast";
 
 export { removeRedundantElse, hasRedundantElse };
 
@@ -10,7 +10,7 @@ async function removeRedundantElse(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = removeRedundantElseFrom(code, selection);
+  const updatedCode = removeRedundantElseFrom(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundRedundantElse);
@@ -20,21 +20,21 @@ async function removeRedundantElse(
   await editor.write(updatedCode.code);
 }
 
-function hasRedundantElse(code: Code, selection: Selection): boolean {
-  return removeRedundantElseFrom(code, selection).hasCodeChanged;
+function hasRedundantElse(ast: t.AST, selection: Selection): boolean {
+  return removeRedundantElseFrom(ast, selection).hasCodeChanged;
 }
 
 function removeRedundantElseFrom(
-  code: Code,
+  ast: t.AST,
   selection: Selection
-): ast.Transformed {
-  return ast.transform(code, {
+): t.Transformed {
+  return t.transformAST(ast, {
     IfStatement(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
       const ifBranch = node.consequent;
-      if (!ast.isBlockStatement(ifBranch)) return;
+      if (!t.isBlockStatement(ifBranch)) return;
       if (!hasExitStatement(ifBranch)) return;
 
       const elseBranch = node.alternate;
@@ -45,14 +45,14 @@ function removeRedundantElseFrom(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       node.alternate = null;
-      path.replaceWithMultiple([node, ...ast.getStatements(elseBranch)]);
+      path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
       path.stop();
     }
   });
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -63,7 +63,7 @@ function hasChildWhichMatchesSelection(
       if (!selection.isInsidePath(childPath)) return;
 
       const ifBranch = node.consequent;
-      if (!ast.isBlockStatement(ifBranch)) return;
+      if (!t.isBlockStatement(ifBranch)) return;
       if (!hasExitStatement(ifBranch)) return;
 
       const elseBranch = node.alternate;
@@ -77,10 +77,10 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function hasExitStatement(node: ast.BlockStatement): boolean {
+function hasExitStatement(node: t.BlockStatement): boolean {
   const lastStatement = last(node.body);
 
   return (
-    ast.isReturnStatement(lastStatement) || ast.isThrowStatement(lastStatement)
+    t.isReturnStatement(lastStatement) || t.isThrowStatement(lastStatement)
   );
 }
