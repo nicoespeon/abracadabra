@@ -14,7 +14,9 @@ export {
   traverseNode,
   traversePath,
   parseAndTraverseCode,
+  parse,
   transform,
+  transformAST,
   transformCopy,
   Transformed,
   AST
@@ -24,6 +26,17 @@ export { mergeCommentsInto };
 function transform(code: Code, options: TraverseOptions): Transformed {
   const ast = parseAndTraverseCode(code, options);
   const newCode = recast.print(ast).code;
+
+  return {
+    code: newCode,
+    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
+  };
+}
+
+function transformAST(ast: AST, options: TraverseOptions): Transformed {
+  const code = recast.print(ast).code;
+  const newAst = traverseAST(ast, options);
+  const newCode = recast.print(newAst).code;
 
   return {
     code: newCode,
