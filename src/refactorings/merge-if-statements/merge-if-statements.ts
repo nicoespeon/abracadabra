@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { mergeIfStatements, tryMergeIfStatements };
 
@@ -9,7 +9,7 @@ async function mergeIfStatements(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundIfStatementsToMerge);
@@ -20,10 +20,10 @@ async function mergeIfStatements(
 }
 
 function tryMergeIfStatements(
-  code: Code,
+  ast: t.AST,
   selection: Selection
 ): { canMerge: boolean; mergeAlternate: boolean } {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(ast, selection);
 
   return {
     canMerge: updatedCode.hasCodeChanged,
@@ -32,12 +32,12 @@ function tryMergeIfStatements(
 }
 
 function updateCode(
-  code: Code,
+  ast: t.AST,
   selection: Selection
-): ast.Transformed & { mergeAlternate: boolean } {
+): t.Transformed & { mergeAlternate: boolean } {
   let mergeAlternate = false;
 
-  const result = ast.transform(code, {
+  const result = t.transformAST(ast, {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -61,10 +61,10 @@ function updateCode(
 }
 
 function mergeAlternateWithNestedIf(
-  path: ast.NodePath<ast.IfStatement>,
-  alternate: ast.IfStatement["alternate"]
+  path: t.NodePath<t.IfStatement>,
+  alternate: t.IfStatement["alternate"]
 ) {
-  if (!ast.isBlockStatement(alternate)) return;
+  if (!t.isBlockStatement(alternate)) return;
 
   const nestedStatement = getNestedIfStatementIn(alternate);
   if (!nestedStatement) return;
@@ -74,27 +74,27 @@ function mergeAlternateWithNestedIf(
 }
 
 function mergeConsequentWithNestedIf(
-  path: ast.NodePath<ast.IfStatement>,
-  consequent: ast.IfStatement["consequent"]
+  path: t.NodePath<t.IfStatement>,
+  consequent: t.IfStatement["consequent"]
 ) {
   const nestedIfStatement = getNestedIfStatementIn(consequent);
   if (!nestedIfStatement) return;
   if (nestedIfStatement.alternate) return;
 
-  path.node.test = ast.logicalExpression(
+  path.node.test = t.logicalExpression(
     "&&",
     path.node.test,
     nestedIfStatement.test
   );
-  path.node.consequent = ast.blockStatement(
-    ast.getStatements(nestedIfStatement.consequent)
+  path.node.consequent = t.blockStatement(
+    t.getStatements(nestedIfStatement.consequent)
   );
 
   path.stop();
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -126,7 +126,7 @@ function hasChildWhichMatchesSelection(
           selection.startsBefore(Selection.fromAST(consequent.loc));
         if (selectionOnChildIfKeyword) return;
 
-        if (!ast.isBlockStatement(alternate)) return;
+        if (!t.isBlockStatement(alternate)) return;
 
         const nestedIfStatement = getNestedIfStatementIn(alternate);
         if (!nestedIfStatement) return;
@@ -144,17 +144,15 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function getNestedIfStatementIn(
-  statement: ast.Statement
-): ast.IfStatement | null {
-  if (ast.isBlockStatement(statement) && statement.body.length > 1) {
+function getNestedIfStatementIn(statement: t.Statement): t.IfStatement | null {
+  if (t.isBlockStatement(statement) && statement.body.length > 1) {
     return null;
   }
 
-  const nestedIfStatement = ast.isBlockStatement(statement)
+  const nestedIfStatement = t.isBlockStatement(statement)
     ? statement.body[0] // We tested there is no other element in body.
     : statement;
-  if (!ast.isIfStatement(nestedIfStatement)) return null;
+  if (!t.isIfStatement(nestedIfStatement)) return null;
 
   return nestedIfStatement;
 }

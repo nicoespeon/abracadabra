@@ -1,10 +1,10 @@
 import { tryMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
-import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { RefactoringWithActionProvider } from "../../types";
+import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import * as t from "../../ast";
 
-const config: RefactoringWithActionProvider = {
+const config: xxxnew_RefactoringWithActionProvider = {
   command: {
     key: "mergeIfStatements",
     operation: mergeIfStatements,
@@ -13,11 +13,8 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Merge if statements",
 
-    canPerform(code: Code, selection: Selection) {
-      const { mergeAlternate, canMerge } = tryMergeIfStatements(
-        code,
-        selection
-      );
+    canPerform(ast: t.AST, selection: Selection) {
+      const { mergeAlternate, canMerge } = tryMergeIfStatements(ast, selection);
       this.message = mergeAlternate ? "Merge else-if" : "Merge if statements";
 
       return canMerge;
