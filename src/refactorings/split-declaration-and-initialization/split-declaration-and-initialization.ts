@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export {
   splitDeclarationAndInitialization,
@@ -12,7 +12,7 @@ async function splitDeclarationAndInitialization(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundDeclarationToSplit);
@@ -23,14 +23,14 @@ async function splitDeclarationAndInitialization(
 }
 
 function canSplitDeclarationAndInitialization(
-  code: Code,
+  ast: t.AST,
   selection: Selection
 ): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     VariableDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -43,14 +43,14 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 
       const kind = path.node.kind === "const" ? "let" : path.node.kind;
       path.replaceWithMultiple([
-        ast.variableDeclaration(
+        t.variableDeclaration(
           kind,
-          declarations.map(({ id }) => ast.variableDeclarator(id))
+          declarations.map(({ id }) => t.variableDeclarator(id))
         ),
         ...declarations
           .filter(isDeclarationInitialized)
           .map(({ id, init }) =>
-            ast.expressionStatement(ast.assignmentExpression("=", id, init))
+            t.expressionStatement(t.assignmentExpression("=", id, init))
           )
       ]);
     }
@@ -58,7 +58,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -76,13 +76,13 @@ function hasChildWhichMatchesSelection(
 }
 
 function hasInitializedDeclaration(
-  declarations: ast.VariableDeclarator[]
+  declarations: t.VariableDeclarator[]
 ): boolean {
   return declarations.some(isDeclarationInitialized);
 }
 
 function isDeclarationInitialized(
-  declaration: ast.VariableDeclarator
-): declaration is ast.VariableDeclarator & { init: ast.Expression } {
+  declaration: t.VariableDeclarator
+): declaration is t.VariableDeclarator & { init: t.Expression } {
   return declaration.init !== null;
 }
