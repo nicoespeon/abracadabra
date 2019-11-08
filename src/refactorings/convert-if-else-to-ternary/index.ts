@@ -3,9 +3,9 @@ import {
   convertIfElseToTernary
 } from "./convert-if-else-to-ternary";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { xxxnew_RefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: xxxnew_RefactoringWithActionProvider = {
   command: {
     key: "convertIfElseToTernary",
     operation: convertIfElseToTernary,

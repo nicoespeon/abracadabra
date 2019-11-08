@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { convertIfElseToTernary, hasIfElseToConvert };
 
@@ -9,7 +9,7 @@ async function convertIfElseToTernary(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundIfElseToConvert);
@@ -19,12 +19,12 @@ async function convertIfElseToTernary(
   await editor.write(updatedCode.code);
 }
 
-function hasIfElseToConvert(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     IfStatement(path) {
       const { node } = path;
       if (!selection.isInsidePath(path)) return;
@@ -40,8 +40,8 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function getReturnStatementTernary(
-  node: ast.IfStatement
-): ast.ReturnStatement | undefined {
+  node: t.IfStatement
+): t.ReturnStatement | undefined {
   const ifReturnedStatement = getReturnedStatement(node.consequent);
   if (!ifReturnedStatement) return;
   if (!ifReturnedStatement.argument) return;
@@ -50,15 +50,15 @@ function getReturnStatementTernary(
   if (!elseReturnedStatement) return;
   if (!elseReturnedStatement.argument) return;
 
-  let result = ast.returnStatement(
-    ast.conditionalExpression(
+  let result = t.returnStatement(
+    t.conditionalExpression(
       node.test,
       ifReturnedStatement.argument,
       elseReturnedStatement.argument
     )
   );
 
-  result = ast.mergeCommentsInto(result, [
+  result = t.mergeCommentsInto(result, [
     ifReturnedStatement,
     elseReturnedStatement
   ]);
@@ -67,19 +67,19 @@ function getReturnStatementTernary(
 }
 
 function getReturnedStatement(
-  node: ast.Statement | null
-): ast.ReturnStatement | null {
-  if (!ast.isBlockStatement(node)) return null;
+  node: t.Statement | null
+): t.ReturnStatement | null {
+  if (!t.isBlockStatement(node)) return null;
 
   const firstChild = node.body[0];
-  if (!ast.isReturnStatement(firstChild)) return null;
+  if (!t.isReturnStatement(firstChild)) return null;
 
   return firstChild;
 }
 
 function getAssignmentExpressionTernary(
-  node: ast.IfStatement
-): ast.AssignmentExpression | undefined {
+  node: t.IfStatement
+): t.AssignmentExpression | undefined {
   const ifAssignedStatement = getAssignedStatement(node.consequent);
   if (!ifAssignedStatement) return;
 
@@ -93,17 +93,13 @@ function getAssignmentExpressionTernary(
     return;
   }
 
-  let result = ast.assignmentExpression(
+  let result = t.assignmentExpression(
     ifAssignment.operator,
     ifAssignment.left,
-    ast.conditionalExpression(
-      node.test,
-      ifAssignment.right,
-      elseAssignment.right
-    )
+    t.conditionalExpression(node.test, ifAssignment.right, elseAssignment.right)
   );
 
-  result = ast.mergeCommentsInto(result, [
+  result = t.mergeCommentsInto(result, [
     ifAssignedStatement,
     elseAssignedStatement
   ]);
@@ -112,23 +108,23 @@ function getAssignmentExpressionTernary(
 }
 
 function getAssignedStatement(
-  node: ast.Statement | null
-): ast.ExpressionStatement & { expression: ast.AssignmentExpression } | null {
-  if (!ast.isBlockStatement(node)) return null;
+  node: t.Statement | null
+): t.ExpressionStatement & { expression: t.AssignmentExpression } | null {
+  if (!t.isBlockStatement(node)) return null;
   if (node.body.length > 1) return null;
 
   const firstChild = node.body[0];
-  if (!ast.isExpressionStatement(firstChild)) return null;
+  if (!t.isExpressionStatement(firstChild)) return null;
 
   const expression = firstChild.expression;
-  if (!ast.isAssignmentExpression(expression)) return null;
+  if (!t.isAssignmentExpression(expression)) return null;
 
   return { ...firstChild, expression };
 }
 
 function areSameAssignments(
-  expressionA: ast.AssignmentExpression,
-  expressionB: ast.AssignmentExpression
+  expressionA: t.AssignmentExpression,
+  expressionB: t.AssignmentExpression
 ): boolean {
   return (
     haveSameLeftIdentifiers(expressionA, expressionB) &&
@@ -137,12 +133,12 @@ function areSameAssignments(
 }
 
 function haveSameLeftIdentifiers(
-  expressionA: ast.AssignmentExpression,
-  expressionB: ast.AssignmentExpression
+  expressionA: t.AssignmentExpression,
+  expressionB: t.AssignmentExpression
 ): boolean {
   return (
-    ast.isIdentifier(expressionA.left) &&
-    ast.isIdentifier(expressionB.left) &&
+    t.isIdentifier(expressionA.left) &&
+    t.isIdentifier(expressionB.left) &&
     expressionA.left.name === expressionB.left.name
   );
 }
