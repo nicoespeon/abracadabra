@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { removeBracesFromArrowFunction, hasBracesToRemoveFromArrowFunction };
 
@@ -9,7 +9,7 @@ async function removeBracesFromArrowFunction(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (updatedCode.isPatternInvalid) {
     editor.showError(ErrorReason.CantRemoveBracesFromArrowFunction);
@@ -25,22 +25,22 @@ async function removeBracesFromArrowFunction(
 }
 
 function hasBracesToRemoveFromArrowFunction(
-  code: Code,
+  ast: t.AST,
   selection: Selection
 ): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
 function updateCode(
-  code: Code,
+  ast: t.AST,
   selection: Selection
-): ast.Transformed & { isPatternInvalid: boolean } {
+): t.Transformed & { isPatternInvalid: boolean } {
   let isPatternInvalid = false;
 
-  const result = ast.transform(code, {
+  const result = t.transformAST(ast, {
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
-      if (!ast.isBlockStatement(path.node.body)) return;
+      if (!t.isBlockStatement(path.node.body)) return;
 
       const blockStatementStatements = path.node.body.body;
       if (blockStatementStatements.length > 1) {
@@ -49,7 +49,7 @@ function updateCode(
       }
 
       const firstValue = blockStatementStatements[0];
-      if (!ast.isReturnStatement(firstValue)) {
+      if (!t.isReturnStatement(firstValue)) {
         isPatternInvalid = true;
         return;
       }
@@ -75,7 +75,7 @@ function updateCode(
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -83,13 +83,13 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
-      if (!ast.isBlockStatement(childPath.node.body)) return;
+      if (!t.isBlockStatement(childPath.node.body)) return;
 
       const blockStatementStatements = childPath.node.body.body;
       if (blockStatementStatements.length > 1) return;
 
       const firstValue = blockStatementStatements[0];
-      if (!ast.isReturnStatement(firstValue)) return;
+      if (!t.isReturnStatement(firstValue)) return;
       if (firstValue.argument === null) return;
 
       result = true;
