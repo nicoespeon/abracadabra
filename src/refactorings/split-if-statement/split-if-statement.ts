@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { splitIfStatement, canSplitIfStatement };
 
@@ -9,7 +9,7 @@ async function splitIfStatement(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundIfStatementToSplit);
@@ -19,17 +19,17 @@ async function splitIfStatement(
   await editor.write(updatedCode.code);
 }
 
-function canSplitIfStatement(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function canSplitIfStatement(ast: t.AST, selection: Selection): boolean {
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
       const { test, consequent, alternate } = path.node;
-      if (!ast.isLogicalExpression(test)) return;
+      if (!t.isLogicalExpression(test)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
@@ -38,14 +38,14 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       // Handle logical expressions in `else if` if they're closer to selection.
       if (hasAlternateWhichMatchesSelection(alternate, selection)) return;
 
-      const splittedIfStatement = ast.ifStatement(
+      const splittedIfStatement = t.ifStatement(
         test.right,
         consequent,
         alternate
       );
 
       if (test.operator === "&&") {
-        path.node.consequent = ast.blockStatement([splittedIfStatement]);
+        path.node.consequent = t.blockStatement([splittedIfStatement]);
       } else {
         path.node.alternate = splittedIfStatement;
       }
@@ -57,7 +57,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -65,7 +65,7 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     IfStatement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
-      if (!ast.isLogicalExpression(childPath.node.test)) return;
+      if (!t.isLogicalExpression(childPath.node.test)) return;
 
       result = true;
       childPath.stop();
@@ -76,12 +76,12 @@ function hasChildWhichMatchesSelection(
 }
 
 function hasAlternateWhichMatchesSelection(
-  alternate: ast.IfStatement["alternate"],
+  alternate: t.IfStatement["alternate"],
   selection: Selection
 ): boolean {
-  if (!ast.isIfStatement(alternate)) return false;
+  if (!t.isIfStatement(alternate)) return false;
   if (!selection.isInsideNode(alternate)) return false;
-  if (!ast.isLogicalExpression(alternate.test)) return false;
+  if (!t.isLogicalExpression(alternate.test)) return false;
 
   return true;
 }

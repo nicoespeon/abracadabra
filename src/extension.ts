@@ -73,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
   SUPPORTED_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
-      new RefactoringActionProvider([splitIfStatement]),
+      new RefactoringActionProvider([]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
       }
@@ -100,7 +100,8 @@ export function activate(context: vscode.ExtensionContext) {
         removeDeadCode,
         removeRedundantElse,
         replaceBinaryWithAssignment,
-        splitDeclarationAndInitialization
+        splitDeclarationAndInitialization,
+        splitIfStatement
       ]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
