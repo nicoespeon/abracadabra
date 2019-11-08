@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { replaceBinaryWithAssignment, tryToReplaceBinaryWithAssignment };
 
@@ -9,7 +9,7 @@ async function replaceBinaryWithAssignment(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode || !updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundBinaryExpression);
@@ -20,10 +20,10 @@ async function replaceBinaryWithAssignment(
 }
 
 function tryToReplaceBinaryWithAssignment(
-  code: Code,
+  ast: t.AST,
   selection: Selection
-): { canReplace: boolean; operator: ast.BinaryExpression["operator"] } {
-  const updatedCode = updateCode(code, selection);
+): { canReplace: boolean; operator: t.BinaryExpression["operator"] } {
+  const updatedCode = updateCode(ast, selection);
   if (!updatedCode) return { canReplace: false, operator: "+" };
 
   return {
@@ -45,29 +45,29 @@ const assignableOperators = [
 ];
 
 function updateCode(
-  code: Code,
+  ast: t.AST,
   selection: Selection
-): ast.Transformed & { operator: ast.BinaryExpression["operator"] } | null {
-  let operator: ast.BinaryExpression["operator"] | undefined;
+): t.Transformed & { operator: t.BinaryExpression["operator"] } | null {
+  let operator: t.BinaryExpression["operator"] | undefined;
 
-  const result = ast.transform(code, {
+  const result = t.transformAST(ast, {
     AssignmentExpression(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
-      if (!ast.isBinaryExpression(node.right)) return;
+      if (!t.isBinaryExpression(node.right)) return;
 
       const identifier = node.left;
       const binaryExpression = node.right;
       operator = binaryExpression.operator;
 
-      const isIdentifierOnTheLeft = ast.areEqual(
+      const isIdentifierOnTheLeft = t.areEqual(
         identifier,
         binaryExpression.left
       );
 
       // If the operator is symmetric, the identifier can be on the right.
       const isSymmetricOperator = symmetricOperators.includes(operator);
-      const isIdentifierOnTheRight = ast.areEqual(
+      const isIdentifierOnTheRight = t.areEqual(
         identifier,
         binaryExpression.right
       );
@@ -85,7 +85,7 @@ function updateCode(
         : binaryExpression.right;
 
       path.replaceWith(
-        ast.assignmentExpression(`${operator}=`, identifier, newRight)
+        t.assignmentExpression(`${operator}=`, identifier, newRight)
       );
       path.stop();
     }
