@@ -74,7 +74,6 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([
-        convertIfElseToSwitch,
         convertIfElseToTernary,
         convertTernaryToIfElse,
         convertToTemplateLiteral,
@@ -102,7 +101,8 @@ export function activate(context: vscode.ExtensionContext) {
       new xxxnew_RefactoringActionProvider([
         addBracesToArrowFunction,
         bubbleUpIfStatement,
-        convertForToForeach
+        convertForToForeach,
+        convertIfElseToSwitch
       ]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]

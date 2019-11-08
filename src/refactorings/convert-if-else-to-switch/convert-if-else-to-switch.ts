@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { convertIfElseToSwitch, hasIfElseToConvert };
 
@@ -9,7 +9,7 @@ async function convertIfElseToSwitch(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundIfElseToConvert);
@@ -19,12 +19,12 @@ async function convertIfElseToSwitch(
   await editor.write(updatedCode.code);
 }
 
-function hasIfElseToConvert(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -39,7 +39,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -60,30 +60,30 @@ function hasChildWhichMatchesSelection(
 }
 
 class IfElseToSwitch {
-  private path: ast.NodePath<ast.IfStatement>;
-  private discriminant: ast.Expression | undefined;
-  private cases: ast.SwitchCase[] = [];
+  private path: t.NodePath<t.IfStatement>;
+  private discriminant: t.Expression | undefined;
+  private cases: t.SwitchCase[] = [];
   private canConvertAllBranches = true;
 
-  constructor(path: ast.NodePath<ast.IfStatement>) {
+  constructor(path: t.NodePath<t.IfStatement>) {
     this.path = path;
   }
 
-  convert(): ast.SwitchStatement | ast.IfStatement {
+  convert(): t.SwitchStatement | t.IfStatement {
     this.convertNode(this.path.node);
 
     return this.discriminant && this.canConvertAllBranches
-      ? ast.switchStatement(this.discriminant, this.cases)
+      ? t.switchStatement(this.discriminant, this.cases)
       : this.path.node;
   }
 
-  private convertNode(node: ast.IfStatement) {
+  private convertNode(node: t.IfStatement) {
     this.convertConsequent(node);
     this.convertAlternate(node);
   }
 
-  private convertConsequent(statement: ast.IfStatement) {
-    const switchStatement = ast.toSwitch(statement.test);
+  private convertConsequent(statement: t.IfStatement) {
+    const switchStatement = t.toSwitch(statement.test);
 
     if (!switchStatement) {
       this.canConvertAllBranches = false;
@@ -96,17 +96,17 @@ class IfElseToSwitch {
       this.discriminant = discriminant;
     }
 
-    if (!ast.areEqual(this.discriminant, discriminant)) {
+    if (!t.areEqual(this.discriminant, discriminant)) {
       this.canConvertAllBranches = false;
     }
 
     this.addCase(test, statement.consequent);
   }
 
-  private convertAlternate({ alternate }: ast.IfStatement) {
+  private convertAlternate({ alternate }: t.IfStatement) {
     if (!alternate) return;
 
-    if (ast.isIfStatement(alternate)) {
+    if (t.isIfStatement(alternate)) {
       this.convertNode(alternate);
       return;
     }
@@ -114,17 +114,17 @@ class IfElseToSwitch {
     this.addDefault(alternate);
   }
 
-  private addDefault(statement: ast.Statement) {
+  private addDefault(statement: t.Statement) {
     this.addCase(null, statement);
   }
 
-  private addCase(test: ast.SwitchCase["test"], statement: ast.Statement) {
-    const statements = ast.getStatements(statement);
+  private addCase(test: t.SwitchCase["test"], statement: t.Statement) {
+    const statements = t.getStatements(statement);
 
-    const consequent = ast.hasFinalReturn(statements)
+    const consequent = t.hasFinalReturn(statements)
       ? statements
-      : [...statements, ast.breakStatement()];
+      : [...statements, t.breakStatement()];
 
-    this.cases.push(ast.switchCase(test, consequent));
+    this.cases.push(t.switchCase(test, consequent));
   }
 }

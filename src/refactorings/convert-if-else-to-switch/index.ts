@@ -3,9 +3,9 @@ import {
   convertIfElseToSwitch
 } from "./convert-if-else-to-switch";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { xxxnew_RefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: xxxnew_RefactoringWithActionProvider = {
   command: {
     key: "convertIfElseToSwitch",
     operation: convertIfElseToSwitch,
