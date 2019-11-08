@@ -6,12 +6,16 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "mergeWithPreviousIfStatement",
-  operation: mergeWithPreviousIfStatement,
-  title: "Merge With Previous If Statement",
-  actionProviderMessage: "Merge with previous if",
-  canPerformRefactoring: canMergeWithPreviousIf,
-  isPreferred: true
+  command: {
+    key: "mergeWithPreviousIfStatement",
+    operation: mergeWithPreviousIfStatement,
+    title: "Merge With Previous If Statement"
+  },
+  actionProvider: {
+    message: "Merge with previous if",
+    canPerform: canMergeWithPreviousIf,
+    isPreferred: true
+  }
 };
 
 export default config;

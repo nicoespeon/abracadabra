@@ -6,12 +6,16 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "convertToTemplateLiteral",
-  operation: convertToTemplateLiteral,
-  title: "Convert to Template Literal",
-  actionProviderMessage: "Convert to template literal",
-  canPerformRefactoring: canConvertToTemplateLiteral,
-  isPreferred: true
+  command: {
+    key: "convertToTemplateLiteral",
+    operation: convertToTemplateLiteral,
+    title: "Convert to Template Literal"
+  },
+  actionProvider: {
+    message: "Convert to template literal",
+    canPerform: canConvertToTemplateLiteral,
+    isPreferred: true
+  }
 };
 
 export default config;

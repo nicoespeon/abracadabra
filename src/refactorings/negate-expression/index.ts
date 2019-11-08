@@ -5,22 +5,24 @@ import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "negateExpression",
-  operation: negateExpression,
-  title: "Negate Expression",
-  actionProviderMessage: "Negate the expression",
+  command: {
+    key: "negateExpression",
+    operation: negateExpression,
+    title: "Negate Expression"
+  },
+  actionProvider: {
+    message: "Negate the expression",
 
-  canPerformRefactoring(code: Code, selection: Selection) {
-    const expression = findNegatableExpression(code, selection);
+    canPerform(code: Code, selection: Selection) {
+      const expression = findNegatableExpression(code, selection);
 
-    this.actionProviderMessage = "Negate the expression";
-    if (expression && expression.negatedOperator) {
-      this.actionProviderMessage += ` (use ${
-        expression.negatedOperator
-      } instead)`;
+      this.message = "Negate the expression";
+      if (expression && expression.negatedOperator) {
+        this.message += ` (use ${expression.negatedOperator} instead)`;
+      }
+
+      return Boolean(expression);
     }
-
-    return Boolean(expression);
   }
 };
 

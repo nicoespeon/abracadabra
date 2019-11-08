@@ -8,14 +8,18 @@ import { renameSymbol } from "./rename-symbol";
 import { Refactoring } from "../../types";
 
 const config: Refactoring = {
-  commandKey: "renameSymbol",
-  async operation() {
-    const activeTextEditor = vscode.window.activeTextEditor;
-    if (!activeTextEditor) {
-      return;
-    }
+  command: {
+    key: "renameSymbol",
+    async operation() {
+      const activeTextEditor = vscode.window.activeTextEditor;
+      if (!activeTextEditor) {
+        return;
+      }
 
-    await executeSafely(() => renameSymbol(new VSCodeEditor(activeTextEditor)));
+      await executeSafely(() =>
+        renameSymbol(new VSCodeEditor(activeTextEditor))
+      );
+    }
   }
 };
 

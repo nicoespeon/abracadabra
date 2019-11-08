@@ -6,12 +6,16 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "convertForToForeach",
-  operation: convertForToForeach,
-  title: "Convert For-Loop to ForEach",
-  actionProviderMessage: "Convert to forEach",
-  canPerformRefactoring: canConvertForLoop,
-  isPreferred: true
+  command: {
+    key: "convertForToForeach",
+    operation: convertForToForeach,
+    title: "Convert For-Loop to ForEach"
+  },
+  actionProvider: {
+    message: "Convert to forEach",
+    canPerform: canConvertForLoop,
+    isPreferred: true
+  }
 };
 
 export default config;

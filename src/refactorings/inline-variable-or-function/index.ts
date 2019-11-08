@@ -13,8 +13,10 @@ import {
 import { Refactoring } from "../../types";
 
 const config: Refactoring = {
-  commandKey: "inlineVariableOrFunction",
-  operation: inlineVariableOrFunction
+  command: {
+    key: "inlineVariableOrFunction",
+    operation: inlineVariableOrFunction
+  }
 };
 
 export default config;

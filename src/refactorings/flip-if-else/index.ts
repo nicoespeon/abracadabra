@@ -3,12 +3,16 @@ import { hasIfElseToFlip, flipIfElse } from "./flip-if-else";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "flipIfElse",
-  operation: flipIfElse,
-  title: "Flip If/Else",
-  actionProviderMessage: "Flip if/else",
-  canPerformRefactoring: hasIfElseToFlip,
-  isPreferred: true
+  command: {
+    key: "flipIfElse",
+    operation: flipIfElse,
+    title: "Flip If/Else"
+  },
+  actionProvider: {
+    message: "Flip if/else",
+    canPerform: hasIfElseToFlip,
+    isPreferred: true
+  }
 };
 
 export default config;

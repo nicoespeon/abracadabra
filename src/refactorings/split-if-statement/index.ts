@@ -3,11 +3,15 @@ import { canSplitIfStatement, splitIfStatement } from "./split-if-statement";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "splitIfStatement",
-  operation: splitIfStatement,
-  title: "Split If Statement",
-  actionProviderMessage: "Split if statement",
-  canPerformRefactoring: canSplitIfStatement
+  command: {
+    key: "splitIfStatement",
+    operation: splitIfStatement,
+    title: "Split If Statement"
+  },
+  actionProvider: {
+    message: "Split if statement",
+    canPerform: canSplitIfStatement
+  }
 };
 
 export default config;

@@ -6,11 +6,15 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "convertIfElseToTernary",
-  operation: convertIfElseToTernary,
-  actionProviderMessage: "Convert if/else to ternary",
-  title: "Convert If/Else to Ternary",
-  canPerformRefactoring: hasIfElseToConvert
+  command: {
+    key: "convertIfElseToTernary",
+    operation: convertIfElseToTernary,
+    title: "Convert If/Else to Ternary"
+  },
+  actionProvider: {
+    message: "Convert if/else to ternary",
+    canPerform: hasIfElseToConvert
+  }
 };
 
 export default config;

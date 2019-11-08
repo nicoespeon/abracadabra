@@ -6,11 +6,15 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "splitDeclarationAndInitialization",
-  operation: splitDeclarationAndInitialization,
-  title: "Split Declaration and Initialization",
-  actionProviderMessage: "Split declaration and initialization",
-  canPerformRefactoring: canSplitDeclarationAndInitialization
+  command: {
+    key: "splitDeclarationAndInitialization",
+    operation: splitDeclarationAndInitialization,
+    title: "Split Declaration and Initialization"
+  },
+  actionProvider: {
+    message: "Split declaration and initialization",
+    canPerform: canSplitDeclarationAndInitialization
+  }
 };
 
 export default config;

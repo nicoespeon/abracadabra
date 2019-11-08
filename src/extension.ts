@@ -58,11 +58,11 @@ export function activate(context: vscode.ExtensionContext) {
     renameSymbol,
     replaceBinaryWithAssignment,
     splitDeclarationAndInitialization
-  ].forEach(({ commandKey, operation }) =>
+  ].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        `abracadabra.${commandKey}`,
-        createCommand(operation)
+        `abracadabra.${command.key}`,
+        createCommand(command.operation)
       )
     )
   );

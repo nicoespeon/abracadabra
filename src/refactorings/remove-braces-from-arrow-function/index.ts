@@ -6,11 +6,15 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "removeBracesFromArrowFunction",
-  operation: removeBracesFromArrowFunction,
-  title: "Remove Braces from Arrow Function",
-  actionProviderMessage: "Remove braces from arrow function",
-  canPerformRefactoring: hasBracesToRemoveFromArrowFunction
+  command: {
+    key: "removeBracesFromArrowFunction",
+    operation: removeBracesFromArrowFunction,
+    title: "Remove Braces from Arrow Function"
+  },
+  actionProvider: {
+    message: "Remove braces from arrow function",
+    canPerform: hasBracesToRemoveFromArrowFunction
+  }
 };
 
 export default config;

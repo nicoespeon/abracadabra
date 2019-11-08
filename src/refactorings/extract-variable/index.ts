@@ -3,8 +3,10 @@ import { extractVariable } from "./extract-variable";
 import { Refactoring } from "../../types";
 
 const config: Refactoring = {
-  commandKey: "extractVariable",
-  operation: extractVariable
+  command: {
+    key: "extractVariable",
+    operation: extractVariable
+  }
 };
 
 export default config;

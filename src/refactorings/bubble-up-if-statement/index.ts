@@ -6,12 +6,16 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "bubbleUpIfStatement",
-  operation: bubbleUpIfStatement,
-  title: "Bubble Up If Statement",
-  actionProviderMessage: "Bubble up if statement",
-  canPerformRefactoring: canBubbleUpIfStatement,
-  isPreferred: true
+  command: {
+    key: "bubbleUpIfStatement",
+    operation: bubbleUpIfStatement,
+    title: "Bubble Up If Statement"
+  },
+  actionProvider: {
+    message: "Bubble up if statement",
+    canPerform: canBubbleUpIfStatement,
+    isPreferred: true
+  }
 };
 
 export default config;

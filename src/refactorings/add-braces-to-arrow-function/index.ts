@@ -6,11 +6,15 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "addBracesToArrowFunction",
-  operation: addBracesToArrowFunction,
-  title: "Add Braces to Arrow Function",
-  actionProviderMessage: "Add braces to arrow function",
-  canPerformRefactoring: hasArrowFunctionToAddBraces
+  command: {
+    key: "addBracesToArrowFunction",
+    operation: addBracesToArrowFunction,
+    title: "Add Braces to Arrow Function"
+  },
+  actionProvider: {
+    message: "Add braces to arrow function",
+    canPerform: hasArrowFunctionToAddBraces
+  }
 };
 
 export default config;

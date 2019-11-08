@@ -32,7 +32,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     selection: Selection
   ) {
     try {
-      return refactoring.canPerformRefactoring(code, selection);
+      return refactoring.actionProvider.canPerform(code, selection);
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
       return false;
@@ -41,14 +41,14 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
   private buildCodeActionFor(refactoring: RefactoringWithActionProvider) {
     const action = new vscode.CodeAction(
-      `✨ ${refactoring.actionProviderMessage}`,
+      `✨ ${refactoring.actionProvider.message}`,
       vscode.CodeActionKind.RefactorRewrite
     );
 
-    action.isPreferred = refactoring.isPreferred;
+    action.isPreferred = refactoring.actionProvider.isPreferred;
     action.command = {
-      command: `abracadabra.${refactoring.commandKey}`,
-      title: refactoring.title
+      command: `abracadabra.${refactoring.command.key}`,
+      title: refactoring.command.title
     };
 
     return action;

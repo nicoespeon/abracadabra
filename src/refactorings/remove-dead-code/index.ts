@@ -3,12 +3,16 @@ import { hasDeadCode, removeDeadCode } from "./remove-dead-code";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey: "removeDeadCode",
-  operation: removeDeadCode,
-  title: "Remove Dead Code",
-  actionProviderMessage: "Remove dead code",
-  canPerformRefactoring: hasDeadCode,
-  isPreferred: true
+  command: {
+    key: "removeDeadCode",
+    operation: removeDeadCode,
+    title: "Remove Dead Code"
+  },
+  actionProvider: {
+    message: "Remove dead code",
+    canPerform: hasDeadCode,
+    isPreferred: true
+  }
 };
 
 export default config;
