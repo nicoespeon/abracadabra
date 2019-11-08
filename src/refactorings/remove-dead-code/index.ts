@@ -1,8 +1,8 @@
 import { hasDeadCode, removeDeadCode } from "./remove-dead-code";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { xxxnew_RefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: xxxnew_RefactoringWithActionProvider = {
   command: {
     key: "removeDeadCode",
     operation: removeDeadCode,

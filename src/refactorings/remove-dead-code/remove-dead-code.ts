@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { removeDeadCode, hasDeadCode };
 
@@ -9,7 +9,7 @@ async function removeDeadCode(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundDeadCode);
@@ -19,24 +19,24 @@ async function removeDeadCode(
   await editor.write(updatedCode.code);
 }
 
-function hasDeadCode(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function hasDeadCode(ast: t.AST, selection: Selection): boolean {
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
       const { test } = path.node;
 
-      if (ast.isFalsy(test)) {
+      if (t.isFalsy(test)) {
         replaceWithAlternate(path);
         path.stop();
         return;
       }
 
-      if (ast.isTruthy(test)) {
+      if (t.isTruthy(test)) {
         replaceWithConsequent(path);
         path.stop();
         return;
@@ -57,10 +57,10 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
   });
 }
 
-function removeDeadCodeFromBranches(path: ast.NodePath<ast.IfStatement>) {
+function removeDeadCodeFromBranches(path: t.NodePath<t.IfStatement>) {
   const { test } = path.node;
 
-  const target = ast.isBinaryExpression(test)
+  const target = t.isBinaryExpression(test)
     ? new BinaryExpressionTarget(test)
     : new NoopTarget();
 
@@ -79,10 +79,10 @@ function removeDeadCodeFromBranches(path: ast.NodePath<ast.IfStatement>) {
     IfStatement(childPath) {
       if (target.isReassigned) return;
 
-      const oppositeTest = ast.isBinaryExpression(test)
+      const oppositeTest = t.isBinaryExpression(test)
         ? {
             ...test,
-            operator: ast.getOppositeOperator(test.operator)
+            operator: t.getOppositeOperator(test.operator)
           }
         : test;
 
@@ -93,14 +93,14 @@ function removeDeadCodeFromBranches(path: ast.NodePath<ast.IfStatement>) {
 
 interface Target {
   isReassigned: boolean;
-  checkAssignment(path: ast.NodePath<ast.AssignmentExpression>): void;
+  checkAssignment(path: t.NodePath<t.AssignmentExpression>): void;
 }
 
 class BinaryExpressionTarget implements Target {
-  private target: ast.Node;
+  private target: t.Node;
   private _isReassigned = false;
 
-  constructor(expression: ast.BinaryExpression) {
+  constructor(expression: t.BinaryExpression) {
     this.target = expression.left;
   }
 
@@ -108,8 +108,8 @@ class BinaryExpressionTarget implements Target {
     return this._isReassigned;
   }
 
-  checkAssignment(path: ast.NodePath<ast.AssignmentExpression>) {
-    if (ast.areEqual(this.target, path.node.left)) {
+  checkAssignment(path: t.NodePath<t.AssignmentExpression>) {
+    if (t.areEqual(this.target, path.node.left)) {
       this._isReassigned = true;
     }
   }
@@ -121,8 +121,8 @@ class NoopTarget implements Target {
 }
 
 function removeDeadCodeFromNestedIf(
-  test: ast.IfStatement["test"],
-  nestedPath: ast.NodePath<ast.IfStatement>
+  test: t.IfStatement["test"],
+  nestedPath: t.NodePath<t.IfStatement>
 ) {
   const { test: nestedTest } = nestedPath.node;
 
@@ -135,44 +135,44 @@ function removeDeadCodeFromNestedIf(
     nestedPath.node.alternate = null;
   }
 
-  if (ast.areOpposite(test, nestedTest)) {
+  if (t.areOpposite(test, nestedTest)) {
     replaceWithAlternate(nestedPath);
     return;
   }
 
-  if (ast.areEqual(test, nestedTest)) {
+  if (t.areEqual(test, nestedTest)) {
     replaceWithConsequent(nestedPath);
     return;
   }
 }
 
-function hasEmptyAlternate({ alternate }: ast.IfStatement): boolean {
+function hasEmptyAlternate({ alternate }: t.IfStatement): boolean {
   if (!alternate) return true;
 
-  if (ast.isIfStatement(alternate)) {
+  if (t.isIfStatement(alternate)) {
     return isEmptyIfStatement(alternate);
   }
 
-  return ast.isEmpty(alternate);
+  return t.isEmpty(alternate);
 }
 
-function hasEmptyConsequent({ consequent }: ast.IfStatement): boolean {
-  if (ast.isIfStatement(consequent)) {
+function hasEmptyConsequent({ consequent }: t.IfStatement): boolean {
+  if (t.isIfStatement(consequent)) {
     return isEmptyIfStatement(consequent);
   }
 
-  return ast.isEmpty(consequent);
+  return t.isEmpty(consequent);
 }
 
-function isEmptyIfStatement(node: ast.IfStatement): boolean {
+function isEmptyIfStatement(node: t.IfStatement): boolean {
   return hasEmptyConsequent(node) && hasEmptyAlternate(node);
 }
 
-function replaceWithAlternate(path: ast.NodePath<ast.IfStatement>) {
+function replaceWithAlternate(path: t.NodePath<t.IfStatement>) {
   const { alternate } = path.node;
-  alternate ? ast.replaceWithBodyOf(path, alternate) : path.remove();
+  alternate ? t.replaceWithBodyOf(path, alternate) : path.remove();
 }
 
-function replaceWithConsequent(path: ast.NodePath<ast.IfStatement>) {
-  ast.replaceWithBodyOf(path, path.node.consequent);
+function replaceWithConsequent(path: t.NodePath<t.IfStatement>) {
+  t.replaceWithBodyOf(path, path.node.consequent);
 }

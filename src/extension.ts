@@ -74,7 +74,6 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([
-        removeDeadCode,
         removeRedundantElse,
         replaceBinaryWithAssignment,
         splitDeclarationAndInitialization,
@@ -102,7 +101,8 @@ export function activate(context: vscode.ExtensionContext) {
         mergeIfStatements,
         mergeWithPreviousIfStatement,
         negateExpression,
-        removeBracesFromArrowFunction
+        removeBracesFromArrowFunction,
+        removeDeadCode
       ]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
