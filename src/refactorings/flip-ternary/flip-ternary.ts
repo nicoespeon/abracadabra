@@ -1,13 +1,13 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
 export { flipTernary, hasTernaryToFlip };
 
 async function flipTernary(code: Code, selection: Selection, editor: Editor) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundTernaryToFlip);
@@ -17,12 +17,12 @@ async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   await editor.write(updatedCode.code);
 }
 
-function hasTernaryToFlip(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     ConditionalExpression(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -41,7 +41,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -59,21 +59,21 @@ function hasChildWhichMatchesSelection(
 }
 
 function getNegatedIfTest(
-  test: ast.ConditionalExpression["test"]
-): ast.ConditionalExpression["test"] {
+  test: t.ConditionalExpression["test"]
+): t.ConditionalExpression["test"] {
   // Simplify double-negations
-  if (ast.isUnaryExpression(test)) {
+  if (t.isUnaryExpression(test)) {
     return test.argument;
   }
 
   // Simplify simple binary expressions
   // E.g. `a > b` => `a <= b` instead of `!(a > b)`
-  if (ast.isBinaryExpression(test)) {
+  if (t.isBinaryExpression(test)) {
     return {
       ...test,
       operator: getNegatedBinaryOperator(test.operator)
     };
   }
 
-  return ast.unaryExpression("!", test, true);
+  return t.unaryExpression("!", test, true);
 }
