@@ -16,7 +16,8 @@ export {
   parseAndTraverseCode,
   transform,
   transformCopy,
-  Transformed
+  Transformed,
+  AST
 };
 export { mergeCommentsInto };
 
@@ -34,11 +35,11 @@ function standardizeEOL(code: Code): Code {
   return code.replace(/\r/g, "");
 }
 
-function parseAndTraverseCode(code: Code, opts: TraverseOptions): t.File {
+function parseAndTraverseCode(code: Code, opts: TraverseOptions): AST {
   return traverseAST(parse(code), opts);
 }
 
-function parse(code: Code): t.File {
+function parse(code: Code): AST {
   return recast.parse(code, {
     parser: {
       parse: (source: Code) =>
@@ -80,7 +81,7 @@ function parse(code: Code): t.File {
   });
 }
 
-function traverseAST(ast: t.File, opts: TraverseOptions): t.File {
+function traverseAST(ast: AST, opts: TraverseOptions): AST {
   traverse(ast, opts);
   return ast;
 }
@@ -147,6 +148,8 @@ interface Transformed {
   code: Code;
   hasCodeChanged: boolean;
 }
+
+type AST = t.File;
 
 function mergeCommentsInto<T extends t.Node>(
   node: T,
