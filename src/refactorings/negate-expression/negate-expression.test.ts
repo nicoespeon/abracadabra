@@ -1,6 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
 import { negateExpression, findNegatableExpression } from "./negate-expression";
@@ -213,7 +214,7 @@ describe("Finding negatable expression (quick fix)", () => {
     const code = `if (a > b) {}`;
     const selection = Selection.cursorAt(0, 4);
 
-    const expression = findNegatableExpression(code, selection);
+    const expression = findNegatableExpression(t.parse(code), selection);
 
     expect(expression).toBeDefined();
   });
@@ -224,7 +225,7 @@ describe("Finding negatable expression (quick fix)", () => {
 }`;
     const selection = Selection.cursorAt(1, 13);
 
-    const expression = findNegatableExpression(code, selection);
+    const expression = findNegatableExpression(t.parse(code), selection);
 
     expect(expression).toBeDefined();
   });
@@ -235,7 +236,7 @@ describe("Finding negatable expression (quick fix)", () => {
 }`;
     const selection = Selection.cursorAt(1, 13);
 
-    const expression = findNegatableExpression(code, selection);
+    const expression = findNegatableExpression(t.parse(code), selection);
 
     expect(expression).toBeUndefined();
   });

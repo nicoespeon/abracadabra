@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { findNegatableExpression, negateExpression };
 export { getNegatedBinaryOperator };
@@ -10,7 +10,7 @@ async function negateExpression(
   selection: Selection,
   editor: Editor
 ) {
-  const expression = findNegatableExpression(code, selection);
+  const expression = findNegatableExpression(t.parse(code), selection);
 
   if (!expression) {
     editor.showError(ErrorReason.DidNotFoundNegatableExpression);
@@ -27,33 +27,33 @@ async function negateExpression(
 }
 
 function findNegatableExpression(
-  code: Code,
+  ast: t.AST,
   selection: Selection
 ): NegatableExpression | undefined {
   let result: NegatableExpression | undefined;
 
-  ast.parseAndTraverseCode(code, {
+  t.traverseAST(ast, {
     enter({ node, parent }) {
       if (!isNegatable(node)) return;
       if (isNegatedIdentifier(node)) return;
       if (!selection.isInsideNode(node)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
-      if (ast.isUnaryExpression(parent)) return;
+      if (t.isUnaryExpression(parent)) return;
 
       // E.g. `const foo = bar || "default"` => expression is not negatable
-      if (ast.isVariableDeclarator(parent)) return;
+      if (t.isVariableDeclarator(parent)) return;
 
       // E.g. `if (!this.isValid && isCorrect)` => don't match `!this.isValid`
-      if (ast.isUnaryExpression(node) && ast.isLogicalExpression(parent)) {
+      if (t.isUnaryExpression(node) && t.isLogicalExpression(parent)) {
         return;
       }
 
       result = {
         loc: node.loc,
-        negatedOperator: ast.isLogicalExpression(node)
+        negatedOperator: t.isLogicalExpression(node)
           ? getNegatedLogicalOperator(node.operator)
-          : ast.isBinaryExpression(node)
+          : t.isBinaryExpression(node)
           ? getNegatedBinaryOperator(node.operator)
           : null
       };
@@ -64,29 +64,29 @@ function findNegatableExpression(
 }
 
 interface NegatableExpression {
-  loc: ast.SourceLocation;
+  loc: t.SourceLocation;
   negatedOperator:
-    | ast.BinaryExpression["operator"]
-    | ast.LogicalExpression["operator"]
+    | t.BinaryExpression["operator"]
+    | t.LogicalExpression["operator"]
     | null;
 }
 
 function isNegatable(
-  node: ast.Node
-): node is ast.BinaryExpression | ast.LogicalExpression | ast.UnaryExpression {
+  node: t.Node
+): node is t.BinaryExpression | t.LogicalExpression | t.UnaryExpression {
   return (
-    (ast.isUnaryExpression(node) && node.operator === "!") ||
-    ((ast.isBinaryExpression(node) || ast.isLogicalExpression(node)) &&
+    (t.isUnaryExpression(node) && node.operator === "!") ||
+    ((t.isBinaryExpression(node) || t.isLogicalExpression(node)) &&
       hasNegatableOperator(node.operator))
   );
 }
 
-function isNegatedIdentifier(node: ast.Node): boolean {
-  return ast.isUnaryExpression(node) && ast.isIdentifier(node.argument);
+function isNegatedIdentifier(node: t.Node): boolean {
+  return t.isUnaryExpression(node) && t.isIdentifier(node.argument);
 }
 
 function hasNegatableOperator(
-  operator: ast.BinaryExpression["operator"] | ast.LogicalExpression["operator"]
+  operator: t.BinaryExpression["operator"] | t.LogicalExpression["operator"]
 ): boolean {
   const NEGATABLE_OPERATORS = [
     "==",
@@ -105,13 +105,13 @@ function hasNegatableOperator(
 }
 
 function negate(code: Code): Code {
-  const result = ast.transform(code, {
+  const result = t.transform(code, {
     // Handle `||` and `&&` expressions
     LogicalExpression(path) {
       path.node.operator = getNegatedLogicalOperator(path.node.operator);
       path.node.left = negateBranch(path.node.left);
       path.node.right = negateBranch(path.node.right);
-      const negatedExpression = ast.unaryExpression("!", path.node, true);
+      const negatedExpression = t.unaryExpression("!", path.node, true);
 
       path.replaceWith(negatedExpression);
       path.stop();
@@ -120,7 +120,7 @@ function negate(code: Code): Code {
     // Handle operators like `>`, `<=`, etc.
     BinaryExpression(path) {
       path.node.operator = getNegatedBinaryOperator(path.node.operator);
-      const negatedExpression = ast.unaryExpression("!", path.node, true);
+      const negatedExpression = t.unaryExpression("!", path.node, true);
 
       path.replaceWith(negatedExpression);
       path.stop();
@@ -138,21 +138,21 @@ function negate(code: Code): Code {
   );
 }
 
-function negateBranch(node: ast.Expression): ast.Expression {
-  if (ast.isUnaryExpression(node)) {
+function negateBranch(node: t.Expression): t.Expression {
+  if (t.isUnaryExpression(node)) {
     return node.argument;
   }
 
-  if (ast.isBinaryExpression(node)) {
+  if (t.isBinaryExpression(node)) {
     return { ...node, operator: getNegatedBinaryOperator(node.operator) };
   }
 
-  return ast.unaryExpression("!", node, true);
+  return t.unaryExpression("!", node, true);
 }
 
 function getNegatedLogicalOperator(
-  operator: ast.LogicalExpression["operator"]
-): ast.LogicalExpression["operator"] {
+  operator: t.LogicalExpression["operator"]
+): t.LogicalExpression["operator"] {
   switch (operator) {
     case "||":
       return "&&";
@@ -164,8 +164,8 @@ function getNegatedLogicalOperator(
 }
 
 function getNegatedBinaryOperator(
-  operator: ast.BinaryExpression["operator"]
-): ast.BinaryExpression["operator"] {
+  operator: t.BinaryExpression["operator"]
+): t.BinaryExpression["operator"] {
   switch (operator) {
     case "==":
       return "!=";
