@@ -13,7 +13,7 @@ export { NodePath, Visitor, Scope } from "@babel/traverse";
 export {
   traverseNode,
   traversePath,
-  traverseCode,
+  parseAndTraverseCode,
   transform,
   transformCopy,
   Transformed
@@ -21,7 +21,7 @@ export {
 export { mergeCommentsInto };
 
 function transform(code: Code, options: TraverseOptions): Transformed {
-  const ast = traverseCode(code, options);
+  const ast = parseAndTraverseCode(code, options);
   const newCode = recast.print(ast).code;
 
   return {
@@ -34,8 +34,12 @@ function standardizeEOL(code: Code): Code {
   return code.replace(/\r/g, "");
 }
 
-function traverseCode(code: Code, opts: TraverseOptions): t.File {
-  const ast: t.File = recast.parse(code, {
+function parseAndTraverseCode(code: Code, opts: TraverseOptions): t.File {
+  return traverseAST(parse(code), opts);
+}
+
+function parse(code: Code): t.File {
+  return recast.parse(code, {
     parser: {
       parse: (source: Code) =>
         babelParse(source, {
@@ -74,9 +78,10 @@ function traverseCode(code: Code, opts: TraverseOptions): t.File {
         })
     }
   });
+}
 
+function traverseAST(ast: t.File, opts: TraverseOptions): t.File {
   traverse(ast, opts);
-
   return ast;
 }
 

@@ -94,7 +94,7 @@ function findExtractableCode(
     otherOccurrences: []
   };
 
-  ast.traverseCode(code, {
+  ast.parseAndTraverseCode(code, {
     enter(path) {
       if (!isExtractableContext(path.parent)) return;
       if (!isExtractable(path)) return;
@@ -148,7 +148,9 @@ function findOtherOccurrences(
   };
 
   const scopePath = occurrence.path.getFunctionParent();
-  scopePath ? scopePath.traverse(visitor) : ast.traverseCode(code, visitor);
+  scopePath
+    ? scopePath.traverse(visitor)
+    : ast.parseAndTraverseCode(code, visitor);
 
   return result;
 }
