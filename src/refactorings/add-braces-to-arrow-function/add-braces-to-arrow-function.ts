@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { addBracesToArrowFunction, hasArrowFunctionToAddBraces };
 
@@ -9,7 +9,7 @@ async function addBracesToArrowFunction(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundArrowFunctionToAddBraces);
@@ -20,24 +20,24 @@ async function addBracesToArrowFunction(
 }
 
 function hasArrowFunctionToAddBraces(
-  code: Code,
+  ast: t.AST,
   selection: Selection
 ): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
-      if (ast.isBlockStatement(path.node.body)) return;
+      if (t.isBlockStatement(path.node.body)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const blockStatement = ast.blockStatement([
-        ast.returnStatement(path.node.body)
+      const blockStatement = t.blockStatement([
+        t.returnStatement(path.node.body)
       ]);
       path.node.body = blockStatement;
       path.stop();
@@ -46,7 +46,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -54,7 +54,7 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
-      if (ast.isBlockStatement(childPath.node.body)) return;
+      if (t.isBlockStatement(childPath.node.body)) return;
 
       result = true;
       childPath.stop();
