@@ -1,4 +1,3 @@
-import { commandKey } from "./command";
 import {
   canMergeWithPreviousIf,
   mergeWithPreviousIfStatement
@@ -7,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.mergeWithPreviousIfStatement",
   operation: mergeWithPreviousIfStatement,
   title: "Merge With Previous If Statement",
   actionProviderMessage: "Merge with previous if",

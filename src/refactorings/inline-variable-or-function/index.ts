@@ -1,24 +1,25 @@
 import * as vscode from "vscode";
 
-import { executeSafely } from "../../commands";
 import { inlineFunction } from "./inline-function";
 import { inlineVariable } from "./inline-variable";
 
+import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import {
   VSCodeEditor,
   createSelectionFromVSCode
 } from "../../editor/adapters/vscode-editor";
 
-// Must match `command` field in `package.json`
-export const commandKey = "abracadabra.inlineVariableOrFunction";
+import { Refactoring } from "../../types";
 
-export default vscode.commands.registerCommand(
-  commandKey,
-  inlineVariableOrFunctionCommand
-);
+const config: Refactoring = {
+  commandKey: "abracadabra.inlineVariableOrFunction",
+  operation: inlineVariableOrFunction
+};
 
-async function inlineVariableOrFunctionCommand() {
+export default config;
+
+async function inlineVariableOrFunction() {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) {
     return;

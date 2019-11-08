@@ -1,10 +1,9 @@
-import { commandKey } from "./command";
 import { hasTernaryToFlip, flipTernary } from "./flip-ternary";
 
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.flipTernary",
   operation: flipTernary,
   title: "Flip Ternary",
   actionProviderMessage: "Flip ternary",

@@ -1,10 +1,9 @@
-import { commandKey } from "./command";
 import { hasRedundantElse, removeRedundantElse } from "./remove-redundant-else";
 
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.removeRedundantElse",
   operation: removeRedundantElse,
   title: "Remove Redundant Else",
   actionProviderMessage: "Remove redundant else",

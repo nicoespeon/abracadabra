@@ -1,4 +1,3 @@
-import { commandKey } from "./command";
 import {
   hasIfElseToConvert,
   convertIfElseToSwitch
@@ -7,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.convertIfElseToSwitch",
   operation: convertIfElseToSwitch,
   title: "Convert If/Else to Switch",
   actionProviderMessage: "Convert if/else to switch",

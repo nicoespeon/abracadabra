@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
@@ -9,40 +10,22 @@ import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import extractVariable from "./refactorings/extract-variable";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
+import inlineVariableOrFunction from "./refactorings/inline-variable-or-function";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
+import moveStatementDown from "./refactorings/move-statement-down";
+import moveStatementUp from "./refactorings/move-statement-up";
 import negateExpression from "./refactorings/negate-expression";
 import removeBracesFromArrowFunction from "./refactorings/remove-braces-from-arrow-function";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
+import renameSymbol from "./refactorings/rename-symbol";
 import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assignment";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
-
-import addBracesToArrowFunctionCommand from "./refactorings/add-braces-to-arrow-function/command";
-import bubbleUpIfStatementCommand from "./refactorings/bubble-up-if-statement/command";
-import convertForToForeachCommand from "./refactorings/convert-for-to-foreach/command";
-import convertIfElseToTernaryCommand from "./refactorings/convert-if-else-to-ternary/command";
-import convertIfElseToSwitchCommand from "./refactorings/convert-if-else-to-switch/command";
-import convertTernaryToIfElseCommand from "./refactorings/convert-ternary-to-if-else/command";
-import convertToTemplateLiteralCommand from "./refactorings/convert-to-template-literal/command";
-import extractVariableCommand from "./refactorings/extract-variable/command";
-import flipIfElseCommand from "./refactorings/flip-if-else/command";
-import flipTernaryCommand from "./refactorings/flip-ternary/command";
-import inlineVariableOrFunctionCommand from "./refactorings/inline-variable-or-function/command";
-import mergeIfStatementsCommand from "./refactorings/merge-if-statements/command";
-import mergeWithPreviousIfStatementCommand from "./refactorings/merge-with-previous-if-statement/command";
-import moveStatementDownCommand from "./refactorings/move-statement-down/command";
-import moveStatementUpCommand from "./refactorings/move-statement-up/command";
-import negateExpressionCommand from "./refactorings/negate-expression/command";
-import removeBracesFromArrowFunctionCommand from "./refactorings/remove-braces-from-arrow-function/command";
-import removeDeadCodeCommand from "./refactorings/remove-dead-code/command";
-import removeRedundantElseCommand from "./refactorings/remove-redundant-else/command";
-import renameSymbolCommand from "./refactorings/rename-symbol/command";
-import replaceBinaryWithAssignmentCommand from "./refactorings/replace-binary-with-assignment/command";
-import splitDeclarationAndInitializationCommand from "./refactorings/split-declaration-and-initialization/command";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -53,30 +36,33 @@ const SUPPORTED_LANGUAGES = [
 
 export function activate(context: vscode.ExtensionContext) {
   [
-    addBracesToArrowFunctionCommand,
-    bubbleUpIfStatementCommand,
-    convertForToForeachCommand,
-    convertIfElseToTernaryCommand,
-    convertIfElseToSwitchCommand,
-    convertTernaryToIfElseCommand,
-    convertToTemplateLiteralCommand,
-    extractVariableCommand,
-    flipIfElseCommand,
-    flipTernaryCommand,
-    inlineVariableOrFunctionCommand,
-    mergeIfStatementsCommand,
-    mergeWithPreviousIfStatementCommand,
-    moveStatementDownCommand,
-    moveStatementUpCommand,
-    negateExpressionCommand,
-    removeBracesFromArrowFunctionCommand,
-    removeDeadCodeCommand,
-    removeRedundantElseCommand,
-    renameSymbolCommand,
-    replaceBinaryWithAssignmentCommand,
-    splitDeclarationAndInitializationCommand,
-    addBracesToArrowFunctionCommand
-  ].forEach(command => context.subscriptions.push(command));
+    addBracesToArrowFunction,
+    bubbleUpIfStatement,
+    convertForToForeach,
+    convertIfElseToTernary,
+    convertIfElseToSwitch,
+    convertTernaryToIfElse,
+    convertToTemplateLiteral,
+    extractVariable,
+    flipIfElse,
+    flipTernary,
+    inlineVariableOrFunction,
+    mergeIfStatements,
+    mergeWithPreviousIfStatement,
+    moveStatementDown,
+    moveStatementUp,
+    negateExpression,
+    removeBracesFromArrowFunction,
+    removeDeadCode,
+    removeRedundantElse,
+    renameSymbol,
+    replaceBinaryWithAssignment,
+    splitDeclarationAndInitialization
+  ].forEach(({ commandKey, operation }) =>
+    context.subscriptions.push(
+      vscode.commands.registerCommand(commandKey, createCommand(operation))
+    )
+  );
 
   SUPPORTED_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(

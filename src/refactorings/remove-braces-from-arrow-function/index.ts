@@ -1,4 +1,3 @@
-import { commandKey } from "./command";
 import {
   hasBracesToRemoveFromArrowFunction,
   removeBracesFromArrowFunction
@@ -7,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.removeBracesFromArrowFunction",
   operation: removeBracesFromArrowFunction,
   title: "Remove Braces from Arrow Function",
   actionProviderMessage: "Remove braces from arrow function",

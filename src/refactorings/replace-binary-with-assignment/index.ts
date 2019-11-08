@@ -1,4 +1,3 @@
-import { commandKey } from "./command";
 import {
   tryToReplaceBinaryWithAssignment,
   replaceBinaryWithAssignment
@@ -9,7 +8,7 @@ import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.replaceBinaryWithAssignment",
   operation: replaceBinaryWithAssignment,
   title: "Replace Binary With Assignment",
   actionProviderMessage: "Replace binary with assignment",

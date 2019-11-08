@@ -1,4 +1,3 @@
-import { commandKey } from "./command";
 import {
   canConvertToTemplateLiteral,
   convertToTemplateLiteral
@@ -7,7 +6,7 @@ import {
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
-  commandKey,
+  commandKey: "abracadabra.convertToTemplateLiteral",
   operation: convertToTemplateLiteral,
   title: "Convert to Template Literal",
   actionProviderMessage: "Convert to template literal",
