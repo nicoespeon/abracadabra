@@ -74,7 +74,6 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([
-        flipIfElse,
         flipTernary,
         mergeIfStatements,
         mergeWithPreviousIfStatement,
@@ -102,7 +101,8 @@ export function activate(context: vscode.ExtensionContext) {
         convertIfElseToSwitch,
         convertIfElseToTernary,
         convertTernaryToIfElse,
-        convertToTemplateLiteral
+        convertToTemplateLiteral,
+        flipIfElse
       ]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
