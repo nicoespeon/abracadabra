@@ -3,9 +3,9 @@ import {
   convertForToForeach
 } from "./convert-for-to-foreach";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "convertForToForeach",
     operation: convertForToForeach,

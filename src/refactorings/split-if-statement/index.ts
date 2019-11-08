@@ -1,8 +1,8 @@
 import { canSplitIfStatement, splitIfStatement } from "./split-if-statement";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "splitIfStatement",
     operation: splitIfStatement,

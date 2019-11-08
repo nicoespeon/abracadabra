@@ -3,9 +3,9 @@ import {
   bubbleUpIfStatement
 } from "./bubble-up-if-statement";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "bubbleUpIfStatement",
     operation: bubbleUpIfStatement,

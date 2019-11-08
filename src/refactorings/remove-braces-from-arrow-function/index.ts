@@ -3,9 +3,9 @@ import {
   removeBracesFromArrowFunction
 } from "./remove-braces-from-arrow-function";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "removeBracesFromArrowFunction",
     operation: removeBracesFromArrowFunction,

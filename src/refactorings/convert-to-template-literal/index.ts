@@ -3,9 +3,9 @@ import {
   convertToTemplateLiteral
 } from "./convert-to-template-literal";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "convertToTemplateLiteral",
     operation: convertToTemplateLiteral,

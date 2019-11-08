@@ -5,9 +5,9 @@ import {
 
 import * as t from "../../ast";
 import { Selection } from "../../editor/selection";
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "replaceBinaryWithAssignment",
     operation: replaceBinaryWithAssignment,

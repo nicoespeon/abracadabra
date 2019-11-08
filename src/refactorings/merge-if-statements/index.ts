@@ -1,10 +1,10 @@
 import { tryMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
 import { Selection } from "../../editor/selection";
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 import * as t from "../../ast";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "mergeIfStatements",
     operation: mergeIfStatements,

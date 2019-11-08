@@ -3,9 +3,9 @@ import {
   splitDeclarationAndInitialization
 } from "./split-declaration-and-initialization";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "splitDeclarationAndInitialization",
     operation: splitDeclarationAndInitialization,

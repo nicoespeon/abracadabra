@@ -1,8 +1,8 @@
 import { hasIfElseToFlip, flipIfElse } from "./flip-if-else";
 
-import { xxxnew_RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: xxxnew_RefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "flipIfElse",
     operation: flipIfElse,
