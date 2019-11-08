@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { convertToTemplateLiteral, canConvertToTemplateLiteral };
 
@@ -9,7 +9,7 @@ async function convertToTemplateLiteral(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundStringToConvert);
@@ -20,14 +20,14 @@ async function convertToTemplateLiteral(
 }
 
 function canConvertToTemplateLiteral(
-  code: Code,
+  ast: t.AST,
   selection: Selection
 ): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+  return updateCode(ast, selection).hasCodeChanged;
 }
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     BinaryExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -43,7 +43,7 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
       if (!selection.isInsidePath(path)) return;
 
       // In that case, we should go through the BinaryExpression logic.
-      if (ast.isBinaryExpression(path.parentPath)) return;
+      if (t.isBinaryExpression(path.parentPath)) return;
 
       path.replaceWith(createTemplateLiteral(new PrimitiveTemplate(path.node)));
       path.stop();
@@ -51,14 +51,14 @@ function updateCode(code: Code, selection: Selection): ast.Transformed {
   });
 }
 
-function getTemplate(node: ast.BinaryExpression["left"]): Template {
-  if (ast.isTemplateLiteral(node)) return new TemplateLiteralTemplate(node);
+function getTemplate(node: t.BinaryExpression["left"]): Template {
+  if (t.isTemplateLiteral(node)) return new TemplateLiteralTemplate(node);
   if ("value" in node) return new PrimitiveTemplate(node);
-  if (ast.isNullLiteral(node)) return new NullTemplate();
-  if (ast.isUndefinedLiteral(node)) return new UndefinedTemplate();
-  if (ast.isTemplateExpression(node)) return new ExpressionTemplate(node);
+  if (t.isNullLiteral(node)) return new NullTemplate();
+  if (t.isUndefinedLiteral(node)) return new UndefinedTemplate();
+  if (t.isTemplateExpression(node)) return new ExpressionTemplate(node);
 
-  if (ast.isBinaryExpression(node) && node.operator === "+") {
+  if (t.isBinaryExpression(node) && node.operator === "+") {
     return new CompositeTemplate(
       getTemplate(node.left),
       getTemplate(node.right)
@@ -68,8 +68,8 @@ function getTemplate(node: ast.BinaryExpression["left"]): Template {
   return new InvalidTemplate();
 }
 
-function createTemplateLiteral(template: Template): ast.TemplateLiteral {
-  return ast.templateLiteral(
+function createTemplateLiteral(template: Template): t.TemplateLiteral {
+  return t.templateLiteral(
     // Intermediate interpolated quasis shouldn't be part of the final template.
     template.quasis.filter(quasi => !isInterpolated(quasi) || quasi.tail),
     template.expressions
@@ -79,8 +79,8 @@ function createTemplateLiteral(template: Template): ast.TemplateLiteral {
 interface Template {
   isValid: boolean;
   hasString: boolean;
-  quasis: ast.TemplateElement[];
-  expressions: ast.Expression[];
+  quasis: t.TemplateElement[];
+  expressions: t.Expression[];
 }
 
 class CompositeTemplate implements Template {
@@ -101,12 +101,12 @@ class CompositeTemplate implements Template {
         if (!lastQuasi) return [...result, quasi];
         if (isInterpolated(lastQuasi)) return [...result, lastQuasi, quasi];
 
-        const consolidatedQuasi = ast.templateElement(
+        const consolidatedQuasi = t.templateElement(
           lastQuasi.value.raw + quasi.value.raw
         );
         return [...result, consolidatedQuasi];
       },
-      [] as ast.TemplateElement[]
+      [] as t.TemplateElement[]
     );
   }
 
@@ -123,56 +123,56 @@ class CompositeTemplate implements Template {
   }
 }
 
-function isInterpolated(quasi: ast.TemplateElement): boolean {
+function isInterpolated(quasi: t.TemplateElement): boolean {
   return quasi.value.raw === "";
 }
 
 class InvalidTemplate implements Template {
   isValid = false;
   hasString = false;
-  quasis: ast.TemplateElement[] = [];
-  expressions: ast.Expression[] = [];
+  quasis: t.TemplateElement[] = [];
+  expressions: t.Expression[] = [];
 }
 
 class PrimitiveTemplate implements Template {
   isValid = true;
-  expressions: ast.Expression[] = [];
-  private node: ast.Primitive;
+  expressions: t.Expression[] = [];
+  private node: t.Primitive;
 
-  constructor(node: ast.Primitive) {
+  constructor(node: t.Primitive) {
     this.node = node;
   }
 
   get quasis() {
-    return [ast.templateElement(this.node.value)];
+    return [t.templateElement(this.node.value)];
   }
 
   get hasString() {
-    return ast.isStringLiteral(this.node);
+    return t.isStringLiteral(this.node);
   }
 }
 
 class NullTemplate implements Template {
   isValid = true;
   hasString = false;
-  quasis: ast.TemplateElement[] = [ast.templateElement("null")];
-  expressions: ast.Expression[] = [];
+  quasis: t.TemplateElement[] = [t.templateElement("null")];
+  expressions: t.Expression[] = [];
 }
 
 class UndefinedTemplate implements Template {
   isValid = true;
   hasString = false;
-  quasis: ast.TemplateElement[] = [ast.templateElement("undefined")];
-  expressions: ast.Expression[] = [];
+  quasis: t.TemplateElement[] = [t.templateElement("undefined")];
+  expressions: t.Expression[] = [];
 }
 
 class ExpressionTemplate implements Template {
   isValid = true;
   hasString = false;
-  quasis: ast.TemplateElement[] = [ast.templateElement("")];
-  expressions: ast.Expression[];
+  quasis: t.TemplateElement[] = [t.templateElement("")];
+  expressions: t.Expression[];
 
-  constructor(node: ast.Expression) {
+  constructor(node: t.Expression) {
     this.expressions = [node];
   }
 }
@@ -180,10 +180,10 @@ class ExpressionTemplate implements Template {
 class TemplateLiteralTemplate implements Template {
   isValid = true;
   hasString = true;
-  quasis: ast.TemplateElement[];
-  expressions: ast.Expression[];
+  quasis: t.TemplateElement[];
+  expressions: t.Expression[];
 
-  constructor(node: ast.TemplateLiteral) {
+  constructor(node: t.TemplateLiteral) {
     this.quasis = node.quasis;
     this.expressions = node.expressions;
   }
