@@ -9,8 +9,9 @@ import {
 } from "./editor/adapters/vscode-editor";
 
 export { createCommand, executeSafely };
+export { Operation };
 
-function createCommand(refactoring: Refactoring) {
+function createCommand(execute: Operation) {
   return async () => {
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) {
@@ -20,7 +21,7 @@ function createCommand(refactoring: Refactoring) {
     const { document, selection } = activeTextEditor;
 
     await executeSafely(() =>
-      refactoring(
+      execute(
         document.getText(),
         createSelectionFromVSCode(selection),
         new VSCodeEditor(activeTextEditor)
@@ -29,7 +30,7 @@ function createCommand(refactoring: Refactoring) {
   };
 }
 
-type Refactoring = (
+type Operation = (
   code: Code,
   selection: Selection,
   write: Editor

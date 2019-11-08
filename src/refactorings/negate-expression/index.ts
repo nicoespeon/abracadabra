@@ -1,5 +1,5 @@
 import { commandKey } from "./command";
-import { findNegatableExpression } from "./negate-expression";
+import { findNegatableExpression, negateExpression } from "./negate-expression";
 
 import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
@@ -7,6 +7,7 @@ import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
   commandKey,
+  operation: negateExpression,
   title: "Negate Expression",
   actionProviderMessage: "Negate the expression",
 

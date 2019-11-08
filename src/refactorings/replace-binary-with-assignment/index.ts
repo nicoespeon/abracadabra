@@ -1,5 +1,8 @@
 import { commandKey } from "./command";
-import { tryToReplaceBinaryWithAssignment } from "./replace-binary-with-assignment";
+import {
+  tryToReplaceBinaryWithAssignment,
+  replaceBinaryWithAssignment
+} from "./replace-binary-with-assignment";
 
 import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
@@ -7,6 +10,7 @@ import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
   commandKey,
+  operation: replaceBinaryWithAssignment,
   title: "Replace Binary With Assignment",
   actionProviderMessage: "Replace binary with assignment",
   isPreferred: true,

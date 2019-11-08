@@ -1,5 +1,5 @@
 import { commandKey } from "./command";
-import { tryMergeIfStatements } from "./merge-if-statements";
+import { tryMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
 import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
@@ -7,6 +7,7 @@ import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
   commandKey,
+  operation: mergeIfStatements,
   title: "Merge If Statements",
   actionProviderMessage: "Merge if statements",
 
