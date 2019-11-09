@@ -11,7 +11,7 @@ async function removeBracesFromArrowFunction(
 ) {
   const updatedCode = updateCode(t.parse(code), selection);
 
-  if (updatedCode.isPatternInvalid) {
+  if (!updatedCode.isPatternValid) {
     editor.showError(ErrorReason.CantRemoveBracesFromArrowFunction);
     return;
   }
@@ -34,8 +34,8 @@ function hasBracesToRemoveFromArrowFunction(
 function updateCode(
   ast: t.AST,
   selection: Selection
-): t.Transformed & { isPatternInvalid: boolean } {
-  let isPatternInvalid = false;
+): t.Transformed & { isPatternValid: boolean } {
+  let isPatternValid = true;
 
   const result = t.transformAST(ast, {
     ArrowFunctionExpression(path) {
@@ -44,18 +44,18 @@ function updateCode(
 
       const blockStatementStatements = path.node.body.body;
       if (blockStatementStatements.length > 1) {
-        isPatternInvalid = true;
+        isPatternValid = false;
         return;
       }
 
       const firstValue = blockStatementStatements[0];
       if (!t.isReturnStatement(firstValue)) {
-        isPatternInvalid = true;
+        isPatternValid = false;
         return;
       }
 
       if (firstValue.argument === null) {
-        isPatternInvalid = true;
+        isPatternValid = false;
         return;
       }
 
@@ -70,7 +70,7 @@ function updateCode(
 
   return {
     ...result,
-    isPatternInvalid
+    isPatternValid
   };
 }
 
