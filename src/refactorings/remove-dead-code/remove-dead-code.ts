@@ -20,6 +20,8 @@ async function removeDeadCode(
 }
 
 function hasDeadCode(ast: t.AST, selection: Selection): boolean {
+  // This can't be optimized for perfs, it will create *too much* duplication.
+  // We need to refactor the code *first* for this one.
   return updateCode(ast, selection).hasCodeChanged;
 }
 

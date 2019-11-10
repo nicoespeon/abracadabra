@@ -23,12 +23,47 @@ function tryToReplaceBinaryWithAssignment(
   ast: t.AST,
   selection: Selection
 ): { canReplace: boolean; operator: t.BinaryExpression["operator"] } {
-  const updatedCode = updateCode(ast, selection);
-  if (!updatedCode) return { canReplace: false, operator: "+" };
+  let canReplace = false;
+  // FIXME: Casting can be replaced with `as const` in TS 3.4+
+  let operator = "+" as t.BinaryExpression["operator"];
+
+  t.traverseAST(ast, {
+    AssignmentExpression(path) {
+      const { node } = path;
+      if (!selection.isInsideNode(node)) return;
+      if (!t.isBinaryExpression(node.right)) return;
+
+      const identifier = node.left;
+      const binaryExpression = node.right;
+      operator = binaryExpression.operator;
+
+      const isIdentifierOnTheLeft = t.areEqual(
+        identifier,
+        binaryExpression.left
+      );
+
+      // If the operator is symmetric, the identifier can be on the right.
+      const isSymmetricOperator = symmetricOperators.includes(operator);
+      const isIdentifierOnTheRight = t.areEqual(
+        identifier,
+        binaryExpression.right
+      );
+
+      if (
+        !isIdentifierOnTheLeft &&
+        (!isSymmetricOperator || !isIdentifierOnTheRight)
+      ) {
+        return;
+      }
+      if (!assignableOperators.includes(binaryExpression.operator)) return;
+
+      canReplace = true;
+    }
+  });
 
   return {
-    canReplace: updatedCode.hasCodeChanged,
-    operator: updatedCode.operator
+    canReplace,
+    operator
   };
 }
 

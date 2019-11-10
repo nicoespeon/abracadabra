@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { findNegatableExpression, negateExpression };
+export { canNegateExpression, findNegatableExpression, negateExpression };
 export { getNegatedBinaryOperator };
 
 async function negateExpression(
@@ -24,6 +24,45 @@ async function negateExpression(
       selection: expressionSelection
     }
   ]);
+}
+
+function canNegateExpression(
+  ast: t.AST,
+  selection: Selection
+): {
+  canNegate: boolean;
+  negatedOperator: NegatableExpression["negatedOperator"];
+} {
+  let canNegate = false;
+  let negatedOperator = null;
+
+  t.traverseAST(ast, {
+    enter({ node, parent }) {
+      if (!isNegatable(node)) return;
+      if (isNegatedIdentifier(node)) return;
+      if (!selection.isInsideNode(node)) return;
+
+      // If parent is unary expression we don't go further to double-negate it.
+      if (t.isUnaryExpression(parent)) return;
+
+      // E.g. `const foo = bar || "default"` => expression is not negatable
+      if (t.isVariableDeclarator(parent)) return;
+
+      // E.g. `if (!this.isValid && isCorrect)` => don't match `!this.isValid`
+      if (t.isUnaryExpression(node) && t.isLogicalExpression(parent)) {
+        return;
+      }
+
+      negatedOperator = t.isLogicalExpression(node)
+        ? getNegatedLogicalOperator(node.operator)
+        : t.isBinaryExpression(node)
+        ? getNegatedBinaryOperator(node.operator)
+        : null;
+      canNegate = true;
+    }
+  });
+
+  return { canNegate, negatedOperator };
 }
 
 function findNegatableExpression(

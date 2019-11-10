@@ -20,7 +20,29 @@ async function bubbleUpIfStatement(
 }
 
 function canBubbleUpIfStatement(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const parentIfPath = t.findParentIfPath(path);
+      if (!parentIfPath) return;
+
+      if (t.isInAlternate(path)) {
+        // We don't handle this scenario for now. It'd be an improvement.
+        return;
+      }
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

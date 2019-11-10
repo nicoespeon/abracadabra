@@ -18,7 +18,22 @@ async function flipTernary(code: Code, selection: Selection, editor: Editor) {
 }
 
 function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    ConditionalExpression(path) {
+      const { node } = path;
+      if (!selection.isInsideNode(node)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

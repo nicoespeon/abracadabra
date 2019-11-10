@@ -20,7 +20,22 @@ async function convertIfElseToTernary(
 }
 
 function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      const { node } = path;
+      if (!selection.isInsidePath(path)) return;
+
+      const ternary =
+        getReturnStatementTernary(node) || getAssignmentExpressionTernary(node);
+      if (!ternary) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

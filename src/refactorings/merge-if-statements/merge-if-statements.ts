@@ -23,6 +23,31 @@ function tryMergeIfStatements(
   ast: t.AST,
   selection: Selection
 ): { canMerge: boolean; mergeAlternate: boolean } {
+  let canMerge = false;
+  let mergeAlternate = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const { alternate } = path.node;
+
+      if (alternate) {
+        mergeAlternate = true;
+        canMerge = true;
+      } else {
+        mergeAlternate = false;
+        canMerge = true;
+      }
+    }
+  });
+
+  return { canMerge, mergeAlternate };
+
   const updatedCode = updateCode(ast, selection);
 
   return {

@@ -25,7 +25,22 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
 }
 
 function hasIfElseToFlip(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      const { node } = path;
+      if (!selection.isInsideNode(node)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

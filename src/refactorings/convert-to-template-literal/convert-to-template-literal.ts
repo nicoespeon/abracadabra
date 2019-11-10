@@ -23,7 +23,30 @@ function canConvertToTemplateLiteral(
   ast: t.AST,
   selection: Selection
 ): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    BinaryExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const template = getTemplate(path.node);
+      if (!template.isValid) return;
+      if (!template.hasString) return;
+
+      result = true;
+    },
+
+    StringLiteral(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // In that case, we should go through the BinaryExpression logic.
+      if (t.isBinaryExpression(path.parentPath)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

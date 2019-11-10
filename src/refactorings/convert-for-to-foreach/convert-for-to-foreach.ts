@@ -22,7 +22,31 @@ async function convertForToForeach(
 }
 
 function canConvertForLoop(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    ForStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const { init, test } = path.node;
+      if (!t.isBinaryExpression(test)) return;
+      if (!t.isVariableDeclaration(init)) return;
+
+      const left = test.left;
+      if (!t.isIdentifier(left)) return;
+
+      const list = getList(test, init);
+      if (!list) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

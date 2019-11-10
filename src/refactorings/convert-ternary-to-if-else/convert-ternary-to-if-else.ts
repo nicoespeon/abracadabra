@@ -20,7 +20,31 @@ async function convertTernaryToIfElse(
 }
 
 function hasTernaryToConvert(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    ConditionalExpression(path) {
+      const { parentPath } = path;
+      if (!selection.isInsidePath(path)) return;
+
+      if (t.isReturnStatement(parentPath.node)) {
+        result = true;
+      }
+
+      if (t.isAssignmentExpression(parentPath.node)) {
+        result = true;
+      }
+
+      if (
+        t.isVariableDeclarator(parentPath.node) &&
+        t.isVariableDeclaration(parentPath.parent)
+      ) {
+        result = true;
+      }
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

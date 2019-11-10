@@ -28,7 +28,40 @@ function hasBracesToRemoveFromArrowFunction(
   ast: t.AST,
   selection: Selection
 ): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let hasBracesToRemove = false;
+  let isPatternValid = true;
+
+  t.traverseAST(ast, {
+    ArrowFunctionExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+      if (!t.isBlockStatement(path.node.body)) return;
+
+      const blockStatementStatements = path.node.body.body;
+      if (blockStatementStatements.length > 1) {
+        isPatternValid = false;
+        return;
+      }
+
+      const firstValue = blockStatementStatements[0];
+      if (!t.isReturnStatement(firstValue)) {
+        isPatternValid = false;
+        return;
+      }
+
+      if (firstValue.argument === null) {
+        isPatternValid = false;
+        return;
+      }
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      hasBracesToRemove = true;
+    }
+  });
+
+  return hasBracesToRemove && isPatternValid;
 }
 
 function updateCode(

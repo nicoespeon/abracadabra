@@ -20,7 +20,27 @@ async function splitIfStatement(
 }
 
 function canSplitIfStatement(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const { test, alternate } = path.node;
+      if (!t.isLogicalExpression(test)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      // Handle logical expressions in `else if` if they're closer to selection.
+      if (hasAlternateWhichMatchesSelection(alternate, selection)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

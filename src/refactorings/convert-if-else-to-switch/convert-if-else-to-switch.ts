@@ -20,7 +20,22 @@ async function convertIfElseToSwitch(
 }
 
 function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const convertedNode = new IfElseToSwitch(path).convert();
+      result = path.node !== convertedNode;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

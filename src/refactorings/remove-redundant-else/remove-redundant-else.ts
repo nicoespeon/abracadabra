@@ -21,7 +21,29 @@ async function removeRedundantElse(
 }
 
 function hasRedundantElse(ast: t.AST, selection: Selection): boolean {
-  return removeRedundantElseFrom(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    IfStatement(path) {
+      const { node } = path;
+      if (!selection.isInsideNode(node)) return;
+
+      const ifBranch = node.consequent;
+      if (!t.isBlockStatement(ifBranch)) return;
+      if (!hasExitStatement(ifBranch)) return;
+
+      const elseBranch = node.alternate;
+      if (!elseBranch) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function removeRedundantElseFrom(

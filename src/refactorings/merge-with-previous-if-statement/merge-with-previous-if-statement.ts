@@ -20,7 +20,27 @@ async function mergeWithPreviousIfStatement(
 }
 
 function canMergeWithPreviousIf(ast: t.AST, selection: Selection): boolean {
-  return updateCode(ast, selection).hasCodeChanged;
+  let result = false;
+
+  t.traverseAST(ast, {
+    Statement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const previousSibling = t.getPreviousSibling(path);
+      if (!previousSibling) return;
+
+      const previousNode = previousSibling.node;
+      if (!t.isIfStatement(previousNode)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
