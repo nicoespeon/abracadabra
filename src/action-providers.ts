@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import cloneDeep from "lodash.clonedeep";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
 import { Selection } from "./editor/selection";
@@ -23,9 +22,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const selection = createSelectionFromVSCode(range);
 
     return this.refactorings
-      .filter(refactoring =>
-        this.canPerform(refactoring, cloneDeep(ast), selection)
-      )
+      .filter(refactoring => this.canPerform(refactoring, ast, selection))
       .map(refactoring => this.buildCodeActionFor(refactoring));
   }
 
