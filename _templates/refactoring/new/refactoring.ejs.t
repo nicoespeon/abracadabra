@@ -8,7 +8,7 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 -%>
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 <% if (hasActionProvider){ -%>
 export { <%= camelName %>, <%= camelActionProviderName %> };
@@ -21,7 +21,7 @@ async function <%= camelName %>(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code, selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.<%= pascalErrorName %>);
@@ -32,13 +32,14 @@ async function <%= camelName %>(
 }
 
 <% if (hasActionProvider){ -%>
-function <%= camelActionProviderName %>(code: Code, selection: Selection): boolean {
-  return updateCode(code, selection).hasCodeChanged;
+function <%= camelActionProviderName %>(ast: t.AST, selection: Selection): boolean {
+  // TODO: implement the check here 🧙‍
+  return false;
 }
 <% } -%>
 
-function updateCode(code: Code, selection: Selection): ast.Transformed {
-  return ast.transform(code, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(ast, {
     // TODO: implement the transformation here 🧙‍
   });
 }
