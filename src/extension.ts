@@ -39,8 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
     addBracesToArrowFunction,
     bubbleUpIfStatement,
     convertForToForeach,
-    convertIfElseToTernary,
     convertIfElseToSwitch,
+    convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
     extractVariable,
@@ -57,7 +57,8 @@ export function activate(context: vscode.ExtensionContext) {
     removeRedundantElse,
     renameSymbol,
     replaceBinaryWithAssignment,
-    splitDeclarationAndInitialization
+    splitDeclarationAndInitialization,
+    splitIfStatement
   ].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
