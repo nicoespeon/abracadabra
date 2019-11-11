@@ -23,8 +23,43 @@ async function convertForToForeach(
 
 function canConvertForLoop(ast: t.AST, selection: Selection): boolean {
   let result = false;
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
-  t.traverseAST(ast, {
+  return result;
+}
+
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, accessor, list) => {
+      const { body } = path.node;
+
+      const item = t.identifier(singular(getListName(list)));
+      const forEachBody = t.isBlockStatement(body)
+        ? body
+        : t.blockStatement([body]);
+
+      replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
+
+      // After we replaced, we check if there are remaining accessors.
+      const params = isAccessorReferencedIn(forEachBody, accessor)
+        ? [item, accessor]
+        : [item];
+
+      path.replaceWith(t.forEach(list, params, forEachBody));
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.NodePath<t.ForStatement>,
+    accessor: t.Identifier,
+    list: List
+  ) => void
+): t.Visitor {
+  return {
     ForStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -42,49 +77,10 @@ function canConvertForLoop(ast: t.AST, selection: Selection): boolean {
       const list = getList(test, init);
       if (!list) return;
 
-      result = true;
-    }
-  });
-
-  return result;
-}
-
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    ForStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const { init, test, body } = path.node;
-      if (!t.isBinaryExpression(test)) return;
-      if (!t.isVariableDeclaration(init)) return;
-
-      const left = test.left;
-      if (!t.isIdentifier(left)) return;
-
-      const list = getList(test, init);
-      if (!list) return;
-
-      const accessor = left;
-      const item = t.identifier(singular(getListName(list)));
-      const forEachBody = t.isBlockStatement(body)
-        ? body
-        : t.blockStatement([body]);
-
-      replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
-
-      // After we replaced, we check if there are remaining accessors.
-      const params = isAccessorReferencedIn(forEachBody, accessor)
-        ? [item, accessor]
-        : [item];
-
-      path.replaceWith(t.forEach(list, params, forEachBody));
+      onMatch(path, left, list);
       path.stop();
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
