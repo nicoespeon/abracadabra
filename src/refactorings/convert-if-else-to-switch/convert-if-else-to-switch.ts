@@ -21,25 +21,28 @@ async function convertIfElseToSwitch(
 
 function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
   let result = false;
-
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const convertedNode = new IfElseToSwitch(path).convert();
-      result = path.node !== convertedNode;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, convertedNode) => {
+      path.replaceWith(convertedNode);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.NodePath<t.IfStatement>,
+    convertedNode: t.IfStatement | t.SwitchStatement
+  ) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -48,9 +51,12 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       const convertedNode = new IfElseToSwitch(path).convert();
-      path.replaceWith(convertedNode);
+      if (convertedNode === path.node) return;
+
+      onMatch(path, convertedNode);
+      path.stop();
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
