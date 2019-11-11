@@ -21,49 +21,16 @@ async function bubbleUpIfStatement(
 
 function canBubbleUpIfStatement(ast: t.AST, selection: Selection): boolean {
   let result = false;
-
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const parentIfPath = t.findParentIfPath(path);
-      if (!parentIfPath) return;
-
-      if (t.isInAlternate(path)) {
-        // We don't handle this scenario for now. It'd be an improvement.
-        return;
-      }
-
-      result = true;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    IfStatement(path) {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, parentIfPath) => {
       const { node } = path;
-
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const parentIfPath = t.findParentIfPath(path);
-      if (!parentIfPath) return;
-
-      if (t.isInAlternate(path)) {
-        // We don't handle this scenario for now. It'd be an improvement.
-        return;
-      }
-
       const parentIf = parentIfPath.node;
       const parentTest = parentIf.test;
       const parentAlternate = parentIf.alternate;
@@ -86,15 +53,43 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       parentIfPath.replaceWith(
         t.ifStatement(node.test, parentIf.consequent, newParentIfAlternate)
       );
-      parentIfPath.stop();
 
       path.replaceWith(buildNestedIfStatementFor(node.consequent));
-      path.stop();
 
       path.getAllPrevSiblings().forEach(path => path.remove());
       path.getAllNextSiblings().forEach(path => path.remove());
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.NodePath<t.IfStatement>,
+    parentIfPath: t.NodePath<t.IfStatement>
+  ) => void
+): t.Visitor {
+  return {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const parentIfPath = t.findParentIfPath(path);
+      if (!parentIfPath) return;
+
+      if (t.isInAlternate(path)) {
+        // We don't handle this scenario for now. It'd be an improvement.
+        return;
+      }
+
+      onMatch(path, parentIfPath);
+      parentIfPath.stop();
+      path.stop();
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
