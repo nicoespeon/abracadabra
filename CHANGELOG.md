@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+### Improve Quick Fixes performances
+
+We've optimized the way we determine which refactorings can be executed **at your current cursor position**. This is an Abracabra key feature.
+
+Every time you move your cursor on the code, we propose you the relevant refactorings through the VS Code Quick Fixes (aka, the lightbulb 💡). This process was taking quite some time, which was causing 2 issues:
+
+1. On large files (> 1000 LOC), it would take many seconds to propose you anything. This is lon. And let's be honest, legacy code we're dealing with frequently comes as large files we want to refactor.
+2. Each new refactoring was adding a bit more of computing. Today, that's around 20 refactorings. If we want to add more, we add to improve performances first, so the extension stays usable.
+
+In short, 2 things were improved:
+
+1. We now only parse the code once, instead of each refactoring parsing the code again.
+2. We shortcut the refactoring execution, so we save a bunch of time on the transformation part too.
+
+As for every performance optimization, you need to measure it or it didn't happen! Overall, here's what it looks like:
+
+| File size         | Execution time _before_ | Execution time _after_ | Gain                      |
+| ----------------- | ----------------------- | ---------------------- | ------------------------- |
+| Small (70 LOC)    | 200ms                   | 40ms                   | -80%, **5 times faster**  |
+| Large (2.400 LOC) | 6s                      | 350ms                  | -94%, **17 times faster** |
+
 #### Move Statements now handles one-liners more intuitively
 
 Consider following code:
