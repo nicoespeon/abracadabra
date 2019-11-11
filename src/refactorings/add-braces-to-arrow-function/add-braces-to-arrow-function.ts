@@ -24,25 +24,31 @@ function hasArrowFunctionToAddBraces(
   selection: Selection
 ): boolean {
   let result = false;
-
-  t.traverseAST(ast, {
-    ArrowFunctionExpression(path) {
-      if (!selection.isInsidePath(path)) return;
-      if (t.isBlockStatement(path.node.body)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      result = true;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, path => {
+      // Duplicate this type guard so TS can infer the type properly
+      if (t.isBlockStatement(path.node.body)) return;
+
+      const blockStatement = t.blockStatement([
+        t.returnStatement(path.node.body)
+      ]);
+      path.node.body = blockStatement;
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.ArrowFunctionExpression>) => void
+): t.Visitor {
+  return {
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
       if (t.isBlockStatement(path.node.body)) return;
@@ -51,13 +57,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const blockStatement = t.blockStatement([
-        t.returnStatement(path.node.body)
-      ]);
-      path.node.body = blockStatement;
+      onMatch(path);
       path.stop();
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
