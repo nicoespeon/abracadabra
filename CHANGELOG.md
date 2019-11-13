@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-### Improve Quick Fixes performances
+#### Improve Quick Fixes performances
 
 We've optimized the way we determine which refactorings can be executed **at your current cursor position**. This is an Abracabra key feature.
 
