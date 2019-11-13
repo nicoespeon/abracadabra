@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2019-11-13
+
 ### Changed
 
 ### Improve Quick Fixes performances
@@ -461,7 +463,8 @@ function doSomething(someData) {
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.10.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/nicoespeon/abracadabra/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/nicoespeon/abracadabra/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/nicoespeon/abracadabra/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/nicoespeon/abracadabra/compare/0.7.0...0.8.0
