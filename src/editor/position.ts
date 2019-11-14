@@ -59,6 +59,10 @@ class Position {
     return new Position(this.line + 1, this.character);
   }
 
+  addLines(lines: number): Position {
+    return new Position(this.line + lines, this.character);
+  }
+
   putAtSameCharacter(position: Position): Position {
     return new Position(this.line, position.character);
   }

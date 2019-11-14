@@ -64,10 +64,17 @@ function updateCode(
 
     const pathBelow = path.getSibling(pathBelowKey);
     if (!ast.isSelectableNode(pathBelow.node)) return;
+    if (!ast.isSelectableNode(path.node)) return;
 
-    newStatementPosition = Position.fromAST(
-      pathBelow.node.loc.end
-    ).putAtSameCharacter(selection.start);
+    const nodeSelection = Selection.fromAST(path.node.loc);
+    const nodeBelowSelection = Selection.fromAST(pathBelow.node.loc);
+    const nextStatementHeight = nodeBelowSelection.height + 1;
+    const blankLinesBetweenNodes =
+      nodeBelowSelection.start.line - nodeSelection.end.line - 1;
+
+    newStatementPosition = selection.start.addLines(
+      nextStatementHeight + blankLinesBetweenNodes
+    );
 
     // If `pathBelow` is a function, it may create new lines when moved.
     // Adapt the new statement position accordingly.

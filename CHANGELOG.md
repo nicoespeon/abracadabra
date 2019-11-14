@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Cursor position after "Move Statements" is now more accurate
+
 ## [0.11.0] - 2019-11-13
 
 ### Changed

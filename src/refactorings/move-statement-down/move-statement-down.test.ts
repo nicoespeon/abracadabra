@@ -58,7 +58,7 @@ console.log("I'm down");`,
 if (isValid) {
   console.log("I'm up");
 }`,
-        expectedPosition: new Position(4, 0)
+        expectedPosition: new Position(2, 0)
       },
       {
         description: "multi-lines statement moved below multi-lines statement",
@@ -77,7 +77,7 @@ function saySomething() {
 if (isValid) {
   console.log("I'm up");
 }`,
-        expectedPosition: new Position(6, 0)
+        expectedPosition: new Position(4, 0)
       },
       {
         description: "statement inside a container",
@@ -196,6 +196,23 @@ console.log("Should not move");`,
 };
 console.log("Should not move");`,
         expectedPosition: new Position(2, 2)
+      },
+      {
+        description: "object properties, cursor on closing bracket",
+        code: `const data = {
+  foo: "foo",
+  bar: "bar",
+  baz: "baz"
+};
+console.log("Should move");`,
+        selection: Selection.cursorAt(0, 14),
+        expected: `console.log("Should move");
+const data = {
+  foo: "foo",
+  bar: "bar",
+  baz: "baz"
+};`,
+        expectedPosition: new Position(1, 14)
       },
       {
         description: "object properties, one-liner",
