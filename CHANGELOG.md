@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Cursor position after "Move Statements" is now more accurate
+- VS Code now scrolls to the moved statement, so we don't loose track of it!
 
 ## [0.11.0] - 2019-11-13
 

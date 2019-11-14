@@ -24,11 +24,6 @@ class VSCodeEditor implements Editor {
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
-    const cursorAtInitialStartPosition = new vscode.Selection(
-      this.editor.selection.start,
-      this.editor.selection.start
-    );
-
     const edit = new vscode.WorkspaceEdit();
     const allDocumentRange = new vscode.Range(
       new vscode.Position(0, 0),
@@ -39,9 +34,23 @@ class VSCodeEditor implements Editor {
 
     await vscode.workspace.applyEdit(edit);
 
+    // Put cursor at correct position
+    const cursorAtInitialStartPosition = new vscode.Selection(
+      this.editor.selection.start,
+      this.editor.selection.start
+    );
     this.editor.selection = newCursorPosition
       ? toVSCodeCursor(newCursorPosition)
       : cursorAtInitialStartPosition;
+
+    // Scroll to correct position
+    const position = newCursorPosition
+      ? toVSCodePosition(newCursorPosition)
+      : this.editor.selection.start;
+    this.editor.revealRange(
+      new vscode.Range(position, position),
+      vscode.TextEditorRevealType.InCenter
+    );
   }
 
   async readThenWrite(
