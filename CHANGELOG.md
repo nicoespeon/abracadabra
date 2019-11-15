@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2019-11-15
+
+**Abracadabra is now stable enough to be considered v1 🎉✨🎩**
+
 ### Fixed
 
-- Cursor position after "Move Statements" is now more accurate
+- Cursor position after "Move Statements" is now more accurate.
 - VS Code now scrolls to the moved statement, so we don't loose track of it!
 
 ## [0.11.0] - 2019-11-13
@@ -468,7 +472,8 @@ function doSomething(someData) {
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/0.11.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/nicoespeon/abracadabra/compare/0.11.0...1.0.0
 [0.11.0]: https://github.com/nicoespeon/abracadabra/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/nicoespeon/abracadabra/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/nicoespeon/abracadabra/compare/0.8.0...0.9.0
