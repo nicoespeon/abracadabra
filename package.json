@@ -3,7 +3,7 @@
   "version": "0.11.0",
   "displayName": "Abracadabra",
   "publisher": "nicoespeon",
-  "description": "Automated refactorings for VS Code (JS & TS)",
+  "description": "Automated refactorings for VS Code, in JavaScript and TypeScript.",
   "author": "Nicolas Carlo <nicolascarlo.espeon@gmail.com>",
   "license": "MIT",
   "repository": {
