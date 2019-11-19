@@ -53,6 +53,13 @@ console.log(id);`,
         expected: `console.log(session.users["first"].id);`
       },
       {
+        description:
+          "init being a member expression with a computed identifier",
+        code: `const { id } = session.users[key];
+console.log(id);`,
+        expected: `console.log(session.users[key].id);`
+      },
+      {
         description: "nested",
         code: `const { user: { id } } = session;
 console.log(id);`,

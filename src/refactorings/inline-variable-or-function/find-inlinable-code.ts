@@ -91,12 +91,14 @@ function getInitName(init: ast.Node): string | null {
   if (ast.isIdentifier(init)) return init.name;
 
   if (ast.isMemberExpression(init)) {
-    const { property } = init;
+    const { property, computed } = init;
 
     const propertyName = ast.isNumericLiteral(property)
       ? `[${property.value}]`
       : ast.isStringLiteral(property)
       ? `["${property.value}"]`
+      : ast.isIdentifier(property) && computed
+      ? `[${property.name}]`
       : `.${getInitName(property)}`;
 
     if (property.value === null && getInitName(property) === null) {

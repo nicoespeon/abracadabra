@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inline Variable now works correctly for destructured objects with a computed identifier (e.g. `const { id } = session.users[key]`).
+
 ## [1.0.0] - 2019-11-15
 
 **Abracadabra is now stable enough to be considered v1 🎉✨🎩**
