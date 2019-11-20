@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Extract Variable don't suggest an invalid variable name when extracting a string starting with a number.
+- Stop jumping cursor to the end of the file when performing some refactorings. That was a regression introduced when we improve cursor scrolling on Move Statements, in v1.0.0 😅
 
 ## [1.0.1] - 2019-11-18
 
