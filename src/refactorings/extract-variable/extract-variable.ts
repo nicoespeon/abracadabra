@@ -217,23 +217,12 @@ class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
 
-  private variableName: string = "";
+  private variable: Variable;
 
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
     this.loc = loc;
-
-    if (ast.isStringLiteral(path.node)) {
-      this.variableName = camel(path.node.value);
-    }
-
-    if (
-      !this.variableName ||
-      this.variableName.length > 20 ||
-      this.variableName.match(/^\d.*/)
-    ) {
-      this.variableName = "extracted";
-    }
+    this.variable = new Variable(path.node);
   }
 
   get selection() {
@@ -247,7 +236,7 @@ class Occurrence {
   positionOnExtractedId(): Position {
     return new Position(
       this.selection.start.line + this.selection.height + 1,
-      this.selection.start.character + this.variableName.length
+      this.selection.start.character + this.variable.length
     );
   }
 
@@ -258,7 +247,7 @@ class Occurrence {
 
   toVariableDeclaration(code: Code): Code {
     const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
-    return `const ${this.variableName} = ${extractedCode};\n${
+    return `const ${this.variable.name} = ${extractedCode};\n${
       this.indentation
     }`;
   }
@@ -270,7 +259,7 @@ class Occurrence {
       ast.isJSXAttribute(parent) ||
       (ast.isJSX(parent) && (ast.isJSXElement(node) || ast.isJSXText(node)));
 
-    return shouldWrapInBraces ? `{${this.variableName}}` : this.variableName;
+    return shouldWrapInBraces ? `{${this.variable.name}}` : this.variable.name;
   }
 
   private getIndentationLevel(): IndentationLevel {
@@ -283,6 +272,29 @@ class Occurrence {
     if (!parent.loc) return this.selection.start;
 
     return Position.fromAST(parent.loc.start);
+  }
+}
+
+class Variable {
+  private _name = "extracted";
+
+  constructor(node: ast.Node) {
+    if (ast.isStringLiteral(node)) {
+      const parsedName = camel(node.value);
+      const startsWithNumber = parsedName.match(/^\d.*/);
+
+      if (parsedName.length <= 20 && !startsWithNumber) {
+        this._name = parsedName;
+      }
+    }
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  get length(): number {
+    return this._name.length;
   }
 }
 
