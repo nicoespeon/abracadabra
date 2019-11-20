@@ -80,7 +80,10 @@ function updateCode(
     // If `pathBelow` is a function, it may create new lines when moved.
     // Same if `path` is an object method.
     // Adapt the new statement position accordingly.
-    if (ast.isFunction(pathBelow) || ast.isObjectMethod(path)) {
+    if (
+      ast.isFunction(pathBelow) ||
+      (ast.isObjectMethod(path) && typeof path.key === "number")
+    ) {
       const hasPathAbove = path.key > 0;
       const extracted = path.getSibling(path.key - 1);
 
