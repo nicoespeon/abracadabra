@@ -280,11 +280,12 @@ class Variable {
 
   constructor(node: ast.Node) {
     if (ast.isStringLiteral(node)) {
-      const parsedName = camel(node.value);
-      const startsWithNumber = parsedName.match(/^\d.*/);
+      this.tryToSetNameWith(node.value);
+    }
 
-      if (parsedName.length <= 20 && !startsWithNumber) {
-        this._name = parsedName;
+    if (ast.isMemberExpression(node)) {
+      if (ast.isIdentifier(node.property) && !node.computed) {
+        this.tryToSetNameWith(node.property.name);
       }
     }
   }
@@ -295,6 +296,15 @@ class Variable {
 
   get length(): number {
     return this._name.length;
+  }
+
+  private tryToSetNameWith(value: string) {
+    const parsedName = camel(value);
+    const startsWithNumber = parsedName.match(/^\d.*/);
+
+    if (parsedName.length <= 20 && !startsWithNumber) {
+      this._name = parsedName;
+    }
   }
 }
 

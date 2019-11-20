@@ -273,8 +273,8 @@ console.log({ foo: extracted });`
         description: "a spread variable",
         code: `console.log({ ...foo.bar });`,
         selection: Selection.cursorAt(0, 22),
-        expected: `const extracted = foo.bar;
-console.log({ ...extracted });`
+        expected: `const bar = foo.bar;
+console.log({ ...bar });`
       },
       {
         description: "a spread variable, cursor on spread",
@@ -301,7 +301,14 @@ console.log({
           "a valid path when cursor is on a part of member expression",
         code: `console.log(path.node.name);`,
         selection: Selection.cursorAt(0, 17),
-        expected: `const extracted = path.node;
+        expected: `const node = path.node;
+console.log(node.name);`
+      },
+      {
+        description: "member expression with computed value",
+        code: `console.log(this.items[i].name);`,
+        selection: Selection.cursorAt(0, 23),
+        expected: `const extracted = this.items[i];
 console.log(extracted.name);`
       },
       {
@@ -508,9 +515,9 @@ if (
 }`,
         selection: Selection.cursorAt(2, 27),
         expected: `function render() {
-  const extracted = this.props.location.name;
+  const name = this.props.location.name;
   return <div className="text-lg font-weight-bold">
-    {extracted}
+    {name}
   </div>;
 }`
       },
@@ -599,9 +606,9 @@ console.log(extracted);`
   node.consequent
 );`,
         selection: Selection.cursorAt(1, 20),
-        expected: `const extracted = parentPath.node.operator;
+        expected: `const operator = parentPath.node.operator;
 createIfStatement(
-  extracted,
+  operator,
   parentPath.node.left,
   node.consequent
 );`
@@ -613,9 +620,9 @@ createIfStatement(
 ) ? "with-loc"
   : "without-loc";`,
         selection: Selection.cursorAt(1, 17),
-        expected: `const extracted = path.node.loc.length;
+        expected: `const length = path.node.loc.length;
 const type = !!(
-  extracted > 0
+  length > 0
 ) ? "with-loc"
   : "without-loc";`
       },
@@ -695,8 +702,8 @@ const sayHello = extracted;`
         description: "a for statement",
         code: `for (var i = 0; i < this.items.length; i++) {}`,
         selection: Selection.cursorAt(0, 27),
-        expected: `const extracted = this.items;
-for (var i = 0; i < extracted.length; i++) {}`
+        expected: `const items = this.items;
+for (var i = 0; i < items.length; i++) {}`
       },
       {
         description: "a call expression in a JSX Element",
