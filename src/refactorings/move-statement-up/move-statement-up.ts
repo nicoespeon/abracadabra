@@ -42,7 +42,8 @@ function updateCode(
 
   const result = ast.transform(code, {
     Statement: visitPath,
-    ObjectProperty: visitPath
+    ObjectProperty: visitPath,
+    ObjectMethod: visitPath
   });
 
   return { ...result, isFirstStatement, newStatementPosition };
@@ -67,6 +68,27 @@ function updateCode(
       pathAbove.node.loc.start
     ).putAtSameCharacter(selection.start);
 
+    // If `pathAbove` is a function, it may create new lines when moved.
+    // Same if `path` is an object method.
+    // Adapt the new statement position accordingly.
+    if (
+      ast.isFunction(pathAbove) ||
+      (ast.isObjectMethod(path) && typeof path.key === "number")
+    ) {
+      const pathBelowKey = path.key + 1;
+      const container = new Array().concat(path.container);
+      const hasPathBelow = pathBelowKey < container.length;
+      const extracted = path.getSibling(path.key - 1);
+
+      if (hasPathBelow && !Position.hasSpaceBetweenPaths(extracted, path)) {
+        newStatementPosition = newStatementPosition.putAtNextLine();
+      }
+
+      if (!Position.hasSpaceBetweenPaths(path, pathAbove)) {
+        newStatementPosition = newStatementPosition.putAtNextLine();
+      }
+    }
+
     // Preserve the `loc` of the above path & reset the one of the moved node.
     // Use `path.node` intead of `node` or TS won't build. I don't know why.
     const newNodeAbove = { ...path.node, loc: pathAbove.node.loc };
@@ -85,7 +107,8 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     Statement: visitPath,
-    ObjectProperty: visitPath
+    ObjectProperty: visitPath,
+    ObjectMethod: visitPath
   });
 
   return result;

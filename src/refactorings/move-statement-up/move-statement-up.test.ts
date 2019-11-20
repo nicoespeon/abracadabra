@@ -190,6 +190,27 @@ const data = {
   bar: "bar"
 };`,
         expectedPosition: new Position(2, 2)
+      },
+      {
+        description: "object method",
+        code: `const data = {
+  foo: "foo",
+  baz: "baz",
+  bar() {
+    return "bar";
+  }
+};`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `const data = {
+  foo: "foo",
+
+  bar() {
+    return "bar";
+  },
+
+  baz: "baz"
+};`,
+        expectedPosition: new Position(3, 2)
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {
