@@ -1,4 +1,4 @@
-import { ASTPosition } from "../ast";
+import { ASTPosition, NodePath, isSelectableNode } from "../ast";
 
 export { Position };
 
@@ -13,6 +13,16 @@ class Position {
 
   static fromAST(astPosition: ASTPosition): Position {
     return new Position(astPosition.line - 1, astPosition.column);
+  }
+
+  static hasSpaceBetweenPaths(pathA: NodePath, pathB: NodePath): boolean {
+    if (!isSelectableNode(pathA.node)) return false;
+    if (!isSelectableNode(pathB.node)) return false;
+
+    const startPositionA = Position.fromAST(pathA.node.loc.end);
+    const endPositionB = Position.fromAST(pathB.node.loc.start);
+
+    return endPositionB.line - startPositionA.line > 1;
   }
 
   get line(): number {

@@ -87,11 +87,11 @@ function updateCode(
       const hasPathAbove = path.key > 0;
       const extracted = path.getSibling(path.key - 1);
 
-      if (hasPathAbove && !hasSpaceBetweenPaths(extracted, path)) {
+      if (hasPathAbove && !Position.hasSpaceBetweenPaths(extracted, path)) {
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
 
-      if (!hasSpaceBetweenPaths(path, pathBelow)) {
+      if (!Position.hasSpaceBetweenPaths(path, pathBelow)) {
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
     }
@@ -165,17 +165,4 @@ function matchesSelection(path: ast.NodePath, selection: Selection): boolean {
   if (!selection.isInside(extendedSelection)) return false;
 
   return true;
-}
-
-function hasSpaceBetweenPaths(
-  pathA: ast.NodePath,
-  pathB: ast.NodePath
-): boolean {
-  if (!ast.isSelectableNode(pathA.node)) return false;
-  if (!ast.isSelectableNode(pathB.node)) return false;
-
-  const startPositionA = Position.fromAST(pathA.node.loc.end);
-  const endPositionB = Position.fromAST(pathB.node.loc.start);
-
-  return endPositionB.line - startPositionA.line > 1;
 }
