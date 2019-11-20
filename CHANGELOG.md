@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Variable now extracts JSX Attributes (e.g. `<Header title="Home" />` will extract `"Home"` if cursor is on it).
 
+### Fixed
+
+- Extract Variable don't suggest an invalid variable name when extracting a string starting with a number.
+
 ## [1.0.1] - 2019-11-18
 
 ### Fixed

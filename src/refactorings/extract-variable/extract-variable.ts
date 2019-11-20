@@ -227,7 +227,11 @@ class Occurrence {
       this.variableName = camel(path.node.value);
     }
 
-    if (!this.variableName || this.variableName.length > 20) {
+    if (
+      !this.variableName ||
+      this.variableName.length > 20 ||
+      this.variableName.match(/^\d.*/)
+    ) {
       this.variableName = "extracted";
     }
   }

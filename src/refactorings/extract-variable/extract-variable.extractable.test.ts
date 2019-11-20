@@ -23,6 +23,13 @@ describe("Extract Variable - Patterns we can extract", () => {
 console.log(hello);`
       },
       {
+        description: "a string that starts with a number",
+        code: `console.log("2019-01-01");`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = "2019-01-01";
+console.log(extracted);`
+      },
+      {
         description: "a number",
         code: `console.log(12.5);`,
         selection: Selection.cursorAt(0, 12),
