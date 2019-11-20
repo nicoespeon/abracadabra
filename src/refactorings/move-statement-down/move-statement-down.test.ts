@@ -254,6 +254,24 @@ console.log("Should not move");`,
   bar: "bar"
 };`,
         expectedPosition: new Position(3, 2)
+      },
+      {
+        description: "object method",
+        code: `const data = {
+  foo() {
+    return "foo";
+  },
+  bar: "bar"
+};`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `const data = {
+  bar: "bar",
+
+  foo() {
+    return "foo";
+  }
+};`,
+        expectedPosition: new Position(3, 2)
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {

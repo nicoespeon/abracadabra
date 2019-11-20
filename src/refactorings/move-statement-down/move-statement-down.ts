@@ -42,7 +42,8 @@ function updateCode(
 
   const result = ast.transform(code, {
     Statement: visitPath,
-    ObjectProperty: visitPath
+    ObjectProperty: visitPath,
+    ObjectMethod: visitPath
   });
 
   return { ...result, isLastStatement, newStatementPosition };
@@ -77,8 +78,9 @@ function updateCode(
     );
 
     // If `pathBelow` is a function, it may create new lines when moved.
+    // Same if `path` is an object method.
     // Adapt the new statement position accordingly.
-    if (ast.isFunction(pathBelow)) {
+    if (ast.isFunction(pathBelow) || ast.isObjectMethod(path)) {
       const hasPathAbove = path.key > 0;
       const extracted = path.getSibling(path.key - 1);
 
@@ -109,7 +111,8 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     Statement: visitPath,
-    ObjectProperty: visitPath
+    ObjectProperty: visitPath,
+    ObjectMethod: visitPath
   });
 
   return result;
