@@ -188,6 +188,7 @@ function isExtractableContext(node: ast.Node): boolean {
     ast.isWhileStatement(node) ||
     ast.isSwitchCase(node) ||
     ast.isJSXExpressionContainer(node) ||
+    ast.isJSXAttribute(node) ||
     ast.isSpreadElement(node)
   );
 }
@@ -259,9 +260,11 @@ class Occurrence {
   }
 
   toVariableId(): Code {
+    const { parent, node } = this.path;
+
     const shouldWrapInBraces =
-      (ast.isJSXElement(this.path.node) || ast.isJSXText(this.path.node)) &&
-      ast.isJSX(this.path.parent);
+      ast.isJSXAttribute(parent) ||
+      (ast.isJSX(parent) && (ast.isJSXElement(node) || ast.isJSXText(node)));
 
     return shouldWrapInBraces ? `{${this.variableName}}` : this.variableName;
   }

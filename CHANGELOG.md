@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Extract Variable now extracts JSX Attributes (e.g. `<Header title="Home" />` will extract `"Home"` if cursor is on it).
+
 ## [1.0.1] - 2019-11-18
 
 ### Fixed

@@ -500,12 +500,22 @@ if (
   </div>;
 }`,
         selection: Selection.cursorAt(2, 27),
-        // Note: maybe we'd like to improve this one (double `{}`)
         expected: `function render() {
   const extracted = this.props.location.name;
   return <div className="text-lg font-weight-bold">
     {extracted}
   </div>;
+}`
+      },
+      {
+        description: "a JSXAttribute",
+        code: `function render() {
+  return <Header title="Home" />;
+}`,
+        selection: Selection.cursorAt(1, 25),
+        expected: `function render() {
+  const home = "Home";
+  return <Header title={home} />;
 }`
       },
       {
