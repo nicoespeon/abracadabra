@@ -211,6 +211,48 @@ const data = {
   baz: "baz"
 };`,
         expectedPosition: new Position(3, 2)
+      },
+      {
+        description: "class method",
+        code: `class Node {
+  getName() {
+    return "foo";
+  }
+
+  getSize() {
+    return 1;
+  }
+}`,
+        selection: Selection.cursorAt(5, 2),
+        expected: `class Node {
+  getSize() {
+    return 1;
+  }
+
+  getName() {
+    return "foo";
+  }
+}`,
+        expectedPosition: new Position(1, 2)
+      },
+      {
+        description: "class property",
+        code: `class Node {
+  name = "foo"
+
+  getSize() {
+    return 1;
+  }
+}`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `class Node {
+  getSize() {
+    return 1;
+  }
+
+  name = "foo";
+}`,
+        expectedPosition: new Position(1, 2)
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {

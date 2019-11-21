@@ -272,6 +272,48 @@ console.log("Should not move");`,
   }
 };`,
         expectedPosition: new Position(3, 2)
+      },
+      {
+        description: "class method",
+        code: `class Node {
+  getName() {
+    return "foo";
+  }
+
+  getSize() {
+    return 1;
+  }
+}`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `class Node {
+  getSize() {
+    return 1;
+  }
+
+  getName() {
+    return "foo";
+  }
+}`,
+        expectedPosition: new Position(5, 2)
+      },
+      {
+        description: "class property",
+        code: `class Node {
+  name = "foo"
+
+  getSize() {
+    return 1;
+  }
+}`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `class Node {
+  getSize() {
+    return 1;
+  }
+
+  name = "foo";
+}`,
+        expectedPosition: new Position(5, 2)
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {

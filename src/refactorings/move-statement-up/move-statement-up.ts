@@ -43,7 +43,9 @@ function updateCode(
   const result = ast.transform(code, {
     Statement: visitPath,
     ObjectProperty: visitPath,
-    ObjectMethod: visitPath
+    ObjectMethod: visitPath,
+    ClassMethod: visitPath,
+    ClassProperty: visitPath
   });
 
   return { ...result, isFirstStatement, newStatementPosition };
@@ -80,11 +82,11 @@ function updateCode(
       const hasPathBelow = pathBelowKey < container.length;
       const extracted = path.getSibling(path.key - 1);
 
-      if (hasPathBelow && !Position.hasSpaceBetweenPaths(extracted, path)) {
+      if (hasPathBelow && !Position.hasSpaceBetweenPaths(path, extracted)) {
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
 
-      if (!Position.hasSpaceBetweenPaths(path, pathAbove)) {
+      if (!Position.hasSpaceBetweenPaths(pathAbove, path)) {
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
     }
@@ -108,7 +110,9 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     Statement: visitPath,
     ObjectProperty: visitPath,
-    ObjectMethod: visitPath
+    ObjectMethod: visitPath,
+    ClassMethod: visitPath,
+    ClassProperty: visitPath
   });
 
   return result;

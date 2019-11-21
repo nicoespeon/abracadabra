@@ -43,7 +43,9 @@ function updateCode(
   const result = ast.transform(code, {
     Statement: visitPath,
     ObjectProperty: visitPath,
-    ObjectMethod: visitPath
+    ObjectMethod: visitPath,
+    ClassMethod: visitPath,
+    ClassProperty: visitPath
   });
 
   return { ...result, isLastStatement, newStatementPosition };
@@ -115,7 +117,9 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     Statement: visitPath,
     ObjectProperty: visitPath,
-    ObjectMethod: visitPath
+    ObjectMethod: visitPath,
+    ClassMethod: visitPath,
+    ClassProperty: visitPath
   });
 
   return result;
