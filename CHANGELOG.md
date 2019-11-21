@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Variable now extracts JSX Attributes (e.g. `<Header title="Home" />` will extract `"Home"` if cursor is on it).
 - Extract Variable now suggest a better variable name when you extract member expressions (e.g. `const name = this.props.location.name` instead of `const extracted = this.props.location.name`).
+- Move Statements now work on object methods, class methods and class properties!
 
 ### Fixed
 
