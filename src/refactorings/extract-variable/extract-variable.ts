@@ -203,6 +203,7 @@ function isExtractable(path: ast.NodePath): boolean {
     !ast.isTemplateElement(path) &&
     !ast.isBlockStatement(path) &&
     !ast.isSpreadElement(path) &&
+    !ast.isTSTypeAnnotation(path) &&
     // Don't extract object method because we don't handle `this`.
     !ast.isObjectMethod(path)
   );

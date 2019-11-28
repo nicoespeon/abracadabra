@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Variable won't extract type annotation as it doesn't handle them properly yet.
+
 ## [1.1.0] - 2019-11-21
 
 ### Changed

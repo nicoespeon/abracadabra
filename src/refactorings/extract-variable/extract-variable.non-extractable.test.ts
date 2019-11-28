@@ -28,6 +28,11 @@ describe("Extract Variable - Patterns we can't extract", () => {
         description: "the identifier from a variable declaration",
         code: `const foo = "bar";`,
         selection: new Selection([0, 6], [0, 9])
+      },
+      {
+        description: "a type annotation",
+        code: `const toto: string = "";`,
+        selection: Selection.cursorAt(0, 13)
       }
     ],
     async ({ code, selection }) => {
