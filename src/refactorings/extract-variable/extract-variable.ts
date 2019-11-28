@@ -232,10 +232,20 @@ class Occurrence {
   }
 
   get modification(): Modification {
-    return {
-      code: this.toVariableId(),
-      selection: this.selection
-    };
+    const modification =
+      ast.isObjectProperty(this.path.node) && !this.path.node.computed
+        ? {
+            code: "",
+            selection: this.selection.extendStartToEndOf(
+              Selection.fromAST(this.path.node.key.loc)
+            )
+          }
+        : {
+            code: this.toVariableId(),
+            selection: this.selection
+          };
+
+    return modification;
   }
 
   positionOnExtractedId(): Position {
@@ -286,6 +296,10 @@ class Variable {
   constructor(node: ast.Node) {
     if (ast.isStringLiteral(node)) {
       this.tryToSetNameWith(node.value);
+    }
+
+    if (ast.isObjectProperty(node) && !node.computed) {
+      this.tryToSetNameWith(node.key.name);
     }
 
     if (ast.isMemberExpression(node)) {

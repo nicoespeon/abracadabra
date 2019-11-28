@@ -161,11 +161,11 @@ console.log(extracted);`
   }
 });`,
         selection: Selection.cursorAt(3, 9),
-        expected: `const extracted = "Hello!";
+        expected: `const bar = "Hello!";
 console.log({
   one: 1,
   foo: {
-    bar: extracted
+    bar
   }
 });`
       },
@@ -179,11 +179,11 @@ console.log({
   }
 };`,
         selection: Selection.cursorAt(3, 9),
-        expected: `const extracted = "Hello!";
+        expected: `const bar = "Hello!";
 const a = {
   one: 1,
   foo: {
-    bar: extracted
+    bar
   }
 };`
       },
@@ -215,12 +215,12 @@ const SUPPORTED_LANGUAGES = [
   ]
 ]);`,
         selection: Selection.cursorAt(4, 13),
-        expected: `const extracted = "Hello!";
+        expected: `const hello = "Hello!";
 console.log([
   1,
   [
     {
-      hello: extracted
+      hello
     }
   ]
 ]);`
@@ -266,8 +266,8 @@ console.log(extracted);`
           "the nested object when cursor is on nested object property",
         code: `console.log({ foo: { bar: true } });`,
         selection: Selection.cursorAt(0, 21),
-        expected: `const extracted = { bar: true };
-console.log({ foo: extracted });`
+        expected: `const foo = { bar: true };
+console.log({ foo });`
       },
       {
         description: "a spread variable",
@@ -438,9 +438,9 @@ console.log(extracted);`
   foo: "bar"
 };`,
         selection: Selection.cursorAt(1, 9),
-        expected: `const extracted = "bar";
+        expected: `const foo = "bar";
 export const something = {
-  foo: extracted
+  foo
 };`
       },
       {
@@ -449,9 +449,9 @@ export const something = {
   foo: "bar"
 });`,
         selection: Selection.cursorAt(1, 9),
-        expected: `const extracted = "bar";
+        expected: `const foo = "bar";
 const something = () => ({
-  foo: extracted
+  foo
 });`
       },
       {
@@ -634,10 +634,10 @@ const type = !!(
   })}
 />`,
         selection: Selection.cursorAt(2, 12),
-        expected: `const extracted = "Pedro";
+        expected: `const name = "Pedro";
 <Component
   text={getTextForPerson({
-    name: extracted
+    name
   })}
 />`
       },
