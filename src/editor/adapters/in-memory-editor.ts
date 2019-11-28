@@ -1,4 +1,11 @@
-import { Editor, Code, Update, Command, ErrorReason, Choice } from "../editor";
+import {
+  Editor,
+  Code,
+  Modification,
+  Command,
+  ErrorReason,
+  Choice
+} from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
 
@@ -33,7 +40,7 @@ class InMemoryEditor implements Editor {
 
   readThenWrite(
     selection: Selection,
-    getUpdates: (code: Code) => Update[],
+    getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void> {
     if (newCursorPosition) this._position = newCursorPosition;
@@ -58,41 +65,43 @@ class InMemoryEditor implements Editor {
     // Since we insert updates progressively as new elements, keep track
     // of them so we can indent properly.
     const previousUpdatesOnLine: { [key: number]: number } = {};
-    getUpdates(this.read(readCodeMatrix)).forEach(({ code, selection }) => {
-      const { start, end } = selection;
+    getModifications(this.read(readCodeMatrix)).forEach(
+      ({ code, selection }) => {
+        const { start, end } = selection;
 
-      if (!previousUpdatesOnLine[start.line]) {
-        previousUpdatesOnLine[start.line] = 0;
-      }
-
-      if (start.line === end.line) {
-        // Replace selected code with updated code.
-        this.codeMatrix[start.line].splice(
-          start.character + previousUpdatesOnLine[start.line],
-          end.character - start.character,
-          code
-        );
-      } else if (end.line > start.line) {
-        // Replace selected code with updated code.
-        this.codeMatrix[start.line].splice(
-          start.character + previousUpdatesOnLine[start.line],
-          this.codeMatrix[start.line].length - start.character,
-          code
-        );
-
-        // Merge the rest of the last line.
-        this.codeMatrix[start.line].push(
-          ...this.codeMatrix[end.line].slice(end.character)
-        );
-
-        // Delete all lines in between selection
-        for (let i = start.line + 1; i <= end.line; i++) {
-          this.codeMatrix[i] = [DELETED_LINE];
+        if (!previousUpdatesOnLine[start.line]) {
+          previousUpdatesOnLine[start.line] = 0;
         }
-      }
 
-      previousUpdatesOnLine[start.line] += 1;
-    });
+        if (start.line === end.line) {
+          // Replace selected code with updated code.
+          this.codeMatrix[start.line].splice(
+            start.character + previousUpdatesOnLine[start.line],
+            end.character - start.character,
+            code
+          );
+        } else if (end.line > start.line) {
+          // Replace selected code with updated code.
+          this.codeMatrix[start.line].splice(
+            start.character + previousUpdatesOnLine[start.line],
+            this.codeMatrix[start.line].length - start.character,
+            code
+          );
+
+          // Merge the rest of the last line.
+          this.codeMatrix[start.line].push(
+            ...this.codeMatrix[end.line].slice(end.character)
+          );
+
+          // Delete all lines in between selection
+          for (let i = start.line + 1; i <= end.line; i++) {
+            this.codeMatrix[i] = [DELETED_LINE];
+          }
+        }
+
+        previousUpdatesOnLine[start.line] += 1;
+      }
+    );
 
     return Promise.resolve();
   }

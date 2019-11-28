@@ -1,7 +1,7 @@
 import * as ast from "../../ast";
 
 import { Selection } from "../../editor/selection";
-import { Update } from "../../editor/editor";
+import { Modification } from "../../editor/editor";
 
 import { InlinableCode, InlinableObjectPattern } from "./find-inlinable-code";
 
@@ -80,9 +80,9 @@ class FakeInlinable implements InlinableCode {
   valueSelection = ANY_SELECTION;
   codeToRemoveSelection = ANY_SELECTION;
 
-  private updates: Update[];
+  private updates: Modification[];
 
-  constructor(updates: Update[] = []) {
+  constructor(updates: Modification[] = []) {
     this.updates = updates;
   }
 

@@ -4,7 +4,7 @@ import { ErrorReason, toString } from "./error-reason";
 
 export { Editor };
 export {
-  Update,
+  Modification,
   Code,
   Command,
   Choice,
@@ -16,7 +16,7 @@ interface Editor {
   write(code: Code, newCursorPosition?: Position): Promise<void>;
   readThenWrite(
     selection: Selection,
-    getUpdates: (code: Code) => Update[],
+    getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void>;
   delegate(command: Command): Promise<void>;
@@ -24,7 +24,7 @@ interface Editor {
   askUser<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined>;
 }
 
-type Update = {
+type Modification = {
   code: Code;
   selection: Selection;
 };

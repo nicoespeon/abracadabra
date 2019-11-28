@@ -76,36 +76,42 @@ function createEditorContractTests(
     });
 
     describe("readThenWrite", () => {
-      it("should call `getUpdates()` with an empty string if given selection is a cursor", async () => {
+      it("should call `getModifications()` with an empty string if given selection is a cursor", async () => {
         const code = `console.log("Hello")`;
-        const getUpdates = jest.fn().mockReturnValue([]);
+        const getModifications = jest.fn().mockReturnValue([]);
 
         const [editor] = createEditorOn(code);
-        await editor.readThenWrite(Selection.cursorAt(0, 0), getUpdates);
+        await editor.readThenWrite(Selection.cursorAt(0, 0), getModifications);
 
-        expect(getUpdates).toBeCalledWith("");
+        expect(getModifications).toBeCalledWith("");
       });
 
-      it("should call `getUpdates()` with the result of given selection", async () => {
+      it("should call `getModifications()` with the result of given selection", async () => {
         const code = `console.log("Hello")`;
-        const getUpdates = jest.fn().mockReturnValue([]);
+        const getModifications = jest.fn().mockReturnValue([]);
 
         const [editor] = createEditorOn(code);
-        await editor.readThenWrite(new Selection([0, 13], [0, 18]), getUpdates);
+        await editor.readThenWrite(
+          new Selection([0, 13], [0, 18]),
+          getModifications
+        );
 
-        expect(getUpdates).toBeCalledWith("Hello");
+        expect(getModifications).toBeCalledWith("Hello");
       });
 
-      it("should call `getUpdates()` with the result of given multi-lines selection", async () => {
+      it("should call `getModifications()` with the result of given multi-lines selection", async () => {
         const code = `function sayHello() {
   console.log("Hello");
 }`;
-        const getUpdates = jest.fn().mockReturnValue([]);
+        const getModifications = jest.fn().mockReturnValue([]);
 
         const [editor] = createEditorOn(code);
-        await editor.readThenWrite(new Selection([0, 9], [2, 1]), getUpdates);
+        await editor.readThenWrite(
+          new Selection([0, 9], [2, 1]),
+          getModifications
+        );
 
-        expect(getUpdates).toBeCalledWith(`sayHello() {
+        expect(getModifications).toBeCalledWith(`sayHello() {
   console.log("Hello");
 }`);
       });

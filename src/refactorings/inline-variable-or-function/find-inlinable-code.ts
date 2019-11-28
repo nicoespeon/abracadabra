@@ -1,4 +1,4 @@
-import { Code, Update } from "../../editor/editor";
+import { Code, Modification } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as ast from "../../ast";
 import { last } from "../../array-helpers";
@@ -141,7 +141,7 @@ interface InlinableCode {
   shouldExtendSelectionToDeclaration: boolean;
   valueSelection: Selection;
   codeToRemoveSelection: Selection;
-  updateIdentifiersWith: (inlinedCode: Code) => Update[];
+  updateIdentifiersWith: (inlinedCode: Code) => Modification[];
 }
 
 // 🍂 Leaves
@@ -196,7 +196,7 @@ class InlinableIdentifier implements InlinableCode {
     );
   }
 
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
+  updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return this.identifiersToReplace.map(
       ({ loc, isInUnaryExpression, shorthandKey }) => ({
         code: isInUnaryExpression
@@ -281,7 +281,7 @@ class InlinableTSTypeAlias implements InlinableCode {
     return this.refToReplaceLocs.length > 0;
   }
 
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
+  updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return this.refToReplaceLocs.map(loc => ({
       code: inlinedCode,
       selection: Selection.fromAST(loc)
@@ -341,7 +341,7 @@ class CompositeInlinable implements InlinableCode {
     return this.child.codeToRemoveSelection;
   }
 
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
+  updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return this.child.updateIdentifiersWith(inlinedCode);
   }
 }
@@ -451,7 +451,7 @@ class InlinableObjectPattern extends CompositeInlinable {
     return selection;
   }
 
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
+  updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return super.updateIdentifiersWith(
       this.prependObjectValueWithInitName(inlinedCode)
     );
@@ -516,7 +516,7 @@ class InlinableArrayPattern extends CompositeInlinable {
     return selection;
   }
 
-  updateIdentifiersWith(inlinedCode: Code): Update[] {
+  updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return super.updateIdentifiersWith(`${inlinedCode}[${this.index}]`);
   }
 }

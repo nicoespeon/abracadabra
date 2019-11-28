@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import {
   Editor,
   Code,
-  Update,
+  Modification,
   Command,
   ErrorReason,
   errorReasonToString,
@@ -57,7 +57,7 @@ class VSCodeEditor implements Editor {
 
   async readThenWrite(
     selection: Selection,
-    getUpdates: (code: Code) => Update[],
+    getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void> {
     const startPosition = toVSCodePosition(selection.start);
@@ -67,7 +67,7 @@ class VSCodeEditor implements Editor {
       new vscode.Range(startPosition, endPosition)
     );
 
-    const textEdits = getUpdates(readCode).map(({ code, selection }) => {
+    const textEdits = getModifications(readCode).map(({ code, selection }) => {
       const startPosition = toVSCodePosition(selection.start);
       const endPosition = toVSCodePosition(selection.end);
 
