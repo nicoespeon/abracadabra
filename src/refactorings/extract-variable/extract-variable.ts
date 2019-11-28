@@ -220,7 +220,7 @@ class Occurrence {
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
     this.loc = loc;
-    this.variable = new Variable(path.node);
+    this.variable = new Variable(path);
   }
 
   get selection() {
@@ -232,20 +232,19 @@ class Occurrence {
   }
 
   get modification(): Modification {
-    const modification =
-      ast.isObjectProperty(this.path.node) && !this.path.node.computed
-        ? {
-            code: "",
-            selection: this.selection.extendStartToEndOf(
-              Selection.fromAST(this.path.node.key.loc)
-            )
-          }
-        : {
-            code: this.toVariableId(),
-            selection: this.selection
-          };
+    const { node } = this.path;
 
-    return modification;
+    return ast.canBeShorthand(node)
+      ? {
+          code: "",
+          selection: this.selection.extendStartToEndOf(
+            Selection.fromAST(node.key.loc)
+          )
+        }
+      : {
+          code: this.variable.id,
+          selection: this.selection
+        };
   }
 
   positionOnExtractedId(): Position {
@@ -267,16 +266,6 @@ class Occurrence {
     }`;
   }
 
-  toVariableId(): Code {
-    const { parent, node } = this.path;
-
-    const shouldWrapInBraces =
-      ast.isJSXAttribute(parent) ||
-      (ast.isJSX(parent) && (ast.isJSXElement(node) || ast.isJSXText(node)));
-
-    return shouldWrapInBraces ? `{${this.variable.name}}` : this.variable.name;
-  }
-
   private getIndentationLevel(): IndentationLevel {
     return this.getScopeParentPosition().character;
   }
@@ -292,13 +281,18 @@ class Occurrence {
 
 class Variable {
   private _name = "extracted";
+  private path: ast.NodePath;
 
-  constructor(node: ast.Node) {
+  constructor(path: ast.NodePath) {
+    this.path = path;
+
+    const { node } = path;
+
     if (ast.isStringLiteral(node)) {
       this.tryToSetNameWith(node.value);
     }
 
-    if (ast.isObjectProperty(node) && !node.computed) {
+    if (ast.canBeShorthand(node)) {
       this.tryToSetNameWith(node.key.name);
     }
 
@@ -315,6 +309,16 @@ class Variable {
 
   get length(): number {
     return this._name.length;
+  }
+
+  get id(): Code {
+    const { parent, node } = this.path;
+
+    const shouldWrapInBraces =
+      ast.isJSXAttribute(parent) ||
+      (ast.isJSX(parent) && (ast.isJSXElement(node) || ast.isJSXText(node)));
+
+    return shouldWrapInBraces ? `{${this.name}}` : this.name;
   }
 
   private tryToSetNameWith(value: string) {

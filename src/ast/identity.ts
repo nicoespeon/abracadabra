@@ -24,7 +24,8 @@ export {
   isInAlternate,
   areOpposite,
   areOppositeOperators,
-  getOppositeOperator
+  getOppositeOperator,
+  canBeShorthand
 };
 
 function isClassPropertyIdentifier(path: NodePath): boolean {
@@ -299,4 +300,8 @@ function getOppositeOperator(
   });
 
   return result || operator;
+}
+
+function canBeShorthand(node: t.Node): node is t.ObjectProperty {
+  return t.isObjectProperty(node) && !node.computed;
 }
