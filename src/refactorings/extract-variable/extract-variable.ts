@@ -1,6 +1,6 @@
 import { camel } from "change-case";
 
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, Code, ErrorReason, Modification } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import * as ast from "../../ast";
@@ -42,10 +42,7 @@ async function extractVariable(
         selection: topMostOccurrence.getScopeParentCursor()
       },
       // Replace extracted code with new variable.
-      ...extractedOccurrences.map(occurrence => ({
-        code: occurrence.toVariableId(),
-        selection: occurrence.selection
-      }))
+      ...extractedOccurrences.map(occurrence => occurrence.modification)
     ],
     selectedOccurrence.positionOnExtractedId()
   );
@@ -232,6 +229,13 @@ class Occurrence {
 
   get indentation(): Code {
     return " ".repeat(this.getIndentationLevel());
+  }
+
+  get modification(): Modification {
+    return {
+      code: this.toVariableId(),
+      selection: this.selection
+    };
   }
 
   positionOnExtractedId(): Position {
