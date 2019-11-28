@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2019-11-28
+
 ### Changed
 
 #### Extract Variable creates shorthand object properties
@@ -529,7 +531,8 @@ function doSomething(someData) {
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/1.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/nicoespeon/abracadabra/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/nicoespeon/abracadabra/compare/1.0.1...1.1.0
 [1.0.1]: https://github.com/nicoespeon/abracadabra/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/nicoespeon/abracadabra/compare/0.11.0...1.0.0
