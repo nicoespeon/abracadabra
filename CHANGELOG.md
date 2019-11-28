@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Extract Variable creates shorthand object properties
+
+Consider the following code:
+
+```js
+console.log({
+  foo: "bar"
+});
+```
+
+Before, extracting the `"bar"` string literal would have produced:
+
+```js
+const extracted = "bar";
+console.log({
+  foo: extracted
+});
+```
+
+This worked. But in practice, we realized that we continue modifying the code manually to get there:
+
+```js
+const foo = "bar";
+console.log({
+  foo
+});
+```
+
+So now, this is what _Extract Variable_ will generate by default. Obviously, you'll have the capability to rename `foo` directly, so you can adapt the name if you want to provide another one.
+
+We believe this will make extracting object properties even more fluid.
+
 ### Fixed
 
 - Extract Variable won't extract type annotation as it doesn't handle them properly yet.
