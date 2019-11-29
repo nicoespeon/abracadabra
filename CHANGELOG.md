@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2019-11-28
+## [1.2.0] - 2019-11-28 - Big head, shorthand 🦖
 
 ### Changed
 
@@ -47,7 +47,9 @@ We believe this will make extracting object properties even more fluid.
 
 - Extract Variable won't extract type annotation as it doesn't handle them properly yet.
 
-## [1.1.0] - 2019-11-21
+## [1.1.0] - 2019-11-21 - Keep movin' 🏃‍♀️
+
+<details>
 
 ### Changed
 
@@ -60,22 +62,30 @@ We believe this will make extracting object properties even more fluid.
 - Extract Variable don't suggest an invalid variable name when extracting a string starting with a number.
 - Stop jumping cursor to the end of the file when performing some refactorings. That was a regression introduced when we improve cursor scrolling on Move Statements, in v1.0.0 😅
 
+</details>
+
 ## [1.0.1] - 2019-11-18
+
+<details>
 
 ### Fixed
 
 - Inline Variable now works correctly for destructured objects with a computed identifier (e.g. `const { id } = session.users[key]`).
 
-## [1.0.0] - 2019-11-15
+</details>
+
+## [1.0.0] - 2019-11-15 - Officially stable 🎩
 
 **Abracadabra is now stable enough to be considered v1 🎉✨🎩**
+
+<details>
 
 ### Fixed
 
 - Cursor position after "Move Statements" is now more accurate.
 - VS Code now scrolls to the moved statement, so we don't loose track of it!
 
-## [0.11.0] - 2019-11-13
+## [0.11.0] - 2019-11-13 - Refactor Barry, Refactor ⚡
 
 ### Changed
 
@@ -150,7 +160,11 @@ const user = {
 
 Noticed how it handles the trailing comma? Ok, that was already here. But it's still super neat!
 
-## [0.10.0] - 2019-10-27
+</details>
+
+## [0.10.0] - 2019-10-27 - Can't type this 🕺
+
+<details>
 
 ### Changed
 
@@ -226,7 +240,11 @@ if (isValid) {
 
 - Extract Variable with arrays of different length now matches other occurrences correctly.
 
-## [0.9.0] - 2019-10-17
+</details>
+
+## [0.9.0] - 2019-10-17 - Let me guess your name 🔮
+
+<details>
 
 ### Changed
 
@@ -283,7 +301,11 @@ One last thing: if the inferred name is too long (> 20 characters), it will defa
 
 - All refactorings Quick Fixes used to appear on Windows because of EOL. Not anymore!
 
-## [0.8.0] - 2019-09-22
+</details>
+
+## [0.8.0] - 2019-09-22 - I see dead code 💀
+
+<details>
 
 ### Added
 
@@ -317,7 +339,11 @@ Destructured array patterns (e.g. `const [userId] = session`) are still not supp
 
 - Convert If/Else to Ternary now preserve comments that were inside each branches.
 
-## [0.7.0] - 2019-09-16
+</details>
+
+## [0.7.0] - 2019-09-16 - Switch it on! 🔦
+
+<details>
 
 ### Added
 
@@ -366,7 +392,11 @@ const getLastName = () => {
 - Flip If/Else now works when both if and else branches have return statements
 - Inline Function now preserves comments as much as possible
 
-## [0.6.0] - 2019-09-08
+</details>
+
+## [0.6.0] - 2019-09-08 - Bubble it up 🐠
+
+<details>
 
 ### Added
 
@@ -402,7 +432,11 @@ console.log({ ...extracted });
 
 If your cursor is on the `...` symbol however, you will still extract the whole thing.
 
-## [0.5.0] - 2019-08-25
+</details>
+
+## [0.5.0] - 2019-08-25 - Extract 'em all 🤙
+
+<details>
 
 ### Added
 
@@ -426,7 +460,11 @@ But if we can find other occurrences of the variable in the scope, then it will 
 - Extract Variable now works for call expressions in JSX Elements (e.g. `<Button onClick={this.extractMe()} />`)
 - Extract Variable now works in for statements
 
-## [0.4.0] - 2019-08-18
+</details>
+
+## [0.4.0] - 2019-08-18 - Here come the Guards 💂‍♀️
+
+<details>
 
 ### Changed
 
@@ -480,7 +518,11 @@ function doSomething(someData) {
 - Extract Variable on JSX Elements now triggers symbol rename as expected
 - Extract Variable now works on `JSXText`s
 
-## [0.3.0] - 2019-08-10
+</details>
+
+## [0.3.0] - 2019-08-10 - Y U no use template strings? 😫
+
+<details>
 
 ### Added
 
@@ -495,14 +537,22 @@ function doSomething(someData) {
 - Flip Ternary now handles nested ternaries correctly.
 - Flip If/Else now handles nested _If_ statements correctly.
 
-## [0.2.0] - 2019-08-05
+</details>
+
+## [0.2.0] - 2019-08-05 - Let me Inline this for you 🧙‍♂️
+
+<details>
 
 ### Added
 
 - **[New refactoring]** Inline Function
 - **[New refactoring]** Merge If Statements
 
-## [0.1.0] - 2019-07-23
+</details>
+
+## [0.1.0] - 2019-07-23 - Brace(s) yourself… ❄️
+
+<details>
 
 ### Fixed
 
@@ -515,7 +565,11 @@ function doSomething(someData) {
 - **[New refactoring]** Remove Braces from Arrow Function
 - **[New refactoring]** Add Braces to Arrow Function
 
-## [0.0.1] - 2019-07-09
+</details>
+
+## [0.0.1] - 2019-07-09 - First publication, first refactorings ✨
+
+<details>
 
 ### Added
 
@@ -530,6 +584,8 @@ function doSomething(someData) {
 - **[New refactoring]** Inline Variable
 - **[New refactoring]** Extract Variable
 - **[New refactoring]** Rename Symbol
+
+</details>
 
 [unreleased]: https://github.com/nicoespeon/abracadabra/compare/1.2.0...HEAD
 [1.2.0]: https://github.com/nicoespeon/abracadabra/compare/1.1.0...1.2.0
