@@ -39,12 +39,12 @@ async function extractVariable(
       // Insert new variable declaration.
       {
         code: selectedOccurrence.toVariableDeclaration(extractedCode),
-        selection: topMostOccurrence.getScopeParentCursor()
+        selection: topMostOccurrence.scopeParentCursor
       },
       // Replace extracted code with new variable.
       ...extractedOccurrences.map(occurrence => occurrence.modification)
     ],
-    selectedOccurrence.positionOnExtractedId()
+    selectedOccurrence.positionOnExtractedId
   );
 
   // Extracted symbol is located at `selection` => just trigger a rename.
@@ -247,14 +247,14 @@ class Occurrence {
     };
   }
 
-  positionOnExtractedId(): Position {
+  get positionOnExtractedId(): Position {
     return new Position(
       this.selection.start.line + this.selection.height + 1,
       this.selection.start.character + this.variable.length
     );
   }
 
-  getScopeParentCursor(): Selection {
+  get scopeParentCursor(): Selection {
     const position = this.getScopeParentPosition();
     return Selection.fromPositions(position, position);
   }
@@ -294,7 +294,7 @@ class ShorthandOccurrence extends Occurrence {
     };
   }
 
-  positionOnExtractedId(): Position {
+  get positionOnExtractedId(): Position {
     return new Position(
       this.selection.start.line + this.selection.height + 1,
       this.keySelection.end.character
