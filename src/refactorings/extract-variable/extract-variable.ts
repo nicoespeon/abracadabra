@@ -102,7 +102,7 @@ function findExtractableCode(
       const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
 
-      result.selectedOccurrence = new Occurrence(path, loc);
+      result.selectedOccurrence = createOccurrence(path, loc);
     }
   });
 
@@ -139,7 +139,7 @@ function findOtherOccurrences(
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
       if (ast.areEqual(path.node, occurrence.path.node)) {
-        result.push(new Occurrence(path, node.loc));
+        result.push(createOccurrence(path, node.loc));
       }
     }
   };
@@ -211,6 +211,15 @@ type ExtractableCode = {
   otherOccurrences: Occurrence[];
 };
 
+function createOccurrence(
+  path: ast.NodePath,
+  loc: ast.SourceLocation
+): Occurrence {
+  return ast.canBeShorthand(path)
+    ? new ShorthandOccurrence(path, loc)
+    : new Occurrence(path, loc);
+}
+
 class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
@@ -232,33 +241,17 @@ class Occurrence {
   }
 
   get modification(): Modification {
-    const { node } = this.path;
-
-    return ast.canBeShorthand(node)
-      ? {
-          code: "",
-          selection: this.selection.extendStartToEndOf(
-            Selection.fromAST(node.key.loc)
-          )
-        }
-      : {
-          code: this.variable.id,
-          selection: this.selection
-        };
+    return {
+      code: this.variable.id,
+      selection: this.selection
+    };
   }
 
   positionOnExtractedId(): Position {
-    const { node } = this.path;
-
-    return ast.canBeShorthand(node)
-      ? new Position(
-          this.selection.start.line + this.selection.height + 1,
-          Selection.fromAST(node.key.loc).end.character
-        )
-      : new Position(
-          this.selection.start.line + this.selection.height + 1,
-          this.selection.start.character + this.variable.length
-        );
+    return new Position(
+      this.selection.start.line + this.selection.height + 1,
+      this.selection.start.character + this.variable.length
+    );
   }
 
   getScopeParentCursor(): Selection {
@@ -286,6 +279,29 @@ class Occurrence {
   }
 }
 
+class ShorthandOccurrence extends Occurrence {
+  private keySelection: Selection;
+
+  constructor(path: ast.NodePath<ast.ObjectProperty>, loc: ast.SourceLocation) {
+    super(path, loc);
+    this.keySelection = Selection.fromAST(path.node.key.loc);
+  }
+
+  get modification(): Modification {
+    return {
+      code: "",
+      selection: this.selection.extendStartToEndOf(this.keySelection)
+    };
+  }
+
+  positionOnExtractedId(): Position {
+    return new Position(
+      this.selection.start.line + this.selection.height + 1,
+      this.keySelection.end.character
+    );
+  }
+}
+
 class Variable {
   private _name = "extracted";
   private path: ast.NodePath;
@@ -299,8 +315,8 @@ class Variable {
       this.tryToSetNameWith(node.value);
     }
 
-    if (ast.canBeShorthand(node)) {
-      this.tryToSetNameWith(node.key.name);
+    if (ast.canBeShorthand(path)) {
+      this.tryToSetNameWith(path.node.key.name);
     }
 
     if (ast.isMemberExpression(node)) {
