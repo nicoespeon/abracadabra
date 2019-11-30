@@ -248,10 +248,17 @@ class Occurrence {
   }
 
   positionOnExtractedId(): Position {
-    return new Position(
-      this.selection.start.line + this.selection.height + 1,
-      this.selection.start.character + this.variable.length
-    );
+    const { node } = this.path;
+
+    return ast.canBeShorthand(node)
+      ? new Position(
+          this.selection.start.line + this.selection.height + 1,
+          Selection.fromAST(node.key.loc).end.character
+        )
+      : new Position(
+          this.selection.start.line + this.selection.height + 1,
+          this.selection.start.character + this.variable.length
+        );
   }
 
   getScopeParentCursor(): Selection {

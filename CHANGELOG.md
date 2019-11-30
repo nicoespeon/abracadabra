@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix cursor position after Extract Variable that creates a shorthand on an object property that ends with a comma, so rename works
+
 ## [1.2.0] - 2019-11-28 - Big head, shorthand 🦖
 
 ### Changed

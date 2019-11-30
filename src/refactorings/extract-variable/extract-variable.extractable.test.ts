@@ -170,6 +170,20 @@ console.log({
 });`
       },
       {
+        description: "an object property value (not the last one)",
+        code: `console.log({
+  hello: "World",
+  goodbye: "my old friend"
+});`,
+        selection: Selection.cursorAt(1, 9),
+        expected: `const hello = "World";
+console.log({
+  hello,
+  goodbye: "my old friend"
+});`,
+        expectedPosition: new Position(2, 7)
+      },
+      {
         description:
           "an element nested in a multi-lines object that is assigned to a variable",
         code: `const a = {
