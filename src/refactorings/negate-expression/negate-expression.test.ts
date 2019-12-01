@@ -240,4 +240,22 @@ describe("Finding negatable expression (quick fix)", () => {
 
     expect(expression).toBeUndefined();
   });
+
+  it("should not match against a single unary expression", async () => {
+    const code = `if (!isValid) {}`;
+    const selection = Selection.cursorAt(0, 4);
+
+    const expression = findNegatableExpression(t.parse(code), selection);
+
+    expect(expression).toBeUndefined();
+  });
+
+  it("should not match against a single unary expression (call expression)", async () => {
+    const code = `if (!isValid()) {}`;
+    const selection = Selection.cursorAt(0, 4);
+
+    const expression = findNegatableExpression(t.parse(code), selection);
+
+    expect(expression).toBeUndefined();
+  });
 });

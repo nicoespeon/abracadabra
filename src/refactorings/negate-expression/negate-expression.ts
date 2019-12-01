@@ -39,7 +39,7 @@ function canNegateExpression(
   t.traverseAST(ast, {
     enter({ node, parent }) {
       if (!isNegatable(node)) return;
-      if (isNegatedIdentifier(node)) return;
+      if (!wouldChangeIfNegated(node)) return;
       if (!selection.isInsideNode(node)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
@@ -74,7 +74,7 @@ function findNegatableExpression(
   t.traverseAST(ast, {
     enter({ node, parent }) {
       if (!isNegatable(node)) return;
-      if (isNegatedIdentifier(node)) return;
+      if (!wouldChangeIfNegated(node)) return;
       if (!selection.isInsideNode(node)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
@@ -120,8 +120,11 @@ function isNegatable(
   );
 }
 
-function isNegatedIdentifier(node: t.Node): boolean {
-  return t.isUnaryExpression(node) && t.isIdentifier(node.argument);
+function wouldChangeIfNegated(node: t.Node): boolean {
+  return !(
+    t.isUnaryExpression(node) &&
+    (t.isIdentifier(node.argument) || t.isCallExpression(node.argument))
+  );
 }
 
 function hasNegatableOperator(
