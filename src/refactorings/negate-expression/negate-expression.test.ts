@@ -4,7 +4,7 @@ import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
-import { negateExpression, findNegatableExpression } from "./negate-expression";
+import { negateExpression, canNegateExpression } from "./negate-expression";
 
 describe("Negate Expression", () => {
   let showErrorMessage: Editor["showError"];
@@ -214,9 +214,9 @@ describe("Finding negatable expression (quick fix)", () => {
     const code = `if (a > b) {}`;
     const selection = Selection.cursorAt(0, 4);
 
-    const expression = findNegatableExpression(t.parse(code), selection);
+    const { canNegate } = canNegateExpression(t.parse(code), selection);
 
-    expect(expression).toBeDefined();
+    expect(canNegate).toBe(true);
   });
 
   it("should match against binary expressions", async () => {
@@ -225,9 +225,9 @@ describe("Finding negatable expression (quick fix)", () => {
 }`;
     const selection = Selection.cursorAt(1, 13);
 
-    const expression = findNegatableExpression(t.parse(code), selection);
+    const { canNegate } = canNegateExpression(t.parse(code), selection);
 
-    expect(expression).toBeDefined();
+    expect(canNegate).toBe(true);
   });
 
   it("should not match against concatenable operators", async () => {
@@ -236,26 +236,26 @@ describe("Finding negatable expression (quick fix)", () => {
 }`;
     const selection = Selection.cursorAt(1, 13);
 
-    const expression = findNegatableExpression(t.parse(code), selection);
+    const { canNegate } = canNegateExpression(t.parse(code), selection);
 
-    expect(expression).toBeUndefined();
+    expect(canNegate).toBe(false);
   });
 
   it("should not match against a single unary expression", async () => {
     const code = `if (!isValid) {}`;
     const selection = Selection.cursorAt(0, 4);
 
-    const expression = findNegatableExpression(t.parse(code), selection);
+    const { canNegate } = canNegateExpression(t.parse(code), selection);
 
-    expect(expression).toBeUndefined();
+    expect(canNegate).toBe(false);
   });
 
   it("should not match against a single unary expression (call expression)", async () => {
     const code = `if (!isValid()) {}`;
     const selection = Selection.cursorAt(0, 4);
 
-    const expression = findNegatableExpression(t.parse(code), selection);
+    const { canNegate } = canNegateExpression(t.parse(code), selection);
 
-    expect(expression).toBeUndefined();
+    expect(canNegate).toBe(false);
   });
 });
