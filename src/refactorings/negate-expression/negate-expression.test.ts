@@ -108,6 +108,15 @@ describe("Negate Expression", () => {
         expected: "a == b || b == c"
       },
       {
+        description: "already negated expression, multi-line",
+        expression: `!(
+  a != b &&
+  b != c
+)`,
+        selection: Selection.cursorAt(0, 4),
+        expected: `a == b || b == c`
+      },
+      {
         description: "identifiers (boolean values)",
         expression: "isValid || isCorrect",
         selection: Selection.cursorAt(0, 13),

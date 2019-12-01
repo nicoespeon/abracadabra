@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix cursor position after Extract Variable that creates a shorthand on an object property that ends with a comma, so rename works
 - Stop proposing Negate Expression quick fix on single call expressions, since the negated expression is identical
+- Remove double-negations after running Negate Expression on a multi-line expression
 
 ## [1.2.0] - 2019-11-28 - Big head, shorthand 🦖
 

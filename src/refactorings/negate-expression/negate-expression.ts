@@ -151,7 +151,7 @@ function negate(code: Code): Code {
       .replace(/;$/, "")
       // We might end up with a double-negation, let's clean that.
       // E.g. `!(!(a || b))` => `a || b`
-      .replace(/^!\(!\((.*)\)\)$/, "$1")
+      .replace(/^!\(\s*!\((.*)\)\s*\)$/, "$1")
   );
 }
 
