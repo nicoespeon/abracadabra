@@ -240,13 +240,13 @@
       },
       {
         "command": "abracadabra.moveStatementDown",
-        "key": "ctrl+alt+shift+down",
+        "key": "alt+shift+d",
         "mac": "cmd+shift+down",
         "when": "editorTextFocus"
       },
       {
         "command": "abracadabra.moveStatementUp",
-        "key": "ctrl+alt+shift+up",
+        "key": "alt+shift+u",
         "mac": "cmd+shift+up",
         "when": "editorTextFocus"
       }
