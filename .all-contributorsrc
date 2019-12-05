@@ -6,6 +6,30 @@
   "commit": false,
   "contributors": [
     {
+      "login": "nicoespeon",
+      "name": "Nicolas Carlo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1094774?v=3",
+      "profile": "https://nicoespeon.com",
+      "contributions": [
+        "question",
+        "code",
+        "documentation",
+        "review",
+        "ideas"
+      ]
+    },
+    {
+      "login": "fabien0102",
+      "name": "Fabien Bernard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1761469?v=3",
+      "profile": "https://fabien0102.com/",
+      "contributions": [
+        "code",
+        "ideas",
+        "design"
+      ]
+    },
+    {
       "login": "David-Else",
       "name": "David",
       "avatar_url": "https://avatars2.githubusercontent.com/u/12832280?v=4",
