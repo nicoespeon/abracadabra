@@ -4,6 +4,19 @@ First of all, we'd like to thank you for taking some of your time to contribute 
 
 Architecture decisions for this project [are documented here][adrs], using the [Architecture Decision Records (ADR)][adrs-pattern] pattern.
 
+## Table of Contents
+
+- [Getting started](#getting-started)
+- [Run the tests](#run-the-tests)
+  - [About tests](#about-tests)
+- [Create a new refactoring](#create-a-new-refactoring)
+- [Useful resources to start changing the code](#useful-resources-to-start-changing-the-code)
+- [Code Style](#code-style)
+  - [Structure of TS files](#structure-of-ts-files)
+- [Debug locally](#debug-locally)
+- [Create a package and use it](#create-a-package-and-use-it)
+- [Open a PR and add acknowledge your contribution](#open-a-pr-and-add-acknowledge-your-contribution)
+
 ## Getting started
 
 > Pre-requisite: you have installed [git][install-git], [node][install-node] and [yarn][install-yarn].

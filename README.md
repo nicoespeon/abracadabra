@@ -23,6 +23,59 @@ Our goal is to provide you with easy-to-use, intuitive refactorings. They help y
 
 ![Gif showing refactoring operations this extension can do][demo-extension]
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Available refactorings](#available-refactorings)
+
+  - The Essentials:
+
+    1. [Rename Symbol](#rename-symbol)
+    1. [Extract Variable](#extract-variable)
+    1. [Inline Variable](#inline-variable)
+    1. [Inline Function](#inline-function)
+    1. [Move Statement Up](#move-statement-up)
+    1. [Move Statement Down](#move-statement-down)
+
+  - Simplifying Conditional Logic:
+
+    1. [Negate Expression](#negate-expression)
+    1. [Remove Redundant Else](#remove-redundant-else)
+    1. [Flip If/Else](#flip-ifelse)
+    1. [Flip Ternary](#flip-ternary)
+    1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
+    1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
+    1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
+    1. [Split If Statement](#split-if-statement)
+    1. [Merge If Statements](#merge-if-statements)
+    1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
+    1. [Bubble up If Statement](#bubble-up-if-statement)
+
+  - Moving Features:
+
+    1. [Remove Dead Code](#remove-dead-code)
+
+  - Organizing data:
+
+    1. [Split Declaration and Initialization](#split-declaration-and-initialization)
+
+  - Working around the syntax:
+    1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
+    1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
+    1. [Convert to Template Literal](#convert-to-template-literal)
+    1. [Replace Binary with Assignment](#replace-binary-with-assignment)
+    1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
+
+- [Release Notes](#release-notes)
+  - [Versioning](#versioning)
+- [Contributing](#contributing)
+  - [Contributing Guide](#contributing-guide)
+  - [Good First Issues](#good-first-issues)
+- [Contributors](#contributors)
+- [Alternatives](#alternatives)
+  - [Why building yet another refactoring extension then?](#why-building-yet-another-refactoring-extension-then)
+- [License](#license)
+
 ## Installation
 
 1. Click on the Extensions icon (usually on the left-hand side of your editor).
@@ -40,45 +93,6 @@ Some refactorings have default keybindings configured, but [you can change that]
 Refactorings that don't have default keybindings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You usually access them by clicking on the lightbulb that appear next to the code 💡
 
 **We recommend you** to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
-
-The Essentials:
-
-1. [Rename Symbol](#rename-symbol)
-1. [Extract Variable](#extract-variable)
-1. [Inline Variable](#inline-variable)
-1. [Inline Function](#inline-function)
-1. [Move Statement Up](#move-statement-up)
-1. [Move Statement Down](#move-statement-down)
-
-Simplifying Conditional Logic:
-
-1. [Negate Expression](#negate-expression)
-1. [Remove Redundant Else](#remove-redundant-else)
-1. [Flip If/Else](#flip-ifelse)
-1. [Flip Ternary](#flip-ternary)
-1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
-1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
-1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
-1. [Split If Statement](#split-if-statement)
-1. [Merge If Statements](#merge-if-statements)
-1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
-1. [Bubble up If Statement](#bubble-up-if-statement)
-
-Moving Features:
-
-1. [Remove Dead Code](#remove-dead-code)
-
-Organizing data:
-
-1. [Split Declaration and Initialization](#split-declaration-and-initialization)
-
-Working around the syntax:
-
-1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
-1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
-1. [Convert to Template Literal](#convert-to-template-literal)
-1. [Replace Binary with Assignment](#replace-binary-with-assignment)
-1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
 
 ### Rename Symbol
 
