@@ -27,18 +27,14 @@ Our goal is to provide you with easy-to-use, intuitive refactorings. They help y
 
 - [Installation](#installation)
 - [Available refactorings](#available-refactorings)
-
   - The Essentials:
-
     1. [Rename Symbol](#rename-symbol)
     1. [Extract Variable](#extract-variable)
     1. [Inline Variable](#inline-variable)
     1. [Inline Function](#inline-function)
     1. [Move Statement Up](#move-statement-up)
     1. [Move Statement Down](#move-statement-down)
-
   - Simplifying Conditional Logic:
-
     1. [Negate Expression](#negate-expression)
     1. [Remove Redundant Else](#remove-redundant-else)
     1. [Flip If/Else](#flip-ifelse)
@@ -50,22 +46,16 @@ Our goal is to provide you with easy-to-use, intuitive refactorings. They help y
     1. [Merge If Statements](#merge-if-statements)
     1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
     1. [Bubble up If Statement](#bubble-up-if-statement)
-
   - Moving Features:
-
     1. [Remove Dead Code](#remove-dead-code)
-
   - Organizing data:
-
     1. [Split Declaration and Initialization](#split-declaration-and-initialization)
-
   - Working around the syntax:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
     1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
-
 - [Release Notes](#release-notes)
   - [Versioning](#versioning)
 - [Contributing](#contributing)
