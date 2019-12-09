@@ -28,7 +28,7 @@ function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
       if (!selection.isInsidePath(path)) return;
 
       const ternary =
-        getReturnStatementTernary(node) || getAssignmentExpressionTernary(node);
+        getReturnStatementTernary(path) || getAssignmentExpressionTernary(node);
       if (!ternary) return;
 
       result = true;
@@ -45,7 +45,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (!selection.isInsidePath(path)) return;
 
       const ternary =
-        getReturnStatementTernary(node) || getAssignmentExpressionTernary(node);
+        getReturnStatementTernary(path) || getAssignmentExpressionTernary(node);
       if (!ternary) return;
 
       path.replaceWith(ternary);
@@ -55,8 +55,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 }
 
 function getReturnStatementTernary(
-  node: t.IfStatement
+  path: t.NodePath<t.IfStatement>
 ): t.ReturnStatement | undefined {
+  const { node } = path;
+
   const ifReturnedStatement = getReturnedStatement(node.consequent);
   if (!ifReturnedStatement) return;
   if (!ifReturnedStatement.argument) return;
