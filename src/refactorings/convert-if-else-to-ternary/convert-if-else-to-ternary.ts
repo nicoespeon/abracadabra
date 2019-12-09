@@ -21,37 +21,92 @@ async function convertIfElseToTernary(
 
 function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
   let result = false;
-
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      const { node } = path;
-      if (!selection.isInsidePath(path)) return;
-
-      const ternary =
-        getReturnStatementTernary(path) || getAssignmentExpressionTernary(node);
-      if (!ternary) return;
-
-      result = true;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, node) => {
+      path.replaceWith(node);
+      path.stop();
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>, node: t.Node) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
-      const { node } = path;
       if (!selection.isInsidePath(path)) return;
 
-      const ternary =
-        getReturnStatementTernary(path) || getAssignmentExpressionTernary(node);
-      if (!ternary) return;
-
-      path.replaceWith(ternary);
-      path.stop();
+      // Use the Chain of Responsibility pattern to add transformation options.
+      const ternary = new ReturnedTernaryMatcher(path);
+      ternary.setNext(new AssignedTernaryMatcher(path));
+      ternary.onMatch(node => onMatch(path, node));
     }
-  });
+  };
+}
+
+interface TernaryMatcher {
+  setNext(matcher: TernaryMatcher): void;
+  onMatch(convert: Convert): void;
+}
+
+type Convert = (node: t.Node) => void;
+
+class NoopMatcher implements TernaryMatcher {
+  next: TernaryMatcher | undefined;
+
+  setNext(converter: TernaryMatcher) {
+    this.next = converter;
+  }
+
+  onMatch(convert: Convert) {
+    if (this.next) {
+      this.next.onMatch(convert);
+    }
+
+    // If no-one matches, do nothing.
+  }
+}
+
+class ReturnedTernaryMatcher extends NoopMatcher {
+  private statement: t.ReturnStatement | undefined;
+
+  constructor(path: t.NodePath<t.IfStatement>) {
+    super();
+    this.statement = getReturnStatementTernary(path);
+  }
+
+  onMatch(convert: Convert) {
+    if (!this.statement) {
+      return super.onMatch(convert);
+    }
+
+    convert(this.statement);
+  }
+}
+
+class AssignedTernaryMatcher extends NoopMatcher {
+  private expression: t.AssignmentExpression | undefined;
+
+  constructor(path: t.NodePath<t.IfStatement>) {
+    super();
+    this.expression = getAssignmentExpressionTernary(path.node);
+  }
+
+  onMatch(convert: Convert) {
+    if (!this.expression) {
+      return super.onMatch(convert);
+    }
+
+    convert(this.expression);
+  }
 }
 
 function getReturnStatementTernary(
