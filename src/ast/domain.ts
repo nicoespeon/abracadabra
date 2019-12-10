@@ -3,6 +3,7 @@ import * as t from "@babel/types";
 
 export * from "@babel/types";
 export {
+  getReturnedStatement,
   getStatements,
   isEmpty,
   replaceWithBodyOf,
@@ -10,6 +11,17 @@ export {
   Primitive,
   forEach
 };
+
+function getReturnedStatement(
+  node: t.Statement | null
+): t.ReturnStatement | null {
+  if (!t.isBlockStatement(node)) return null;
+
+  const firstChild = node.body[0];
+  if (!t.isReturnStatement(firstChild)) return null;
+
+  return firstChild;
+}
 
 function getStatements(statement: t.Statement): t.Statement[] {
   return t.isBlockStatement(statement) ? statement.body : [statement];

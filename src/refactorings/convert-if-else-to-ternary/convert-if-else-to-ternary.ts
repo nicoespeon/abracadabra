@@ -76,19 +76,48 @@ class NoopMatcher implements TernaryMatcher {
 }
 
 class ReturnedTernaryMatcher extends NoopMatcher {
-  private statement: t.ReturnStatement | undefined;
+  private path: t.NodePath<t.IfStatement>;
 
   constructor(path: t.NodePath<t.IfStatement>) {
     super();
-    this.statement = getReturnStatementTernary(path);
+    this.path = path;
   }
 
   onMatch(convert: Convert) {
-    if (!this.statement) {
+    const statement = this.getReturnStatementTernary();
+
+    if (!statement) {
       return super.onMatch(convert);
     }
 
-    convert(this.statement);
+    convert(statement);
+  }
+
+  private getReturnStatementTernary(): t.ReturnStatement | undefined {
+    const { node } = this.path;
+
+    const ifReturnedStatement = t.getReturnedStatement(node.consequent);
+    if (!ifReturnedStatement) return;
+    if (!ifReturnedStatement.argument) return;
+
+    const elseReturnedStatement = t.getReturnedStatement(node.alternate);
+    if (!elseReturnedStatement) return;
+    if (!elseReturnedStatement.argument) return;
+
+    let result = t.returnStatement(
+      t.conditionalExpression(
+        node.test,
+        ifReturnedStatement.argument,
+        elseReturnedStatement.argument
+      )
+    );
+
+    result = t.mergeCommentsInto(result, [
+      ifReturnedStatement,
+      elseReturnedStatement
+    ]);
+
+    return result;
   }
 }
 
@@ -107,46 +136,6 @@ class AssignedTernaryMatcher extends NoopMatcher {
 
     convert(this.expression);
   }
-}
-
-function getReturnStatementTernary(
-  path: t.NodePath<t.IfStatement>
-): t.ReturnStatement | undefined {
-  const { node } = path;
-
-  const ifReturnedStatement = getReturnedStatement(node.consequent);
-  if (!ifReturnedStatement) return;
-  if (!ifReturnedStatement.argument) return;
-
-  const elseReturnedStatement = getReturnedStatement(node.alternate);
-  if (!elseReturnedStatement) return;
-  if (!elseReturnedStatement.argument) return;
-
-  let result = t.returnStatement(
-    t.conditionalExpression(
-      node.test,
-      ifReturnedStatement.argument,
-      elseReturnedStatement.argument
-    )
-  );
-
-  result = t.mergeCommentsInto(result, [
-    ifReturnedStatement,
-    elseReturnedStatement
-  ]);
-
-  return result;
-}
-
-function getReturnedStatement(
-  node: t.Statement | null
-): t.ReturnStatement | null {
-  if (!t.isBlockStatement(node)) return null;
-
-  const firstChild = node.body[0];
-  if (!t.isReturnStatement(firstChild)) return null;
-
-  return firstChild;
 }
 
 function getAssignmentExpressionTernary(
