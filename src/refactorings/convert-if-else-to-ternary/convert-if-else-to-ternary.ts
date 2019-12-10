@@ -101,30 +101,11 @@ class ReturnedTernaryMatcher extends NoopMatcher {
   }
 
   private getReturnStatementTernary(): t.ReturnStatement | undefined {
-    const { node } = this.path;
-
-    const ifReturnedStatement = t.getReturnedStatement(node.consequent);
-    if (!ifReturnedStatement) return;
-    if (!ifReturnedStatement.argument) return;
-
-    const elseReturnedStatement = t.getReturnedStatement(node.alternate);
-    if (!elseReturnedStatement) return;
-    if (!elseReturnedStatement.argument) return;
-
-    let result = t.returnStatement(
-      t.conditionalExpression(
-        node.test,
-        ifReturnedStatement.argument,
-        elseReturnedStatement.argument
-      )
+    return createReturnStatement(
+      this.path.node.test,
+      t.getReturnedStatement(this.path.node.consequent),
+      t.getReturnedStatement(this.path.node.alternate)
     );
-
-    result = t.mergeCommentsInto(result, [
-      ifReturnedStatement,
-      elseReturnedStatement
-    ]);
-
-    return result;
   }
 }
 
@@ -157,31 +138,33 @@ class ImplicitReturnedTernaryMatcher extends NoopMatcher {
   }
 
   private getReturnStatementTernary(): t.ReturnStatement | undefined {
-    const { node } = this.path;
-
-    const ifReturnedStatement = t.getReturnedStatement(node.consequent);
-    if (!ifReturnedStatement) return;
-    if (!ifReturnedStatement.argument) return;
-
     if (!this.implicitReturnPath) return;
-    const elseReturnedStatement = this.implicitReturnPath.node;
-    if (!elseReturnedStatement.argument) return;
 
-    let result = t.returnStatement(
-      t.conditionalExpression(
-        node.test,
-        ifReturnedStatement.argument,
-        elseReturnedStatement.argument
-      )
+    return createReturnStatement(
+      this.path.node.test,
+      t.getReturnedStatement(this.path.node.consequent),
+      this.implicitReturnPath.node
     );
-
-    result = t.mergeCommentsInto(result, [
-      ifReturnedStatement,
-      elseReturnedStatement
-    ]);
-
-    return result;
   }
+}
+
+function createReturnStatement(
+  test: t.Expression,
+  consequent: t.ReturnStatement | null,
+  alternate: t.ReturnStatement | null
+): t.ReturnStatement | undefined {
+  if (!consequent) return;
+  if (!consequent.argument) return;
+
+  if (!alternate) return;
+  if (!alternate.argument) return;
+
+  let result = t.returnStatement(
+    t.conditionalExpression(test, consequent.argument, alternate.argument)
+  );
+  result = t.mergeCommentsInto(result, [consequent, alternate]);
+
+  return result;
 }
 
 class AssignedTernaryMatcher extends NoopMatcher {
