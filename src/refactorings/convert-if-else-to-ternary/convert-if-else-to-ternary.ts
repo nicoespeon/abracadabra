@@ -47,6 +47,7 @@ function createVisitor(
       // Use the Chain of Responsibility pattern to add transformation options.
       new ReturnedTernaryMatcher(path)
         .setNext(new AssignedTernaryMatcher(path))
+        .setNext(new ImplicitReturnedTernaryMatcher(path))
         .onMatch(node => onMatch(path, node));
     }
   };
@@ -108,6 +109,62 @@ class ReturnedTernaryMatcher extends NoopMatcher {
 
     const elseReturnedStatement = t.getReturnedStatement(node.alternate);
     if (!elseReturnedStatement) return;
+    if (!elseReturnedStatement.argument) return;
+
+    let result = t.returnStatement(
+      t.conditionalExpression(
+        node.test,
+        ifReturnedStatement.argument,
+        elseReturnedStatement.argument
+      )
+    );
+
+    result = t.mergeCommentsInto(result, [
+      ifReturnedStatement,
+      elseReturnedStatement
+    ]);
+
+    return result;
+  }
+}
+
+class ImplicitReturnedTernaryMatcher extends NoopMatcher {
+  private path: t.NodePath<t.IfStatement>;
+  private implicitReturnPath: t.NodePath<t.ReturnStatement> | undefined;
+
+  constructor(path: t.NodePath<t.IfStatement>) {
+    super();
+    this.path = path;
+
+    const nextSibling = this.path.getAllNextSiblings()[0];
+    if (t.isReturnStatement(nextSibling)) {
+      this.implicitReturnPath = nextSibling as t.NodePath<t.ReturnStatement>;
+    }
+  }
+
+  onMatch(convert: Convert) {
+    const statement = this.getReturnStatementTernary();
+
+    if (!statement) {
+      return super.onMatch(convert);
+    }
+
+    if (this.implicitReturnPath) {
+      this.implicitReturnPath.remove();
+    }
+
+    convert(statement);
+  }
+
+  private getReturnStatementTernary(): t.ReturnStatement | undefined {
+    const { node } = this.path;
+
+    const ifReturnedStatement = t.getReturnedStatement(node.consequent);
+    if (!ifReturnedStatement) return;
+    if (!ifReturnedStatement.argument) return;
+
+    if (!this.implicitReturnPath) return;
+    const elseReturnedStatement = this.implicitReturnPath.node;
     if (!elseReturnedStatement.argument) return;
 
     let result = t.returnStatement(

@@ -103,6 +103,20 @@ describe("Convert If/Else to Ternary", () => {
 }`
       },
       {
+        description: "implicit else clause",
+        code: `function reservationMode(daysInAdvance) {
+  if (daysInAdvance > 10) {
+    return "early";
+  }
+
+  return "normal";
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `function reservationMode(daysInAdvance) {
+  return daysInAdvance > 10 ? "early" : "normal";
+}`
+      },
+      {
         description: "preserve comments for returned values",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
@@ -238,11 +252,13 @@ describe("Convert If/Else to Ternary", () => {
         selection: Selection.cursorAt(2, 6)
       },
       {
-        description: "there is no else branch",
+        description: "there is no obvious implicit else branch",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     return "early";
   }
+
+  console.log("logging some stuff");
   return "normal";
 }`,
         selection: Selection.cursorAt(1, 6)

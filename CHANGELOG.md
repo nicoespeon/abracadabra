@@ -11,6 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **(Breaking)** Changed keybinding of Move Statement Up/Down on Windows and Linux since it conflicts with VS Code native shortcuts. It was `Ctrl + Shift + ↑ / ↓`, now it's `Alt + Shift + U / D`
 
+#### Convert If/Else to Ternary handles implicit else return statements
+
+Useful when dealing with guard clauses patterns.
+
+Consider the following code:
+
+```js
+function calculateYear(selectedDates) {
+  if (selectedDates[0].getMonth() === 0) {
+    return selectedDates[0].getFullYear() - 1;
+  }
+
+  return selectedDates[0].getFullYear();
+}
+```
+
+Before this change, you couldn't convert this to a ternary directly, since the else statement is not explicit. But it's still here. It's a typical guard clause pattern.
+
+Now, Abracadabra will recognize this pattern and it will produce the expected code:
+
+```js
+function calculateYear(selectedDates) {
+  return selectedDates[0].getMonth() === 0
+    ? selectedDates[0].getFullYear() - 1
+    : selectedDates[0].getFullYear();
+}
+```
+
 ## [1.2.1] - 2019-11-30
 
 ### Fixed
