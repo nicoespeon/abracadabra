@@ -45,25 +45,31 @@ function createVisitor(
       if (!selection.isInsidePath(path)) return;
 
       // Use the Chain of Responsibility pattern to add transformation options.
-      const ternary = new ReturnedTernaryMatcher(path);
-      ternary.setNext(new AssignedTernaryMatcher(path));
-      ternary.onMatch(node => onMatch(path, node));
+      new ReturnedTernaryMatcher(path)
+        .setNext(new AssignedTernaryMatcher(path))
+        .onMatch(node => onMatch(path, node));
     }
   };
 }
 
 interface TernaryMatcher {
-  setNext(matcher: TernaryMatcher): void;
+  setNext(matcher: TernaryMatcher): TernaryMatcher;
   onMatch(convert: Convert): void;
 }
 
 type Convert = (node: t.Node) => void;
 
 class NoopMatcher implements TernaryMatcher {
-  next: TernaryMatcher | undefined;
+  private next: TernaryMatcher | undefined;
 
   setNext(converter: TernaryMatcher) {
-    this.next = converter;
+    if (this.next) {
+      this.next.setNext(converter);
+    } else {
+      this.next = converter;
+    }
+
+    return this;
   }
 
   onMatch(convert: Convert) {
