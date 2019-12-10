@@ -4,6 +4,7 @@ import * as t from "@babel/types";
 export * from "@babel/types";
 export {
   getReturnedStatement,
+  getAssignedStatement,
   getStatements,
   isEmpty,
   replaceWithBodyOf,
@@ -21,6 +22,21 @@ function getReturnedStatement(
   if (!t.isReturnStatement(firstChild)) return null;
 
   return firstChild;
+}
+
+function getAssignedStatement(
+  node: t.Statement | null
+): t.ExpressionStatement & { expression: t.AssignmentExpression } | null {
+  if (!t.isBlockStatement(node)) return null;
+  if (node.body.length > 1) return null;
+
+  const firstChild = node.body[0];
+  if (!t.isExpressionStatement(firstChild)) return null;
+
+  const expression = firstChild.expression;
+  if (!t.isAssignmentExpression(expression)) return null;
+
+  return { ...firstChild, expression };
 }
 
 function getStatements(statement: t.Statement): t.Statement[] {

@@ -18,6 +18,7 @@ export {
   hasFinalReturn,
   isTruthy,
   isFalsy,
+  areSameAssignments,
   areEqual,
   isTemplateExpression,
   isInBranchedLogic,
@@ -98,6 +99,27 @@ function isNonEmptyReturn(node: t.Node) {
 
 function hasFinalReturn(statements: t.Statement[]): boolean {
   return t.isReturnStatement(last(statements));
+}
+
+function areSameAssignments(
+  expressionA: t.AssignmentExpression,
+  expressionB: t.AssignmentExpression
+): boolean {
+  return (
+    haveSameLeftIdentifiers(expressionA, expressionB) &&
+    expressionA.operator === expressionB.operator
+  );
+}
+
+function haveSameLeftIdentifiers(
+  expressionA: t.AssignmentExpression,
+  expressionB: t.AssignmentExpression
+): boolean {
+  return (
+    t.isIdentifier(expressionA.left) &&
+    t.isIdentifier(expressionB.left) &&
+    expressionA.left.name === expressionB.left.name
+  );
 }
 
 function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {

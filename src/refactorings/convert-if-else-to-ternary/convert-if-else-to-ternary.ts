@@ -122,84 +122,54 @@ class ReturnedTernaryMatcher extends NoopMatcher {
 }
 
 class AssignedTernaryMatcher extends NoopMatcher {
-  private expression: t.AssignmentExpression | undefined;
+  private path: t.NodePath<t.IfStatement>;
 
   constructor(path: t.NodePath<t.IfStatement>) {
     super();
-    this.expression = getAssignmentExpressionTernary(path.node);
+    this.path = path;
   }
 
   onMatch(convert: Convert) {
-    if (!this.expression) {
+    const expression = this.getAssignmentExpressionTernary();
+
+    if (!expression) {
       return super.onMatch(convert);
     }
 
-    convert(this.expression);
-  }
-}
-
-function getAssignmentExpressionTernary(
-  node: t.IfStatement
-): t.AssignmentExpression | undefined {
-  const ifAssignedStatement = getAssignedStatement(node.consequent);
-  if (!ifAssignedStatement) return;
-
-  const elseAssignedStatement = getAssignedStatement(node.alternate);
-  if (!elseAssignedStatement) return;
-
-  const ifAssignment = ifAssignedStatement.expression;
-  const elseAssignment = elseAssignedStatement.expression;
-
-  if (!areSameAssignments(ifAssignment, elseAssignment)) {
-    return;
+    convert(expression);
   }
 
-  let result = t.assignmentExpression(
-    ifAssignment.operator,
-    ifAssignment.left,
-    t.conditionalExpression(node.test, ifAssignment.right, elseAssignment.right)
-  );
+  private getAssignmentExpressionTernary(): t.AssignmentExpression | undefined {
+    const { node } = this.path;
 
-  result = t.mergeCommentsInto(result, [
-    ifAssignedStatement,
-    elseAssignedStatement
-  ]);
+    const ifAssignedStatement = t.getAssignedStatement(node.consequent);
+    if (!ifAssignedStatement) return;
 
-  return result;
-}
+    const elseAssignedStatement = t.getAssignedStatement(node.alternate);
+    if (!elseAssignedStatement) return;
 
-function getAssignedStatement(
-  node: t.Statement | null
-): t.ExpressionStatement & { expression: t.AssignmentExpression } | null {
-  if (!t.isBlockStatement(node)) return null;
-  if (node.body.length > 1) return null;
+    const ifAssignment = ifAssignedStatement.expression;
+    const elseAssignment = elseAssignedStatement.expression;
 
-  const firstChild = node.body[0];
-  if (!t.isExpressionStatement(firstChild)) return null;
+    if (!t.areSameAssignments(ifAssignment, elseAssignment)) {
+      return;
+    }
 
-  const expression = firstChild.expression;
-  if (!t.isAssignmentExpression(expression)) return null;
+    let result = t.assignmentExpression(
+      ifAssignment.operator,
+      ifAssignment.left,
+      t.conditionalExpression(
+        node.test,
+        ifAssignment.right,
+        elseAssignment.right
+      )
+    );
 
-  return { ...firstChild, expression };
-}
+    result = t.mergeCommentsInto(result, [
+      ifAssignedStatement,
+      elseAssignedStatement
+    ]);
 
-function areSameAssignments(
-  expressionA: t.AssignmentExpression,
-  expressionB: t.AssignmentExpression
-): boolean {
-  return (
-    haveSameLeftIdentifiers(expressionA, expressionB) &&
-    expressionA.operator === expressionB.operator
-  );
-}
-
-function haveSameLeftIdentifiers(
-  expressionA: t.AssignmentExpression,
-  expressionB: t.AssignmentExpression
-): boolean {
-  return (
-    t.isIdentifier(expressionA.left) &&
-    t.isIdentifier(expressionB.left) &&
-    expressionA.left.name === expressionB.left.name
-  );
+    return result;
+  }
 }
