@@ -40,6 +40,10 @@ function calculateYear(selectedDates) {
 }
 ```
 
+### Fixed
+
+- Inline Variable now handles destructured "this" expressions correctly (e.g. you can inline `const { id } = this.user`).
+
 ## [1.2.1] - 2019-11-30
 
 ### Fixed

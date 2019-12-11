@@ -113,6 +113,10 @@ function getInitName(init: ast.Node): string | null {
     return getInitName(init.key);
   }
 
+  if (ast.isThisExpression(init)) {
+    return "this";
+  }
+
   return null;
 }
 

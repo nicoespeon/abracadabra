@@ -29,6 +29,13 @@ messages.map(message => ({ id }));`,
         expected: `messages.map(message => ({ id: session.userId }));`
       },
       {
+        description: "from a this expression",
+        code: `const { userId } = this.session;
+messages.map(message => ({ userId }));`,
+        selection: Selection.cursorAt(0, 8),
+        expected: `messages.map(message => ({ userId: this.session.userId }));`
+      },
+      {
         description: "not assigned to another object",
         code: `const { userId } = session;
 console.log(userId);`,
