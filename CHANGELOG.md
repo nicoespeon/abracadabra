@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **(Breaking)** Changed keybinding of Move Statement Up/Down on Windows and Linux since it conflicts with VS Code native shortcuts. It was `Ctrl + Shift + ↑ / ↓`, now it's `Alt + Shift + U / D`
+- Configure `Alt ↵` keybinding to trigger VS Code Quick Fixes, so it's more convenient to use the extension by default.
 
 #### Convert If/Else to Ternary handles implicit else return statements
 

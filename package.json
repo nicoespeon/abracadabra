@@ -227,6 +227,11 @@
     ],
     "keybindings": [
       {
+        "command": "abracadabra.quickFix",
+        "key": "alt+enter",
+        "when": "editorTextFocus"
+      },
+      {
         "command": "abracadabra.extractVariable",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",

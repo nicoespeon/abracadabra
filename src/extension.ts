@@ -35,6 +35,12 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 export function activate(context: vscode.ExtensionContext) {
+  context.subscriptions.push(
+    vscode.commands.registerCommand("abracadabra.quickFix", () => {
+      vscode.commands.executeCommand("editor.action.quickFix");
+    })
+  );
+
   [
     addBracesToArrowFunction,
     bubbleUpIfStatement,

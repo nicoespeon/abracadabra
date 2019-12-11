@@ -80,9 +80,7 @@ All refactorings are available through the [Command Palette][command-palette].
 
 Some refactorings have default keybindings configured, but [you can change that][change-keybindings].
 
-Refactorings that don't have default keybindings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You usually access them by clicking on the lightbulb that appear next to the code 💡
-
-**We recommend you** to use the official shortcut (e.g. `⌘ .` on Mac), or to define a custom one (like `Alt + ↵`).
+All other refactorings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You can access them by clicking on the lightbulb that appear next to the code 💡 or use the default shortcut `Alt ↵`.
 
 ### Rename Symbol
 
@@ -164,7 +162,7 @@ _Move Statement Up_ and _Move Statement Down_ also work on object properties. Th
 
 ### Negate Expression
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
 
@@ -176,7 +174,7 @@ It will negate the closest expression from your cursor or partial selection.
 
 ### Remove Redundant Else
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Removes the `else` keyword when it's not necessary, resulting in less nested code. This refactoring helps you [replace nested conditional with guard clauses][replace-nested-conditional-with-guard-clauses] to make your code easier to read.
 
@@ -184,7 +182,7 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 
 ### Flip If/Else
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Flips the `if` and `else` statements. It's a useful refactoring to have in your toolbelt to simplify logical expressions.
 
@@ -192,7 +190,7 @@ Flips the `if` and `else` statements. It's a useful refactoring to have in your 
 
 ### Flip Ternary
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
@@ -200,7 +198,7 @@ Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 ### Convert If/Else to Ternary
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Converts an if/else statement into a (shorter) ternary expression. This is very handy to improve code readability.
 
@@ -208,7 +206,7 @@ Converts an if/else statement into a (shorter) ternary expression. This is very 
 
 ### Convert Ternary to If/Else
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Converts a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
 
@@ -216,7 +214,7 @@ Converts a ternary expression into an if/else statement. It reverses _Convert If
 
 ### Convert If/Else to Switch
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Converts an if/else statement into a switch statement. This is typically what you do before introducing polymorphism to clean object-oriented code.
 
@@ -224,7 +222,7 @@ Converts an if/else statement into a switch statement. This is typically what yo
 
 ### Split If Statement
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Splits the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
 
@@ -232,7 +230,7 @@ Splits the logical expression of the closest if statement. This is an helpful to
 
 ### Merge If Statements
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 This is the opposite of _Split If Statement_. It consolidates **nested** ifs to clean up the code.
 
@@ -244,7 +242,7 @@ It also works with `else-if`.
 
 ### Merge With Previous If Statement
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Merges selected statement with the if statement that is above. This is handy when you want to [decompose a conditional][decompose-conditional] to clean the code.
 
@@ -256,7 +254,7 @@ If you want to merge 2 consecutive if statements, it will resolve the dead code 
 
 ### Bubble up If Statement
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Useful when you need to have the similar conditionals at the top level. If you get there, you'll be able to convert them into a top-level `switch` statement, which you can easily refactor with polymorphism.
 
@@ -266,7 +264,7 @@ Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting 
 
 ### Remove Dead Code
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Sometimes, Abracadabra can determine that some code can't be reached. If so, it can also get rid of the dead code for you.
 
@@ -274,7 +272,7 @@ Sometimes, Abracadabra can determine that some code can't be reached. If so, it 
 
 ### Split Declaration and Initialization
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Splits the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
 
@@ -282,7 +280,7 @@ Splits the declaration of the variable and its initialization. If it's a `const`
 
 ### Add Braces to Arrow Function
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Useful when you need to add code in the body of an arrow function.
 
@@ -292,7 +290,7 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 
 ### Remove Braces from Arrow Function
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
 
@@ -300,7 +298,7 @@ Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Cod
 
 ### Convert to Template Literal
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 Have you ever worked on an old JavaScript code which used to concatenate strings with `+`? This refactoring will save you the energy of converting it to a template string.
 
@@ -310,7 +308,7 @@ It's also useful when you want to turn a string into a template string.
 
 ### Replace Binary with Assignment
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 This one might seem obscure, but it's really replacing `+` with `+=`. Whenever it's possible, Abracadabra will propose you to refactor the code for a shorter (assignment) syntax.
 
@@ -318,7 +316,7 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 
 ### Convert For-Loop to Foreach
 
-> 💡 Available as Quick Fix
+> 💡 Available as Quick Fix (`Alt ↵`)
 
 When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
