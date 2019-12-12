@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2019-12-12 - A better shortcut 🛣
+
 ### Changed
 
 - **(Breaking)** Changed keybinding of Move Statement Up/Down on Windows and Linux since it conflicts with VS Code native shortcuts. It was `Ctrl + Shift + ↑ / ↓`, now it's `Alt + Shift + U / D`
@@ -46,13 +48,19 @@ function calculateYear(selectedDates) {
 
 ## [1.2.1] - 2019-11-30
 
+<details>
+
 ### Fixed
 
 - Fix cursor position after Extract Variable that creates a shorthand on an object property that ends with a comma, so rename works
 - Stop proposing Negate Expression quick fix on single call expressions, since the negated expression is identical
 - Remove double-negations after running Negate Expression on a multi-line expression
 
+</details>
+
 ## [1.2.0] - 2019-11-28 - Big head, shorthand 🦖
+
+<details>
 
 ### Changed
 
@@ -91,6 +99,8 @@ We believe this will make extracting object properties even more fluid.
 ### Fixed
 
 - Extract Variable won't extract type annotation as it doesn't handle them properly yet.
+
+</details>
 
 ## [1.1.0] - 2019-11-21 - Keep movin' 🏃‍♀️
 
@@ -632,7 +642,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/1.2.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/nicoespeon/abracadabra/compare/1.2.1...2.0.0
 [1.2.1]: https://github.com/nicoespeon/abracadabra/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/nicoespeon/abracadabra/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/nicoespeon/abracadabra/compare/1.0.1...1.1.0
