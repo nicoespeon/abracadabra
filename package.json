@@ -54,6 +54,7 @@
   "devDependencies": {
     "@types/babel__traverse": "7.0.6",
     "@types/jest": "24.0.13",
+    "@types/jscodeshift": "0.6.3",
     "@types/node": "10.12.21",
     "@types/pluralize": "0.0.29",
     "husky": "2.3.0",
@@ -75,7 +76,9 @@
     "@babel/traverse": "7.4.5",
     "@babel/types": "7.4.4",
     "change-case": "3.1.0",
+    "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",
+    "react-codemod": "5.1.1",
     "recast": "0.18.1"
   },
   "activationEvents": [
