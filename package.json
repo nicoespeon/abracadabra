@@ -106,6 +106,7 @@
     "onCommand:abracadabra.replaceBinaryWithAssignment",
     "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
+    "onCommand:abracadabra.addBracesToIfStatement",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -231,6 +232,11 @@
       {
         "command": "abracadabra.splitIfStatement",
         "title": "Split If Statement",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.addBracesToIfStatement",
+        "title": "Add Braces to If Statement",
         "category": "Abracadabra"
       }
     ],
@@ -632,6 +638,10 @@
         {
           "command": "abracadabra.splitIfStatement",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.addBracesToIfStatement",
+          "when": "editorLangId == javascript"
         }
       ]
     }
