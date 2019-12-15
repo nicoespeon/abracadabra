@@ -8,7 +8,7 @@ assignees: ""
 
 ## Describe what's missing
 
-_A clear and concise description of what should be improvemed._
+_A clear and concise description of what should be improved._
 
 ## How would it work
 
