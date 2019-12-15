@@ -22,6 +22,18 @@ describe("Add Braces To If Statement", () => {
         expected: `if (!isValid) {
   return;
 }`
+      },
+      {
+        description: "basic if-else scenario, selecting if",
+        code: `if (isValid) 
+  doSomething();
+else
+  doAnotherThing();`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `if (isValid) {
+  doSomething();
+} else
+  doAnotherThing();`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -33,6 +45,19 @@ describe("Add Braces To If Statement", () => {
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
+    const selection = Selection.cursorAt(0, 0);
+
+    await doAddBracesToIfStatement(code, selection);
+
+    expect(showErrorMessage).toBeCalledWith(
+      ErrorReason.DidNotFoundIfStatementToAddBraces
+    );
+  });
+
+  it("should throw an error if if statement has braces", async () => {
+    const code = `if (!isValid) {
+      return;
+    }`;
     const selection = Selection.cursorAt(0, 0);
 
     await doAddBracesToIfStatement(code, selection);
