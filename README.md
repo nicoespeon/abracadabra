@@ -23,6 +23,10 @@ Our goal is to provide you with easy-to-use, intuitive refactorings. They help y
 
 ![Gif showing refactoring operations this extension can do][demo-extension]
 
+Related projects:
+
+- [Hocus Pocus][hocus-pocus], a VS Code extension that creates useful things for you, in JavaScript and TypeScript.
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -446,6 +450,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 
 <!-- Links -->
 
+[hocus-pocus]: https://marketplace.visualstudio.com/items?itemName=nicoespeon.hocus-pocus
 [command-palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
 [change-keybindings]: https://code.visualstudio.com/docs/getstarted/keybindings
 [vscode-refactorings]: https://code.visualstudio.com/docs/editor/refactoring
