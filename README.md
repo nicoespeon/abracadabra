@@ -134,9 +134,9 @@ This refactoring is similar to _Inline Variable_, but for functions. It replaces
 
 ### Move Statement Up
 
-| Keybinding        | On Mac  |
-| :---------------- | :------ |
-| `Alt + Shift + U` | `⌘ ⇧ ↑` |
+| Keybinding        |
+| :---------------- |
+| `Alt + Shift + U` |
 
 > A `Statement` is typically a variable or a function declaration.
 
@@ -148,9 +148,9 @@ As for all refactorings, it works even if you partially select the statement, or
 
 ### Move Statement Down
 
-| Keybinding        | On Mac  |
-| :---------------- | :------ |
-| `Alt + Shift + D` | `⌘ ⇧ ↓` |
+| Keybinding        |
+| :---------------- |
+| `Alt + Shift + D` |
 
 Same as _Move Statement Up_, but it moves the selected statement down. Like, the other direction. That's it.
 

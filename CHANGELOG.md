@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **(Breaking)** So… Move Statement Up/Down keybinding was conflicting with VS Code native shortcuts on Mac OS too. It was `⌘ ⇧ ↑/↓`, now it's `Alt + Shift + U / D` for everyone.
+
 ## [2.0.0] - 2019-12-12 - A better shortcut 🛣
 
 ### Changed

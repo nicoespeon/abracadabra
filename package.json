@@ -246,13 +246,11 @@
       {
         "command": "abracadabra.moveStatementDown",
         "key": "alt+shift+d",
-        "mac": "cmd+shift+down",
         "when": "editorTextFocus"
       },
       {
         "command": "abracadabra.moveStatementUp",
         "key": "alt+shift+u",
-        "mac": "cmd+shift+up",
         "when": "editorTextFocus"
       }
     ],
