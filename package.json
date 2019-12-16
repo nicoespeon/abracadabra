@@ -98,6 +98,7 @@
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.negateExpression",
+    "onCommand:abracadabra.react.convertToPureComponent",
     "onCommand:abracadabra.removeBracesFromArrowFunction",
     "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
@@ -190,6 +191,11 @@
       {
         "command": "abracadabra.negateExpression",
         "title": "Negate Expression",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.react.convertToPureComponent",
+        "title": "(React) Convert to Pure Component",
         "category": "Abracadabra"
       },
       {
