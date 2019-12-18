@@ -60,6 +60,8 @@ Related projects:
     1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
+  - React specific:
+    1. [Convert to Pure Component](#convert-to-pure-component)
 - [Release Notes](#release-notes)
   - [Versioning](#versioning)
 - [Contributing](#contributing)
@@ -326,6 +328,16 @@ When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
 ![][demo-convert-for-to-foreach]
 
+### Convert to Pure Component
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+This one is specific to React and comes from [react codemod][react-codemod].
+
+It converts ES6 classes that only have a `render()` method, only have safe properties (statics and props), and do not have refs to Functional Components.
+
+![][demo-convert-to-pure-component]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -468,6 +480,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [all-contributors]: https://allcontributors.org
 [all-contributors-emoji]: https://allcontributors.org/docs/en/emoji-key
 [create-new-issue]: https://github.com/nicoespeon/abracadabra/issues/new/choose
+[react-codemod]: https://github.com/reactjs/react-codemod
 
 <!-- Demo images -->
 
@@ -502,6 +515,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
 [demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-for-to-foreach.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-dead-code.gif?raw=true
+[demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-pure-component.gif?raw=true
 
 <!-- Logo -->
 
