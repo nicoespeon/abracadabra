@@ -7,9 +7,14 @@ import { convertToPureComponent } from "./convert-to-pure-component";
 
 describe("(React) Convert To Pure Component", () => {
   let showErrorMessage: Editor["showError"];
+  let askUser: Editor["askUser"];
 
   beforeEach(() => {
     showErrorMessage = jest.fn();
+    askUser = jest
+      .fn()
+      .mockImplementationOnce(([useArrows]) => useArrows)
+      .mockImplementationOnce(([destructuring]) => destructuring);
   });
 
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
@@ -69,6 +74,48 @@ describe("(React) Convert To Pure Component", () => {
     }
   );
 
+  it("should not use arrow function if user selects not to", async () => {
+    askUser = jest
+      .fn()
+      .mockImplementationOnce(([_, dontUseArrows]) => dontUseArrows)
+      .mockImplementationOnce(([destructuring]) => destructuring);
+    const code = `class Test extends React.Component {
+  render() {
+    return <h1>{this.props.title}</h1>;
+  }
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    const result = await doConvertToPureComponent(code, selection);
+
+    expect(result).toBe(`function Test(
+  {
+    title
+  }
+) {
+  return <h1>{title}</h1>;
+}`);
+  });
+
+  it("should not destructure props if user selects not to", async () => {
+    askUser = jest
+      .fn()
+      .mockImplementationOnce(([useArrows]) => useArrows)
+      .mockImplementationOnce(([_, noDestructuring]) => noDestructuring);
+    const code = `class Test extends React.Component {
+  render() {
+    return <h1>{this.props.title}</h1>;
+  }
+}`;
+    const selection = Selection.cursorAt(0, 0);
+
+    const result = await doConvertToPureComponent(code, selection);
+
+    expect(result).toBe(`const Test = props => {
+  return <h1>{props.title}</h1>;
+};`);
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
@@ -86,6 +133,7 @@ describe("(React) Convert To Pure Component", () => {
   ): Promise<Code> {
     const editor = new InMemoryEditor(code);
     editor.showError = showErrorMessage;
+    editor.askUser = askUser;
     await convertToPureComponent(code, selection, editor);
     return editor.code;
   }

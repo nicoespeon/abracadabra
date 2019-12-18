@@ -14,7 +14,20 @@ async function convertToPureComponent(
   _selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = updateCode(code);
+  const useArrowsChoice = await editor.askUser([
+    { value: true, label: "Use an arrow function" },
+    { value: false, label: "Use a function declaration" }
+  ]);
+
+  const destructuringChoice = await editor.askUser([
+    { value: true, label: "Destructure props" },
+    { value: false, label: "Don't destructure props" }
+  ]);
+
+  const updatedCode = updateCode(code, {
+    useArrows: useArrowsChoice ? useArrowsChoice.value : false,
+    destructuring: destructuringChoice ? destructuringChoice.value : false
+  });
 
   if (!updatedCode) {
     editor.showError(ErrorReason.DidNotFoundReactComponent);
@@ -29,7 +42,12 @@ function canConvertToPureComponent(ast: t.AST, _selection: Selection): boolean {
   return updateCode(code) !== null;
 }
 
-function updateCode(code: Code): Code | null {
+type Options = {
+  useArrows: boolean;
+  destructuring: boolean;
+};
+
+function updateCode(code: Code, options?: Options): Code | null {
   const file = {
     path: "irrelevant",
     source: code
@@ -42,11 +60,10 @@ function updateCode(code: Code): Code | null {
     report: irrelevant
   };
 
-  const options = {
-    useArrows: true,
-    destructuring: true,
+  const finalOptions = {
+    ...options,
     printOptions: {}
   };
 
-  return pureComponent(file, api, options);
+  return pureComponent(file, api, finalOptions);
 }
