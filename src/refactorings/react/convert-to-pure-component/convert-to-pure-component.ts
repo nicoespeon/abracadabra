@@ -19,14 +19,18 @@ async function convertToPureComponent(
     { value: false, label: "Use a function declaration" }
   ]);
 
+  if (!useArrowsChoice) return;
+
   const destructuringChoice = await editor.askUser([
     { value: true, label: "Destructure props" },
     { value: false, label: "Don't destructure props" }
   ]);
 
+  if (!destructuringChoice) return;
+
   const updatedCode = updateCode(code, {
-    useArrows: useArrowsChoice ? useArrowsChoice.value : false,
-    destructuring: destructuringChoice ? destructuringChoice.value : false
+    useArrows: useArrowsChoice.value,
+    destructuring: destructuringChoice.value
   });
 
   if (!updatedCode) {
