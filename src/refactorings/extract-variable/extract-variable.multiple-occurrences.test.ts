@@ -56,9 +56,7 @@ sendMessage("Hello");`;
     const code = `console.log("Hello");
 sendMessage("Hello");`;
     const selection = Selection.cursorAt(0, 15);
-    askUser = jest.fn(([_, this_occurrence]) =>
-      Promise.resolve(this_occurrence)
-    );
+    askUser = jest.fn(([_, thisOccurrence]) => Promise.resolve(thisOccurrence));
 
     const result = await doExtractVariable(code, selection);
 
@@ -72,7 +70,7 @@ sendMessage("Hello");`;
     const code = `console.log("Hello");
 sendMessage("Hello");`;
     const selection = Selection.cursorAt(0, 15);
-    askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
 
     const result = await doExtractVariable(code, selection);
 
@@ -86,7 +84,7 @@ sendMessage(hello);`;
     const code = `console.log("Hello");
 sendMessage("Hello");`;
     const selection = Selection.cursorAt(1, 15);
-    askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
 
     const result = await doExtractVariable(code, selection);
 
@@ -104,7 +102,7 @@ sendMessage(hello);`;
 
 sendMessage("Hello");`;
     const selection = Selection.cursorAt(1, 18);
-    askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
 
     const result = await doExtractVariable(code, selection);
 
@@ -306,7 +304,7 @@ sendMessage(extracted);`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {
-      askUser = jest.fn(([all_occurrence]) => Promise.resolve(all_occurrence));
+      askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
 
       const result = await doExtractVariable(code, selection);
 
