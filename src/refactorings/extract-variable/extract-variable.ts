@@ -260,10 +260,17 @@ class Occurrence {
   }
 
   toVariableDeclaration(code: Code): Code {
-    const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
-    return `const ${this.variable.name} = ${extractedCode};\n${
-      this.indentation
-    }`;
+    const extractedCode = ast.isJSXText(this.path.node)
+      ? `"${code}"`
+      : ast.isMemberExpression(this.path.node) && !this.path.node.computed
+      ? ast.generate(this.path.node.object)
+      : code;
+    const name =
+      ast.isMemberExpression(this.path.node) && !this.path.node.computed
+        ? `{ ${this.variable.name} }`
+        : this.variable.name;
+
+    return `const ${name} = ${extractedCode};\n${this.indentation}`;
   }
 
   private getIndentationLevel(): IndentationLevel {

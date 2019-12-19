@@ -25,7 +25,7 @@ export {
 };
 export { mergeCommentsInto };
 
-function generate(ast: t.File): Code {
+function generate(ast: t.File | t.Node): Code {
   return recast.print(ast).code;
 }
 
