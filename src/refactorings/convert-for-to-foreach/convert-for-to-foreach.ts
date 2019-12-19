@@ -70,6 +70,7 @@ function createVisitor(
       const { init, test } = path.node;
       if (!t.isBinaryExpression(test)) return;
       if (!t.isVariableDeclaration(init)) return;
+      if (!startsFrom0(init)) return;
 
       const left = test.left;
       if (!t.isIdentifier(left)) return;
@@ -96,6 +97,7 @@ function hasChildWhichMatchesSelection(
       const { init, test } = childPath.node;
       if (!t.isBinaryExpression(test)) return;
       if (!t.isVariableDeclaration(init)) return;
+      if (!startsFrom0(init)) return;
 
       if (!t.isIdentifier(test.left)) return;
 
@@ -107,6 +109,18 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
+}
+
+function startsFrom0({ declarations }: t.VariableDeclaration): boolean {
+  const numeric0 = t.numericLiteral(0);
+
+  return declarations.reduce((result, { init }) => {
+    if (t.isNumericLiteral(init) && !t.areEqual(init, numeric0)) {
+      return false;
+    }
+
+    return result;
+  }, true);
 }
 
 function getList(

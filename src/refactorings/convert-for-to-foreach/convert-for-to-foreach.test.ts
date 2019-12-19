@@ -184,6 +184,12 @@ items.forEach(item => {
         code: `for (let i = 0; i < items.count; i++) {
   console.log(items[i]);
 }`
+      },
+      {
+        description: "for-loop with init not starting at 0",
+        code: `for (let i = 1; i < items.length; i++) {
+  console.log(items[i]);
+}`
       }
     ],
     async ({ code }) => {

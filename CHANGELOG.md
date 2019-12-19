@@ -41,6 +41,10 @@ console.log(address);
 
 Since you end up renaming the symbol, you can provide a different name than `address` and it will work.
 
+### Fixed
+
+- Don't Convert For-Loop to ForEach if counter doesn't start from 0
+
 ## [2.0.0] - 2019-12-12 - A better shortcut 🛣
 
 ### Changed
