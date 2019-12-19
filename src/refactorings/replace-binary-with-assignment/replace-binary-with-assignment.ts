@@ -24,7 +24,6 @@ function tryToReplaceBinaryWithAssignment(
   selection: Selection
 ): { canReplace: boolean; operator: t.BinaryExpression["operator"] } {
   let canReplace = false;
-  // FIXME: Casting can be replaced with `as const` in TS 3.4+
   let operator = "+" as t.BinaryExpression["operator"];
 
   t.traverseAST(ast, {
