@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFoundReactComponent,
   DidNotFoundDeadCode,
   DidNotFoundForLoopToConvert,
   DidNotFoundStatementToMerge,
@@ -36,6 +37,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFoundReactComponent:
+      return didNotFound("a React component to convert");
+
     case ErrorReason.DidNotFoundDeadCode:
       return didNotFound("dead code to delete");
 

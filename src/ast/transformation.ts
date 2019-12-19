@@ -11,6 +11,7 @@ const traversePath = traverse;
 
 export { NodePath, Visitor, Scope } from "@babel/traverse";
 export {
+  generate,
   traverseNode,
   traversePath,
   traverseAST,
@@ -24,9 +25,13 @@ export {
 };
 export { mergeCommentsInto };
 
+function generate(ast: t.File): Code {
+  return recast.print(ast).code;
+}
+
 function transform(code: Code, options: TraverseOptions): Transformed {
   const ast = parseAndTraverseCode(code, options);
-  const newCode = recast.print(ast).code;
+  const newCode = generate(ast);
 
   return {
     code: newCode,
