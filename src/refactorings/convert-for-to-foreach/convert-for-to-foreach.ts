@@ -114,7 +114,7 @@ function hasChildWhichMatchesSelection(
 function startsFrom0({ declarations }: t.VariableDeclaration): boolean {
   const numeric0 = t.numericLiteral(0);
 
-  return declarations.reduce((result, { init }) => {
+  return declarations.reduce<boolean>((result, { init }) => {
     if (t.isNumericLiteral(init) && !t.areEqual(init, numeric0)) {
       return false;
     }
