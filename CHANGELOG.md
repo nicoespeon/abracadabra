@@ -15,6 +15,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **(Breaking)** So… Move Statement Up/Down keybinding was conflicting with VS Code native shortcuts on Mac OS too. It was `⌘ ⇧ ↑/↓`, now it's `Alt + Shift + U / D` for everyone.
 
+#### Extract Variable now destructures member expressions properties
+
+Consider the following code:
+
+```js
+console.log(session.user.address);
+```
+
+Before, extracting `address` would have produced:
+
+```js
+const address = session.user.address;
+console.log(address);
+```
+
+This was fine… But it could be optimized. From our own experience, we always destructure the `address` property after the extraction.
+
+Thus, from now on, extracting `address` will produce:
+
+```js
+const { address } = session.user;
+console.log(address);
+```
+
+Since you end up renaming the symbol, you can provide a different name than `address` and it will work.
+
 ## [2.0.0] - 2019-12-12 - A better shortcut 🛣
 
 ### Changed

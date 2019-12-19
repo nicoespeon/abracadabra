@@ -215,16 +215,22 @@ function createOccurrence(
   path: ast.NodePath,
   loc: ast.SourceLocation
 ): Occurrence {
-  return ast.canBeShorthand(path)
-    ? new ShorthandOccurrence(path, loc)
-    : new Occurrence(path, loc);
+  if (ast.canBeShorthand(path)) {
+    return new ShorthandOccurrence(path, loc);
+  }
+
+  if (path.isMemberExpression()) {
+    return new MemberExpressionOccurrence(path, loc);
+  }
+
+  return new Occurrence(path, loc);
 }
 
 class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
 
-  private variable: Variable;
+  protected variable: Variable;
 
   constructor(path: ast.NodePath, loc: ast.SourceLocation) {
     this.path = path;
@@ -261,9 +267,9 @@ class Occurrence {
 
   toVariableDeclaration(code: Code): Code {
     const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
-    return `const ${this.variable.name} = ${extractedCode};\n${
-      this.indentation
-    }`;
+    const { name } = this.variable;
+
+    return `const ${name} = ${extractedCode};\n${this.indentation}`;
   }
 
   private getIndentationLevel(): IndentationLevel {
@@ -299,6 +305,29 @@ class ShorthandOccurrence extends Occurrence {
       this.selection.start.line + this.selection.height + 1,
       this.keySelection.end.character
     );
+  }
+}
+
+class MemberExpressionOccurrence extends Occurrence {
+  path: ast.NodePath<ast.MemberExpression>;
+
+  constructor(
+    path: ast.NodePath<ast.MemberExpression>,
+    loc: ast.SourceLocation
+  ) {
+    super(path, loc);
+    this.path = path;
+  }
+
+  toVariableDeclaration(code: Code): Code {
+    if (this.path.node.computed) {
+      return super.toVariableDeclaration(code);
+    }
+
+    const extractedCode = ast.generate(this.path.node.object);
+    const name = `{ ${this.variable.name} }`;
+
+    return `const ${name} = ${extractedCode};\n${this.indentation}`;
   }
 }
 

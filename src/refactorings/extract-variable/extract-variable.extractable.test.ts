@@ -287,7 +287,7 @@ console.log({ foo });`
         description: "a spread variable",
         code: `console.log({ ...foo.bar });`,
         selection: Selection.cursorAt(0, 22),
-        expected: `const bar = foo.bar;
+        expected: `const { bar } = foo;
 console.log({ ...bar });`
       },
       {
@@ -315,7 +315,7 @@ console.log({
           "a valid path when cursor is on a part of member expression",
         code: `console.log(path.node.name);`,
         selection: Selection.cursorAt(0, 17),
-        expected: `const node = path.node;
+        expected: `const { node } = path;
 console.log(node.name);`
       },
       {
@@ -529,7 +529,7 @@ if (
 }`,
         selection: Selection.cursorAt(2, 27),
         expected: `function render() {
-  const name = this.props.location.name;
+  const { name } = this.props.location;
   return <div className="text-lg font-weight-bold">
     {name}
   </div>;
@@ -620,7 +620,7 @@ console.log(extracted);`
   node.consequent
 );`,
         selection: Selection.cursorAt(1, 20),
-        expected: `const operator = parentPath.node.operator;
+        expected: `const { operator } = parentPath.node;
 createIfStatement(
   operator,
   parentPath.node.left,
@@ -634,7 +634,7 @@ createIfStatement(
 ) ? "with-loc"
   : "without-loc";`,
         selection: Selection.cursorAt(1, 17),
-        expected: `const length = path.node.loc.length;
+        expected: `const { length } = path.node.loc;
 const type = !!(
   length > 0
 ) ? "with-loc"
@@ -716,7 +716,7 @@ const sayHello = extracted;`
         description: "a for statement",
         code: `for (var i = 0; i < this.items.length; i++) {}`,
         selection: Selection.cursorAt(0, 27),
-        expected: `const items = this.items;
+        expected: `const { items } = this;
 for (var i = 0; i < items.length; i++) {}`
       },
       {
