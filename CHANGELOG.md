@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Added
+## [3.0.0] - 2019-12-19 - Finding good shortcuts is hard 🤪
+
+### Added
 
 - **[New Refactoring]** Convert to Pure Component (React specific)
 
@@ -47,6 +49,8 @@ Since you end up renaming the symbol, you can provide a different name than `add
 
 ## [2.0.0] - 2019-12-12 - A better shortcut 🛣
 
+<details>
+
 ### Changed
 
 - **(Breaking)** Changed keybinding of Move Statement Up/Down on Windows and Linux since it conflicts with VS Code native shortcuts. It was `Ctrl + Shift + ↑ / ↓`, now it's `Alt + Shift + U / D`
@@ -83,6 +87,8 @@ function calculateYear(selectedDates) {
 ### Fixed
 
 - Inline Variable now handles destructured "this" expressions correctly (e.g. you can inline `const { id } = this.user`).
+
+</details>
 
 ## [1.2.1] - 2019-11-30
 
@@ -680,7 +686,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/2.0.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/nicoespeon/abracadabra/compare/2.0.0...3.0.0
 [2.0.0]: https://github.com/nicoespeon/abracadabra/compare/1.2.1...2.0.0
 [1.2.1]: https://github.com/nicoespeon/abracadabra/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/nicoespeon/abracadabra/compare/1.1.0...1.2.0
