@@ -27,7 +27,7 @@ import renameSymbol from "./refactorings/rename-symbol";
 import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assignment";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
-import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement;";
+import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
