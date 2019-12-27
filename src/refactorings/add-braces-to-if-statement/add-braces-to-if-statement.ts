@@ -21,14 +21,7 @@ async function addBracesToIfStatement(
 
 function hasIfStatementToAddBraces(ast: t.AST, selection: Selection): boolean {
   let result = false;
-
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      result = true;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
@@ -37,12 +30,27 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, path => {
-      if (t.isBlockStatement(path.node.consequent)) return;
-      const blockStatement = t.blockStatement([path.node.consequent]);
-
-      path.node.consequent = blockStatement;
+      path.node.consequent = statementWithBraces(
+        selection,
+        path.node.consequent
+      );
+      if (path.node.alternate) {
+        path.node.alternate = statementWithBraces(
+          selection,
+          path.node.alternate
+        );
+      }
     })
   );
+}
+
+function statementWithBraces(
+  selection: Selection,
+  node: t.Statement
+): t.Statement {
+  if (!selection.isInsideNode(node)) return node;
+  if (t.isBlockStatement(node)) return node;
+  return t.blockStatement([node]);
 }
 
 function createVisitor(

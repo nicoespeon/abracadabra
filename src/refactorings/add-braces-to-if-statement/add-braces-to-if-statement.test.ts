@@ -29,11 +29,24 @@ describe("Add Braces To If Statement", () => {
   doSomething();
 else
   doAnotherThing();`,
-        selection: Selection.cursorAt(0, 0),
+        selection: Selection.cursorAt(1, 3),
         expected: `if (isValid) {
   doSomething();
 } else
   doAnotherThing();`
+      },
+      {
+        description: "basic if-else scenario, selecting else",
+        code: `if (isValid) 
+  doSomething();
+else
+  doAnotherThing();`,
+        selection: Selection.cursorAt(3, 3),
+        expected: `if (isValid)
+  doSomething();
+else {
+  doAnotherThing();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
