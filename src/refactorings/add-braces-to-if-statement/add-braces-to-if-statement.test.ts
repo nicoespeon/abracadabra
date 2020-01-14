@@ -24,6 +24,14 @@ describe("Add Braces To If Statement", () => {
 }`
       },
       {
+        description: "basic scenario, cursor on if",
+        code: "if (!isValid) return;",
+        selection: Selection.cursorAt(0, 0),
+        expected: `if (!isValid) {
+  return;
+}`
+      },
+      {
         description: "basic if-else scenario, selecting if",
         code: `if (isValid)
   doSomething();
@@ -42,6 +50,19 @@ else
 else
   doAnotherThing();`,
         selection: Selection.cursorAt(3, 3),
+        expected: `if (isValid)
+  doSomething();
+else {
+  doAnotherThing();
+}`
+      },
+      {
+        description: "basic if-else scenario, cursor on else",
+        code: `if (isValid)
+  doSomething();
+else
+  doAnotherThing();`,
+        selection: Selection.cursorAt(2, 0),
         expected: `if (isValid)
   doSomething();
 else {

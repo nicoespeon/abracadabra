@@ -1,5 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { Position } from "../../editor/position";
 import * as t from "../../ast";
 
 export { addBracesToIfStatement, hasIfStatementToAddBraces };
@@ -30,27 +31,23 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, path => {
-      path.node.consequent = statementWithBraces(
-        selection,
-        path.node.consequent
-      );
+      if (!t.isSelectableNode(path.node.consequent)) return;
+      const endOfConsequent = Position.fromAST(path.node.consequent.loc.end);
+
+      if (selection.start.isBefore(endOfConsequent)) {
+        path.node.consequent = statementWithBraces(path.node.consequent);
+        return;
+      }
+
       if (path.node.alternate) {
-        path.node.alternate = statementWithBraces(
-          selection,
-          path.node.alternate
-        );
+        path.node.alternate = statementWithBraces(path.node.alternate);
       }
     })
   );
 }
 
-function statementWithBraces(
-  selection: Selection,
-  node: t.Statement
-): t.Statement {
-  if (!selection.isInsideNode(node)) return node;
-  if (t.isBlockStatement(node)) return node;
-  return t.blockStatement([node]);
+function statementWithBraces(node: t.Statement): t.Statement {
+  return t.isBlockStatement(node) ? node : t.blockStatement([node]);
 }
 
 function createVisitor(
