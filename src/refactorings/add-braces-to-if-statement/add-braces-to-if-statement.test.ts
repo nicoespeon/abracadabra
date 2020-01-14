@@ -74,6 +74,17 @@ if (isValid) {
   if (isValid) {
     doSomething();
   }`
+      },
+      {
+        description: "multiple statements after if",
+        code: `if (isValid)
+  doSomething();
+  doAnotherThing();`,
+        selection: Selection.cursorAt(1, 2),
+        expected: `if (isValid) {
+  doSomething();
+}
+  doAnotherThing();`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
