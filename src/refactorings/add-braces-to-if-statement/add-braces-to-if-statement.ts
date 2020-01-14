@@ -60,8 +60,31 @@ function createVisitor(
   return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path);
       path.stop();
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    IfStatement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }

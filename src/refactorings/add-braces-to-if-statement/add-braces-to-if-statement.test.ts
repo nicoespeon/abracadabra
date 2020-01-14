@@ -63,6 +63,17 @@ if (isValid) {
   doSomething();
 } else
   doAnotherThing();`
+      },
+      {
+        description: "nested if statements, cursor on nested",
+        code: `if (isProd)
+  if (isValid)
+    doSomething();`,
+        selection: Selection.cursorAt(2, 4),
+        expected: `if (isProd)
+  if (isValid) {
+    doSomething();
+  }`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
