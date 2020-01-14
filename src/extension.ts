@@ -27,6 +27,7 @@ import renameSymbol from "./refactorings/rename-symbol";
 import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assignment";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
+import simplifyTernary from "./refactorings/simplify-ternary";
 
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -65,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
     removeRedundantElse,
     renameSymbol,
     replaceBinaryWithAssignment,
+    simplifyTernary,
     splitDeclarationAndInitialization,
     splitIfStatement
   ].forEach(({ command }) =>
@@ -97,6 +99,7 @@ export function activate(context: vscode.ExtensionContext) {
         removeDeadCode,
         removeRedundantElse,
         replaceBinaryWithAssignment,
+        simplifyTernary,
         splitDeclarationAndInitialization,
         splitIfStatement
       ]),

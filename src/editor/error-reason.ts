@@ -14,6 +14,7 @@ enum ErrorReason {
   DidNotFoundRedundantElse,
   DidNotFoundIfElseToFlip,
   DidNotFoundTernaryToFlip,
+  DidNotFoundTernaryToSimplify,
   DidNotFoundIfElseToConvert,
   DidNotFoundTernaryToConvert,
   DidNotFoundArrowFunctionToAddBraces,
@@ -75,6 +76,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundTernaryToFlip:
       return didNotFound("a ternary to flip");
+
+    case ErrorReason.DidNotFoundTernaryToSimplify:
+      return didNotFound("a ternary to simplify");
 
     case ErrorReason.DidNotFoundIfElseToConvert:
       return didNotFound("a valid if statement to convert");

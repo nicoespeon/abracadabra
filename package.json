@@ -104,6 +104,7 @@
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.renameSymbol",
     "onCommand:abracadabra.replaceBinaryWithAssignment",
+    "onCommand:abracadabra.simplifyTernary",
     "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
     "onLanguage:javascript",
@@ -221,6 +222,11 @@
       {
         "command": "abracadabra.replaceBinaryWithAssignment",
         "title": "Replace Binary with Expression",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.simplifyTernary",
+        "title": "Simplify Ternary",
         "category": "Abracadabra"
       },
       {
@@ -599,6 +605,22 @@
         },
         {
           "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.simplifyTernary",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.simplifyTernary",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.simplifyTernary",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.simplifyTernary",
           "when": "editorLangId == typescriptreact"
         },
         {
