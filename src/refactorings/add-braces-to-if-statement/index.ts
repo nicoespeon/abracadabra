@@ -9,7 +9,7 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "addBracesToIfStatement",
     operation: addBracesToIfStatement,
-    title: "Add Braces To If Statement"
+    title: "Add Braces to If Statement"
   },
   actionProvider: {
     message: "Add braces to if statement",
