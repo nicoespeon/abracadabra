@@ -53,6 +53,7 @@ Related projects:
   - Working around the syntax:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
+    1. [Add Braces to If Statement](#add-braces-to-if-statement)
     1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
@@ -297,6 +298,14 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
 
 ![][demo-remove-braces-from-arrow-function]
+
+### Add Braces to If Statement
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Useful when you need to add code in the body of an `if` or `else` statement.
+
+![][demo-add-braces-to-if-statement]
 
 ### Convert to Template Literal
 

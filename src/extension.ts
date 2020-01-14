@@ -4,6 +4,7 @@ import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
+import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
 import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
@@ -44,6 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   [
     addBracesToArrowFunction,
+    addBracesToIfStatement,
     bubbleUpIfStatement,
     convertForToForeach,
     convertIfElseToSwitch,
@@ -81,6 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
       language,
       new RefactoringActionProvider([
         addBracesToArrowFunction,
+        addBracesToIfStatement,
         bubbleUpIfStatement,
         convertForToForeach,
         convertIfElseToSwitch,
