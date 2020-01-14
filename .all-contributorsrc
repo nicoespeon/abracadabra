@@ -47,6 +47,16 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "visusnet",
+      "name": "Alexander Müller",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1219124?v=4",
+      "profile": "https://github.com/visusnet",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
