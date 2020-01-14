@@ -343,7 +343,7 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-Useful when you need to add code in the body of a if or else statement.
+Useful when you need to add code in the body of an `if` or `else` statement.
 
 ![][demo-add-braces-to-if-statement]
 
