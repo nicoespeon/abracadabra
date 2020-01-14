@@ -25,7 +25,7 @@ describe("Add Braces To If Statement", () => {
       },
       {
         description: "basic if-else scenario, selecting if",
-        code: `if (isValid) 
+        code: `if (isValid)
   doSomething();
 else
   doAnotherThing();`,
@@ -37,7 +37,7 @@ else
       },
       {
         description: "basic if-else scenario, selecting else",
-        code: `if (isValid) 
+        code: `if (isValid)
   doSomething();
 else
   doAnotherThing();`,
@@ -67,10 +67,10 @@ else {
     );
   });
 
-  it("should throw an error if if statement has braces", async () => {
+  it("should throw an error if statement already has braces", async () => {
     const code = `if (!isValid) {
-      return;
-    }`;
+ return;
+}`;
     const selection = Selection.cursorAt(0, 0);
 
     await doAddBracesToIfStatement(code, selection);
