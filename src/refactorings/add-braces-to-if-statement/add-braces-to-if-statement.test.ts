@@ -47,6 +47,22 @@ else
 else {
   doAnotherThing();
 }`
+      },
+      {
+        description: "many if statements, 2nd one selected",
+        code: `if (isProd) logEvent();
+
+if (isValid)
+  doSomething();
+else
+  doAnotherThing();`,
+        selection: Selection.cursorAt(3, 2),
+        expected: `if (isProd) logEvent();
+
+if (isValid) {
+  doSomething();
+} else
+  doAnotherThing();`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
