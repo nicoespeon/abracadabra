@@ -16,10 +16,16 @@ describe("Simplify Ternary", () => {
     "should simplify ternary",
     [
       {
-        description: "bool ? a : b === a",
+        description: "true ? a : b === a",
         code: `const x = true ? a : b;`,
         selection: Selection.cursorAt(0, 11),
         expected: `const x = a;`
+      },
+      {
+        description: "false ? a : b === a",
+        code: `const x = false ? a : b;`,
+        selection: Selection.cursorAt(0, 11),
+        expected: `const x = b;`
       },
       {
         description: "a ? true : false === Boolean(a)",
@@ -44,6 +50,12 @@ describe("Simplify Ternary", () => {
         code: `const x = a ? false : false;`,
         selection: Selection.cursorAt(0, 11),
         expected: `const x = false;`
+      },
+      {
+        description: "a ? a : b === a || b",
+        code: `const x = a ? a : b;`,
+        selection: Selection.cursorAt(0, 11),
+        expected: `const x = a || b;`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
