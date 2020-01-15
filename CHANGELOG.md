@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Simplify Ternary
+- **[New Refactoring]** Add Braces to If Statement
+
 ## [3.0.0] - 2019-12-19 - Finding good shortcuts is hard 🤪
 
 ### Added
