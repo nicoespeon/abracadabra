@@ -89,7 +89,19 @@ As a general rule, we prefer to have **what is exposed appear before what is pri
 
 You can use [VS Code's built-in debugger][vscode-debug-extension] on the project to test the extension.
 
+To build the project, press `F5`.
+
+![][debugger-build]
+
 It will open an "Extension Development Host" window, overriding your "Abracadabra" extension with your local code. This is helpful to test your changes in integration with VS Code API.
+
+![][extension-development-host]
+
+If you do changes, rebuild the project by clicking on the reload icon.
+
+![][debugger-rebuild]
+
+While debugging the extension is helpful to see changes in action, you can use the unit tests to develop without having to rebuild the project at every change.
 
 ## Create a package and use it
 
@@ -132,3 +144,9 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 [adrs]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr
 [adr-no-integration-tests]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0002-no-integration-test.md
 [adr-create-generator]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0006-create-generator-to-bootstrap-new-refactorings.md
+
+<!-- Images -->
+
+[debugger-build]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/debugger-build.png?raw=true
+[extension-development-host]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/extension-development-host.png?raw=true
+[debugger-rebuild]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/debugger-rebuild.png?raw=true
