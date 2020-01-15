@@ -41,6 +41,7 @@ Related projects:
   - Simplifying Conditional Logic:
     1. [Negate Expression](#negate-expression)
     1. [Remove Redundant Else](#remove-redundant-else)
+    1. [Simplify Ternary](#simplify-ternary)
     1. [Flip If/Else](#flip-ifelse)
     1. [Flip Ternary](#flip-ternary)
     1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
@@ -186,6 +187,14 @@ It will negate the closest expression from your cursor or partial selection.
 Removes the `else` keyword when it's not necessary, resulting in less nested code. This refactoring helps you [replace nested conditional with guard clauses][replace-nested-conditional-with-guard-clauses] to make your code easier to read.
 
 ![][demo-remove-redundant-else]
+
+### Simplify Ternary
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Simplify ternary expressions that you might end up with after executing other refactorings.
+
+![][demo-simplify-ternary]
 
 ### Flip If/Else
 
@@ -527,6 +536,8 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-for-to-foreach.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-dead-code.gif?raw=true
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-pure-component.gif?raw=true
+[demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/simplify-ternary.gif?raw=true
+[demo-add-braces-to-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-if-statement.gif?raw=true
 
 <!-- Logo -->
 
