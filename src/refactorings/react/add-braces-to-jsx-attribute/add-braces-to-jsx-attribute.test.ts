@@ -22,7 +22,32 @@ describe("Add Braces To Jsx Attribute", () => {
         expected: `<TestComponent testProp={"test"} />`
       },
       {
-        description: "JSX attribute already a JSX expression",
+        description:
+          "scenario with multiple jsx attributes selecting the first one",
+        code: `<TestComponent firstProp="first" secondProp="second" />`,
+        selection: Selection.cursorAt(0, 30),
+        expected: `<TestComponent firstProp={"first"} secondProp="second" />`
+      },
+      {
+        description: "scenario function component",
+        code: `function TestComponent() {
+          return (
+            <section>
+              <TestComponent testProp="test" />
+            </section>
+          );
+        }`,
+        selection: Selection.cursorAt(3, 40),
+        expected: `function TestComponent() {
+          return (
+            <section>
+              <TestComponent testProp={"test"} />
+            </section>
+          );
+        }`
+      },
+      {
+        description: "scenario JSX attribute already a JSX expression",
         code: `<TestComponent testProp={"test"} />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp={"test"} />`
