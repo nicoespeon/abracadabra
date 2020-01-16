@@ -15,7 +15,18 @@ describe("Add Braces To Jsx Attribute", () => {
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should add braces to jsx attribute",
     [
-      // TODO: write successful test cases here
+      {
+        description: "basic scenario",
+        code: `<TestComponent testProp="test" />`,
+        selection: Selection.cursorAt(0, 24),
+        expected: `<TestComponent testProp={"test"} />`
+      },
+      {
+        description: "JSX attribute already a JSX expression",
+        code: `<TestComponent testProp={"test"} />`,
+        selection: Selection.cursorAt(0, 24),
+        expected: `<TestComponent testProp={"test"} />`
+      }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doAddBracesToJsxAttribute(code, selection);

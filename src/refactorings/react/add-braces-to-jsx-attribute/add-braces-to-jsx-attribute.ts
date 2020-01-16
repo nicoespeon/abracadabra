@@ -30,8 +30,7 @@ function hasJsxAttributeToAddBracesTo(
       if (!selection.isInsidePath(path)) {
         return;
       }
-      const isStringLiteral = t.isStringLiteral(path.node.value);
-      hasJsxAttributeToAddBracesTo = isStringLiteral;
+      hasJsxAttributeToAddBracesTo = t.isStringLiteral(path.node.value);
     }
   });
 
@@ -39,15 +38,17 @@ function hasJsxAttributeToAddBracesTo(
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  const result = t.transformAST(ast, {
+  return t.transformAST(ast, {
     JSXAttribute(path) {
       if (!selection.isInsidePath(path)) {
         return;
       }
-      path.node.value = t.jsxExpressionContainer(path.node.value);
+
+      if (t.isStringLiteral(path.node.value)) {
+        // Wrap the string literal in a JSX Expression
+        path.node.value = t.jsxExpressionContainer(path.node.value);
+      }
       path.stop();
     }
   });
-
-  return result;
 }
