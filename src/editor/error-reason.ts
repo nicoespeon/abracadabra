@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFoundBracesToRemove,
   DidNotFoundReactComponent,
   DidNotFoundIfStatementToAddBraces,
   DidNotFoundDeadCode,
@@ -39,9 +40,12 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFoundBracesToRemove:
+      return didNotFound("braces to remove from jsx attribute");
+
     case ErrorReason.DidNotFoundReactComponent:
       return didNotFound("a React component to convert");
-    
+
     case ErrorReason.DidNotFoundIfStatementToAddBraces:
       return didNotFound("a valid if statement to add braces to");
 
