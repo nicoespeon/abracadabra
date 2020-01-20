@@ -64,7 +64,7 @@ Related projects:
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
   - React specific:
     1. [Convert to Pure Component](#convert-to-pure-component)
-    1. [Add braces to JSX attribute](#add-braces-to-jSX-attribute)
+    1. [Add braces to JSX attribute](#add-braces-to-jsx-attribute)
 - [Release Notes](#release-notes)
   - [Versioning](#versioning)
 - [Contributing](#contributing)

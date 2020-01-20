@@ -9,10 +9,10 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "addBracesToJsxAttribute",
     operation: addBracesToJsxAttribute,
-    title: "Add Braces To Jsx Attribute"
+    title: "Add Braces to JSX Attribute"
   },
   actionProvider: {
-    message: "Add braces to jsx attribute",
+    message: "Add braces to JSX attribute",
     canPerform: hasJsxAttributeToAddBracesTo
   }
 };

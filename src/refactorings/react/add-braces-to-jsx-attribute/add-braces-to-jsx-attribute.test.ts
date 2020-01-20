@@ -5,7 +5,7 @@ import { testEach } from "../../../tests-helpers";
 
 import { addBracesToJsxAttribute } from "./add-braces-to-jsx-attribute";
 
-describe("Add Braces To Jsx Attribute", () => {
+describe("Add Braces to JSX Attribute", () => {
   let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe("Add Braces To Jsx Attribute", () => {
   });
 
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
-    "should add braces to jsx attribute",
+    "should add braces to JSX attribute",
     [
       {
         description: "basic scenario",
