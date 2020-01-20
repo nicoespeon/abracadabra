@@ -22,11 +22,24 @@ describe("Add Braces To Jsx Attribute", () => {
         expected: `<TestComponent testProp={"test"} />`
       },
       {
+        description: "cursor on the JSX identifier",
+        code: `<TestComponent testProp="test" />`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `<TestComponent testProp={"test"} />`
+      },
+      {
         description:
           "scenario with multiple jsx attributes selecting the first one",
         code: `<TestComponent firstProp="first" secondProp="second" />`,
         selection: Selection.cursorAt(0, 30),
         expected: `<TestComponent firstProp={"first"} secondProp="second" />`
+      },
+      {
+        description:
+          "scenario with multiple jsx attributes selecting the second one",
+        code: `<TestComponent firstProp="first" secondProp="second" />`,
+        selection: Selection.cursorAt(0, 46),
+        expected: `<TestComponent firstProp="first" secondProp={"second"} />`
       },
       {
         description: "scenario function component",
