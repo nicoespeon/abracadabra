@@ -58,6 +58,45 @@ describe("Remove Braces From Jsx Attribute", () => {
         code: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`
+      },
+      {
+        description: "scenario function component",
+        code: `function TestComponent() {
+          return (
+            <section>
+              <TestComponent testProp={'test'} />
+            </section>
+          );
+        }`,
+        selection: Selection.cursorAt(3, 40),
+        expected: `function TestComponent() {
+          return (
+            <section>
+              <TestComponent testProp="test" />
+            </section>
+          );
+        }`
+      },
+      {
+        description:
+          "scenario string expression not in JSX attribute should not be replaced",
+        code: `function TestComponent() {
+          return (
+            <section>
+              {'test'}
+              <TestComponent />
+            </section>
+          );
+        }`,
+        selection: Selection.cursorAt(3, 8),
+        expected: `function TestComponent() {
+          return (
+            <section>
+              {'test'}
+              <TestComponent />
+            </section>
+          );
+        }`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
