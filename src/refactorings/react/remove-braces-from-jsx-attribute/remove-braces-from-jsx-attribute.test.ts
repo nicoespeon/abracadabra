@@ -40,30 +40,6 @@ describe("Remove Braces From JSX Attribute", () => {
         expected: `<TestComponent firstProp={'test'} secondProp="test" />`
       },
       {
-        description: "JSX attribute already containing a string literal",
-        code: `<TestComponent testProp="test" />`,
-        selection: Selection.cursorAt(0, 24),
-        expected: `<TestComponent testProp="test" />`
-      },
-      {
-        description: "JSX expression is a function",
-        code: `<TestComponent testProp={function() { /* should not be replaced */ }} />`,
-        selection: Selection.cursorAt(0, 24),
-        expected: `<TestComponent testProp={function() { /* should not be replaced */ }} />`
-      },
-      {
-        description: "JSX epxression is an arrow function",
-        code: `<TestComponent testProp={() => { /* should not be replaced */ }} />`,
-        selection: Selection.cursorAt(0, 24),
-        expected: `<TestComponent testProp={() => { /* should not be replaced */ }} />`
-      },
-      {
-        description: "JSX expression is an object",
-        code: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`,
-        selection: Selection.cursorAt(0, 24),
-        expected: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`
-      },
-      {
         description: "function component",
         code: `function TestComponent() {
           return (
@@ -80,6 +56,36 @@ describe("Remove Braces From JSX Attribute", () => {
             </section>
           );
         }`
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
+      const result = await doRemoveBracesFromJsxAttribute(code, selection);
+      expect(result).toBe(expected);
+    }
+  );
+
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not change",
+    [
+      {
+        description: "JSX attribute already containing a string literal",
+        code: `<TestComponent testProp="test" />`,
+        selection: Selection.cursorAt(0, 24)
+      },
+      {
+        description: "JSX expression that is a function",
+        code: `<TestComponent testProp={function() { /* should not be replaced */ }} />`,
+        selection: Selection.cursorAt(0, 24)
+      },
+      {
+        description: "JSX epxression that is an arrow function",
+        code: `<TestComponent testProp={() => { /* should not be replaced */ }} />`,
+        selection: Selection.cursorAt(0, 24)
+      },
+      {
+        description: "JSX expression that is an object",
+        code: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`,
+        selection: Selection.cursorAt(0, 24)
       },
       {
         description:
@@ -92,20 +98,12 @@ describe("Remove Braces From JSX Attribute", () => {
             </section>
           );
         }`,
-        selection: Selection.cursorAt(3, 8),
-        expected: `function TestComponent() {
-          return (
-            <section>
-              {'test'}
-              <TestComponent />
-            </section>
-          );
-        }`
+        selection: Selection.cursorAt(3, 8)
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
       const result = await doRemoveBracesFromJsxAttribute(code, selection);
-      expect(result).toBe(expected);
+      expect(result).toBe(code);
     }
   );
 
