@@ -22,45 +22,49 @@ describe("Remove Braces From JSX Attribute", () => {
         expected: `<TestComponent testProp="test" />`
       },
       {
-        description:
-          "basic scenario should rewrite single quotes to double quotes",
+        description: "JSX attribute with single quote",
         code: `<TestComponent testProp={'test'} />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp="test" />`
       },
       {
-        description: "basic scenario multiple JSX attributes",
+        description: "multiple JSX attributes, cursor on first attribute",
         code: `<TestComponent firstProp={'test'} secondProp={'test'} />`,
         selection: Selection.cursorAt(0, 27),
         expected: `<TestComponent firstProp="test" secondProp={'test'} />`
       },
       {
-        description:
-          "scenario JSX attribute already containing a string literal",
+        description: "multiple JSX attributes, cursor on second attribute",
+        code: `<TestComponent firstProp={'test'} secondProp={'test'} />`,
+        selection: Selection.cursorAt(0, 48),
+        expected: `<TestComponent firstProp={'test'} secondProp="test" />`
+      },
+      {
+        description: "JSX attribute already containing a string literal",
         code: `<TestComponent testProp="test" />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp="test" />`
       },
       {
-        description: "scenario JSX epxression is a function",
+        description: "JSX expression is a function",
         code: `<TestComponent testProp={function() { /* should not be replaced */ }} />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp={function() { /* should not be replaced */ }} />`
       },
       {
-        description: "scenario JSX epxression is an arrow function",
+        description: "JSX epxression is an arrow function",
         code: `<TestComponent testProp={() => { /* should not be replaced */ }} />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp={() => { /* should not be replaced */ }} />`
       },
       {
-        description: "scenario JSX epxression is an object",
+        description: "JSX expression is an object",
         code: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`,
         selection: Selection.cursorAt(0, 24),
         expected: `<TestComponent testProp={{ should: 'not', be: 'replaced' }} />`
       },
       {
-        description: "scenario function component",
+        description: "function component",
         code: `function TestComponent() {
           return (
             <section>
@@ -79,7 +83,7 @@ describe("Remove Braces From JSX Attribute", () => {
       },
       {
         description:
-          "scenario string expression not in JSX attribute should not be replaced",
+          "string expression not in JSX attribute should not be replaced",
         code: `function TestComponent() {
           return (
             <section>
