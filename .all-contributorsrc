@@ -57,6 +57,17 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "timvancleef",
+      "name": "Tim van Cleef",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7040078?v=4",
+      "profile": "https://github.com/timvancleef",
+      "contributions": [
+        "ideas",
+        "code",
+        "documentation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
