@@ -9,10 +9,10 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "removeBracesFromJsxAttribute",
     operation: removeBracesFromJsxAttribute,
-    title: "Remove Braces From Jsx Attribute"
+    title: "Remove Braces from JSX Attribute"
   },
   actionProvider: {
-    message: "Remove braces from jsx attribute",
+    message: "Remove braces from JSX attribute",
     canPerform: hasBracesToRemoveFromJsxAttribute
   }
 };

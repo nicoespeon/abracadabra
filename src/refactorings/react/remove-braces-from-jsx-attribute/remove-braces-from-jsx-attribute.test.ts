@@ -5,7 +5,7 @@ import { testEach } from "../../../tests-helpers";
 
 import { removeBracesFromJsxAttribute } from "./remove-braces-from-jsx-attribute";
 
-describe("Remove Braces From Jsx Attribute", () => {
+describe("Remove Braces From JSX Attribute", () => {
   let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
