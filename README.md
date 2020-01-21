@@ -65,6 +65,7 @@ Related projects:
   - React specific:
     1. [Convert to Pure Component](#convert-to-pure-component)
     1. [Add braces to JSX attribute](#add-braces-to-jsx-attribute)
+    1. [Remove braces from JSX attribute](#remove-braces-from-jsx-attribute)
 - [Release Notes](#release-notes)
   - [Versioning](#versioning)
 - [Contributing](#contributing)
@@ -367,6 +368,16 @@ It adds curly braces to a JSX string literal, converting it into a JSX expressio
 
 ![][demo-add-braces-to-jsx-attribute]
 
+### Remove braces from JSX attribute
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+This refactoring is specific to React.
+
+If a JSX attribute is a JSX expression containing only a string literal, it refactors the JSX expression into a string literal by removing the curly braces.
+
+![][demo-remove-braces-from-jsx-attribute]
+
 ## Release Notes
 
 [Have a look at our CHANGELOG][changelog] to get the details of all changes between versions.
@@ -550,6 +561,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/simplify-ternary.gif?raw=true
 [demo-add-braces-to-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-if-statement.gif?raw=true
 [demo-add-braces-to-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-jsx-attribute.gif?raw=true
+[demo-remove-braces-from-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-jsx-attribute.gif?raw=true
 
 <!-- Logo -->
 

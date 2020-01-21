@@ -22,6 +22,7 @@ import moveStatementUp from "./refactorings/move-statement-up";
 import negateExpression from "./refactorings/negate-expression";
 import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
 import reactAddBracesToJsxAttribute from "./refactorings/react/add-braces-to-jsx-attribute";
+import reactRemoveBracesFromJsxAttribute from "./refactorings/react/remove-braces-from-jsx-attribute";
 import removeBracesFromArrowFunction from "./refactorings/remove-braces-from-arrow-function";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
@@ -65,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
     negateExpression,
     reactConvertToPureComponent,
     reactAddBracesToJsxAttribute,
+    reactRemoveBracesFromJsxAttribute,
     removeBracesFromArrowFunction,
     removeDeadCode,
     removeRedundantElse,
@@ -101,6 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
         negateExpression,
         reactConvertToPureComponent,
         reactAddBracesToJsxAttribute,
+        reactRemoveBracesFromJsxAttribute,
         removeBracesFromArrowFunction,
         removeDeadCode,
         removeRedundantElse,
