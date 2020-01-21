@@ -3,6 +3,7 @@ export { ErrorReason, toString };
 enum ErrorReason {
   DidNotFoundJsxAttributeToAddBracesTo,
   DidNotFoundBracesToRemove,
+  DidNotFoundClassToExtractInterface,
   DidNotFoundReactComponent,
   DidNotFoundIfStatementToAddBraces,
   DidNotFoundDeadCode,
@@ -46,6 +47,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFoundBracesToRemove:
       return didNotFound("braces to remove from jsx attribute");
+
+    case ErrorReason.DidNotFoundClassToExtractInterface:
+      return didNotFound("a class to extract the interface");
 
     case ErrorReason.DidNotFoundReactComponent:
       return didNotFound("a React component to convert");
