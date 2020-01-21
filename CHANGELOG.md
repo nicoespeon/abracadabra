@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Add Braces to JSX Attribute
+- **[New Refactoring]** Remove Braces from JSX Attribute
+
 ## [3.1.0] - 2020-01-14 - Keep 'em simple 🌱
 
 ### Added
