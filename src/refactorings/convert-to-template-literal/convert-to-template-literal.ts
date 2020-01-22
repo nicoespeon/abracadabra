@@ -68,7 +68,17 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       // In that case, we should go through the BinaryExpression logic.
       if (t.isBinaryExpression(path.parentPath)) return;
 
-      path.replaceWith(createTemplateLiteral(new PrimitiveTemplate(path.node)));
+      const templateLiteral = createTemplateLiteral(
+        new PrimitiveTemplate(path.node)
+      );
+
+      if (t.isJSXAttribute(path.parentPath)) {
+        // Case of <MyComponent prop="test" /> => <MyComponent prop={`test`} />
+        path.replaceWith(t.jsxExpressionContainer(templateLiteral));
+      } else {
+        path.replaceWith(templateLiteral);
+      }
+
       path.stop();
     }
   });

@@ -96,6 +96,18 @@ const name = "Jane " + lastName + " / " + age;`,
         expected: `const lastName = "Doe";
 const age = 30;
 const name = \`Jane \${lastName} / \${age}\`;`
+      },
+      {
+        description: "JSX attribute without braces",
+        code: `<TestComponent testProp="test" />`,
+        selection: Selection.cursorAt(0, 26),
+        expected: `<TestComponent testProp={\`test\`} />`
+      },
+      {
+        description: "JSX attribute with braces",
+        code: `<TestComponent testProp={"test"} />`,
+        selection: Selection.cursorAt(0, 26),
+        expected: `<TestComponent testProp={\`test\`} />`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 13), expected }) => {

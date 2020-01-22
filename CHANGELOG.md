@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Convert to Template Literal now works on JSX attributes which were not already wrapped with braces. Concretely, `<MyComponent prop="test" />` will now produce `<MyComponent prop={`test`} />` instead of failing.
+
 ### Added
 
 - **[New Refactoring]** Add Braces to JSX Attribute
