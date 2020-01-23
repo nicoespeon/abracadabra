@@ -48,6 +48,29 @@ interface Extracted {
 interface Extracted {
   isEqualTo(position?: Position): boolean;
 }`
+      },
+      {
+        description: "class with private method",
+        code: `class Position {
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+
+  private doSomething(): void {}
+  #doSomethingElse(): void {}
+}`,
+        expected: `class Position implements Extracted {
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+
+  private doSomething(): void {}
+  #doSomethingElse(): void {}
+}
+
+interface Extracted {
+  isEqualTo(position: Position): boolean;
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

@@ -29,6 +29,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ClassDeclaration(path) {
       const declarations = path.node.body.body
         .filter((method): method is t.ClassMethod => t.isClassMethod(method))
+        .filter(method => method.accessibility !== "private")
         .map(method => {
           return t.tsMethodSignature(
             method.key,
