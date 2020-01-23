@@ -4,6 +4,25 @@ import * as t from "../../ast";
 
 export { extractInterface, canExtractInterface };
 
+// TODO: properties through public constructor (auto-assign)
+// TODO: properties computed
+// TODO: properties optional
+// TODO: properties readonly
+// TODO: properties as const
+// TODO: private properties
+// TODO: method readonly
+// TODO: constructor
+// TODO: Generics (typeParameters)
+
+// class Position implements Extracted {
+//   x: number;
+//   y = 10;
+// }
+
+// interface Extracted {
+//   isEqualTo(position?: { x: number; y: number }): boolean;
+// }
+
 async function extractInterface(
   code: Code,
   selection: Selection,
@@ -25,6 +44,7 @@ function canExtractInterface(ast: t.AST, selection: Selection): boolean {
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  // TODO: selection
   return t.transformAST(ast, {
     ClassDeclaration(path) {
       const declarations = path.node.body.body
@@ -34,6 +54,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           return t.tsMethodSignature(
             method.key,
             null,
+            // method.typeParameters,
             method.params.filter(
               (param): param is t.Identifier => t.isIdentifier(param)
             ),
@@ -41,12 +62,37 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           );
         });
 
+      const properties = path.node.body.body
+        .filter(
+          (property): property is t.ClassProperty => t.isClassProperty(property)
+        )
+        .map(property => {
+          return t.tsPropertySignature(
+            property.key,
+            t.isTSTypeAnnotation(property.typeAnnotation)
+              ? property.typeAnnotation
+              : toTSType(property.value),
+            null
+          );
+        });
+
+      // TODO: test all different nodes
+      function toTSType(
+        value: t.ClassProperty["value"]
+      ): t.TSTypeAnnotation | null {
+        if (t.isNumericLiteral(value)) {
+          return t.tsTypeAnnotation(t.tsNumberKeyword());
+        }
+
+        return t.tsTypeAnnotation(t.tsAnyKeyword());
+      }
+
       const interfaceIdentifier = t.identifier("Extracted");
       const interfaceDeclaration = t.tsInterfaceDeclaration(
         interfaceIdentifier,
         undefined,
         undefined,
-        t.tsInterfaceBody(declarations)
+        t.tsInterfaceBody([...properties, ...declarations])
       );
 
       path.node.implements = [t.classImplements(interfaceIdentifier)];

@@ -33,6 +33,23 @@ interface Extracted {
 }`
       },
       {
+        description: "inline type in param method",
+        code: `class Position {
+  isEqualTo(position: {x: number, y: number}): boolean {
+    return true;
+  }
+}`,
+        expected: `class Position implements Extracted {
+  isEqualTo(position: {x: number, y: number}): boolean {
+    return true;
+  }
+}
+
+interface Extracted {
+  isEqualTo(position: {x: number, y: number}): boolean;
+}`
+      },
+      {
         description: "method with optional params",
         code: `class Position {
   isEqualTo(position?: Position): boolean {
@@ -70,6 +87,22 @@ interface Extracted {
 
 interface Extracted {
   isEqualTo(position: Position): boolean;
+}`
+      },
+      {
+        description: "class with public properties",
+        code: `class Position {
+  x: number;
+  y = 10;
+}`,
+        expected: `class Position implements Extracted {
+  x: number;
+  y = 10;
+}
+
+interface Extracted {
+  x: number;
+  y: number;
 }`
       }
     ],
