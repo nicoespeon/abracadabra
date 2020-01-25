@@ -44,9 +44,10 @@ function canExtractInterface(ast: t.AST, selection: Selection): boolean {
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  // TODO: selection
   return t.transformAST(ast, {
     ClassDeclaration(path) {
+      if (!selection.isInsidePath(path)) return;
+
       const declarations = path.node.body.body
         .filter((method): method is t.ClassMethod => t.isClassMethod(method))
         .filter(method => method.accessibility !== "private")

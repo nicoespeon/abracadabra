@@ -104,6 +104,36 @@ interface Extracted {
   x: number;
   y: number;
 }`
+      },
+      {
+        description: "selected class only",
+        code: `class Position {
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}
+
+class AnotherPosition {
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}`,
+        selection: Selection.cursorAt(6, 0),
+        expected: `class Position {
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}
+
+class AnotherPosition implements Extracted {
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}
+
+interface Extracted {
+  isEqualTo(position: Position): boolean;
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
