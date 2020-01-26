@@ -77,24 +77,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           return result;
         });
 
-      function toTSType(
-        value: t.ClassProperty["value"]
-      ): t.TSTypeAnnotation | null {
-        if (t.isNumericLiteral(value)) {
-          return t.tsTypeAnnotation(t.tsNumberKeyword());
-        }
-
-        if (t.isStringLiteral(value)) {
-          return t.tsTypeAnnotation(t.tsStringKeyword());
-        }
-
-        if (t.isBooleanLiteral(value)) {
-          return t.tsTypeAnnotation(t.tsBooleanKeyword());
-        }
-
-        return t.tsTypeAnnotation(t.tsAnyKeyword());
-      }
-
       const interfaceIdentifier = t.identifier("Extracted");
       const interfaceDeclaration = t.tsInterfaceDeclaration(
         interfaceIdentifier,
@@ -107,4 +89,20 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.insertAfter(interfaceDeclaration);
     }
   });
+}
+
+function toTSType(value: t.ClassProperty["value"]): t.TSTypeAnnotation | null {
+  if (t.isNumericLiteral(value)) {
+    return t.tsTypeAnnotation(t.tsNumberKeyword());
+  }
+
+  if (t.isStringLiteral(value)) {
+    return t.tsTypeAnnotation(t.tsStringKeyword());
+  }
+
+  if (t.isBooleanLiteral(value)) {
+    return t.tsTypeAnnotation(t.tsBooleanKeyword());
+  }
+
+  return t.tsTypeAnnotation(t.tsAnyKeyword());
 }
