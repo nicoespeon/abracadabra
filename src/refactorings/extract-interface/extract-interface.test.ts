@@ -18,11 +18,19 @@ describe.only("Extract Interface", () => {
       {
         description: "class with public method",
         code: `class Position {
+  constructor(name: string) {
+    this.name = name;
+  }
+
   isEqualTo(position: Position): boolean {
     return true;
   }
 }`,
         expected: `class Position implements Extracted {
+  constructor(name: string) {
+    this.name = name;
+  }
+
   isEqualTo(position: Position): boolean {
     return true;
   }

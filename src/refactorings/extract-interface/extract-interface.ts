@@ -4,19 +4,8 @@ import * as t from "../../ast";
 
 export { extractInterface, canExtractInterface };
 
-// TODO: properties through public constructor (auto-assign)
-// TODO: method readonly
-// TODO: constructor
+// TODO: don't refer private properties auto-assigned with constructor
 // TODO: Generics (typeParameters)
-
-// class Position implements Extracted {
-//   x: number;
-//   y = 10;
-// }
-
-// interface Extracted {
-//   isEqualTo(position?: { x: number; y: number }): boolean;
-// }
 
 async function extractInterface(
   code: Code,
@@ -46,6 +35,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const declarations = path.node.body.body
         .filter((method): method is t.ClassMethod => t.isClassMethod(method))
         .filter(method => method.accessibility !== "private")
+        .filter(method => method.kind !== "constructor")
         .map(method => {
           return t.tsMethodSignature(
             method.key,
