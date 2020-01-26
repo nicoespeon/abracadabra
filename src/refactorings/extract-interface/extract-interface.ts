@@ -77,12 +77,19 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           );
         });
 
-      // TODO: test all different nodes
       function toTSType(
         value: t.ClassProperty["value"]
       ): t.TSTypeAnnotation | null {
         if (t.isNumericLiteral(value)) {
           return t.tsTypeAnnotation(t.tsNumberKeyword());
+        }
+
+        if (t.isStringLiteral(value)) {
+          return t.tsTypeAnnotation(t.tsStringKeyword());
+        }
+
+        if (t.isBooleanLiteral(value)) {
+          return t.tsTypeAnnotation(t.tsBooleanKeyword());
         }
 
         return t.tsTypeAnnotation(t.tsAnyKeyword());

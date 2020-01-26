@@ -94,15 +94,24 @@ interface Extracted {
         code: `class Position {
   x: number;
   y = 10;
+  isValid = true;
+  name = "point";
+  someData = [];
 }`,
         expected: `class Position implements Extracted {
   x: number;
   y = 10;
+  isValid = true;
+  name = "point";
+  someData = [];
 }
 
 interface Extracted {
   x: number;
   y: number;
+  isValid: boolean;
+  name: string;
+  someData: any;
 }`
       },
       {
