@@ -5,11 +5,6 @@ import * as t from "../../ast";
 export { extractInterface, canExtractInterface };
 
 // TODO: properties through public constructor (auto-assign)
-// TODO: properties computed
-// TODO: properties optional
-// TODO: properties readonly
-// TODO: properties as const
-// TODO: private properties
 // TODO: method readonly
 // TODO: constructor
 // TODO: Generics (typeParameters)
@@ -38,7 +33,7 @@ async function extractInterface(
   await editor.write(updatedCode.code);
 }
 
-function canExtractInterface(ast: t.AST, selection: Selection): boolean {
+function canExtractInterface(/* ast: t.AST, selection: Selection */): boolean {
   // TODO: implement the check here 🧙‍
   return false;
 }
@@ -55,7 +50,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           return t.tsMethodSignature(
             method.key,
             null,
-            // method.typeParameters,
             method.params.filter(
               (param): param is t.Identifier => t.isIdentifier(param)
             ),
@@ -67,14 +61,20 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         .filter(
           (property): property is t.ClassProperty => t.isClassProperty(property)
         )
+        .filter(method => method.accessibility !== "private")
         .map(property => {
-          return t.tsPropertySignature(
+          // Only pass 3 params and mutates the result because of a weird bug.
+          // TS complains "Too many arguments" if we pass more than 3 params
+          // even though `tsPropertySignature` takes 6 params.
+          const result = t.tsPropertySignature(
             property.key,
             t.isTSTypeAnnotation(property.typeAnnotation)
               ? property.typeAnnotation
               : toTSType(property.value),
             null
           );
+          result.readonly = property.readonly;
+          return result;
         });
 
       function toTSType(

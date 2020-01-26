@@ -93,14 +93,14 @@ interface Extracted {
         description: "class with public properties",
         code: `class Position {
   x: number;
-  y = 10;
+  readonly y = 10;
   isValid = true;
   name = "point";
   someData = [];
 }`,
         expected: `class Position implements Extracted {
   x: number;
-  y = 10;
+  readonly y = 10;
   isValid = true;
   name = "point";
   someData = [];
@@ -108,10 +108,27 @@ interface Extracted {
 
 interface Extracted {
   x: number;
-  y: number;
+  readonly y: number;
   isValid: boolean;
   name: string;
   someData: any;
+}`
+      },
+      {
+        description: "class with private properties",
+        code: `class Position {
+  x: number;
+  private y = 10;
+  #isValid = true;
+}`,
+        expected: `class Position implements Extracted {
+  x: number;
+  private y = 10;
+  #isValid = true;
+}
+
+interface Extracted {
+  x: number;
 }`
       },
       {
