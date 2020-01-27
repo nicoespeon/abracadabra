@@ -140,6 +140,19 @@ interface Extracted {
 }`
       },
       {
+        description: "properties auto-assigned in constructor",
+        code: `class Position {
+  constructor(public name: string, private location: Location) {}
+}`,
+        expected: `class Position implements Extracted {
+  constructor(public name: string, private location: Location) {}
+}
+
+interface Extracted {
+  name: string;
+}`
+      },
+      {
         description: "selected class only",
         code: `class Position {
   isEqualTo(position: Position): boolean {

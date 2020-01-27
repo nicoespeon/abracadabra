@@ -4,7 +4,6 @@ import * as t from "../../ast";
 
 export { extractInterface, canExtractInterface };
 
-// TODO: don't refer private properties auto-assigned with constructor
 // TODO: Generics (typeParameters)
 
 async function extractInterface(
@@ -32,8 +31,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ClassDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const declarations = path.node.body.body
-        .filter((method): method is t.ClassMethod => t.isClassMethod(method))
+      const methods = path.node.body.body.filter(
+        (method): method is t.ClassMethod => t.isClassMethod(method)
+      );
+
+      const declarations = methods
         .filter(method => method.accessibility !== "private")
         .filter(method => method.kind !== "constructor")
         .map(method => {
@@ -46,6 +48,24 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
             t.isTSTypeAnnotation(method.returnType) ? method.returnType : null
           );
         });
+
+      let autoAssignedProperties: t.TSPropertySignature[] = [];
+      const constructorDeclaration = methods.find(
+        method => method.kind === "constructor"
+      );
+      if (constructorDeclaration) {
+        autoAssignedProperties = constructorDeclaration.params
+          .filter(
+            (param): param is t.TSParameterProperty =>
+              t.isTSParameterProperty(param)
+          )
+          .filter(param => param.accessibility === "public")
+          .map(param => param.parameter)
+          .filter(
+            (property): property is t.Identifier => t.isIdentifier(property)
+          )
+          .map(property => t.tsPropertySignature(property));
+      }
 
       const properties = path.node.body.body
         .filter(
@@ -65,7 +85,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           );
           result.readonly = property.readonly;
           return result;
-        });
+        })
+        .concat(autoAssignedProperties);
 
       const interfaceIdentifier = t.identifier("Extracted");
       const interfaceDeclaration = t.tsInterfaceDeclaration(
