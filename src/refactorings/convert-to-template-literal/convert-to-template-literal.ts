@@ -42,6 +42,9 @@ function canConvertToTemplateLiteral(
       // In that case, we should go through the BinaryExpression logic.
       if (t.isBinaryExpression(path.parentPath)) return;
 
+      // If we are inside of an import statement, dont show refactoring
+      if (t.isImportDeclaration(path.parentPath)) return;
+
       result = true;
     }
   });
@@ -67,6 +70,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
       // In that case, we should go through the BinaryExpression logic.
       if (t.isBinaryExpression(path.parentPath)) return;
+
+      // If we are inside of an import statement, do nothing
+      if (t.isImportDeclaration(path.parentPath)) return;
 
       const templateLiteral = createTemplateLiteral(
         new PrimitiveTemplate(path.node)

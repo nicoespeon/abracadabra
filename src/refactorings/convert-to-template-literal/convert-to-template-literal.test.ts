@@ -2,8 +2,11 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
-
-import { convertToTemplateLiteral } from "./convert-to-template-literal";
+import * as t from "../../ast";
+import {
+  convertToTemplateLiteral,
+  canConvertToTemplateLiteral
+} from "./convert-to-template-literal";
 
 describe("Convert To Template Literal", () => {
   let showErrorMessage: Editor["showError"];
@@ -11,6 +14,28 @@ describe("Convert To Template Literal", () => {
   beforeEach(() => {
     showErrorMessage = jest.fn();
   });
+
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not show refactoring",
+    [
+      {
+        description: "on an import statement using double quotes",
+        code: `import MyComponent from "./MyComponent";`,
+        selection: Selection.cursorAt(0, 27)
+      },
+      {
+        description: "on an import statement using sinle quotes",
+        code: `import MyComponent from './MyComponent';`,
+        selection: Selection.cursorAt(0, 27)
+      }
+    ],
+    ({ code, selection = Selection.cursorAt(0, 13) }) => {
+      const ast = t.parse(code);
+      const canConvert = canConvertToTemplateLiteral(ast, selection);
+
+      expect(canConvert).toBeFalsy();
+    }
+  );
 
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should convert to template literal",
@@ -135,6 +160,10 @@ const name = \`Jane \${lastName} / \${age}\`;`
       {
         description: "concatenation with object",
         code: `const name = "Jane-" + { lastName: "Doe" };`
+      },
+      {
+        description: "import statement",
+        code: `import MyComponent from "./MyComponent"`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 14) }) => {
