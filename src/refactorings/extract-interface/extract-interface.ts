@@ -36,7 +36,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       );
 
       const declarations = methods
-        .filter(method => !isPrivate(method))
+        .filter(method => isPublic(method))
         .filter(method => !isConstructor(method))
         .map(method => {
           return t.tsMethodSignature(
@@ -69,7 +69,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         .filter(
           (property): property is t.ClassProperty => t.isClassProperty(property)
         )
-        .filter(property => !isPrivate(property))
+        .filter(property => isPublic(property))
         .map(property => {
           // Only pass 3 params and mutates the result because of a weird bug.
           // TS complains "Too many arguments" if we pass more than 3 params
@@ -100,12 +100,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   });
 }
 
-function isPublic(param: t.TSParameterProperty): boolean {
-  return param.accessibility === "public";
-}
-
-function isPrivate(method: t.ClassMethod | t.ClassProperty): boolean {
-  return method.accessibility === "private";
+function isPublic(
+  node: t.TSParameterProperty | t.ClassProperty | t.ClassMethod
+): boolean {
+  return node.accessibility === "public" || !node.accessibility;
 }
 
 function isConstructor(method: t.ClassMethod): boolean {

@@ -123,16 +123,18 @@ interface Extracted {
 }`
       },
       {
-        description: "class with private properties",
+        description: "class with private or protected properties",
         code: `class Position {
   x: number;
   private y = 10;
   #isValid = true;
+  protected name: string;
 }`,
         expected: `class Position implements Extracted {
   x: number;
   private y = 10;
   #isValid = true;
+  protected name: string;
 }
 
 interface Extracted {
