@@ -19,13 +19,32 @@ async function extractInterface(
   await editor.write(updatedCode.code);
 }
 
-function canExtractInterface(/* ast: t.AST, selection: Selection */): boolean {
-  // TODO: implement the check here 🧙‍
-  return false;
+function canExtractInterface(ast: t.AST, selection: Selection): boolean {
+  let result = false;
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
+
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, id, declaration) => {
+      path.node.implements = [t.classImplements(id)];
+      path.insertAfter(declaration);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.NodePath<t.ClassDeclaration>,
+    id: t.Identifier,
+    declaration: t.TSInterfaceDeclaration
+  ) => void
+): t.Visitor {
+  return {
     ClassDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -111,10 +130,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         ])
       );
 
-      path.node.implements = [t.classImplements(interfaceIdentifier)];
-      path.insertAfter(interfaceDeclaration);
+      onMatch(path, interfaceIdentifier, interfaceDeclaration);
     }
-  });
+  };
 }
 
 function isPublic(
