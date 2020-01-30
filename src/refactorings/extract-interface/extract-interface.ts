@@ -58,11 +58,13 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
               t.isTSParameterProperty(param)
           )
           .filter(isPublic)
-          .map(param => param.parameter)
-          .filter(
-            (property): property is t.Identifier => t.isIdentifier(property)
-          )
-          .map(property => t.tsPropertySignature(property));
+          .reduce<t.TSPropertySignature[]>((memo, property) => {
+            if (!t.isIdentifier(property.parameter)) return memo;
+
+            const result = t.tsPropertySignature(property.parameter);
+            result.readonly = property.readonly;
+            return memo.concat(result);
+          }, []);
       }
 
       const properties = path.node.body.body
