@@ -144,15 +144,26 @@ interface Extracted {
       {
         description: "properties auto-assigned in constructor",
         code: `class Position {
-  constructor(public name: string, public readonly isValid: boolean, private location: Location) {}
+  constructor(
+    public name: string,
+    public readonly isValid: boolean = true,
+    private x: number,
+    public y = 0
+  ) {}
 }`,
         expected: `class Position implements Extracted {
-  constructor(public name: string, public readonly isValid: boolean, private location: Location) {}
+  constructor(
+    public name: string,
+    public readonly isValid: boolean = true,
+    private x: number,
+    public y = 0
+  ) {}
 }
 
 interface Extracted {
   name: string;
   readonly isValid: boolean;
+  y: number;
 }`
       },
       {

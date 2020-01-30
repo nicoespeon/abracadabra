@@ -59,9 +59,24 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           )
           .filter(isPublic)
           .reduce<t.TSPropertySignature[]>((memo, property) => {
-            if (!t.isIdentifier(property.parameter)) return memo;
+            let result;
 
-            const result = t.tsPropertySignature(property.parameter);
+            if (t.isIdentifier(property.parameter)) {
+              result = t.tsPropertySignature(property.parameter);
+            } else {
+              const key = property.parameter.left;
+              if (!t.isExpression(key)) return memo;
+
+              result = t.tsPropertySignature(
+                key,
+                t.isTSTypeAnnotation(key.typeAnnotation)
+                  ? null
+                  : toTSType(property.parameter.right)
+              );
+            }
+
+            // Mutates the result because of a weird bug: TS complains "Too many arguments"
+            // if we pass more than 3 params even though `tsPropertySignature` takes 6 params.
             result.readonly = property.readonly;
             return memo.concat(result);
           }, []);
@@ -73,16 +88,15 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         )
         .filter(property => isPublic(property))
         .map(property => {
-          // Only pass 3 params and mutates the result because of a weird bug.
-          // TS complains "Too many arguments" if we pass more than 3 params
-          // even though `tsPropertySignature` takes 6 params.
           const result = t.tsPropertySignature(
             property.key,
             t.isTSTypeAnnotation(property.typeAnnotation)
               ? property.typeAnnotation
-              : toTSType(property.value),
-            null
+              : toTSType(property.value)
           );
+
+          // Mutates the result because of a weird bug: TS complains "Too many arguments"
+          // if we pass more than 3 params even though `tsPropertySignature` takes 6 params.
           result.readonly = property.readonly;
           return result;
         })
