@@ -4,8 +4,6 @@ import * as t from "../../ast";
 
 export { extractInterface, canExtractInterface };
 
-// TODO: Generics (typeParameters)
-
 async function extractInterface(
   code: Code,
   selection: Selection,
