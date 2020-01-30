@@ -5,7 +5,7 @@ import { testEach } from "../../tests-helpers";
 
 import { extractInterface } from "./extract-interface";
 
-describe.only("Extract Interface", () => {
+describe("Extract Interface", () => {
   let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
