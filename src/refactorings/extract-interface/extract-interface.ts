@@ -36,8 +36,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       );
 
       const declarations = methods
-        .filter(method => method.accessibility !== "private")
-        .filter(method => method.kind !== "constructor")
+        .filter(method => !isPrivate(method))
+        .filter(method => !isConstructor(method))
         .map(method => {
           return t.tsMethodSignature(
             method.key,
@@ -50,16 +50,14 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         });
 
       let autoAssignedProperties: t.TSPropertySignature[] = [];
-      const constructorDeclaration = methods.find(
-        method => method.kind === "constructor"
-      );
+      const constructorDeclaration = methods.find(isConstructor);
       if (constructorDeclaration) {
         autoAssignedProperties = constructorDeclaration.params
           .filter(
             (param): param is t.TSParameterProperty =>
               t.isTSParameterProperty(param)
           )
-          .filter(param => param.accessibility === "public")
+          .filter(isPublic)
           .map(param => param.parameter)
           .filter(
             (property): property is t.Identifier => t.isIdentifier(property)
@@ -71,7 +69,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         .filter(
           (property): property is t.ClassProperty => t.isClassProperty(property)
         )
-        .filter(method => method.accessibility !== "private")
+        .filter(property => !isPrivate(property))
         .map(property => {
           // Only pass 3 params and mutates the result because of a weird bug.
           // TS complains "Too many arguments" if we pass more than 3 params
@@ -100,6 +98,18 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.insertAfter(interfaceDeclaration);
     }
   });
+}
+
+function isPublic(param: t.TSParameterProperty): boolean {
+  return param.accessibility === "public";
+}
+
+function isPrivate(method: t.ClassMethod | t.ClassProperty): boolean {
+  return method.accessibility === "private";
+}
+
+function isConstructor(method: t.ClassMethod): boolean {
+  return method.kind === "constructor";
 }
 
 function toTSType(value: t.ClassProperty["value"]): t.TSTypeAnnotation | null {
