@@ -36,7 +36,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       );
 
       const declarations = methods
-        .filter(method => isPublic(method))
+        .filter(isPublic)
         .filter(method => !isConstructor(method))
         .map(method => {
           return t.tsMethodSignature(
@@ -82,11 +82,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           }, []);
       }
 
-      const properties = path.node.body.body
+      const classProperties = path.node.body.body
         .filter(
           (property): property is t.ClassProperty => t.isClassProperty(property)
         )
-        .filter(property => isPublic(property))
+        .filter(isPublic)
         .map(property => {
           const result = t.tsPropertySignature(
             property.key,
@@ -99,15 +99,18 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           // if we pass more than 3 params even though `tsPropertySignature` takes 6 params.
           result.readonly = property.readonly;
           return result;
-        })
-        .concat(autoAssignedProperties);
+        });
 
       const interfaceIdentifier = t.identifier("Extracted");
       const interfaceDeclaration = t.tsInterfaceDeclaration(
         interfaceIdentifier,
         undefined,
         undefined,
-        t.tsInterfaceBody([...properties, ...declarations])
+        t.tsInterfaceBody([
+          ...classProperties,
+          ...autoAssignedProperties,
+          ...declarations
+        ])
       );
 
       path.node.implements = [t.classImplements(interfaceIdentifier)];
