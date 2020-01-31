@@ -22,6 +22,7 @@ interface Editor {
   delegate(command: Command): Promise<void>;
   showError(reason: ErrorReason): Promise<void>;
   askUser<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined>;
+  moveCursorTo(position: Position): Promise<void>;
 }
 
 type Modification = {

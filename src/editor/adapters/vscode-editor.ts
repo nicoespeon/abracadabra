@@ -98,6 +98,11 @@ class VSCodeEditor implements Editor {
   async askUser<T>(choices: Choice<T>[]) {
     return await vscode.window.showQuickPick(choices);
   }
+
+  moveCursorTo(position: Position) {
+    this.editor.selection = toVSCodeCursor(position);
+    return Promise.resolve();
+  }
 }
 
 function createSelectionFromVSCode(

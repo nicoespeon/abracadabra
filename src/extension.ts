@@ -11,6 +11,7 @@ import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import extractInterface from "./refactorings/extract-interface";
 import extractVariable from "./refactorings/extract-variable";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
@@ -32,12 +33,8 @@ import splitDeclarationAndInitialization from "./refactorings/split-declaration-
 import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
 
-const SUPPORTED_LANGUAGES = [
-  "javascript",
-  "javascriptreact",
-  "typescript",
-  "typescriptreact"
-];
+const TS_LANGUAGES = ["typescript", "typescriptreact"];
+const ALL_LANGUAGES = ["javascript", "javascriptreact", ...TS_LANGUAGES];
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -55,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
+    extractInterface,
     extractVariable,
     flipIfElse,
     flipTernary,
@@ -84,7 +82,17 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  SUPPORTED_LANGUAGES.forEach(language => {
+  TS_LANGUAGES.forEach(language => {
+    vscode.languages.registerCodeActionsProvider(
+      language,
+      new RefactoringActionProvider([extractInterface]),
+      {
+        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
+      }
+    );
+  });
+
+  ALL_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([
