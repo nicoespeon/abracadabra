@@ -1,6 +1,8 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export { extractInterface, canExtractInterface };
 
@@ -17,6 +19,10 @@ async function extractInterface(
   }
 
   await editor.write(updatedCode.code);
+
+  await editor.moveCursorTo(updatedCode.interfaceIdentifierPosition);
+
+  await renameSymbol(editor);
 }
 
 function canExtractInterface(ast: t.AST, selection: Selection): boolean {
@@ -26,14 +32,33 @@ function canExtractInterface(ast: t.AST, selection: Selection): boolean {
   return result;
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): t.Transformed & { interfaceIdentifierPosition: Position } {
+  let interfaceIdentifierPosition: Position = selection.start;
+
+  const result = t.transformAST(
     ast,
     createVisitor(selection, (path, id, declaration) => {
+      if (t.isSelectableNode(path.node)) {
+        // "interface X" => 10 characters before "X"
+        const interfaceIdentifierOffset = 10;
+
+        interfaceIdentifierPosition = Position.fromAST(path.node.loc.end)
+          .putAtStartOfLine()
+          // New interface starts 2 lines after class declaration
+          .putAtNextLine()
+          .putAtNextLine()
+          .addCharacters(interfaceIdentifierOffset);
+      }
+
       path.node.implements = [t.classImplements(id)];
       path.insertAfter(declaration);
     })
   );
+
+  return { ...result, interfaceIdentifierPosition };
 }
 
 function createVisitor(

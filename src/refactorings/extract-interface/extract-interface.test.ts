@@ -1,4 +1,5 @@
 import { Editor, ErrorReason, Code } from "../../editor/editor";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -213,6 +214,25 @@ interface Extracted {
     expect(showErrorMessage).toBeCalledWith(
       ErrorReason.DidNotFoundClassToExtractInterface
     );
+  });
+
+  it("should move cursor to extracted interface name", async () => {
+    const code = `class Position {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}`;
+    const editor = new InMemoryEditor(code);
+    const selection = Selection.cursorAt(0, 0);
+    const moveCursorTo = jest.spyOn(editor, "moveCursorTo");
+
+    await extractInterface(code, selection, editor);
+
+    expect(moveCursorTo).toBeCalledWith(new Position(10, 10));
   });
 
   async function doExtractInterface(
