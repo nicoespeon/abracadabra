@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** Add Braces to JSX Attribute
 - **[New Refactoring]** Remove Braces from JSX Attribute
+- **[New Refactoring]** Extract Interfaces _(TS specific)_
 
 ## [3.1.0] - 2020-01-14 - Keep 'em simple 🌱
 
@@ -23,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **[New Refactoring]** Convert to Pure Component (React specific)
+- **[New Refactoring]** Convert to Pure Component _(React specific)_
 
 ### Changed
 
