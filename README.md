@@ -62,6 +62,8 @@ Related projects:
     1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
+  - TS specific:
+    1. [Extract Interface](#extract-interface)
   - React specific:
     1. [Convert to Pure Component](#convert-to-pure-component)
     1. [Add braces to JSX attribute](#add-braces-to-jsx-attribute)
@@ -348,6 +350,16 @@ When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
 ![][demo-convert-for-to-foreach]
 
+### Extract Interface
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Extract the interface from a class.
+
+This is very useful when you need to invert a dependency: create an interface from an existing class, so you can provide a different implementation of this interface.
+
+![][demo-extract-interface]
+
 ### Convert to Pure Component
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -563,6 +575,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-add-braces-to-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-if-statement.gif?raw=true
 [demo-add-braces-to-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-jsx-attribute.gif?raw=true
 [demo-remove-braces-from-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-jsx-attribute.gif?raw=true
+[demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-interface.gif?raw=true
 
 <!-- Logo -->
 
