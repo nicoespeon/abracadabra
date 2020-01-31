@@ -90,6 +90,7 @@
     "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
+    "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.extractVariable",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
@@ -158,6 +159,11 @@
       {
         "command": "abracadabra.extractVariable",
         "title": "Extract Variable",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.extractInterface",
+        "title": "Extract Interface",
         "category": "Abracadabra"
       },
       {
@@ -419,6 +425,14 @@
         },
         {
           "command": "abracadabra.extractVariable",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extractInterface",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extractInterface",
           "when": "editorLangId == typescriptreact"
         },
         {
