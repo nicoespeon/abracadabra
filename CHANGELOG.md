@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2020-01-30 - The Class Without an Interface 🎭
+
 ### Fixed
 
 - Convert to Template Literal now works on JSX attributes which were not already wrapped with braces. Concretely, `<MyComponent prop="test" />` will now produce `<MyComponent prop={`test`} />` instead of failing.
@@ -16,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** Add Braces to JSX Attribute
 - **[New Refactoring]** Remove Braces from JSX Attribute
-- **[New Refactoring]** Extract Interfaces _(TS specific)_
+- **[New Refactoring]** Extract Interface _(TS specific)_
 
 ## [3.1.0] - 2020-01-14 - Keep 'em simple 🌱
 
@@ -704,7 +706,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/3.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/3.2.0...HEAD
+[3.2.0]: https://github.com/nicoespeon/abracadabra/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/nicoespeon/abracadabra/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/nicoespeon/abracadabra/compare/2.0.0...3.0.0
 [2.0.0]: https://github.com/nicoespeon/abracadabra/compare/1.2.1...2.0.0
