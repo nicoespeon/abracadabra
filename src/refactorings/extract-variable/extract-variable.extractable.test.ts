@@ -30,6 +30,13 @@ console.log(hello);`
 console.log(extracted);`
       },
       {
+        description: "an empty string",
+        code: `console.log("");`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = "";
+console.log(extracted);`
+      },
+      {
         description: "a number",
         code: `console.log(12.5);`,
         selection: Selection.cursorAt(0, 12),
