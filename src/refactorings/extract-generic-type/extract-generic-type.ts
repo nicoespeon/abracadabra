@@ -26,6 +26,22 @@ function hasTypeToExtract(ast: t.AST, selection: Selection): boolean {
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(ast, {
-    // TODO: implement the transformation here 🧙‍
+    TSTypeAnnotation(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const genericTypeAnnotation = t.tsTypeAnnotation(
+        t.tsTypeReference(t.identifier("T"))
+      );
+      if (t.isTSInterfaceDeclaration(path.parentPath.parentPath.parent)) {
+        const typeParameter = t.tsTypeParameter(undefined, t.tsNumberKeyword());
+        typeParameter.name = "T";
+        path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
+          [typeParameter]
+        );
+      }
+      path.replaceWith(genericTypeAnnotation);
+
+      path.stop();
+    }
   });
 }

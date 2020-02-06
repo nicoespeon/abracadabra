@@ -15,7 +15,19 @@ describe("Extract Generic Type", () => {
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should extract generic type",
     [
-      // TODO: write successful test cases here
+      {
+        description: "primitive type",
+        code: `interface Position {
+  x: number;
+  y: number;
+}`,
+        selection: Selection.cursorAt(1, 6),
+        expected: `interface Position<T = number> {
+  x: T;
+  y: number;
+}`
+      }
+      // TODO: extract 1 or all occurrences of given type (e.g. "number")
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doExtractGenericType(code, selection);
