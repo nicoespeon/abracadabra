@@ -37,6 +37,27 @@ console.log(extracted);`
 console.log(extracted);`
       },
       {
+        description: "a 1-char string",
+        code: `console.log("T");`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = "T";
+console.log(extracted);`
+      },
+      {
+        description: "a string being a keyword",
+        code: `console.log("const");`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = "const";
+console.log(extracted);`
+      },
+      {
+        description: "a string without chars inside",
+        code: `console.log("===");`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = "===";
+console.log(extracted);`
+      },
+      {
         description: "a number",
         code: `console.log(12.5);`,
         selection: Selection.cursorAt(0, 12),

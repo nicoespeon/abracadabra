@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Extract Variable didn't worked properly with empty string. This is now fixed!
+- Extract Variable didn't worked properly with empty string and special keywords. This is now fixed!
 
 ## [3.2.0] - 2020-01-30 - The Class Without an Interface 🎭
 

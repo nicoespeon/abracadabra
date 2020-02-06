@@ -377,7 +377,26 @@ class Variable {
     const parsedName = camel(value);
     const startsWithNumber = parsedName.match(/^\d.*/);
 
-    if (parsedName.length > 0 && parsedName.length <= 20 && !startsWithNumber) {
+    const BLACKLISTED_KEYWORDS = [
+      "const",
+      "var",
+      "let",
+      "function",
+      "if",
+      "else",
+      "switch",
+      "case",
+      "default",
+      "import",
+      "export"
+    ];
+
+    if (
+      parsedName.length > 1 &&
+      parsedName.length <= 20 &&
+      !startsWithNumber &&
+      !BLACKLISTED_KEYWORDS.includes(parsedName)
+    ) {
       this._name = parsedName;
     }
   }
