@@ -29,8 +29,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     TSTypeAnnotation(path) {
       if (!selection.isInsidePath(path)) return;
 
+      const genericTypeName = "T";
       const genericTypeAnnotation = t.tsTypeAnnotation(
-        t.tsTypeReference(t.identifier("T"))
+        t.tsTypeReference(t.identifier(genericTypeName))
       );
 
       if (t.isTSInterfaceDeclaration(path.parentPath.parentPath.parent)) {
@@ -40,7 +41,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           undefined,
           path.node.typeAnnotation
         );
-        typeParameter.name = "T";
+        typeParameter.name = genericTypeName;
 
         path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
           [typeParameter]
