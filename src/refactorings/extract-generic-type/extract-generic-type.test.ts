@@ -16,7 +16,7 @@ describe("Extract Generic Type", () => {
     "should extract generic type",
     [
       {
-        description: "primitive type",
+        description: "primitive type (number)",
         code: `interface Position {
   x: number;
   y: number;
@@ -26,8 +26,24 @@ describe("Extract Generic Type", () => {
   x: T;
   y: number;
 }`
+      },
+      {
+        description: "primitive type (string)",
+        code: `interface Position {
+  x: string;
+  y: number;
+}`,
+        selection: Selection.cursorAt(1, 6),
+        expected: `interface Position<T = string> {
+  x: T;
+  y: number;
+}`
       }
       // TODO: extract 1 or all occurrences of given type (e.g. "number")
+      // TODO: already existing T in interface
+      // TODO: nested object in interface
+      // TODO: something that is not an interface (e.g. function)
+      // TODO: rename on `T`
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doExtractGenericType(code, selection);

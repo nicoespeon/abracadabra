@@ -32,15 +32,22 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const genericTypeAnnotation = t.tsTypeAnnotation(
         t.tsTypeReference(t.identifier("T"))
       );
+
       if (t.isTSInterfaceDeclaration(path.parentPath.parentPath.parent)) {
-        const typeParameter = t.tsTypeParameter(undefined, t.tsNumberKeyword());
+        // Mutates the result because of a weird bug: TS complains "Too many arguments"
+        // if we pass more than 2 params even though `tsTypeParameter` takes 3 params.
+        const typeParameter = t.tsTypeParameter(
+          undefined,
+          path.node.typeAnnotation
+        );
         typeParameter.name = "T";
+
         path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
           [typeParameter]
         );
       }
-      path.replaceWith(genericTypeAnnotation);
 
+      path.replaceWith(genericTypeAnnotation);
       path.stop();
     }
   });
