@@ -1,5 +1,5 @@
 import {
-  hasBracesToRemoveFromArrowFunction,
+  hasBracesToRemoveFromArrowFunctionVisitorFactory,
   removeBracesFromArrowFunction
 } from "./remove-braces-from-arrow-function";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove braces from arrow function",
-    canPerform: hasBracesToRemoveFromArrowFunction
+    canPerformVisitorFactory: hasBracesToRemoveFromArrowFunctionVisitorFactory
   }
 };
 

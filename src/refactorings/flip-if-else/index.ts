@@ -1,4 +1,4 @@
-import { hasIfElseToFlip, flipIfElse } from "./flip-if-else";
+import { hasIfElseToFlipVisitorFactory, flipIfElse } from "./flip-if-else";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Flip if/else",
-    canPerform: hasIfElseToFlip,
+    canPerformVisitorFactory: hasIfElseToFlipVisitorFactory,
     isPreferred: true
   }
 };

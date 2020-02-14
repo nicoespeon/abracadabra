@@ -1,6 +1,6 @@
 import {
   addBracesToJsxAttribute,
-  hasJsxAttributeToAddBracesTo
+  hasJsxAttributeToAddBracesToVisitorFactory
 } from "./add-braces-to-jsx-attribute";
 
 import { RefactoringWithActionProvider } from "../../../types";
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Add braces to JSX attribute",
-    canPerform: hasJsxAttributeToAddBracesTo
+    canPerformVisitorFactory: hasJsxAttributeToAddBracesToVisitorFactory
   }
 };
 

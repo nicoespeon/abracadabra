@@ -1,5 +1,5 @@
 import {
-  canBubbleUpIfStatement,
+  canBubbleUpIfStatementVisitorFactory,
   bubbleUpIfStatement
 } from "./bubble-up-if-statement";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Bubble up if statement",
-    canPerform: canBubbleUpIfStatement,
+    canPerformVisitorFactory: canBubbleUpIfStatementVisitorFactory,
     isPreferred: true
   }
 };

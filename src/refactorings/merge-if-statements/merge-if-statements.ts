@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { mergeIfStatements, tryMergeIfStatements };
+export { mergeIfStatements, canMergeStatementsVisitorFactory };
 
 async function mergeIfStatements(
   code: Code,
@@ -19,41 +19,11 @@ async function mergeIfStatements(
   await editor.write(updatedCode.code);
 }
 
-function tryMergeIfStatements(
-  ast: t.AST,
-  selection: Selection
-): { canMerge: boolean; mergeAlternate: boolean } {
-  let canMerge = false;
-  let mergeAlternate = false;
-
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const { alternate } = path.node;
-
-      if (alternate) {
-        mergeAlternate = true;
-        canMerge = true;
-      } else {
-        mergeAlternate = false;
-        canMerge = true;
-      }
-    }
-  });
-
-  return { canMerge, mergeAlternate };
-
-  const updatedCode = updateCode(ast, selection);
-
-  return {
-    canMerge: updatedCode.hasCodeChanged,
-    mergeAlternate: updatedCode.mergeAlternate
-  };
+function canMergeStatementsVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return createVisitor(selection, onMatch);
 }
 
 function updateCode(
@@ -62,14 +32,9 @@ function updateCode(
 ): t.Transformed & { mergeAlternate: boolean } {
   let mergeAlternate = false;
 
-  const result = t.transformAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  const result = t.transformAST(
+    ast,
+    createVisitor(selection, path => {
       const { alternate, consequent } = path.node;
 
       if (alternate) {
@@ -79,10 +44,28 @@ function updateCode(
         mergeAlternate = false;
         mergeConsequentWithNestedIf(path, consequent);
       }
-    }
-  });
+    })
+  );
 
   return { ...result, mergeAlternate };
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
+): t.Visitor {
+  return {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
+      path.stop();
+    }
+  };
 }
 
 function mergeAlternateWithNestedIf(

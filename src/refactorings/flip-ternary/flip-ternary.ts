@@ -4,7 +4,7 @@ import * as t from "../../ast";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
-export { flipTernary, hasTernaryToFlip };
+export { flipTernary, hasTernaryToFlipVisitorFactory };
 
 async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
@@ -17,10 +17,11 @@ async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   await editor.write(updatedCode.code);
 }
 
-function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
+function hasTernaryToFlipVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
     ConditionalExpression(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -29,11 +30,9 @@ function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      result = true;
+      onMatch(path);
     }
-  });
-
-  return result;
+  };
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

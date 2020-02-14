@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertIfElseToTernary, hasIfElseToConvert };
+export { convertIfElseToTernary, hasIfElseToConvertVisitorFactory };
 
 async function convertIfElseToTernary(
   code: Code,
@@ -19,11 +19,11 @@ async function convertIfElseToTernary(
   await editor.write(updatedCode.code);
 }
 
-function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
+function hasIfElseToConvertVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return createVisitor(selection, onMatch);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

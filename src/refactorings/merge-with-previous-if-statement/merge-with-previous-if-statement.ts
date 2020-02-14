@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { mergeWithPreviousIfStatement, canMergeWithPreviousIf };
+export { mergeWithPreviousIfStatement, canMergeWithPreviousIfVisitorFactory };
 
 async function mergeWithPreviousIfStatement(
   code: Code,
@@ -19,39 +19,25 @@ async function mergeWithPreviousIfStatement(
   await editor.write(updatedCode.code);
 }
 
-function canMergeWithPreviousIf(ast: t.AST, selection: Selection): boolean {
-  let result = false;
+function canMergeWithPreviousIfVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return createVisitor(selection, path => {
+    const previousSibling = t.getPreviousSibling(path);
+    if (!previousSibling) return;
 
-  t.traverseAST(ast, {
-    Statement(path) {
-      if (!selection.isInsidePath(path)) return;
+    const previousNode = previousSibling.node;
+    if (!t.isIfStatement(previousNode)) return;
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const previousSibling = t.getPreviousSibling(path);
-      if (!previousSibling) return;
-
-      const previousNode = previousSibling.node;
-      if (!t.isIfStatement(previousNode)) return;
-
-      result = true;
-    }
+    onMatch(path);
   });
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    Statement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  return t.transformAST(
+    ast,
+    createVisitor(selection, path => {
       const previousSibling = t.getPreviousSibling(path);
       if (!previousSibling) return;
 
@@ -62,8 +48,25 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
       path.remove();
       path.stop();
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
+    Statement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(

@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertToTemplateLiteral, canConvertToTemplateLiteral };
+export { convertToTemplateLiteral, canConvertToTemplateLiteralVisitorFactory };
 
 async function convertToTemplateLiteral(
   code: Code,
@@ -19,13 +19,11 @@ async function convertToTemplateLiteral(
   await editor.write(updatedCode.code);
 }
 
-function canConvertToTemplateLiteral(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
+function canConvertToTemplateLiteralVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
     BinaryExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -33,7 +31,7 @@ function canConvertToTemplateLiteral(
       if (!template.isValid) return;
       if (!template.hasString) return;
 
-      result = true;
+      onMatch(path);
     },
 
     StringLiteral(path) {
@@ -45,11 +43,9 @@ function canConvertToTemplateLiteral(
       // If we are inside of an import statement, dont show refactoring
       if (t.isImportDeclaration(path.parentPath)) return;
 
-      result = true;
+      onMatch(path);
     }
-  });
-
-  return result;
+  };
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

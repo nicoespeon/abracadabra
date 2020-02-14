@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertTernaryToIfElse, hasTernaryToConvert };
+export { convertTernaryToIfElse, hasTernaryToConvertVisitorFactory };
 
 async function convertTernaryToIfElse(
   code: Code,
@@ -19,32 +19,31 @@ async function convertTernaryToIfElse(
   await editor.write(updatedCode.code);
 }
 
-function hasTernaryToConvert(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
+function hasTernaryToConvertVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
     ConditionalExpression(path) {
       const { parentPath } = path;
       if (!selection.isInsidePath(path)) return;
 
       if (t.isReturnStatement(parentPath.node)) {
-        result = true;
+        onMatch(path);
       }
 
       if (t.isAssignmentExpression(parentPath.node)) {
-        result = true;
+        onMatch(path);
       }
 
       if (
         t.isVariableDeclarator(parentPath.node) &&
         t.isVariableDeclaration(parentPath.parent)
       ) {
-        result = true;
+        onMatch(path);
       }
     }
-  });
-
-  return result;
+  };
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

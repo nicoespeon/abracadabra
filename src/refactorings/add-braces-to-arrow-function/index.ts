@@ -1,6 +1,6 @@
 import {
   addBracesToArrowFunction,
-  hasArrowFunctionToAddBraces
+  hasArrowFunctionToAddBracesVisitorFactory
 } from "./add-braces-to-arrow-function";
 
 import { RefactoringWithActionProvider } from "../../types";
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Add braces to arrow function",
-    canPerform: hasArrowFunctionToAddBraces
+    canPerformVisitorFactory: hasArrowFunctionToAddBracesVisitorFactory
   }
 };
 

@@ -1,5 +1,5 @@
 import {
-  hasIfElseToConvert,
+  hasIfElseToConvertVisitorFactory,
   convertIfElseToSwitch
 } from "./convert-if-else-to-switch";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert if/else to switch",
-    canPerform: hasIfElseToConvert,
+    canPerformVisitorFactory: hasIfElseToConvertVisitorFactory,
     isPreferred: true
   }
 };

@@ -1,6 +1,6 @@
 import {
   addBracesToIfStatement,
-  hasIfStatementToAddBraces
+  hasIfStatementToAddBracesVisitorFactory
 } from "./add-braces-to-if-statement";
 
 import { RefactoringWithActionProvider } from "../../types";
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Add braces to if statement",
-    canPerform: hasIfStatementToAddBraces
+    canPerformVisitorFactory: hasIfStatementToAddBracesVisitorFactory
   }
 };
 

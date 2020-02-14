@@ -1,6 +1,6 @@
 import {
   removeBracesFromJsxAttribute,
-  hasBracesToRemoveFromJsxAttribute
+  hasBracesToRemoveFromJsxAttributeVisitorFactory
 } from "./remove-braces-from-jsx-attribute";
 
 import { RefactoringWithActionProvider } from "../../../types";
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove braces from JSX attribute",
-    canPerform: hasBracesToRemoveFromJsxAttribute
+    canPerformVisitorFactory: hasBracesToRemoveFromJsxAttributeVisitorFactory
   }
 };
 

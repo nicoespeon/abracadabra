@@ -1,6 +1,9 @@
-import { canNegateExpression, negateExpression } from "./negate-expression";
+import {
+  canNegateExpressionVisitorFactory,
+  negateExpression,
+  getNegatedOperator
+} from "./negate-expression";
 
-import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 import * as t from "../../ast";
 
@@ -13,15 +16,21 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Negate the expression",
 
-    canPerform(ast: t.AST, selection: Selection) {
-      const expression = canNegateExpression(ast, selection);
+    canPerformVisitorFactory: canNegateExpressionVisitorFactory,
 
-      this.message = "Negate the expression";
-      if (expression.negatedOperator) {
-        this.message += ` (use ${expression.negatedOperator} instead)`;
-      }
-
-      return expression.canNegate;
+    canPerformRefactoringMutator(
+      path: t.NodePath<any>,
+      refactoring: RefactoringWithActionProvider
+    ): RefactoringWithActionProvider {
+      return {
+        ...refactoring,
+        actionProvider: {
+          ...refactoring.actionProvider,
+          message: `${
+            refactoring.actionProvider.message
+          } (use ${getNegatedOperator(path.node)} instead)`
+        }
+      };
     }
   }
 };

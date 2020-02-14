@@ -1,5 +1,5 @@
 import {
-  canConvertForLoop,
+  canConvertForLoopVisitorFactory,
   convertForToForeach
 } from "./convert-for-to-foreach";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert to forEach",
-    canPerform: canConvertForLoop,
+    canPerformVisitorFactory: canConvertForLoopVisitorFactory,
     isPreferred: true
   }
 };

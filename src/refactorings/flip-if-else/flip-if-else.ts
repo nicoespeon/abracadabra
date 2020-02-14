@@ -5,7 +5,7 @@ import { last, allButLast } from "../../array-helpers";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
-export { flipIfElse, hasIfElseToFlip };
+export { flipIfElse, hasIfElseToFlipVisitorFactory };
 
 async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
@@ -24,10 +24,11 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   );
 }
 
-function hasIfElseToFlip(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
+function hasIfElseToFlipVisitorFactory(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -36,11 +37,9 @@ function hasIfElseToFlip(ast: t.AST, selection: Selection): boolean {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      result = true;
+      onMatch(path);
     }
-  });
-
-  return result;
+  };
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

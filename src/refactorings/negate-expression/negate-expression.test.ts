@@ -1,10 +1,9 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
-import { negateExpression, canNegateExpression } from "./negate-expression";
+import { negateExpression } from "./negate-expression";
 
 describe("Negate Expression", () => {
   let showErrorMessage: Editor["showError"];
@@ -216,55 +215,4 @@ describe("Negate Expression", () => {
     await negateExpression(code, selection, editor);
     return editor.code;
   }
-});
-
-describe("Finding negatable expression (quick fix)", () => {
-  it("should match against logical expressions", async () => {
-    const code = `if (a > b) {}`;
-    const selection = Selection.cursorAt(0, 4);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(true);
-  });
-
-  it("should match against binary expressions", async () => {
-    const code = `function result() {
-  return a === 0;
-}`;
-    const selection = Selection.cursorAt(1, 13);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(true);
-  });
-
-  it("should not match against concatenable operators", async () => {
-    const code = `function result() {
-  return "(" + this.getValue() + ")";
-}`;
-    const selection = Selection.cursorAt(1, 13);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(false);
-  });
-
-  it("should not match against a single unary expression", async () => {
-    const code = `if (!isValid) {}`;
-    const selection = Selection.cursorAt(0, 4);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(false);
-  });
-
-  it("should not match against a single unary expression (call expression)", async () => {
-    const code = `if (!isValid()) {}`;
-    const selection = Selection.cursorAt(0, 4);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(false);
-  });
 });
