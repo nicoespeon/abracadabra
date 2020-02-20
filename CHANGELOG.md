@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Extract Variable didn't worked properly with empty string and special keywords. This is now fixed!
+- Extract Variable didn't worked properly for non-camel case properties. E.g. `path.some_node.value` would wrongly extract `const { someNode } = path`. Now it will correctly compute `const { some_node } = path`.
 
 ## [3.2.0] - 2020-01-30 - The Class Without an Interface 🎭
 

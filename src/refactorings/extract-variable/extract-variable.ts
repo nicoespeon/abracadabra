@@ -341,7 +341,7 @@ class Variable {
     const { node } = path;
 
     if (ast.isStringLiteral(node)) {
-      this.tryToSetNameWith(node.value);
+      this.tryToSetNameWith(camel(node.value));
     }
 
     if (ast.canBeShorthand(path)) {
@@ -374,8 +374,7 @@ class Variable {
   }
 
   private tryToSetNameWith(value: string) {
-    const parsedName = camel(value);
-    const startsWithNumber = parsedName.match(/^\d.*/);
+    const startsWithNumber = value.match(/^\d.*/);
 
     const BLACKLISTED_KEYWORDS = [
       "const",
@@ -392,12 +391,12 @@ class Variable {
     ];
 
     if (
-      parsedName.length > 1 &&
-      parsedName.length <= 20 &&
+      value.length > 1 &&
+      value.length <= 20 &&
       !startsWithNumber &&
-      !BLACKLISTED_KEYWORDS.includes(parsedName)
+      !BLACKLISTED_KEYWORDS.includes(value)
     ) {
-      this._name = parsedName;
+      this._name = value;
     }
   }
 }

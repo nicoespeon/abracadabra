@@ -212,6 +212,19 @@ console.log({
         expectedPosition: new Position(2, 7)
       },
       {
+        description: "an object property value which key is not in camel case",
+        code: `console.log({
+  hello_world: "World",
+  goodbye: "my old friend"
+});`,
+        selection: Selection.cursorAt(1, 16),
+        expected: `const hello_world = "World";
+console.log({
+  hello_world,
+  goodbye: "my old friend"
+});`
+      },
+      {
         description:
           "an element nested in a multi-lines object that is assigned to a variable",
         code: `const a = {
@@ -345,6 +358,14 @@ console.log({
         selection: Selection.cursorAt(0, 17),
         expected: `const { node } = path;
 console.log(node.name);`
+      },
+      {
+        description:
+          "a member expression when property name is not in camel case",
+        code: `console.log(path.some_node.name);`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const { some_node } = path;
+console.log(some_node.name);`
       },
       {
         description: "member expression with computed value",
