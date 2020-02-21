@@ -23,31 +23,40 @@ function hasBracesToRemoveFromJsxAttribute(
   ast: t.AST,
   selection: Selection
 ): boolean {
-  let isParentJsxAttribute = false;
-  let isJsxExpressionStringLiteral = false;
+  let result = false;
 
-  t.traverseAST(ast, {
-    JSXExpressionContainer(path) {
-      if (!selection.isInsidePath(path)) return;
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
-      isParentJsxAttribute = t.isJSXAttribute(path.parent);
-      isJsxExpressionStringLiteral = t.isStringLiteral(path.node.expression);
-    }
-  });
-
-  return isParentJsxAttribute && isJsxExpressionStringLiteral;
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, path => {
+      if (
+        t.isJSXAttribute(path.parent) &&
+        t.isStringLiteral(path.node.expression)
+      ) {
+        path.parent.value = t.stringLiteral(path.node.expression.value);
+      }
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.JSXExpressionContainer>) => void
+): t.Visitor {
+  return {
     JSXExpressionContainer(path) {
       if (
         selection.isInsidePath(path) &&
         t.isJSXAttribute(path.parent) &&
         t.isStringLiteral(path.node.expression)
       ) {
-        path.parent.value = t.stringLiteral(path.node.expression.value);
+        onMatch(path);
       }
     }
-  });
+  };
 }

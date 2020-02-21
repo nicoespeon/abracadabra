@@ -46,8 +46,26 @@ function findNegatableExpression(
 ): NegatableExpression | undefined {
   let result: NegatableExpression | undefined;
 
-  t.traverseAST(ast, {
-    enter({ node, parent }) {
+  t.traverseAST(
+    ast,
+    createVisitor(selection, ({ node }) => {
+      result = {
+        loc: node.loc,
+        negatedOperator: getNegatedOperator(node)
+      };
+    })
+  );
+
+  return result;
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
+    enter(path) {
+      const { node, parent } = path;
       if (!isNegatable(node)) return;
       if (!wouldChangeIfNegated(node)) return;
       if (!selection.isInsideNode(node)) return;
@@ -63,26 +81,27 @@ function findNegatableExpression(
         return;
       }
 
-      result = {
-        loc: node.loc,
-        negatedOperator: t.isLogicalExpression(node)
-          ? getNegatedLogicalOperator(node.operator)
-          : t.isBinaryExpression(node)
-          ? getNegatedBinaryOperator(node.operator)
-          : null
-      };
+      onMatch(path);
     }
-  });
-
-  return result;
+  };
 }
+
+type NegatedOperator =
+  | t.BinaryExpression["operator"]
+  | t.LogicalExpression["operator"]
+  | null;
 
 interface NegatableExpression {
   loc: t.SourceLocation;
-  negatedOperator:
-    | t.BinaryExpression["operator"]
-    | t.LogicalExpression["operator"]
-    | null;
+  negatedOperator: NegatedOperator;
+}
+
+function getNegatedOperator(node: t.Node): NegatedOperator {
+  return t.isLogicalExpression(node)
+    ? getNegatedLogicalOperator(node.operator)
+    : t.isBinaryExpression(node)
+    ? getNegatedBinaryOperator(node.operator)
+    : null;
 }
 
 function isNegatable(

@@ -26,14 +26,9 @@ function tryMergeIfStatements(
   let canMerge = false;
   let mergeAlternate = false;
 
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  t.traverseAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       const { alternate } = path.node;
 
       if (alternate) {
@@ -43,17 +38,10 @@ function tryMergeIfStatements(
         mergeAlternate = false;
         canMerge = true;
       }
-    }
-  });
+    })
+  );
 
   return { canMerge, mergeAlternate };
-
-  const updatedCode = updateCode(ast, selection);
-
-  return {
-    canMerge: updatedCode.hasCodeChanged,
-    mergeAlternate: updatedCode.mergeAlternate
-  };
 }
 
 function updateCode(
@@ -62,14 +50,9 @@ function updateCode(
 ): t.Transformed & { mergeAlternate: boolean } {
   let mergeAlternate = false;
 
-  const result = t.transformAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  const result = t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       const { alternate, consequent } = path.node;
 
       if (alternate) {
@@ -79,10 +62,28 @@ function updateCode(
         mergeAlternate = false;
         mergeConsequentWithNestedIf(path, consequent);
       }
-    }
-  });
+    })
+  );
 
   return { ...result, mergeAlternate };
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
+): t.Visitor {
+  return {
+    IfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
+      path.stop();
+    }
+  };
 }
 
 function mergeAlternateWithNestedIf(

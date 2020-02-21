@@ -20,24 +20,30 @@ async function flipTernary(code: Code, selection: Selection, editor: Editor) {
 function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
   let result = false;
 
-  t.traverseAST(ast, {
-    ConditionalExpression(path) {
-      const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      result = true;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.ConditionalExpression>) => {
+      const { node } = path;
+      const ifBranch = node.consequent;
+      const elseBranch = node.alternate;
+      node.consequent = elseBranch;
+      node.alternate = ifBranch;
+      node.test = getNegatedIfTest(node.test);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.ConditionalExpression>) => void
+): t.Visitor {
+  return {
     ConditionalExpression(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -46,13 +52,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const ifBranch = node.consequent;
-      const elseBranch = node.alternate;
-      node.consequent = elseBranch;
-      node.alternate = ifBranch;
-      node.test = getNegatedIfTest(node.test);
+      onMatch(path);
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(

@@ -22,36 +22,20 @@ async function mergeWithPreviousIfStatement(
 function canMergeWithPreviousIf(ast: t.AST, selection: Selection): boolean {
   let result = false;
 
-  t.traverseAST(ast, {
-    Statement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const previousSibling = t.getPreviousSibling(path);
-      if (!previousSibling) return;
-
-      const previousNode = previousSibling.node;
-      if (!t.isIfStatement(previousNode)) return;
-
+  t.traverseAST(
+    ast,
+    createVisitor(selection, () => {
       result = true;
-    }
-  });
+    })
+  );
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    Statement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.Statement>) => {
       const previousSibling = t.getPreviousSibling(path);
       if (!previousSibling) return;
 
@@ -62,8 +46,31 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
       path.remove();
       path.stop();
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.Statement>) => void
+): t.Visitor {
+  return {
+    Statement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const previousSibling = t.getPreviousSibling(path);
+      if (!previousSibling) return;
+
+      const previousNode = previousSibling.node;
+      if (!t.isIfStatement(previousNode)) return;
+
+      onMatch(path);
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
