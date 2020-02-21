@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertTernaryToIfElse, hasTernaryToConvert };
+export { convertTernaryToIfElse, createVisitor as hasTernaryToConvert };
 
 async function convertTernaryToIfElse(
   code: Code,
@@ -17,14 +17,6 @@ async function convertTernaryToIfElse(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasTernaryToConvert(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

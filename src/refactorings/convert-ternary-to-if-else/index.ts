@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert ternary to if/else",
-    canPerform: hasTernaryToConvert
+    createVisitor: hasTernaryToConvert
   }
 };
 

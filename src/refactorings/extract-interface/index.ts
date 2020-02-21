@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Extract interface",
-    canPerform: canExtractInterface
+    createVisitor: canExtractInterface
   }
 };
 

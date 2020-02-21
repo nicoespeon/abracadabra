@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Split if statement",
-    canPerform: canSplitIfStatement
+    createVisitor: canSplitIfStatement
   }
 };
 

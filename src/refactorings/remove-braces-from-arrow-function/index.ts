@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove braces from arrow function",
-    canPerform: hasBracesToRemoveFromArrowFunction
+    createVisitor: hasBracesToRemoveFromArrowFunction
   }
 };
 

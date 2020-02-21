@@ -25,14 +25,12 @@ async function removeBracesFromArrowFunction(
 }
 
 function hasBracesToRemoveFromArrowFunction(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(
-    ast,
-    createVisitor(selection, (path: t.NodePath<t.ArrowFunctionExpression>) => {
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.ArrowFunctionExpression>) => void
+): t.Visitor {
+  return createVisitor(
+    selection,
+    (path: t.NodePath<t.ArrowFunctionExpression>) => {
       if (!selection.isInsidePath(path)) return;
 
       if (!t.isBlockStatement(path.node.body)) return;
@@ -51,11 +49,9 @@ function hasBracesToRemoveFromArrowFunction(
         return;
       }
 
-      result = true;
-    })
+      onMatch(path);
+    }
   );
-
-  return result;
 }
 
 function updateCode(

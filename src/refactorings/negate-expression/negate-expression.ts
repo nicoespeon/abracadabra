@@ -2,7 +2,11 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { canNegateExpression, negateExpression };
+export {
+  createVisitor as canNegateExpression,
+  negateExpression,
+  getNegatedOperator
+};
 export { getNegatedBinaryOperator };
 
 async function negateExpression(
@@ -24,20 +28,6 @@ async function negateExpression(
       selection: expressionSelection
     }
   ]);
-}
-
-function canNegateExpression(
-  ast: t.AST,
-  selection: Selection
-): {
-  canNegate: boolean;
-  negatedOperator: NegatableExpression["negatedOperator"];
-} {
-  const result = findNegatableExpression(ast, selection);
-  return {
-    canNegate: !!result,
-    negatedOperator: (result && result.negatedOperator) || null
-  };
 }
 
 function findNegatableExpression(

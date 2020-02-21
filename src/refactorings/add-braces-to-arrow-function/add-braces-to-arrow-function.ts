@@ -2,7 +2,10 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { addBracesToArrowFunction, hasArrowFunctionToAddBraces };
+export {
+  addBracesToArrowFunction,
+  createVisitor as hasArrowFunctionToAddBraces
+};
 
 async function addBracesToArrowFunction(
   code: Code,
@@ -17,16 +20,6 @@ async function addBracesToArrowFunction(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasArrowFunctionToAddBraces(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

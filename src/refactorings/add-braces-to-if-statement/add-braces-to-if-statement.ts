@@ -3,7 +3,7 @@ import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import * as t from "../../ast";
 
-export { addBracesToIfStatement, hasIfStatementToAddBraces };
+export { addBracesToIfStatement, createVisitor as hasIfStatementToAddBraces };
 
 async function addBracesToIfStatement(
   code: Code,
@@ -18,13 +18,6 @@ async function addBracesToIfStatement(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasIfStatementToAddBraces(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

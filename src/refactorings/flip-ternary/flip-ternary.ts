@@ -4,7 +4,7 @@ import * as t from "../../ast";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
-export { flipTernary, hasTernaryToFlip };
+export { flipTernary, createVisitor as hasTernaryToFlip };
 
 async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
@@ -15,14 +15,6 @@ async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

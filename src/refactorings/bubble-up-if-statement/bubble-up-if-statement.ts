@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { bubbleUpIfStatement, canBubbleUpIfStatement };
+export { bubbleUpIfStatement, createVisitor as canBubbleUpIfStatement };
 
 async function bubbleUpIfStatement(
   code: Code,
@@ -17,13 +17,6 @@ async function bubbleUpIfStatement(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function canBubbleUpIfStatement(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

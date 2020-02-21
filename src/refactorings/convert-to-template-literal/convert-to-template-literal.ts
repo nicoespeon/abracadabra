@@ -2,7 +2,10 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertToTemplateLiteral, canConvertToTemplateLiteral };
+export {
+  convertToTemplateLiteral,
+  createVisitor as canConvertToTemplateLiteral
+};
 
 async function convertToTemplateLiteral(
   code: Code,
@@ -17,17 +20,6 @@ async function convertToTemplateLiteral(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function canConvertToTemplateLiteral(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

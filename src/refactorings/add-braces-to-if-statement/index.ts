@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Add braces to if statement",
-    canPerform: hasIfStatementToAddBraces
+    createVisitor: hasIfStatementToAddBraces
   }
 };
 

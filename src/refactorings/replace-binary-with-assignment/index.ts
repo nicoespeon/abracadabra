@@ -1,6 +1,7 @@
 import {
   tryToReplaceBinaryWithAssignment,
-  replaceBinaryWithAssignment
+  replaceBinaryWithAssignment,
+  canReplaceBinaryWithAssignment
 } from "./replace-binary-with-assignment";
 
 import * as t from "../../ast";
@@ -16,12 +17,13 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Replace binary with assignment",
     isPreferred: true,
+    createVisitor: canReplaceBinaryWithAssignment,
+    updateMessage(path: t.NodePath<t.AssignmentExpression>) {
+      const { node } = path;
 
-    canPerform(ast: t.AST, selection: Selection) {
-      const attempt = tryToReplaceBinaryWithAssignment(ast, selection);
-      this.message = `Replace = with ${attempt.operator}=`;
-
-      return attempt.canReplace;
+      const binaryExpression = node.right as t.BinaryExpression;
+      const operator = binaryExpression.operator;
+      this.message = `Replace = with ${operator}=`;
     }
   }
 };

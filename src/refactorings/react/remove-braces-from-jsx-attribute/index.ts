@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove braces from JSX attribute",
-    canPerform: hasBracesToRemoveFromJsxAttribute
+    createVisitor: hasBracesToRemoveFromJsxAttribute
   }
 };
 

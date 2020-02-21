@@ -5,6 +5,7 @@ import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
 import { negateExpression, canNegateExpression } from "./negate-expression";
+import { traverseAST } from "../../ast";
 
 describe("Negate Expression", () => {
   let showErrorMessage: Editor["showError"];
@@ -219,52 +220,54 @@ describe("Negate Expression", () => {
 });
 
 describe("Finding negatable expression (quick fix)", () => {
-  it("should match against logical expressions", async () => {
-    const code = `if (a > b) {}`;
-    const selection = Selection.cursorAt(0, 4);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(true);
-  });
-
-  it("should match against binary expressions", async () => {
-    const code = `function result() {
+  testEach<{ code: Code; selection: Selection; shouldMatch: boolean }>(
+    "should",
+    [
+      {
+        description: "match against logical expressions",
+        code: `if (a > b) {}`,
+        selection: Selection.cursorAt(0, 4),
+        shouldMatch: true
+      },
+      {
+        description: "match against binary expressions",
+        code: `function result() {
   return a === 0;
-}`;
-    const selection = Selection.cursorAt(1, 13);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(true);
-  });
-
-  it("should not match against concatenable operators", async () => {
-    const code = `function result() {
+}`,
+        selection: Selection.cursorAt(1, 13),
+        shouldMatch: true
+      },
+      {
+        description: "not match against concatenable operators",
+        code: `function result() {
   return "(" + this.getValue() + ")";
-}`;
-    const selection = Selection.cursorAt(1, 13);
+}`,
+        selection: Selection.cursorAt(1, 13),
+        shouldMatch: false
+      },
+      {
+        description: "not match against a single unary expression",
+        code: `if (!isValid) {}`,
+        selection: Selection.cursorAt(0, 4),
+        shouldMatch: false
+      },
+      {
+        description:
+          "not match against a single unary expression (call expression)",
+        code: `if (!isValid()) {}`,
+        selection: Selection.cursorAt(0, 4),
+        shouldMatch: false
+      }
+    ],
+    ({ code, selection = Selection.cursorAt(0, 13), shouldMatch }) => {
+      const ast = t.parse(code);
+      let canNegate = false;
+      traverseAST(
+        ast,
+        canNegateExpression(selection, () => (canNegate = true))
+      );
 
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(false);
-  });
-
-  it("should not match against a single unary expression", async () => {
-    const code = `if (!isValid) {}`;
-    const selection = Selection.cursorAt(0, 4);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(false);
-  });
-
-  it("should not match against a single unary expression (call expression)", async () => {
-    const code = `if (!isValid()) {}`;
-    const selection = Selection.cursorAt(0, 4);
-
-    const { canNegate } = canNegateExpression(t.parse(code), selection);
-
-    expect(canNegate).toBe(false);
-  });
+      expect(canNegate).toBe(shouldMatch);
+    }
+  );
 });

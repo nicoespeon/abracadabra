@@ -1,8 +1,8 @@
-import { tryMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
+import { canMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
-import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
 import * as t from "../../ast";
+import { NodePath } from "../../ast";
 
 const config: RefactoringWithActionProvider = {
   command: {
@@ -12,12 +12,10 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Merge if statements",
-
-    canPerform(ast: t.AST, selection: Selection) {
-      const { mergeAlternate, canMerge } = tryMergeIfStatements(ast, selection);
-      this.message = mergeAlternate ? "Merge else-if" : "Merge if statements";
-
-      return canMerge;
+    createVisitor: canMergeIfStatements,
+    updateMessage(path: NodePath<t.IfStatement>) {
+      const { alternate } = path.node;
+      this.message = alternate ? "Merge else-if" : "Merge if statements";
     }
   }
 };

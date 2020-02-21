@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert to template literal",
-    canPerform: canConvertToTemplateLiteral,
+    createVisitor: canConvertToTemplateLiteral,
     isPreferred: true
   }
 };

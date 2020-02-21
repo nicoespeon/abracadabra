@@ -3,7 +3,7 @@ import { Selection } from "../../editor/selection";
 import { last } from "../../array-helpers";
 import * as t from "../../ast";
 
-export { removeRedundantElse, hasRedundantElse };
+export { removeRedundantElse, createVisitor as hasRedundantElse };
 
 async function removeRedundantElse(
   code: Code,
@@ -18,14 +18,6 @@ async function removeRedundantElse(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasRedundantElse(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

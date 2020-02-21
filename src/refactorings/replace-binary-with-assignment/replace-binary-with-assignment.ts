@@ -2,7 +2,10 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { replaceBinaryWithAssignment, tryToReplaceBinaryWithAssignment };
+export {
+  replaceBinaryWithAssignment,
+  createVisitor as canReplaceBinaryWithAssignment
+};
 
 async function replaceBinaryWithAssignment(
   code: Code,
@@ -17,32 +20,6 @@ async function replaceBinaryWithAssignment(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function tryToReplaceBinaryWithAssignment(
-  ast: t.AST,
-  selection: Selection
-): { canReplace: boolean; operator: t.BinaryExpression["operator"] } {
-  let canReplace = false;
-  let operator = "+" as t.BinaryExpression["operator"];
-
-  t.traverseAST(
-    ast,
-    createVisitor(selection, (path: t.NodePath<t.AssignmentExpression>) => {
-      const { node } = path;
-      if (!t.isBinaryExpression(node.right)) return;
-
-      const binaryExpression = node.right;
-      operator = binaryExpression.operator;
-
-      canReplace = true;
-    })
-  );
-
-  return {
-    canReplace,
-    operator
-  };
 }
 
 const symmetricOperators = ["+", "*", "|", "&", "^"];
@@ -62,10 +39,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path: t.NodePath<t.AssignmentExpression>) => {
       const { node } = path;
-      if (!t.isBinaryExpression(node.right)) return;
 
       const identifier = node.left;
-      const binaryExpression = node.right;
+      const binaryExpression = node.right as t.BinaryExpression;
       const operator = binaryExpression.operator;
 
       const isIdentifierOnTheRight = t.areEqual(

@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { mergeIfStatements, tryMergeIfStatements };
+export { mergeIfStatements, createVisitor as canMergeIfStatements };
 
 async function mergeIfStatements(
   code: Code,
@@ -17,31 +17,6 @@ async function mergeIfStatements(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function tryMergeIfStatements(
-  ast: t.AST,
-  selection: Selection
-): { canMerge: boolean; mergeAlternate: boolean } {
-  let canMerge = false;
-  let mergeAlternate = false;
-
-  t.traverseAST(
-    ast,
-    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
-      const { alternate } = path.node;
-
-      if (alternate) {
-        mergeAlternate = true;
-        canMerge = true;
-      } else {
-        mergeAlternate = false;
-        canMerge = true;
-      }
-    })
-  );
-
-  return { canMerge, mergeAlternate };
 }
 
 function updateCode(

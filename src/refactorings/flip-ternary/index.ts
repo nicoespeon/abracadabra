@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Flip ternary",
-    canPerform: hasTernaryToFlip,
+    createVisitor: hasTernaryToFlip,
     isPreferred: true
   }
 };
