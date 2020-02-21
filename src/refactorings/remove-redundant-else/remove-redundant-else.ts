@@ -10,7 +10,7 @@ async function removeRedundantElse(
   selection: Selection,
   editor: Editor
 ) {
-  const updatedCode = removeRedundantElseFrom(t.parse(code), selection);
+  const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFoundRedundantElse);
@@ -23,34 +23,30 @@ async function removeRedundantElse(
 function hasRedundantElse(ast: t.AST, selection: Selection): boolean {
   let result = false;
 
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      const ifBranch = node.consequent;
-      if (!t.isBlockStatement(ifBranch)) return;
-      if (!hasExitStatement(ifBranch)) return;
-
-      const elseBranch = node.alternate;
-      if (!elseBranch) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      result = true;
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
-function removeRedundantElseFrom(
-  ast: t.AST,
-  selection: Selection
-): t.Transformed {
-  return t.transformAST(ast, {
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<any>) => {
+      const { node } = path;
+
+      const elseBranch = node.alternate;
+      node.alternate = null;
+      path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
+      path.stop();
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -66,11 +62,9 @@ function removeRedundantElseFrom(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      node.alternate = null;
-      path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
-      path.stop();
+      onMatch(path);
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
