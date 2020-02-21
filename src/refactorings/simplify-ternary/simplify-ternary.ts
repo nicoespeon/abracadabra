@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { simplifyTernary, hasTernaryToSimplify };
+export { simplifyTernary, createVisitor as createTernaryToSimplifyVisitor };
 
 async function simplifyTernary(
   code: Code,
@@ -17,14 +17,6 @@ async function simplifyTernary(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasTernaryToSimplify(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

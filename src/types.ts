@@ -1,8 +1,13 @@
 import { Code, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
-import { AST } from "./ast";
+import { AST, Visitor, NodePath } from "./ast";
 
-export { Refactoring, RefactoringWithActionProvider, Operation };
+export {
+  Refactoring,
+  RefactoringWithActionProvider,
+  Operation,
+  isLegacyActionProvider
+};
 
 interface Refactoring {
   command: {
@@ -11,17 +16,30 @@ interface Refactoring {
   };
 }
 
+interface ActionProvider {
+  message: string;
+  isPreferred?: boolean;
+  createVisitor: (
+    selection: Selection,
+    onMatch: (path: NodePath<any>) => void,
+    refactoring: RefactoringWithActionProvider
+  ) => Visitor;
+  updateMessage?: (path: NodePath<any>) => void;
+}
+
+interface LegacyActionProvider {
+  message: string;
+  isPreferred?: boolean;
+  canPerform: (ast: AST, selection: Selection) => boolean;
+}
+
 interface RefactoringWithActionProvider extends Refactoring {
   command: {
     key: string;
     title: string;
     operation: Operation;
   };
-  actionProvider: {
-    message: string;
-    canPerform: (ast: AST, selection: Selection) => boolean;
-    isPreferred?: boolean;
-  };
+  actionProvider: ActionProvider | LegacyActionProvider;
 }
 
 type Operation = (
@@ -29,3 +47,9 @@ type Operation = (
   selection: Selection,
   write: Editor
 ) => Promise<void>;
+
+function isLegacyActionProvider(
+  actionProvider: ActionProvider | LegacyActionProvider
+): actionProvider is LegacyActionProvider {
+  return (actionProvider as LegacyActionProvider).canPerform !== undefined;
+}

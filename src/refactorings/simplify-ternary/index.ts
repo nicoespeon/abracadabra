@@ -1,4 +1,8 @@
-import { simplifyTernary, hasTernaryToSimplify } from "./simplify-ternary";
+import {
+  simplifyTernary,
+  createTernaryToSimplifyVisitor
+} from "./simplify-ternary";
+import * as t from "../../ast";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +14,12 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Simplify ternary",
-    canPerform: hasTernaryToSimplify
+    createVisitor: createTernaryToSimplifyVisitor,
+    updateMessage(path: t.NodePath<any>): void {
+      this.message = `Simplify ternary (for demo purposes only: ${
+        path.node.type
+      })`;
+    }
   }
 };
 
