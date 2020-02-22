@@ -40,6 +40,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         : [item];
 
       path.replaceWith(t.forEach(list, params, forEachBody));
+
+      path.stop();
     })
   );
 }
@@ -72,7 +74,6 @@ function createVisitor(
       if (!list) return;
 
       onMatch(path, left, list);
-      path.stop();
     }
   };
 }

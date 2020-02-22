@@ -29,6 +29,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       // Wrap the string literal in a JSX Expression
       path.node.value = t.jsxExpressionContainer(path.node
         .value as t.StringLiteral);
+      path.stop();
     })
   );
 }
@@ -46,7 +47,6 @@ function createVisitor(
       if (t.isStringLiteral(path.node.value)) {
         onMatch(path);
       }
-      path.stop();
     }
   };
 }

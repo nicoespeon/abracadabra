@@ -37,6 +37,8 @@ function updateCode(
         mergeAlternate = false;
         mergeConsequentWithNestedIf(path, consequent);
       }
+
+      path.stop();
     })
   );
 
@@ -56,7 +58,6 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
-      path.stop();
     }
   };
 }

@@ -83,6 +83,8 @@ function updateCode(
       }
 
       path.node.body = firstValue.argument;
+
+      path.stop();
     })
   );
 
@@ -105,7 +107,6 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
-      path.stop();
     }
   };
 }

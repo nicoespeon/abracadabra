@@ -33,6 +33,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         t.returnStatement(path.node.body)
       ]);
       path.node.body = blockStatement;
+      path.stop();
     })
   );
 }
@@ -51,7 +52,6 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
-      path.stop();
     }
   };
 }

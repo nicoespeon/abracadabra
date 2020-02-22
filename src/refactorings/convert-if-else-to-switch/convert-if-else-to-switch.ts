@@ -24,6 +24,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path, convertedNode) => {
       path.replaceWith(convertedNode);
+      path.stop();
     })
   );
 }
@@ -47,7 +48,6 @@ function createVisitor(
       if (convertedNode === path.node) return;
 
       onMatch(path, convertedNode);
-      path.stop();
     }
   };
 }
