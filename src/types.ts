@@ -1,6 +1,6 @@
 import { Code, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
-import { AST, Visitor, NodePath } from "./ast";
+import { AST, Visitor, NodePath, Node } from "./ast";
 
 export {
   Refactoring,

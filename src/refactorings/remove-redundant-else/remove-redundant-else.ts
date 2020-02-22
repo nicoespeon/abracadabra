@@ -23,12 +23,15 @@ async function removeRedundantElse(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<any>) => {
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       const { node } = path;
 
       const elseBranch = node.alternate;
       node.alternate = null;
-      path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
+      path.replaceWithMultiple([
+        node,
+        ...t.getStatements(elseBranch as t.Statement)
+      ]);
       path.stop();
     })
   );
@@ -36,7 +39,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<any>) => void
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
 ): t.Visitor {
   return {
     IfStatement(path) {

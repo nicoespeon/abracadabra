@@ -25,41 +25,44 @@ async function convertToTemplateLiteral(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<any>) => {
-      if (t.isBinaryExpression(path)) {
-        const template = getTemplate(path.node);
-        if (!template.isValid) return;
-        if (!template.hasString) return;
+    createVisitor(
+      selection,
+      (path: t.NodePath<t.BinaryExpression | t.StringLiteral>) => {
+        if (t.isBinaryExpression(path)) {
+          const template = getTemplate(path.node);
+          if (!template.isValid) return;
+          if (!template.hasString) return;
 
-        path.replaceWith(createTemplateLiteral(template));
-        path.stop();
-      } else if (t.isStringLiteral(path)) {
-        // In that case, we should go through the BinaryExpression logic.
-        if (t.isBinaryExpression(path.parentPath)) return;
+          path.replaceWith(createTemplateLiteral(template));
+          path.stop();
+        } else if (t.isStringLiteral(path)) {
+          // In that case, we should go through the BinaryExpression logic.
+          if (t.isBinaryExpression(path.parentPath)) return;
 
-        // If we are inside of an import statement, do nothing
-        if (t.isImportDeclaration(path.parentPath)) return;
+          // If we are inside of an import statement, do nothing
+          if (t.isImportDeclaration(path.parentPath)) return;
 
-        const templateLiteral = createTemplateLiteral(
-          new PrimitiveTemplate(path.node)
-        );
+          const templateLiteral = createTemplateLiteral(
+            new PrimitiveTemplate(path.node as t.Primitive)
+          );
 
-        if (t.isJSXAttribute(path.parentPath)) {
-          // Case of <MyComponent prop="test" /> => <MyComponent prop={`test`} />
-          path.replaceWith(t.jsxExpressionContainer(templateLiteral));
-        } else {
-          path.replaceWith(templateLiteral);
+          if (t.isJSXAttribute(path.parentPath)) {
+            // Case of <MyComponent prop="test" /> => <MyComponent prop={`test`} />
+            path.replaceWith(t.jsxExpressionContainer(templateLiteral));
+          } else {
+            path.replaceWith(templateLiteral);
+          }
+
+          path.stop();
         }
-
-        path.stop();
       }
-    })
+    )
   );
 }
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<any>) => void
+  onMatch: (path: t.NodePath<t.BinaryExpression | t.StringLiteral>) => void
 ): t.Visitor {
   return {
     BinaryExpression(path) {

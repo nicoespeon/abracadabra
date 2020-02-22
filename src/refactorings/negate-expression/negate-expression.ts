@@ -40,7 +40,7 @@ function findNegatableExpression(
     ast,
     createVisitor(selection, ({ node }) => {
       result = {
-        loc: node.loc,
+        loc: node.loc as t.SourceLocation,
         negatedOperator: getNegatedOperator(node)
       };
     })
@@ -51,7 +51,7 @@ function findNegatableExpression(
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<any>) => void
+  onMatch: (path: t.NodePath<t.Node>) => void
 ): t.Visitor {
   return {
     enter(path) {

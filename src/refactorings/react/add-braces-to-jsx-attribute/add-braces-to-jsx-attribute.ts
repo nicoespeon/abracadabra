@@ -27,14 +27,15 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, path => {
       // Wrap the string literal in a JSX Expression
-      path.node.value = t.jsxExpressionContainer(path.node.value);
+      path.node.value = t.jsxExpressionContainer(path.node
+        .value as t.StringLiteral);
     })
   );
 }
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<any>) => void
+  onMatch: (path: t.NodePath<t.JSXAttribute>) => void
 ): t.Visitor {
   return {
     JSXAttribute(path) {
