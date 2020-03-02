@@ -21,7 +21,7 @@ interface ActionProvider {
   isPreferred?: boolean;
   createVisitor: (
     selection: Selection,
-    onMatch: (path: NodePath<any>) => void,
+    onMatch: (path: NodePath) => void,
     refactoring: RefactoringWithActionProvider
   ) => Visitor;
   updateMessage?: (path: NodePath<any>) => void;
