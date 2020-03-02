@@ -24,7 +24,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const applicableRefactorings: RefactoringWithActionProvider[] = [];
 
     const onCanPeform = (
-      path: t.NodePath<any>,
+      path: t.NodePath,
       refactoring: RefactoringWithActionProvider
     ) => {
       if (isLegacyActionProvider(refactoring.actionProvider)) {
