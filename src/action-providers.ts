@@ -55,23 +55,26 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       ActionProvider
     >[] = [];
 
-    const onCanPeform = (
-      path: t.NodePath,
-      refactoring: RefactoringWithActionProvider<ActionProvider>
-    ) => {
-      if (refactoring.actionProvider.updateMessage) {
-        refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
-          path
-        );
-      }
-
-      applicableRefactorings.push(refactoring);
-    };
-
     t.traverseAST(ast, {
       enter: (path: t.NodePath<any>) => {
         refactorings.forEach(refactoring =>
-          this.canPerform(refactoring, path, selection, onCanPeform)
+          this.canPerform(
+            refactoring,
+            path,
+            selection,
+            (
+              path: t.NodePath,
+              refactoring: RefactoringWithActionProvider<ActionProvider>
+            ) => {
+              if (refactoring.actionProvider.updateMessage) {
+                refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
+                  path
+                );
+              }
+
+              applicableRefactorings.push(refactoring);
+            }
+          )
         );
       }
     });
