@@ -15,10 +15,8 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Simplify ternary",
     createVisitor: createTernaryToSimplifyVisitor,
-    updateMessage(path: t.NodePath<any>): void {
-      this.message = `Simplify ternary (for demo purposes only: ${
-        path.node.type
-      })`;
+    updateMessage(path: t.NodePath): string {
+      return `Simplify ternary (for demo purposes only: ${path.node.type})`;
     }
   }
 };

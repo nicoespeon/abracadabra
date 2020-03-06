@@ -32,7 +32,9 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       }
 
       if (refactoring.actionProvider.updateMessage) {
-        refactoring.actionProvider.updateMessage(path);
+        refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
+          path
+        );
       }
 
       applicableRefactorings.push(refactoring);

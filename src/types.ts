@@ -24,7 +24,7 @@ interface ActionProvider {
     onMatch: (path: NodePath) => void,
     refactoring: RefactoringWithActionProvider
   ) => Visitor;
-  updateMessage?: (path: NodePath<any>) => void;
+  updateMessage?: (path: NodePath) => string;
 }
 
 interface LegacyActionProvider {
