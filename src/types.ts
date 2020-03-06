@@ -6,7 +6,10 @@ export {
   Refactoring,
   RefactoringWithActionProvider,
   Operation,
-  isLegacyActionProvider
+  ActionProvider,
+  LegacyActionProvider,
+  isRefactoringWithActionProvider,
+  isRefactoringWithLegacyActionProvider
 };
 
 interface Refactoring {
@@ -33,13 +36,15 @@ interface LegacyActionProvider {
   canPerform: (ast: AST, selection: Selection) => boolean;
 }
 
-interface RefactoringWithActionProvider extends Refactoring {
+interface RefactoringWithActionProvider<
+  ActionProviderType = ActionProvider | LegacyActionProvider
+> extends Refactoring {
   command: {
     key: string;
     title: string;
     operation: Operation;
   };
-  actionProvider: ActionProvider | LegacyActionProvider;
+  actionProvider: ActionProviderType;
 }
 
 type Operation = (
@@ -52,4 +57,16 @@ function isLegacyActionProvider(
   actionProvider: ActionProvider | LegacyActionProvider
 ): actionProvider is LegacyActionProvider {
   return (actionProvider as LegacyActionProvider).canPerform !== undefined;
+}
+
+function isRefactoringWithLegacyActionProvider(
+  refactoring: RefactoringWithActionProvider
+): refactoring is RefactoringWithActionProvider<LegacyActionProvider> {
+  return isLegacyActionProvider(refactoring.actionProvider);
+}
+
+function isRefactoringWithActionProvider(
+  refactoring: RefactoringWithActionProvider
+): refactoring is RefactoringWithActionProvider<ActionProvider> {
+  return !isLegacyActionProvider(refactoring.actionProvider);
 }

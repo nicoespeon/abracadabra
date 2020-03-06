@@ -1,7 +1,13 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import { RefactoringWithActionProvider, isLegacyActionProvider } from "./types";
+import {
+  RefactoringWithActionProvider,
+  ActionProvider,
+  LegacyActionProvider,
+  isRefactoringWithActionProvider,
+  isRefactoringWithLegacyActionProvider
+} from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
 
@@ -21,16 +27,38 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const ast = t.parse(document.getText());
     const selection = createSelectionFromVSCode(range);
 
-    const applicableRefactorings: RefactoringWithActionProvider[] = [];
+    return [
+      ...this.findApplicableRefactorings(ast, selection),
+      ...this.findApplicableLegacyRefactorings(ast, selection)
+    ].map(refactoring => this.buildCodeActionFor(refactoring));
+  }
+
+  private findApplicableLegacyRefactorings(ast: t.File, selection: Selection) {
+    const legacyRefactorings = this.refactorings.filter(
+      isRefactoringWithLegacyActionProvider
+    );
+    const applicableLegacyRefactorings = legacyRefactorings.filter(
+      refactoring => this.canPerformLegacy(refactoring, ast, selection)
+    );
+    return applicableLegacyRefactorings;
+  }
+
+  private findApplicableRefactorings(
+    ast: t.File,
+    selection: Selection
+  ): RefactoringWithActionProvider<ActionProvider>[] {
+    const refactorings = this.refactorings.filter(
+      isRefactoringWithActionProvider
+    );
+
+    const applicableRefactorings: RefactoringWithActionProvider<
+      ActionProvider
+    >[] = [];
 
     const onCanPeform = (
       path: t.NodePath,
-      refactoring: RefactoringWithActionProvider
+      refactoring: RefactoringWithActionProvider<ActionProvider>
     ) => {
-      if (isLegacyActionProvider(refactoring.actionProvider)) {
-        return;
-      }
-
       if (refactoring.actionProvider.updateMessage) {
         refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
           path
@@ -42,34 +70,24 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
     t.traverseAST(ast, {
       enter: (path: t.NodePath<any>) => {
-        this.refactorings.forEach(refactoring =>
+        refactorings.forEach(refactoring =>
           this.canPerform(refactoring, path, selection, onCanPeform)
         );
       }
     });
 
-    const applicableLegacyRefactorings = this.refactorings.filter(refactoring =>
-      this.canPerformLegacy(refactoring, ast, selection)
-    );
-
-    return [...applicableRefactorings, ...applicableLegacyRefactorings].map(
-      refactoring => this.buildCodeActionFor(refactoring)
-    );
+    return applicableRefactorings;
   }
 
   private canPerform(
-    refactoring: RefactoringWithActionProvider,
+    refactoring: RefactoringWithActionProvider<ActionProvider>,
     path: t.NodePath<any>,
     selection: Selection,
     onCanPerform: (
       matchedPath: t.NodePath<any>,
-      refactoring: RefactoringWithActionProvider
+      refactoring: RefactoringWithActionProvider<ActionProvider>
     ) => void
   ) {
-    if (isLegacyActionProvider(refactoring.actionProvider)) {
-      return;
-    }
-
     const visitor: t.Visitor = refactoring.actionProvider.createVisitor(
       selection,
       path => onCanPerform(path, refactoring),
@@ -94,13 +112,12 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private canPerformLegacy(
-    refactoring: RefactoringWithActionProvider,
+    refactoring: RefactoringWithActionProvider<LegacyActionProvider>,
     ast: t.AST,
     selection: Selection
   ) {
     try {
       return (
-        isLegacyActionProvider(refactoring.actionProvider) &&
         typeof refactoring.actionProvider.canPerform === "function" &&
         refactoring.actionProvider.canPerform(ast, selection)
       );
