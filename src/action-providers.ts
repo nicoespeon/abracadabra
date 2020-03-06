@@ -58,7 +58,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     t.traverseAST(ast, {
       enter: (path: t.NodePath<any>) => {
         refactorings.forEach(refactoring =>
-          this.canPerform(
+          this.visitAndCheckApplicability(
             refactoring,
             path,
             selection,
@@ -82,18 +82,18 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     return applicableRefactorings;
   }
 
-  private canPerform(
+  private visitAndCheckApplicability(
     refactoring: RefactoringWithActionProvider<ActionProvider>,
     path: t.NodePath<any>,
     selection: Selection,
-    onCanPerform: (
+    whenApplicable: (
       matchedPath: t.NodePath<any>,
       refactoring: RefactoringWithActionProvider<ActionProvider>
     ) => void
   ) {
     const visitor: t.Visitor = refactoring.actionProvider.createVisitor(
       selection,
-      path => onCanPerform(path, refactoring),
+      path => whenApplicable(path, refactoring),
       refactoring
     );
 
