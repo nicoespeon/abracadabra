@@ -16,8 +16,8 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Negate the expression",
     createVisitor: canNegateExpression,
-    updateMessage(path: t.NodePath<t.Node>) {
-      this.message = `Negate the expression (use ${getNegatedOperator(
+    updateMessage(path: t.NodePath) {
+      return `Negate the expression (use ${getNegatedOperator(
         path.node
       )} instead)`;
     }

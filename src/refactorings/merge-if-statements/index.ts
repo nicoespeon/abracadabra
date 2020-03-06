@@ -12,9 +12,9 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Merge if statements",
     createVisitor: canMergeIfStatements,
-    updateMessage(path: t.NodePath<t.Node>) {
+    updateMessage(path: t.NodePath) {
       const { alternate } = path.node as t.IfStatement;
-      this.message = alternate ? "Merge else-if" : "Merge if statements";
+      return alternate ? "Merge else-if" : "Merge if statements";
     }
   }
 };

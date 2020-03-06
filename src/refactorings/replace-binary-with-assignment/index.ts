@@ -16,12 +16,12 @@ const config: RefactoringWithActionProvider = {
     message: "Replace binary with assignment",
     isPreferred: true,
     createVisitor: canReplaceBinaryWithAssignment,
-    updateMessage(path: t.NodePath<t.Node>) {
+    updateMessage(path: t.NodePath) {
       const { node } = path as t.NodePath<t.AssignmentExpression>;
 
       const binaryExpression = node.right as t.BinaryExpression;
       const operator = binaryExpression.operator;
-      this.message = `Replace = with ${operator}=`;
+      return `Replace = with ${operator}=`;
     }
   }
 };
