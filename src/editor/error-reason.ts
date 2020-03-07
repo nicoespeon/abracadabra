@@ -23,6 +23,7 @@ enum ErrorReason {
   DidNotFoundTernaryToConvert,
   DidNotFoundArrowFunctionToAddBraces,
   DidNotFoundBracesToRemoveFromArrowFunction,
+  DidNotFoundBracesToRemoveFromIfStatement,
   DidNotFoundIfStatementToSplit,
   DidNotFoundIfStatementsToMerge,
   DidNotFoundDeclarationToSplit,
@@ -106,6 +107,9 @@ function toString(reason: ErrorReason): string {
       return didNotFound("an arrow function to add braces");
 
     case ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction:
+      return didNotFound("braces to remove");
+
+    case ErrorReason.DidNotFoundBracesToRemoveFromIfStatement:
       return didNotFound("braces to remove");
 
     case ErrorReason.DidNotFoundIfStatementToSplit:

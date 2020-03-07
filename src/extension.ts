@@ -25,6 +25,7 @@ import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-co
 import reactAddBracesToJsxAttribute from "./refactorings/react/add-braces-to-jsx-attribute";
 import reactRemoveBracesFromJsxAttribute from "./refactorings/react/remove-braces-from-jsx-attribute";
 import removeBracesFromArrowFunction from "./refactorings/remove-braces-from-arrow-function";
+import removeBracesFromIfStatement from "./refactorings/remove-braces-from-if-statement";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
 import renameSymbol from "./refactorings/rename-symbol";
@@ -66,6 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
     reactAddBracesToJsxAttribute,
     reactRemoveBracesFromJsxAttribute,
     removeBracesFromArrowFunction,
+    removeBracesFromIfStatement,
     removeDeadCode,
     removeRedundantElse,
     renameSymbol,
@@ -113,6 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
         reactAddBracesToJsxAttribute,
         reactRemoveBracesFromJsxAttribute,
         removeBracesFromArrowFunction,
+        removeBracesFromIfStatement,
         removeDeadCode,
         removeRedundantElse,
         replaceBinaryWithAssignment,

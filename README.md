@@ -324,6 +324,12 @@ Useful when you need to add code in the body of an `if` or `else` statement.
 
 ![][demo-add-braces-to-if-statement]
 
+### Remove Braces from If Statement
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Does the contrary of _Add Braces to If Statement_: Removes braces from single-statement blocks in an `if` or `else` statement.
+
 ### Convert to Template Literal
 
 > 💡 Available as Quick Fix (`Alt ↵`)
