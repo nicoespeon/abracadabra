@@ -11,7 +11,7 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfElseToFlip);
+    editor.showError(ErrorReason.DidNotFindIfElseToFlip);
     return;
   }
 

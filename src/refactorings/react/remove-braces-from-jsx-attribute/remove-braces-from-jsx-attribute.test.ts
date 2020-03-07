@@ -114,7 +114,7 @@ describe("Remove Braces From JSX Attribute", () => {
     await doRemoveBracesFromJsxAttribute(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundBracesToRemove
+      ErrorReason.DidNotFindBracesToRemove
     );
   });
 

@@ -323,7 +323,7 @@ if (false) {
 
     await doRemoveDeadCode(code, selection);
 
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFoundDeadCode);
+    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFindDeadCode);
   });
 
   async function doRemoveDeadCode(

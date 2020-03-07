@@ -427,7 +427,7 @@ describe("Split If Statement", () => {
     await doMergeIfStatements(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfStatementsToMerge
+      ErrorReason.DidNotFindIfStatementsToMerge
     );
   });
 

@@ -56,7 +56,7 @@ describe("Add Braces to Arrow Function", () => {
     await doAddBracesToArrowFunction(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundArrowFunctionToAddBraces
+      ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
 
@@ -69,7 +69,7 @@ describe("Add Braces to Arrow Function", () => {
     await doAddBracesToArrowFunction(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundArrowFunctionToAddBraces
+      ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
 

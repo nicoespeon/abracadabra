@@ -230,7 +230,7 @@ describe("Convert Ternary to If/Else", () => {
     await doConvertTernaryToIfElse(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundTernaryToConvert
+      ErrorReason.DidNotFindTernaryToConvert
     );
   });
 
