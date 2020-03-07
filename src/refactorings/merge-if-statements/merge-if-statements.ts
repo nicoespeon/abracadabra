@@ -47,13 +47,6 @@ function tryMergeIfStatements(
   });
 
   return { canMerge, mergeAlternate };
-
-  const updatedCode = updateCode(ast, selection);
-
-  return {
-    canMerge: updatedCode.hasCodeChanged,
-    mergeAlternate: updatedCode.mergeAlternate
-  };
 }
 
 function updateCode(
