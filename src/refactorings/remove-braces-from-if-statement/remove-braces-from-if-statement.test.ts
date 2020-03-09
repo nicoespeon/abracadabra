@@ -128,7 +128,7 @@ doAnotherThing();`
     await doRemoveBracesFromIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundBracesToRemoveFromIfStatement
+      ErrorReason.DidNotFindBracesToRemoveFromIfStatement
     );
   });
 
@@ -139,7 +139,7 @@ doAnotherThing();`
     await doRemoveBracesFromIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundBracesToRemoveFromIfStatement
+      ErrorReason.DidNotFindBracesToRemoveFromIfStatement
     );
   });
 

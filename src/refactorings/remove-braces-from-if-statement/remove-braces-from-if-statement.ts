@@ -13,7 +13,7 @@ async function removeBracesFromIfStatement(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundBracesToRemoveFromIfStatement);
+    editor.showError(ErrorReason.DidNotFindBracesToRemoveFromIfStatement);
     return;
   }
 
