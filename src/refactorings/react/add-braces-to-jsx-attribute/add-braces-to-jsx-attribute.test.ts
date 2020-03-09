@@ -78,7 +78,7 @@ describe("Add Braces to JSX Attribute", () => {
     await doAddBracesToJsxAttribute(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundJsxAttributeToAddBracesTo
+      ErrorReason.DidNotFindJsxAttributeToAddBracesTo
     );
   });
 

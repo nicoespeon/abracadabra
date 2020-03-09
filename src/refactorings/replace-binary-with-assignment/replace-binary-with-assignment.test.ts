@@ -189,7 +189,7 @@ fees = fees + 10;`
     await doReplaceBinaryWithAssignmentExpression(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundBinaryExpression
+      ErrorReason.DidNotFindBinaryExpression
     );
   });
 

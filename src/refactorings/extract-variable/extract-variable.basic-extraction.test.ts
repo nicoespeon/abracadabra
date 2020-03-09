@@ -67,7 +67,7 @@ console.log(hello);`);
       await doExtractVariable(code, invalidSelection);
 
       expect(showErrorMessage).toBeCalledWith(
-        ErrorReason.DidNotFoundExtractableCode
+        ErrorReason.DidNotFindExtractableCode
       );
     });
   });

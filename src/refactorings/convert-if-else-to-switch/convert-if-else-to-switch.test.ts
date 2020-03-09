@@ -307,7 +307,7 @@ default:
     await doConvertIfElseToSwitch(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfElseToConvert
+      ErrorReason.DidNotFindIfElseToConvert
     );
   });
 

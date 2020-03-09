@@ -12,7 +12,7 @@ async function bubbleUpIfStatement(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundNestedIf);
+    editor.showError(ErrorReason.DidNotFindNestedIf);
     return;
   }
 

@@ -238,9 +238,7 @@ doSomethingElse();`,
 
     await doFlipIfElse(code, selection);
 
-    expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfElseToFlip
-    );
+    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFindIfElseToFlip);
   });
 
   async function doFlipIfElse(code: Code, selection: Selection): Promise<Code> {

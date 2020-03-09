@@ -8,4 +8,4 @@ after: switch
   noCaseErrorMessage = h.changeCase.noCase(errorReason.message)
 -%>
     case ErrorReason.<%= pascalErrorName %>:
-      return didNotFound("<%= noCaseErrorMessage %>");
+      return didNotFind("<%= noCaseErrorMessage %>");

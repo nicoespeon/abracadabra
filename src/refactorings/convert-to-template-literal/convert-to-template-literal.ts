@@ -12,7 +12,7 @@ async function convertToTemplateLiteral(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundStringToConvert);
+    editor.showError(ErrorReason.DidNotFindStringToConvert);
     return;
   }
 

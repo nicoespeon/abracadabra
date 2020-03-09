@@ -1,33 +1,33 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
-  DidNotFoundJsxAttributeToAddBracesTo,
-  DidNotFoundBracesToRemove,
-  DidNotFoundClassToExtractInterface,
-  DidNotFoundReactComponent,
-  DidNotFoundIfStatementToAddBraces,
-  DidNotFoundDeadCode,
-  DidNotFoundForLoopToConvert,
-  DidNotFoundStatementToMerge,
-  DidNotFoundNestedIf,
-  DidNotFoundBinaryExpression,
-  DidNotFoundExtractableCode,
-  DidNotFoundInlinableCode,
-  DidNotFoundInlinableCodeIdentifiers,
-  DidNotFoundNegatableExpression,
-  DidNotFoundRedundantElse,
-  DidNotFoundIfElseToFlip,
-  DidNotFoundTernaryToFlip,
-  DidNotFoundTernaryToSimplify,
-  DidNotFoundIfElseToConvert,
-  DidNotFoundTernaryToConvert,
-  DidNotFoundArrowFunctionToAddBraces,
-  DidNotFoundBracesToRemoveFromArrowFunction,
-  DidNotFoundBracesToRemoveFromIfStatement,
-  DidNotFoundIfStatementToSplit,
-  DidNotFoundIfStatementsToMerge,
-  DidNotFoundDeclarationToSplit,
-  DidNotFoundStringToConvert,
+  DidNotFindJsxAttributeToAddBracesTo,
+  DidNotFindBracesToRemove,
+  DidNotFindClassToExtractInterface,
+  DidNotFindReactComponent,
+  DidNotFindIfStatementToAddBraces,
+  DidNotFindDeadCode,
+  DidNotFindForLoopToConvert,
+  DidNotFindStatementToMerge,
+  DidNotFindNestedIf,
+  DidNotFindBinaryExpression,
+  DidNotFindExtractableCode,
+  DidNotFindInlinableCode,
+  DidNotFindInlinableCodeIdentifiers,
+  DidNotFindNegatableExpression,
+  DidNotFindRedundantElse,
+  DidNotFindIfElseToFlip,
+  DidNotFindTernaryToFlip,
+  DidNotFindTernaryToSimplify,
+  DidNotFindIfElseToConvert,
+  DidNotFindTernaryToConvert,
+  DidNotFindArrowFunctionToAddBraces,
+  DidNotFindBracesToRemoveFromArrowFunction,
+  DidNotfindBracesToRemoveFromIfStatement,
+  DidNotFindIfStatementToSplit,
+  DidNotFindIfStatementsToMerge,
+  DidNotFindDeclarationToSplit,
+  DidNotFindStringToConvert,
   CantMoveStatementUp,
   CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
@@ -43,86 +43,86 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
-    case ErrorReason.DidNotFoundJsxAttributeToAddBracesTo:
-      return didNotFound("a jsx attribute to add braces to");
+    case ErrorReason.DidNotFindJsxAttributeToAddBracesTo:
+      return didNotFind("a jsx attribute to add braces to");
 
-    case ErrorReason.DidNotFoundBracesToRemove:
-      return didNotFound("braces to remove from jsx attribute");
+    case ErrorReason.DidNotFindBracesToRemove:
+      return didNotFind("braces to remove from jsx attribute");
 
-    case ErrorReason.DidNotFoundClassToExtractInterface:
-      return didNotFound("a class to extract the interface");
+    case ErrorReason.DidNotFindClassToExtractInterface:
+      return didNotFind("a class to extract the interface");
 
-    case ErrorReason.DidNotFoundReactComponent:
-      return didNotFound("a React component to convert");
+    case ErrorReason.DidNotFindReactComponent:
+      return didNotFind("a React component to convert");
 
-    case ErrorReason.DidNotFoundIfStatementToAddBraces:
-      return didNotFound("a valid if statement to add braces to");
+    case ErrorReason.DidNotFindIfStatementToAddBraces:
+      return didNotFind("a valid if statement to add braces to");
 
-    case ErrorReason.DidNotFoundDeadCode:
-      return didNotFound("dead code to delete");
+    case ErrorReason.DidNotFindDeadCode:
+      return didNotFind("dead code to delete");
 
-    case ErrorReason.DidNotFoundForLoopToConvert:
-      return didNotFound("a valid for loop to convert");
+    case ErrorReason.DidNotFindForLoopToConvert:
+      return didNotFind("a valid for loop to convert");
 
-    case ErrorReason.DidNotFoundStatementToMerge:
-      return didNotFound("a statement to merge with");
+    case ErrorReason.DidNotFindStatementToMerge:
+      return didNotFind("a statement to merge with");
 
-    case ErrorReason.DidNotFoundNestedIf:
-      return didNotFound("a nested if to bubble up");
+    case ErrorReason.DidNotFindNestedIf:
+      return didNotFind("a nested if to bubble up");
 
-    case ErrorReason.DidNotFoundBinaryExpression:
-      return didNotFound("a binary expression to convert");
+    case ErrorReason.DidNotFindBinaryExpression:
+      return didNotFind("a binary expression to convert");
 
-    case ErrorReason.DidNotFoundExtractableCode:
-      return didNotFound("a valid code to extract");
+    case ErrorReason.DidNotFindExtractableCode:
+      return didNotFind("a valid code to extract");
 
-    case ErrorReason.DidNotFoundInlinableCode:
-      return didNotFound("a valid code to inline");
+    case ErrorReason.DidNotFindInlinableCode:
+      return didNotFind("a valid code to inline");
 
-    case ErrorReason.DidNotFoundInlinableCodeIdentifiers:
-      return "I didn't found references of this variable in the code 🤔";
+    case ErrorReason.DidNotFindInlinableCodeIdentifiers:
+      return "I didn't find references of this variable in the code 🤔";
 
-    case ErrorReason.DidNotFoundNegatableExpression:
-      return didNotFound("a valid expression to negate");
+    case ErrorReason.DidNotFindNegatableExpression:
+      return didNotFind("a valid expression to negate");
 
-    case ErrorReason.DidNotFoundRedundantElse:
-      return didNotFound("a redundant else to remove");
+    case ErrorReason.DidNotFindRedundantElse:
+      return didNotFind("a redundant else to remove");
 
-    case ErrorReason.DidNotFoundIfElseToFlip:
-      return didNotFound("an if statement to flip");
+    case ErrorReason.DidNotFindIfElseToFlip:
+      return didNotFind("an if statement to flip");
 
-    case ErrorReason.DidNotFoundTernaryToFlip:
-      return didNotFound("a ternary to flip");
+    case ErrorReason.DidNotFindTernaryToFlip:
+      return didNotFind("a ternary to flip");
 
-    case ErrorReason.DidNotFoundTernaryToSimplify:
-      return didNotFound("a ternary to simplify");
+    case ErrorReason.DidNotFindTernaryToSimplify:
+      return didNotFind("a ternary to simplify");
 
-    case ErrorReason.DidNotFoundIfElseToConvert:
-      return didNotFound("a valid if statement to convert");
+    case ErrorReason.DidNotFindIfElseToConvert:
+      return didNotFind("a valid if statement to convert");
 
-    case ErrorReason.DidNotFoundTernaryToConvert:
-      return didNotFound("a ternary to convert into if statement");
+    case ErrorReason.DidNotFindTernaryToConvert:
+      return didNotFind("a ternary to convert into if statement");
 
-    case ErrorReason.DidNotFoundArrowFunctionToAddBraces:
-      return didNotFound("an arrow function to add braces");
+    case ErrorReason.DidNotFindArrowFunctionToAddBraces:
+      return didNotFind("an arrow function to add braces");
 
-    case ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction:
-      return didNotFound("braces to remove");
+    case ErrorReason.DidNotFindBracesToRemoveFromArrowFunction:
+      return didNotFind("braces to remove");
 
-    case ErrorReason.DidNotFoundBracesToRemoveFromIfStatement:
-      return didNotFound("braces to remove");
+    case ErrorReason.DidNotfindBracesToRemoveFromIfStatement:
+      return didNotFind("braces to remove");
 
-    case ErrorReason.DidNotFoundIfStatementToSplit:
-      return didNotFound("an if statement that can be split");
+    case ErrorReason.DidNotFindIfStatementToSplit:
+      return didNotFind("an if statement that can be split");
 
-    case ErrorReason.DidNotFoundIfStatementsToMerge:
-      return didNotFound("if statements that can be merged");
+    case ErrorReason.DidNotFindIfStatementsToMerge:
+      return didNotFind("if statements that can be merged");
 
-    case ErrorReason.DidNotFoundDeclarationToSplit:
-      return didNotFound("a declaration that can be splitted");
+    case ErrorReason.DidNotFindDeclarationToSplit:
+      return didNotFind("a declaration that can be splitted");
 
-    case ErrorReason.DidNotFoundStringToConvert:
-      return didNotFound("a string to convert into template literal");
+    case ErrorReason.DidNotFindStringToConvert:
+      return didNotFind("a string to convert into template literal");
 
     case ErrorReason.CantMoveStatementUp:
       return cantDoIt("move this statement up");
@@ -162,8 +162,8 @@ function toString(reason: ErrorReason): string {
   }
 }
 
-function didNotFound(element: string): string {
-  return `I didn't found ${element} from current selection 🤔`;
+function didNotFind(element: string): string {
+  return `I didn't find ${element} from current selection 🤔`;
 }
 
 function cantDoIt(element: string): string {

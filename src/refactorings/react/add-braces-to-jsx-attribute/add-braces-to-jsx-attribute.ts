@@ -12,7 +12,7 @@ async function addBracesToJsxAttribute(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundJsxAttributeToAddBracesTo);
+    editor.showError(ErrorReason.DidNotFindJsxAttributeToAddBracesTo);
     return;
   }
 

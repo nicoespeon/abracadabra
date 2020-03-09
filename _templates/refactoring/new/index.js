@@ -16,11 +16,11 @@ module.exports = {
             {
               name: "name",
               message: "Name of the error",
-              initial: "DidNotFoundIfElseToFlip"
+              initial: "DidNotFindIfElseToFlip"
             },
             {
               name: "message",
-              message: "Error message for the user => \"I didn't found",
+              message: "Error message for the user => \"I didn't find",
               initial: "an if statement to flip"
             }
           ]

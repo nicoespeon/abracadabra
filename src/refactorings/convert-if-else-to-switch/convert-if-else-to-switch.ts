@@ -12,7 +12,7 @@ async function convertIfElseToSwitch(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfElseToConvert);
+    editor.showError(ErrorReason.DidNotFindIfElseToConvert);
     return;
   }
 

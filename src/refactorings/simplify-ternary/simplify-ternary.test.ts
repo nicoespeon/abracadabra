@@ -72,7 +72,7 @@ describe("Simplify Ternary", () => {
     await doSimplifyTernary(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundTernaryToSimplify
+      ErrorReason.DidNotFindTernaryToSimplify
     );
   });
 

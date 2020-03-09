@@ -1,4 +1,4 @@
-import { tryMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
+import { canMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
 import { Selection } from "../../editor/selection";
 import { RefactoringWithActionProvider } from "../../types";
@@ -14,7 +14,7 @@ const config: RefactoringWithActionProvider = {
     message: "Merge if statements",
 
     canPerform(ast: t.AST, selection: Selection) {
-      const { mergeAlternate, canMerge } = tryMergeIfStatements(ast, selection);
+      const { mergeAlternate, canMerge } = canMergeIfStatements(ast, selection);
       this.message = mergeAlternate ? "Merge else-if" : "Merge if statements";
 
       return canMerge;

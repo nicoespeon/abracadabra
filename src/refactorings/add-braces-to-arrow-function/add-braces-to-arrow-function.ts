@@ -12,7 +12,7 @@ async function addBracesToArrowFunction(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundArrowFunctionToAddBraces);
+    editor.showError(ErrorReason.DidNotFindArrowFunctionToAddBraces);
     return;
   }
 

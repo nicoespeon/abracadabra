@@ -14,7 +14,7 @@ async function extractInterface(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundClassToExtractInterface);
+    editor.showError(ErrorReason.DidNotFindClassToExtractInterface);
     return;
   }
 
