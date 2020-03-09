@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { mergeIfStatements, tryMergeIfStatements };
+export { mergeIfStatements, canMergeIfStatements };
 
 async function mergeIfStatements(
   code: Code,
@@ -19,7 +19,7 @@ async function mergeIfStatements(
   await editor.write(updatedCode.code);
 }
 
-function tryMergeIfStatements(
+function canMergeIfStatements(
   ast: t.AST,
   selection: Selection
 ): { canMerge: boolean; mergeAlternate: boolean } {
@@ -34,26 +34,12 @@ function tryMergeIfStatements(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const { alternate } = path.node;
-
-      if (alternate) {
-        mergeAlternate = true;
-        canMerge = true;
-      } else {
-        mergeAlternate = false;
-        canMerge = true;
-      }
+      canMerge = true;
+      mergeAlternate = !!path.node.alternate;
     }
   });
 
   return { canMerge, mergeAlternate };
-
-  const updatedCode = updateCode(ast, selection);
-
-  return {
-    canMerge: updatedCode.hasCodeChanged,
-    mergeAlternate: updatedCode.mergeAlternate
-  };
 }
 
 function updateCode(
