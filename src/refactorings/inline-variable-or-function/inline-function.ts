@@ -30,7 +30,7 @@ async function inlineFunction(
   }
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundInlinableCode);
+    editor.showError(ErrorReason.DidNotFindInlinableCode);
     return;
   }
 

@@ -266,7 +266,7 @@ const result = 1 + two + three;`);
       await doInlineVariable(code, selectionOnDeclarator);
 
       expect(showErrorMessage).toBeCalledWith(
-        ErrorReason.DidNotFoundInlinableCode
+        ErrorReason.DidNotFindInlinableCode
       );
     });
 
@@ -313,7 +313,7 @@ const result = one + 2 + three;`);
     await doInlineVariable(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundInlinableCode
+      ErrorReason.DidNotFindInlinableCode
     );
   });
 
@@ -324,7 +324,7 @@ const result = one + 2 + three;`);
     await doInlineVariable(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundInlinableCodeIdentifiers
+      ErrorReason.DidNotFindInlinableCodeIdentifiers
     );
   });
 
@@ -335,7 +335,7 @@ const result = one + 2 + three;`);
     await doInlineVariable(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundInlinableCodeIdentifiers
+      ErrorReason.DidNotFindInlinableCodeIdentifiers
     );
   });
 

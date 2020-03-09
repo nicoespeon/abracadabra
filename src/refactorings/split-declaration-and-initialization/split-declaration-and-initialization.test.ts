@@ -111,7 +111,7 @@ getLastName = () => {
     await doSplitDeclarationAndInitialization(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundDeclarationToSplit
+      ErrorReason.DidNotFindDeclarationToSplit
     );
   });
 
@@ -122,7 +122,7 @@ getLastName = () => {
     await doSplitDeclarationAndInitialization(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundDeclarationToSplit
+      ErrorReason.DidNotFindDeclarationToSplit
     );
   });
 

@@ -14,7 +14,7 @@ async function convertForToForeach(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundForLoopToConvert);
+    editor.showError(ErrorReason.DidNotFindForLoopToConvert);
     return;
   }
 

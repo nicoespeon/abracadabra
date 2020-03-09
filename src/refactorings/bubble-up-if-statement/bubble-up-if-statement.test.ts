@@ -289,7 +289,7 @@ if (canLog) {
 
     await doBubbleUpIfStatement(code, selection);
 
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFoundNestedIf);
+    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFindNestedIf);
   });
 
   async function doBubbleUpIfStatement(

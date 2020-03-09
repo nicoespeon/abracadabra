@@ -12,7 +12,7 @@ async function mergeIfStatements(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfStatementsToMerge);
+    editor.showError(ErrorReason.DidNotFindIfStatementsToMerge);
     return;
   }
 
