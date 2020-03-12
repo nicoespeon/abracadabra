@@ -1,6 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { isLast } from "../../array-helpers";
 
 export { convertToTemplateLiteral, canConvertToTemplateLiteral };
 
@@ -110,7 +111,10 @@ function getTemplate(node: t.BinaryExpression["left"]): Template {
 function createTemplateLiteral(template: Template): t.TemplateLiteral {
   return t.templateLiteral(
     // Intermediate interpolated quasis shouldn't be part of the final template.
-    template.quasis.filter(quasi => !isInterpolated(quasi) || quasi.tail),
+    // Last quasi should be identified with `quasi.tail`, but since babel 7.8.7 upgrade it doesn't work.
+    template.quasis.filter(
+      (quasi, index) => !isInterpolated(quasi) || isLast(template.quasis, index)
+    ),
     template.expressions
   );
 }
