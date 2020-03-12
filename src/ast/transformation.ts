@@ -93,7 +93,8 @@ function parse(code: Code): AST {
             ["pipelineOperator", { proposal: "minimal" }],
             "throwExpressions",
             "jsx",
-            "typescript"
+            "typescript",
+            "topLevelAwait"
           ]
         })
     }
