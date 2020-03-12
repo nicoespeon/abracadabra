@@ -77,24 +77,36 @@ function parse(code: Code): AST {
             "classPrivateMethods",
             "classPrivateProperties",
             "classProperties",
+            // Not compatible with "decorators-legacy"
+            // "decorators",
             "decorators-legacy",
             "doExpressions",
             "dynamicImport",
+            // Make tests fail, not sure why
+            // "estree",
             "exportDefaultFrom",
             "exportNamespaceFrom",
+            // Not compatible with "typescript"
+            // "flow",
+            // "flowComments",
             "functionBind",
             "functionSent",
             "importMeta",
             "jsx",
+            "logicalAssignment",
             "nullishCoalescingOperator",
             "numericSeparator",
             "objectRestSpread",
             "optionalCatchBinding",
             "optionalChaining",
+            "partialApplication",
             ["pipelineOperator", { proposal: "minimal" }],
+            "placeholders",
             "throwExpressions",
             "topLevelAwait",
             "typescript"
+            // Not compatible with "placeholders"
+            // "v8intrinsic"
           ]
         })
     }
