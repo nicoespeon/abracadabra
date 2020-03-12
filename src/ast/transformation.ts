@@ -85,6 +85,7 @@ function parse(code: Code): AST {
             "functionBind",
             "functionSent",
             "importMeta",
+            "jsx",
             "nullishCoalescingOperator",
             "numericSeparator",
             "objectRestSpread",
@@ -92,9 +93,8 @@ function parse(code: Code): AST {
             "optionalChaining",
             ["pipelineOperator", { proposal: "minimal" }],
             "throwExpressions",
-            "jsx",
-            "typescript",
-            "topLevelAwait"
+            "topLevelAwait",
+            "typescript"
           ]
         })
     }
