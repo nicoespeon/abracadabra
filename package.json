@@ -52,17 +52,17 @@
     }
   },
   "devDependencies": {
-    "@types/babel__traverse": "7.0.6",
+    "@types/babel__traverse": "7.0.9",
     "@types/jest": "24.0.13",
     "@types/jscodeshift": "0.6.3",
     "@types/node": "10.12.21",
     "@types/pluralize": "0.0.29",
     "husky": "2.3.0",
     "hygen": "4.0.8",
-    "jest": "24.8.0",
+    "jest": "25.1.0",
     "prettier": "1.17.1",
     "pretty-quick": "1.11.0",
-    "ts-jest": "24.0.2",
+    "ts-jest": "25.2.1",
     "ts-loader": "6.0.4",
     "tslint": "5.12.1",
     "typescript": "3.7.3",
@@ -72,9 +72,9 @@
     "webpack-cli": "3.3.5"
   },
   "dependencies": {
-    "@babel/parser": "7.4.5",
-    "@babel/traverse": "7.4.5",
-    "@babel/types": "7.4.4",
+    "@babel/parser": "7.8.7",
+    "@babel/traverse": "7.8.6",
+    "@babel/types": "7.8.7",
     "change-case": "3.1.0",
     "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",

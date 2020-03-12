@@ -34,7 +34,7 @@ export { findParamMatchingId };
 
 function findParamMatchingId(
   id: ast.Identifier,
-  params: ast.Node[]
+  params: (ast.Node | null)[]
 ): MatchingParam {
   return params.reduce((result: MatchingParam, param, index) => {
     if (result.isMatch) return result;
@@ -153,7 +153,7 @@ class MatchingRestIdentifier implements MatchingParam {
 
   constructor(
     index: number,
-    params: ast.Node[],
+    params: (ast.Node | null)[],
     id: ast.Identifier,
     argument: ast.Identifier
   ) {
