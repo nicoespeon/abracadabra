@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Upgrade babel to make the extension work with TypeScript 3.8 syntax, such as top-level awaits. Thanks @David-Else [for reporting this](https://github.com/nicoespeon/abracadabra/issues/75) 🙏
+
 ## [3.2.1] - 2020-02-20
 
 ### Fixed
