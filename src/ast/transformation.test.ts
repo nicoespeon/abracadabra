@@ -17,5 +17,13 @@ describe("Transformation", () => {
 
       expect(hasCodeChanged).toBe(false);
     });
+
+    it("should not crash with top-level await", () => {
+      const code = `async function doSomething() {}
+
+await doSomething();`;
+
+      expect(() => transform(code, {})).not.toThrow();
+    });
   });
 });
