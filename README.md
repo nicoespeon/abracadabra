@@ -2,7 +2,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors)
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
@@ -433,6 +433,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/HEYGUL"><img src="https://avatars2.githubusercontent.com/u/2989532?v=4" width="100px;" alt="GUL"/><br /><sub><b>GUL</b></sub></a><br /><a href="#ideas-HEYGUL" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=HEYGUL" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/visusnet"><img src="https://avatars2.githubusercontent.com/u/1219124?v=4" width="100px;" alt="Alexander Müller"/><br /><sub><b>Alexander Müller</b></sub></a><br /><a href="#ideas-visusnet" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=visusnet" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/timvancleef"><img src="https://avatars.githubusercontent.com/u/7040078?v=3" width="100px;" alt="Tim van Cleef"/><br /><sub><b>Tim van Cleef</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=timvancleef" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=timvancleef" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/automatensalat"><img src="https://avatars.githubusercontent.com/u/26285169?v=3" width="100px;" alt="Tobias Hann"/><br /><sub><b>Tobias Hann</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aautomatensalat" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=automatensalat" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=automatensalat" title="Documentation">📖</a></td>
   </tr>
 </table>
 

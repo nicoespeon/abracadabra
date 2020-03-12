@@ -68,6 +68,18 @@
         "code",
         "documentation"
       ]
+    },
+    {
+      "login": "automatensalat",
+      "name": "Tobias Hann",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/26285169?v=4",
+      "profile": "https://github.com/automatensalat",
+      "contributions": [
+        "bug",
+        "ideas",
+        "code",
+        "documentation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
