@@ -183,7 +183,7 @@ class PrimitiveTemplate implements Template {
   }
 
   get quasis() {
-    return [t.templateElement(this.node.value)];
+    return [t.templateElement(String(this.node.value))];
   }
 
   get hasString() {
