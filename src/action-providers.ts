@@ -1,9 +1,15 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import { Selection } from "./editor/selection";
-import { RefactoringWithActionProvider } from "./types";
+import {
+  RefactoringWithActionProvider,
+  ActionProvider,
+  LegacyActionProvider,
+  isRefactoringWithActionProvider,
+  isRefactoringWithLegacyActionProvider
+} from "./types";
 import * as t from "./ast";
+import { Selection } from "./editor/selection";
 
 export { RefactoringActionProvider };
 
@@ -21,13 +27,96 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const ast = t.parse(document.getText());
     const selection = createSelectionFromVSCode(range);
 
-    return this.refactorings
-      .filter(refactoring => this.canPerform(refactoring, ast, selection))
-      .map(refactoring => this.buildCodeActionFor(refactoring));
+    return [
+      ...this.findApplicableRefactorings(ast, selection),
+      ...this.findApplicableLegacyRefactorings(ast, selection)
+    ].map(refactoring => this.buildCodeActionFor(refactoring));
   }
 
-  private canPerform(
-    refactoring: RefactoringWithActionProvider,
+  private findApplicableLegacyRefactorings(ast: t.File, selection: Selection) {
+    return this.refactorings
+      .filter(isRefactoringWithLegacyActionProvider)
+      .filter(refactoring =>
+        this.canPerformLegacy(refactoring, ast, selection)
+      );
+  }
+
+  private findApplicableRefactorings(
+    ast: t.File,
+    selection: Selection
+  ): RefactoringWithActionProvider<ActionProvider>[] {
+    const refactorings = this.refactorings.filter(
+      isRefactoringWithActionProvider
+    );
+
+    const applicableRefactorings: RefactoringWithActionProvider<
+      ActionProvider
+    >[] = [];
+
+    t.traverseAST(ast, {
+      enter: path => {
+        refactorings.forEach(refactoring =>
+          this.visitAndCheckApplicability(
+            refactoring,
+            path,
+            selection,
+            (path, refactoring) => {
+              if (refactoring.actionProvider.updateMessage) {
+                refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
+                  path
+                );
+              }
+
+              applicableRefactorings.push(refactoring);
+            }
+          )
+        );
+      }
+    });
+
+    return applicableRefactorings;
+  }
+
+  private visitAndCheckApplicability(
+    refactoring: RefactoringWithActionProvider<ActionProvider>,
+    path: t.NodePath,
+    selection: Selection,
+    whenApplicable: (
+      matchedPath: t.NodePath,
+      refactoring: RefactoringWithActionProvider<ActionProvider>
+    ) => void
+  ) {
+    const visitor = refactoring.actionProvider.createVisitor(
+      selection,
+      path => whenApplicable(path, refactoring),
+      refactoring
+    );
+
+    this.visit(visitor, path);
+  }
+
+  private visit(visitor: t.Visitor, path: t.NodePath) {
+    const node = path.node;
+
+    try {
+      const visitorNode = visitor[node.type];
+      if (typeof visitorNode === "function") {
+        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+        visitorNode.bind(visitor)(path, path.state);
+      } else if (
+        typeof visitorNode === "object" &&
+        typeof visitorNode.enter === "function"
+      ) {
+        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+        visitorNode.enter(path, path.state);
+      }
+    } catch (_) {
+      // Silently fail, we don't care why it failed (e.g. code can't be parsed).
+    }
+  }
+
+  private canPerformLegacy(
+    refactoring: RefactoringWithActionProvider<LegacyActionProvider>,
     ast: t.AST,
     selection: Selection
   ) {
