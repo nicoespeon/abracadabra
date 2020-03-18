@@ -121,10 +121,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     selection: Selection
   ) {
     try {
-      return (
-        typeof refactoring.actionProvider.canPerform === "function" &&
-        refactoring.actionProvider.canPerform(ast, selection)
-      );
+      return refactoring.actionProvider.canPerform(ast, selection);
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
       return false;
