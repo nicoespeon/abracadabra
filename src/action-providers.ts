@@ -54,16 +54,13 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     >[] = [];
 
     t.traverseAST(ast, {
-      enter: (path: t.NodePath) => {
+      enter: path => {
         refactorings.forEach(refactoring =>
           this.visitAndCheckApplicability(
             refactoring,
             path,
             selection,
-            (
-              path: t.NodePath,
-              refactoring: RefactoringWithActionProvider<ActionProvider>
-            ) => {
+            (path, refactoring) => {
               if (refactoring.actionProvider.updateMessage) {
                 refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
                   path
