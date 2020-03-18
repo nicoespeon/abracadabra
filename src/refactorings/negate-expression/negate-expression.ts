@@ -13,7 +13,7 @@ async function negateExpression(
   const expression = findNegatableExpression(t.parse(code), selection);
 
   if (!expression) {
-    editor.showError(ErrorReason.DidNotFoundNegatableExpression);
+    editor.showError(ErrorReason.DidNotFindNegatableExpression);
     return;
   }
 

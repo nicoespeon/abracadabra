@@ -20,7 +20,7 @@ async function extractVariable(
   );
 
   if (!selectedOccurrence) {
-    editor.showError(ErrorReason.DidNotFoundExtractableCode);
+    editor.showError(ErrorReason.DidNotFindExtractableCode);
     return;
   }
 

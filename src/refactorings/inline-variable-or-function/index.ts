@@ -50,7 +50,7 @@ class VSCodeEditorAttemptingInlining extends VSCodeEditor {
   couldInlineCode = true;
 
   async showError(reason: ErrorReason) {
-    if (reason === ErrorReason.DidNotFoundInlinableCode) {
+    if (reason === ErrorReason.DidNotFindInlinableCode) {
       this.couldInlineCode = false;
       return Promise.resolve();
     }

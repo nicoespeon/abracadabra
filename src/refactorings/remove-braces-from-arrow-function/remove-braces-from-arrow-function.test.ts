@@ -64,7 +64,7 @@ describe("Remove Braces from Arrow Function", () => {
     await doRemoveBracesFromArrowFunction(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction
+      ErrorReason.DidNotFindBracesToRemoveFromArrowFunction
     );
   });
 
@@ -75,7 +75,7 @@ describe("Remove Braces from Arrow Function", () => {
     await doRemoveBracesFromArrowFunction(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction
+      ErrorReason.DidNotFindBracesToRemoveFromArrowFunction
     );
   });
 

@@ -212,7 +212,7 @@ interface Extracted {
     await doExtractInterface(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundClassToExtractInterface
+      ErrorReason.DidNotFindClassToExtractInterface
     );
   });
 
