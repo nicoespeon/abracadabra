@@ -34,13 +34,11 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private findApplicableLegacyRefactorings(ast: t.File, selection: Selection) {
-    const legacyRefactorings = this.refactorings.filter(
-      isRefactoringWithLegacyActionProvider
-    );
-    const applicableLegacyRefactorings = legacyRefactorings.filter(
-      refactoring => this.canPerformLegacy(refactoring, ast, selection)
-    );
-    return applicableLegacyRefactorings;
+    return this.refactorings
+      .filter(isRefactoringWithLegacyActionProvider)
+      .filter(refactoring =>
+        this.canPerformLegacy(refactoring, ast, selection)
+      );
   }
 
   private findApplicableRefactorings(
