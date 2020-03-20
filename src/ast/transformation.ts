@@ -109,7 +109,9 @@ function parse(code: Code): AST {
             // "v8intrinsic"
           ]
         })
-    }
+    },
+    // VS Code considers tabs to be of size 1
+    tabWidth: 1
   });
 }
 

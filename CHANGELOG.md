@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Variable didn't worked correctly if indentation included tabs. This is now fixed!
+
 ## [3.2.2] - 2020-03-12
 
 ### Fixed

@@ -778,6 +778,23 @@ for (var i = 0; i < items.length; i++) {}`
   const extracted = this.onClick();
   return <Button onClick={extracted} />;
 }`
+      },
+      {
+        description: "with tabs",
+        code: `function test() {
+	const myVar = {
+		someArray: [{ somethingNested: 42 }]
+	};
+	console.log(myVar.someArray[0].somethingNested);
+}`,
+        selection: Selection.cursorAt(4, 25),
+        expected: `function test() {
+	const myVar = {
+		someArray: [{ somethingNested: 42 }]
+	};
+	const { someArray } = myVar;
+	console.log(someArray[0].somethingNested);
+}`
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {
