@@ -790,7 +790,7 @@ for (var i = 0; i < items.length; i++) {}`
     }
   );
 
-  it("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
+  it("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
     const code = `function render() {
   return <div className="text-lg font-weight-bold">
     <p>{name}</p>
@@ -808,7 +808,7 @@ for (var i = 0; i < items.length; i++) {}`
 }`);
   });
 
-  it("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
+  it("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
     const code = `function render() {
   return <p>{name}</p>;
 }`;
