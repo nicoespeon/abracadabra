@@ -68,7 +68,7 @@ describe("Flip Ternary", () => {
     await doFlipTernary(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundTernaryToFlip
+      ErrorReason.DidNotFindTernaryToFlip
     );
   });
 

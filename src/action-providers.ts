@@ -34,13 +34,11 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private findApplicableLegacyRefactorings(ast: t.File, selection: Selection) {
-    const legacyRefactorings = this.refactorings.filter(
-      isRefactoringWithLegacyActionProvider
-    );
-    const applicableLegacyRefactorings = legacyRefactorings.filter(
-      refactoring => this.canPerformLegacy(refactoring, ast, selection)
-    );
-    return applicableLegacyRefactorings;
+    return this.refactorings
+      .filter(isRefactoringWithLegacyActionProvider)
+      .filter(refactoring =>
+        this.canPerformLegacy(refactoring, ast, selection)
+      );
   }
 
   private findApplicableRefactorings(
@@ -56,16 +54,13 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     >[] = [];
 
     t.traverseAST(ast, {
-      enter: (path: t.NodePath<any>) => {
+      enter: path => {
         refactorings.forEach(refactoring =>
           this.visitAndCheckApplicability(
             refactoring,
             path,
             selection,
-            (
-              path: t.NodePath,
-              refactoring: RefactoringWithActionProvider<ActionProvider>
-            ) => {
+            (path, refactoring) => {
               if (refactoring.actionProvider.updateMessage) {
                 refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
                   path
@@ -84,14 +79,14 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
   private visitAndCheckApplicability(
     refactoring: RefactoringWithActionProvider<ActionProvider>,
-    path: t.NodePath<any>,
+    path: t.NodePath,
     selection: Selection,
     whenApplicable: (
-      matchedPath: t.NodePath<any>,
+      matchedPath: t.NodePath,
       refactoring: RefactoringWithActionProvider<ActionProvider>
     ) => void
   ) {
-    const visitor: t.Visitor = refactoring.actionProvider.createVisitor(
+    const visitor = refactoring.actionProvider.createVisitor(
       selection,
       path => whenApplicable(path, refactoring),
       refactoring
@@ -100,14 +95,20 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     this.visit(visitor, path);
   }
 
-  private visit(visitor: any, path: t.NodePath<any>) {
-    const node: t.Node = path.node;
+  private visit(visitor: t.Visitor, path: t.NodePath) {
+    const node = path.node;
 
     try {
-      if (typeof visitor[node.type] === "function") {
-        visitor[node.type](path);
-      } else if (typeof visitor[node.type] === "object") {
-        visitor[node.type].enter(path);
+      const visitorNode = visitor[node.type];
+      if (typeof visitorNode === "function") {
+        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+        visitorNode.bind(visitor)(path, path.state);
+      } else if (
+        typeof visitorNode === "object" &&
+        typeof visitorNode.enter === "function"
+      ) {
+        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+        visitorNode.enter(path, path.state);
       }
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
@@ -120,10 +121,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     selection: Selection
   ) {
     try {
-      return (
-        typeof refactoring.actionProvider.canPerform === "function" &&
-        refactoring.actionProvider.canPerform(ast, selection)
-      );
+      return refactoring.actionProvider.canPerform(ast, selection);
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
       return false;

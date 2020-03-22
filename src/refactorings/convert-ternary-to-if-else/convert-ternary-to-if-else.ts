@@ -12,7 +12,7 @@ async function convertTernaryToIfElse(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundTernaryToConvert);
+    editor.showError(ErrorReason.DidNotFindTernaryToConvert);
     return;
   }
 

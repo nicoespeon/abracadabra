@@ -778,6 +778,23 @@ for (var i = 0; i < items.length; i++) {}`
   const extracted = this.onClick();
   return <Button onClick={extracted} />;
 }`
+      },
+      {
+        description: "with tabs",
+        code: `function test() {
+	const myVar = {
+		someArray: [{ somethingNested: 42 }]
+	};
+	console.log(myVar.someArray[0].somethingNested);
+}`,
+        selection: Selection.cursorAt(4, 25),
+        expected: `function test() {
+	const myVar = {
+		someArray: [{ somethingNested: 42 }]
+	};
+	const { someArray } = myVar;
+	console.log(someArray[0].somethingNested);
+}`
       }
     ],
     async ({ code, selection, expected, expectedPosition }) => {
@@ -790,7 +807,7 @@ for (var i = 0; i < items.length; i++) {}`
     }
   );
 
-  it("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
+  it("should wrap extracted JSX element inside JSX Expression Container when inside another", async () => {
     const code = `function render() {
   return <div className="text-lg font-weight-bold">
     <p>{name}</p>
@@ -808,7 +825,7 @@ for (var i = 0; i < items.length; i++) {}`
 }`);
   });
 
-  it("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
+  it("should not wrap extracted JSX element inside JSX Expression Container when not inside another", async () => {
     const code = `function render() {
   return <p>{name}</p>;
 }`;

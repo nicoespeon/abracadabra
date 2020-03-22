@@ -12,7 +12,7 @@ async function removeDeadCode(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundDeadCode);
+    editor.showError(ErrorReason.DidNotFindDeadCode);
     return;
   }
 

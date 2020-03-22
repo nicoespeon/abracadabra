@@ -459,7 +459,7 @@ logData(); // => logged`
         description: "cursor is not on a function",
         code: `const hello = "Hello"`,
         selection: Selection.cursorAt(2, 0),
-        expectedError: ErrorReason.DidNotFoundInlinableCode
+        expectedError: ErrorReason.DidNotFindInlinableCode
       },
       {
         description: "cursor is not on function word or id",
@@ -469,7 +469,7 @@ logData(); // => logged`
 
 sayHello("Jane");`,
         selection: Selection.cursorAt(0, 18),
-        expectedError: ErrorReason.DidNotFoundInlinableCode
+        expectedError: ErrorReason.DidNotFindInlinableCode
       },
       {
         description: "function has no reference in scope",
@@ -484,7 +484,7 @@ sayHello("Jane");`,
 // Not in scope.
 doSomething();`,
         selection: Selection.cursorAt(2, 4),
-        expectedError: ErrorReason.DidNotFoundInlinableCode
+        expectedError: ErrorReason.DidNotFindInlinableCode
       },
       {
         description: "function has multiple return statements",

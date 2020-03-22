@@ -34,7 +34,7 @@ async function convertToPureComponent(
   });
 
   if (!updatedCode) {
-    editor.showError(ErrorReason.DidNotFoundReactComponent);
+    editor.showError(ErrorReason.DidNotFindReactComponent);
     return;
   }
 

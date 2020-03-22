@@ -445,7 +445,7 @@ doAnotherThing();`,
     await doMergeWithPreviousIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundStatementToMerge
+      ErrorReason.DidNotFindStatementToMerge
     );
   });
 

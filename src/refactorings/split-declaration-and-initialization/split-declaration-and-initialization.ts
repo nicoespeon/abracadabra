@@ -15,7 +15,7 @@ async function splitDeclarationAndInitialization(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundDeclarationToSplit);
+    editor.showError(ErrorReason.DidNotFindDeclarationToSplit);
     return;
   }
 

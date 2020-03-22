@@ -12,7 +12,7 @@ async function removeBracesFromJsxAttribute(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundBracesToRemove);
+    editor.showError(ErrorReason.DidNotFindBracesToRemove);
     return;
   }
 

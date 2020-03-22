@@ -123,7 +123,7 @@ describe("(React) Convert To Pure Component", () => {
     await doConvertToPureComponent(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundReactComponent
+      ErrorReason.DidNotFindReactComponent
     );
   });
 

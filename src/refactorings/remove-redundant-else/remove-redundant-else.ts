@@ -13,7 +13,7 @@ async function removeRedundantElse(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundRedundantElse);
+    editor.showError(ErrorReason.DidNotFindRedundantElse);
     return;
   }
 

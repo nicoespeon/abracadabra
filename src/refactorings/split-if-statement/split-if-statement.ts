@@ -12,7 +12,7 @@ async function splitIfStatement(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfStatementToSplit);
+    editor.showError(ErrorReason.DidNotFindIfStatementToSplit);
     return;
   }
 

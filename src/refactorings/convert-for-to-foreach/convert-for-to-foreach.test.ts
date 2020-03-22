@@ -208,7 +208,7 @@ items.forEach(item => {
     await doConvertForToForeach(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundForLoopToConvert
+      ErrorReason.DidNotFindForLoopToConvert
     );
   });
 

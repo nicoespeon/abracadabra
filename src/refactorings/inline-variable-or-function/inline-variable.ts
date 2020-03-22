@@ -20,7 +20,7 @@ async function inlineVariable(
   const inlinableCode = findInlinableCodeInAST(code, selection);
 
   if (!inlinableCode) {
-    editor.showError(ErrorReason.DidNotFoundInlinableCode);
+    editor.showError(ErrorReason.DidNotFindInlinableCode);
     return;
   }
 
@@ -35,7 +35,7 @@ async function inlineVariable(
   }
 
   if (!inlinableCode.hasIdentifiersToUpdate) {
-    editor.showError(ErrorReason.DidNotFoundInlinableCodeIdentifiers);
+    editor.showError(ErrorReason.DidNotFindInlinableCodeIdentifiers);
     return;
   }
 
