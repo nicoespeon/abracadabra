@@ -37,28 +37,19 @@ function canMergeIfStatements(
   return { canMerge, mergeAlternate };
 }
 
-function updateCode(
-  ast: t.AST,
-  selection: Selection
-): t.Transformed & { mergeAlternate: boolean } {
-  let mergeAlternate = false;
-
-  const result = t.transformAST(
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
     ast,
     createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       const { alternate, consequent } = path.node;
 
       if (alternate) {
-        mergeAlternate = true;
         mergeAlternateWithNestedIf(path, alternate);
       } else {
-        mergeAlternate = false;
         mergeConsequentWithNestedIf(path, consequent);
       }
     })
   );
-
-  return { ...result, mergeAlternate };
 }
 
 function createVisitor(
