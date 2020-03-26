@@ -28,40 +28,34 @@ function hasBracesToRemoveFromArrowFunction(
   ast: t.AST,
   selection: Selection
 ): boolean {
-  let hasBracesToRemove = false;
-  let isPatternValid = true;
+  let result = false;
 
-  t.traverseAST(ast, {
-    ArrowFunctionExpression(path) {
+  t.traverseAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.ArrowFunctionExpression>) => {
       if (!selection.isInsidePath(path)) return;
+
       if (!t.isBlockStatement(path.node.body)) return;
 
       const blockStatementStatements = path.node.body.body;
       if (blockStatementStatements.length > 1) {
-        isPatternValid = false;
         return;
       }
 
       const firstValue = blockStatementStatements[0];
       if (!t.isReturnStatement(firstValue)) {
-        isPatternValid = false;
         return;
       }
 
       if (firstValue.argument === null) {
-        isPatternValid = false;
         return;
       }
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+      result = true;
+    })
+  );
 
-      hasBracesToRemove = true;
-    }
-  });
-
-  return hasBracesToRemove && isPatternValid;
+  return result;
 }
 
 function updateCode(
@@ -70,9 +64,9 @@ function updateCode(
 ): t.Transformed & { isPatternValid: boolean } {
   let isPatternValid = true;
 
-  const result = t.transformAST(ast, {
-    ArrowFunctionExpression(path) {
-      if (!selection.isInsidePath(path)) return;
+  const result = t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.ArrowFunctionExpression>) => {
       if (!t.isBlockStatement(path.node.body)) return;
 
       const blockStatementStatements = path.node.body.body;
@@ -92,18 +86,31 @@ function updateCode(
         return;
       }
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
       path.node.body = firstValue.argument;
-      path.stop();
-    }
-  });
+    })
+  );
 
   return {
     ...result,
     isPatternValid
+  };
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.ArrowFunctionExpression>) => void
+): t.Visitor {
+  return {
+    ArrowFunctionExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
+      path.stop();
+    }
   };
 }
 

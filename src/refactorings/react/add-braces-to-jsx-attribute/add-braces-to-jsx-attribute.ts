@@ -23,32 +23,37 @@ function hasJsxAttributeToAddBracesTo(
   ast: t.AST,
   selection: Selection
 ): boolean {
-  let hasJsxAttributeToAddBracesTo = false;
+  let result = false;
 
-  t.traverseAST(ast, {
-    JSXAttribute(path) {
-      if (!selection.isInsidePath(path)) {
-        return;
-      }
-      hasJsxAttributeToAddBracesTo = t.isStringLiteral(path.node.value);
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
-  return hasJsxAttributeToAddBracesTo;
+  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, path => {
+      // Wrap the string literal in a JSX Expression
+      path.node.value = t.jsxExpressionContainer(path.node.value);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<any>) => void
+): t.Visitor {
+  return {
     JSXAttribute(path) {
       if (!selection.isInsidePath(path)) {
         return;
       }
 
       if (t.isStringLiteral(path.node.value)) {
-        // Wrap the string literal in a JSX Expression
-        path.node.value = t.jsxExpressionContainer(path.node.value);
+        onMatch(path);
       }
       path.stop();
     }
-  });
+  };
 }

@@ -22,37 +22,16 @@ async function convertTernaryToIfElse(
 function hasTernaryToConvert(ast: t.AST, selection: Selection): boolean {
   let result = false;
 
-  t.traverseAST(ast, {
-    ConditionalExpression(path) {
-      const { parentPath } = path;
-      if (!selection.isInsidePath(path)) return;
-
-      if (t.isReturnStatement(parentPath.node)) {
-        result = true;
-      }
-
-      if (t.isAssignmentExpression(parentPath.node)) {
-        result = true;
-      }
-
-      if (
-        t.isVariableDeclarator(parentPath.node) &&
-        t.isVariableDeclaration(parentPath.parent)
-      ) {
-        result = true;
-      }
-    }
-  });
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    ConditionalExpression(path) {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.ConditionalExpression>) => {
       const { parentPath, node } = path;
-      if (!selection.isInsidePath(path)) return;
-
       if (t.isReturnStatement(parentPath.node)) {
         parentPath.replaceWith(
           createIfStatement(selection, node, t.returnStatement)
@@ -92,8 +71,29 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
         parentPath.parentPath.stop();
       }
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.ConditionalExpression>) => void
+): t.Visitor {
+  return {
+    ConditionalExpression(path) {
+      const { parentPath } = path;
+      if (!selection.isInsidePath(path)) return;
+
+      if (
+        t.isReturnStatement(parentPath.node) ||
+        t.isAssignmentExpression(parentPath.node) ||
+        (t.isVariableDeclarator(parentPath.node) &&
+          t.isVariableDeclaration(parentPath.parent))
+      ) {
+        onMatch(path);
+      }
     }
-  });
+  };
 }
 
 function createIfStatement(

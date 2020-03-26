@@ -22,7 +22,42 @@ async function splitIfStatement(
 function canSplitIfStatement(ast: t.AST, selection: Selection): boolean {
   let result = false;
 
-  t.traverseAST(ast, {
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
+
+  return result;
+}
+
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
+      const { test, consequent, alternate } = path.node;
+
+      const logicalExpression = test as t.LogicalExpression;
+
+      const splittedIfStatement = t.ifStatement(
+        logicalExpression.right,
+        consequent,
+        alternate
+      );
+
+      if (logicalExpression.operator === "&&") {
+        path.node.consequent = t.blockStatement([splittedIfStatement]);
+      } else {
+        path.node.alternate = splittedIfStatement;
+      }
+      path.node.test = logicalExpression.left;
+
+      path.stop();
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -36,44 +71,9 @@ function canSplitIfStatement(ast: t.AST, selection: Selection): boolean {
       // Handle logical expressions in `else if` if they're closer to selection.
       if (hasAlternateWhichMatchesSelection(alternate, selection)) return;
 
-      result = true;
+      onMatch(path);
     }
-  });
-
-  return result;
-}
-
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      const { test, consequent, alternate } = path.node;
-      if (!t.isLogicalExpression(test)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      // Handle logical expressions in `else if` if they're closer to selection.
-      if (hasAlternateWhichMatchesSelection(alternate, selection)) return;
-
-      const splittedIfStatement = t.ifStatement(
-        test.right,
-        consequent,
-        alternate
-      );
-
-      if (test.operator === "&&") {
-        path.node.consequent = t.blockStatement([splittedIfStatement]);
-      } else {
-        path.node.alternate = splittedIfStatement;
-      }
-      path.node.test = test.left;
-
-      path.stop();
-    }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(

@@ -26,29 +26,37 @@ function canMergeIfStatements(
   let canMerge = false;
   let mergeAlternate = false;
 
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  t.traverseAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       canMerge = true;
       mergeAlternate = !!path.node.alternate;
-    }
-  });
+    })
+  );
 
   return { canMerge, mergeAlternate };
 }
 
-function updateCode(
-  ast: t.AST,
-  selection: Selection
-): t.Transformed & { mergeAlternate: boolean } {
-  let mergeAlternate = false;
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
+      const { alternate, consequent } = path.node;
 
-  const result = t.transformAST(ast, {
+      if (alternate) {
+        mergeAlternateWithNestedIf(path, alternate);
+      } else {
+        mergeConsequentWithNestedIf(path, consequent);
+      }
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -56,19 +64,10 @@ function updateCode(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const { alternate, consequent } = path.node;
-
-      if (alternate) {
-        mergeAlternate = true;
-        mergeAlternateWithNestedIf(path, alternate);
-      } else {
-        mergeAlternate = false;
-        mergeConsequentWithNestedIf(path, consequent);
-      }
+      onMatch(path);
+      path.stop();
     }
-  });
-
-  return { ...result, mergeAlternate };
+  };
 }
 
 function mergeAlternateWithNestedIf(

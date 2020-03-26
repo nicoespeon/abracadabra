@@ -26,39 +26,18 @@ function tryToReplaceBinaryWithAssignment(
   let canReplace = false;
   let operator = "+" as t.BinaryExpression["operator"];
 
-  t.traverseAST(ast, {
-    AssignmentExpression(path) {
+  t.traverseAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.AssignmentExpression>) => {
       const { node } = path;
-      if (!selection.isInsideNode(node)) return;
       if (!t.isBinaryExpression(node.right)) return;
 
-      const identifier = node.left;
       const binaryExpression = node.right;
       operator = binaryExpression.operator;
 
-      const isIdentifierOnTheLeft = t.areEqual(
-        identifier,
-        binaryExpression.left
-      );
-
-      // If the operator is symmetric, the identifier can be on the right.
-      const isSymmetricOperator = symmetricOperators.includes(operator);
-      const isIdentifierOnTheRight = t.areEqual(
-        identifier,
-        binaryExpression.right
-      );
-
-      if (
-        !isIdentifierOnTheLeft &&
-        (!isSymmetricOperator || !isIdentifierOnTheRight)
-      ) {
-        return;
-      }
-      if (!assignableOperators.includes(binaryExpression.operator)) return;
-
       canReplace = true;
-    }
-  });
+    })
+  );
 
   return {
     canReplace,
@@ -78,13 +57,41 @@ const assignableOperators = [
   ">>>"
 ];
 
-function updateCode(
-  ast: t.AST,
-  selection: Selection
-): t.Transformed & { operator: t.BinaryExpression["operator"] } | null {
-  let operator: t.BinaryExpression["operator"] | undefined;
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  const result = t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.AssignmentExpression>) => {
+      const { node } = path;
+      if (!t.isBinaryExpression(node.right)) return;
 
-  const result = t.transformAST(ast, {
+      const identifier = node.left;
+      const binaryExpression = node.right;
+      const operator = binaryExpression.operator;
+
+      const isIdentifierOnTheRight = t.areEqual(
+        identifier,
+        binaryExpression.right
+      );
+
+      const newRight = isIdentifierOnTheRight
+        ? binaryExpression.left
+        : binaryExpression.right;
+
+      path.replaceWith(
+        t.assignmentExpression(`${operator}=`, identifier, newRight)
+      );
+      path.stop();
+    })
+  );
+
+  return result;
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.AssignmentExpression>) => void
+): t.Visitor {
+  return {
     AssignmentExpression(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -92,7 +99,7 @@ function updateCode(
 
       const identifier = node.left;
       const binaryExpression = node.right;
-      operator = binaryExpression.operator;
+      const operator = binaryExpression.operator;
 
       const isIdentifierOnTheLeft = t.areEqual(
         identifier,
@@ -114,18 +121,7 @@ function updateCode(
       }
       if (!assignableOperators.includes(binaryExpression.operator)) return;
 
-      const newRight = isIdentifierOnTheRight
-        ? binaryExpression.left
-        : binaryExpression.right;
-
-      path.replaceWith(
-        t.assignmentExpression(`${operator}=`, identifier, newRight)
-      );
-      path.stop();
+      onMatch(path);
     }
-  });
-
-  if (!operator) return null;
-
-  return { ...result, operator };
+  };
 }
