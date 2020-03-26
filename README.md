@@ -68,6 +68,7 @@ Related projects:
     1. [Convert to Pure Component](#convert-to-pure-component)
     1. [Add braces to JSX attribute](#add-braces-to-jsx-attribute)
     1. [Remove braces from JSX attribute](#remove-braces-from-jsx-attribute)
+- [Configuration](#configuration)
 - [Release Notes](#release-notes)
   - [Versioning](#versioning)
 - [Contributing](#contributing)
@@ -389,6 +390,12 @@ This refactoring is specific to React.
 If a JSX attribute is a JSX expression containing only a string literal, it refactors the JSX expression into a string literal by removing the curly braces.
 
 ![][demo-remove-braces-from-jsx-attribute]
+
+## Configuration
+
+| Setting                      | Description                                | Default                             |
+| ---------------------------- | ------------------------------------------ | ----------------------------------- |
+| `abracadabra.ignoredFolders` | Folders where it won't propose Quick Fixes | `["node_modules", "dist", "build"]` |
 
 ## Release Notes
 

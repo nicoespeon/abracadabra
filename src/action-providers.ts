@@ -27,10 +27,35 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const ast = t.parse(document.getText());
     const selection = createSelectionFromVSCode(range);
 
+    if (this.isNavigatingAnIgnoredFile(document.uri.path)) {
+      return [];
+    }
+
     return [
       ...this.findApplicableRefactorings(ast, selection),
       ...this.findApplicableLegacyRefactorings(ast, selection)
     ].map(refactoring => this.buildCodeActionFor(refactoring));
+  }
+
+  private isNavigatingAnIgnoredFile(filePath: string): boolean {
+    return this.getIgnoredFolders().some(ignored =>
+      filePath.includes(`/${ignored}/`)
+    );
+  }
+
+  private getIgnoredFolders(): string[] {
+    const ignoredFolders = vscode.workspace
+      .getConfiguration("abracadabra")
+      .get("ignoredFolders");
+
+    if (!Array.isArray(ignoredFolders)) {
+      console.log(
+        `abracadabra.ignoredFolders should be an array but current value is ${ignoredFolders}`
+      );
+      return [];
+    }
+
+    return ignoredFolders;
   }
 
   private findApplicableLegacyRefactorings(ast: t.File, selection: Selection) {

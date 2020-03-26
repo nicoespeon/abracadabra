@@ -281,6 +281,20 @@
         "when": "editorTextFocus"
       }
     ],
+    "configuration": {
+      "title": "Abracadabra",
+      "properties": {
+        "abracadabra.ignoredFolders": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            "dist",
+            "build"
+          ],
+          "description": "Folders where it won't propose Quick Fixes (defaults: node_modules, dist, build)."
+        }
+      }
+    },
     "menus": {
       "commandPalette": [
         {
