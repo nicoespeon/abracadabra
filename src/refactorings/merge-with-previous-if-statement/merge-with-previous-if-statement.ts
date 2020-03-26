@@ -22,12 +22,7 @@ async function mergeWithPreviousIfStatement(
 function canMergeWithPreviousIf(ast: t.AST, selection: Selection): boolean {
   let result = false;
 
-  t.traverseAST(
-    ast,
-    createVisitor(selection, () => {
-      result = true;
-    })
-  );
+  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
 
   return result;
 }
