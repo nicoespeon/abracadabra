@@ -4,7 +4,6 @@ import * as t from "../../ast";
 import { last, allButLast } from "../../array-helpers";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
-import { IfStatement } from "../../ast";
 
 export { flipIfElse, hasIfElseToFlip };
 
@@ -36,7 +35,7 @@ function hasIfElseToFlip(ast: t.AST, selection: Selection): boolean {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<IfStatement>) => {
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       if (t.isGuardClause(path)) {
         flipGuardClause(path);
       } else {
