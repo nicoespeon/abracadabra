@@ -5,7 +5,6 @@ import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
 import { negateExpression, canNegateExpression } from "./negate-expression";
-import { traverseAST } from "../../ast";
 
 describe("Negate Expression", () => {
   let showErrorMessage: Editor["showError"];
@@ -262,7 +261,7 @@ describe("Finding negatable expression (quick fix)", () => {
     ({ code, selection = Selection.cursorAt(0, 13), shouldMatch }) => {
       const ast = t.parse(code);
       let canNegate = false;
-      traverseAST(
+      t.traverseAST(
         ast,
         canNegateExpression(selection, () => (canNegate = true))
       );
