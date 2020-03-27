@@ -5,7 +5,6 @@ import {
 } from "./negate-expression";
 
 import { RefactoringWithActionProvider } from "../../types";
-import * as t from "../../ast";
 
 const config: RefactoringWithActionProvider = {
   command: {
@@ -16,7 +15,7 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Negate the expression",
     createVisitor: canNegateExpression,
-    updateMessage(path: t.NodePath) {
+    updateMessage(path) {
       return `Negate the expression (use ${getNegatedOperator(
         path.node
       )} instead)`;
