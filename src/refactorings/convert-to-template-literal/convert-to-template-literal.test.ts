@@ -185,7 +185,7 @@ const name = \`Jane \${lastName} / \${age}\`;`
     await doConvertToTemplateLiteral(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundStringToConvert
+      ErrorReason.DidNotFindStringToConvert
     );
   });
 

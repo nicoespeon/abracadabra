@@ -15,7 +15,7 @@ async function replaceBinaryWithAssignment(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode || !updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundBinaryExpression);
+    editor.showError(ErrorReason.DidNotFindBinaryExpression);
     return;
   }
 

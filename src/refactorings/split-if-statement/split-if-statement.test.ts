@@ -210,7 +210,7 @@ describe("Split If Statement", () => {
     await doSplitIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfStatementToSplit
+      ErrorReason.DidNotFindIfStatementToSplit
     );
   });
 
@@ -221,7 +221,7 @@ describe("Split If Statement", () => {
     await doSplitIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfStatementToSplit
+      ErrorReason.DidNotFindIfStatementToSplit
     );
   });
 

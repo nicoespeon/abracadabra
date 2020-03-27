@@ -12,37 +12,28 @@ async function mergeIfStatements(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfStatementsToMerge);
+    editor.showError(ErrorReason.DidNotFindIfStatementsToMerge);
     return;
   }
 
   await editor.write(updatedCode.code);
 }
 
-function updateCode(
-  ast: t.AST,
-  selection: Selection
-): t.Transformed & { mergeAlternate: boolean } {
-  let mergeAlternate = false;
-
-  const result = t.transformAST(
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
     ast,
     createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       const { alternate, consequent } = path.node;
 
       if (alternate) {
-        mergeAlternate = true;
         mergeAlternateWithNestedIf(path, alternate);
       } else {
-        mergeAlternate = false;
         mergeConsequentWithNestedIf(path, consequent);
       }
 
       path.stop();
     })
   );
-
-  return { ...result, mergeAlternate };
 }
 
 function createVisitor(

@@ -246,7 +246,7 @@ describe("Remove Redundant Else", () => {
     await doRemoveRedundantElse(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundRedundantElse
+      ErrorReason.DidNotFindRedundantElse
     );
   });
 

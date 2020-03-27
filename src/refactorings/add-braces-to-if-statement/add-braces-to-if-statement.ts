@@ -13,7 +13,7 @@ async function addBracesToIfStatement(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfStatementToAddBraces);
+    editor.showError(ErrorReason.DidNotFindIfStatementToAddBraces);
     return;
   }
 

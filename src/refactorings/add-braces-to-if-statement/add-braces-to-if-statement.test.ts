@@ -122,7 +122,7 @@ if (isValid) {
     await doAddBracesToIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfStatementToAddBraces
+      ErrorReason.DidNotFindIfStatementToAddBraces
     );
   });
 
@@ -135,7 +135,7 @@ if (isValid) {
     await doAddBracesToIfStatement(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfStatementToAddBraces
+      ErrorReason.DidNotFindIfStatementToAddBraces
     );
   });
 

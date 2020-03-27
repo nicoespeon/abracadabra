@@ -12,7 +12,7 @@ async function simplifyTernary(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundTernaryToSimplify);
+    editor.showError(ErrorReason.DidNotFindTernaryToSimplify);
     return;
   }
 

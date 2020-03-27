@@ -193,7 +193,7 @@ describe("Negate Expression", () => {
     await doNegateExpression(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundNegatableExpression
+      ErrorReason.DidNotFindNegatableExpression
     );
   });
 
@@ -204,7 +204,7 @@ describe("Negate Expression", () => {
     await doNegateExpression(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundNegatableExpression
+      ErrorReason.DidNotFindNegatableExpression
     );
   });
 

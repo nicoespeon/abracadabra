@@ -15,7 +15,7 @@ async function mergeWithPreviousIfStatement(
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundStatementToMerge);
+    editor.showError(ErrorReason.DidNotFindStatementToMerge);
     return;
   }
 

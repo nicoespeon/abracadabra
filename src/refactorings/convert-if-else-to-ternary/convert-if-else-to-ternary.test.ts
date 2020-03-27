@@ -294,7 +294,7 @@ describe("Convert If/Else to Ternary", () => {
     await doConvertIfElseToTernary(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFoundIfElseToConvert
+      ErrorReason.DidNotFindIfElseToConvert
     );
   });
 

@@ -17,7 +17,7 @@ async function removeBracesFromArrowFunction(
   }
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundBracesToRemoveFromArrowFunction);
+    editor.showError(ErrorReason.DidNotFindBracesToRemoveFromArrowFunction);
     return;
   }
 

@@ -4,7 +4,6 @@ import * as t from "../../ast";
 import { last, allButLast } from "../../array-helpers";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
-import { IfStatement } from "../../ast";
 
 export { flipIfElse, createVisitor as hasIfElseToFlip };
 
@@ -12,7 +11,7 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFoundIfElseToFlip);
+    editor.showError(ErrorReason.DidNotFindIfElseToFlip);
     return;
   }
 
@@ -28,7 +27,7 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<IfStatement>) => {
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       if (t.isGuardClause(path)) {
         flipGuardClause(path);
       } else {
