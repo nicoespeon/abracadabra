@@ -40,7 +40,7 @@ function findNegatableExpression(
     ast,
     createVisitor(selection, ({ node }) => {
       result = {
-        loc: node.loc as t.SourceLocation,
+        loc: node.loc,
         negatedOperator: getNegatedOperator(node)
       };
     })
@@ -51,7 +51,7 @@ function findNegatableExpression(
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath) => void
+  onMatch: (path: t.NodePath<t.SelectableNode>) => void
 ): t.Visitor {
   return {
     enter(path) {
@@ -59,6 +59,7 @@ function createVisitor(
       if (!isNegatable(node)) return;
       if (!wouldChangeIfNegated(node)) return;
       if (!selection.isInsideNode(node)) return;
+      if (!t.isSelectablePath(path)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
       if (t.isUnaryExpression(parent)) return;
