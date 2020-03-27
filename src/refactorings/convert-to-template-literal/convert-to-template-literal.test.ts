@@ -7,7 +7,6 @@ import {
   convertToTemplateLiteral,
   canConvertToTemplateLiteral
 } from "./convert-to-template-literal";
-import { traverseAST } from "../../ast";
 
 describe("Convert To Template Literal", () => {
   let showErrorMessage: Editor["showError"];
@@ -33,7 +32,7 @@ describe("Convert To Template Literal", () => {
     ({ code, selection = Selection.cursorAt(0, 13) }) => {
       const ast = t.parse(code);
       let canConvert = false;
-      traverseAST(
+      t.traverseAST(
         ast,
         canConvertToTemplateLiteral(selection, () => (canConvert = true))
       );
