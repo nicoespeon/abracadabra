@@ -19,15 +19,15 @@ interface Refactoring {
   };
 }
 
-interface ActionProvider {
+interface ActionProvider<T = Node> {
   message: string;
   isPreferred?: boolean;
   createVisitor: (
     selection: Selection,
-    onMatch: (path: NodePath) => void,
+    onMatch: (path: NodePath<T>) => void,
     refactoring: RefactoringWithActionProvider
   ) => Visitor;
-  updateMessage?: (path: NodePath) => string;
+  updateMessage?: (path: NodePath<T>) => string;
 }
 
 interface LegacyActionProvider {
