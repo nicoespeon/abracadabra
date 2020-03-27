@@ -27,8 +27,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, path => {
       // Wrap the string literal in a JSX Expression
-      path.node.value = t.jsxExpressionContainer(path.node
-        .value as t.StringLiteral);
+      if (path.node.value && !t.isJSXExpressionContainer(path.node.value)) {
+        path.node.value = t.jsxExpressionContainer(path.node.value);
+      }
       path.stop();
     })
   );
