@@ -27,11 +27,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const { node } = path;
 
       const elseBranch = node.alternate;
+      if (!elseBranch) return;
+
       node.alternate = null;
-      path.replaceWithMultiple([
-        node,
-        ...t.getStatements(elseBranch as t.Statement)
-      ]);
+      path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
       path.stop();
     })
   );
