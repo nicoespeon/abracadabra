@@ -4,7 +4,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
-export { extractInterface, canExtractInterface };
+export { extractInterface, createVisitor as canExtractInterface };
 
 async function extractInterface(
   code: Code,
@@ -23,13 +23,6 @@ async function extractInterface(
   await editor.moveCursorTo(updatedCode.interfaceIdentifierPosition);
 
   await renameSymbol(editor);
-}
-
-function canExtractInterface(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(

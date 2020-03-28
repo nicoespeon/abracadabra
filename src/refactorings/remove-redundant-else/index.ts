@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove redundant else",
-    canPerform: hasRedundantElse,
+    createVisitor: hasRedundantElse,
     isPreferred: true
   }
 };

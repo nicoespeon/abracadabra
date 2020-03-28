@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { mergeIfStatements, canMergeIfStatements };
+export { mergeIfStatements, createVisitor as canMergeIfStatements };
 
 async function mergeIfStatements(
   code: Code,
@@ -19,24 +19,6 @@ async function mergeIfStatements(
   await editor.write(updatedCode.code);
 }
 
-function canMergeIfStatements(
-  ast: t.AST,
-  selection: Selection
-): { canMerge: boolean; mergeAlternate: boolean } {
-  let canMerge = false;
-  let mergeAlternate = false;
-
-  t.traverseAST(
-    ast,
-    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
-      canMerge = true;
-      mergeAlternate = !!path.node.alternate;
-    })
-  );
-
-  return { canMerge, mergeAlternate };
-}
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
@@ -48,6 +30,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       } else {
         mergeConsequentWithNestedIf(path, consequent);
       }
+
+      path.stop();
     })
   );
 }
@@ -64,8 +48,20 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
+      const { alternate, consequent } = path.node;
+
+      if (alternate) {
+        if (!t.isBlockStatement(alternate)) return;
+
+        const nestedIfStatement = getNestedIfStatementIn(alternate);
+        if (!nestedIfStatement) return;
+      } else {
+        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        if (!nestedIfStatement) return;
+        if (nestedIfStatement.alternate) return;
+      }
+
       onMatch(path);
-      path.stop();
     }
   };
 }

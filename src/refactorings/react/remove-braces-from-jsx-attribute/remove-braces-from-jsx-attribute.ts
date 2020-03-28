@@ -2,7 +2,10 @@ import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
 
-export { removeBracesFromJsxAttribute, hasBracesToRemoveFromJsxAttribute };
+export {
+  removeBracesFromJsxAttribute,
+  createVisitor as hasBracesToRemoveFromJsxAttribute
+};
 
 async function removeBracesFromJsxAttribute(
   code: Code,
@@ -17,17 +20,6 @@ async function removeBracesFromJsxAttribute(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasBracesToRemoveFromJsxAttribute(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

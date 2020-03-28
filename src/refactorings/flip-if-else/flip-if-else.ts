@@ -5,7 +5,7 @@ import { last, allButLast } from "../../array-helpers";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
-export { flipIfElse, hasIfElseToFlip };
+export { flipIfElse, createVisitor as hasIfElseToFlip };
 
 async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
@@ -22,14 +22,6 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
       // https://github.com/benjamn/recast/issues/612
       .replace(/\)\n\s*{} else {/, ") {} else {")
   );
-}
-
-function hasIfElseToFlip(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

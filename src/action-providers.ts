@@ -1,13 +1,7 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import {
-  RefactoringWithActionProvider,
-  ActionProvider,
-  LegacyActionProvider,
-  isRefactoringWithActionProvider,
-  isRefactoringWithLegacyActionProvider
-} from "./types";
+import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
 
@@ -31,10 +25,9 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       return [];
     }
 
-    return [
-      ...this.findApplicableRefactorings(ast, selection),
-      ...this.findApplicableLegacyRefactorings(ast, selection)
-    ].map(refactoring => this.buildCodeActionFor(refactoring));
+    return this.findApplicableRefactorings(ast, selection).map(refactoring =>
+      this.buildCodeActionFor(refactoring)
+    );
   }
 
   private isNavigatingAnIgnoredFile(filePath: string): boolean {
@@ -58,66 +51,42 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     return ignoredFolders;
   }
 
-  private findApplicableLegacyRefactorings(ast: t.File, selection: Selection) {
-    return this.refactorings
-      .filter(isRefactoringWithLegacyActionProvider)
-      .filter(refactoring =>
-        this.canPerformLegacy(refactoring, ast, selection)
-      );
-  }
-
   private findApplicableRefactorings(
     ast: t.File,
     selection: Selection
-  ): RefactoringWithActionProvider<ActionProvider>[] {
-    const refactorings = this.refactorings.filter(
-      isRefactoringWithActionProvider
-    );
-
-    const applicableRefactorings: RefactoringWithActionProvider<
-      ActionProvider
-    >[] = [];
+  ): RefactoringWithActionProvider[] {
+    const applicableRefactorings = new Map<
+      string,
+      RefactoringWithActionProvider
+    >();
 
     t.traverseAST(ast, {
       enter: path => {
-        refactorings.forEach(refactoring =>
-          this.visitAndCheckApplicability(
-            refactoring,
-            path,
+        this.refactorings.forEach(refactoring => {
+          const {
+            actionProvider,
+            command: { key }
+          } = refactoring;
+
+          const visitor = actionProvider.createVisitor(
             selection,
-            (path, refactoring) => {
-              if (refactoring.actionProvider.updateMessage) {
-                refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
-                  path
+            visitedPath => {
+              if (actionProvider.updateMessage) {
+                actionProvider.message = actionProvider.updateMessage(
+                  visitedPath
                 );
               }
 
-              applicableRefactorings.push(refactoring);
+              applicableRefactorings.set(key, refactoring);
             }
-          )
-        );
+          );
+
+          this.visit(visitor, path);
+        });
       }
     });
 
-    return applicableRefactorings;
-  }
-
-  private visitAndCheckApplicability(
-    refactoring: RefactoringWithActionProvider<ActionProvider>,
-    path: t.NodePath,
-    selection: Selection,
-    whenApplicable: (
-      matchedPath: t.NodePath,
-      refactoring: RefactoringWithActionProvider<ActionProvider>
-    ) => void
-  ) {
-    const visitor = refactoring.actionProvider.createVisitor(
-      selection,
-      path => whenApplicable(path, refactoring),
-      refactoring
-    );
-
-    this.visit(visitor, path);
+    return Array.from(applicableRefactorings.values());
   }
 
   private visit(visitor: t.Visitor, path: t.NodePath) {
@@ -137,19 +106,6 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       }
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
-    }
-  }
-
-  private canPerformLegacy(
-    refactoring: RefactoringWithActionProvider<LegacyActionProvider>,
-    ast: t.AST,
-    selection: Selection
-  ) {
-    try {
-      return refactoring.actionProvider.canPerform(ast, selection);
-    } catch (_) {
-      // Silently fail, we don't care why it failed (e.g. code can't be parsed).
-      return false;
     }
   }
 

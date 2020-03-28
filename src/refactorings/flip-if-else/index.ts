@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Flip if/else",
-    canPerform: hasIfElseToFlip,
+    createVisitor: hasIfElseToFlip,
     isPreferred: true
   }
 };

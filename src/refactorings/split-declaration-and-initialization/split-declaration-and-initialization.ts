@@ -4,7 +4,7 @@ import * as t from "../../ast";
 
 export {
   splitDeclarationAndInitialization,
-  canSplitDeclarationAndInitialization
+  createVisitor as canSplitDeclarationAndInitialization
 };
 
 async function splitDeclarationAndInitialization(
@@ -20,17 +20,6 @@ async function splitDeclarationAndInitialization(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function canSplitDeclarationAndInitialization(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

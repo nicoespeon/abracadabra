@@ -2,7 +2,10 @@ import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
 
-export { addBracesToJsxAttribute, hasJsxAttributeToAddBracesTo };
+export {
+  addBracesToJsxAttribute,
+  createVisitor as hasJsxAttributeToAddBracesTo
+};
 
 async function addBracesToJsxAttribute(
   code: Code,
@@ -19,30 +22,22 @@ async function addBracesToJsxAttribute(
   await editor.write(updatedCode.code);
 }
 
-function hasJsxAttributeToAddBracesTo(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
-}
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, path => {
       // Wrap the string literal in a JSX Expression
-      path.node.value = t.jsxExpressionContainer(path.node.value);
+      if (path.node.value && !t.isJSXExpressionContainer(path.node.value)) {
+        path.node.value = t.jsxExpressionContainer(path.node.value);
+      }
+      path.stop();
     })
   );
 }
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<any>) => void
+  onMatch: (path: t.NodePath<t.JSXAttribute>) => void
 ): t.Visitor {
   return {
     JSXAttribute(path) {
@@ -53,7 +48,6 @@ function createVisitor(
       if (t.isStringLiteral(path.node.value)) {
         onMatch(path);
       }
-      path.stop();
     }
   };
 }

@@ -5,9 +5,8 @@ const pureComponent = reactCodemod.default;
 
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
-import * as t from "../../../ast";
 
-export { convertToPureComponent, canConvertToPureComponent };
+export { convertToPureComponent };
 
 async function convertToPureComponent(
   code: Code,
@@ -39,11 +38,6 @@ async function convertToPureComponent(
   }
 
   await editor.write(updatedCode);
-}
-
-function canConvertToPureComponent(ast: t.AST, _selection: Selection): boolean {
-  const code = t.generate(ast);
-  return updateCode(code) !== null;
 }
 
 type Options = {

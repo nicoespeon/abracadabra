@@ -34,7 +34,13 @@ import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
 
 const TS_LANGUAGES = ["typescript", "typescriptreact"];
-const ALL_LANGUAGES = ["javascript", "javascriptreact", ...TS_LANGUAGES];
+const REACT_LANGUAGES = ["javascriptreact", "typescriptreact"];
+const ALL_LANGUAGES = [
+  "javascript",
+  "javascriptreact",
+  "typescript",
+  "typescriptreact"
+];
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -92,6 +98,19 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
+  REACT_LANGUAGES.forEach(language => {
+    vscode.languages.registerCodeActionsProvider(
+      language,
+      new RefactoringActionProvider([
+        reactAddBracesToJsxAttribute,
+        reactRemoveBracesFromJsxAttribute
+      ]),
+      {
+        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
+      }
+    );
+  });
+
   ALL_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
@@ -109,9 +128,6 @@ export function activate(context: vscode.ExtensionContext) {
         mergeIfStatements,
         mergeWithPreviousIfStatement,
         negateExpression,
-        reactConvertToPureComponent,
-        reactAddBracesToJsxAttribute,
-        reactRemoveBracesFromJsxAttribute,
         removeBracesFromArrowFunction,
         removeDeadCode,
         removeRedundantElse,

@@ -1,19 +1,11 @@
-import {
-  convertToPureComponent,
-  canConvertToPureComponent
-} from "./convert-to-pure-component";
+import { convertToPureComponent } from "./convert-to-pure-component";
 
-import { RefactoringWithActionProvider } from "../../../types";
+import { Refactoring } from "../../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: Refactoring = {
   command: {
     key: "react.convertToPureComponent",
-    operation: convertToPureComponent,
-    title: "(React) Convert To Pure Component"
-  },
-  actionProvider: {
-    message: "Convert to pure component",
-    canPerform: canConvertToPureComponent
+    operation: convertToPureComponent
   }
 };
 

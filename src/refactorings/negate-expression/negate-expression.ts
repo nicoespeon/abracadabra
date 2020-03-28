@@ -2,7 +2,11 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { canNegateExpression, negateExpression };
+export {
+  createVisitor as canNegateExpression,
+  negateExpression,
+  getNegatedOperator
+};
 export { getNegatedBinaryOperator };
 
 async function negateExpression(
@@ -26,20 +30,6 @@ async function negateExpression(
   ]);
 }
 
-function canNegateExpression(
-  ast: t.AST,
-  selection: Selection
-): {
-  canNegate: boolean;
-  negatedOperator: NegatableExpression["negatedOperator"];
-} {
-  const result = findNegatableExpression(ast, selection);
-  return {
-    canNegate: !!result,
-    negatedOperator: (result && result.negatedOperator) || null
-  };
-}
-
 function findNegatableExpression(
   ast: t.AST,
   selection: Selection
@@ -61,7 +51,7 @@ function findNegatableExpression(
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<any>) => void
+  onMatch: (path: t.NodePath<t.SelectableNode>) => void
 ): t.Visitor {
   return {
     enter(path) {
@@ -69,6 +59,7 @@ function createVisitor(
       if (!isNegatable(node)) return;
       if (!wouldChangeIfNegated(node)) return;
       if (!selection.isInsideNode(node)) return;
+      if (!t.isSelectablePath(path)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
       if (t.isUnaryExpression(parent)) return;
