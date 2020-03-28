@@ -249,7 +249,13 @@ if (false) {
 }`
       },
       {
-        description: "empty ifs",
+        description: "empty if",
+        code: `if (item.quality > 40) {}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: ``
+      },
+      {
+        description: "empty nested ifs",
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
