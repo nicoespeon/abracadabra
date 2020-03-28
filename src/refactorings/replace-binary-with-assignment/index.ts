@@ -4,11 +4,9 @@ import {
 } from "./replace-binary-with-assignment";
 
 import * as t from "../../ast";
-import { RefactoringWithActionProvider, ActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider<
-  ActionProvider<t.AssignmentExpression>
-> = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "replaceBinaryWithAssignment",
     operation: replaceBinaryWithAssignment,
@@ -18,10 +16,11 @@ const config: RefactoringWithActionProvider<
     message: "Replace binary with assignment",
     isPreferred: true,
     createVisitor: canReplaceBinaryWithAssignment,
-    updateMessage({ node }) {
-      if (!t.isBinaryExpression(node.right)) return this.message;
+    updateMessage(path: t.NodePath) {
+      const { node } = path as t.NodePath<t.AssignmentExpression>;
 
-      const operator = node.right.operator;
+      const binaryExpression = node.right as t.BinaryExpression;
+      const operator = binaryExpression.operator;
       return `Replace = with ${operator}=`;
     }
   }

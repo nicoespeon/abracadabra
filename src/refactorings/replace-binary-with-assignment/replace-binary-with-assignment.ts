@@ -39,10 +39,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path: t.NodePath<t.AssignmentExpression>) => {
       const { node } = path;
-      if (!t.isBinaryExpression(node.right)) return;
 
       const identifier = node.left;
-      const binaryExpression = node.right;
+      const binaryExpression = node.right as t.BinaryExpression;
       const operator = binaryExpression.operator;
 
       const isIdentifierOnTheRight = t.areEqual(
