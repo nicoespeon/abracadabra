@@ -52,6 +52,7 @@ function createVisitor(
   return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
+      if (hasBracesAlready(path)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
@@ -60,6 +61,15 @@ function createVisitor(
       onMatch(path);
     }
   };
+}
+
+function hasBracesAlready(path: t.NodePath<t.IfStatement>): boolean {
+  const { consequent, alternate } = path.node;
+
+  return (
+    t.isBlockStatement(consequent) &&
+    (alternate === null || t.isBlockStatement(alternate))
+  );
 }
 
 function hasChildWhichMatchesSelection(
