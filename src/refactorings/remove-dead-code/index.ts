@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove dead code",
-    canPerform: hasDeadCode,
+    createVisitor: hasDeadCode,
     isPreferred: true
   }
 };
