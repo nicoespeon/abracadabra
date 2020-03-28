@@ -1,16 +1,8 @@
 import { Code, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
-import { AST, Visitor, NodePath } from "./ast";
+import { Visitor, NodePath } from "./ast";
 
-export {
-  Refactoring,
-  RefactoringWithActionProvider,
-  Operation,
-  ActionProvider,
-  LegacyActionProvider,
-  isRefactoringWithActionProvider,
-  isRefactoringWithLegacyActionProvider
-};
+export { Refactoring, RefactoringWithActionProvider, Operation };
 
 interface Refactoring {
   command: {
@@ -19,32 +11,22 @@ interface Refactoring {
   };
 }
 
-interface ActionProvider {
-  message: string;
-  isPreferred?: boolean;
-  createVisitor: (
-    selection: Selection,
-    onMatch: (path: NodePath) => void,
-    refactoring: RefactoringWithActionProvider
-  ) => Visitor;
-  updateMessage?: (path: NodePath) => string;
-}
-
-interface LegacyActionProvider {
-  message: string;
-  isPreferred?: boolean;
-  canPerform: (ast: AST, selection: Selection) => boolean;
-}
-
-interface RefactoringWithActionProvider<
-  ActionProviderType = ActionProvider | LegacyActionProvider
-> extends Refactoring {
+interface RefactoringWithActionProvider extends Refactoring {
   command: {
     key: string;
     title: string;
     operation: Operation;
   };
-  actionProvider: ActionProviderType;
+  actionProvider: {
+    message: string;
+    isPreferred?: boolean;
+    createVisitor: (
+      selection: Selection,
+      onMatch: (path: NodePath) => void,
+      refactoring: RefactoringWithActionProvider
+    ) => Visitor;
+    updateMessage?: (path: NodePath) => string;
+  };
 }
 
 type Operation = (
@@ -52,21 +34,3 @@ type Operation = (
   selection: Selection,
   write: Editor
 ) => Promise<void>;
-
-function isLegacyActionProvider(
-  actionProvider: ActionProvider | LegacyActionProvider
-): actionProvider is LegacyActionProvider {
-  return (actionProvider as LegacyActionProvider).canPerform !== undefined;
-}
-
-function isRefactoringWithLegacyActionProvider(
-  refactoring: RefactoringWithActionProvider
-): refactoring is RefactoringWithActionProvider<LegacyActionProvider> {
-  return isLegacyActionProvider(refactoring.actionProvider);
-}
-
-function isRefactoringWithActionProvider(
-  refactoring: RefactoringWithActionProvider
-): refactoring is RefactoringWithActionProvider<ActionProvider> {
-  return !isLegacyActionProvider(refactoring.actionProvider);
-}
