@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **(Breaking)** [We stopped proposing][adr-0008] "Convert to Pure Component" as a Quick Fix. The refactoring can still be executed through the Command Palette.
+- **Improved the extension performances** when proposing Quick Fixes, thanks to @visusnet hard work! Since that occurs anytime you move the cursor, it makes a great difference for your machine. Especially if you work on large files 🚀
 
 ### Added
 
