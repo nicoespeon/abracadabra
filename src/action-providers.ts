@@ -55,12 +55,18 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     ast: t.File,
     selection: Selection
   ): RefactoringWithActionProvider[] {
-    const applicableRefactorings: RefactoringWithActionProvider[] = [];
+    const applicableRefactorings = new Map<
+      string,
+      RefactoringWithActionProvider
+    >();
 
     t.traverseAST(ast, {
       enter: path => {
         this.refactorings.forEach(refactoring => {
-          const { actionProvider } = refactoring;
+          const {
+            actionProvider,
+            command: { key }
+          } = refactoring;
 
           const visitor = actionProvider.createVisitor(
             selection,
@@ -71,7 +77,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
                 );
               }
 
-              applicableRefactorings.push(refactoring);
+              applicableRefactorings.set(key, refactoring);
             }
           );
 
@@ -80,7 +86,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       }
     });
 
-    return applicableRefactorings;
+    return Array.from(applicableRefactorings.values());
   }
 
   private visit(visitor: t.Visitor, path: t.NodePath) {
