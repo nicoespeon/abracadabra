@@ -48,6 +48,39 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
+      const { alternate, consequent } = path.node;
+
+      if (alternate) {
+        /**
+         * When cursor is on child `if`, like here:
+         *
+         *     else {
+         *       if (isValid) {
+         *       ^^^^^^^^^^^^
+         *         doSomething();
+         *       } else {
+         *         if (isCorrect) {}
+         *       }
+         *     }
+         *
+         * It's more intuitive to merge the parent `else` with `if (isValid)`,
+         * not the child `else` with `if (isCorrect)` in this situation.
+         */
+        const selectionOnChildIfKeyword =
+          consequent.loc &&
+          selection.startsBefore(Selection.fromAST(consequent.loc));
+        if (selectionOnChildIfKeyword) return;
+
+        if (!t.isBlockStatement(alternate)) return;
+
+        const nestedIfStatement = getNestedIfStatementIn(alternate);
+        if (!nestedIfStatement) return;
+      } else {
+        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        if (!nestedIfStatement) return;
+        if (nestedIfStatement.alternate) return;
+      }
+
       onMatch(path);
     }
   };
