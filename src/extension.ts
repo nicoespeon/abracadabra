@@ -109,7 +109,6 @@ export function activate(context: vscode.ExtensionContext) {
         mergeIfStatements,
         mergeWithPreviousIfStatement,
         negateExpression,
-        reactConvertToPureComponent,
         reactAddBracesToJsxAttribute,
         reactRemoveBracesFromJsxAttribute,
         removeBracesFromArrowFunction,

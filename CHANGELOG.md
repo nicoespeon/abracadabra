@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **(Breaking)** [We stopped proposing][adr-0008] "Convert to Pure Component" as a Quick Fix. The refactoring can still be executed through the Command Palette.
+
 ### Added
 
 - A new setting `abracadabra.ignoredFolders` that you can use to disable the extension Quick Fixes in specified folders. Default is `["node_modules", "build", "dist"]`.
@@ -767,3 +771,4 @@ function doSomething(someData) {
 <!-- Links -->
 
 [guard-clause]: https://deviq.com/guard-clause/
+[adr-0008]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0008-don-t-propose-quick-fix-for-react-convert-to-pure-component.md

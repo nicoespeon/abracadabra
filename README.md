@@ -408,7 +408,7 @@ This is very useful when you need to invert a dependency: create an interface fr
 
 ### Convert to Pure Component
 
-> 💡 Available as Quick Fix (`Alt ↵`)
+> **Not** available as a Quick Fix, use the [Command Palette][command-palette] to run this one
 
 This one is specific to React and comes from [react codemod][react-codemod].
 
