@@ -22,8 +22,7 @@ interface RefactoringWithActionProvider extends Refactoring {
     isPreferred?: boolean;
     createVisitor: (
       selection: Selection,
-      onMatch: (path: NodePath) => void,
-      refactoring: RefactoringWithActionProvider
+      onMatch: (path: NodePath) => void
     ) => Visitor;
     updateMessage?: (path: NodePath) => string;
   };

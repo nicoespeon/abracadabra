@@ -59,44 +59,28 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
     t.traverseAST(ast, {
       enter: path => {
-        this.refactorings.forEach(refactoring =>
-          this.visitAndCheckApplicability(
-            refactoring,
-            path,
+        this.refactorings.forEach(refactoring => {
+          const { actionProvider } = refactoring;
+
+          const visitor = actionProvider.createVisitor(
             selection,
-            (path, refactoring) => {
-              if (refactoring.actionProvider.updateMessage) {
-                refactoring.actionProvider.message = refactoring.actionProvider.updateMessage(
-                  path
+            visitedPath => {
+              if (actionProvider.updateMessage) {
+                actionProvider.message = actionProvider.updateMessage(
+                  visitedPath
                 );
               }
 
               applicableRefactorings.push(refactoring);
             }
-          )
-        );
+          );
+
+          this.visit(visitor, path);
+        });
       }
     });
 
     return applicableRefactorings;
-  }
-
-  private visitAndCheckApplicability(
-    refactoring: RefactoringWithActionProvider,
-    path: t.NodePath,
-    selection: Selection,
-    whenApplicable: (
-      matchedPath: t.NodePath,
-      refactoring: RefactoringWithActionProvider
-    ) => void
-  ) {
-    const visitor = refactoring.actionProvider.createVisitor(
-      selection,
-      path => whenApplicable(path, refactoring),
-      refactoring
-    );
-
-    this.visit(visitor, path);
   }
 
   private visit(visitor: t.Visitor, path: t.NodePath) {
