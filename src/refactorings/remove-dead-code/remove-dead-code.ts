@@ -26,40 +26,76 @@ function hasDeadCode(ast: t.AST, selection: Selection): boolean {
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, scenario) => {
+      switch (scenario) {
+        case DeadCodeScenario.EmptyAlternate:
+          path.node.alternate = null;
+          break;
+
+        case DeadCodeScenario.EmptyIfStatement:
+          path.remove();
+          break;
+
+        case DeadCodeScenario.FalsyTest:
+          replaceWithAlternate(path);
+          break;
+
+        case DeadCodeScenario.TruthyTest:
+          replaceWithConsequent(path);
+          break;
+
+        case DeadCodeScenario.NestedTestEqual:
+          replaceWithConsequent(path);
+          break;
+
+        case DeadCodeScenario.NestedTestOpposite:
+          replaceWithAlternate(path);
+          break;
+      }
+    })
+  );
+}
+
+function createVisitor(selection: Selection, onMatch: OnMatch): t.Visitor {
+  return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
       const { test } = path.node;
 
       if (t.isFalsy(test)) {
-        replaceWithAlternate(path);
+        onMatch(path, DeadCodeScenario.FalsyTest);
         path.stop();
         return;
       }
 
       if (t.isTruthy(test)) {
-        replaceWithConsequent(path);
+        onMatch(path, DeadCodeScenario.TruthyTest);
         path.stop();
         return;
       }
 
       if (isEmptyIfStatement(path.node)) {
-        path.remove();
+        onMatch(path, DeadCodeScenario.EmptyIfStatement);
         path.stop();
         return;
       }
 
       if (hasEmptyAlternate(path.node)) {
-        path.node.alternate = null;
+        onMatch(path, DeadCodeScenario.EmptyAlternate);
       }
 
-      removeDeadCodeFromBranches(path);
+      checkDeadCodeFromBranches(path, onMatch);
     }
-  });
+  };
 }
 
-function removeDeadCodeFromBranches(path: t.NodePath<t.IfStatement>) {
+function checkDeadCodeFromBranches(
+  path: t.NodePath<t.IfStatement>,
+  onMatch: OnMatch
+) {
   const { test } = path.node;
 
   const target = t.isBinaryExpression(test)
@@ -71,7 +107,7 @@ function removeDeadCodeFromBranches(path: t.NodePath<t.IfStatement>) {
 
     IfStatement(childPath) {
       if (target.isReassigned) return;
-      removeDeadCodeFromNestedIf(test, childPath);
+      checkDeadCodeFromNestedIf(test, childPath, onMatch);
     }
   });
 
@@ -88,7 +124,7 @@ function removeDeadCodeFromBranches(path: t.NodePath<t.IfStatement>) {
           }
         : test;
 
-      removeDeadCodeFromNestedIf(oppositeTest, childPath);
+      checkDeadCodeFromNestedIf(oppositeTest, childPath, onMatch);
     }
   });
 }
@@ -122,28 +158,29 @@ class NoopTarget implements Target {
   checkAssignment() {}
 }
 
-function removeDeadCodeFromNestedIf(
+function checkDeadCodeFromNestedIf(
   test: t.IfStatement["test"],
-  nestedPath: t.NodePath<t.IfStatement>
+  nestedPath: t.NodePath<t.IfStatement>,
+  onMatch: OnMatch
 ) {
   const { test: nestedTest } = nestedPath.node;
 
   if (isEmptyIfStatement(nestedPath.node)) {
-    nestedPath.remove();
+    onMatch(nestedPath, DeadCodeScenario.EmptyIfStatement);
     return;
   }
 
   if (hasEmptyAlternate(nestedPath.node)) {
-    nestedPath.node.alternate = null;
+    onMatch(nestedPath, DeadCodeScenario.EmptyAlternate);
   }
 
   if (t.areOpposite(test, nestedTest)) {
-    replaceWithAlternate(nestedPath);
+    onMatch(nestedPath, DeadCodeScenario.NestedTestOpposite);
     return;
   }
 
   if (t.areEqual(test, nestedTest)) {
-    replaceWithConsequent(nestedPath);
+    onMatch(nestedPath, DeadCodeScenario.NestedTestEqual);
     return;
   }
 }
@@ -178,3 +215,17 @@ function replaceWithAlternate(path: t.NodePath<t.IfStatement>) {
 function replaceWithConsequent(path: t.NodePath<t.IfStatement>) {
   t.replaceWithBodyOf(path, path.node.consequent);
 }
+
+enum DeadCodeScenario {
+  FalsyTest,
+  TruthyTest,
+  EmptyIfStatement,
+  EmptyAlternate,
+  NestedTestOpposite,
+  NestedTestEqual
+}
+
+type OnMatch = (
+  path: t.NodePath<t.IfStatement>,
+  scenario: DeadCodeScenario
+) => void;
