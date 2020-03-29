@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed (= Breaking)
+
+- Removed "Convert to Template Literal" refactoring. This is now natively include in VS Code with a similar, great developer experience (e.g. you can trigger the Quick Fix wherever your cursor is). We're happy of this and there's no point in providing a duplicate implementation of it 👐
+
 ### Changed
 
 - **(Breaking)** [We stopped proposing][adr-0008] "Convert to Pure Component" as a Quick Fix. The refactoring can still be executed through the Command Palette.

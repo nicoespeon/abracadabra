@@ -52,7 +52,6 @@ Related projects:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
     1. [Add Braces to If Statement](#add-braces-to-if-statement)
-    1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
   - TS specific:
@@ -362,16 +361,6 @@ Useful when you need to add code in the body of an `if` or `else` statement.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Convert to Template Literal
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-Have you ever worked on an old JavaScript code which used to concatenate strings with `+`? This refactoring will save you the energy of converting it to a template string.
-
-It's also useful when you want to turn a string into a template string.
-
-![][demo-convert-to-template-literal]
-
 [⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Replace Binary with Assignment
@@ -628,7 +617,6 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
-[demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 [demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true

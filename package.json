@@ -89,7 +89,6 @@
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
-    "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.extractVariable",
     "onCommand:abracadabra.flipIfElse",
@@ -151,11 +150,6 @@
       {
         "command": "abracadabra.convertTernaryToIfElse",
         "title": "Convert Ternary to If/Else",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.convertToTemplateLiteral",
-        "title": "Convert to Template Literal",
         "category": "Abracadabra"
       },
       {
@@ -419,22 +413,6 @@
         },
         {
           "command": "abracadabra.convertTernaryToIfElse",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
           "when": "editorLangId == typescriptreact"
         },
         {

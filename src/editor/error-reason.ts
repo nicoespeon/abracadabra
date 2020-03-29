@@ -117,9 +117,6 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFindDeclarationToSplit:
       return didNotFind("a declaration that can be splitted");
 
-    case ErrorReason.DidNotFindStringToConvert:
-      return didNotFind("a string to convert into template literal");
-
     case ErrorReason.CantMoveStatementUp:
       return cantDoIt("move this statement up");
 
