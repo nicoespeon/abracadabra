@@ -100,7 +100,9 @@
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.negateExpression",
+    "onCommand:abracadabra.react.addBracesToJsxAttribute",
     "onCommand:abracadabra.react.convertToPureComponent",
+    "onCommand:abracadabra.react.removeBracesFromJsxAttribute",
     "onCommand:abracadabra.removeBracesFromArrowFunction",
     "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
@@ -207,8 +209,18 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.react.addBracesToJsxAttribute",
+        "title": "(React) Add Braces to JSX Attribute",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.react.convertToPureComponent",
         "title": "(React) Convert to Pure Component",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.react.removeBracesFromJsxAttribute",
+        "title": "(React) Remove Braces from JSX Attribute",
         "category": "Abracadabra"
       },
       {
@@ -575,6 +587,30 @@
         },
         {
           "command": "abracadabra.negateExpression",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.addBracesToJsxAttribute",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.react.addBracesToJsxAttribute",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.convertToPureComponent",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.react.convertToPureComponent",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.removeBracesFromJsxAttribute",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.react.removeBracesFromJsxAttribute",
           "when": "editorLangId == typescriptreact"
         },
         {
