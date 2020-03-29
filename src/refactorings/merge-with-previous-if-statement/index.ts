@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Merge with previous if",
-    canPerform: canMergeWithPreviousIf,
+    createVisitor: canMergeWithPreviousIf,
     isPreferred: true
   }
 };

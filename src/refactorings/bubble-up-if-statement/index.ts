@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Bubble up if statement",
-    canPerform: canBubbleUpIfStatement,
+    createVisitor: canBubbleUpIfStatement,
     isPreferred: true
   }
 };

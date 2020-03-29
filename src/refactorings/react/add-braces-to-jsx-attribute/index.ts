@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Add braces to JSX attribute",
-    canPerform: hasJsxAttributeToAddBracesTo
+    createVisitor: hasJsxAttributeToAddBracesTo
   }
 };
 

@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertIfElseToSwitch, hasIfElseToConvert };
+export { convertIfElseToSwitch, createVisitor as hasIfElseToConvert };
 
 async function convertIfElseToSwitch(
   code: Code,
@@ -19,18 +19,12 @@ async function convertIfElseToSwitch(
   await editor.write(updatedCode.code);
 }
 
-function hasIfElseToConvert(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
-}
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, convertedNode) => {
       path.replaceWith(convertedNode);
+      path.stop();
     })
   );
 }
@@ -54,7 +48,6 @@ function createVisitor(
       if (convertedNode === path.node) return;
 
       onMatch(path, convertedNode);
-      path.stop();
     }
   };
 }

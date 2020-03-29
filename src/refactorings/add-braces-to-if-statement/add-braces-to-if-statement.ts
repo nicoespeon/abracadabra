@@ -3,7 +3,7 @@ import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import * as t from "../../ast";
 
-export { addBracesToIfStatement, hasIfStatementToAddBraces };
+export { addBracesToIfStatement, createVisitor as hasIfStatementToAddBraces };
 
 async function addBracesToIfStatement(
   code: Code,
@@ -18,13 +18,6 @@ async function addBracesToIfStatement(
   }
 
   await editor.write(updatedCode.code);
-}
-
-function hasIfStatementToAddBraces(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
@@ -42,6 +35,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (path.node.alternate) {
         path.node.alternate = statementWithBraces(path.node.alternate);
       }
+
+      path.stop();
     })
   );
 }
@@ -57,15 +52,24 @@ function createVisitor(
   return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
+      if (hasBracesAlready(path)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
-      path.stop();
     }
   };
+}
+
+function hasBracesAlready(path: t.NodePath<t.IfStatement>): boolean {
+  const { consequent, alternate } = path.node;
+
+  return (
+    t.isBlockStatement(consequent) &&
+    (alternate === null || t.isBlockStatement(alternate))
+  );
 }
 
 function hasChildWhichMatchesSelection(

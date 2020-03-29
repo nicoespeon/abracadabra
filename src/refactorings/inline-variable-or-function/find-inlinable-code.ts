@@ -66,6 +66,7 @@ function findInlinableCode(
 
     let result: InlinableCode | null = null;
     id.elements.forEach((element, index) => {
+      if (!element) return;
       if (!selection.isInsideNode(element)) return;
       if (!ast.isSelectableNode(element)) return;
 

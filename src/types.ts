@@ -1,6 +1,6 @@
 import { Code, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
-import { AST } from "./ast";
+import { Visitor, NodePath } from "./ast";
 
 export { Refactoring, RefactoringWithActionProvider, Operation };
 
@@ -19,8 +19,12 @@ interface RefactoringWithActionProvider extends Refactoring {
   };
   actionProvider: {
     message: string;
-    canPerform: (ast: AST, selection: Selection) => boolean;
     isPreferred?: boolean;
+    createVisitor: (
+      selection: Selection,
+      onMatch: (path: NodePath) => void
+    ) => Visitor;
+    updateMessage?: (path: NodePath) => string;
   };
 }
 

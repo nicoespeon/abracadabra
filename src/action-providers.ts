@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import { Selection } from "./editor/selection";
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
+import { Selection } from "./editor/selection";
 
 export { RefactoringActionProvider };
 
@@ -21,21 +21,91 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const ast = t.parse(document.getText());
     const selection = createSelectionFromVSCode(range);
 
-    return this.refactorings
-      .filter(refactoring => this.canPerform(refactoring, ast, selection))
-      .map(refactoring => this.buildCodeActionFor(refactoring));
+    if (this.isNavigatingAnIgnoredFile(document.uri.path)) {
+      return [];
+    }
+
+    return this.findApplicableRefactorings(ast, selection).map(refactoring =>
+      this.buildCodeActionFor(refactoring)
+    );
   }
 
-  private canPerform(
-    refactoring: RefactoringWithActionProvider,
-    ast: t.AST,
+  private isNavigatingAnIgnoredFile(filePath: string): boolean {
+    return this.getIgnoredFolders().some(ignored =>
+      filePath.includes(`/${ignored}/`)
+    );
+  }
+
+  private getIgnoredFolders(): string[] {
+    const ignoredFolders = vscode.workspace
+      .getConfiguration("abracadabra")
+      .get("ignoredFolders");
+
+    if (!Array.isArray(ignoredFolders)) {
+      console.log(
+        `abracadabra.ignoredFolders should be an array but current value is ${ignoredFolders}`
+      );
+      return [];
+    }
+
+    return ignoredFolders;
+  }
+
+  private findApplicableRefactorings(
+    ast: t.File,
     selection: Selection
-  ) {
+  ): RefactoringWithActionProvider[] {
+    const applicableRefactorings = new Map<
+      string,
+      RefactoringWithActionProvider
+    >();
+
+    t.traverseAST(ast, {
+      enter: path => {
+        this.refactorings.forEach(refactoring => {
+          const {
+            actionProvider,
+            command: { key }
+          } = refactoring;
+
+          const visitor = actionProvider.createVisitor(
+            selection,
+            visitedPath => {
+              if (actionProvider.updateMessage) {
+                actionProvider.message = actionProvider.updateMessage(
+                  visitedPath
+                );
+              }
+
+              applicableRefactorings.set(key, refactoring);
+            }
+          );
+
+          this.visit(visitor, path);
+        });
+      }
+    });
+
+    return Array.from(applicableRefactorings.values());
+  }
+
+  private visit(visitor: t.Visitor, path: t.NodePath) {
+    const node = path.node;
+
     try {
-      return refactoring.actionProvider.canPerform(ast, selection);
+      const visitorNode = visitor[node.type];
+      if (typeof visitorNode === "function") {
+        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+        visitorNode.bind(visitor)(path, path.state);
+      } else if (
+        typeof visitorNode === "object" &&
+        typeof visitorNode.enter === "function"
+      ) {
+        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+        visitorNode.enter(path, path.state);
+      }
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
-      return false;
     }
   }
 

@@ -4,7 +4,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
-export { extractInterface, canExtractInterface };
+export { extractInterface, createVisitor as canExtractInterface };
 
 async function extractInterface(
   code: Code,
@@ -23,13 +23,6 @@ async function extractInterface(
   await editor.moveCursorTo(updatedCode.interfaceIdentifierPosition);
 
   await renameSymbol(editor);
-}
-
-function canExtractInterface(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-  t.traverseAST(ast, createVisitor(selection, () => (result = true)));
-
-  return result;
 }
 
 function updateCode(
@@ -73,8 +66,8 @@ function createVisitor(
     ClassDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const methods = path.node.body.body.filter(
-        (method): method is t.ClassMethod => t.isClassMethod(method)
+      const methods: t.ClassMethod[] = path.node.body.body.filter(
+        (method: any): method is t.ClassMethod => t.isClassMethod(method)
       );
 
       const declarations = methods
@@ -108,6 +101,7 @@ function createVisitor(
             } else {
               const key = property.parameter.left;
               if (!t.isExpression(key)) return memo;
+              if (t.isMemberExpression(key)) return memo;
 
               result = t.tsPropertySignature(
                 key,
@@ -126,10 +120,11 @@ function createVisitor(
 
       const classProperties = path.node.body.body
         .filter(
-          (property): property is t.ClassProperty => t.isClassProperty(property)
+          (property: any): property is t.ClassProperty =>
+            t.isClassProperty(property)
         )
         .filter(isPublic)
-        .map(property => {
+        .map((property: t.ClassProperty) => {
           const result = t.tsPropertySignature(
             property.key,
             t.isTSTypeAnnotation(property.typeAnnotation)

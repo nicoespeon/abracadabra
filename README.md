@@ -1,17 +1,10 @@
 # 🧙‍ Abracadabra
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
-
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
 ![][logo-abracadabra]
 
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors)
 [![Build Status](https://travis-ci.org/nicoespeon/abracadabra.svg?branch=master)](https://travis-ci.org/nicoespeon/abracadabra)
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
-
-[> Give a feedback][create-new-issue]
 
 Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript.
 
@@ -59,7 +52,6 @@ Related projects:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
     1. [Add Braces to If Statement](#add-braces-to-if-statement)
-    1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
   - TS specific:
@@ -68,6 +60,7 @@ Related projects:
     1. [Convert to Pure Component](#convert-to-pure-component)
     1. [Add braces to JSX attribute](#add-braces-to-jsx-attribute)
     1. [Remove braces from JSX attribute](#remove-braces-from-jsx-attribute)
+- [Configuration](#configuration)
 - [Release Notes](#release-notes)
   - [Versioning](#versioning)
 - [Contributing](#contributing)
@@ -106,6 +99,8 @@ This refactoring allows you to rename things and make sure all references in you
 
 [VS Code does this refactoring][vscode-rename-symbol] very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Extract Variable
 
 | Keybinding       | On Mac  |
@@ -124,6 +119,8 @@ It will also handle multiple occurrences.
 
 ![][demo-extract-variable-multiple-occurrences]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Inline Variable
 
 | Keybinding       | On Mac  |
@@ -134,6 +131,8 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 
 ![][demo-inline-variable]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Inline Function
 
 | Keybinding       | On Mac  |
@@ -143,6 +142,8 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
 
 ![][demo-inline-function]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Move Statement Up
 
@@ -158,6 +159,8 @@ As for all refactorings, it works even if you partially select the statement, or
 
 ![][demo-move-statement-up]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Move Statement Down
 
 | Keybinding        |
@@ -172,6 +175,8 @@ _Move Statement Up_ and _Move Statement Down_ also work on object properties. Th
 
 ![][demo-move-statement-object-property]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Negate Expression
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -184,6 +189,8 @@ It will negate the closest expression from your cursor or partial selection.
 
 ![][demo-negate-expression-partial]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Remove Redundant Else
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -191,6 +198,8 @@ It will negate the closest expression from your cursor or partial selection.
 Removes the `else` keyword when it's not necessary, resulting in less nested code. This refactoring helps you [replace nested conditional with guard clauses][replace-nested-conditional-with-guard-clauses] to make your code easier to read.
 
 ![][demo-remove-redundant-else]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Simplify Ternary
 
@@ -208,6 +217,8 @@ Flips the `if` and `else` statements. It's a useful refactoring to have in your 
 
 ![][demo-flip-if-else]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Flip Ternary
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -215,6 +226,8 @@ Flips the `if` and `else` statements. It's a useful refactoring to have in your 
 Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 ![][demo-flip-ternary]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Convert If/Else to Ternary
 
@@ -224,6 +237,8 @@ Converts an if/else statement into a (shorter) ternary expression. This is very 
 
 ![][demo-convert-if-else-to-ternary]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Convert Ternary to If/Else
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -231,6 +246,8 @@ Converts an if/else statement into a (shorter) ternary expression. This is very 
 Converts a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
 
 ![][demo-convert-ternary-to-if-else]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Convert If/Else to Switch
 
@@ -240,6 +257,8 @@ Converts an if/else statement into a switch statement. This is typically what yo
 
 ![][demo-convert-if-else-to-switch]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Split If Statement
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -247,6 +266,8 @@ Converts an if/else statement into a switch statement. This is typically what yo
 Splits the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
 
 ![][demo-split-if-statement]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Merge If Statements
 
@@ -260,6 +281,8 @@ It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Merge With Previous If Statement
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -272,6 +295,8 @@ If you want to merge 2 consecutive if statements, it will resolve the dead code 
 
 ![][demo-merge-if-with-previous-if-statement]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Bubble up If Statement
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -282,6 +307,8 @@ Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting 
 
 ![][demo-bubble-up-if-statement]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Remove Dead Code
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -290,6 +317,8 @@ Sometimes, Abracadabra can determine that some code can't be reached. If so, it 
 
 ![][demo-remove-dead-code]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Split Declaration and Initialization
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -297,6 +326,8 @@ Sometimes, Abracadabra can determine that some code can't be reached. If so, it 
 Splits the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
 
 ![][demo-split-declaration-and-initialization]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Add Braces to Arrow Function
 
@@ -308,6 +339,8 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 
 ![][demo-add-braces-to-arrow-function]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Remove Braces from Arrow Function
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -315,6 +348,8 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
 
 ![][demo-remove-braces-from-arrow-function]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Add Braces to If Statement
 
@@ -324,21 +359,15 @@ Useful when you need to add code in the body of an `if` or `else` statement.
 
 ![][demo-add-braces-to-if-statement]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Remove Braces from If Statement
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
 Does the contrary of _Add Braces to If Statement_: Removes braces from single-statement blocks in an `if` or `else` statement.
 
-### Convert to Template Literal
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-Have you ever worked on an old JavaScript code which used to concatenate strings with `+`? This refactoring will save you the energy of converting it to a template string.
-
-It's also useful when you want to turn a string into a template string.
-
-![][demo-convert-to-template-literal]
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Replace Binary with Assignment
 
@@ -348,6 +377,8 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 
 ![][demo-replace-binary-with-assignment]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Convert For-Loop to Foreach
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -355,6 +386,8 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
 ![][demo-convert-for-to-foreach]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Extract Interface
 
@@ -366,15 +399,19 @@ This is very useful when you need to invert a dependency: create an interface fr
 
 ![][demo-extract-interface]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Convert to Pure Component
 
-> 💡 Available as Quick Fix (`Alt ↵`)
+> **Not** available as a Quick Fix, use the [Command Palette][command-palette] to run this one
 
 This one is specific to React and comes from [react codemod][react-codemod].
 
 It converts ES6 classes that only have a `render()` method, only have safe properties (statics and props), and do not have refs to Functional Components.
 
 ![][demo-convert-to-pure-component]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Add braces to JSX attribute
 
@@ -386,6 +423,8 @@ It adds curly braces to a JSX string literal, converting it into a JSX expressio
 
 ![][demo-add-braces-to-jsx-attribute]
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Remove braces from JSX attribute
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -395,6 +434,14 @@ This refactoring is specific to React.
 If a JSX attribute is a JSX expression containing only a string literal, it refactors the JSX expression into a string literal by removing the curly braces.
 
 ![][demo-remove-braces-from-jsx-attribute]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+## Configuration
+
+| Setting                      | Description                                | Default                             |
+| ---------------------------- | ------------------------------------------ | ----------------------------------- |
+| `abracadabra.ignoredFolders` | Folders where it won't propose Quick Fixes | `["node_modules", "dist", "build"]` |
 
 ## Release Notes
 
@@ -414,6 +461,8 @@ That means our releases use the following format:
 - Backward compatible changes bump `<minor>` (and reset `<patch>`)
 - Bug fixes bump `<patch>`
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ## Contributing
 
 ### [Contributing Guide][contributing]
@@ -424,11 +473,12 @@ Read our [contributing guide][contributing] to learn about our development proce
 
 To help you get your feet wet and become familiar with our contribution process, we have a list of [good first issues][good-first-issues] that contains things with a relatively limited scope. This is a great place to get started!
 
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
@@ -437,19 +487,23 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://fabien0102.com/"><img src="https://avatars.githubusercontent.com/u/1761469?v=3" width="100px;" alt="Fabien Bernard"/><br /><sub><b>Fabien Bernard</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=fabien0102" title="Code">💻</a> <a href="#ideas-fabien0102" title="Ideas">🤔</a> <a href="#design-fabien0102" title="Design">🎨</a></td>
     <td align="center"><a href="https://www.elsewebdevelopment.com/"><img src="https://avatars2.githubusercontent.com/u/12832280?v=4" width="100px;" alt="David"/><br /><sub><b>David</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3ADavid-Else" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/HEYGUL"><img src="https://avatars2.githubusercontent.com/u/2989532?v=4" width="100px;" alt="GUL"/><br /><sub><b>GUL</b></sub></a><br /><a href="#ideas-HEYGUL" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=HEYGUL" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/visusnet"><img src="https://avatars2.githubusercontent.com/u/1219124?v=4" width="100px;" alt="Alexander Müller"/><br /><sub><b>Alexander Müller</b></sub></a><br /><a href="#ideas-visusnet" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=visusnet" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/visusnet"><img src="https://avatars2.githubusercontent.com/u/1219124?v=4" width="100px;" alt="Alexander Rose"/><br /><sub><b>Alexander Rose</b></sub></a><br /><a href="#ideas-visusnet" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=visusnet" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/timvancleef"><img src="https://avatars.githubusercontent.com/u/7040078?v=3" width="100px;" alt="Tim van Cleef"/><br /><sub><b>Tim van Cleef</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=timvancleef" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=timvancleef" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/automatensalat"><img src="https://avatars.githubusercontent.com/u/26285169?v=3" width="100px;" alt="Tobias Hann"/><br /><sub><b>Tobias Hann</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aautomatensalat" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=automatensalat" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=automatensalat" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/capaj"><img src="https://avatars.githubusercontent.com/u/1305378?v=3" width="100px;" alt="Jiri Spac"/><br /><sub><b>Jiri Spac</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Acapaj" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
 This project follows the [all-contributors][all-contributors] specification.
 
 Contributions of any kind are welcome!
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ## Alternatives
 
@@ -569,7 +623,6 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
-[demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 [demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true

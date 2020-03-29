@@ -2,7 +2,11 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { canNegateExpression, negateExpression };
+export {
+  createVisitor as canNegateExpression,
+  negateExpression,
+  getNegatedOperator
+};
 export { getNegatedBinaryOperator };
 
 async function negateExpression(
@@ -26,31 +30,36 @@ async function negateExpression(
   ]);
 }
 
-function canNegateExpression(
-  ast: t.AST,
-  selection: Selection
-): {
-  canNegate: boolean;
-  negatedOperator: NegatableExpression["negatedOperator"];
-} {
-  const result = findNegatableExpression(ast, selection);
-  return {
-    canNegate: !!result,
-    negatedOperator: (result && result.negatedOperator) || null
-  };
-}
-
 function findNegatableExpression(
   ast: t.AST,
   selection: Selection
 ): NegatableExpression | undefined {
   let result: NegatableExpression | undefined;
 
-  t.traverseAST(ast, {
-    enter({ node, parent }) {
+  t.traverseAST(
+    ast,
+    createVisitor(selection, ({ node }) => {
+      result = {
+        loc: node.loc,
+        negatedOperator: getNegatedOperator(node)
+      };
+    })
+  );
+
+  return result;
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.SelectableNode>) => void
+): t.Visitor {
+  return {
+    enter(path) {
+      const { node, parent } = path;
       if (!isNegatable(node)) return;
       if (!wouldChangeIfNegated(node)) return;
       if (!selection.isInsideNode(node)) return;
+      if (!t.isSelectablePath(path)) return;
 
       // If parent is unary expression we don't go further to double-negate it.
       if (t.isUnaryExpression(parent)) return;
@@ -63,26 +72,27 @@ function findNegatableExpression(
         return;
       }
 
-      result = {
-        loc: node.loc,
-        negatedOperator: t.isLogicalExpression(node)
-          ? getNegatedLogicalOperator(node.operator)
-          : t.isBinaryExpression(node)
-          ? getNegatedBinaryOperator(node.operator)
-          : null
-      };
+      onMatch(path);
     }
-  });
-
-  return result;
+  };
 }
+
+type NegatedOperator =
+  | t.BinaryExpression["operator"]
+  | t.LogicalExpression["operator"]
+  | null;
 
 interface NegatableExpression {
   loc: t.SourceLocation;
-  negatedOperator:
-    | t.BinaryExpression["operator"]
-    | t.LogicalExpression["operator"]
-    | null;
+  negatedOperator: NegatedOperator;
+}
+
+function getNegatedOperator(node: t.Node): NegatedOperator {
+  return t.isLogicalExpression(node)
+    ? getNegatedLogicalOperator(node.operator)
+    : t.isBinaryExpression(node)
+    ? getNegatedBinaryOperator(node.operator)
+    : null;
 }
 
 function isNegatable(

@@ -5,7 +5,7 @@ import { last, allButLast } from "../../array-helpers";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
-export { flipIfElse, hasIfElseToFlip };
+export { flipIfElse, createVisitor as hasIfElseToFlip };
 
 async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
@@ -24,44 +24,38 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
   );
 }
 
-function hasIfElseToFlip(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      result = true;
-    }
-  });
-
-  return result;
-}
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    IfStatement(path) {
-      const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
       if (t.isGuardClause(path)) {
         flipGuardClause(path);
       } else {
         flipIfStatement(path);
       }
 
+      const { node } = path;
       node.test = getNegatedIfTest(node.test);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
+): t.Visitor {
+  return {
+    IfStatement(path) {
+      const { node } = path;
+      if (!selection.isInsideNode(node)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
     }
-  });
+  };
 }
 
 function flipIfStatement(path: t.NodePath<t.IfStatement>) {

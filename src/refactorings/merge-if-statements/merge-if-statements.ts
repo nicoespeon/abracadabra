@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { mergeIfStatements, canMergeIfStatements };
+export { mergeIfStatements, createVisitor as canMergeIfStatements };
 
 async function mergeIfStatements(
   code: Code,
@@ -19,36 +19,28 @@ async function mergeIfStatements(
   await editor.write(updatedCode.code);
 }
 
-function canMergeIfStatements(
-  ast: t.AST,
-  selection: Selection
-): { canMerge: boolean; mergeAlternate: boolean } {
-  let canMerge = false;
-  let mergeAlternate = false;
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
+      const { alternate, consequent } = path.node;
 
-  t.traverseAST(ast, {
-    IfStatement(path) {
-      if (!selection.isInsidePath(path)) return;
+      if (alternate) {
+        mergeAlternateWithNestedIf(path, alternate);
+      } else {
+        mergeConsequentWithNestedIf(path, consequent);
+      }
 
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      canMerge = true;
-      mergeAlternate = !!path.node.alternate;
-    }
-  });
-
-  return { canMerge, mergeAlternate };
+      path.stop();
+    })
+  );
 }
 
-function updateCode(
-  ast: t.AST,
-  selection: Selection
-): t.Transformed & { mergeAlternate: boolean } {
-  let mergeAlternate = false;
-
-  const result = t.transformAST(ast, {
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.IfStatement>) => void
+): t.Visitor {
+  return {
     IfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -59,16 +51,19 @@ function updateCode(
       const { alternate, consequent } = path.node;
 
       if (alternate) {
-        mergeAlternate = true;
-        mergeAlternateWithNestedIf(path, alternate);
-      } else {
-        mergeAlternate = false;
-        mergeConsequentWithNestedIf(path, consequent);
-      }
-    }
-  });
+        if (!t.isBlockStatement(alternate)) return;
 
-  return { ...result, mergeAlternate };
+        const nestedIfStatement = getNestedIfStatementIn(alternate);
+        if (!nestedIfStatement) return;
+      } else {
+        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        if (!nestedIfStatement) return;
+        if (nestedIfStatement.alternate) return;
+      }
+
+      onMatch(path);
+    }
+  };
 }
 
 function mergeAlternateWithNestedIf(

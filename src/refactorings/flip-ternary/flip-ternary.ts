@@ -4,7 +4,7 @@ import * as t from "../../ast";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 
-export { flipTernary, hasTernaryToFlip };
+export { flipTernary, createVisitor as hasTernaryToFlip };
 
 async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   const updatedCode = updateCode(t.parse(code), selection);
@@ -17,42 +17,36 @@ async function flipTernary(code: Code, selection: Selection, editor: Editor) {
   await editor.write(updatedCode.code);
 }
 
-function hasTernaryToFlip(ast: t.AST, selection: Selection): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
-    ConditionalExpression(path) {
-      const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      result = true;
-    }
-  });
-
-  return result;
-}
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    ConditionalExpression(path) {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.ConditionalExpression>) => {
       const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
       const ifBranch = node.consequent;
       const elseBranch = node.alternate;
       node.consequent = elseBranch;
       node.alternate = ifBranch;
       node.test = getNegatedIfTest(node.test);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.ConditionalExpression>) => void
+): t.Visitor {
+  return {
+    ConditionalExpression(path) {
+      const { node } = path;
+      if (!selection.isInsideNode(node)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(

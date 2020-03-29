@@ -10,7 +10,6 @@ import convertForToForeach from "./refactorings/convert-for-to-foreach";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
-import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import extractInterface from "./refactorings/extract-interface";
 import extractVariable from "./refactorings/extract-variable";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -35,7 +34,13 @@ import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
 
 const TS_LANGUAGES = ["typescript", "typescriptreact"];
-const ALL_LANGUAGES = ["javascript", "javascriptreact", ...TS_LANGUAGES];
+const REACT_LANGUAGES = ["javascriptreact", "typescriptreact"];
+const ALL_LANGUAGES = [
+  "javascript",
+  "javascriptreact",
+  "typescript",
+  "typescriptreact"
+];
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -52,7 +57,6 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToSwitch,
     convertIfElseToTernary,
     convertTernaryToIfElse,
-    convertToTemplateLiteral,
     extractInterface,
     extractVariable,
     flipIfElse,
@@ -94,6 +98,19 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
+  REACT_LANGUAGES.forEach(language => {
+    vscode.languages.registerCodeActionsProvider(
+      language,
+      new RefactoringActionProvider([
+        reactAddBracesToJsxAttribute,
+        reactRemoveBracesFromJsxAttribute
+      ]),
+      {
+        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
+      }
+    );
+  });
+
   ALL_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
@@ -105,15 +122,11 @@ export function activate(context: vscode.ExtensionContext) {
         convertIfElseToSwitch,
         convertIfElseToTernary,
         convertTernaryToIfElse,
-        convertToTemplateLiteral,
         flipIfElse,
         flipTernary,
         mergeIfStatements,
         mergeWithPreviousIfStatement,
         negateExpression,
-        reactConvertToPureComponent,
-        reactAddBracesToJsxAttribute,
-        reactRemoveBracesFromJsxAttribute,
         removeBracesFromArrowFunction,
         removeBracesFromIfStatement,
         removeDeadCode,

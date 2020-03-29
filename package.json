@@ -1,6 +1,6 @@
 {
   "name": "abracadabra",
-  "version": "3.2.1",
+  "version": "3.2.3",
   "displayName": "Abracadabra, refactor this!",
   "publisher": "nicoespeon",
   "description": "Automated refactorings for VS Code, in JavaScript and TypeScript.",
@@ -52,17 +52,17 @@
     }
   },
   "devDependencies": {
-    "@types/babel__traverse": "7.0.6",
+    "@types/babel__traverse": "7.0.9",
     "@types/jest": "24.0.13",
     "@types/jscodeshift": "0.6.3",
     "@types/node": "10.12.21",
     "@types/pluralize": "0.0.29",
     "husky": "2.3.0",
     "hygen": "4.0.8",
-    "jest": "24.8.0",
+    "jest": "25.1.0",
     "prettier": "1.17.1",
     "pretty-quick": "1.11.0",
-    "ts-jest": "24.0.2",
+    "ts-jest": "25.2.1",
     "ts-loader": "6.0.4",
     "tslint": "5.12.1",
     "typescript": "3.7.3",
@@ -72,9 +72,9 @@
     "webpack-cli": "3.3.5"
   },
   "dependencies": {
-    "@babel/parser": "7.4.5",
-    "@babel/traverse": "7.4.5",
-    "@babel/types": "7.4.4",
+    "@babel/parser": "7.8.7",
+    "@babel/traverse": "7.8.6",
+    "@babel/types": "7.8.7",
     "change-case": "3.1.0",
     "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",
@@ -89,7 +89,6 @@
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
-    "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.extractVariable",
     "onCommand:abracadabra.flipIfElse",
@@ -100,7 +99,9 @@
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.negateExpression",
+    "onCommand:abracadabra.react.addBracesToJsxAttribute",
     "onCommand:abracadabra.react.convertToPureComponent",
+    "onCommand:abracadabra.react.removeBracesFromJsxAttribute",
     "onCommand:abracadabra.removeBracesFromArrowFunction",
     "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
@@ -149,11 +150,6 @@
       {
         "command": "abracadabra.convertTernaryToIfElse",
         "title": "Convert Ternary to If/Else",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.convertToTemplateLiteral",
-        "title": "Convert to Template Literal",
         "category": "Abracadabra"
       },
       {
@@ -207,8 +203,18 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.react.addBracesToJsxAttribute",
+        "title": "(React) Add Braces to JSX Attribute",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.react.convertToPureComponent",
         "title": "(React) Convert to Pure Component",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.react.removeBracesFromJsxAttribute",
+        "title": "(React) Remove Braces from JSX Attribute",
         "category": "Abracadabra"
       },
       {
@@ -281,6 +287,20 @@
         "when": "editorTextFocus"
       }
     ],
+    "configuration": {
+      "title": "Abracadabra",
+      "properties": {
+        "abracadabra.ignoredFolders": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            "dist",
+            "build"
+          ],
+          "description": "Folders where it won't propose Quick Fixes (defaults: node_modules, dist, build)."
+        }
+      }
+    },
     "menus": {
       "commandPalette": [
         {
@@ -396,22 +416,6 @@
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.convertToTemplateLiteral",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
           "command": "abracadabra.extractVariable",
           "when": "editorLangId == javascript"
         },
@@ -561,6 +565,30 @@
         },
         {
           "command": "abracadabra.negateExpression",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.addBracesToJsxAttribute",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.react.addBracesToJsxAttribute",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.convertToPureComponent",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.react.convertToPureComponent",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.removeBracesFromJsxAttribute",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.react.removeBracesFromJsxAttribute",
           "when": "editorLangId == typescriptreact"
         },
         {

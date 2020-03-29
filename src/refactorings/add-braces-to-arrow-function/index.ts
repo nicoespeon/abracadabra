@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Add braces to arrow function",
-    canPerform: hasArrowFunctionToAddBraces
+    createVisitor: hasArrowFunctionToAddBraces
   }
 };
 

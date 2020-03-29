@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Split declaration and initialization",
-    canPerform: canSplitDeclarationAndInitialization
+    createVisitor: canSplitDeclarationAndInitialization
   }
 };
 

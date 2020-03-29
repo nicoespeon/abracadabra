@@ -243,7 +243,7 @@ class Occurrence {
   }
 
   get indentation(): Code {
-    return " ".repeat(this.getIndentationLevel());
+    return this.indentationChar.repeat(this.indentationLevel);
   }
 
   get modification(): Modification {
@@ -272,7 +272,21 @@ class Occurrence {
     return `const ${name} = ${extractedCode};\n${this.indentation}`;
   }
 
-  private getIndentationLevel(): IndentationLevel {
+  private get indentationChar(): string {
+    try {
+      // @ts-ignore It's not typed, but it seems recast adds info at runtime.
+      const { line: sourceCodeChars } = this.path.node.loc.lines.infos[
+        this.loc.start.line - 1
+      ];
+
+      return sourceCodeChars[0];
+    } catch (_) {
+      // If it fails at runtime, fallback on a space.
+      return " ";
+    }
+  }
+
+  private get indentationLevel(): IndentationLevel {
     return this.getScopeParentPosition().character;
   }
 

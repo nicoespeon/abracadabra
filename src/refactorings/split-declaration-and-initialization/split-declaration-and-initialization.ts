@@ -4,7 +4,7 @@ import * as t from "../../ast";
 
 export {
   splitDeclarationAndInitialization,
-  canSplitDeclarationAndInitialization
+  createVisitor as canSplitDeclarationAndInitialization
 };
 
 async function splitDeclarationAndInitialization(
@@ -22,42 +22,11 @@ async function splitDeclarationAndInitialization(
   await editor.write(updatedCode.code);
 }
 
-function canSplitDeclarationAndInitialization(
-  ast: t.AST,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  t.traverseAST(ast, {
-    VariableDeclaration(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      const declarations = path.node.declarations;
-      if (!hasInitializedDeclaration(declarations)) return;
-
-      result = true;
-    }
-  });
-
-  return result;
-}
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    VariableDeclaration(path) {
-      if (!selection.isInsidePath(path)) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path: t.NodePath<t.VariableDeclaration>) => {
       const declarations = path.node.declarations;
-      if (!hasInitializedDeclaration(declarations)) return;
-
       const kind = path.node.kind === "const" ? "let" : path.node.kind;
       path.replaceWithMultiple([
         t.variableDeclaration(
@@ -70,8 +39,28 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
             t.expressionStatement(t.assignmentExpression("=", id, init))
           )
       ]);
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath<t.VariableDeclaration>) => void
+): t.Visitor {
+  return {
+    VariableDeclaration(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const declarations = path.node.declarations;
+      if (!hasInitializedDeclaration(declarations)) return;
+
+      onMatch(path);
     }
-  });
+  };
 }
 
 function hasChildWhichMatchesSelection(
