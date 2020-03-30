@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[New Refactoring]** Remove Braces from If Statement, thanks to @automatensalat
 - A new setting `abracadabra.ignoredFolders` that you can use to disable the extension Quick Fixes in specified folders. Default is `["node_modules", "build", "dist"]`.
 
 ### Fixed

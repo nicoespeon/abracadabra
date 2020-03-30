@@ -103,6 +103,7 @@
     "onCommand:abracadabra.react.convertToPureComponent",
     "onCommand:abracadabra.react.removeBracesFromJsxAttribute",
     "onCommand:abracadabra.removeBracesFromArrowFunction",
+    "onCommand:abracadabra.removeBracesFromIfStatement",
     "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.renameSymbol",
@@ -220,6 +221,11 @@
       {
         "command": "abracadabra.removeBracesFromArrowFunction",
         "title": "Remove Braces from Arrow Function",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.removeBracesFromIfStatement",
+        "title": "Remove Braces from If Statement",
         "category": "Abracadabra"
       },
       {
@@ -605,6 +611,22 @@
         },
         {
           "command": "abracadabra.removeBracesFromArrowFunction",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.removeBracesFromIfStatement",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.removeBracesFromIfStatement",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.removeBracesFromIfStatement",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.removeBracesFromIfStatement",
           "when": "editorLangId == typescriptreact"
         },
         {
