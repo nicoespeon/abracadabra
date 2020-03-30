@@ -361,6 +361,12 @@ Useful when you need to add code in the body of an `if` or `else` statement.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Remove Braces from If Statement
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Does the contrary of _Add Braces to If Statement_: Removes braces from single-statement blocks in an `if` or `else` statement.
+
 [⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Replace Binary with Assignment
