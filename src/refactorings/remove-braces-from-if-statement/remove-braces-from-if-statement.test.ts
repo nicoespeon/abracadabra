@@ -1,13 +1,9 @@
 import { Editor, ErrorReason, Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
-import {
-  removeBracesFromIfStatement,
-  hasIfStatementWithBraces
-} from "./remove-braces-from-if-statement";
+import { removeBracesFromIfStatement } from "./remove-braces-from-if-statement";
 
 describe("Remove Braces from If Statement", () => {
   let showErrorMessage: Editor["showError"];
@@ -21,8 +17,8 @@ describe("Remove Braces from If Statement", () => {
     [
       {
         description: "basic scenario",
-        code: `if (!isValid) { 
-  return; 
+        code: `if (!isValid) {
+  return;
 }`,
         selection: Selection.cursorAt(0, 15),
         expected: `if (!isValid)
@@ -30,8 +26,8 @@ describe("Remove Braces from If Statement", () => {
       },
       {
         description: "basic scenario, cursor on if",
-        code: `if (!isValid) { 
-  return; 
+        code: `if (!isValid) {
+  return;
 }`,
         selection: Selection.cursorAt(0, 0),
         expected: `if (!isValid)
@@ -121,6 +117,35 @@ doAnotherThing();`
     }
   );
 
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not apply to",
+    [
+      {
+        description: "block with multiple statements, selection on if",
+        code: `if (!isValid) {
+  doSomething();
+  return;
+}`,
+        selection: Selection.cursorAt(0, 15)
+      },
+      {
+        description: "block with multiple statements, selection on else",
+        code: `if (!isValid) {
+  doSomething();
+} else {
+  doSomethingElse();
+  return;
+}`,
+        selection: Selection.cursorAt(2, 4)
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
+      const result = await doRemoveBracesFromIfStatement(code, selection);
+
+      expect(result).toBe(code);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
@@ -141,62 +166,6 @@ doAnotherThing();`
     expect(showErrorMessage).toBeCalledWith(
       ErrorReason.DidNotFindBracesToRemoveFromIfStatement
     );
-  });
-
-  describe(hasIfStatementWithBraces, () => {
-    it("should not offer refactoring for block with multiple statements, selection on if", async () => {
-      const code = `if (!isValid) { 
-    doSomething(); 
-    return;
-  }`;
-      const ast = t.parse(code);
-      const selection = Selection.cursorAt(0, 0);
-
-      const hasMatchingIfStatement = hasIfStatementWithBraces(ast, selection);
-
-      expect(hasMatchingIfStatement).toBe(false);
-    });
-
-    it("should offer refactoring for block with single statement, selection on if", async () => {
-      const code = `if (!isValid) { 
-    doSomething();
-  }`;
-      const ast = t.parse(code);
-      const selection = Selection.cursorAt(0, 0);
-
-      const hasMatchingIfStatement = hasIfStatementWithBraces(ast, selection);
-
-      expect(hasMatchingIfStatement).toBe(true);
-    });
-
-    it("should not offer refactoring for block with multiple statements, selection on else", async () => {
-      const code = `if (!isValid) { 
-    doSomething(); 
-  } else {
-    doSomethingElse();
-    return;
-  }`;
-      const ast = t.parse(code);
-      const selection = Selection.cursorAt(2, 4);
-
-      const hasMatchingIfStatement = hasIfStatementWithBraces(ast, selection);
-
-      expect(hasMatchingIfStatement).toBe(false);
-    });
-
-    it("should offer refactoring for block with multiple statements, selection on else", async () => {
-      const code = `if (!isValid) { 
-    doSomething(); 
-  } else {
-    doSomethingElse();
-  }`;
-      const ast = t.parse(code);
-      const selection = Selection.cursorAt(2, 4);
-
-      const hasMatchingIfStatement = hasIfStatementWithBraces(ast, selection);
-
-      expect(hasMatchingIfStatement).toBe(true);
-    });
   });
 
   async function doRemoveBracesFromIfStatement(
