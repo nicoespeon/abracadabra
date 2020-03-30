@@ -52,6 +52,7 @@ Related projects:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
     1. [Add Braces to If Statement](#add-braces-to-if-statement)
+    1. [Remove Braces from If Statement](#remove-braces-from-if-statement)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
   - TS specific:
