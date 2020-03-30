@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2020-03-30 - Cover up that folder… 🙈
+
 ### Removed (= Breaking)
 
 - Removed "Convert to Template Literal" refactoring. This is now natively include in VS Code with a similar, great developer experience (e.g. you can trigger the Quick Fix wherever your cursor is). We're happy of this and there's no point in providing a duplicate implementation of it 👐
@@ -27,24 +29,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.2.3] - 2020-03-19
 
+<details>
+
 ### Fixed
 
 - Extract Variable didn't worked correctly if indentation included tabs. This is now fixed!
 
+</details>
+
 ## [3.2.2] - 2020-03-12
+
+<details>
 
 ### Fixed
 
 - Upgrade babel to make the extension work with TypeScript 3.8 syntax, such as top-level awaits. Thanks @David-Else [for reporting this](https://github.com/nicoespeon/abracadabra/issues/75) 🙏
 
+</details>
+
 ## [3.2.1] - 2020-02-20
+
+<details>
 
 ### Fixed
 
 - Extract Variable didn't worked properly with empty string and special keywords. This is now fixed!
 - Extract Variable didn't worked properly for non-camel case properties. E.g. `path.some_node.value` would wrongly extract `const { someNode } = path`. Now it will correctly compute `const { some_node } = path`.
 
+</details>
+
 ## [3.2.0] - 2020-01-30 - The Class Without an Interface 🎭
+
+<details>
 
 ### Fixed
 
@@ -57,14 +73,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[New Refactoring]** Remove Braces from JSX Attribute
 - **[New Refactoring]** Extract Interface _(TS specific)_
 
+</details>
+
 ## [3.1.0] - 2020-01-14 - Keep 'em simple 🌱
+
+<details>
 
 ### Added
 
 - **[New Refactoring]** Simplify Ternary
 - **[New Refactoring]** Add Braces to If Statement
 
+</details>
+
 ## [3.0.0] - 2019-12-19 - Finding good shortcuts is hard 🤪
+
+<details>
 
 ### Added
 
@@ -103,6 +127,8 @@ Since you end up renaming the symbol, you can provide a different name than `add
 ### Fixed
 
 - Don't Convert For-Loop to ForEach if counter doesn't start from 0
+
+</details>
 
 ## [2.0.0] - 2019-12-12 - A better shortcut 🛣
 
@@ -743,7 +769,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/3.2.3...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/nicoespeon/abracadabra/compare/3.2.3...4.0.0
 [3.2.3]: https://github.com/nicoespeon/abracadabra/compare/3.2.2...3.2.3
 [3.2.2]: https://github.com/nicoespeon/abracadabra/compare/3.2.1...3.2.2
 [3.2.1]: https://github.com/nicoespeon/abracadabra/compare/3.2.0...3.2.1
