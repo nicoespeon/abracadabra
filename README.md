@@ -367,6 +367,8 @@ Useful when you need to add code in the body of an `if` or `else` statement.
 
 Does the contrary of _Add Braces to If Statement_: Removes braces from single-statement blocks in an `if` or `else` statement.
 
+![][demo-remove-braces-from-if-statement]
+
 [⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Replace Binary with Assignment
@@ -632,6 +634,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-pure-component.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/simplify-ternary.gif?raw=true
 [demo-add-braces-to-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-if-statement.gif?raw=true
+[demo-remove-braces-from-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-if-statement.gif?raw=true
 [demo-add-braces-to-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-jsx-attribute.gif?raw=true
 [demo-remove-braces-from-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-jsx-attribute.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-interface.gif?raw=true
