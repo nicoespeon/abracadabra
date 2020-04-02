@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Extract Variable" didn't worked on object properties with long key names. So this code:
+
+```js
+const component_context = {
+  someVeryLongPropertyNameThatWontFit: doSomething()
+};
+```
+
+Would produce this, invalid code:
+
+```js
+const extracted = doSomething();
+const component_context = {
+  someVeryLongPropertyNameThatWontFit
+};
+```
+
+This is now fixed and it will produce the expected code:
+
+```js
+const someVeryLongPropertyNameThatWontFit = doSomething();
+const component_context = {
+  someVeryLongPropertyNameThatWontFit
+};
+```
+
 ## [4.0.0] - 2020-03-30 - Cover up that folder… 🙈
 
 ### Removed (= Breaking)
