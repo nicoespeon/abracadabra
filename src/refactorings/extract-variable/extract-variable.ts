@@ -1,11 +1,16 @@
-import { camel } from "change-case";
-
 import { Editor, Code, ErrorReason, Modification } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import * as ast from "../../ast";
 
 import { renameSymbol } from "../rename-symbol/rename-symbol";
+
+import {
+  Variable,
+  StringLiteralVariable,
+  MemberExpressionVariable,
+  ShorthandVariable
+} from "./variable";
 
 export { extractVariable, ReplaceChoice };
 
@@ -360,91 +365,6 @@ class MemberExpressionOccurrence extends Occurrence {
     const name = `{ ${this.variable.name} }`;
 
     return `const ${name} = ${extractedCode};\n${this.indentation}`;
-  }
-}
-
-class Variable {
-  protected _name = "extracted";
-
-  constructor(protected path: ast.NodePath) {}
-
-  get name(): string {
-    return this._name;
-  }
-
-  get length(): number {
-    return this._name.length;
-  }
-
-  get id(): Code {
-    const { parent, node } = this.path;
-
-    const shouldWrapInBraces =
-      ast.isJSXAttribute(parent) ||
-      (ast.isJSX(parent) && (ast.isJSXElement(node) || ast.isJSXText(node)));
-
-    return shouldWrapInBraces ? `{${this.name}}` : this.name;
-  }
-
-  protected tryToSetNameWith(value: string) {
-    if (this.isValidName(value)) {
-      this._name = value;
-    }
-  }
-
-  protected isValidName(value: string): boolean {
-    const startsWithNumber = value.match(/^\d.*/);
-
-    const BLACKLISTED_KEYWORDS = [
-      "const",
-      "var",
-      "let",
-      "function",
-      "if",
-      "else",
-      "switch",
-      "case",
-      "default",
-      "import",
-      "export"
-    ];
-
-    return !startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value);
-  }
-}
-
-class StringLiteralVariable extends Variable {
-  constructor(protected path: ast.NodePath<ast.StringLiteral>) {
-    super(path);
-    this.tryToSetNameWith(camel(path.node.value));
-  }
-
-  protected isValidName(value: string): boolean {
-    return super.isValidName(value) && value.length > 1 && value.length <= 20;
-  }
-}
-
-class MemberExpressionVariable extends Variable {
-  constructor(protected path: ast.NodePath<ast.MemberExpression>) {
-    super(path);
-    const {
-      node: { property, computed }
-    } = path;
-
-    if (ast.isIdentifier(property) && !computed) {
-      this.tryToSetNameWith(property.name);
-    }
-  }
-}
-
-class ShorthandVariable extends Variable {
-  constructor(protected path: ast.NodePath<ast.ObjectProperty>) {
-    super(path);
-    this.tryToSetNameWith(path.node.key.name);
-  }
-
-  get isValid(): boolean {
-    return this.isValidName(this.path.node.key.name);
   }
 }
 
