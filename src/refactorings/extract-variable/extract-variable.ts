@@ -215,12 +215,11 @@ function createOccurrence(
   path: ast.NodePath,
   loc: ast.SourceLocation
 ): Occurrence {
-  const variable = new Variable(path);
-
   if (ast.canBeShorthand(path)) {
-    return new ShorthandOccurrence(path, loc, variable);
+    return new ShorthandOccurrence(path, loc, new ShorthandVariable(path));
   }
 
+  const variable = new WIPVariable(path);
   if (path.isMemberExpression()) {
     return new MemberExpressionOccurrence(path, loc, variable);
   }
@@ -354,28 +353,9 @@ class MemberExpressionOccurrence extends Occurrence {
 }
 
 class Variable {
-  private _name = "extracted";
-  private path: ast.NodePath;
+  protected _name = "extracted";
 
-  constructor(path: ast.NodePath) {
-    this.path = path;
-
-    const { node } = path;
-
-    if (ast.isStringLiteral(node)) {
-      this.tryToSetNameWith(camel(node.value));
-    }
-
-    if (ast.canBeShorthand(path)) {
-      this.tryToSetNameWith2(path.node.key.name);
-    }
-
-    if (ast.isMemberExpression(node)) {
-      if (ast.isIdentifier(node.property) && !node.computed) {
-        this.tryToSetNameWith(node.property.name);
-      }
-    }
-  }
+  constructor(protected path: ast.NodePath) {}
 
   get name(): string {
     return this._name;
@@ -395,34 +375,13 @@ class Variable {
     return shouldWrapInBraces ? `{${this.name}}` : this.name;
   }
 
-  private tryToSetNameWith(value: string) {
-    const startsWithNumber = value.match(/^\d.*/);
-
-    const BLACKLISTED_KEYWORDS = [
-      "const",
-      "var",
-      "let",
-      "function",
-      "if",
-      "else",
-      "switch",
-      "case",
-      "default",
-      "import",
-      "export"
-    ];
-
-    if (
-      value.length > 1 &&
-      value.length <= 20 &&
-      !startsWithNumber &&
-      !BLACKLISTED_KEYWORDS.includes(value)
-    ) {
+  protected tryToSetNameWith(value: string) {
+    if (this.isValidName(value)) {
       this._name = value;
     }
   }
 
-  private tryToSetNameWith2(value: string) {
+  protected isValidName(value: string): boolean {
     const startsWithNumber = value.match(/^\d.*/);
 
     const BLACKLISTED_KEYWORDS = [
@@ -439,9 +398,35 @@ class Variable {
       "export"
     ];
 
-    if (!startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value)) {
-      this._name = value;
+    return !startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value);
+  }
+}
+
+class WIPVariable extends Variable {
+  constructor(path: ast.NodePath) {
+    super(path);
+    const { node } = path;
+
+    if (ast.isStringLiteral(node)) {
+      this.tryToSetNameWith(camel(node.value));
     }
+
+    if (ast.isMemberExpression(node)) {
+      if (ast.isIdentifier(node.property) && !node.computed) {
+        this.tryToSetNameWith(node.property.name);
+      }
+    }
+  }
+
+  protected isValidName(value: string): boolean {
+    return super.isValidName(value) && value.length > 1 && value.length <= 20;
+  }
+}
+
+class ShorthandVariable extends Variable {
+  constructor(path: ast.NodePath<ast.ObjectProperty>) {
+    super(path);
+    this.tryToSetNameWith(path.node.key.name);
   }
 }
 
