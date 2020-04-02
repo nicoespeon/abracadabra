@@ -215,27 +215,30 @@ function createOccurrence(
   path: ast.NodePath,
   loc: ast.SourceLocation
 ): Occurrence {
+  const variable = new Variable(path);
+
   if (ast.canBeShorthand(path)) {
-    return new ShorthandOccurrence(path, loc);
+    return new ShorthandOccurrence(path, loc, variable);
   }
 
   if (path.isMemberExpression()) {
-    return new MemberExpressionOccurrence(path, loc);
+    return new MemberExpressionOccurrence(path, loc, variable);
   }
 
-  return new Occurrence(path, loc);
+  return new Occurrence(path, loc, variable);
 }
 
 class Occurrence {
   path: ast.NodePath;
   loc: ast.SourceLocation;
 
-  protected variable: Variable;
-
-  constructor(path: ast.NodePath, loc: ast.SourceLocation) {
+  constructor(
+    path: ast.NodePath,
+    loc: ast.SourceLocation,
+    protected variable: Variable
+  ) {
     this.path = path;
     this.loc = loc;
-    this.variable = new Variable(path);
   }
 
   get selection() {
@@ -302,8 +305,12 @@ class Occurrence {
 class ShorthandOccurrence extends Occurrence {
   private keySelection: Selection;
 
-  constructor(path: ast.NodePath<ast.ObjectProperty>, loc: ast.SourceLocation) {
-    super(path, loc);
+  constructor(
+    path: ast.NodePath<ast.ObjectProperty>,
+    loc: ast.SourceLocation,
+    variable: Variable
+  ) {
+    super(path, loc, variable);
     this.keySelection = Selection.fromAST(path.node.key.loc);
   }
 
@@ -327,9 +334,10 @@ class MemberExpressionOccurrence extends Occurrence {
 
   constructor(
     path: ast.NodePath<ast.MemberExpression>,
-    loc: ast.SourceLocation
+    loc: ast.SourceLocation,
+    variable: Variable
   ) {
-    super(path, loc);
+    super(path, loc, variable);
     this.path = path;
   }
 
