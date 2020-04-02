@@ -225,6 +225,13 @@ console.log(node.name);`
 console.log(some_node.name);`
       },
       {
+        description: "a member expression when property name is too long",
+        code: `console.log(path.somethingVeryVeryVeryLongThatWontFit.name);`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const { somethingVeryVeryVeryLongThatWontFit } = path;
+console.log(somethingVeryVeryVeryLongThatWontFit.name);`
+      },
+      {
         description: "member expression with computed value",
         code: `console.log(this.items[i].name);`,
         selection: Selection.cursorAt(0, 23),
