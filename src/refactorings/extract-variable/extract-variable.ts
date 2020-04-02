@@ -1,7 +1,7 @@
 import { Editor, Code, ErrorReason, Modification } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
@@ -96,7 +96,7 @@ function findExtractableCode(
     otherOccurrences: []
   };
 
-  ast.parseAndTraverseCode(code, {
+  t.parseAndTraverseCode(code, {
     enter(path) {
       if (!isExtractableContext(path.parent)) return;
       if (!isExtractable(path)) return;
@@ -130,12 +130,12 @@ function findOtherOccurrences(
   let result: Occurrence[] = [];
 
   const visitor = {
-    enter(path: ast.NodePath) {
+    enter(path: t.NodePath) {
       const { node } = path;
 
       if (path.type !== occurrence.path.type) return;
-      if (!ast.isSelectableNode(node)) return;
-      if (!ast.isSelectableNode(occurrence.path.node)) return;
+      if (!t.isSelectableNode(node)) return;
+      if (!t.isSelectableNode(occurrence.path.node)) return;
 
       const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
@@ -143,7 +143,7 @@ function findOtherOccurrences(
       const pathSelection = Selection.fromAST(loc);
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
-      if (ast.areEqual(path.node, occurrence.path.node)) {
+      if (t.areEqual(path.node, occurrence.path.node)) {
         result.push(createOccurrence(path, node.loc));
       }
     }
@@ -152,26 +152,26 @@ function findOtherOccurrences(
   const scopePath = occurrence.path.getFunctionParent();
   scopePath
     ? scopePath.traverse(visitor)
-    : ast.parseAndTraverseCode(code, visitor);
+    : t.parseAndTraverseCode(code, visitor);
 
   return result;
 }
 
 function getOccurrenceLoc(
-  node: ast.SelectableNode,
+  node: t.SelectableNode,
   selection: Selection
-): ast.SourceLocation | null {
-  return ast.isSelectableObjectProperty(node)
+): t.SourceLocation | null {
+  return t.isSelectableObjectProperty(node)
     ? findObjectPropertyLoc(selection, node)
-    : ast.isJSXExpressionContainer(node)
+    : t.isJSXExpressionContainer(node)
     ? node.expression.loc
     : node.loc;
 }
 
 function findObjectPropertyLoc(
   selection: Selection,
-  node: ast.SelectableObjectProperty
-): ast.SourceLocation | null {
+  node: t.SelectableObjectProperty
+): t.SourceLocation | null {
   if (selection.isInsideNode(node.value)) return node.value.loc;
   if (node.computed) return node.key.loc;
 
@@ -180,34 +180,34 @@ function findObjectPropertyLoc(
   return null;
 }
 
-function isExtractableContext(node: ast.Node): boolean {
+function isExtractableContext(node: t.Node): boolean {
   return (
-    (ast.isExpression(node) && !ast.isArrowFunctionExpression(node)) ||
-    ast.isReturnStatement(node) ||
-    ast.isVariableDeclarator(node) ||
-    ast.isClassProperty(node) ||
-    ast.isIfStatement(node) ||
-    ast.isWhileStatement(node) ||
-    ast.isSwitchCase(node) ||
-    ast.isJSXExpressionContainer(node) ||
-    ast.isJSXAttribute(node) ||
-    ast.isSpreadElement(node)
+    (t.isExpression(node) && !t.isArrowFunctionExpression(node)) ||
+    t.isReturnStatement(node) ||
+    t.isVariableDeclarator(node) ||
+    t.isClassProperty(node) ||
+    t.isIfStatement(node) ||
+    t.isWhileStatement(node) ||
+    t.isSwitchCase(node) ||
+    t.isJSXExpressionContainer(node) ||
+    t.isJSXAttribute(node) ||
+    t.isSpreadElement(node)
   );
 }
 
-function isExtractable(path: ast.NodePath): boolean {
+function isExtractable(path: t.NodePath): boolean {
   return (
-    !ast.isPartOfMemberExpression(path) &&
-    !ast.isClassPropertyIdentifier(path) &&
-    !ast.isVariableDeclarationIdentifier(path) &&
-    !ast.isFunctionCallIdentifier(path) &&
-    !ast.isJSXPartialElement(path) &&
-    !ast.isTemplateElement(path) &&
-    !ast.isBlockStatement(path) &&
-    !ast.isSpreadElement(path) &&
-    !ast.isTSTypeAnnotation(path) &&
+    !t.isPartOfMemberExpression(path) &&
+    !t.isClassPropertyIdentifier(path) &&
+    !t.isVariableDeclarationIdentifier(path) &&
+    !t.isFunctionCallIdentifier(path) &&
+    !t.isJSXPartialElement(path) &&
+    !t.isTemplateElement(path) &&
+    !t.isBlockStatement(path) &&
+    !t.isSpreadElement(path) &&
+    !t.isTSTypeAnnotation(path) &&
     // Don't extract object method because we don't handle `this`.
-    !ast.isObjectMethod(path)
+    !t.isObjectMethod(path)
   );
 }
 
@@ -216,11 +216,8 @@ type ExtractableCode = {
   otherOccurrences: Occurrence[];
 };
 
-function createOccurrence(
-  path: ast.NodePath,
-  loc: ast.SourceLocation
-): Occurrence {
-  if (ast.canBeShorthand(path)) {
+function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
+  if (t.canBeShorthand(path)) {
     const variable = new ShorthandVariable(path);
 
     if (variable.isValid) {
@@ -245,8 +242,8 @@ function createOccurrence(
 
 class Occurrence {
   constructor(
-    public path: ast.NodePath,
-    public loc: ast.SourceLocation,
+    public path: t.NodePath,
+    public loc: t.SourceLocation,
     protected variable: Variable
   ) {}
 
@@ -278,7 +275,7 @@ class Occurrence {
   }
 
   toVariableDeclaration(code: Code): Code {
-    const extractedCode = ast.isJSXText(this.path.node) ? `"${code}"` : code;
+    const extractedCode = t.isJSXText(this.path.node) ? `"${code}"` : code;
     const { name } = this.variable;
 
     return `const ${name} = ${extractedCode};\n${this.indentation}`;
@@ -303,7 +300,7 @@ class Occurrence {
   }
 
   private getScopeParentPosition(): Position {
-    const parentPath = ast.findScopePath(this.path);
+    const parentPath = t.findScopePath(this.path);
     const parent = parentPath ? parentPath.node : this.path.node;
     if (!parent.loc) return this.selection.start;
 
@@ -315,8 +312,8 @@ class ShorthandOccurrence extends Occurrence {
   private keySelection: Selection;
 
   constructor(
-    path: ast.NodePath<ast.ObjectProperty>,
-    loc: ast.SourceLocation,
+    path: t.NodePath<t.ObjectProperty>,
+    loc: t.SourceLocation,
     variable: Variable
   ) {
     super(path, loc, variable);
@@ -339,11 +336,11 @@ class ShorthandOccurrence extends Occurrence {
 }
 
 class MemberExpressionOccurrence extends Occurrence {
-  path: ast.NodePath<ast.MemberExpression>;
+  path: t.NodePath<t.MemberExpression>;
 
   constructor(
-    path: ast.NodePath<ast.MemberExpression>,
-    loc: ast.SourceLocation,
+    path: t.NodePath<t.MemberExpression>,
+    loc: t.SourceLocation,
     variable: Variable
   ) {
     super(path, loc, variable);
@@ -355,7 +352,7 @@ class MemberExpressionOccurrence extends Occurrence {
       return super.toVariableDeclaration(code);
     }
 
-    const extractedCode = ast.generate(this.path.node.object);
+    const extractedCode = t.generate(this.path.node.object);
     const name = `{ ${this.variable.name} }`;
 
     return `const ${name} = ${extractedCode};\n${this.indentation}`;
