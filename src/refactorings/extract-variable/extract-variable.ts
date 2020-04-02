@@ -244,17 +244,11 @@ function createOccurrence(
 }
 
 class Occurrence {
-  path: ast.NodePath;
-  loc: ast.SourceLocation;
-
   constructor(
-    path: ast.NodePath,
-    loc: ast.SourceLocation,
+    public path: ast.NodePath,
+    public loc: ast.SourceLocation,
     protected variable: Variable
-  ) {
-    this.path = path;
-    this.loc = loc;
-  }
+  ) {}
 
   get selection() {
     return Selection.fromAST(this.loc);
