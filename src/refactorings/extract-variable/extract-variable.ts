@@ -216,19 +216,26 @@ function createOccurrence(
   loc: ast.SourceLocation
 ): Occurrence {
   if (ast.canBeShorthand(path)) {
-    const shorthandVariable = new ShorthandVariable(path);
+    const variable = new ShorthandVariable(path);
 
-    if (shorthandVariable.isValid) {
-      return new ShorthandOccurrence(path, loc, shorthandVariable);
+    if (variable.isValid) {
+      return new ShorthandOccurrence(path, loc, variable);
     }
   }
 
-  const variable = new WIPVariable(path);
   if (path.isMemberExpression()) {
-    return new MemberExpressionOccurrence(path, loc, variable);
+    return new MemberExpressionOccurrence(
+      path,
+      loc,
+      new MemberExpressionVariable(path)
+    );
   }
 
-  return new Occurrence(path, loc, variable);
+  if (path.isStringLiteral()) {
+    return new Occurrence(path, loc, new StringLiteralVariable(path));
+  }
+
+  return new Occurrence(path, loc, new Variable(path));
 }
 
 class Occurrence {
@@ -406,24 +413,27 @@ class Variable {
   }
 }
 
-class WIPVariable extends Variable {
-  constructor(path: ast.NodePath) {
+class StringLiteralVariable extends Variable {
+  constructor(protected path: ast.NodePath<ast.StringLiteral>) {
     super(path);
-    const { node } = path;
-
-    if (ast.isStringLiteral(node)) {
-      this.tryToSetNameWith(camel(node.value));
-    }
-
-    if (ast.isMemberExpression(node)) {
-      if (ast.isIdentifier(node.property) && !node.computed) {
-        this.tryToSetNameWith(node.property.name);
-      }
-    }
+    this.tryToSetNameWith(camel(path.node.value));
   }
 
   protected isValidName(value: string): boolean {
     return super.isValidName(value) && value.length > 1 && value.length <= 20;
+  }
+}
+
+class MemberExpressionVariable extends Variable {
+  constructor(protected path: ast.NodePath<ast.MemberExpression>) {
+    super(path);
+    const {
+      node: { property, computed }
+    } = path;
+
+    if (ast.isIdentifier(property) && !computed) {
+      this.tryToSetNameWith(property.name);
+    }
   }
 }
 
