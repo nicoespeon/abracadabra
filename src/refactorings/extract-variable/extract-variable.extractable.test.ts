@@ -225,6 +225,17 @@ console.log({
 });`
       },
       {
+        description: "an object property value which key is too long",
+        code: `console.log({
+  somethingVeryVeryVeryLong: doSomething()
+});`,
+        selection: Selection.cursorAt(1, 33),
+        expected: `const somethingVeryVeryVeryLong = doSomething();
+console.log({
+  somethingVeryVeryVeryLong
+});`
+      },
+      {
         description:
           "an element nested in a multi-lines object that is assigned to a variable",
         code: `const a = {

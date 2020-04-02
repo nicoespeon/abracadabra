@@ -359,7 +359,7 @@ class Variable {
     }
 
     if (ast.canBeShorthand(path)) {
-      this.tryToSetNameWith(path.node.key.name);
+      this.tryToSetNameWith2(path.node.key.name);
     }
 
     if (ast.isMemberExpression(node)) {
@@ -410,6 +410,28 @@ class Variable {
       !startsWithNumber &&
       !BLACKLISTED_KEYWORDS.includes(value)
     ) {
+      this._name = value;
+    }
+  }
+
+  private tryToSetNameWith2(value: string) {
+    const startsWithNumber = value.match(/^\d.*/);
+
+    const BLACKLISTED_KEYWORDS = [
+      "const",
+      "var",
+      "let",
+      "function",
+      "if",
+      "else",
+      "switch",
+      "case",
+      "default",
+      "import",
+      "export"
+    ];
+
+    if (!startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value)) {
       this._name = value;
     }
   }
