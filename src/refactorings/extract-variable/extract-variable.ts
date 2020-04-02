@@ -216,7 +216,11 @@ function createOccurrence(
   loc: ast.SourceLocation
 ): Occurrence {
   if (ast.canBeShorthand(path)) {
-    return new ShorthandOccurrence(path, loc, new ShorthandVariable(path));
+    const shorthandVariable = new ShorthandVariable(path);
+
+    if (shorthandVariable.isValid) {
+      return new ShorthandOccurrence(path, loc, shorthandVariable);
+    }
   }
 
   const variable = new WIPVariable(path);
@@ -424,9 +428,13 @@ class WIPVariable extends Variable {
 }
 
 class ShorthandVariable extends Variable {
-  constructor(path: ast.NodePath<ast.ObjectProperty>) {
+  constructor(protected path: ast.NodePath<ast.ObjectProperty>) {
     super(path);
     this.tryToSetNameWith(path.node.key.name);
+  }
+
+  get isValid(): boolean {
+    return this.isValidName(this.path.node.key.name);
   }
 }
 

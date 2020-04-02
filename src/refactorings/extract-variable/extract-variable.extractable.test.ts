@@ -236,6 +236,17 @@ console.log({
 });`
       },
       {
+        description: "an object property value which key is a keyword",
+        code: `console.log({
+  const: doSomething()
+});`,
+        selection: Selection.cursorAt(1, 12),
+        expected: `const extracted = doSomething();
+console.log({
+  const: extracted
+});`
+      },
+      {
         description:
           "an element nested in a multi-lines object that is assigned to a variable",
         code: `const a = {
