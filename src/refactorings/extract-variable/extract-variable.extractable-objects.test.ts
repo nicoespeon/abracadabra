@@ -119,6 +119,17 @@ console.log({
 });`
       },
       {
+        description: "an object property value which key is a string",
+        code: `console.log({
+  "hello.world": doSomething()
+});`,
+        selection: Selection.cursorAt(1, 18),
+        expected: `const extracted = doSomething();
+console.log({
+  "hello.world": extracted
+});`
+      },
+      {
         description:
           "an element nested in a multi-lines object that is assigned to a variable",
         code: `const a = {

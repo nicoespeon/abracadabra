@@ -325,5 +325,9 @@ function getOppositeOperator(
 }
 
 function canBeShorthand(path: NodePath): path is NodePath<t.ObjectProperty> {
-  return t.isObjectProperty(path.node) && !path.node.computed;
+  return (
+    t.isObjectProperty(path.node) &&
+    !path.node.computed &&
+    t.isIdentifier(path.node.key)
+  );
 }

@@ -35,6 +35,16 @@ const component_context = {
 };
 ```
 
+- "Extract Variable" didn't worked on object properties when key was a string like:
+
+```js
+const component_context = {
+  "hello.world": doSomething()
+};
+```
+
+That is now fixed!
+
 ## [4.0.0] - 2020-03-30 - Cover up that folder… 🙈
 
 ### Removed (= Breaking)
