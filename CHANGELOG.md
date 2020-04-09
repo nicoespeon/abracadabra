@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.1] - 2020-04-09
+
 ### Fixed
 
 - "Extract Variable" didn't worked on object properties with long key names. So this code:
@@ -807,7 +809,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.0.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.0.1...HEAD
+[4.0.1]: https://github.com/nicoespeon/abracadabra/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/nicoespeon/abracadabra/compare/3.2.3...4.0.0
 [3.2.3]: https://github.com/nicoespeon/abracadabra/compare/3.2.2...3.2.3
 [3.2.2]: https://github.com/nicoespeon/abracadabra/compare/3.2.1...3.2.2
