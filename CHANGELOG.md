@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.0] - 2020-04-09 - Back in Black 🎸
+
 ### Added
 
 - Get "Convert to Template Literal" back for the only scenario VS Code doesn't handle natively: simple strings. So you can convert a simple string into a template literal again, which is really convenient!
@@ -817,7 +819,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.0.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/nicoespeon/abracadabra/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/nicoespeon/abracadabra/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/nicoespeon/abracadabra/compare/3.2.3...4.0.0
 [3.2.3]: https://github.com/nicoespeon/abracadabra/compare/3.2.2...3.2.3
