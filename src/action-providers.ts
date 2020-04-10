@@ -18,12 +18,12 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection
   ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const ast = t.parse(document.getText());
-    const selection = createSelectionFromVSCode(range);
-
     if (this.isNavigatingAnIgnoredFile(document.uri.path)) {
       return [];
     }
+
+    const ast = t.parse(document.getText());
+    const selection = createSelectionFromVSCode(range);
 
     return this.findApplicableRefactorings(ast, selection).map(refactoring =>
       this.buildCodeActionFor(refactoring)
