@@ -18,16 +18,23 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection
   ): vscode.ProviderResult<vscode.CodeAction[]> {
+    const NO_ACTION: vscode.CodeAction[] = [];
+
     if (this.isNavigatingAnIgnoredFile(document.uri.path)) {
-      return [];
+      return NO_ACTION;
     }
 
-    const ast = t.parse(document.getText());
-    const selection = createSelectionFromVSCode(range);
+    try {
+      const ast = t.parse(document.getText());
+      const selection = createSelectionFromVSCode(range);
 
-    return this.findApplicableRefactorings(ast, selection).map(refactoring =>
-      this.buildCodeActionFor(refactoring)
-    );
+      return this.findApplicableRefactorings(ast, selection).map(refactoring =>
+        this.buildCodeActionFor(refactoring)
+      );
+    } catch (_) {
+      // Silently fail, we don't care why it failed (e.g. code can't be parsed).
+      return NO_ACTION;
+    }
   }
 
   private isNavigatingAnIgnoredFile(filePath: string): boolean {
@@ -90,22 +97,17 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private visit(visitor: t.Visitor, path: t.NodePath) {
-    const node = path.node;
+    const visitorNode = visitor[path.node.type];
 
-    try {
-      const visitorNode = visitor[node.type];
-      if (typeof visitorNode === "function") {
-        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
-        visitorNode.bind(visitor)(path, path.state);
-      } else if (
-        typeof visitorNode === "object" &&
-        typeof visitorNode.enter === "function"
-      ) {
-        // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
-        visitorNode.enter(path, path.state);
-      }
-    } catch (_) {
-      // Silently fail, we don't care why it failed (e.g. code can't be parsed).
+    if (typeof visitorNode === "function") {
+      // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+      visitorNode.bind(visitor)(path, path.state);
+    } else if (
+      typeof visitorNode === "object" &&
+      typeof visitorNode.enter === "function"
+    ) {
+      // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+      visitorNode.enter(path, path.state);
     }
   }
 

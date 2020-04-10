@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Quick Fixes used to log errors when code couldn't be parsed. This is not useful, so they don't anymore!
+
 ## [4.0.1] - 2020-04-09
 
 ### Fixed
