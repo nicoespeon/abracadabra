@@ -377,9 +377,13 @@ Does the contrary of _Add Braces to If Statement_: Removes braces from single-st
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-TODO: update description and demo
+This refactoring is already handled by VS Code.
 
-It's also useful when you want to turn a string into a template string.
+But there's one scenario they don't want to handle: [convert simple strings into template literals](https://github.com/microsoft/TypeScript/issues/36784).
+
+This is too bad because it's convenient to turn an existing string into a template literal to start adding some variables inside.
+
+Hence, Abracadabra is proposing the refactoring for such scenario!
 
 ![][demo-convert-to-template-literal]
 

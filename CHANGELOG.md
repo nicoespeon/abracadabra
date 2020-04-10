@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Get "Convert to Template Literal" back for the only scenario VS Code doesn't handle natively: simple strings. So you can convert a simple string into a template literal again, which is really convenient!
+
 ### Fixed
 
 - Quick Fixes used to log errors when code couldn't be parsed. This is not useful, so they don't anymore!
