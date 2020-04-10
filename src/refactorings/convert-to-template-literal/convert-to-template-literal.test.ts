@@ -27,6 +27,11 @@ describe("Convert To Template Literal", () => {
         description: "on an import statement using sinle quotes",
         code: `import MyComponent from './MyComponent';`,
         selection: Selection.cursorAt(0, 27)
+      },
+      {
+        description: "on a concatenation (handled by VS Code)",
+        code: `const name = "Jane" + 1;`,
+        selection: Selection.cursorAt(0, 17)
       }
     ],
     ({ code, selection = Selection.cursorAt(0, 13) }) => {
@@ -57,84 +62,8 @@ const lastName = "Doe";`,
 const lastName = "Doe";`
       },
       {
-        description: "concatenation with number, cursor on string",
-        code: `const name = "Jane" + 1;`,
-        expected: "const name = `Jane1`;"
-      },
-      {
-        description: "concatenation with number, cursor on the other node",
-        code: `const name = "Jane-" + 1;`,
-        selection: Selection.cursorAt(0, 23),
-        expected: "const name = `Jane-1`;"
-      },
-      {
-        description: "concatenation with number, cursor on operator",
-        code: `const name = "Jane-" + 1;`,
-        selection: Selection.cursorAt(0, 20),
-        expected: "const name = `Jane-1`;"
-      },
-      {
-        description: "concatenation with boolean",
-        code: `const name = "Jane-" + true;`,
-        expected: "const name = `Jane-true`;"
-      },
-      {
-        description: "concatenation with another string",
-        code: `const name = "Jane-" + "Doe";`,
-        expected: "const name = `Jane-Doe`;"
-      },
-      {
-        description: "concatenation with another template literal",
-        code: `const name = "Jane-" + \`Doe-\${12}\`;`,
-        expected: "const name = `Jane-Doe-${12}`;"
-      },
-      {
-        description: "concatenation with null",
-        code: `const name = "Jane-" + null;`,
-        expected: "const name = `Jane-null`;"
-      },
-      {
-        description: "concatenation with undefined",
-        code: `const name = "Jane-" + undefined;`,
-        expected: "const name = `Jane-undefined`;"
-      },
-      {
-        description: "concatenation with call expression",
-        code: `const name = "Jane-" + getLastNameOf(jane);`,
-        expected: "const name = `Jane-${getLastNameOf(jane)}`;"
-      },
-      {
-        description: "concatenation with member expression",
-        code: `const name = "Jane-" + lastNames[1];`,
-        expected: "const name = `Jane-${lastNames[1]}`;"
-      },
-      {
-        description: "concatenation with identifier",
-        code: `const lastName = "Doe";
-const name = "Jane " + lastName;`,
-        selection: Selection.cursorAt(1, 20),
-        expected: `const lastName = "Doe";
-const name = \`Jane \${lastName}\`;`
-      },
-      {
-        description: "concatenation with many elements",
-        code: `const lastName = "Doe";
-const age = 30;
-const name = "Jane " + lastName + " / " + age;`,
-        selection: Selection.cursorAt(2, 20),
-        expected: `const lastName = "Doe";
-const age = 30;
-const name = \`Jane \${lastName} / \${age}\`;`
-      },
-      {
         description: "JSX attribute without braces",
         code: `<TestComponent testProp="test" />`,
-        selection: Selection.cursorAt(0, 26),
-        expected: `<TestComponent testProp={\`test\`} />`
-      },
-      {
-        description: "JSX attribute with braces",
-        code: `<TestComponent testProp={"test"} />`,
         selection: Selection.cursorAt(0, 26),
         expected: `<TestComponent testProp={\`test\`} />`
       }
@@ -158,12 +87,8 @@ const name = \`Jane \${lastName} / \${age}\`;`
         code: "const total = price + 10 + 20;"
       },
       {
-        description: "concatenation with array",
-        code: `const name = "Jane-" + ["Doe"];`
-      },
-      {
-        description: "concatenation with object",
-        code: `const name = "Jane-" + { lastName: "Doe" };`
+        description: "concatenation (handled by VS Code)",
+        code: `const name = "Jane-" + 1;`
       },
       {
         description: "import statement",
