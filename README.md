@@ -53,6 +53,7 @@ Related projects:
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
     1. [Add Braces to If Statement](#add-braces-to-if-statement)
     1. [Remove Braces from If Statement](#remove-braces-from-if-statement)
+    1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
   - TS specific:
@@ -372,6 +373,22 @@ Does the contrary of _Add Braces to If Statement_: Removes braces from single-st
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Convert to Template Literal
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+This refactoring is already handled by VS Code.
+
+But there's one scenario they don't want to handle: [convert simple strings into template literals](https://github.com/microsoft/TypeScript/issues/36784).
+
+This is too bad because it's convenient to turn an existing string into a template literal to start adding some variables inside.
+
+Hence, Abracadabra is proposing the refactoring for such scenario!
+
+![][demo-convert-to-template-literal]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Replace Binary with Assignment
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -627,6 +644,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
+[demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 [demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true
