@@ -1,4 +1,4 @@
-import { extractGenericType, hasTypeToExtract } from "./extract-generic-type";
+import { extractGenericType, createVisitor } from "./extract-generic-type";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Extract generic type",
-    canPerform: hasTypeToExtract
+    createVisitor
   }
 };
 

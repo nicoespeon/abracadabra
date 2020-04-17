@@ -2,7 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { extractGenericType, hasTypeToExtract };
+export { extractGenericType, createVisitor };
 
 async function extractGenericType(
   code: Code,
@@ -19,13 +19,37 @@ async function extractGenericType(
   await editor.write(updatedCode.code);
 }
 
-function hasTypeToExtract(ast: t.AST, selection: Selection): boolean {
-  // TODO: implement the check here 🧙‍
-  return false;
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, typeName, typeAnnotation) => {
+      if (t.isTSInterfaceDeclaration(path.parentPath.parentPath.parent)) {
+        const typeParameter = t.tsTypeParameter(
+          undefined,
+          path.node.typeAnnotation,
+          typeName
+        );
+
+        path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
+          [typeParameter]
+        );
+      }
+
+      path.replaceWith(typeAnnotation);
+      path.stop();
+    })
+  );
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.NodePath<t.TSTypeAnnotation>,
+    typeName: string,
+    typeAnnotation: t.TSTypeAnnotation
+  ) => void
+): t.Visitor {
+  return {
     TSTypeAnnotation(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -34,22 +58,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         t.tsTypeReference(t.identifier(genericTypeName))
       );
 
-      if (t.isTSInterfaceDeclaration(path.parentPath.parentPath.parent)) {
-        // Mutates the result because of a weird bug: TS complains "Too many arguments"
-        // if we pass more than 2 params even though `tsTypeParameter` takes 3 params.
-        const typeParameter = t.tsTypeParameter(
-          undefined,
-          path.node.typeAnnotation
-        );
-        typeParameter.name = genericTypeName;
-
-        path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
-          [typeParameter]
-        );
-      }
-
-      path.replaceWith(genericTypeAnnotation);
-      path.stop();
+      onMatch(path, genericTypeName, genericTypeAnnotation);
     }
-  });
+  };
 }
