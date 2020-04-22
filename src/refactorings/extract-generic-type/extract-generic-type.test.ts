@@ -124,6 +124,25 @@ describe("Extract Generic Type", () => {
     expect(editor.code).toBe(expected);
   });
 
+  it("should replace nothing if user decides to", async () => {
+    const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}`;
+    const selection = Selection.cursorAt(1, 5);
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([_all, _selected, nothing]) =>
+        Promise.resolve(nothing)
+      );
+
+    await extractGenericType(code, selection, editor);
+
+    expect(editor.code).toBe(code);
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);

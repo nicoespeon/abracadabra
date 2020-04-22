@@ -26,6 +26,8 @@ async function extractGenericType(
   }
 
   const choice = await askReplacementStrategy(otherOccurrences, editor);
+  if (choice === ReplacementStrategy.None) return;
+
   const occurrences =
     choice === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
