@@ -4,8 +4,12 @@ import * as t from "../../ast";
 
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 import { createOccurrence, Occurrence } from "./occurrence";
+import {
+  ReplacementStrategy,
+  askReplacementStrategy
+} from "../../replacement-strategy";
 
-export { extractVariable, ReplaceChoice };
+export { extractVariable };
 
 async function extractVariable(
   code: Code,
@@ -22,11 +26,11 @@ async function extractVariable(
     return;
   }
 
-  const choice = await getChoice(otherOccurrences, editor);
-  if (choice === ReplaceChoice.None) return;
+  const choice = await askReplacementStrategy(otherOccurrences, editor);
+  if (choice === ReplacementStrategy.None) return;
 
   const extractedOccurrences =
-    choice === ReplaceChoice.AllOccurrences
+    choice === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
   const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
@@ -51,33 +55,6 @@ async function extractVariable(
 
 function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;
-}
-
-async function getChoice(
-  otherOccurrences: Occurrence[],
-  editor: Editor
-): Promise<ReplaceChoice> {
-  const occurrencesCount = otherOccurrences.length;
-  if (occurrencesCount <= 0) return ReplaceChoice.ThisOccurrence;
-
-  const choice = await editor.askUser([
-    {
-      value: ReplaceChoice.AllOccurrences,
-      label: `Replace all ${occurrencesCount + 1} occurrences`
-    },
-    {
-      value: ReplaceChoice.ThisOccurrence,
-      label: "Replace this occurrence only"
-    }
-  ]);
-
-  return choice ? choice.value : ReplaceChoice.None;
-}
-
-enum ReplaceChoice {
-  AllOccurrences,
-  ThisOccurrence,
-  None
 }
 
 function findExtractableCode(

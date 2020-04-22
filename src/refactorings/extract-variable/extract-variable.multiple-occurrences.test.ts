@@ -3,7 +3,8 @@ import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 
-import { extractVariable, ReplaceChoice } from "./extract-variable";
+import { extractVariable } from "./extract-variable";
+import { ReplacementStrategy } from "../../replacement-strategy";
 import { testEach } from "../../tests-helpers";
 
 describe("Extract Variable - Multiple occurrences", () => {
@@ -31,11 +32,11 @@ sendMessage("Hello");`;
 
     expect(askUser).toBeCalledWith([
       {
-        value: ReplaceChoice.AllOccurrences,
+        value: ReplacementStrategy.AllOccurrences,
         label: "Replace all 2 occurrences"
       },
       {
-        value: ReplaceChoice.ThisOccurrence,
+        value: ReplacementStrategy.SelectedOccurrence,
         label: "Replace this occurrence only"
       }
     ]);
