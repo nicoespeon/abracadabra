@@ -52,95 +52,97 @@ describe("Extract Generic Type", () => {
     }
   );
 
-  it("should ask user to replace all occurrences", async () => {
-    const code = `interface Position {
+  describe("multiple occurrences", () => {
+    it("should ask user to replace all occurrences", async () => {
+      const code = `interface Position {
   x: number;
   y: number;
   isActive: boolean;
 }`;
-    const selection = Selection.cursorAt(1, 5);
-    const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUser");
+      const selection = Selection.cursorAt(1, 5);
+      const editor = new InMemoryEditor(code);
+      jest.spyOn(editor, "askUser");
 
-    await extractGenericType(code, selection, editor);
+      await extractGenericType(code, selection, editor);
 
-    expect(editor.askUser).toBeCalledWith([
-      {
-        value: ReplacementStrategy.AllOccurrences,
-        label: "Replace all 2 occurrences"
-      },
-      {
-        value: ReplacementStrategy.SelectedOccurrence,
-        label: "Replace this occurrence only"
-      }
-    ]);
-  });
+      expect(editor.askUser).toBeCalledWith([
+        {
+          value: ReplacementStrategy.AllOccurrences,
+          label: "Replace all 2 occurrences"
+        },
+        {
+          value: ReplacementStrategy.SelectedOccurrence,
+          label: "Replace this occurrence only"
+        }
+      ]);
+    });
 
-  it("should only replace the selected occurrence if user decides to", async () => {
-    const code = `interface Position {
+    it("should only replace the selected occurrence if user decides to", async () => {
+      const code = `interface Position {
   x: number;
   y: number;
   isActive: boolean;
 }`;
-    const selection = Selection.cursorAt(2, 5);
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUser")
-      .mockImplementation(([_, selectedOccurrence]) =>
-        Promise.resolve(selectedOccurrence)
-      );
+      const selection = Selection.cursorAt(2, 5);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([_, selectedOccurrence]) =>
+          Promise.resolve(selectedOccurrence)
+        );
 
-    await extractGenericType(code, selection, editor);
+      await extractGenericType(code, selection, editor);
 
-    const expected = `interface Position<T = number> {
+      const expected = `interface Position<T = number> {
   x: number;
   y: T;
   isActive: boolean;
 }`;
-    expect(editor.code).toBe(expected);
-  });
+      expect(editor.code).toBe(expected);
+    });
 
-  it("should replace all occurrences if user decides to", async () => {
-    const code = `interface Position {
+    it("should replace all occurrences if user decides to", async () => {
+      const code = `interface Position {
   x: number;
   y: number;
   isActive: boolean;
 }`;
-    const selection = Selection.cursorAt(1, 5);
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUser")
-      .mockImplementation(([allOccurrences]) =>
-        Promise.resolve(allOccurrences)
-      );
+      const selection = Selection.cursorAt(1, 5);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([allOccurrences]) =>
+          Promise.resolve(allOccurrences)
+        );
 
-    await extractGenericType(code, selection, editor);
+      await extractGenericType(code, selection, editor);
 
-    const expected = `interface Position<T = number> {
+      const expected = `interface Position<T = number> {
   x: T;
   y: T;
   isActive: boolean;
 }`;
-    expect(editor.code).toBe(expected);
-  });
+      expect(editor.code).toBe(expected);
+    });
 
-  it("should replace nothing if user decides to", async () => {
-    const code = `interface Position {
+    it("should replace nothing if user decides to", async () => {
+      const code = `interface Position {
   x: number;
   y: number;
   isActive: boolean;
 }`;
-    const selection = Selection.cursorAt(1, 5);
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUser")
-      .mockImplementation(([_all, _selected, nothing]) =>
-        Promise.resolve(nothing)
-      );
+      const selection = Selection.cursorAt(1, 5);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([_all, _selected, nothing]) =>
+          Promise.resolve(nothing)
+        );
 
-    await extractGenericType(code, selection, editor);
+      await extractGenericType(code, selection, editor);
 
-    expect(editor.code).toBe(code);
+      expect(editor.code).toBe(code);
+    });
   });
 
   it("should show an error message if refactoring can't be made", async () => {
