@@ -1,7 +1,10 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { askReplacementStrategy } from "../../replacement-strategy";
+import {
+  askReplacementStrategy,
+  ReplacementStrategy
+} from "../../replacement-strategy";
 
 export { extractGenericType, createVisitor };
 
@@ -22,9 +25,13 @@ async function extractGenericType(
     return;
   }
 
-  await askReplacementStrategy(otherOccurrences, editor);
+  const choice = await askReplacementStrategy(otherOccurrences, editor);
+  const occurrences =
+    choice === ReplacementStrategy.AllOccurrences
+      ? otherOccurrences.concat(selectedOccurrence)
+      : [selectedOccurrence];
 
-  selectedOccurrence.transform();
+  occurrences.forEach(occurrence => occurrence.transform());
 
   await editor.write(t.print(ast));
 }

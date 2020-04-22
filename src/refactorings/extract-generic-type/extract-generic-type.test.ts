@@ -40,7 +40,6 @@ describe("Extract Generic Type", () => {
   y: number;
 }`
       }
-      // TODO: extract 1 or all occurrences of given type (e.g. "number")
       // TODO: already existing T in interface
       // TODO: nested object in interface
       // TODO: something that is not an interface (e.g. function)
@@ -77,6 +76,54 @@ describe("Extract Generic Type", () => {
     ]);
   });
 
+  it("should only replace the selected occurrence if user decides to", async () => {
+    const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}`;
+    const selection = Selection.cursorAt(2, 5);
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([_, selectedOccurrence]) =>
+        Promise.resolve(selectedOccurrence)
+      );
+
+    await extractGenericType(code, selection, editor);
+
+    const expected = `interface Position<T = number> {
+  x: number;
+  y: T;
+  isActive: boolean;
+}`;
+    expect(editor.code).toBe(expected);
+  });
+
+  it("should replace all occurrences if user decides to", async () => {
+    const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}`;
+    const selection = Selection.cursorAt(1, 5);
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
+
+    await extractGenericType(code, selection, editor);
+
+    const expected = `interface Position<T = number> {
+  x: T;
+  y: T;
+  isActive: boolean;
+}`;
+    expect(editor.code).toBe(expected);
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const selection = Selection.cursorAt(0, 0);
@@ -93,6 +140,11 @@ describe("Extract Generic Type", () => {
     selection: Selection
   ): Promise<Code> {
     const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([_, selectedOccurrence]) =>
+        Promise.resolve(selectedOccurrence)
+      );
     editor.showError = showErrorMessage;
     await extractGenericType(code, selection, editor);
     return editor.code;
