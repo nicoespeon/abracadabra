@@ -1,4 +1,4 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
+import { Editor, ErrorReason, Code, Command } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -43,7 +43,6 @@ describe("Extract Generic Type", () => {
       // TODO: already existing T in interface
       // TODO: nested object in interface
       // TODO: something that is not an interface (e.g. function)
-      // TODO: rename on `T`
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doExtractGenericType(code, selection);
@@ -143,6 +142,21 @@ describe("Extract Generic Type", () => {
 
       expect(editor.code).toBe(code);
     });
+  });
+
+  it("should rename extracted symbol", async () => {
+    const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}`;
+    const selection = Selection.cursorAt(2, 5);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "delegate");
+
+    await extractGenericType(code, selection, editor);
+
+    expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
   });
 
   it("should show an error message if refactoring can't be made", async () => {

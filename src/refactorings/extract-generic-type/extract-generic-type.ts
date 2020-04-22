@@ -5,6 +5,7 @@ import {
   askReplacementStrategy,
   ReplacementStrategy
 } from "../../replacement-strategy";
+import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export { extractGenericType, createVisitor };
 
@@ -36,6 +37,9 @@ async function extractGenericType(
   occurrences.forEach(occurrence => occurrence.transform());
 
   await editor.write(t.print(ast));
+
+  // Extracted symbol is located at `selection` => just trigger a rename.
+  await renameSymbol(editor);
 }
 
 function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
