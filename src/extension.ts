@@ -11,6 +11,7 @@ import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import extractVariable from "./refactorings/extract-variable";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -59,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
+    extractGenericType,
     extractInterface,
     extractVariable,
     flipIfElse,
@@ -93,7 +95,7 @@ export function activate(context: vscode.ExtensionContext) {
   TS_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
-      new RefactoringActionProvider([extractInterface]),
+      new RefactoringActionProvider([extractGenericType, extractInterface]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
       }
