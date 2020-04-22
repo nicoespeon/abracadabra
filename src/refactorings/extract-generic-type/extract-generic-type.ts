@@ -10,54 +10,35 @@ async function extractGenericType(
   selection: Selection,
   editor: Editor
 ) {
-  const { others: otherOccurrences } = findAllOccurrences(
-    t.parse(code),
-    selection
-  );
-  await askReplacementStrategy(otherOccurrences, editor);
+  const ast = t.parse(code);
 
-  const updatedCode = updateCode(t.parse(code), selection);
+  const {
+    selected: selectedOccurrence,
+    others: otherOccurrences
+  } = findAllOccurrences(ast, selection);
 
-  if (!updatedCode.hasCodeChanged) {
+  if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFindTypeToExtract);
     return;
   }
 
-  await editor.write(updatedCode.code);
-}
+  await askReplacementStrategy(otherOccurrences, editor);
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
-    ast,
-    createVisitor(selection, (path, typeName, typeAnnotation) => {
-      if (t.isTSInterfaceDeclaration(path.parentPath.parentPath.parent)) {
-        const typeParameter = t.tsTypeParameter(
-          undefined,
-          path.node.typeAnnotation,
-          typeName
-        );
+  selectedOccurrence.transform();
 
-        path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
-          [typeParameter]
-        );
-      }
-
-      path.replaceWith(typeAnnotation);
-      path.stop();
-    })
-  );
+  await editor.write(t.print(ast));
 }
 
 function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
   let selectedOccurrence: Occurrence | null = null;
   let otherOccurrences: Occurrence[] = [];
 
-  t.transformAST(
+  t.traverseAST(
     ast,
     createVisitor(
       selection,
-      path => (selectedOccurrence = path),
-      path => otherOccurrences.push(path)
+      path => (selectedOccurrence = new Occurrence(path)),
+      path => otherOccurrences.push(new Occurrence(path))
     )
   );
 
@@ -68,7 +49,7 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
         selectedOccurrence &&
         t.areEqual(occurrence.node, selectedOccurrence.node) &&
         // Don't include the selected occurrence
-        !Selection.areEqual(occurrence, selectedOccurrence)
+        !Selection.areEqual(occurrence.path, selectedOccurrence.path)
     )
   };
 }
@@ -78,15 +59,38 @@ interface AllOccurrences {
   others: Occurrence[];
 }
 
-type Occurrence = t.SelectablePath<t.TSTypeAnnotation>;
+class Occurrence {
+  constructor(readonly path: t.SelectablePath<t.TSTypeAnnotation>) {}
+
+  get node(): t.Selectable<t.TSTypeAnnotation> {
+    return this.path.node;
+  }
+
+  transform() {
+    const genericTypeName = "T";
+    const genericTypeAnnotation = t.tsTypeAnnotation(
+      t.tsTypeReference(t.identifier(genericTypeName))
+    );
+
+    if (t.isTSInterfaceDeclaration(this.path.parentPath.parentPath.parent)) {
+      const typeParameter = t.tsTypeParameter(
+        undefined,
+        this.path.node.typeAnnotation,
+        genericTypeName
+      );
+
+      this.path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
+        [typeParameter]
+      );
+    }
+
+    this.path.replaceWith(genericTypeAnnotation);
+  }
+}
 
 function createVisitor(
   selection: Selection,
-  onMatch: (
-    path: t.SelectablePath<t.TSTypeAnnotation>,
-    typeName: string,
-    typeAnnotation: t.TSTypeAnnotation
-  ) => void,
+  onMatch: (path: t.SelectablePath<t.TSTypeAnnotation>) => void,
   onVisit: (path: t.SelectablePath<t.TSTypeAnnotation>) => void = () => {}
 ): t.Visitor {
   return {
@@ -96,12 +100,7 @@ function createVisitor(
       onVisit(path);
       if (!selection.isInsidePath(path)) return;
 
-      const genericTypeName = "T";
-      const genericTypeAnnotation = t.tsTypeAnnotation(
-        t.tsTypeReference(t.identifier(genericTypeName))
-      );
-
-      onMatch(path, genericTypeName, genericTypeAnnotation);
+      onMatch(path);
     }
   };
 }
