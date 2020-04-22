@@ -16,10 +16,10 @@ async function extractVariable(
   selection: Selection,
   editor: Editor
 ) {
-  const { selectedOccurrence, otherOccurrences } = findExtractableCode(
-    code,
-    selection
-  );
+  const {
+    selected: selectedOccurrence,
+    others: otherOccurrences
+  } = findAllOccurrences(code, selection);
 
   if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFindExtractableCode);
@@ -57,13 +57,10 @@ function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;
 }
 
-function findExtractableCode(
-  code: Code,
-  selection: Selection
-): ExtractableCode {
-  let result: ExtractableCode = {
-    selectedOccurrence: null,
-    otherOccurrences: []
+function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
+  let result: AllOccurrences = {
+    selected: null,
+    others: []
   };
 
   t.parseAndTraverseCode(code, {
@@ -77,24 +74,20 @@ function findExtractableCode(
       const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
 
-      result.selectedOccurrence = createOccurrence(path, loc);
+      result.selected = createOccurrence(path, loc);
     }
   });
 
-  if (result.selectedOccurrence) {
-    result.otherOccurrences = findOtherOccurrences(
-      result.selectedOccurrence,
-      code,
-      selection
-    );
+  if (result.selected) {
+    result.others = findOtherOccurrences(result.selected, code, selection);
   }
 
   return result;
 }
 
-type ExtractableCode = {
-  selectedOccurrence: Occurrence | null;
-  otherOccurrences: Occurrence[];
+type AllOccurrences = {
+  selected: Occurrence | null;
+  others: Occurrence[];
 };
 
 function findOtherOccurrences(
