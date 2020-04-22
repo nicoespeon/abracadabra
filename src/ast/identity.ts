@@ -230,6 +230,11 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     return nodeA.name === nodeB.name;
   }
 
+  // TS types
+  if (t.isTSTypeAnnotation(nodeA) && t.isTSTypeAnnotation(nodeB)) {
+    return nodeA.typeAnnotation.type === nodeB.typeAnnotation.type;
+  }
+
   // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }

@@ -4,6 +4,7 @@ import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { extractGenericType } from "./extract-generic-type";
+import { ReplacementStrategy } from "../../replacement-strategy";
 
 describe("Extract Generic Type", () => {
   let showErrorMessage: Editor["showError"];
@@ -51,6 +52,30 @@ describe("Extract Generic Type", () => {
       expect(result).toBe(expected);
     }
   );
+
+  it("should ask user to replace all occurrences", async () => {
+    const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}`;
+    const selection = Selection.cursorAt(1, 5);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "askUser");
+
+    await extractGenericType(code, selection, editor);
+
+    expect(editor.askUser).toBeCalledWith([
+      {
+        value: ReplacementStrategy.AllOccurrences,
+        label: "Replace all 2 occurrences"
+      },
+      {
+        value: ReplacementStrategy.SelectedOccurrence,
+        label: "Replace this occurrence only"
+      }
+    ]);
+  });
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;

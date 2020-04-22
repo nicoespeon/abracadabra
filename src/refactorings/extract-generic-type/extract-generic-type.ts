@@ -1,6 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { askReplacementStrategy } from "../../replacement-strategy";
 
 export { extractGenericType, createVisitor };
 
@@ -9,6 +10,12 @@ async function extractGenericType(
   selection: Selection,
   editor: Editor
 ) {
+  const { others: otherOccurrences } = findAllOccurrences(
+    t.parse(code),
+    selection
+  );
+  await askReplacementStrategy(otherOccurrences, editor);
+
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
@@ -41,16 +48,52 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
+function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
+  let selectedOccurrence: Occurrence | null = null;
+  let otherOccurrences: Occurrence[] = [];
+
+  t.transformAST(
+    ast,
+    createVisitor(
+      selection,
+      path => (selectedOccurrence = path),
+      path => otherOccurrences.push(path)
+    )
+  );
+
+  return {
+    selected: selectedOccurrence,
+    others: otherOccurrences.filter(
+      occurrence =>
+        selectedOccurrence &&
+        t.areEqual(occurrence.node, selectedOccurrence.node) &&
+        // Don't include the selected occurrence
+        !Selection.areEqual(occurrence, selectedOccurrence)
+    )
+  };
+}
+
+interface AllOccurrences {
+  selected: Occurrence | null;
+  others: Occurrence[];
+}
+
+type Occurrence = t.SelectablePath<t.TSTypeAnnotation>;
+
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.TSTypeAnnotation>,
+    path: t.SelectablePath<t.TSTypeAnnotation>,
     typeName: string,
     typeAnnotation: t.TSTypeAnnotation
-  ) => void
+  ) => void,
+  onVisit: (path: t.SelectablePath<t.TSTypeAnnotation>) => void = () => {}
 ): t.Visitor {
   return {
     TSTypeAnnotation(path) {
+      if (!t.isSelectablePath(path)) return;
+
+      onVisit(path);
       if (!selection.isInsidePath(path)) return;
 
       const genericTypeName = "T";
