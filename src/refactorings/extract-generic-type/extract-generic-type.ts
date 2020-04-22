@@ -38,6 +38,7 @@ async function extractGenericType(
 
   await editor.write(t.print(ast));
 
+  // TODO: cursor might be at end of line, not on symbol => move it first
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);
 }
