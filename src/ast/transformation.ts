@@ -21,6 +21,7 @@ export {
   transformAST,
   transformCopy,
   Transformed,
+  print,
   AST
 };
 export { mergeCommentsInto };
@@ -40,14 +41,17 @@ function transform(code: Code, options: TraverseOptions): Transformed {
 }
 
 function transformAST(ast: AST, options: TraverseOptions): Transformed {
-  const code = recast.print(ast).code;
-  const newAst = traverseAST(ast, options);
-  const newCode = recast.print(newAst).code;
+  const code = print(ast);
+  const newCode = print(traverseAST(ast, options));
 
   return {
     code: newCode,
     hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
   };
+}
+
+function print(ast: AST): Code {
+  return recast.print(ast).code;
 }
 
 function standardizeEOL(code: Code): Code {
