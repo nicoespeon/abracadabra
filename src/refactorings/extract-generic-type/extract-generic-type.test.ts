@@ -52,8 +52,45 @@ describe("Extract Generic Type", () => {
   x: T;
   y: U;
 }`
+      },
+      {
+        description: "with nested structure",
+        code: `interface Position {
+  data: {
+    x: number;
+    y: number;
+  }
+}`,
+        selection: Selection.cursorAt(2, 9),
+        expected: `interface Position<T = number> {
+  data: {
+    x: T;
+    y: number;
+  }
+}`
+      },
+      {
+        description: "with complex nested structure",
+        code: `interface Position<T = string> {
+  timestamp: T;
+  data: {
+    x: number;
+    _position: {
+      y: number;
+    }
+  }
+}`,
+        selection: Selection.cursorAt(5, 10),
+        expected: `interface Position<T = string, U = number> {
+  timestamp: T;
+  data: {
+    x: number;
+    _position: {
+      y: U;
+    }
+  }
+}`
       }
-      // TODO: nested object in interface
       // TODO: something that is not an interface (e.g. function)
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {

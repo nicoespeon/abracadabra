@@ -96,14 +96,20 @@ class Occurrence {
 
   protected get existingTypeParameters(): t.TSTypeParameter[] {
     const NO_PARAMS: t.TSTypeParameter[] = [];
-    const { parent: interfaceDeclaration } = this.path.parentPath.parentPath;
 
-    if (!t.isTSInterfaceDeclaration(interfaceDeclaration)) {
-      return NO_PARAMS;
-    }
+    const interfaceDeclaration = this.getInterfaceDeclaration();
+    if (!interfaceDeclaration) return NO_PARAMS;
 
-    const { typeParameters } = interfaceDeclaration;
+    const { typeParameters } = interfaceDeclaration.node;
     return (typeParameters && typeParameters.params) || NO_PARAMS;
+  }
+
+  protected getInterfaceDeclaration(): t.NodePath<
+    t.TSInterfaceDeclaration
+  > | null {
+    return this.path.findParent(t.isTSInterfaceDeclaration) as t.NodePath<
+      t.TSInterfaceDeclaration
+    > | null;
   }
 
   private computeValidTypeName(): string {
@@ -126,20 +132,19 @@ class SelectedOccurrence extends Occurrence {
   }
 
   private addGenericDeclaration() {
-    const { parent: interfaceDeclaration } = this.path.parentPath.parentPath;
+    const interfaceDeclaration = this.getInterfaceDeclaration();
+    if (!interfaceDeclaration) return;
 
-    if (t.isTSInterfaceDeclaration(interfaceDeclaration)) {
-      const newTypeParameter = t.tsTypeParameter(
-        undefined,
-        this.path.node.typeAnnotation,
-        this.typeName
-      );
+    const newTypeParameter = t.tsTypeParameter(
+      undefined,
+      this.path.node.typeAnnotation,
+      this.typeName
+    );
 
-      interfaceDeclaration.typeParameters = t.tsTypeParameterDeclaration([
-        ...this.existingTypeParameters,
-        newTypeParameter
-      ]);
-    }
+    interfaceDeclaration.node.typeParameters = t.tsTypeParameterDeclaration([
+      ...this.existingTypeParameters,
+      newTypeParameter
+    ]);
   }
 }
 
