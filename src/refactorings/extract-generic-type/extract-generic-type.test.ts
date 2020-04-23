@@ -40,8 +40,19 @@ describe("Extract Generic Type", () => {
   x: T;
   y: number;
 }`
+      },
+      {
+        description: "with existing generics",
+        code: `interface Position<T = number> {
+  x: T;
+  y: number;
+}`,
+        selection: Selection.cursorAt(2, 6),
+        expected: `interface Position<T = number, U = number> {
+  x: T;
+  y: U;
+}`
       }
-      // TODO: already existing T in interface
       // TODO: nested object in interface
       // TODO: something that is not an interface (e.g. function)
     ],

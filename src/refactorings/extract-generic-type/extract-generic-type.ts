@@ -49,7 +49,7 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
     ast,
     createVisitor(
       selection,
-      path => (selectedOccurrence = new Occurrence(path)),
+      path => (selectedOccurrence = new SelectedOccurrence(path)),
       path => otherOccurrences.push(new Occurrence(path))
     )
   );
@@ -73,11 +73,14 @@ interface AllOccurrences {
 
 class Occurrence {
   readonly start?: Position;
+  protected readonly typeName: string;
 
   constructor(readonly path: t.SelectablePath<t.TSTypeAnnotation>) {
     if (t.isSelectableNode(path.node.typeAnnotation)) {
       this.start = Position.fromAST(path.node.typeAnnotation.loc.start);
     }
+
+    this.typeName = this.computeValidTypeName();
   }
 
   get node(): t.Selectable<t.TSTypeAnnotation> {
@@ -85,24 +88,58 @@ class Occurrence {
   }
 
   transform() {
-    const genericTypeName = "T";
-    const genericTypeAnnotation = t.tsTypeAnnotation(
-      t.tsTypeReference(t.identifier(genericTypeName))
+    const typeAnnotation = t.tsTypeAnnotation(
+      t.tsTypeReference(t.identifier(this.typeName))
     );
+    this.path.replaceWith(typeAnnotation);
+  }
 
-    if (t.isTSInterfaceDeclaration(this.path.parentPath.parentPath.parent)) {
-      const typeParameter = t.tsTypeParameter(
-        undefined,
-        this.path.node.typeAnnotation,
-        genericTypeName
-      );
+  protected get existingTypeParameters(): t.TSTypeParameter[] {
+    const NO_PARAMS: t.TSTypeParameter[] = [];
+    const { parent: interfaceDeclaration } = this.path.parentPath.parentPath;
 
-      this.path.parentPath.parentPath.parent.typeParameters = t.tsTypeParameterDeclaration(
-        [typeParameter]
-      );
+    if (!t.isTSInterfaceDeclaration(interfaceDeclaration)) {
+      return NO_PARAMS;
     }
 
-    this.path.replaceWith(genericTypeAnnotation);
+    const { typeParameters } = interfaceDeclaration;
+    return (typeParameters && typeParameters.params) || NO_PARAMS;
+  }
+
+  private computeValidTypeName(): string {
+    const DEFAULT_NAME = "T";
+    const VALID_NAMES = [DEFAULT_NAME, "U", "V", "W", "X", "Y", "Z"];
+
+    const existingNames = this.existingTypeParameters.map(({ name }) => name);
+    const availableNames = VALID_NAMES.filter(
+      name => !existingNames.includes(name)
+    );
+
+    return availableNames[0] || DEFAULT_NAME;
+  }
+}
+
+class SelectedOccurrence extends Occurrence {
+  transform() {
+    this.addGenericDeclaration();
+    super.transform();
+  }
+
+  private addGenericDeclaration() {
+    const { parent: interfaceDeclaration } = this.path.parentPath.parentPath;
+
+    if (t.isTSInterfaceDeclaration(interfaceDeclaration)) {
+      const newTypeParameter = t.tsTypeParameter(
+        undefined,
+        this.path.node.typeAnnotation,
+        this.typeName
+      );
+
+      interfaceDeclaration.typeParameters = t.tsTypeParameterDeclaration([
+        ...this.existingTypeParameters,
+        newTypeParameter
+      ]);
+    }
   }
 }
 
