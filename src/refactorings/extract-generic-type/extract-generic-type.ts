@@ -37,7 +37,8 @@ async function extractGenericType(
 
   occurrences.forEach(occurrence => occurrence.transform());
 
-  await editor.write(t.print(ast), selectedOccurrence.start);
+  const anyOccurrence = occurrences[0];
+  await editor.write(t.print(ast), anyOccurrence.symbolPosition);
   await renameSymbol(editor);
 }
 
@@ -72,14 +73,11 @@ interface AllOccurrences {
 }
 
 class Occurrence {
-  readonly start?: Position;
+  readonly symbolPosition?: Position;
   protected readonly typeName: string;
 
   constructor(readonly path: t.SelectablePath<t.TSTypeAnnotation>) {
-    if (t.isSelectableNode(path.node.typeAnnotation)) {
-      this.start = Position.fromAST(path.node.typeAnnotation.loc.start);
-    }
-
+    this.symbolPosition = this.determineSymbolPosition();
     this.typeName = this.computeValidTypeName();
   }
 
@@ -110,6 +108,23 @@ class Occurrence {
     return this.path.findParent(t.isTSInterfaceDeclaration) as t.NodePath<
       t.TSInterfaceDeclaration
     > | null;
+  }
+
+  private determineSymbolPosition(): Position | undefined {
+    const interfaceDeclaration = this.getInterfaceDeclaration();
+    if (!interfaceDeclaration) return;
+
+    const { id } = interfaceDeclaration.node;
+    if (!t.isSelectableNode(id)) return;
+
+    /**
+     * interface Position {
+     *                   ^−−−− end of ID
+     *
+     * interface Position<T = number> {
+     *                   ^−−−− end of ID + 1
+     */
+    return Position.fromAST(id.loc.end).addCharacters(1);
   }
 
   private computeValidTypeName(): string {

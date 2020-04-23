@@ -205,9 +205,59 @@ describe("Extract Generic Type", () => {
 
     await extractGenericType(code, selection, editor);
 
-    expect(editor.position).toEqual(new Position(2, 5));
     expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
   });
+
+  it("should put the cursor on extracted symbol", async () => {
+    const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}`;
+    const selection = Selection.cursorAt(2, 11);
+    const editor = new InMemoryEditor(code);
+
+    await extractGenericType(code, selection, editor);
+
+    /**
+     * Produced code =>
+     *
+     * interface Position<T = number> {
+     *   x: T;
+     *   y: T;
+     *   isActive: boolean;
+     * }
+     */
+    const expectedPosition = new Position(0, 19);
+    expect(editor.position).toEqual(expectedPosition);
+  });
+
+  it("should put the cursor on extracted symbol when we extract an object", async () => {
+    const code = `interface Position {
+  data: {
+    x: number;
+    y: number;
+  }
+}`;
+    const selection = Selection.cursorAt(1, 8);
+    const editor = new InMemoryEditor(code);
+
+    await extractGenericType(code, selection, editor);
+
+    /**
+     * Produced code =>
+     *
+     * interface Position<T = {
+     *   x: number;
+     *   y: number;
+     * }> {
+     *   data: T
+     * }
+     */
+    expect(editor.position).toEqual(new Position(0, 19));
+  });
+
+  // TODO: check position with existing generic type parameters
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
