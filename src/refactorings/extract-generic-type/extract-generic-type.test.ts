@@ -5,6 +5,7 @@ import { testEach } from "../../tests-helpers";
 
 import { extractGenericType } from "./extract-generic-type";
 import { ReplacementStrategy } from "../../replacement-strategy";
+import { Position } from "../../editor/position";
 
 describe("Extract Generic Type", () => {
   let showErrorMessage: Editor["showError"];
@@ -150,12 +151,13 @@ describe("Extract Generic Type", () => {
   y: number;
   isActive: boolean;
 }`;
-    const selection = Selection.cursorAt(2, 5);
+    const selection = Selection.cursorAt(2, 11);
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "delegate");
 
     await extractGenericType(code, selection, editor);
 
+    expect(editor.position).toEqual(new Position(2, 5));
     expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
   });
 

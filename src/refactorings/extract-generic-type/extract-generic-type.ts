@@ -1,5 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { Position } from "../../editor/position";
 import * as t from "../../ast";
 import {
   askReplacementStrategy,
@@ -36,10 +37,7 @@ async function extractGenericType(
 
   occurrences.forEach(occurrence => occurrence.transform());
 
-  await editor.write(t.print(ast));
-
-  // TODO: cursor might be at end of line, not on symbol => move it first
-  // Extracted symbol is located at `selection` => just trigger a rename.
+  await editor.write(t.print(ast), selectedOccurrence.start);
   await renameSymbol(editor);
 }
 
@@ -74,7 +72,13 @@ interface AllOccurrences {
 }
 
 class Occurrence {
-  constructor(readonly path: t.SelectablePath<t.TSTypeAnnotation>) {}
+  readonly start?: Position;
+
+  constructor(readonly path: t.SelectablePath<t.TSTypeAnnotation>) {
+    if (t.isSelectableNode(path.node.typeAnnotation)) {
+      this.start = Position.fromAST(path.node.typeAnnotation.loc.start);
+    }
+  }
 
   get node(): t.Selectable<t.TSTypeAnnotation> {
     return this.path.node;
