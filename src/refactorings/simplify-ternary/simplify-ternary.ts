@@ -73,7 +73,7 @@ function createVisitor(
             onMatch(path, t.booleanLiteral(false));
           }
         }
-      } else if (t.areEqual(path.node.test, path.node.consequent)) {
+      } else if (t.areEquivalent(path.node.test, path.node.consequent)) {
         // a ? a : b
         onMatch(
           path,

@@ -59,7 +59,7 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
     others: otherOccurrences.filter(
       occurrence =>
         selectedOccurrence &&
-        t.areEqual(occurrence.node, selectedOccurrence.node) &&
+        t.areEquivalent(occurrence.node, selectedOccurrence.node) &&
         // Don't include the selected occurrence
         !Selection.areEqual(occurrence.path, selectedOccurrence.path)
     )

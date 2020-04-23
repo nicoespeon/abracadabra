@@ -141,7 +141,7 @@ class BinaryExpressionTarget implements Target {
   }
 
   checkAssignment(path: t.NodePath<t.AssignmentExpression>) {
-    if (t.areEqual(this.target, path.node.left)) {
+    if (t.areEquivalent(this.target, path.node.left)) {
       this._isReassigned = true;
     }
   }
@@ -173,7 +173,7 @@ function checkDeadCodeFromNestedIf(
     return;
   }
 
-  if (t.areEqual(test, nestedTest)) {
+  if (t.areEquivalent(test, nestedTest)) {
     onMatch(nestedPath, DeadCodeScenario.NestedTestEqual);
     return;
   }

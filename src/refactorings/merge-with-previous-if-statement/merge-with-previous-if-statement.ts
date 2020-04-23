@@ -88,7 +88,7 @@ function hasChildWhichMatchesSelection(
 }
 
 function mergeWithIfStatement(ifStatement: t.IfStatement, node: t.Statement) {
-  if (t.isIfStatement(node) && t.areEqual(ifStatement.test, node.test)) {
+  if (t.isIfStatement(node) && t.areEquivalent(ifStatement.test, node.test)) {
     mergeIfStatementWithIfStatement(ifStatement, node);
   } else {
     mergeStatementWithIfStatement(ifStatement, node);

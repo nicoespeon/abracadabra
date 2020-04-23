@@ -44,7 +44,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const binaryExpression = node.right as t.BinaryExpression;
       const operator = binaryExpression.operator;
 
-      const isIdentifierOnTheRight = t.areEqual(
+      const isIdentifierOnTheRight = t.areEquivalent(
         identifier,
         binaryExpression.right
       );
@@ -77,14 +77,14 @@ function createVisitor(
       const binaryExpression = node.right;
       const operator = binaryExpression.operator;
 
-      const isIdentifierOnTheLeft = t.areEqual(
+      const isIdentifierOnTheLeft = t.areEquivalent(
         identifier,
         binaryExpression.left
       );
 
       // If the operator is symmetric, the identifier can be on the right.
       const isSymmetricOperator = symmetricOperators.includes(operator);
-      const isIdentifierOnTheRight = t.areEqual(
+      const isIdentifierOnTheRight = t.areEquivalent(
         identifier,
         binaryExpression.right
       );

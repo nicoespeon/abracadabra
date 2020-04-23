@@ -178,7 +178,7 @@ class InlinableIdentifier implements InlinableCode {
     ast.traverseNode(this.scope, {
       enter(node) {
         if (!ast.isAssignmentExpression(node)) return;
-        if (!ast.areEqual(self.id, node.left)) return;
+        if (!ast.areEquivalent(self.id, node.left)) return;
 
         result = true;
       }
@@ -220,7 +220,7 @@ class InlinableIdentifier implements InlinableCode {
     ast.traverseNode(this.scope, {
       enter(node, ancestors) {
         if (!ast.isSelectableNode(node)) return;
-        if (!ast.areEqual(self.id, node)) return;
+        if (!ast.areEquivalent(self.id, node)) return;
         if (ast.isShadowIn(self.id, ancestors)) return;
 
         const selection = Selection.fromAST(node.loc);
@@ -299,7 +299,7 @@ class InlinableTSTypeAlias implements InlinableCode {
     this.path.parentPath.traverse({
       TSTypeReference(path) {
         if (!ast.isSelectablePath(path)) return;
-        if (!ast.areEqual(self.path.node.id, path.node.typeName)) return;
+        if (!ast.areEquivalent(self.path.node.id, path.node.typeName)) return;
 
         self.refToReplaceLocs.push(path.node.loc);
       }

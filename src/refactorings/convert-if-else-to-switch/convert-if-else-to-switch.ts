@@ -110,7 +110,7 @@ class IfElseToSwitch {
       this.discriminant = discriminant;
     }
 
-    if (!t.areEqual(this.discriminant, discriminant)) {
+    if (!t.areEquivalent(this.discriminant, discriminant)) {
       this.canConvertAllBranches = false;
     }
 

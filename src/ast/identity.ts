@@ -19,7 +19,7 @@ export {
   isTruthy,
   isFalsy,
   areSameAssignments,
-  areEqual,
+  areEquivalent,
   isTemplateExpression,
   isInBranchedLogic,
   isInAlternate,
@@ -80,11 +80,11 @@ function isGuardClause(path: NodePath<t.IfStatement>) {
 }
 
 function isTruthy(test: t.Expression): boolean {
-  return areEqual(test, t.booleanLiteral(true));
+  return areEquivalent(test, t.booleanLiteral(true));
 }
 
 function isFalsy(test: t.Expression): boolean {
-  return areEqual(test, t.booleanLiteral(false));
+  return areEquivalent(test, t.booleanLiteral(false));
 }
 
 function isGuardConsequentBlock(
@@ -122,7 +122,7 @@ function haveSameLeftIdentifiers(
   );
 }
 
-function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
+function areEquivalent(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
   if (nodeA === null) return false;
   if (nodeB === null) return false;
 
@@ -140,7 +140,10 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     return areAllEqual(nodeA.properties, nodeB.properties);
   }
   if (t.isObjectProperty(nodeA) && t.isObjectProperty(nodeB)) {
-    return areEqual(nodeA.key, nodeB.key) && areEqual(nodeA.value, nodeB.value);
+    return (
+      areEquivalent(nodeA.key, nodeB.key) &&
+      areEquivalent(nodeA.value, nodeB.value)
+    );
   }
 
   // Identifiers
@@ -153,13 +156,13 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     t.isArrowFunctionExpression(nodeA) &&
     t.isArrowFunctionExpression(nodeB)
   ) {
-    return areEqual(nodeA.body, nodeB.body);
+    return areEquivalent(nodeA.body, nodeB.body);
   }
 
   // Call Expressions
   if (t.isCallExpression(nodeA) && t.isCallExpression(nodeB)) {
     return (
-      areEqual(nodeA.callee, nodeB.callee) &&
+      areEquivalent(nodeA.callee, nodeB.callee) &&
       areAllEqual(nodeA.arguments, nodeB.arguments)
     );
   }
@@ -171,8 +174,8 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
   ) {
     return (
       nodeA.operator === nodeB.operator &&
-      areEqual(nodeA.left, nodeB.left) &&
-      areEqual(nodeA.right, nodeB.right)
+      areEquivalent(nodeA.left, nodeB.left) &&
+      areEquivalent(nodeA.right, nodeB.right)
     );
   }
 
@@ -180,22 +183,22 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
   if (t.isUnaryExpression(nodeA) && t.isUnaryExpression(nodeB)) {
     return (
       nodeA.operator === nodeB.operator &&
-      areEqual(nodeA.argument, nodeB.argument)
+      areEquivalent(nodeA.argument, nodeB.argument)
     );
   }
 
   // Member Expressions
   if (t.isMemberExpression(nodeA) && t.isMemberExpression(nodeB)) {
     return (
-      areEqual(nodeA.property, nodeB.property) &&
-      areEqual(nodeA.object, nodeB.object)
+      areEquivalent(nodeA.property, nodeB.property) &&
+      areEquivalent(nodeA.object, nodeB.object)
     );
   }
 
   // New Expressions
   if (t.isNewExpression(nodeA) && t.isNewExpression(nodeB)) {
     return (
-      areEqual(nodeA.callee, nodeB.callee) &&
+      areEquivalent(nodeA.callee, nodeB.callee) &&
       areAllEqual(nodeA.arguments, nodeB.arguments)
     );
   }
@@ -204,26 +207,27 @@ function areEqual(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
   if (t.isJSXElement(nodeA) && t.isJSXElement(nodeB)) {
     const areClosingElementsEqual =
       (nodeA.closingElement === null && nodeB.closingElement === null) ||
-      areEqual(nodeA.closingElement, nodeB.closingElement);
+      areEquivalent(nodeA.closingElement, nodeB.closingElement);
 
     return (
-      areEqual(nodeA.openingElement, nodeB.openingElement) &&
+      areEquivalent(nodeA.openingElement, nodeB.openingElement) &&
       areClosingElementsEqual &&
       areAllEqual(nodeA.children, nodeB.children)
     );
   }
   if (t.isJSXOpeningElement(nodeA) && t.isJSXOpeningElement(nodeB)) {
     return (
-      areEqual(nodeA.name, nodeB.name) &&
+      areEquivalent(nodeA.name, nodeB.name) &&
       areAllEqual(nodeA.attributes, nodeB.attributes)
     );
   }
   if (t.isJSXClosingElement(nodeA) && t.isJSXClosingElement(nodeB)) {
-    return areEqual(nodeA.name, nodeB.name);
+    return areEquivalent(nodeA.name, nodeB.name);
   }
   if (t.isJSXAttribute(nodeA) && t.isJSXAttribute(nodeB)) {
     return (
-      areEqual(nodeA.name, nodeB.name) && areEqual(nodeA.value, nodeB.value)
+      areEquivalent(nodeA.name, nodeB.name) &&
+      areEquivalent(nodeA.value, nodeB.value)
     );
   }
   if (t.isJSXIdentifier(nodeA) && t.isJSXIdentifier(nodeB)) {
@@ -245,7 +249,7 @@ function areAllEqual(
 ): boolean {
   return (
     nodesA.length === nodesB.length &&
-    nodesA.every((node, i) => areEqual(node, nodesB[i]))
+    nodesA.every((node, i) => areEquivalent(node, nodesB[i]))
   );
 }
 
@@ -284,13 +288,15 @@ function areOpposite(testA: t.Expression, testB: t.Expression): boolean {
     EQUALS_OPERATORS.includes(testB.operator)
   ) {
     return (
-      areEqual(testA.left, testB.left) && !areEqual(testA.right, testB.right)
+      areEquivalent(testA.left, testB.left) &&
+      !areEquivalent(testA.right, testB.right)
     );
   }
 
   if (areOppositeOperators(testA.operator, testB.operator)) {
     return (
-      areEqual(testA.left, testB.left) && areEqual(testA.right, testB.right)
+      areEquivalent(testA.left, testB.left) &&
+      areEquivalent(testA.right, testB.right)
     );
   }
 
