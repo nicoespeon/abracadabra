@@ -90,6 +90,7 @@
     "onCommand:abracadabra.convertIfElseToSwitch",
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
+    "onCommand:abracadabra.extract",
     "onCommand:abracadabra.extractGenericType",
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.extractVariable",
@@ -283,7 +284,7 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "abracadabra.extractVariable",
+        "command": "abracadabra.extract",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",
         "when": "editorTextFocus"

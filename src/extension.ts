@@ -11,6 +11,7 @@ import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import extract from "./refactorings/extract";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import extractVariable from "./refactorings/extract-variable";
@@ -60,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
+    extract,
     extractGenericType,
     extractInterface,
     extractVariable,
