@@ -91,12 +91,28 @@ describe("Extract Generic Type", () => {
   }
 }`
       }
-      // TODO: something that is not an interface (e.g. function)
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doExtractGenericType(code, selection);
 
       expect(result).toBe(expected);
+    }
+  );
+
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not extract generic type",
+    [
+      {
+        description: "type not in an interface",
+        code: `function isValid(message: string): boolean {}`,
+        selection: Selection.cursorAt(0, 26)
+      }
+      // TODO: should limit occurrences to selected interface scope
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
+      const result = await doExtractGenericType(code, selection);
+
+      expect(result).toBe(code);
     }
   );
 

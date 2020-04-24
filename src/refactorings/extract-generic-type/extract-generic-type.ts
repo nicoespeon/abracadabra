@@ -187,6 +187,11 @@ function createVisitor(
     TSTypeAnnotation(path) {
       if (!t.isSelectablePath(path)) return;
 
+      const interfaceDeclaration = path.findParent(
+        t.isTSInterfaceDeclaration
+      ) as t.NodePath<t.TSInterfaceDeclaration> | null;
+      if (!interfaceDeclaration) return;
+
       onVisit(path);
       if (!selection.isInsidePath(path)) return;
 
