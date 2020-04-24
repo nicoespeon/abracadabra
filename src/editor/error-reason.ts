@@ -2,7 +2,6 @@ export { ErrorReason, toString };
 
 enum ErrorReason {
   DidNotFindJsxAttributeToAddBracesTo,
-  DidNotFindTypeToExtract,
   DidNotFindBracesToRemove,
   DidNotFindClassToExtractInterface,
   DidNotFindReactComponent,
@@ -46,9 +45,6 @@ function toString(reason: ErrorReason): string {
   switch (reason) {
     case ErrorReason.DidNotFindJsxAttributeToAddBracesTo:
       return didNotFind("a jsx attribute to add braces to");
-
-    case ErrorReason.DidNotFindTypeToExtract:
-      return didNotFind("a type to extract");
 
     case ErrorReason.DidNotFindBracesToRemove:
       return didNotFind("braces to remove from jsx attribute");

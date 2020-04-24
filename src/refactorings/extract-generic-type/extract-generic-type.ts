@@ -24,7 +24,7 @@ async function extractGenericType(
   } = findAllOccurrences(ast, selection);
 
   if (!selectedOccurrence) {
-    editor.showError(ErrorReason.DidNotFindTypeToExtract);
+    editor.showError(ErrorReason.DidNotFindExtractableCode);
     return;
   }
 

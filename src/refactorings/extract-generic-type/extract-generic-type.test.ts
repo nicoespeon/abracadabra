@@ -322,7 +322,7 @@ interface Occurrence {
     await doExtractGenericType(code, selection);
 
     expect(showErrorMessage).toBeCalledWith(
-      ErrorReason.DidNotFindTypeToExtract
+      ErrorReason.DidNotFindExtractableCode
     );
   });
 
