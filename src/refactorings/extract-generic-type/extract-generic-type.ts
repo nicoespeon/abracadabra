@@ -7,6 +7,7 @@ import {
   ReplacementStrategy
 } from "../../replacement-strategy";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
+import { last } from "../../array-helpers";
 
 export { extractGenericType, createVisitor };
 
@@ -114,17 +115,31 @@ class Occurrence {
     const interfaceDeclaration = this.getInterfaceDeclaration();
     if (!interfaceDeclaration) return;
 
-    const { id } = interfaceDeclaration.node;
-    if (!t.isSelectableNode(id)) return;
+    const lastTypeParameter = last(this.existingTypeParameters);
+    if (lastTypeParameter) {
+      if (!t.isSelectableNode(lastTypeParameter)) return;
 
-    /**
-     * interface Position {
-     *                   ^−−−− end of ID
-     *
-     * interface Position<T = number> {
-     *                   ^−−−− end of ID + 1
-     */
-    return Position.fromAST(id.loc.end).addCharacters(1);
+      /**
+       * interface Position<T = number> {
+       *                             ^−−−− end of last type param
+       *
+       * interface Position<T = number, U = string> {
+       *                               ^−−−− end of last type param + 2
+       */
+      return Position.fromAST(lastTypeParameter.loc.end).addCharacters(2);
+    } else {
+      const { id } = interfaceDeclaration.node;
+      if (!t.isSelectableNode(id)) return;
+
+      /**
+       * interface Position {
+       *                   ^−−−− end of ID
+       *
+       * interface Position<T = number> {
+       *                   ^−−−− end of ID + 1
+       */
+      return Position.fromAST(id.loc.end).addCharacters(1);
+    }
   }
 
   private computeValidTypeName(): string {
