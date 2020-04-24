@@ -1,7 +1,7 @@
-import { Editor, Code, Command, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Editor, Code, Command, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
+import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 
 import { extractVariable } from "./extract-variable";
 

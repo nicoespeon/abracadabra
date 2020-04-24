@@ -1,11 +1,11 @@
-import { Editor, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Editor, Code } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
+import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 
 import { extractVariable } from "./extract-variable";
-import { ReplacementStrategy } from "../../replacement-strategy";
-import { testEach } from "../../tests-helpers";
+import { ReplacementStrategy } from "../../../replacement-strategy";
+import { testEach } from "../../../tests-helpers";
 
 describe("Extract Variable - Multiple occurrences", () => {
   let askUser: Editor["askUser"];

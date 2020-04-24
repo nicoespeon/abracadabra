@@ -1,13 +1,13 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
+import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import * as t from "../../../ast";
 
-import { renameSymbol } from "../rename-symbol/rename-symbol";
+import { renameSymbol } from "../../rename-symbol/rename-symbol";
 import { createOccurrence, Occurrence } from "./occurrence";
 import {
   ReplacementStrategy,
   askReplacementStrategy
-} from "../../replacement-strategy";
+} from "../../../replacement-strategy";
 
 export { extractVariable };
 

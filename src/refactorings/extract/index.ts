@@ -3,14 +3,14 @@ import * as vscode from "vscode";
 import { extractGenericType } from "./extract-generic-type/extract-generic-type";
 import { extractVariable } from "./extract-variable/extract-variable";
 
-import { executeSafely } from "../commands";
-import { ErrorReason } from "../editor/editor";
+import { executeSafely } from "../../commands";
+import { ErrorReason } from "../../editor/editor";
 import {
   VSCodeEditor,
   createSelectionFromVSCode
-} from "../editor/adapters/vscode-editor";
+} from "../../editor/adapters/vscode-editor";
 
-import { Refactoring } from "../types";
+import { Refactoring } from "../../types";
 
 const config: Refactoring = {
   command: {

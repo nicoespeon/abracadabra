@@ -1,11 +1,11 @@
-import { Editor, ErrorReason, Code, Command } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { testEach } from "../../tests-helpers";
+import { Editor, ErrorReason, Code, Command } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { testEach } from "../../../tests-helpers";
 
 import { extractGenericType } from "./extract-generic-type";
-import { ReplacementStrategy } from "../../replacement-strategy";
-import { Position } from "../../editor/position";
+import { ReplacementStrategy } from "../../../replacement-strategy";
+import { Position } from "../../../editor/position";
 
 describe("Extract Generic Type", () => {
   let showErrorMessage: Editor["showError"];

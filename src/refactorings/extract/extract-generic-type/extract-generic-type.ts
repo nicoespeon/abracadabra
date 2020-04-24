@@ -1,13 +1,13 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
-import * as t from "../../ast";
+import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
+import * as t from "../../../ast";
 import {
   askReplacementStrategy,
   ReplacementStrategy
-} from "../../replacement-strategy";
-import { renameSymbol } from "../rename-symbol/rename-symbol";
-import { last } from "../../array-helpers";
+} from "../../../replacement-strategy";
+import { renameSymbol } from "../../rename-symbol/rename-symbol";
+import { last } from "../../../array-helpers";
 
 export { extractGenericType };
 

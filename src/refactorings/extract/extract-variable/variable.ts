@@ -1,7 +1,7 @@
 import { camel } from "change-case";
 
-import { Code } from "../../editor/editor";
-import * as t from "../../ast";
+import { Code } from "../../../editor/editor";
+import * as t from "../../../ast";
 
 export {
   Variable,
