@@ -51,8 +51,8 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
     ast,
     createVisitor(
       selection,
-      path => (selectedOccurrence = new SelectedOccurrence(path)),
-      path => otherOccurrences.push(new Occurrence(path))
+      (_path, occurrence) => (selectedOccurrence = occurrence),
+      occurrence => otherOccurrences.push(occurrence)
     )
   );
 
@@ -180,8 +180,11 @@ class SelectedOccurrence extends Occurrence {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.SelectablePath<t.TSTypeAnnotation>) => void,
-  onVisit: (path: t.SelectablePath<t.TSTypeAnnotation>) => void = () => {}
+  onMatch: (
+    path: t.SelectablePath<t.TSTypeAnnotation>,
+    occurrence: Occurrence
+  ) => void,
+  onVisit: (occurrence: Occurrence) => void = () => {}
 ): t.Visitor {
   return {
     TSTypeAnnotation(path) {
@@ -192,10 +195,10 @@ function createVisitor(
       ) as t.NodePath<t.TSInterfaceDeclaration> | null;
       if (!interfaceDeclaration) return;
 
-      onVisit(path);
+      onVisit(new Occurrence(path));
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path);
+      onMatch(path, new SelectedOccurrence(path));
     }
   };
 }
