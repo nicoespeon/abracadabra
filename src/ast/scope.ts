@@ -1,7 +1,7 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-import { areEqual } from "./identity";
+import { areEquivalent } from "./identity";
 
 export { findScopePath, findParentIfPath, getFunctionScopePath, isShadowIn };
 
@@ -45,7 +45,7 @@ function isShadowIn(
   function isDeclaredInFunction(node: t.Node): boolean {
     return (
       t.isFunctionDeclaration(node) &&
-      node.params.some(node => areEqual(id, node))
+      node.params.some(node => areEquivalent(id, node))
     );
   }
 
@@ -58,7 +58,7 @@ function isShadowIn(
           child.declarations.some(
             declaration =>
               t.isVariableDeclarator(declaration) &&
-              areEqual(id, declaration.id) &&
+              areEquivalent(id, declaration.id) &&
               // Of course, if it's the inlined variable it's not a shadow!
               declaration.id !== id
           )

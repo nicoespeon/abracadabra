@@ -109,7 +109,7 @@ function startsFrom0({ declarations }: t.VariableDeclaration): boolean {
   const numeric0 = t.numericLiteral(0);
 
   return declarations.reduce<boolean>((result, { init }) => {
-    if (t.isNumericLiteral(init) && !t.areEqual(init, numeric0)) {
+    if (t.isNumericLiteral(init) && !t.areEquivalent(init, numeric0)) {
       return false;
     }
 
@@ -155,7 +155,7 @@ function getListFromMemberExpression(node: t.Node): List | undefined {
   if (!t.isMemberExpression(node)) return;
 
   const { object, property } = node;
-  if (!t.areEqual(property, t.identifier("length"))) return;
+  if (!t.areEquivalent(property, t.identifier("length"))) return;
   if (!(t.isIdentifier(object) || t.isMemberExpression(object))) return;
 
   return object;
@@ -176,8 +176,8 @@ function replaceListWithItemIn(
     statement,
     {
       MemberExpression(path) {
-        if (!t.areEqual(path.node.object, list)) return;
-        if (!t.areEqual(path.node.property, accessor)) return;
+        if (!t.areEquivalent(path.node.object, list)) return;
+        if (!t.areEquivalent(path.node.property, accessor)) return;
         path.replaceWith(item);
       }
     },
@@ -193,7 +193,7 @@ function isAccessorReferencedIn(
 
   t.traverseNode(statement, {
     enter(node) {
-      if (!t.areEqual(node, accessor)) return;
+      if (!t.areEquivalent(node, accessor)) return;
       result = true;
     }
   });

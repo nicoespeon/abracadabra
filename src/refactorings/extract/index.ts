@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
-import { inlineFunction } from "./inline-function";
-import { inlineVariable } from "./inline-variable";
+import { extractGenericType } from "./extract-generic-type/extract-generic-type";
+import { extractVariable } from "./extract-variable/extract-variable";
 
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
@@ -14,18 +14,16 @@ import { Refactoring } from "../../types";
 
 const config: Refactoring = {
   command: {
-    key: "inlineVariableOrFunction",
-    operation: inlineVariableOrFunction
+    key: "extract",
+    operation: extract
   }
 };
 
 export default config;
 
-async function inlineVariableOrFunction() {
+async function extract() {
   const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
+  if (!activeTextEditor) return;
 
   const { document, selection } = activeTextEditor;
 
@@ -33,11 +31,11 @@ async function inlineVariableOrFunction() {
     const code = document.getText();
     const selectionFromVSCode = createSelectionFromVSCode(selection);
 
-    const editor = new VSCodeEditorAttemptingInlining(activeTextEditor);
-    await inlineVariable(code, selectionFromVSCode, editor);
+    const editor = new VSCodeEditorAttemptingExtraction(activeTextEditor);
+    await extractVariable(code, selectionFromVSCode, editor);
 
-    if (!editor.couldInlineCode) {
-      await inlineFunction(
+    if (!editor.couldExtract) {
+      await extractGenericType(
         code,
         selectionFromVSCode,
         new VSCodeEditor(activeTextEditor)
@@ -46,12 +44,12 @@ async function inlineVariableOrFunction() {
   });
 }
 
-class VSCodeEditorAttemptingInlining extends VSCodeEditor {
-  couldInlineCode = true;
+class VSCodeEditorAttemptingExtraction extends VSCodeEditor {
+  couldExtract = true;
 
   async showError(reason: ErrorReason) {
-    if (reason === ErrorReason.DidNotFindInlinableCode) {
-      this.couldInlineCode = false;
+    if (reason === ErrorReason.DidNotFindExtractableCode) {
+      this.couldExtract = false;
       return Promise.resolve();
     }
 

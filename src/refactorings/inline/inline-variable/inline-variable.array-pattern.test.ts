@@ -1,7 +1,7 @@
-import { Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { testEach } from "../../../tests-helpers";
 
 import { inlineVariable } from "./inline-variable";
 

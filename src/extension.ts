@@ -11,11 +11,11 @@ import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import extract from "./refactorings/extract";
 import extractInterface from "./refactorings/extract-interface";
-import extractVariable from "./refactorings/extract-variable";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
-import inlineVariableOrFunction from "./refactorings/inline-variable-or-function";
+import inline from "./refactorings/inline";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
@@ -59,11 +59,11 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
+    extract,
     extractInterface,
-    extractVariable,
     flipIfElse,
     flipTernary,
-    inlineVariableOrFunction,
+    inline,
     mergeIfStatements,
     mergeWithPreviousIfStatement,
     moveStatementDown,

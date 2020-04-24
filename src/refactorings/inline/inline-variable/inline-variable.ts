@@ -1,6 +1,6 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import * as ast from "../../../ast";
 
 import {
   findInlinableCode,

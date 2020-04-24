@@ -31,6 +31,15 @@ class Selection {
     return new Selection([line, char], [line, char]);
   }
 
+  static areEqual(
+    pathA: ast.SelectablePath,
+    pathB: ast.SelectablePath
+  ): boolean {
+    return Selection.fromAST(pathA.node.loc).isEqualTo(
+      Selection.fromAST(pathB.node.loc)
+    );
+  }
+
   get start(): Position {
     return this._start;
   }

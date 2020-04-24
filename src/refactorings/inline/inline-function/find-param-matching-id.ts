@@ -1,4 +1,4 @@
-import * as ast from "../../ast";
+import * as ast from "../../../ast";
 
 export { findParamMatchingId };
 

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[Extract Generic Type]** To turn TS types into generics with a simple shortcut. Works like "Extract Variable".
+
+![][demo-extract-generic-type]
+
+It's limited to interfaces for now.
+
 ## [4.1.0] - 2020-04-09 - Back in Black 🎸
 
 ### Added
@@ -852,6 +860,7 @@ function doSomething(someData) {
 
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
+[demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-generic-type.gif?raw=true
 
 <!-- Links -->
 

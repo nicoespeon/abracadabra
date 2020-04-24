@@ -1,7 +1,7 @@
-import * as ast from "../../ast";
+import * as ast from "../../../ast";
 
-import { Selection } from "../../editor/selection";
-import { Modification } from "../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { Modification } from "../../../editor/editor";
 
 import { InlinableCode, InlinableObjectPattern } from "./find-inlinable-code";
 

@@ -27,6 +27,7 @@ Related projects:
   - The Essentials:
     1. [Rename Symbol](#rename-symbol)
     1. [Extract Variable](#extract-variable)
+    1. [Extract Generic Type](#extract-generic-type)
     1. [Inline Variable](#inline-variable)
     1. [Inline Function](#inline-function)
     1. [Move Statement Up](#move-statement-up)
@@ -120,6 +121,18 @@ It will extract the closest element from your cursor or partial selection.
 It will also handle multiple occurrences.
 
 ![][demo-extract-variable-multiple-occurrences]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Extract Generic Type
+
+| Keybinding       | On Mac  |
+| :--------------- | :------ |
+| `Ctrl + Alt + V` | `⌥ ⌘ V` |
+
+Just like for variables, this TS-specific refactoring will extract a type from an interface to make it generic.
+
+![][demo-extract-generic-type]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -625,6 +638,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-partial.gif?raw=true
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
+[demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-generic-type.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-variable.gif?raw=true
 [demo-inline-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/inline-function.gif?raw=true
 [demo-negate-expression]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/negate-expression.gif?raw=true

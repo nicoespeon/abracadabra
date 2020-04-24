@@ -1,32 +1,36 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
+import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import * as t from "../../../ast";
 
-import { renameSymbol } from "../rename-symbol/rename-symbol";
+import { renameSymbol } from "../../rename-symbol/rename-symbol";
 import { createOccurrence, Occurrence } from "./occurrence";
+import {
+  ReplacementStrategy,
+  askReplacementStrategy
+} from "../replacement-strategy";
 
-export { extractVariable, ReplaceChoice };
+export { extractVariable };
 
 async function extractVariable(
   code: Code,
   selection: Selection,
   editor: Editor
 ) {
-  const { selectedOccurrence, otherOccurrences } = findExtractableCode(
-    code,
-    selection
-  );
+  const {
+    selected: selectedOccurrence,
+    others: otherOccurrences
+  } = findAllOccurrences(code, selection);
 
   if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFindExtractableCode);
     return;
   }
 
-  const choice = await getChoice(otherOccurrences, editor);
-  if (choice === ReplaceChoice.None) return;
+  const choice = await askReplacementStrategy(otherOccurrences, editor);
+  if (choice === ReplacementStrategy.None) return;
 
   const extractedOccurrences =
-    choice === ReplaceChoice.AllOccurrences
+    choice === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
   const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
@@ -53,40 +57,10 @@ function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;
 }
 
-async function getChoice(
-  otherOccurrences: Occurrence[],
-  editor: Editor
-): Promise<ReplaceChoice> {
-  const occurrencesCount = otherOccurrences.length;
-  if (occurrencesCount <= 0) return ReplaceChoice.ThisOccurrence;
-
-  const choice = await editor.askUser([
-    {
-      value: ReplaceChoice.AllOccurrences,
-      label: `Replace all ${occurrencesCount + 1} occurrences`
-    },
-    {
-      value: ReplaceChoice.ThisOccurrence,
-      label: "Replace this occurrence only"
-    }
-  ]);
-
-  return choice ? choice.value : ReplaceChoice.None;
-}
-
-enum ReplaceChoice {
-  AllOccurrences,
-  ThisOccurrence,
-  None
-}
-
-function findExtractableCode(
-  code: Code,
-  selection: Selection
-): ExtractableCode {
-  let result: ExtractableCode = {
-    selectedOccurrence: null,
-    otherOccurrences: []
+function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
+  let result: AllOccurrences = {
+    selected: null,
+    others: []
   };
 
   t.parseAndTraverseCode(code, {
@@ -100,24 +74,20 @@ function findExtractableCode(
       const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
 
-      result.selectedOccurrence = createOccurrence(path, loc);
+      result.selected = createOccurrence(path, loc);
     }
   });
 
-  if (result.selectedOccurrence) {
-    result.otherOccurrences = findOtherOccurrences(
-      result.selectedOccurrence,
-      code,
-      selection
-    );
+  if (result.selected) {
+    result.others = findOtherOccurrences(result.selected, code, selection);
   }
 
   return result;
 }
 
-type ExtractableCode = {
-  selectedOccurrence: Occurrence | null;
-  otherOccurrences: Occurrence[];
+type AllOccurrences = {
+  selected: Occurrence | null;
+  others: Occurrence[];
 };
 
 function findOtherOccurrences(
@@ -141,7 +111,7 @@ function findOtherOccurrences(
       const pathSelection = Selection.fromAST(loc);
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
-      if (t.areEqual(path.node, occurrence.path.node)) {
+      if (t.areEquivalent(path.node, occurrence.path.node)) {
         result.push(createOccurrence(path, node.loc));
       }
     }

@@ -1,7 +1,7 @@
-import { Code, Modification } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
-import * as t from "../../ast";
+import { Code, Modification } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
+import * as t from "../../../ast";
 
 import {
   Variable,
