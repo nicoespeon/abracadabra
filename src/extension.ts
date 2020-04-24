@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
   TS_LANGUAGES.forEach(language => {
     vscode.languages.registerCodeActionsProvider(
       language,
-      new RefactoringActionProvider([extractGenericType, extractInterface]),
+      new RefactoringActionProvider([extractInterface]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
       }

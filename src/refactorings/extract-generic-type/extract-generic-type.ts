@@ -9,7 +9,7 @@ import {
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 import { last } from "../../array-helpers";
 
-export { extractGenericType, createVisitor };
+export { extractGenericType };
 
 async function extractGenericType(
   code: Code,
@@ -51,7 +51,7 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
     ast,
     createVisitor(
       selection,
-      (_path, occurrence) => (selectedOccurrence = occurrence),
+      occurrence => (selectedOccurrence = occurrence),
       occurrence => otherOccurrences.push(occurrence)
     )
   );
@@ -75,10 +75,7 @@ interface AllOccurrences {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (
-    path: t.SelectablePath<t.TSTypeAnnotation>,
-    occurrence: Occurrence
-  ) => void,
+  onMatch: (occurrence: Occurrence) => void,
   onVisit: (occurrence: Occurrence) => void = () => {}
 ): t.Visitor {
   return {
@@ -94,7 +91,7 @@ function createVisitor(
       onVisit(new Occurrence(path, interfaceDeclaration));
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, new SelectedOccurrence(path, interfaceDeclaration));
+      onMatch(new SelectedOccurrence(path, interfaceDeclaration));
     }
   };
 }

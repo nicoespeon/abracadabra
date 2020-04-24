@@ -1,16 +1,11 @@
-import { extractGenericType, createVisitor } from "./extract-generic-type";
+import { extractGenericType } from "./extract-generic-type";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { Refactoring } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: Refactoring = {
   command: {
     key: "extractGenericType",
-    operation: extractGenericType,
-    title: "Extract Generic Type"
-  },
-  actionProvider: {
-    message: "Extract generic type",
-    createVisitor
+    operation: extractGenericType
   }
 };
 
