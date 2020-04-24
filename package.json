@@ -162,6 +162,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.extract",
+        "title": "Extract",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.extractVariable",
         "title": "Extract Variable",
         "category": "Abracadabra"
@@ -448,6 +453,22 @@
         },
         {
           "command": "abracadabra.convertToTemplateLiteral",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extract",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.extract",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.extract",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extract",
           "when": "editorLangId == typescriptreact"
         },
         {
