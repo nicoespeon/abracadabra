@@ -107,7 +107,6 @@ describe("Extract Generic Type", () => {
         code: `function isValid(message: string): boolean {}`,
         selection: Selection.cursorAt(0, 26)
       }
-      // TODO: should limit occurrences to selected interface scope
     ],
     async ({ code, selection = Selection.cursorAt(0, 0) }) => {
       const result = await doExtractGenericType(code, selection);
@@ -185,6 +184,38 @@ describe("Extract Generic Type", () => {
   x: T;
   y: T;
   isActive: boolean;
+}`;
+      expect(editor.code).toBe(expected);
+    });
+
+    it("should only replace all occurrences of the same interface", async () => {
+      const code = `interface Position {
+  x: number;
+  y: number;
+  isActive: boolean;
+}
+
+interface Occurrence {
+  id: number;
+}`;
+      const selection = Selection.cursorAt(1, 5);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([allOccurrences]) =>
+          Promise.resolve(allOccurrences)
+        );
+
+      await extractGenericType(code, selection, editor);
+
+      const expected = `interface Position<T = number> {
+  x: T;
+  y: T;
+  isActive: boolean;
+}
+
+interface Occurrence {
+  id: number;
 }`;
       expect(editor.code).toBe(expected);
     });

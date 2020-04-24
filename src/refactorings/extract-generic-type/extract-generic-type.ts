@@ -89,6 +89,7 @@ function createVisitor(
         t.isTSInterfaceDeclaration
       ) as t.NodePath<t.TSInterfaceDeclaration> | null;
       if (!interfaceDeclaration) return;
+      if (!selection.isInsidePath(interfaceDeclaration)) return;
 
       onVisit(new Occurrence(path, interfaceDeclaration));
       if (!selection.isInsidePath(path)) return;
