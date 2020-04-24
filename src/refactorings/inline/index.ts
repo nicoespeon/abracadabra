@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
-import { inlineFunction } from "./inline-function";
-import { inlineVariable } from "./inline-variable";
+import { inlineFunction } from "./inline-function/inline-function";
+import { inlineVariable } from "./inline-variable/inline-variable";
 
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
@@ -14,14 +14,14 @@ import { Refactoring } from "../../types";
 
 const config: Refactoring = {
   command: {
-    key: "inlineVariableOrFunction",
-    operation: inlineVariableOrFunction
+    key: "inline",
+    operation: inline
   }
 };
 
 export default config;
 
-async function inlineVariableOrFunction() {
+async function inline() {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) {
     return;

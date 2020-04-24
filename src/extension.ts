@@ -15,7 +15,7 @@ import extract from "./refactorings/extract";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
-import inlineVariableOrFunction from "./refactorings/inline-variable-or-function";
+import inline from "./refactorings/inline";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
     extractInterface,
     flipIfElse,
     flipTernary,
-    inlineVariableOrFunction,
+    inline,
     mergeIfStatements,
     mergeWithPreviousIfStatement,
     moveStatementDown,

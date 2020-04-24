@@ -1,9 +1,9 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
+import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import * as ast from "../../../ast";
 
 import { findParamMatchingId } from "./find-param-matching-id";
-import { findExportedIdNames } from "./find-exported-id-names";
+import { findExportedIdNames } from "../find-exported-id-names";
 
 export { inlineFunction };
 

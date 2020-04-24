@@ -1,9 +1,9 @@
-import { Code, Modification } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import * as ast from "../../ast";
-import { last } from "../../array-helpers";
+import { Code, Modification } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
+import * as ast from "../../../ast";
+import { last } from "../../../array-helpers";
 
-import { findExportedIdNames } from "./find-exported-id-names";
+import { findExportedIdNames } from "../find-exported-id-names";
 
 export {
   findInlinableCode,
