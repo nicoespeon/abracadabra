@@ -7,7 +7,7 @@ import { createOccurrence, Occurrence } from "./occurrence";
 import {
   ReplacementStrategy,
   askReplacementStrategy
-} from "../../../replacement-strategy";
+} from "../replacement-strategy";
 
 export { extractVariable };
 

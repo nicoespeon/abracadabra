@@ -1,4 +1,4 @@
-import { Editor } from "./editor/editor";
+import { Editor } from "../../editor/editor";
 
 export { askReplacementStrategy, ReplacementStrategy };
 

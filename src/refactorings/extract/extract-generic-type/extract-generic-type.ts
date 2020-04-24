@@ -5,7 +5,7 @@ import * as t from "../../../ast";
 import {
   askReplacementStrategy,
   ReplacementStrategy
-} from "../../../replacement-strategy";
+} from "../replacement-strategy";
 import { renameSymbol } from "../../rename-symbol/rename-symbol";
 import { last } from "../../../array-helpers";
 
