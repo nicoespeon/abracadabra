@@ -12,9 +12,7 @@ import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import extract from "./refactorings/extract";
-import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
-import extractVariable from "./refactorings/extract-variable";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
 import inlineVariableOrFunction from "./refactorings/inline-variable-or-function";
@@ -62,9 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertTernaryToIfElse,
     convertToTemplateLiteral,
     extract,
-    extractGenericType,
     extractInterface,
-    extractVariable,
     flipIfElse,
     flipTernary,
     inlineVariableOrFunction,

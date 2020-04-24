@@ -91,9 +91,7 @@
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.extract",
-    "onCommand:abracadabra.extractGenericType",
     "onCommand:abracadabra.extractInterface",
-    "onCommand:abracadabra.extractVariable",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
     "onCommand:abracadabra.inlineVariableOrFunction",
@@ -164,16 +162,6 @@
       {
         "command": "abracadabra.extract",
         "title": "Extract",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.extractVariable",
-        "title": "Extract Variable",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.extractGenericType",
-        "title": "Extract Generic Type",
         "category": "Abracadabra"
       },
       {
@@ -469,30 +457,6 @@
         },
         {
           "command": "abracadabra.extract",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.extractVariable",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.extractVariable",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.extractVariable",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.extractVariable",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.extractGenericType",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.extractGenericType",
           "when": "editorLangId == typescriptreact"
         },
         {
