@@ -73,6 +73,31 @@ interface AllOccurrences {
   others: Occurrence[];
 }
 
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.SelectablePath<t.TSTypeAnnotation>,
+    occurrence: Occurrence
+  ) => void,
+  onVisit: (occurrence: Occurrence) => void = () => {}
+): t.Visitor {
+  return {
+    TSTypeAnnotation(path) {
+      if (!t.isSelectablePath(path)) return;
+
+      const interfaceDeclaration = path.findParent(
+        t.isTSInterfaceDeclaration
+      ) as t.NodePath<t.TSInterfaceDeclaration> | null;
+      if (!interfaceDeclaration) return;
+
+      onVisit(new Occurrence(path));
+      if (!selection.isInsidePath(path)) return;
+
+      onMatch(path, new SelectedOccurrence(path));
+    }
+  };
+}
+
 class Occurrence {
   readonly symbolPosition?: Position;
   protected readonly typeName: string;
@@ -176,29 +201,4 @@ class SelectedOccurrence extends Occurrence {
       newTypeParameter
     ]);
   }
-}
-
-function createVisitor(
-  selection: Selection,
-  onMatch: (
-    path: t.SelectablePath<t.TSTypeAnnotation>,
-    occurrence: Occurrence
-  ) => void,
-  onVisit: (occurrence: Occurrence) => void = () => {}
-): t.Visitor {
-  return {
-    TSTypeAnnotation(path) {
-      if (!t.isSelectablePath(path)) return;
-
-      const interfaceDeclaration = path.findParent(
-        t.isTSInterfaceDeclaration
-      ) as t.NodePath<t.TSInterfaceDeclaration> | null;
-      if (!interfaceDeclaration) return;
-
-      onVisit(new Occurrence(path));
-      if (!selection.isInsidePath(path)) return;
-
-      onMatch(path, new SelectedOccurrence(path));
-    }
-  };
 }
