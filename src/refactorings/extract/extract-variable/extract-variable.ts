@@ -67,6 +67,7 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
     enter(path) {
       if (!isExtractableContext(path.parent)) return;
       if (!isExtractable(path)) return;
+      if (path.isIdentifier() && path.parentPath.isNewExpression()) return;
 
       const { node } = path;
       if (!selection.isInsideNode(node)) return;

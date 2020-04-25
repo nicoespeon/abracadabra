@@ -15,6 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 It's limited to interfaces for now.
 
+### Fixed
+
+- Extract the instantiated class instead of the Identifier when cursor is on Identifier. Given this code:
+
+```js
+console.log(new Error("It failed"));
+```
+
+With the cursor on `Error`, previous version of Abracadabra would have produced:
+
+```js
+const extracted = Error;
+console.log(new extracted("It failed"));
+```
+
+Which is not what you'd expect. Thus, it will now produce:
+
+```js
+const extracted = new Error("It failed");
+console.log(extracted);
+```
+
 ## [4.1.0] - 2020-04-09 - Back in Black 🎸
 
 ### Added

@@ -411,9 +411,16 @@ if (
 }`
       },
       {
-        description: "an error instance",
+        description: "a class instantiation (cursor on new expression)",
         code: `console.log(new Error("It failed"));`,
-        selection: Selection.cursorAt(0, 14),
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = new Error("It failed");
+console.log(extracted);`
+      },
+      {
+        description: "a class instantiation (cursor on class identifier)",
+        code: `console.log(new Error("It failed"));`,
+        selection: Selection.cursorAt(0, 16),
         expected: `const extracted = new Error("It failed");
 console.log(extracted);`
       },
