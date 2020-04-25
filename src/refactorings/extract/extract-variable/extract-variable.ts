@@ -67,7 +67,7 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
     enter(path) {
       if (!isExtractableContext(path.parent)) return;
       if (!isExtractable(path)) return;
-      if (path.isIdentifier() && path.parentPath.isNewExpression()) return;
+      if (isClassIdentifier(path)) return;
 
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
@@ -90,6 +90,10 @@ type AllOccurrences = {
   selected: Occurrence | null;
   others: Occurrence[];
 };
+
+function isClassIdentifier(path: t.NodePath<t.Node>): boolean {
+  return path.isIdentifier() && path.parentPath.isNewExpression();
+}
 
 function findOtherOccurrences(
   occurrence: Occurrence,
