@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindSwitchToConvert,
   DidNotFindJsxAttributeToAddBracesTo,
   DidNotFindBracesToRemove,
   DidNotFindClassToExtractInterface,
@@ -43,6 +44,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindSwitchToConvert:
+      return didNotFind("a switch statement to convert");
+
     case ErrorReason.DidNotFindJsxAttributeToAddBracesTo:
       return didNotFind("a jsx attribute to add braces to");
 
