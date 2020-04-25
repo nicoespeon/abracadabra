@@ -8,6 +8,7 @@ import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
 import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
+import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
@@ -56,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
     bubbleUpIfStatement,
     convertForToForeach,
     convertIfElseToSwitch,
+    convertSwitchToIfElse,
     convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
@@ -122,6 +124,7 @@ export function activate(context: vscode.ExtensionContext) {
         bubbleUpIfStatement,
         convertForToForeach,
         convertIfElseToSwitch,
+        convertSwitchToIfElse,
         convertIfElseToTernary,
         convertTernaryToIfElse,
         convertToTemplateLiteral,
