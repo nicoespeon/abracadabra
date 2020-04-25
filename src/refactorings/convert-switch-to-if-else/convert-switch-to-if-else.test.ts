@@ -37,6 +37,43 @@ default:
 }`
       },
       {
+        description: "empty fall-throughs",
+        code: `switch (name) {
+case "Jane":
+  sayHelloToJane();
+  break;
+case "Joe":
+case "Joseph":
+  sayHelloToJoe();
+  break;
+case "John":
+case "Johnny":
+case "Johnie":
+  sayHelloToJohn();
+  break;
+case "Jack":
+case "Jacob":
+case "Jackie":
+case "Jake":
+  sayHelloToJack();
+  break;
+default:
+  sayHello();
+  break;
+}`,
+        expected: `if (name === "Jane") {
+  sayHelloToJane();
+} else if (name === "Joe" || name === "Joseph") {
+  sayHelloToJoe();
+} else if (name === "John" || (name === "Johnny" || name === "Johnie")) {
+  sayHelloToJohn();
+} else if (name === "Jack" || (name === "Jacob" || (name === "Jackie" || name === "Jake"))) {
+  sayHelloToJack();
+} else {
+  sayHello();
+}`
+      },
+      {
         description: "convert the selected switch only",
         code: `switch (name) {
 case "Jane":
@@ -47,10 +84,13 @@ default:
   break;
 }
 
-if (name === "John") {
+switch (name) {
+case "John":
   sayHelloToJohn();
-} else {
+  break;
+default:
   sayHello();
+  break;
 }`,
         expected: `if (name === "Jane") {
   sayHelloToJane();
@@ -58,10 +98,13 @@ if (name === "John") {
   sayHello();
 }
 
-if (name === "John") {
+switch (name) {
+case "John":
   sayHelloToJohn();
-} else {
+  break;
+default:
   sayHello();
+  break;
 }`
       },
       {

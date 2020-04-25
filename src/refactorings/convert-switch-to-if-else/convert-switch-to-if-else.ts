@@ -1,7 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { last } from "../../array-helpers";
+import { last, allButLast } from "../../array-helpers";
 
 export { convertSwitchToIfElse, createVisitor as hasSwitchToConvert };
 
@@ -78,13 +78,14 @@ function convert(node: t.SwitchStatement): t.SwitchStatement | t.IfStatement {
   try {
     return convertNode(node);
   } catch (err) {
+    console.log(err);
     return node;
   }
 }
 
-function convertNode(node: t.SwitchStatement) {
-  let rootStatement: t.IfStatement | undefined;
-  let currentStatement: t.IfStatement | undefined;
+function convertNode(node: t.SwitchStatement): t.IfStatement {
+  const statements: t.Statement[] = [];
+  const fallthroughTests: t.BinaryExpression[] = [];
 
   node.cases.forEach((caseNode, index) => {
     const isLast = index === node.cases.length - 1;
@@ -94,38 +95,66 @@ function convertNode(node: t.SwitchStatement) {
         throw new Error("default case can only be the last case");
       }
 
-      if (currentStatement) {
-        currentStatement.alternate = caseWithoutBreak(caseNode, isLast);
-      }
-
+      statements.push(caseWithoutBreak(caseNode, isLast));
       return;
     }
 
-    const test = t.binaryExpression("===", node.discriminant, caseNode.test);
-    const newNode = t.ifStatement(test, caseWithoutBreak(caseNode, isLast));
-
-    if (currentStatement) {
-      currentStatement.alternate = newNode;
+    let test: t.Expression = t.binaryExpression(
+      "===",
+      node.discriminant,
+      caseNode.test
+    );
+    if (caseNode.consequent.length === 0) {
+      fallthroughTests.push(test);
+      return;
     }
-    currentStatement = newNode;
 
-    if (!rootStatement) {
-      rootStatement = newNode;
+    if (fallthroughTests.length > 0) {
+      fallthroughTests.reverse();
+      for (const fallthroughTest of fallthroughTests) {
+        test = t.logicalExpression("||", fallthroughTest, test);
+      }
+      fallthroughTests.splice(0, fallthroughTests.length);
     }
+
+    const statement = t.ifStatement(test, caseWithoutBreak(caseNode, isLast));
+    statements.push(statement);
   });
 
-  if (!rootStatement) {
+  return linkIfStatements(node, statements);
+}
+
+function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
+  if (statements.length === 0) {
     return t.ifStatement(node.discriminant, t.blockStatement([]));
   }
 
-  return rootStatement;
+  const firstStatement = statements[0];
+  if (firstStatement.type !== "IfStatement") {
+    throw new Error(
+      "Cannot convert switch statement with just a single default case."
+    );
+  }
+
+  if (statements.length === 1) {
+    return firstStatement;
+  }
+
+  for (let i = 0; i < statements.length - 1; i++) {
+    const statement = statements[i];
+    if (statement.type === "IfStatement") {
+      statement.alternate = statements[i + 1];
+    }
+  }
+
+  return firstStatement;
 }
 
-function caseWithoutBreak(caseNode: t.SwitchCase, isLast: boolean) {
+function caseWithoutBreak(caseNode: t.SwitchCase, isLastCase: boolean) {
   const lastStatement = last(caseNode.consequent);
   if (lastStatement) {
     if (lastStatement.type === "BreakStatement") {
-      return t.blockStatement(caseNode.consequent.slice(0, -1));
+      return t.blockStatement(allButLast(caseNode.consequent));
     }
 
     if (lastStatement.type === "ReturnStatement" || !caseNode.test) {
@@ -133,11 +162,11 @@ function caseWithoutBreak(caseNode: t.SwitchCase, isLast: boolean) {
     }
   }
 
-  if (isLast) {
+  if (isLastCase) {
     return t.blockStatement(caseNode.consequent);
   }
 
   throw new Error(
-    "Can only convert switch cases ending with break or return statements."
+    "Can only convert non-empty switch cases ending with break or return statements."
   );
 }
