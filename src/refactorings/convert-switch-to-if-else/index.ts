@@ -13,7 +13,8 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert switch to if else",
-    canPerform: hasSwitchToConvert
+    createVisitor: hasSwitchToConvert,
+    isPreferred: true
   }
 };
 
