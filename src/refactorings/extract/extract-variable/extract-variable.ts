@@ -65,14 +65,13 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
 
   t.parseAndTraverseCode(code, {
     enter(path) {
+      if (!selection.isInsidePath(path)) return;
+
       if (!isExtractableContext(path.parent)) return;
       if (!isExtractable(path)) return;
       if (isClassIdentifier(path)) return;
 
-      const { node } = path;
-      if (!selection.isInsideNode(node)) return;
-
-      const loc = getOccurrenceLoc(node, selection);
+      const loc = getOccurrenceLoc(path.node, selection);
       if (!loc) return;
 
       result.selected = createOccurrence(path, loc);
