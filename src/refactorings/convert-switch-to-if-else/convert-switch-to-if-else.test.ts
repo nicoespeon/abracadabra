@@ -183,7 +183,7 @@ default:
     "should not convert",
     [
       {
-        description: "case without brea",
+        description: "non-empty case without break",
         code: `switch (name) {
 case "Jane":
   sayHelloToJane();
