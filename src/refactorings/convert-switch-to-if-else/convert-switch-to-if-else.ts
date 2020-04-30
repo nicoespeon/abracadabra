@@ -129,7 +129,7 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
   }
 
   const firstStatement = statements[0];
-  if (firstStatement.type !== "IfStatement") {
+  if (!t.isIfStatement(firstStatement)) {
     throw new Error(
       "Cannot convert switch statement with just a single default case."
     );
@@ -141,7 +141,7 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
 
   for (let i = 0; i < statements.length - 1; i++) {
     const statement = statements[i];
-    if (statement.type === "IfStatement") {
+    if (t.isIfStatement(statement)) {
       statement.alternate = statements[i + 1];
     }
   }
@@ -152,11 +152,11 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
 function caseWithoutBreak(caseNode: t.SwitchCase, isLastCase: boolean) {
   const lastStatement = last(caseNode.consequent);
   if (lastStatement) {
-    if (lastStatement.type === "BreakStatement") {
+    if (t.isBreakStatement(lastStatement)) {
       return t.blockStatement(allButLast(caseNode.consequent));
     }
 
-    if (lastStatement.type === "ReturnStatement" || !caseNode.test) {
+    if (t.isReturnStatement(lastStatement) || !caseNode.test) {
       return t.blockStatement(caseNode.consequent);
     }
   }
