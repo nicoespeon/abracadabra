@@ -78,7 +78,6 @@ function convert(node: t.SwitchStatement): t.SwitchStatement | t.IfStatement {
   try {
     return convertNode(node);
   } catch (err) {
-    console.log(err);
     return node;
   }
 }
