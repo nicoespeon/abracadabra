@@ -24,7 +24,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, convertedNode) => {
-      path.replaceWith(convertedNode);
+      if (t.isBlockStatement(convertedNode)) {
+        path.replaceWithMultiple(convertedNode.body);
+      } else {
+        path.replaceWith(convertedNode);
+      }
       path.stop();
     })
   );
@@ -34,7 +38,7 @@ function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.SwitchStatement>,
-    convertedNode: t.IfStatement | t.SwitchStatement
+    convertedNode: t.Statement
   ) => void
 ): t.Visitor {
   return {
@@ -74,7 +78,7 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function convert(node: t.SwitchStatement): t.SwitchStatement | t.IfStatement {
+function convert(node: t.SwitchStatement): t.Statement {
   try {
     return convertNode(node);
   } catch (err) {
@@ -82,7 +86,7 @@ function convert(node: t.SwitchStatement): t.SwitchStatement | t.IfStatement {
   }
 }
 
-function convertNode(node: t.SwitchStatement): t.IfStatement {
+function convertNode(node: t.SwitchStatement): t.Statement {
   const statements: t.Statement[] = [];
   const fallthroughTests: t.BinaryExpression[] = [];
 
@@ -137,6 +141,26 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
 
   if (statements.length === 1) {
     return firstStatement;
+  }
+
+  const allEndWithReturn = node.cases.every(
+    caseNode =>
+      t.isReturnStatement(last(caseNode.consequent)) ||
+      caseNode.consequent.length === 0
+  );
+
+  if (allEndWithReturn) {
+    const body = allButLast(statements);
+    const lastStatement = last(statements);
+    if (lastStatement) {
+      if (t.isBlockStatement(lastStatement)) {
+        body.push(...lastStatement.body);
+      } else {
+        body.push(lastStatement);
+      }
+    }
+
+    return t.blockStatement(body);
   }
 
   for (let i = 0; i < statements.length - 1; i++) {
