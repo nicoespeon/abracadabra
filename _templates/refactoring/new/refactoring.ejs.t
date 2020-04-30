@@ -3,7 +3,6 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 ---
 <%
   camelName = h.changeCase.camel(name)
-  camelActionProviderName = h.changeCase.camel(actionProviderName)
   pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
 import { Editor, Code, ErrorReason } from "../../editor/editor";
@@ -11,7 +10,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
 <% if (hasActionProvider){ -%>
-export { <%= camelName %>, <%= camelActionProviderName %> };
+export { <%= camelName %>, createVisitor };
 <% } else { -%>
 export { <%= camelName %> };
 <% } -%>
@@ -31,15 +30,19 @@ async function <%= camelName %>(
   await editor.write(updatedCode.code);
 }
 
-<% if (hasActionProvider){ -%>
-function <%= camelActionProviderName %>(ast: t.AST, selection: Selection): boolean {
-  // TODO: implement the check here 🧙‍
-  return false;
-}
-<% } -%>
-
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, {
-    // TODO: implement the transformation here 🧙‍
-  });
+  return t.transformAST(
+    ast,
+    createVisitor(selection, path => {
+      // TODO: implement the transformation here 🧙‍
+    })
+  );
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath) => void
+): t.Visitor {
+  // TODO: implement the check here 🧙‍
+  return {};
 }

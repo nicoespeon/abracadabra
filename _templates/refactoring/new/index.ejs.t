@@ -6,13 +6,11 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/index.ts
   dashedName = h.changeCase.param(name)
   titleName = h.changeCase.titleCase(name)
   sentenceName = h.changeCase.sentenceCase(name)
-
-  camelActionProviderName = h.changeCase.camel(actionProviderName)
 -%>
 <% if (hasActionProvider){ -%>
 import {
   <%= camelName %>,
-  <%= camelActionProviderName %>
+  createVisitor
 } from "./<%= dashedName %>";
 
 import { RefactoringWithActionProvider } from "../../types";
@@ -25,7 +23,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "<%= sentenceName %>",
-    canPerform: <%= camelActionProviderName %>
+    createVisitor
   }
 };
 <% } else { -%>
