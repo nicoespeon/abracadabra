@@ -88,6 +88,7 @@
     "onCommand:abracadabra.convertForToForeach",
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
+    "onCommand:abracadabra.convertSwitchToIfElse",
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.extract",
@@ -147,6 +148,11 @@
       {
         "command": "abracadabra.convertIfElseToSwitch",
         "title": "Convert If/Else to Switch",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertSwitchToIfElse",
+        "title": "Convert Switch to If/Else",
         "category": "Abracadabra"
       },
       {
@@ -409,6 +415,22 @@
         },
         {
           "command": "abracadabra.convertIfElseToSwitch",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertSwitchToIfElse",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertSwitchToIfElse",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertSwitchToIfElse",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertSwitchToIfElse",
           "when": "editorLangId == typescriptreact"
         },
         {
