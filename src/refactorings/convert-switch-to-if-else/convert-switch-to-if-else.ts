@@ -145,8 +145,7 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
 
   const allEndWithReturn = node.cases.every(
     caseNode =>
-      t.isReturnStatement(last(caseNode.consequent)) ||
-      caseNode.consequent.length === 0
+      t.hasFinalReturn(caseNode.consequent) || caseNode.consequent.length === 0
   );
 
   if (allEndWithReturn) {
