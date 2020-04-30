@@ -9,10 +9,10 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "convertSwitchToIfElse",
     operation: convertSwitchToIfElse,
-    title: "Convert Switch To If Else"
+    title: "Convert Switch to If/Else"
   },
   actionProvider: {
-    message: "Convert switch to if else",
+    message: "Convert switch to if/else",
     createVisitor: hasSwitchToConvert,
     isPreferred: true
   }
