@@ -41,6 +41,7 @@ Related projects:
     1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
     1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
     1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
+    1. [Convert Switch to If/Else](#convert-switch-to-ifelse)
     1. [Split If Statement](#split-if-statement)
     1. [Merge If Statements](#merge-if-statements)
     1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
@@ -271,6 +272,16 @@ Converts a ternary expression into an if/else statement. It reverses _Convert If
 Converts an if/else statement into a switch statement. This is typically what you do before introducing polymorphism to clean object-oriented code.
 
 ![][demo-convert-if-else-to-switch]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Convert Switch to If/Else
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Converts a switch statement into an if/else statement. It reverses _Convert If/Else to Switch_ refactoring.
+
+![][demo-convert-switch-to-if-else]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -650,6 +661,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
 [demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-switch.gif?raw=true
+[demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-switch-to-if-else.gif?raw=true
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
 [demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true

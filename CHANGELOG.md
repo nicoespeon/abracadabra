@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 It's limited to interfaces for now.
 
+- **[Convert Switch to If/Else]** To reverse _Convert If/Else to Switch_ refactoring. Thanks to @delaaxe.
+
+![][demo-convert-switch-to-if-else]
+
 ### Fixed
 
 - Extract the instantiated class instead of the Identifier when cursor is on Identifier. Given this code:
@@ -883,6 +887,7 @@ function doSomething(someData) {
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-generic-type.gif?raw=true
+[demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-switch-to-if-else.gif?raw=true
 
 <!-- Links -->
 
