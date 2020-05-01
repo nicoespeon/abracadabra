@@ -230,6 +230,17 @@ case "John":
   sayHelloToJohn();
   break;
 }`
+      },
+      {
+        description: "a mix of return statements and regular ones",
+        code: `switch (name) {
+case "Jane":
+  return sayHelloToJane();
+case "Johnny":
+  sayHelloToJohn();
+default:
+  sayHello();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0) }) => {
