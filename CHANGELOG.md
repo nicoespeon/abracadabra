@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2020-05-01 - Make it Generic 🏭
+
 ### Added
 
 - **[Extract Generic Type]** To turn TS types into generics with a simple shortcut. Works like "Extract Variable".
@@ -853,7 +855,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.2.0...HEAD
+[4.2.0]: https://github.com/nicoespeon/abracadabra/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/nicoespeon/abracadabra/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/nicoespeon/abracadabra/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/nicoespeon/abracadabra/compare/3.2.3...4.0.0
