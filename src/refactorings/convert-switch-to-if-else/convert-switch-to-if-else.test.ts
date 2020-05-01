@@ -165,11 +165,34 @@ default:
 }`,
         expected: `if (name === "Jane") {
   return sayHelloToJane();
-} else if (name === "John") {
+}
+
+if (name === "John") {
   return sayHelloToJohn();
-} else {
+}
+
+return sayHello();`
+      },
+      {
+        description: "with return statements and fallthrough",
+        code: `switch (name) {
+case "Jane":
+  return sayHelloToJane();
+case "John":
+case "Johnny":
+  return sayHelloToJohn();
+default:
   return sayHello();
-}`
+}`,
+        expected: `if (name === "Jane") {
+  return sayHelloToJane();
+}
+
+if (name === "John" || name === "Johnny") {
+  return sayHelloToJohn();
+}
+
+return sayHello();`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
