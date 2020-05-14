@@ -46,6 +46,26 @@ describe("Remove Redundant Else", () => {
 }`
       },
       {
+        description: "basic scenario with tabs",
+        code: `function doSomethingIfValid() {
+\tif (!isValid) {
+\t\tshowWarning();
+\t\treturn;
+\t} else {
+\t\tdoSomething();
+\t}
+}`,
+        selection: new Selection([1, 1], [6, 2]),
+        expected: `function doSomethingIfValid() {
+\tif (!isValid) {
+\t\tshowWarning();
+\t\treturn;
+\t}
+
+\tdoSomething();
+}`
+      },
+      {
         description: "only the selected one",
         code: `function doSomethingIfValid() {
   if (!isValid) {
