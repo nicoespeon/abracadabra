@@ -25,6 +25,18 @@ describe("Convert Let To Const", () => {
   const someVariable = 'value';
   return someVariable;
 }`
+      },
+      {
+        description:
+          "multiple non-mutated variables declared as let convert to const",
+        code: `{
+  let someVariable, otherVariable = 'value';
+  return someVariable;
+}`,
+        expected: `{
+  const someVariable, otherVariable = 'value';
+  return someVariable;
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
