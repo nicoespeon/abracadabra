@@ -85,13 +85,15 @@ function createVisitor(
       const interfaceDeclaration = path.findParent(
         t.isTSInterfaceDeclaration
       ) as t.NodePath<t.TSInterfaceDeclaration> | null;
-      if (!interfaceDeclaration) return;
-      if (!selection.isInsidePath(interfaceDeclaration)) return;
 
-      onVisit(new InterfaceOccurrence(path, interfaceDeclaration));
-      if (!selection.isInsidePath(path)) return;
+      if (interfaceDeclaration) {
+        if (!selection.isInsidePath(interfaceDeclaration)) return;
 
-      onMatch(new SelectedInterfaceOccurrence(path, interfaceDeclaration));
+        onVisit(new InterfaceOccurrence(path, interfaceDeclaration));
+        if (!selection.isInsidePath(path)) return;
+
+        onMatch(new SelectedInterfaceOccurrence(path, interfaceDeclaration));
+      }
     }
   };
 }
