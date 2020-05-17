@@ -83,6 +83,7 @@ function createVisitor(
       if (!t.isSelectablePath(path)) return;
 
       const interfaceDeclaration = findParentInterfaceDeclaration(path);
+      const functionDeclaration = findParentFunctionDeclaration(path);
 
       if (interfaceDeclaration) {
         if (!selection.isInsidePath(interfaceDeclaration)) return;
@@ -91,6 +92,13 @@ function createVisitor(
         if (!selection.isInsidePath(path)) return;
 
         onMatch(new SelectedInterfaceOccurrence(path, interfaceDeclaration));
+      } else if (functionDeclaration) {
+        // if (!selection.isInsidePath(functionDeclaration)) return;
+
+        // onVisit(new InterfaceOccurrence(path, functionDeclaration));
+        // if (!selection.isInsidePath(path)) return;
+
+        onMatch(new SelectedFunctionOccurrence(path, functionDeclaration));
       }
     }
   };
@@ -101,6 +109,14 @@ function findParentInterfaceDeclaration(
 ) {
   return path.findParent(t.isTSInterfaceDeclaration) as t.NodePath<
     t.TSInterfaceDeclaration
+  > | null;
+}
+
+function findParentFunctionDeclaration(
+  path: t.SelectablePath<t.TSTypeAnnotation>
+) {
+  return path.findParent(t.isFunctionDeclaration) as t.NodePath<
+    t.FunctionDeclaration
   > | null;
 }
 
@@ -196,6 +212,43 @@ class SelectedInterfaceOccurrence extends InterfaceOccurrence {
     );
 
     this.interfaceDeclaration.node.typeParameters = t.tsTypeParameterDeclaration(
+      [...this.existingTypeParameters, newTypeParameter]
+    );
+  }
+}
+
+// TODO: refactor Interface specific logic out of Occurrence classes, using composition (so we can implement Function easily)
+class SelectedFunctionOccurrence implements Occurrence {
+  readonly symbolPosition?: Position;
+  readonly typeName: string = "T";
+  readonly existingTypeParameters: t.TSTypeParameter[] = [];
+
+  constructor(
+    readonly path: t.SelectablePath<t.TSTypeAnnotation>,
+    private functionDeclaration: t.NodePath<t.FunctionDeclaration>
+  ) {}
+
+  get node(): t.Selectable<t.TSTypeAnnotation> {
+    return this.path.node;
+  }
+
+  transform() {
+    this.addGenericDeclaration();
+
+    const typeAnnotation = t.tsTypeAnnotation(
+      t.tsTypeReference(t.identifier(this.typeName))
+    );
+    this.path.replaceWith(typeAnnotation);
+  }
+
+  private addGenericDeclaration() {
+    const newTypeParameter = t.tsTypeParameter(
+      undefined,
+      this.path.node.typeAnnotation,
+      this.typeName
+    );
+
+    this.functionDeclaration.node.typeParameters = t.tsTypeParameterDeclaration(
       [...this.existingTypeParameters, newTypeParameter]
     );
   }

@@ -15,7 +15,7 @@ describe("Extract Generic Type", () => {
   });
 
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
-    "should extract generic type",
+    "should extract generic type from an interface",
     [
       {
         description: "primitive type (number)",
@@ -91,6 +91,25 @@ describe("Extract Generic Type", () => {
   }
 }`
       }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
+      const result = await doExtractGenericType(code, selection);
+
+      expect(result).toBe(expected);
+    }
+  );
+
+  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+    "should extract generic type from a function",
+    [
+      {
+        description: "a primitive type",
+        code: `function doSomething(message: string) {}`,
+        expected: `function doSomething<T = string>(message: T) {}`
+      }
+      // TODO: multiple occurrences
+      // TODO: existing type parameters
+      // TODO: return type becomes generic
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doExtractGenericType(code, selection);
