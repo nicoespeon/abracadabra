@@ -82,9 +82,7 @@ function createVisitor(
     TSTypeAnnotation(path) {
       if (!t.isSelectablePath(path)) return;
 
-      const interfaceDeclaration = path.findParent(
-        t.isTSInterfaceDeclaration
-      ) as t.NodePath<t.TSInterfaceDeclaration> | null;
+      const interfaceDeclaration = findParentInterfaceDeclaration(path);
 
       if (interfaceDeclaration) {
         if (!selection.isInsidePath(interfaceDeclaration)) return;
@@ -96,6 +94,14 @@ function createVisitor(
       }
     }
   };
+}
+
+function findParentInterfaceDeclaration(
+  path: t.SelectablePath<t.TSTypeAnnotation>
+) {
+  return path.findParent(t.isTSInterfaceDeclaration) as t.NodePath<
+    t.TSInterfaceDeclaration
+  > | null;
 }
 
 interface Occurrence {
