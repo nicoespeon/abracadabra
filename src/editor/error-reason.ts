@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindLetToConvertToConst,
   DidNotFindSwitchToConvert,
   DidNotFindJsxAttributeToAddBracesTo,
   DidNotFindBracesToRemove,
@@ -44,6 +45,11 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindLetToConvertToConst:
+      return didNotFind(
+        "a variable declared as let that could be converted to const"
+      );
+
     case ErrorReason.DidNotFindSwitchToConvert:
       return didNotFind("a switch statement to convert");
 
