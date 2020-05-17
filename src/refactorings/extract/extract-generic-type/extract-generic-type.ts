@@ -88,15 +88,23 @@ function createVisitor(
       if (!interfaceDeclaration) return;
       if (!selection.isInsidePath(interfaceDeclaration)) return;
 
-      onVisit(new Occurrence(path, interfaceDeclaration));
+      onVisit(new InterfaceOccurrence(path, interfaceDeclaration));
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(new SelectedOccurrence(path, interfaceDeclaration));
+      onMatch(new SelectedInterfaceOccurrence(path, interfaceDeclaration));
     }
   };
 }
 
-class Occurrence {
+interface Occurrence {
+  readonly path: t.SelectablePath<t.TSTypeAnnotation>;
+  readonly node: t.Selectable<t.TSTypeAnnotation>;
+  readonly symbolPosition?: Position;
+
+  transform(): void;
+}
+
+class InterfaceOccurrence implements Occurrence {
   readonly symbolPosition?: Position;
   protected readonly typeName: string;
 
@@ -166,7 +174,7 @@ class Occurrence {
   }
 }
 
-class SelectedOccurrence extends Occurrence {
+class SelectedInterfaceOccurrence extends InterfaceOccurrence {
   transform() {
     this.addGenericDeclaration();
     super.transform();
