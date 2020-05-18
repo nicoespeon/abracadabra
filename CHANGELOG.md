@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2020-05-18 - Make it Generic vol. 2 🏭
+
 ### Added
 
 - "Extract Generic Type" now works on function declarations.
@@ -859,7 +861,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.2.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.3.0...HEAD
+[4.3.0]: https://github.com/nicoespeon/abracadabra/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/nicoespeon/abracadabra/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/nicoespeon/abracadabra/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/nicoespeon/abracadabra/compare/4.0.0...4.0.1
