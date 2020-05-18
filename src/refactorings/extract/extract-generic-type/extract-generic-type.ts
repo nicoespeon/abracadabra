@@ -217,8 +217,6 @@ class SelectedInterfaceOccurrence extends InterfaceOccurrence {
   }
 }
 
-// TODO: refactor Interface specific logic out of Occurrence classes, using composition (so we can implement Function easily)
-
 class FunctionOccurrence implements Occurrence {
   readonly symbolPosition?: Position;
   protected readonly typeName: string;
