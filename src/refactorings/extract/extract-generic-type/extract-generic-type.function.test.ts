@@ -6,8 +6,6 @@ import { testEach } from "../../../tests-helpers";
 
 import { extractGenericType } from "./extract-generic-type";
 
-// TODO: extract return type
-
 describe("Extract Generic Type - Function declaration", () => {
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should extract generic type from a function",
@@ -23,6 +21,12 @@ describe("Extract Generic Type - Function declaration", () => {
         code: `function doSomething<T>(message: string): T {}`,
         selection: Selection.cursorAt(0, 33),
         expected: `function doSomething<T, U = string>(message: U): T {}`
+      },
+      {
+        description: "return type",
+        code: `function doSomething(message: string): boolean {}`,
+        selection: Selection.cursorAt(0, 39),
+        expected: `function doSomething<T = boolean>(message: string): T {}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -84,7 +88,7 @@ describe("Extract Generic Type - Function declaration", () => {
     });
 
     it("should replace all occurrences if user decides to", async () => {
-      const code = `function doSomething(message: string, reason: string) {}`;
+      const code = `function doSomething(message: string, reason: string): string {}`;
       const selection = Selection.cursorAt(0, 30);
       const editor = new InMemoryEditor(code);
       jest
@@ -95,7 +99,7 @@ describe("Extract Generic Type - Function declaration", () => {
 
       await extractGenericType(code, selection, editor);
 
-      const expected = `function doSomething<T = string>(message: T, reason: T) {}`;
+      const expected = `function doSomething<T = string>(message: T, reason: T): T {}`;
       expect(editor.code).toBe(expected);
     });
 
