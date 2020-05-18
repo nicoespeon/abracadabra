@@ -1,9 +1,12 @@
 import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { extractGenericType } from "./extract-generic-type";
+
+// TODO: extract return type
 
 describe("Extract Generic Type - Function declaration", () => {
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
@@ -21,8 +24,6 @@ describe("Extract Generic Type - Function declaration", () => {
         selection: Selection.cursorAt(0, 33),
         expected: `function doSomething<T, U = string>(message: U): T {}`
       }
-      // TODO: multiple occurrences
-      // TODO: return type becomes generic
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
       const result = await doExtractGenericType(code, selection);
@@ -30,6 +31,40 @@ describe("Extract Generic Type - Function declaration", () => {
       expect(result).toBe(expected);
     }
   );
+
+  describe("cursor position", () => {
+    it("should put the cursor on extracted symbol", async () => {
+      const code = `function doSomething(message: string) {}`;
+      const selection = Selection.cursorAt(0, 30);
+      const editor = new InMemoryEditor(code);
+
+      await extractGenericType(code, selection, editor);
+
+      /**
+       * Produced code =>
+       *
+       * function doSomething<T = string>(message: T) {
+       */
+      const expectedPosition = new Position(0, 21);
+      expect(editor.position).toEqual(expectedPosition);
+    });
+
+    it("should put the cursor on extracted symbol with existing type parameters", async () => {
+      const code = `function doSomething<T = number>(message: string): T {}`;
+      const selection = Selection.cursorAt(0, 42);
+      const editor = new InMemoryEditor(code);
+
+      await extractGenericType(code, selection, editor);
+
+      /**
+       * Produced code =>
+       *
+       * function doSomething<T = number, U = string>(message: U): T {
+       */
+      const expectedPosition = new Position(0, 33);
+      expect(editor.position).toEqual(expectedPosition);
+    });
+  });
 
   async function doExtractGenericType(
     code: Code,
