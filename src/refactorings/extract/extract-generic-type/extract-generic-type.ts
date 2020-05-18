@@ -93,10 +93,10 @@ function createVisitor(
 
         onMatch(new SelectedInterfaceOccurrence(path, interfaceDeclaration));
       } else if (functionDeclaration) {
-        // if (!selection.isInsidePath(functionDeclaration)) return;
+        if (!selection.isInsidePath(functionDeclaration)) return;
 
-        // onVisit(new InterfaceOccurrence(path, functionDeclaration));
-        // if (!selection.isInsidePath(path)) return;
+        onVisit(new FunctionOccurrence(path, functionDeclaration));
+        if (!selection.isInsidePath(path)) return;
 
         onMatch(new SelectedFunctionOccurrence(path, functionDeclaration));
       }
@@ -218,27 +218,85 @@ class SelectedInterfaceOccurrence extends InterfaceOccurrence {
 }
 
 // TODO: refactor Interface specific logic out of Occurrence classes, using composition (so we can implement Function easily)
-class SelectedFunctionOccurrence implements Occurrence {
+
+class FunctionOccurrence implements Occurrence {
   readonly symbolPosition?: Position;
-  readonly typeName: string = "T";
-  readonly existingTypeParameters: t.TSTypeParameter[] = [];
+  protected readonly typeName: string;
 
   constructor(
     readonly path: t.SelectablePath<t.TSTypeAnnotation>,
-    private functionDeclaration: t.NodePath<t.FunctionDeclaration>
-  ) {}
+    protected functionDeclaration: t.NodePath<t.FunctionDeclaration>
+  ) {
+    this.symbolPosition = this.determineSymbolPosition();
+    this.typeName = this.computeValidTypeName();
+  }
 
   get node(): t.Selectable<t.TSTypeAnnotation> {
     return this.path.node;
   }
 
   transform() {
-    this.addGenericDeclaration();
-
     const typeAnnotation = t.tsTypeAnnotation(
       t.tsTypeReference(t.identifier(this.typeName))
     );
     this.path.replaceWith(typeAnnotation);
+  }
+
+  protected get existingTypeParameters(): t.TSTypeParameter[] {
+    const NO_PARAMS: t.TSTypeParameter[] = [];
+    const { typeParameters } = this.functionDeclaration.node;
+    return (
+      (t.isTSTypeParameterDeclaration(typeParameters) &&
+        typeParameters.params) ||
+      NO_PARAMS
+    );
+  }
+
+  private determineSymbolPosition(): Position | undefined {
+    const lastTypeParameter = last(this.existingTypeParameters);
+    if (lastTypeParameter) {
+      if (!t.isSelectableNode(lastTypeParameter)) return;
+
+      /**
+       * function position<T = number>() {
+       *                            ^−−−− end of last type param
+       *
+       * function position<T = number, U = string>() {
+       *                              ^−−−− end of last type param + 2
+       */
+      return Position.fromAST(lastTypeParameter.loc.end).addCharacters(2);
+    } else {
+      const { id } = this.functionDeclaration.node;
+      if (!t.isSelectableNode(id)) return;
+
+      /**
+       * function position() {
+       *                 ^−−−− end of ID
+       *
+       * function position<T = number>() {
+       *                  ^−−−− end of ID + 1
+       */
+      return Position.fromAST(id.loc.end).addCharacters(1);
+    }
+  }
+
+  private computeValidTypeName(): string {
+    const DEFAULT_NAME = "T";
+    const VALID_NAMES = [DEFAULT_NAME, "U", "V", "W", "X", "Y", "Z"];
+
+    const existingNames = this.existingTypeParameters.map(({ name }) => name);
+    const availableNames = VALID_NAMES.filter(
+      name => !existingNames.includes(name)
+    );
+
+    return availableNames[0] || DEFAULT_NAME;
+  }
+}
+
+class SelectedFunctionOccurrence extends FunctionOccurrence {
+  transform() {
+    this.addGenericDeclaration();
+    super.transform();
   }
 
   private addGenericDeclaration() {

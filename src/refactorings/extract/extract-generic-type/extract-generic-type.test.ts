@@ -105,10 +105,16 @@ describe("Extract Generic Type", () => {
       {
         description: "a primitive type",
         code: `function doSomething(message: string) {}`,
+        selection: Selection.cursorAt(0, 30),
         expected: `function doSomething<T = string>(message: T) {}`
+      },
+      {
+        description: "with existing generics",
+        code: `function doSomething<T>(message: string): T {}`,
+        selection: Selection.cursorAt(0, 33),
+        expected: `function doSomething<T, U = string>(message: U): T {}`
       }
       // TODO: multiple occurrences
-      // TODO: existing type parameters
       // TODO: return type becomes generic
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -122,9 +128,9 @@ describe("Extract Generic Type", () => {
     "should not extract generic type",
     [
       {
-        description: "type not in an interface",
-        code: `function isValid(message: string): boolean {}`,
-        selection: Selection.cursorAt(0, 26)
+        description: "type not in an interface or a function declaration",
+        code: `let message: string = "Hello"`,
+        selection: Selection.cursorAt(0, 16)
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0) }) => {
