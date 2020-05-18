@@ -131,7 +131,7 @@ It will also handle multiple occurrences.
 | :--------------- | :------ |
 | `Ctrl + Alt + V` | `⌥ ⌘ V` |
 
-Just like for variables, this TS-specific refactoring will extract a type from an interface to make it generic.
+Just like for variables, this TS-specific refactoring will extract a type to make it generic.
 
 ![][demo-extract-generic-type]
 
