@@ -1,4 +1,4 @@
-import { Editor, Code, Command } from "../../../editor/editor";
+import { Code, Command } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
@@ -8,12 +8,6 @@ import { ReplacementStrategy } from "../replacement-strategy";
 import { Position } from "../../../editor/position";
 
 describe("Extract Generic Type - Interface declaration", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should extract generic type",
     [
@@ -311,7 +305,6 @@ interface Occurrence {
       .mockImplementation(([_, selectedOccurrence]) =>
         Promise.resolve(selectedOccurrence)
       );
-    editor.showError = showErrorMessage;
     await extractGenericType(code, selection, editor);
     return editor.code;
   }

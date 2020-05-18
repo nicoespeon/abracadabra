@@ -1,4 +1,4 @@
-import { Editor, Code } from "../../../editor/editor";
+import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
@@ -6,12 +6,6 @@ import { testEach } from "../../../tests-helpers";
 import { extractGenericType } from "./extract-generic-type";
 
 describe("Extract Generic Type - Function declaration", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should extract generic type from a function",
     [
@@ -47,7 +41,6 @@ describe("Extract Generic Type - Function declaration", () => {
       .mockImplementation(([_, selectedOccurrence]) =>
         Promise.resolve(selectedOccurrence)
       );
-    editor.showError = showErrorMessage;
     await extractGenericType(code, selection, editor);
     return editor.code;
   }
