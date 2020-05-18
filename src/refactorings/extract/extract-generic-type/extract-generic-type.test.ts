@@ -330,21 +330,14 @@ interface Occurrence {
     );
   });
 
-  testEach<{ code: Code; selection?: Selection }>(
-    "should not extract generic type",
-    [
-      {
-        description: "type not in an interface or a function declaration",
-        code: `let message: string = "Hello"`,
-        selection: Selection.cursorAt(0, 16)
-      }
-    ],
-    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
-      const result = await doExtractGenericType(code, selection);
+  it("should not extract generic type if not in a valid pattern", async () => {
+    const code = `let message: string = "Hello"`;
+    const selection = Selection.cursorAt(0, 16);
 
-      expect(result).toBe(code);
-    }
-  );
+    const result = await doExtractGenericType(code, selection);
+
+    expect(result).toBe(code);
+  });
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
