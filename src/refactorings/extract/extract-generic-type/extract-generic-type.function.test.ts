@@ -66,6 +66,58 @@ describe("Extract Generic Type - Function declaration", () => {
     });
   });
 
+  describe("multiple occurrences", () => {
+    it("should only replace the selected occurrence if user decides to", async () => {
+      const code = `function doSomething(message: string, reason: string) {}`;
+      const selection = Selection.cursorAt(0, 30);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([_, selectedOccurrence]) =>
+          Promise.resolve(selectedOccurrence)
+        );
+
+      await extractGenericType(code, selection, editor);
+
+      const expected = `function doSomething<T = string>(message: T, reason: string) {}`;
+      expect(editor.code).toBe(expected);
+    });
+
+    it("should replace all occurrences if user decides to", async () => {
+      const code = `function doSomething(message: string, reason: string) {}`;
+      const selection = Selection.cursorAt(0, 30);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([allOccurrences]) =>
+          Promise.resolve(allOccurrences)
+        );
+
+      await extractGenericType(code, selection, editor);
+
+      const expected = `function doSomething<T = string>(message: T, reason: T) {}`;
+      expect(editor.code).toBe(expected);
+    });
+
+    it("should only replace all occurrences of the same interface", async () => {
+      const code = `function doSomething(message: string, reason: string) {}
+function doSomethingElse(message: string, reason: string) {}`;
+      const selection = Selection.cursorAt(1, 34);
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([allOccurrences]) =>
+          Promise.resolve(allOccurrences)
+        );
+
+      await extractGenericType(code, selection, editor);
+
+      const expected = `function doSomething(message: string, reason: string) {}
+function doSomethingElse<T = string>(message: T, reason: T) {}`;
+      expect(editor.code).toBe(expected);
+    });
+  });
+
   async function doExtractGenericType(
     code: Code,
     selection: Selection
