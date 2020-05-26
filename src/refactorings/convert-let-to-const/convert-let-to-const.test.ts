@@ -16,26 +16,51 @@ describe("Convert Let To Const", () => {
     "should convert let to const",
     [
       {
-        description: "non-mutated variable declared as let converts to const",
+        description: "non-mutated variable declared not in a block",
+        code: `let someVariable = 'value';`,
+        expected: `const someVariable = 'value';`
+      },
+      {
+        description: "non-mutated variable declared in a block",
         code: `{
   let someVariable = 'value';
-  return someVariable;
 }`,
         expected: `{
   const someVariable = 'value';
-  return someVariable;
+}`
+      },
+      {
+        description: "multiple non-mutated variables declared together",
+        code: `{
+  let someVariable, otherVariable = 'value';
+}`,
+        expected: `{
+  const someVariable, otherVariable = 'value';
+}`
+      },
+      {
+        description: "multiple non-mutated variables delcared seperately",
+        code: `{
+  let someVariable = 'someValue';
+  let otherVariable = 'otherValue';
+}`,
+        expected: `{
+  const someVariable = 'someValue';
+  let otherVariable = 'otherValue';
 }`
       },
       {
         description:
-          "multiple non-mutated variables declared as let convert to const",
+          "multiple variables delcared seperately, other one mutated",
         code: `{
-  let someVariable, otherVariable = 'value';
-  return someVariable;
+  let someVariable = 'someValue';
+  let otherVariable = 'otherValue';
+  otherVariable = 'newValue';
 }`,
         expected: `{
-  const someVariable, otherVariable = 'value';
-  return someVariable;
+  const someVariable = 'someValue';
+  let otherVariable = 'otherValue';
+  otherVariable = 'newValue';
 }`
       }
     ],
@@ -43,6 +68,72 @@ describe("Convert Let To Const", () => {
       const result = await doConvertLetToConst(code, selection);
 
       expect(result).toBe(expected);
+    }
+  );
+
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not convert",
+    [
+      {
+        description: "already a const",
+        code: `{
+  const someVariable = 'value';
+}`
+      },
+      {
+        description: "variable delcared as var",
+        code: `{
+  var someVariable = 'value';
+}`
+      },
+      {
+        description: "mutated variable in a block",
+        code: `{
+  let someVariable = 'value';
+  someVariable = 'anotherValue';
+}`
+      },
+      {
+        description: "mutated variable in a different scope",
+        code: `let someVariable = 'value'; 
+{
+  someVariable = 'anotherValue';
+}`
+      },
+      {
+        description: "mutated variable not in a block",
+        code: `let someVariable = 'value';
+  someVariable = 'anotherValue';`
+      },
+      {
+        description:
+          "two variables declared on same line, first mutated, second not",
+        code: `{
+  let someVariable, otherVariable = 'value';
+  someVariable = 'anotherValue';
+}`
+      },
+      {
+        description:
+          "two variables declared on same line, second mutated, first not",
+        code: `{
+  let someVariable, otherVariable = 'value';
+  otherVariable = 'anotherValue';
+}`
+      },
+      {
+        description: "multiple variables, one mutated, one not",
+        code: `{
+  let someVariable = 'someValue';
+  let otherVariable = 'otherValue';
+  someVariable = 'newValue';
+}`
+      }
+    ],
+    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
+      const result = await doConvertLetToConst(code, selection);
+
+      expect(result).toBe(code);
     }
   );
 

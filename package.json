@@ -91,6 +91,7 @@
     "onCommand:abracadabra.convertSwitchToIfElse",
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
+    "onCommand:abracadabra.convertLetToConst",
     "onCommand:abracadabra.extract",
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.flipIfElse",
@@ -163,6 +164,11 @@
       {
         "command": "abracadabra.convertToTemplateLiteral",
         "title": "Convert to Template Literal",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertLetToConst",
+        "title": "Convert Let to Const",
         "category": "Abracadabra"
       },
       {
@@ -463,6 +469,22 @@
         },
         {
           "command": "abracadabra.convertToTemplateLiteral",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertLetToConst",
           "when": "editorLangId == typescriptreact"
         },
         {

@@ -1,6 +1,8 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { isLet } from "../../ast";
+import { Binding } from "@babel/traverse";
 
 export { convertLetToConst, createVisitor };
 
@@ -24,7 +26,27 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path: t.NodePath<t.VariableDeclaration>) => {
       const { node } = path;
-      node.kind = "const";
+      let canBeConverted = true;
+
+      if (!isLet(node)) {
+        canBeConverted = false;
+      } else {
+        const variableBindings: VariableBinding[] = bindingsForSelectedVariableDeclarators(
+          path.scope.bindings,
+          node
+        );
+
+        variableBindings.forEach(binding => {
+          if (!binding.isConstant) {
+            canBeConverted = false;
+          }
+        });
+      }
+
+      if (canBeConverted) {
+        node.kind = "const";
+      }
+
       path.stop();
     })
   );
@@ -41,4 +63,26 @@ function createVisitor(
       onMatch(path);
     }
   };
+}
+type VariableBinding = {
+  identifier: babel.types.Identifier;
+  isConstant: boolean;
+};
+function bindingsForSelectedVariableDeclarators(
+  bindings: { [name: string]: Binding },
+  node: t.VariableDeclaration
+): VariableBinding[] {
+  const variableBindings: VariableBinding[] = [];
+  for (let name in bindings) {
+    let binding = bindings[name];
+    node.declarations
+      .filter(declarator => declarator.id === binding.identifier)
+      .forEach(_ =>
+        variableBindings.push({
+          identifier: binding.identifier,
+          isConstant: binding.constant
+        })
+      );
+  }
+  return variableBindings;
 }
