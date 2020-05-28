@@ -25,5 +25,29 @@ await doSomething();`;
 
       expect(() => transform(code, {})).not.toThrow();
     });
+
+    it("should preserve tabs", () => {
+      const code = `\t\tconsole.log("Hello Tabs")`;
+
+      const { code: result } = transform(code, {
+        StringLiteral(path) {
+          path.node.value = `Tabs still here?`;
+        }
+      });
+
+      expect(result).toBe(`\t\tconsole.log("Tabs still here?")`);
+    });
+
+    it("should preserve spaces", () => {
+      const code = `  console.log("Hello Tabs")`;
+
+      const { code: result } = transform(code, {
+        StringLiteral(path) {
+          path.node.value = `Tabs still here?`;
+        }
+      });
+
+      expect(result).toBe(`  console.log("Tabs still here?")`);
+    });
   });
 });

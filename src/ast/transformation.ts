@@ -38,10 +38,33 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const code = print(ast);
   const newCode = print(traverseAST(ast, options));
 
+  let firstChar;
+  try {
+    // @ts-ignore Recast does add these information
+    firstChar = ast.loc.lines.infos[0].line[0];
+  } catch {
+    firstChar = "";
+  }
+  const useTabs = firstChar === "\t";
+
   return {
-    code: newCode,
+    code: useTabs ? indentWithTabs(newCode) : newCode,
     hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
   };
+}
+
+function indentWithTabs(code: Code): Code {
+  return code
+    .split("\n")
+    .map(line => {
+      const matches = line.match(/^\s+/);
+      if (!matches) return line;
+
+      // # of spaces = # of tabs since `tabWidth = 1` when we parse
+      const indentationWidth = matches[0].length;
+      return "\t".repeat(indentationWidth) + line.slice(indentationWidth);
+    })
+    .join("\n");
 }
 
 function print(ast: AST): Code {
