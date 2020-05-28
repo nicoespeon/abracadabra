@@ -38,6 +38,24 @@ await doSomething();`;
       expect(result).toBe(`\t\tconsole.log("Tabs still here?")`);
     });
 
+    it("should preserve tabs (multi-lines)", () => {
+      const code = `function doSomethingWithTabs() {
+\tconst message = "Hello!";
+\t\tconsole.log(message);
+}`;
+
+      const { code: result } = transform(code, {
+        StringLiteral(path) {
+          path.node.value = `Tabs still here?`;
+        }
+      });
+
+      expect(result).toBe(`function doSomethingWithTabs() {
+\tconst message = "Tabs still here?";
+\t\tconsole.log(message);
+}`);
+    });
+
     it("should preserve spaces", () => {
       const code = `  console.log("Hello Tabs")`;
 

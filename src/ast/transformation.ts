@@ -38,14 +38,20 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const code = print(ast);
   const newCode = print(traverseAST(ast, options));
 
-  let firstChar;
+  let useTabs = false;
   try {
     // @ts-ignore Recast does add these information
-    firstChar = ast.loc.lines.infos[0].line[0];
-  } catch {
-    firstChar = "";
-  }
-  const useTabs = firstChar === "\t";
+    for (let info of ast.loc.lines.infos) {
+      const firstChar = info.line[0];
+      if (firstChar === "\t") {
+        useTabs = true;
+        break;
+      } else if (firstChar === " ") {
+        useTabs = false;
+        break;
+      }
+    }
+  } catch {}
 
   return {
     code: useTabs ? indentWithTabs(newCode) : newCode,
