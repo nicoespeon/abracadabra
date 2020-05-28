@@ -38,11 +38,20 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const code = print(ast);
   const newCode = print(traverseAST(ast, options));
 
+  return {
+    code: isUsingTabs(ast) ? indentWithTabs(newCode) : newCode,
+    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
+  };
+}
+
+function isUsingTabs(ast: AST): boolean {
   let useTabs = false;
+
   try {
     // @ts-ignore Recast does add these information
     for (let info of ast.loc.lines.infos) {
       const firstChar = info.line[0];
+
       if (firstChar === "\t") {
         useTabs = true;
         break;
@@ -53,10 +62,7 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
     }
   } catch {}
 
-  return {
-    code: useTabs ? indentWithTabs(newCode) : newCode,
-    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
-  };
+  return useTabs;
 }
 
 function indentWithTabs(code: Code): Code {
