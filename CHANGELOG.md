@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Tabs are now preserved. Some refactorings used to replace them with spaces. No more 🤠
+
 ## [4.3.0] - 2020-05-18 - Make it Generic vol. 2 🏭
 
 ### Added
