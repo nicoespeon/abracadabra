@@ -31,13 +31,7 @@ function generate(ast: t.File | t.Node): Code {
 }
 
 function transform(code: Code, options: TraverseOptions): Transformed {
-  const ast = parseAndTraverseCode(code, options);
-  const newCode = generate(ast);
-
-  return {
-    code: newCode,
-    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
-  };
+  return transformAST(parse(code), options);
 }
 
 function transformAST(ast: AST, options: TraverseOptions): Transformed {
