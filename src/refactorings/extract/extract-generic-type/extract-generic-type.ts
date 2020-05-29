@@ -93,12 +93,12 @@ function createVisitor(
 
         onMatch(new SelectedInterfaceOccurrence(path, interfaceDeclaration));
       } else if (functionDeclaration) {
-        if (!selection.isInsidePath(functionDeclaration)) return;
+        if (!functionDeclaration.contains(selection)) return;
 
-        onVisit(new FunctionOccurrence(path, functionDeclaration));
+        onVisit(new InterfaceOccurrence(path, functionDeclaration));
         if (!selection.isInsidePath(path)) return;
 
-        onMatch(new SelectedFunctionOccurrence(path, functionDeclaration));
+        onMatch(new SelectedInterfaceOccurrence(path, functionDeclaration));
       }
     }
   };
@@ -115,10 +115,11 @@ function findParentInterfaceDeclaration(
 
 function findParentFunctionDeclaration(
   path: t.SelectablePath<t.TSTypeAnnotation>
-) {
-  return path.findParent(t.isFunctionDeclaration) as t.NodePath<
+): FunctionDeclaration | null {
+  const declaration = path.findParent(t.isFunctionDeclaration) as t.NodePath<
     t.FunctionDeclaration
-  > | null;
+  >;
+  return declaration ? new FunctionDeclaration(declaration) : null;
 }
 
 interface Occurrence {
@@ -217,102 +218,9 @@ class SelectedInterfaceOccurrence extends InterfaceOccurrence {
   }
 }
 
-class FunctionOccurrence implements Occurrence {
-  readonly symbolPosition?: Position;
-  protected readonly typeName: string;
-
-  constructor(
-    readonly path: t.SelectablePath<t.TSTypeAnnotation>,
-    protected functionDeclaration: t.NodePath<t.FunctionDeclaration>
-  ) {
-    this.symbolPosition = this.determineSymbolPosition();
-    this.typeName = this.computeValidTypeName();
-  }
-
-  get node(): t.Selectable<t.TSTypeAnnotation> {
-    return this.path.node;
-  }
-
-  transform() {
-    const typeAnnotation = t.tsTypeAnnotation(
-      t.tsTypeReference(t.identifier(this.typeName))
-    );
-    this.path.replaceWith(typeAnnotation);
-  }
-
-  protected get existingTypeParameters(): t.TSTypeParameter[] {
-    const NO_PARAMS: t.TSTypeParameter[] = [];
-    const { typeParameters } = this.functionDeclaration.node;
-    return (
-      (t.isTSTypeParameterDeclaration(typeParameters) &&
-        typeParameters.params) ||
-      NO_PARAMS
-    );
-  }
-
-  private determineSymbolPosition(): Position | undefined {
-    const lastTypeParameter = last(this.existingTypeParameters);
-    if (lastTypeParameter) {
-      if (!t.isSelectableNode(lastTypeParameter)) return;
-
-      /**
-       * function position<T = number>() {
-       *                            ^−−−− end of last type param
-       *
-       * function position<T = number, U = string>() {
-       *                              ^−−−− end of last type param + 2
-       */
-      return Position.fromAST(lastTypeParameter.loc.end).addCharacters(2);
-    } else {
-      const { id } = this.functionDeclaration.node;
-      if (!t.isSelectableNode(id)) return;
-
-      /**
-       * function position() {
-       *                 ^−−−− end of ID
-       *
-       * function position<T = number>() {
-       *                  ^−−−− end of ID + 1
-       */
-      return Position.fromAST(id.loc.end).addCharacters(1);
-    }
-  }
-
-  private computeValidTypeName(): string {
-    const DEFAULT_NAME = "T";
-    const VALID_NAMES = [DEFAULT_NAME, "U", "V", "W", "X", "Y", "Z"];
-
-    const existingNames = this.existingTypeParameters.map(({ name }) => name);
-    const availableNames = VALID_NAMES.filter(
-      name => !existingNames.includes(name)
-    );
-
-    return availableNames[0] || DEFAULT_NAME;
-  }
-}
-
-class SelectedFunctionOccurrence extends FunctionOccurrence {
-  transform() {
-    this.addGenericDeclaration();
-    super.transform();
-  }
-
-  private addGenericDeclaration() {
-    const newTypeParameter = t.tsTypeParameter(
-      undefined,
-      this.path.node.typeAnnotation,
-      this.typeName
-    );
-
-    this.functionDeclaration.node.typeParameters = t.tsTypeParameterDeclaration(
-      [...this.existingTypeParameters, newTypeParameter]
-    );
-  }
-}
-
 interface Declaration {
   existingTypeParameters: t.TSTypeParameter[];
-  id: t.Identifier;
+  id: t.Identifier | null;
   contains(selection: Selection): boolean;
   setTypeParameters(params: t.TSTypeParameterDeclaration): void;
 }
@@ -328,7 +236,35 @@ class InterfaceDeclaration implements Declaration {
     return (typeParameters && typeParameters.params) || NO_PARAMS;
   }
 
-  get id(): t.Identifier {
+  get id(): t.Identifier | null {
+    return this.declaration.node.id;
+  }
+
+  contains(selection: Selection): boolean {
+    return selection.isInsidePath(this.declaration);
+  }
+
+  setTypeParameters(params: t.TSTypeParameterDeclaration): void {
+    this.declaration.node.typeParameters = params;
+  }
+}
+
+class FunctionDeclaration implements Declaration {
+  constructor(
+    private readonly declaration: t.NodePath<t.FunctionDeclaration>
+  ) {}
+
+  get existingTypeParameters(): t.TSTypeParameter[] {
+    const NO_PARAMS: t.TSTypeParameter[] = [];
+    const { typeParameters } = this.declaration.node;
+    return (
+      (t.isTSTypeParameterDeclaration(typeParameters) &&
+        typeParameters.params) ||
+      NO_PARAMS
+    );
+  }
+
+  get id(): t.Identifier | null {
     return this.declaration.node.id;
   }
 
