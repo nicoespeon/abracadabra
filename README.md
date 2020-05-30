@@ -539,7 +539,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/capaj"><img src="https://avatars.githubusercontent.com/u/1305378?v=3" width="100px;" alt="Jiri Spac"/><br /><sub><b>Jiri Spac</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Acapaj" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/tjx666"><img src="https://github.com/tjx666.png" width="100px;" alt="YuTengjing"/><br /><sub><b>YuTengjing</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Atjx666" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/delaaxe"><img src="https://github.com/delaaxe.png" width="100px;" alt="delaaxe"/><br /><sub><b>delaaxe</b></sub></a><br /><a href="#ideas-delaaxe" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=delaaxe" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/jrnail23"><img src="https://github.com/jrnail23.png" width="100px;" alt="jrnail23"/><br /><sub><b>jrnail23</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ajrnail23" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/jrnail23"><img src="https://github.com/jrnail23.png" width="100px;" alt="jrnail23"/><br /><sub><b>James Nail</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ajrnail23" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
