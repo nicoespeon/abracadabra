@@ -16,7 +16,7 @@ describe("Convert Let To Const", () => {
     "should convert let to const",
     [
       {
-        description: "non-mutated variable declared not in a block",
+        description: "non-mutated variable, not declared in a block",
         code: `let someVariable = 'value';`,
         expected: `const someVariable = 'value';`
       },
