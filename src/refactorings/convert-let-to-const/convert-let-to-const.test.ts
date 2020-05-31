@@ -94,7 +94,7 @@ describe("Convert Let To Const", () => {
 }`
       },
       {
-        description: "mutated variable in a different scope",
+        description: "mutated variable in a nested scope",
         code: `let someVariable = 'value'; 
 {
   someVariable = 'anotherValue';
