@@ -1,7 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { isLet } from "../../ast";
 import { Binding } from "@babel/traverse";
 
 export { convertLetToConst, createVisitor };
@@ -28,7 +27,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const { node } = path;
       let canBeConverted = true;
 
-      if (!isLet(node)) {
+      if (!t.isLet(node)) {
         canBeConverted = false;
       } else {
         const variableBindings: VariableBinding[] = bindingsForSelectedVariableDeclarators(
