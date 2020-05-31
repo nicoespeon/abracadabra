@@ -6,7 +6,7 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "convertLetToConst",
     operation: convertLetToConst,
-    title: "Convert Let To Const"
+    title: "Convert let to const"
   },
   actionProvider: {
     message: "Convert let to const",
