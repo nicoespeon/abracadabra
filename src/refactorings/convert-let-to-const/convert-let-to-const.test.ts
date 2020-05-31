@@ -51,7 +51,7 @@ describe("Convert Let To Const", () => {
       },
       {
         description:
-          "multiple variables delcared seperately, other one mutated",
+          "multiple variables declared seperately, other one is mutated",
         code: `{
   let someVariable = 'someValue';
   let otherVariable = 'otherValue';
