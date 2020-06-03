@@ -314,6 +314,11 @@ if (false) {
     console.log("High quality");
   }
 }`
+      },
+      {
+        description: "if statement without braces",
+        code: `if (minusResult === 1) score = 'Advantage player1';`,
+        selection: Selection.cursorAt(0, 32)
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0) }) => {

@@ -180,13 +180,13 @@ function checkDeadCodeFromNestedIf(
 }
 
 function hasEmptyAlternate({ alternate }: t.IfStatement): boolean {
-  if (!alternate) return true;
+  if (!alternate) return false;
 
   if (t.isIfStatement(alternate)) {
     return isEmptyIfStatement(alternate);
   }
 
-  return t.isEmpty(alternate);
+  return t.isBlockStatement(alternate) && t.isEmpty(alternate);
 }
 
 function hasEmptyConsequent({ consequent }: t.IfStatement): boolean {
@@ -194,11 +194,13 @@ function hasEmptyConsequent({ consequent }: t.IfStatement): boolean {
     return isEmptyIfStatement(consequent);
   }
 
-  return t.isEmpty(consequent);
+  return t.isBlockStatement(consequent) && t.isEmpty(consequent);
 }
 
 function isEmptyIfStatement(node: t.IfStatement): boolean {
-  return hasEmptyConsequent(node) && hasEmptyAlternate(node);
+  return (
+    hasEmptyConsequent(node) && (!node.alternate || hasEmptyAlternate(node))
+  );
 }
 
 function replaceWithAlternate(path: t.NodePath<t.IfStatement>) {
