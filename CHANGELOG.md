@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- "Flip If/Else" was broken with non-negatable operators like `instanceof`. It flips the condition correctly now!
 - Tabs are now preserved. Some refactorings used to replace them with spaces. No more 🤠
 
 ## [4.3.0] - 2020-05-18 - Make it Generic vol. 2 🏭

@@ -223,6 +223,19 @@ doSomethingElse();`,
 } else {
   return doSomething();
 }`
+      },
+      {
+        description: "instanceof",
+        code: `if (data instanceof Item) {
+  doSomething();
+} else {
+  doAnotherThing();
+}`,
+        expected: `if (!(data instanceof Item)) {
+  doAnotherThing();
+} else {
+  doSomething();
+}`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
