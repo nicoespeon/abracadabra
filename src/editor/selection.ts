@@ -56,6 +56,10 @@ class Selection {
     return this.end.line - this.start.line;
   }
 
+  isEmpty(): boolean {
+    return this.start.isEqualTo(this.end);
+  }
+
   extendToStartOfLine(): Selection {
     return Selection.fromPositions(this.start.putAtStartOfLine(), this.end);
   }
