@@ -32,7 +32,7 @@ describe("Convert Let To Const", () => {
 }`
       },
       {
-        description: "multiple non-mutated variables delcared seperately",
+        description: "only the selected non-mutated variable",
         code: `let someVariable = 'someValue';
 let otherVariable = 'otherValue';`,
         selection: Selection.cursorAt(0, 4),
@@ -41,7 +41,7 @@ let otherVariable = 'otherValue';`
       },
       {
         description:
-          "multiple variables declared seperately, other one is mutated",
+          "only the selected non-mutated variable, other one is mutated",
         code: `let someVariable = 'someValue';
 let otherVariable = 'otherValue';
 otherVariable = 'newValue';`,
