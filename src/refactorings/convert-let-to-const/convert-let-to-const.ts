@@ -24,15 +24,13 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path: t.NodePath<t.VariableDeclarator>) => {
-      const { node } = path;
+      const { node, parent } = path;
 
-      if (t.isLet(path.parent) && path.parent.kind === "let") {
-        if (
-          isSingleVariableDeclaration(path.parent) &&
-          canBeConst(path.scope.bindings, node)
-        ) {
-          path.parent.kind = "const";
-        }
+      if (
+        isSingleLetVariableDeclaration(parent) &&
+        variableCanBeConst(path.scope.bindings, node)
+      ) {
+        parent.kind = "const";
       }
 
       path.stop();
@@ -55,11 +53,13 @@ function createVisitor(
   };
 }
 
-function isSingleVariableDeclaration(variable: t.VariableDeclaration) {
-  return variable.declarations.length === 1;
+function isSingleLetVariableDeclaration(
+  node: t.Node
+): node is t.VariableDeclaration {
+  return t.isLet(node) && node.kind === "let" && node.declarations.length === 1;
 }
 
-function canBeConst(
+function variableCanBeConst(
   bindings: { [name: string]: Binding },
   variableDeclarator: t.VariableDeclarator
 ): boolean {
