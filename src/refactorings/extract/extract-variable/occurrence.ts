@@ -14,7 +14,7 @@ export { createOccurrence, Occurrence };
 
 function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
   if (t.canBeShorthand(path)) {
-    const variable = new ShorthandVariable(path);
+    const variable = new ShorthandVariable(path.node, path.parent);
 
     if (variable.isValid) {
       return new ShorthandOccurrence(path, loc, variable);
@@ -25,15 +25,19 @@ function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
     return new MemberExpressionOccurrence(
       path,
       loc,
-      new MemberExpressionVariable(path)
+      new MemberExpressionVariable(path.node, path.parent)
     );
   }
 
   if (path.isStringLiteral()) {
-    return new Occurrence(path, loc, new StringLiteralVariable(path));
+    return new Occurrence(
+      path,
+      loc,
+      new StringLiteralVariable(path.node, path.parent)
+    );
   }
 
-  return new Occurrence(path, loc, new Variable(path));
+  return new Occurrence(path, loc, new Variable(path.node, path.parent));
 }
 
 class Occurrence {
