@@ -23,27 +23,16 @@ async function convertLetToConst(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<t.VariableDeclaration>) => {
+    createVisitor(selection, (path: t.NodePath<t.VariableDeclarator>) => {
       const { node } = path;
-      let canBeConverted = true;
 
-      if (!t.isLet(node)) {
-        canBeConverted = false;
-      } else {
-        const variableBindings: VariableBinding[] = bindingsForSelectedVariableDeclarators(
-          path.scope.bindings,
-          node
-        );
-
-        variableBindings.forEach(binding => {
-          if (!binding.isConstant) {
-            canBeConverted = false;
-          }
-        });
-      }
-
-      if (canBeConverted) {
-        node.kind = "const";
+      if (t.isLet(path.parent) && path.parent.kind === "let") {
+        if (
+          isSingleVariableDeclaration(path.parent) &&
+          canBeConst(path.scope.bindings, node)
+        ) {
+          path.parent.kind = "const";
+        }
       }
 
       path.stop();
@@ -53,35 +42,31 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.VariableDeclaration>) => void
+  onMatch: (path: t.NodePath<t.VariableDeclarator>) => void
 ): t.Visitor {
   return {
-    VariableDeclaration(path) {
+    VariableDeclarator(path) {
       const { node } = path;
-      selection.isInsideNode(node);
+      if (!selection.isInsideNode(node)) {
+        return;
+      }
       onMatch(path);
     }
   };
 }
-type VariableBinding = {
-  identifier: babel.types.Identifier;
-  isConstant: boolean;
-};
-function bindingsForSelectedVariableDeclarators(
+
+function isSingleVariableDeclaration(variable: t.VariableDeclaration) {
+  return variable.declarations.length === 1;
+}
+
+function canBeConst(
   bindings: { [name: string]: Binding },
-  node: t.VariableDeclaration
-): VariableBinding[] {
-  const variableBindings: VariableBinding[] = [];
+  variableDeclarator: t.VariableDeclarator
+): boolean {
   for (let name in bindings) {
     let binding = bindings[name];
-    node.declarations
-      .filter(declarator => declarator.id === binding.identifier)
-      .forEach(_ =>
-        variableBindings.push({
-          identifier: binding.identifier,
-          isConstant: binding.constant
-        })
-      );
+    if (binding.identifier === variableDeclarator.id && !binding.constant)
+      return false;
   }
-  return variableBindings;
+  return true;
 }

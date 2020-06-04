@@ -18,6 +18,7 @@ describe("Convert Let To Const", () => {
       {
         description: "non-mutated variable, not declared in a block",
         code: `let someVariable = 'value';`,
+        selection: Selection.cursorAt(0, 4),
         expected: `const someVariable = 'value';`
       },
       {
@@ -25,43 +26,29 @@ describe("Convert Let To Const", () => {
         code: `{
   let someVariable = 'value';
 }`,
+        selection: Selection.cursorAt(1, 7),
         expected: `{
   const someVariable = 'value';
 }`
       },
       {
-        description: "multiple non-mutated variables declared together",
-        code: `{
-  let someVariable, otherVariable = 'value';
-}`,
-        expected: `{
-  const someVariable, otherVariable = 'value';
-}`
-      },
-      {
         description: "multiple non-mutated variables delcared seperately",
-        code: `{
-  let someVariable = 'someValue';
-  let otherVariable = 'otherValue';
-}`,
-        expected: `{
-  const someVariable = 'someValue';
-  let otherVariable = 'otherValue';
-}`
+        code: `let someVariable = 'someValue';
+let otherVariable = 'otherValue';`,
+        selection: Selection.cursorAt(0, 4),
+        expected: `const someVariable = 'someValue';
+let otherVariable = 'otherValue';`
       },
       {
         description:
           "multiple variables declared seperately, other one is mutated",
-        code: `{
-  let someVariable = 'someValue';
-  let otherVariable = 'otherValue';
-  otherVariable = 'newValue';
-}`,
-        expected: `{
-  const someVariable = 'someValue';
-  let otherVariable = 'otherValue';
-  otherVariable = 'newValue';
-}`
+        code: `let someVariable = 'someValue';
+let otherVariable = 'otherValue';
+otherVariable = 'newValue';`,
+        selection: Selection.cursorAt(0, 4),
+        expected: `const someVariable = 'someValue';
+let otherVariable = 'otherValue';
+otherVariable = 'newValue';`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
@@ -76,58 +63,61 @@ describe("Convert Let To Const", () => {
     [
       {
         description: "already a const",
-        code: `{
-  const someVariable = 'value';
-}`
+        code: `const someVariable = 'value';`,
+        selection: Selection.cursorAt(0, 6)
       },
       {
         description: "variable delcared as var",
-        code: `{
-  var someVariable = 'value';
-}`
+        code: `var someVariable = 'value';`,
+        selection: Selection.cursorAt(0, 4)
       },
       {
-        description: "mutated variable in a block",
-        code: `{
-  let someVariable = 'value';
-  someVariable = 'anotherValue';
-}`
+        description: "mutated variable",
+        code: `let someVariable = 'value';
+someVariable = 'anotherValue';`,
+        selection: Selection.cursorAt(0, 4)
       },
       {
         description: "mutated variable in a nested scope",
         code: `let someVariable = 'value'; 
 {
   someVariable = 'anotherValue';
-}`
+}`,
+        selection: Selection.cursorAt(0, 4)
       },
       {
-        description: "mutated variable not in a block",
-        code: `let someVariable = 'value';
-  someVariable = 'anotherValue';`
+        description: "mutated variable in a block",
+        code: `{
+  let someVariable = 'value';
+  someVariable = 'anotherValue';
+}`,
+        selection: Selection.cursorAt(1, 7)
+      },
+      {
+        description: "multiple variables declared together",
+        code: `let someVariable, otherVariable = 'value';`,
+        selection: Selection.cursorAt(0, 4)
       },
       {
         description:
-          "two variables declared on same line, first mutated, second not",
-        code: `{
-  let someVariable, otherVariable = 'value';
-  someVariable = 'anotherValue';
-}`
+          "two variables declared together, first mutated, second not",
+        code: `let someVariable, otherVariable = 'value';
+someVariable = 'anotherValue';`,
+        selection: Selection.cursorAt(0, 19)
       },
       {
         description:
           "two variables declared on same line, second mutated, first not",
-        code: `{
-  let someVariable, otherVariable = 'value';
-  otherVariable = 'anotherValue';
-}`
+        code: `let someVariable, otherVariable = 'value';
+otherVariable = 'anotherValue';`,
+        selection: Selection.cursorAt(0, 4)
       },
       {
         description: "multiple variables, one mutated, one not",
-        code: `{
-  let someVariable = 'someValue';
-  let otherVariable = 'otherValue';
-  someVariable = 'newValue';
-}`
+        code: `let someVariable = 'someValue';
+let otherVariable = 'otherValue';
+someVariable = 'newValue';`,
+        selection: Selection.cursorAt(0, 4)
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0) }) => {
