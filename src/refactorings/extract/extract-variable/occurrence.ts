@@ -40,9 +40,9 @@ function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
   return new Occurrence(path, loc, new Variable(path.node, path.parent));
 }
 
-class Occurrence {
+class Occurrence<T extends t.Node = t.Node> {
   constructor(
-    public path: t.NodePath,
+    public path: t.NodePath<T>,
     public loc: t.SourceLocation,
     protected variable: Variable
   ) {}
@@ -108,7 +108,7 @@ class Occurrence {
   }
 }
 
-class ShorthandOccurrence extends Occurrence {
+class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
   private keySelection: Selection;
 
   constructor(
@@ -135,7 +135,7 @@ class ShorthandOccurrence extends Occurrence {
   }
 }
 
-class MemberExpressionOccurrence extends Occurrence {
+class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   path: t.NodePath<t.MemberExpression>;
 
   constructor(
