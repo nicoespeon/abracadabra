@@ -285,15 +285,14 @@ class Logger {
 console.log(extracted);`
       },
       {
-        description: "a selected part of an interpolated string",
+        description: "a selected part of a template literal",
         code: "console.log(`Hello world! How are you doing?`);",
         selection: new Selection([0, 19], [0, 24]),
         expected: `const world = "world";
 console.log(\`Hello \${world}! How are you doing?\`);`
       },
       {
-        description:
-          "a selected part of an interpolated string with expressions",
+        description: "a selected part of a template literal with expressions",
         code: "console.log(`${hello} world! How are ${you} doing?`);",
         selection: new Selection([0, 22], [0, 27]),
         only: true,
