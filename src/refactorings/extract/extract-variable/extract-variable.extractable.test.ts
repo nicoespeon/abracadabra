@@ -292,6 +292,15 @@ console.log(extracted);`
 console.log(\`Hello \${world}! How are you doing?\`);`
       },
       {
+        description:
+          "a selected part of an interpolated string with expressions",
+        code: "console.log(`${hello} world! How are ${you} doing?`);",
+        selection: new Selection([0, 22], [0, 27]),
+        only: true,
+        expected: `const world = "world";
+console.log(\`\${hello} \${world}! How are \${you} doing?\`);`
+      },
+      {
         description: "an if statement (whole statement)",
         code: "if (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 4], [0, 45]),

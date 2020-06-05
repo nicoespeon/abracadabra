@@ -171,10 +171,20 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
 
   get modification(): Modification {
     const { name, left, right } = this.parts;
+    const { quasis, expressions } = this.path.node;
+    const { index } = this.selectedQuasi;
+
+    const newQuasis = [t.templateElement(left), t.templateElement(right)];
 
     const newTemplateLiteral = t.templateLiteral(
-      [t.templateElement(left), t.templateElement(right)],
-      [t.identifier(name)]
+      // Replace quasi with the new truncated ones
+      [...quasis.slice(0, index), ...newQuasis, ...quasis.slice(index + 1)],
+      // Insert the new expression
+      [
+        ...expressions.slice(0, index),
+        t.identifier(name),
+        ...expressions.slice(index)
+      ]
     );
 
     return {
@@ -206,16 +216,23 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     return { name, value, left, right };
   }
 
-  private get selectedQuasi(): t.TemplateElement & t.SelectableNode {
-    const result = this.path.node.quasis.find(quasi =>
+  private get selectedQuasi(): t.TemplateElement &
+    t.SelectableNode & { index: number } {
+    const index = this.path.node.quasis.findIndex(quasi =>
       this.userSelection.isInsideNode(quasi)
     );
 
-    if (!result || !t.isSelectableNode(result)) {
-      throw new Error("I can't find selected text in code structure");
+    if (index < 0) {
+      throw new Error("I can't find selected text in template elements");
     }
 
-    return result;
+    const result = this.path.node.quasis[index];
+
+    if (!t.isSelectableNode(result)) {
+      throw new Error("Template element is not selectable");
+    }
+
+    return { ...result, index };
   }
 }
 
