@@ -109,15 +109,8 @@ class Occurrence<T extends t.Node = t.Node> {
 }
 
 class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
-  private keySelection: Selection;
-
-  constructor(
-    path: t.NodePath<t.ObjectProperty>,
-    loc: t.SourceLocation,
-    variable: Variable
-  ) {
-    super(path, loc, variable);
-    this.keySelection = Selection.fromAST(path.node.key.loc);
+  private get keySelection(): Selection {
+    return Selection.fromAST(this.path.node.key.loc);
   }
 
   get modification(): Modification {
