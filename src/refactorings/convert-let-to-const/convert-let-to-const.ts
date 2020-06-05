@@ -1,7 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { Binding } from "@babel/traverse";
 
 export { convertLetToConst, createVisitor };
 
@@ -60,7 +59,7 @@ function isSingleLetVariableDeclaration(
 }
 
 function variableCanBeConst(
-  bindings: { [name: string]: Binding },
+  bindings: { [name: string]: t.Binding },
   variableDeclarator: t.VariableDeclarator
 ): boolean {
   for (let name in bindings) {
