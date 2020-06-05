@@ -42,12 +42,7 @@ function createOccurrence(
   }
 
   if (path.isTemplateLiteral() && !selection.isEmpty()) {
-    return new PartialTemplateLiteralOccurrence(
-      path,
-      loc,
-      new Variable(path.node, path.parent),
-      selection
-    );
+    return new PartialTemplateLiteralOccurrence(path, loc, selection);
   }
 
   return new Occurrence(path, loc, new Variable(path.node, path.parent));
@@ -158,10 +153,9 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   constructor(
     path: t.NodePath<t.TemplateLiteral>,
     loc: t.SourceLocation,
-    variable: Variable,
     private readonly userSelection: Selection
   ) {
-    super(path, loc, variable);
+    super(path, loc, new Variable(path.node, path.parent));
   }
 
   toVariableDeclaration(): Code {
