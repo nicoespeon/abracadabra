@@ -128,9 +128,16 @@ function getNegatedIfTest(test: t.IfStatement["test"]): t.IfStatement["test"] {
   // Simplify simple binary expressions
   // E.g. `a > b` => `a <= b` instead of `!(a > b)`
   if (t.isBinaryExpression(test)) {
+    const negatedOperator = getNegatedBinaryOperator(test.operator);
+
+    // Some operators can't be negated => negate the whole expression
+    if (negatedOperator === test.operator) {
+      return t.unaryExpression("!", test);
+    }
+
     return {
       ...test,
-      operator: getNegatedBinaryOperator(test.operator)
+      operator: negatedOperator
     };
   }
 

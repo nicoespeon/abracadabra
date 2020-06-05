@@ -37,13 +37,7 @@ function generate(ast: t.File | t.Node): Code {
 }
 
 function transform(code: Code, options: TraverseOptions): Transformed {
-  const ast = parseAndTraverseCode(code, options);
-  const newCode = generate(ast);
-
-  return {
-    code: newCode,
-    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
-  };
+  return transformAST(parse(code), options);
 }
 
 function transformAST(ast: AST, options: TraverseOptions): Transformed {
@@ -51,9 +45,44 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const newCode = print(traverseAST(ast, options));
 
   return {
-    code: newCode,
+    code: isUsingTabs(ast) ? indentWithTabs(newCode) : newCode,
     hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
   };
+}
+
+function isUsingTabs(ast: AST): boolean {
+  let useTabs = false;
+
+  try {
+    // @ts-ignore Recast does add these information
+    for (let info of ast.loc.lines.infos) {
+      const firstChar = info.line[0];
+
+      if (firstChar === "\t") {
+        useTabs = true;
+        break;
+      } else if (firstChar === " ") {
+        useTabs = false;
+        break;
+      }
+    }
+  } catch {}
+
+  return useTabs;
+}
+
+function indentWithTabs(code: Code): Code {
+  return code
+    .split("\n")
+    .map(line => {
+      const matches = line.match(/^\s+/);
+      if (!matches) return line;
+
+      // # of spaces = # of tabs since `tabWidth = 1` when we parse
+      const indentationWidth = matches[0].length;
+      return "\t".repeat(indentationWidth) + line.slice(indentationWidth);
+    })
+    .join("\n");
 }
 
 function print(ast: AST): Code {
