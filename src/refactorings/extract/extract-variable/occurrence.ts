@@ -41,7 +41,11 @@ function createOccurrence(
     );
   }
 
-  if (path.isTemplateLiteral() && !selection.isEmpty()) {
+  if (
+    path.isTemplateLiteral() &&
+    !selection.isEmpty() &&
+    PartialTemplateLiteralOccurrence.isValid(path, loc, selection)
+  ) {
     return new PartialTemplateLiteralOccurrence(path, loc, selection);
   }
 
@@ -156,6 +160,28 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     private readonly userSelection: Selection
   ) {
     super(path, loc, new Variable(path.node, path.parent));
+  }
+
+  static isValid(
+    path: t.NodePath<t.TemplateLiteral>,
+    loc: t.SourceLocation,
+    userSelection: Selection
+  ): boolean {
+    try {
+      const occurrence = new PartialTemplateLiteralOccurrence(
+        path,
+        loc,
+        userSelection
+      );
+
+      // If any of these throws, Occurrence is invalid
+      occurrence.toVariableDeclaration();
+      occurrence.modification;
+    } catch {
+      return false;
+    }
+
+    return true;
   }
 
   toVariableDeclaration(): Code {

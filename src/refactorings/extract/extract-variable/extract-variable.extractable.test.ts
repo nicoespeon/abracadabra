@@ -306,6 +306,30 @@ console.log(\`\${hello} \${world}! How are \${you} doing?\`);`
 console.log(\`\${extracted} world! How are \${you} doing?\`);`
       },
       {
+        description:
+          "a selected template literal (selection across quasi and expression)",
+        code: "console.log(`${hello} world! How are ${you} doing?`);",
+        selection: new Selection([0, 19], [0, 25]),
+        expected: `const extracted = \`\${hello} world! How are \${you} doing?\`;
+console.log(extracted);`
+      },
+      {
+        description:
+          "a selected template literal (selection over expression braces)",
+        code: "console.log(`${hello} world! How are ${you} doing?`);",
+        selection: new Selection([0, 14], [0, 17]),
+        expected: `const extracted = \`\${hello} world! How are \${you} doing?\`;
+console.log(extracted);`
+      },
+      {
+        description:
+          "a selected template literal (selection over template bounds)",
+        code: "console.log({ text: `${hello} world! How are ${you} doing?` });",
+        selection: new Selection([0, 19], [0, 26]),
+        expected: `const extracted = { text: \`\${hello} world! How are \${you} doing?\` };
+console.log(extracted);`
+      },
+      {
         description: "an if statement (whole statement)",
         code: "if (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 4], [0, 45]),
