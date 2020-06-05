@@ -10,7 +10,7 @@ describe("Extract Variable - Template Literals we can extract", () => {
   testEach<{
     code: Code;
     selection: Selection;
-    expected: Code;
+    expected: Code | { code: Code; position: Position };
   }>(
     "should extract",
     [
@@ -69,7 +69,14 @@ console.log(extracted);`
     ],
     async ({ code, selection, expected }) => {
       const result = await doExtractVariable(code, selection);
-      expect(result.code).toBe(expected);
+
+      if (typeof expected === "object") {
+        // Use 2 assertions to have a more readable breakdown
+        expect(result.code).toBe(expected.code);
+        expect(result.position).toStrictEqual(expected.position);
+      } else {
+        expect(result.code).toBe(expected);
+      }
     }
   );
 
