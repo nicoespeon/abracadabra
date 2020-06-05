@@ -6,7 +6,7 @@ import { testEach } from "../../../tests-helpers";
 
 import { extractVariable } from "./extract-variable";
 
-describe("Extract Variable - Patterns we can extract", () => {
+describe("Extract Variable - Template Literals we can extract", () => {
   testEach<{
     code: Code;
     selection: Selection;
