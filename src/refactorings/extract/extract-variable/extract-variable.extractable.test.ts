@@ -299,6 +299,13 @@ console.log(\`Hello \${world}! How are you doing?\`);`
 console.log(\`\${hello} \${world}! How are \${you} doing?\`);`
       },
       {
+        description: "a selected expression of a template literal",
+        code: "console.log(`${hello} world! How are ${you} doing?`);",
+        selection: new Selection([0, 15], [0, 17]),
+        expected: `const extracted = hello;
+console.log(\`\${extracted} world! How are \${you} doing?\`);`
+      },
+      {
         description: "an if statement (whole statement)",
         code: "if (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 4], [0, 45]),
