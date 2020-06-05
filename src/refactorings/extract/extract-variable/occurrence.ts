@@ -136,17 +136,6 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 }
 
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
-  path: t.NodePath<t.MemberExpression>;
-
-  constructor(
-    path: t.NodePath<t.MemberExpression>,
-    loc: t.SourceLocation,
-    variable: Variable
-  ) {
-    super(path, loc, variable);
-    this.path = path;
-  }
-
   toVariableDeclaration(code: Code): Code {
     if (this.path.node.computed) {
       return super.toVariableDeclaration(code);
