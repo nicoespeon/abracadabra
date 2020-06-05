@@ -207,13 +207,15 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   }
 
   private get selectedQuasi(): t.TemplateElement & t.SelectableNode {
-    const firstQuasi = this.path.node.quasis[0];
+    const result = this.path.node.quasis.find(quasi =>
+      this.userSelection.isInsideNode(quasi)
+    );
 
-    if (!t.isSelectableNode(firstQuasi)) {
+    if (!result || !t.isSelectableNode(result)) {
       throw new Error("I can't find selected text in code structure");
     }
 
-    return firstQuasi;
+    return result;
   }
 }
 
