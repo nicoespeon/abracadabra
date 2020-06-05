@@ -15,7 +15,7 @@ describe("Extract Variable - Patterns we can extract", () => {
     "should extract",
     [
       {
-        description: "an interpolated string when cursor is on a subpart of it",
+        description: "a template literal when cursor is on a subpart of it",
         code: "console.log(`Hello ${world}! How are you doing?`);",
         selection: Selection.cursorAt(0, 15),
         expected: `const extracted = \`Hello \${world}! How are you doing?\`;
