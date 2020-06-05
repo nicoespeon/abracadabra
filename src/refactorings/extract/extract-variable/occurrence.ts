@@ -189,29 +189,31 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     left: string;
     right: string;
   } {
-    const firstQuasi = this.path.node.quasis[0];
-
-    if (!t.isSelectableNode(firstQuasi)) {
-      throw new Error("I can't find selected text in code structure");
-    }
-
-    const quasiSelection = Selection.fromAST(firstQuasi.loc);
-    const { character: offset } = quasiSelection.start;
-
+    const offset = Selection.fromAST(this.selectedQuasi.loc).start.character;
     const start = this.userSelection.start.character - offset;
     const end = this.userSelection.end.character - offset;
 
-    const value = firstQuasi.value.raw.slice(start, end);
+    const value = this.selectedQuasi.value.raw.slice(start, end);
     const name = new StringLiteralVariable(
       t.stringLiteral(value),
       // We don't care about the parent since it's made up
       t.blockStatement([])
     ).name;
 
-    const left = firstQuasi.value.raw.slice(0, start);
-    const right = firstQuasi.value.raw.slice(end);
+    const left = this.selectedQuasi.value.raw.slice(0, start);
+    const right = this.selectedQuasi.value.raw.slice(end);
 
     return { name, value, left, right };
+  }
+
+  private get selectedQuasi(): t.TemplateElement & t.SelectableNode {
+    const firstQuasi = this.path.node.quasis[0];
+
+    if (!t.isSelectableNode(firstQuasi)) {
+      throw new Error("I can't find selected text in code structure");
+    }
+
+    return firstQuasi;
   }
 }
 
