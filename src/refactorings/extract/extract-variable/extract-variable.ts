@@ -74,7 +74,7 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
       const loc = getOccurrenceLoc(path.node, selection);
       if (!loc) return;
 
-      result.selected = createOccurrence(path, loc);
+      result.selected = createOccurrence(path, loc, selection);
     }
   });
 
@@ -116,7 +116,7 @@ function findOtherOccurrences(
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
       if (t.areEquivalent(path.node, occurrence.path.node)) {
-        result.push(createOccurrence(path, node.loc));
+        result.push(createOccurrence(path, node.loc, selection));
       }
     }
   };

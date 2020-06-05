@@ -285,6 +285,13 @@ class Logger {
 console.log(extracted);`
       },
       {
+        description: "a selected part of an interpolated string",
+        code: "console.log(`Hello world! How are you doing?`);",
+        selection: new Selection([0, 19], [0, 24]),
+        expected: `const world = "world";
+console.log(\`Hello \${world}! How are you doing?\`);`
+      },
+      {
         description: "an if statement (whole statement)",
         code: "if (parents.length > 0 && type === 'refactor') doSomething();",
         selection: new Selection([0, 4], [0, 45]),

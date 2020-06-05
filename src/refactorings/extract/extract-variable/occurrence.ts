@@ -12,7 +12,11 @@ import {
 
 export { createOccurrence, Occurrence };
 
-function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
+function createOccurrence(
+  path: t.NodePath,
+  loc: t.SourceLocation,
+  selection: Selection
+): Occurrence {
   if (t.canBeShorthand(path)) {
     const variable = new ShorthandVariable(path.node, path.parent);
 
@@ -34,6 +38,15 @@ function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
       path,
       loc,
       new StringLiteralVariable(path.node, path.parent)
+    );
+  }
+
+  if (path.isTemplateLiteral() && !selection.isEmpty()) {
+    return new PartialTemplateLiteralOccurrence(
+      path,
+      loc,
+      new Variable(path.node, path.parent),
+      selection
     );
   }
 
@@ -138,6 +151,67 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
     const name = `{ ${this.variable.name} }`;
 
     return `const ${name} = ${extractedCode};\n${this.indentation}`;
+  }
+}
+
+class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
+  constructor(
+    path: t.NodePath<t.TemplateLiteral>,
+    loc: t.SourceLocation,
+    variable: Variable,
+    private readonly userSelection: Selection
+  ) {
+    super(path, loc, variable);
+  }
+
+  toVariableDeclaration(): Code {
+    const { name, value } = this.parts;
+    return `const ${name} = "${value}";\n${this.indentation}`;
+  }
+
+  get modification(): Modification {
+    const { name, left, right } = this.parts;
+
+    const newTemplateLiteral = t.templateLiteral(
+      [t.templateElement(left), t.templateElement(right)],
+      [t.identifier(name)]
+    );
+
+    return {
+      code: t.print(newTemplateLiteral),
+      selection: this.selection
+    };
+  }
+
+  private get parts(): {
+    name: string;
+    value: Code;
+    left: string;
+    right: string;
+  } {
+    const firstQuasi = this.path.node.quasis[0];
+
+    if (!t.isSelectableNode(firstQuasi)) {
+      throw new Error("I can't find selected text in code structure");
+    }
+
+    const quasiSelection = Selection.fromAST(firstQuasi.loc);
+    const { character: offset } = quasiSelection.start;
+
+    const start = this.userSelection.start.character - offset;
+    const end = this.userSelection.end.character - offset;
+
+    const value = firstQuasi.value.raw.slice(start, end);
+    const name = new StringLiteralVariable(
+      t.stringLiteral(value),
+      // We don't care about the parent since it's made up
+      t.blockStatement([])
+    ).name;
+
+    const left = firstQuasi.value.raw.slice(0, start);
+    const right = firstQuasi.value.raw.slice(end);
+
+    return { name, value, left, right };
   }
 }
 
