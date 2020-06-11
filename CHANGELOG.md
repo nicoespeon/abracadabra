@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- "Extract Variable" now works on thrown errors too!
+
 ### Fixed
 
 - "Remove Dead Code" was broken when dealing with conditionals without braces.

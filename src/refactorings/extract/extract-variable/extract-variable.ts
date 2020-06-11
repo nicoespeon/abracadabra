@@ -163,7 +163,8 @@ function isExtractableContext(node: t.Node): boolean {
     t.isSwitchCase(node) ||
     t.isJSXExpressionContainer(node) ||
     t.isJSXAttribute(node) ||
-    t.isSpreadElement(node)
+    t.isSpreadElement(node) ||
+    t.isThrowStatement(node)
   );
 }
 

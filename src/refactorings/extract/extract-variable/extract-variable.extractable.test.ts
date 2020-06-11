@@ -425,6 +425,13 @@ console.log(extracted);`
 console.log(extracted);`
       },
       {
+        description: "a thrown error",
+        code: `throw new Error("It failed");`,
+        selection: Selection.cursorAt(0, 12),
+        expected: `const extracted = new Error("It failed");
+throw extracted;`
+      },
+      {
         description: "a call expression parameter (multi-lines)",
         code: `createIfStatement(
   parentPath.node.operator,
