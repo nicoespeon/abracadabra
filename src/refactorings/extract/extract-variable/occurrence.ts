@@ -160,6 +160,13 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     private readonly userSelection: Selection
   ) {
     super(path, loc, new Variable(path.node, path.parent));
+
+    // Override variable after `this` is set
+    this.variable = new StringLiteralVariable(
+      t.stringLiteral(this.parts.value),
+      // We don't care about the parent since it's made up
+      t.blockStatement([])
+    );
   }
 
   static isValid(
@@ -185,12 +192,13 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   }
 
   toVariableDeclaration(): Code {
-    const { name, value } = this.parts;
-    return `const ${name} = "${value}";\n${this.indentation}`;
+    return `const ${this.variable.name} = "${this.parts.value}";\n${
+      this.indentation
+    }`;
   }
 
   get modification(): Modification {
-    const { name, left, right } = this.parts;
+    const { left, right } = this.parts;
     const { quasis, expressions } = this.path.node;
     const { index } = this.selectedQuasi;
 
@@ -202,7 +210,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
       // Insert the new expression
       [
         ...expressions.slice(0, index),
-        t.identifier(name),
+        t.identifier(this.variable.name),
         ...expressions.slice(index)
       ]
     );
@@ -214,7 +222,6 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   }
 
   private get parts(): {
-    name: string;
     value: Code;
     left: string;
     right: string;
@@ -224,16 +231,10 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     const end = this.userSelection.end.character - offset;
 
     const value = this.selectedQuasi.value.raw.slice(start, end);
-    const name = new StringLiteralVariable(
-      t.stringLiteral(value),
-      // We don't care about the parent since it's made up
-      t.blockStatement([])
-    ).name;
-
     const left = this.selectedQuasi.value.raw.slice(0, start);
     const right = this.selectedQuasi.value.raw.slice(end);
 
-    return { name, value, left, right };
+    return { value, left, right };
   }
 
   private get selectedQuasi(): t.TemplateElement &
