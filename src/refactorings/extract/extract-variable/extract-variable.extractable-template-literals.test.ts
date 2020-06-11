@@ -25,8 +25,11 @@ console.log(extracted);`
         description: "a selected part of a template literal",
         code: "console.log(`Hello world! How are you doing?`);",
         selection: new Selection([0, 19], [0, 24]),
-        expected: `const world = "world";
-console.log(\`Hello \${world}! How are you doing?\`);`
+        expected: {
+          code: `const world = "world";
+console.log(\`Hello \${world}! How are you doing?\`);`,
+          position: new Position(1, 21)
+        }
       },
       {
         description: "a selected part of a template literal with expressions",

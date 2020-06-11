@@ -226,9 +226,8 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     left: string;
     right: string;
   } {
-    const offset = Selection.fromAST(this.selectedQuasi.loc).start.character;
-    const start = this.userSelection.start.character - offset;
-    const end = this.userSelection.end.character - offset;
+    const start = this.userSelection.start.character - this.offset;
+    const end = this.userSelection.end.character - this.offset;
 
     const value = this.selectedQuasi.value.raw.slice(start, end);
     const left = this.selectedQuasi.value.raw.slice(0, start);
@@ -254,6 +253,24 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     }
 
     return { ...result, index };
+  }
+
+  get positionOnExtractedId(): Position {
+    const start = this.userSelection.start.character - this.offset;
+    const openingQuoteLength = 1; // The ` character
+    const openingInterpolationLength = 2; // The ${ characters
+
+    return new Position(
+      this.selection.start.line + this.selection.height + 1,
+      this.selection.start.character +
+        openingQuoteLength +
+        start +
+        openingInterpolationLength
+    );
+  }
+
+  private get offset(): number {
+    return Selection.fromAST(this.selectedQuasi.loc).start.character;
   }
 }
 
