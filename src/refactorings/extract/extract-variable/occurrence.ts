@@ -256,16 +256,12 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   }
 
   get positionOnExtractedId(): Position {
-    const start = this.userSelection.start.character - this.offset;
-    const openingQuoteLength = 1; // The ` character
-    const openingInterpolationLength = 2; // The ${ characters
+    // ${ is inserted before the Identifier
+    const openingInterpolationLength = 2;
 
     return new Position(
       this.selection.start.line + this.selection.height + 1,
-      this.selection.start.character +
-        openingQuoteLength +
-        start +
-        openingInterpolationLength
+      this.userSelection.start.character + openingInterpolationLength
     );
   }
 
