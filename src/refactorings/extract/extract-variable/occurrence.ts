@@ -230,9 +230,10 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     const start = this.userSelection.start.character - offset;
     const end = this.userSelection.end.character - offset;
 
-    const left = this.selectedQuasi.value.raw.slice(0, start);
-    const value = this.selectedQuasi.value.raw.slice(start, end);
-    const right = this.selectedQuasi.value.raw.slice(end);
+    const quasi = this.selectedQuasi.value.raw.split("\n")[0];
+    const left = quasi.slice(0, start);
+    const value = quasi.slice(start, end);
+    const right = quasi.slice(end);
 
     return { left, value, right };
   }
