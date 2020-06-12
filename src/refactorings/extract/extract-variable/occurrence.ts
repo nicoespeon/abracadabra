@@ -221,21 +221,9 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     };
   }
 
-  private get parts(): {
-    left: Code;
-    value: Code;
-    right: Code;
-  } {
+  private get parts(): Parts {
     const offset = Selection.fromAST(this.selectedQuasi.loc).start;
-    const start = this.userSelection.start.character - offset.character;
-    const end = this.userSelection.end.character - offset.character;
-    const quasi = this.selectedQuasi.value.raw.split("\n")[0];
-
-    return {
-      left: quasi.slice(0, start),
-      value: quasi.slice(start, end),
-      right: quasi.slice(end)
-    };
+    return new Parts(this.selectedQuasi.value.raw, this.userSelection, offset);
   }
 
   private get selectedQuasi(): t.TemplateElement &
@@ -269,3 +257,31 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
 }
 
 type IndentationLevel = number;
+
+class Parts {
+  constructor(
+    private readonly code: Code,
+    private readonly selection: Selection,
+    private readonly offset: Position
+  ) {}
+
+  get left(): Code {
+    return this.code.slice(0, this.start);
+  }
+
+  get value(): Code {
+    return this.code.slice(this.start, this.end);
+  }
+
+  get right(): Code {
+    return this.code.slice(this.end);
+  }
+
+  private get start(): number {
+    return this.selection.start.character - this.offset.character;
+  }
+
+  private get end(): number {
+    return this.selection.end.character - this.offset.character;
+  }
+}
