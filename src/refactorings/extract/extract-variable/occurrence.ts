@@ -226,8 +226,9 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     value: Code;
     right: Code;
   } {
-    const start = this.userSelection.start.character - this.offset;
-    const end = this.userSelection.end.character - this.offset;
+    const offset = Selection.fromAST(this.selectedQuasi.loc).start.character;
+    const start = this.userSelection.start.character - offset;
+    const end = this.userSelection.end.character - offset;
 
     const left = this.selectedQuasi.value.raw.slice(0, start);
     const value = this.selectedQuasi.value.raw.slice(start, end);
@@ -263,10 +264,6 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
       this.selection.start.line + this.selection.height + 1,
       this.userSelection.start.character + openingInterpolationLength
     );
-  }
-
-  private get offset(): number {
-    return Selection.fromAST(this.selectedQuasi.loc).start.character;
   }
 }
 
