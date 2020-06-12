@@ -8,7 +8,7 @@ class Parts {
   constructor(
     private readonly code: Code,
     private readonly selection: Selection,
-    private readonly offset: Position
+    private readonly offset: Position = new Position(0, 0)
   ) {}
 
   get before(): Code {
