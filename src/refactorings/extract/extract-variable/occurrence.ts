@@ -231,11 +231,12 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     const end = this.userSelection.end.character - offset;
 
     const quasi = this.selectedQuasi.value.raw.split("\n")[0];
-    const left = quasi.slice(0, start);
-    const value = quasi.slice(start, end);
-    const right = quasi.slice(end);
 
-    return { left, value, right };
+    return {
+      left: quasi.slice(0, start),
+      value: quasi.slice(start, end),
+      right: quasi.slice(end)
+    };
   }
 
   private get selectedQuasi(): t.TemplateElement &
