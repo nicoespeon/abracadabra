@@ -164,7 +164,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
 
     // Override variable after `this` is set
     this.variable = new StringLiteralVariable(
-      t.stringLiteral(this.parts.value),
+      t.stringLiteral(this.parts.selected),
       // We don't care about the parent since it's made up
       t.blockStatement([])
     );
@@ -193,17 +193,17 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   }
 
   toVariableDeclaration(): Code {
-    return `const ${this.variable.name} = "${this.parts.value}";\n${
+    return `const ${this.variable.name} = "${this.parts.selected}";\n${
       this.indentation
     }`;
   }
 
   get modification(): Modification {
-    const { left, right } = this.parts;
+    const { before, after } = this.parts;
     const { quasis, expressions } = this.path.node;
     const { index } = this.selectedQuasi;
 
-    const newQuasis = [t.templateElement(left), t.templateElement(right)];
+    const newQuasis = [t.templateElement(before), t.templateElement(after)];
 
     const newTemplateLiteral = t.templateLiteral(
       // Replace quasi with the new truncated ones

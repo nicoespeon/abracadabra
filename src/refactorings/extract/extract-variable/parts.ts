@@ -11,15 +11,15 @@ class Parts {
     private readonly offset: Position
   ) {}
 
-  get left(): Code {
+  get before(): Code {
     return this.code.slice(0, this.start);
   }
 
-  get value(): Code {
+  get selected(): Code {
     return this.code.slice(this.start, this.end);
   }
 
-  get right(): Code {
+  get after(): Code {
     return this.code.slice(this.end);
   }
 
