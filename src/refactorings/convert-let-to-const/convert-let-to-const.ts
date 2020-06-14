@@ -55,7 +55,7 @@ function createVisitor(
 function isSingleLetVariableDeclaration(
   node: t.Node
 ): node is t.VariableDeclaration {
-  return t.isLet(node) && node.kind === "let" && node.declarations.length === 1;
+  return t.isLet(node) && node.declarations.length === 1;
 }
 
 function variableCanBeConst(
