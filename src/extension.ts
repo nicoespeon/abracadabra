@@ -12,6 +12,7 @@ import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import convertLetToConst from "./refactorings/convert-let-to-const";
 import extract from "./refactorings/extract";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -61,6 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertIfElseToTernary,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
+    convertLetToConst,
     extract,
     extractInterface,
     flipIfElse,
@@ -128,6 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
         convertIfElseToTernary,
         convertTernaryToIfElse,
         convertToTemplateLiteral,
+        convertLetToConst,
         flipIfElse,
         flipTernary,
         mergeIfStatements,

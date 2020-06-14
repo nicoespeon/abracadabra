@@ -50,6 +50,7 @@ Related projects:
     1. [Remove Dead Code](#remove-dead-code)
   - Organizing data:
     1. [Split Declaration and Initialization](#split-declaration-and-initialization)
+    1. [Convert Let to Const](#convert-let-to-const)
   - Working around the syntax:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
@@ -352,6 +353,17 @@ Sometimes, Abracadabra can determine that some code can't be reached. If so, it 
 Splits the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
 
 ![][demo-split-declaration-and-initialization]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+
+### Convert Let to Const
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Converts the declaration of a variable that is a `let` to a `const` if it's not mutated within the scope.
+
+![][demo-convert-let-to-const]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 

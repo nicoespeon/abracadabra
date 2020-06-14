@@ -1,5 +1,10 @@
 import { parse as babelParse } from "@babel/parser";
-import traverse, { TraverseOptions, NodePath, Visitor } from "@babel/traverse";
+import traverse, {
+  TraverseOptions,
+  NodePath,
+  Visitor,
+  Binding
+} from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
 
@@ -22,7 +27,8 @@ export {
   transformCopy,
   Transformed,
   print,
-  AST
+  AST,
+  Binding
 };
 export { mergeCommentsInto };
 
