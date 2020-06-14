@@ -50,7 +50,7 @@ Related projects:
     1. [Remove Dead Code](#remove-dead-code)
   - Organizing data:
     1. [Split Declaration and Initialization](#split-declaration-and-initialization)
-    1. [Convert Let to Const](#convert-let-to-const)
+    1. [Convert let to const](#convert-let-to-const)
   - Working around the syntax:
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
@@ -356,7 +356,7 @@ Splits the declaration of the variable and its initialization. If it's a `const`
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Convert Let to Const
+### Convert let to const
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 

@@ -168,7 +168,7 @@
       },
       {
         "command": "abracadabra.convertLetToConst",
-        "title": "Convert Let to Const",
+        "title": "Convert let to const",
         "category": "Abracadabra"
       },
       {

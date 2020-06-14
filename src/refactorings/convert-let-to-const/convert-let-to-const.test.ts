@@ -5,7 +5,7 @@ import { testEach } from "../../tests-helpers";
 
 import { convertLetToConst } from "./convert-let-to-const";
 
-describe("Convert Let to Const", () => {
+describe("Convert let to const", () => {
   let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
