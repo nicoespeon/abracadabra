@@ -2,7 +2,7 @@
 
 ![][logo-abracadabra]
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
 [![Build Status](https://travis-ci.org/nicoespeon/abracadabra.svg?branch=master)](https://travis-ci.org/nicoespeon/abracadabra)
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
@@ -551,6 +551,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/tjx666"><img src="https://github.com/tjx666.png" width="100px;" alt="YuTengjing"/><br /><sub><b>YuTengjing</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Atjx666" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/delaaxe"><img src="https://github.com/delaaxe.png" width="100px;" alt="delaaxe"/><br /><sub><b>delaaxe</b></sub></a><br /><a href="#ideas-delaaxe" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=delaaxe" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/jrnail23"><img src="https://github.com/jrnail23.png" width="100px;" alt="jrnail23"/><br /><sub><b>James Nail</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ajrnail23" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/nickebbitt"><img src="https://github.com/nickebbitt.png" width="100px;" alt="nickebbitt"/><br /><sub><b>Nick Ebbitt</b></sub></a><br /><a href="#ideas-nickebbitt" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=nickebbitt" title="Code">💻</a></td>
   </tr>
 </table>
 
