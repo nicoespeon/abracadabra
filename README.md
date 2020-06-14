@@ -356,7 +356,6 @@ Splits the declaration of the variable and its initialization. If it's a `const`
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-
 ### Convert Let to Const
 
 > 💡 Available as Quick Fix (`Alt ↵`)

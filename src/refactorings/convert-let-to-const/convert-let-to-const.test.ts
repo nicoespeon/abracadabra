@@ -5,7 +5,7 @@ import { testEach } from "../../tests-helpers";
 
 import { convertLetToConst } from "./convert-let-to-const";
 
-describe("Convert Let To Const", () => {
+describe("Convert Let to Const", () => {
   let showErrorMessage: Editor["showError"];
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ otherVariable = 'newValue';`
         selection: Selection.cursorAt(0, 6)
       },
       {
-        description: "variable delcared as var",
+        description: "variable declared as var",
         code: `var someVariable = 'value';`,
         selection: Selection.cursorAt(0, 4)
       },
@@ -79,7 +79,7 @@ someVariable = 'anotherValue';`,
       },
       {
         description: "mutated variable in a nested scope",
-        code: `let someVariable = 'value'; 
+        code: `let someVariable = 'value';
 {
   someVariable = 'anotherValue';
 }`,

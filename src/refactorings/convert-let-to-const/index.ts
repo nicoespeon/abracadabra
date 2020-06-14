@@ -6,10 +6,10 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "convertLetToConst",
     operation: convertLetToConst,
-    title: "Convert let to const"
+    title: "Convert Let to Const"
   },
   actionProvider: {
-    message: "Convert let to const",
+    message: "Convert Let to Const",
     createVisitor
   }
 };
