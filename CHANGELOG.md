@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
 
+- **[New Refactoring]** Convert let to const, thanks to @nickebbitt for this one!
 - "Extract Variable" now works on thrown errors too!
 
 ### Fixed
