@@ -64,8 +64,10 @@ function variableCanBeConst(
 ): boolean {
   for (let name in bindings) {
     let binding = bindings[name];
-    if (binding.identifier === variableDeclarator.id && !binding.constant)
+    if (binding.identifier === variableDeclarator.id && !binding.constant) {
       return false;
+    }
   }
+
   return true;
 }
