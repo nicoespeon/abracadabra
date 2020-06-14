@@ -42,6 +42,22 @@ console.log(\`\${hello} \${world}! How are \${you} doing?\`);`,
         }
       },
       {
+        description:
+          "a selected single-line part of a multilines template literal",
+        code: `console.log(\`Hello world!
+How are you doing?
+All right!\`);`,
+        selection: new Selection([1, 8], [1, 11]),
+        skip: true,
+        expected: {
+          code: `const you = "you";
+console.log(\`Hello world!
+How are \${you} doing?
+All right!\`);`,
+          position: new Position(2, 12)
+        }
+      },
+      {
         description: "a selected expression of a template literal",
         code: "console.log(`${hello} world! How are ${you} doing?`);",
         selection: new Selection([0, 15], [0, 17]),

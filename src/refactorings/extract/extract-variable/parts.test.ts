@@ -26,4 +26,17 @@ describe("Parts", () => {
     expect(selected).toBe("world");
     expect(after).toBe("!");
   });
+
+  it.only("should work on a single-line selection of a multi-lines code", () => {
+    const code = `Hello world!
+How are you doing?
+I'm fine!`;
+    const selection = new Selection([1, 4], [1, 11]);
+
+    const { before, selected, after } = new Parts(code, selection);
+
+    expect(before).toBe("Hello world!\nHow");
+    expect(selected).toBe("are you");
+    expect(after).toBe("doing?\nI'm fine!");
+  });
 });
