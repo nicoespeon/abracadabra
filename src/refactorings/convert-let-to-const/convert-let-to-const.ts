@@ -22,16 +22,8 @@ async function convertLetToConst(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<t.VariableDeclarator>) => {
-      const { node, parent } = path;
-
-      if (
-        isSingleLetVariableDeclaration(parent) &&
-        variableCanBeConst(path.scope.bindings, node)
-      ) {
-        parent.kind = "const";
-      }
-
+    createVisitor(selection, (path, parent) => {
+      parent.kind = "const";
       path.stop();
     })
   );
@@ -39,15 +31,20 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.VariableDeclarator>) => void
+  onMatch: (
+    path: t.NodePath<t.VariableDeclarator>,
+    parent: t.VariableDeclaration
+  ) => void
 ): t.Visitor {
   return {
     VariableDeclarator(path) {
-      const { node } = path;
-      if (!selection.isInsideNode(node)) {
-        return;
-      }
-      onMatch(path);
+      const { node, parent } = path;
+
+      if (!selection.isInsideNode(node)) return;
+      if (!isSingleLetVariableDeclaration(parent)) return;
+      if (!variableCanBeConst(path.scope.bindings, node)) return;
+
+      onMatch(path, parent);
     }
   };
 }
