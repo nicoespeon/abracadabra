@@ -15,48 +15,6 @@ describe("Extract Variable - Patterns we can extract", () => {
     "should extract",
     [
       {
-        description: "a string",
-        code: `console.log("Hello!");`,
-        selection: Selection.cursorAt(0, 12),
-        expected: `const hello = "Hello!";
-console.log(hello);`
-      },
-      {
-        description: "a string that starts with a number",
-        code: `console.log("2019-01-01");`,
-        selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = "2019-01-01";
-console.log(extracted);`
-      },
-      {
-        description: "an empty string",
-        code: `console.log("");`,
-        selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = "";
-console.log(extracted);`
-      },
-      {
-        description: "a 1-char string",
-        code: `console.log("T");`,
-        selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = "T";
-console.log(extracted);`
-      },
-      {
-        description: "a string being a keyword",
-        code: `console.log("const");`,
-        selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = "const";
-console.log(extracted);`
-      },
-      {
-        description: "a string without chars inside",
-        code: `console.log("===");`,
-        selection: Selection.cursorAt(0, 12),
-        expected: `const extracted = "===";
-console.log(extracted);`
-      },
-      {
         description: "a number",
         code: `console.log(12.5);`,
         selection: Selection.cursorAt(0, 12),
@@ -276,13 +234,6 @@ class Logger {
 class Logger {
   [extracted] = "value";
 }`
-      },
-      {
-        description: "an interpolated string when cursor is on a subpart of it",
-        code: "console.log(`Hello ${world}! How are you doing?`);",
-        selection: Selection.cursorAt(0, 15),
-        expected: `const extracted = \`Hello \${world}! How are you doing?\`;
-console.log(extracted);`
       },
       {
         description: "an if statement (whole statement)",

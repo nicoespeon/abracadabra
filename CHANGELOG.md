@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- "Extract Variable" now extracts substring if that's what you selected!
+
+It will convert the string into a template literal accordingly. It doesn't work with multi-lines template literals yet, but it's already very convenient!
+
+![][demo-extract-substring]
+
 ## [4.4.0] - 2020-06-13 - Let It Be 🌸
 
 ### Added
@@ -908,6 +916,7 @@ function doSomething(someData) {
 
 <!-- Demo images -->
 
+[demo-extract-substring]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-substring.gif?raw=true
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-generic-type.gif?raw=true

@@ -13,7 +13,7 @@ export {
 class Variable {
   protected _name = "extracted";
 
-  constructor(protected path: t.NodePath) {}
+  constructor(protected node: t.Node, private parent: t.Node) {}
 
   get name(): string {
     return this._name;
@@ -24,11 +24,10 @@ class Variable {
   }
 
   get id(): Code {
-    const { parent, node } = this.path;
-
     const shouldWrapInBraces =
-      t.isJSXAttribute(parent) ||
-      (t.isJSX(parent) && (t.isJSXElement(node) || t.isJSXText(node)));
+      t.isJSXAttribute(this.parent) ||
+      (t.isJSX(this.parent) &&
+        (t.isJSXElement(this.node) || t.isJSXText(this.node)));
 
     return shouldWrapInBraces ? `{${this.name}}` : this.name;
   }
@@ -61,9 +60,9 @@ class Variable {
 }
 
 class StringLiteralVariable extends Variable {
-  constructor(protected path: t.NodePath<t.StringLiteral>) {
-    super(path);
-    this.tryToSetNameWith(camel(path.node.value));
+  constructor(protected node: t.StringLiteral, parent: t.Node) {
+    super(node, parent);
+    this.tryToSetNameWith(camel(node.value));
   }
 
   protected isValidName(value: string): boolean {
@@ -72,11 +71,9 @@ class StringLiteralVariable extends Variable {
 }
 
 class MemberExpressionVariable extends Variable {
-  constructor(protected path: t.NodePath<t.MemberExpression>) {
-    super(path);
-    const {
-      node: { property, computed }
-    } = path;
+  constructor(protected node: t.MemberExpression, parent: t.Node) {
+    super(node, parent);
+    const { property, computed } = node;
 
     if (t.isIdentifier(property) && !computed) {
       this.tryToSetNameWith(property.name);
@@ -85,12 +82,12 @@ class MemberExpressionVariable extends Variable {
 }
 
 class ShorthandVariable extends Variable {
-  constructor(protected path: t.NodePath<t.ObjectProperty>) {
-    super(path);
-    this.tryToSetNameWith(path.node.key.name);
+  constructor(protected node: t.ObjectProperty, parent: t.Node) {
+    super(node, parent);
+    this.tryToSetNameWith(node.key.name);
   }
 
   get isValid(): boolean {
-    return this.isValidName(this.path.node.key.name);
+    return this.isValidName(this.node.key.name);
   }
 }

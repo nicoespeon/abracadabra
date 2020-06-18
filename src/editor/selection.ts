@@ -56,6 +56,10 @@ class Selection {
     return this.end.line - this.start.line;
   }
 
+  isEmpty(): boolean {
+    return this.start.isEqualTo(this.end);
+  }
+
   extendToStartOfLine(): Selection {
     return Selection.fromPositions(this.start.putAtStartOfLine(), this.end);
   }
@@ -108,6 +112,25 @@ class Selection {
   isInside(selection: Selection): boolean {
     return (
       this.start.isAfter(selection.start) && this.end.isBefore(selection.end)
+    );
+  }
+
+  isStrictlyInsidePath(path: ast.NodePath): path is ast.SelectablePath {
+    return this.isStrictlyInsideNode(path.node);
+  }
+
+  isStrictlyInsideNode(node: ast.Node): node is ast.SelectableNode {
+    return (
+      ast.isSelectableNode(node) &&
+      this.isStrictlyInside(Selection.fromAST(node.loc))
+    );
+  }
+
+  isStrictlyInside(selection: Selection): boolean {
+    return (
+      this.isInside(selection) &&
+      !this.start.isEqualTo(selection.start) &&
+      !this.end.isEqualTo(selection.end)
     );
   }
 

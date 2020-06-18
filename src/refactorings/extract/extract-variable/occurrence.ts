@@ -9,12 +9,17 @@ import {
   MemberExpressionVariable,
   ShorthandVariable
 } from "./variable";
+import { Parts } from "./parts";
 
 export { createOccurrence, Occurrence };
 
-function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
+function createOccurrence(
+  path: t.NodePath,
+  loc: t.SourceLocation,
+  selection: Selection
+): Occurrence {
   if (t.canBeShorthand(path)) {
-    const variable = new ShorthandVariable(path);
+    const variable = new ShorthandVariable(path.node, path.parent);
 
     if (variable.isValid) {
       return new ShorthandOccurrence(path, loc, variable);
@@ -25,20 +30,37 @@ function createOccurrence(path: t.NodePath, loc: t.SourceLocation): Occurrence {
     return new MemberExpressionOccurrence(
       path,
       loc,
-      new MemberExpressionVariable(path)
+      new MemberExpressionVariable(path.node, path.parent)
     );
   }
 
   if (path.isStringLiteral()) {
-    return new Occurrence(path, loc, new StringLiteralVariable(path));
+    if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+      path.replaceWith(t.convertStringToTemplateLiteral(path.node, loc));
+      return createOccurrence(path, loc, selection);
+    }
+
+    return new Occurrence(
+      path,
+      loc,
+      new StringLiteralVariable(path.node, path.parent)
+    );
   }
 
-  return new Occurrence(path, loc, new Variable(path));
+  if (
+    path.isTemplateLiteral() &&
+    !selection.isEmpty() &&
+    PartialTemplateLiteralOccurrence.isValid(path, loc, selection)
+  ) {
+    return new PartialTemplateLiteralOccurrence(path, loc, selection);
+  }
+
+  return new Occurrence(path, loc, new Variable(path.node, path.parent));
 }
 
-class Occurrence {
+class Occurrence<T extends t.Node = t.Node> {
   constructor(
-    public path: t.NodePath,
+    public path: t.NodePath<T>,
     public loc: t.SourceLocation,
     protected variable: Variable
   ) {}
@@ -104,16 +126,9 @@ class Occurrence {
   }
 }
 
-class ShorthandOccurrence extends Occurrence {
-  private keySelection: Selection;
-
-  constructor(
-    path: t.NodePath<t.ObjectProperty>,
-    loc: t.SourceLocation,
-    variable: Variable
-  ) {
-    super(path, loc, variable);
-    this.keySelection = Selection.fromAST(path.node.key.loc);
+class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
+  private get keySelection(): Selection {
+    return Selection.fromAST(this.path.node.key.loc);
   }
 
   get modification(): Modification {
@@ -131,18 +146,7 @@ class ShorthandOccurrence extends Occurrence {
   }
 }
 
-class MemberExpressionOccurrence extends Occurrence {
-  path: t.NodePath<t.MemberExpression>;
-
-  constructor(
-    path: t.NodePath<t.MemberExpression>,
-    loc: t.SourceLocation,
-    variable: Variable
-  ) {
-    super(path, loc, variable);
-    this.path = path;
-  }
-
+class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   toVariableDeclaration(code: Code): Code {
     if (this.path.node.computed) {
       return super.toVariableDeclaration(code);
@@ -152,6 +156,112 @@ class MemberExpressionOccurrence extends Occurrence {
     const name = `{ ${this.variable.name} }`;
 
     return `const ${name} = ${extractedCode};\n${this.indentation}`;
+  }
+}
+
+class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
+  constructor(
+    path: t.NodePath<t.TemplateLiteral>,
+    loc: t.SourceLocation,
+    private readonly userSelection: Selection
+  ) {
+    super(path, loc, new Variable(path.node, path.parent));
+
+    // Override variable after `this` is set
+    this.variable = new StringLiteralVariable(
+      t.stringLiteral(this.parts.selected),
+      // We don't care about the parent since it's made up
+      t.blockStatement([])
+    );
+  }
+
+  static isValid(
+    path: t.NodePath<t.TemplateLiteral>,
+    loc: t.SourceLocation,
+    userSelection: Selection
+  ): boolean {
+    // This doesn't work yet for multi-lines code because we don't support it.
+    if (Selection.fromAST(loc).isMultiLines) return false;
+
+    try {
+      const occurrence = new PartialTemplateLiteralOccurrence(
+        path,
+        loc,
+        userSelection
+      );
+
+      // If any of these throws, Occurrence is invalid
+      occurrence.toVariableDeclaration();
+      occurrence.modification;
+    } catch {
+      return false;
+    }
+
+    return true;
+  }
+
+  toVariableDeclaration(): Code {
+    return `const ${this.variable.name} = "${this.parts.selected}";\n${
+      this.indentation
+    }`;
+  }
+
+  get modification(): Modification {
+    const { before, after } = this.parts;
+    const { quasis, expressions } = this.path.node;
+    const { index } = this.selectedQuasi;
+
+    const newQuasis = [t.templateElement(before), t.templateElement(after)];
+
+    const newTemplateLiteral = t.templateLiteral(
+      // Replace quasi with the new truncated ones
+      [...quasis.slice(0, index), ...newQuasis, ...quasis.slice(index + 1)],
+      // Insert the new expression
+      [
+        ...expressions.slice(0, index),
+        t.identifier(this.variable.name),
+        ...expressions.slice(index)
+      ]
+    );
+
+    return {
+      code: t.print(newTemplateLiteral),
+      selection: this.selection
+    };
+  }
+
+  private get parts(): Parts {
+    const offset = Selection.fromAST(this.selectedQuasi.loc).start;
+    return new Parts(this.selectedQuasi.value.raw, this.userSelection, offset);
+  }
+
+  private get selectedQuasi(): t.TemplateElement &
+    t.SelectableNode & { index: number } {
+    const index = this.path.node.quasis.findIndex(quasi =>
+      this.userSelection.isInsideNode(quasi)
+    );
+
+    if (index < 0) {
+      throw new Error("I can't find selected text in template elements");
+    }
+
+    const result = this.path.node.quasis[index];
+
+    if (!t.isSelectableNode(result)) {
+      throw new Error("Template element is not selectable");
+    }
+
+    return { ...result, index };
+  }
+
+  get positionOnExtractedId(): Position {
+    // ${ is inserted before the Identifier
+    const openingInterpolationLength = 2;
+
+    return new Position(
+      this.selection.start.line + this.selection.height + 1,
+      this.userSelection.start.character + openingInterpolationLength
+    );
   }
 }
 

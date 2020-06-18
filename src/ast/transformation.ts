@@ -85,7 +85,7 @@ function indentWithTabs(code: Code): Code {
     .join("\n");
 }
 
-function print(ast: AST): Code {
+function print(ast: AST | t.Node): Code {
   return recast.print(ast).code;
 }
 
