@@ -175,6 +175,9 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     loc: t.SourceLocation,
     userSelection: Selection
   ): boolean {
+    // This doesn't work yet for multi-lines code because we don't support it.
+    if (Selection.fromAST(loc).isMultiLines) return false;
+
     try {
       const occurrence = new PartialTemplateLiteralOccurrence(
         path,

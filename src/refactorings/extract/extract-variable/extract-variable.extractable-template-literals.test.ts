@@ -42,22 +42,6 @@ console.log(\`\${hello} \${world}! How are \${you} doing?\`);`,
         }
       },
       {
-        description:
-          "a selected single-line part of a multilines template literal",
-        code: `console.log(\`Hello world!
-How are you doing?
-All right!\`);`,
-        selection: new Selection([1, 8], [1, 11]),
-        skip: true,
-        expected: {
-          code: `const you = "you";
-console.log(\`Hello world!
-How are \${you} doing?
-All right!\`);`,
-          position: new Position(2, 12)
-        }
-      },
-      {
         description: "a selected expression of a template literal",
         code: "console.log(`${hello} world! How are ${you} doing?`);",
         selection: new Selection([0, 15], [0, 17]),
@@ -99,6 +83,28 @@ console.log(extracted);`
       } else {
         expect(result.code).toBe(expected);
       }
+    }
+  );
+
+  testEach<{ code: Code; expected: Code; selection: Selection }>(
+    "should not extract a subset but the whole string",
+    [
+      {
+        description: "from a multi-line template literal",
+        code: `console.log(\`Hello world!
+How are you doing?
+All right!\`);`,
+        expected: `const extracted = \`Hello world!
+How are you doing?
+All right!\`;
+console.log(extracted);`,
+        selection: new Selection([1, 8], [1, 11])
+      }
+    ],
+    async ({ code, expected, selection }) => {
+      const result = await doExtractVariable(code, selection);
+
+      expect(result.code).toBe(expected);
     }
   );
 
