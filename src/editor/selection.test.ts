@@ -72,4 +72,24 @@ describe("Selection", () => {
       expect(extendedSelection).toStrictEqual(new Selection([0, 10], [3, 10]));
     });
   });
+
+  describe("startsBefore", () => {
+    it("should return true if selection starts before given one", () => {
+      const selection = new Selection([1, 4], [1, 8]);
+      const anotherSelection = new Selection([2, 4], [2, 5]);
+
+      const result = selection.startsBefore(anotherSelection);
+
+      expect(result).toBe(true);
+    });
+
+    it("should return true if selection starts at the same position as given one", () => {
+      const selection = new Selection([1, 4], [1, 8]);
+      const anotherSelection = new Selection([1, 4], [2, 5]);
+
+      const result = selection.startsBefore(anotherSelection);
+
+      expect(result).toBe(true);
+    });
+  });
 });
