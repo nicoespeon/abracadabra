@@ -57,6 +57,16 @@ console.log(extracted);`
 console.log(extracted);`
       },
       {
+        description: "a selected part of a string literal",
+        code: "console.log('Hello world! How are you doing?');",
+        selection: new Selection([0, 19], [0, 24]),
+        expected: {
+          code: `const world = "world";
+console.log(\`Hello \${world}! How are you doing?\`);`,
+          position: new Position(1, 21)
+        }
+      },
+      {
         description: "a selected string literal (selection over string bounds)",
         code: "console.log('Hello world! How are you doing?');",
         selection: new Selection([0, 12], [0, 26]),

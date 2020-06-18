@@ -35,6 +35,11 @@ function createOccurrence(
   }
 
   if (path.isStringLiteral()) {
+    if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+      path.replaceWith(convertStringToTemplateLiteral(path.node, loc));
+      return createOccurrence(path, loc, selection);
+    }
+
     return new Occurrence(
       path,
       loc,
@@ -51,6 +56,25 @@ function createOccurrence(
   }
 
   return new Occurrence(path, loc, new Variable(path.node, path.parent));
+}
+
+function convertStringToTemplateLiteral(
+  node: t.StringLiteral,
+  loc: t.SourceLocation
+): t.TemplateLiteral {
+  const quasi = t.templateElement(node.value);
+
+  // Set proper location to created quasi.
+  // quasi is offset by 1 because the ` worth 0 for template literals
+  quasi.loc = {
+    ...loc,
+    start: {
+      ...loc.start,
+      column: loc.start.column + 1
+    }
+  };
+
+  return t.templateLiteral([quasi], []);
 }
 
 class Occurrence<T extends t.Node = t.Node> {
