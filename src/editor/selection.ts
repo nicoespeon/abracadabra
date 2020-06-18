@@ -115,6 +115,25 @@ class Selection {
     );
   }
 
+  isStrictlyInsidePath(path: ast.NodePath): path is ast.SelectablePath {
+    return this.isStrictlyInsideNode(path.node);
+  }
+
+  isStrictlyInsideNode(node: ast.Node): node is ast.SelectableNode {
+    return (
+      ast.isSelectableNode(node) &&
+      this.isStrictlyInside(Selection.fromAST(node.loc))
+    );
+  }
+
+  isStrictlyInside(selection: Selection): boolean {
+    return (
+      this.isInside(selection) &&
+      !this.start.isEqualTo(selection.start) &&
+      !this.end.isEqualTo(selection.end)
+    );
+  }
+
   startsBefore(selection: Selection): boolean {
     return this.start.isBefore(selection.start);
   }
