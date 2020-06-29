@@ -16,14 +16,24 @@ describe("Convert Function Declaration To Arrow Function", () => {
     "should convert function declaration to arrow function",
     [
       {
-        description: "basic",
+        description: "non-generic",
         code: `function fn(a: string): number { return 1; }`,
         expected: `const fn = (a: string): number => { return 1; };`
+      },
+      {
+        description: "non-generic async",
+        code: `async function fn(a: string): number { return 1; }`,
+        expected: `const fn = async (a: string): number => { return 1; };`
       },
       {
         description: "generic",
         code: `function fn<T>(t: T): T { return t; }`,
         expected: `const fn = <T>(t: T): T => { return t; };`
+      },
+      {
+        description: "generic async",
+        code: `async function fn<T>(t: T): T { return t; }`,
+        expected: `const fn = async <T>(t: T): T => { return t; };`
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
