@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindExpressionToWrap,
   DidNotFindLetToConvertToConst,
   DidNotFindSwitchToConvert,
   DidNotFindJsxAttributeToAddBracesTo,
@@ -45,6 +46,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindExpressionToWrap:
+      return didNotFind("an expression to wrap");
+
     case ErrorReason.DidNotFindLetToConvertToConst:
       return didNotFind(
         "a variable declared as let that could be converted to const"

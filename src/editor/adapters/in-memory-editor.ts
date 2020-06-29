@@ -122,6 +122,10 @@ class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
+  select(_selection: Selection) {
+    return Promise.resolve();
+  }
+
   private setCodeMatrix(code: Code) {
     this.codeMatrix = code
       .split(LINE_SEPARATOR)

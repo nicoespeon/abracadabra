@@ -114,6 +114,7 @@
     "onCommand:abracadabra.simplifyTernary",
     "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
+    "onCommand:abracadabra.wrapInFunctionCall",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -279,6 +280,11 @@
       {
         "command": "abracadabra.splitIfStatement",
         "title": "Split If Statement",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.wrapInFunctionCall",
+        "title": "Wrap In Function Call",
         "category": "Abracadabra"
       }
     ],
@@ -805,6 +811,22 @@
         },
         {
           "command": "abracadabra.splitIfStatement",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.wrapInFunctionCall",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.wrapInFunctionCall",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.wrapInFunctionCall",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.wrapInFunctionCall",
           "when": "editorLangId == typescriptreact"
         }
       ]

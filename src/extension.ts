@@ -35,6 +35,7 @@ import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assi
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
+import wrapInFunctionCall from "./refactorings/wrap-in-function-call";
 
 const TS_LANGUAGES = ["typescript", "typescriptreact"];
 const REACT_LANGUAGES = ["javascriptreact", "typescriptreact"];
@@ -84,7 +85,8 @@ export function activate(context: vscode.ExtensionContext) {
     replaceBinaryWithAssignment,
     simplifyTernary,
     splitDeclarationAndInitialization,
-    splitIfStatement
+    splitIfStatement,
+    wrapInFunctionCall
   ].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
@@ -143,7 +145,8 @@ export function activate(context: vscode.ExtensionContext) {
         replaceBinaryWithAssignment,
         simplifyTernary,
         splitDeclarationAndInitialization,
-        splitIfStatement
+        splitIfStatement,
+        wrapInFunctionCall
       ]),
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]

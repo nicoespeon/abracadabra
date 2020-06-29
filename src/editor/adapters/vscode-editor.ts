@@ -103,6 +103,11 @@ class VSCodeEditor implements Editor {
     this.editor.selection = toVSCodeCursor(position);
     return Promise.resolve();
   }
+
+  select(selection: Selection) {
+    this.editor.selection = selectionToVSCodeSelection(selection);
+    return Promise.resolve();
+  }
 }
 
 function createSelectionFromVSCode(
@@ -118,6 +123,13 @@ function toVSCodeCursor(position: Position): vscode.Selection {
   return new vscode.Selection(
     toVSCodePosition(position),
     toVSCodePosition(position)
+  );
+}
+
+function selectionToVSCodeSelection(selection: Selection): vscode.Selection {
+  return new vscode.Selection(
+    toVSCodePosition(selection.start),
+    toVSCodePosition(selection.end)
   );
 }
 
