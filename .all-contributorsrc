@@ -131,6 +131,18 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "OliverJAsh",
+      "name": "Oliver Joseph Ash",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/921609?v=4",
+      "profile": "https://oliverjash.me/",
+      "contributions": [
+        "ideas",
+        "bug",
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
