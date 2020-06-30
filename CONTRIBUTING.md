@@ -49,6 +49,8 @@ Run `yarn new` and follow the tool, it will ask you the relevant questions.
 
 If you want to change how code scaffolding works, check [hygen documentation][hygen-documentation].
 
+You will also need to add the new refactoring to the lists in `package.json` and `src/extension.ts`. These lists should be kept in alphabetical order.
+
 ## Useful resources to start changing the code
 
 - [VS Code Extension API documentation][vscode-extension-docs] is a good start
