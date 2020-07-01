@@ -1,0 +1,153 @@
+{
+  "projectName": "abracadabra",
+  "projectOwner": "nicoespeon",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "nicoespeon",
+      "name": "Nicolas Carlo",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1094774?v=4",
+      "profile": "https://nicoespeon.com/",
+      "contributions": [
+        "ideas",
+        "code",
+        "doc",
+        "review",
+        "question"
+      ]
+    },
+    {
+      "login": "fabien0102",
+      "name": "Fabien BERNARD",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1761469?v=4",
+      "profile": "https://fabien0102.com/",
+      "contributions": [
+        "ideas",
+        "code",
+        "design"
+      ]
+    },
+    {
+      "login": "David-Else",
+      "name": "David",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/12832280?v=4",
+      "profile": "https://www.elsewebdevelopment.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "HEYGUL",
+      "name": "GUL",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2989532?v=4",
+      "profile": "https://github.com/HEYGUL",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
+    },
+    {
+      "login": "visusnet",
+      "name": "Alexander Rose",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1219124?v=4",
+      "profile": "https://github.com/visusnet",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
+    },
+    {
+      "login": "timvancleef",
+      "name": "Tim van Cleef",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7040078?v=4",
+      "profile": "https://github.com/timvancleef",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "automatensalat",
+      "name": "Tobias Hann",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/26285169?v=4",
+      "profile": "https://github.com/automatensalat",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "capaj",
+      "name": "Jiri Spac",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1305378?v=4",
+      "profile": "https://twitter.com/capajj",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "tjx666",
+      "name": "YuTengjing",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/41773861?v=4",
+      "profile": "http://www.lyreal666.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "delaaxe",
+      "name": "delaaxe",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1091900?v=4",
+      "profile": "https://github.com/delaaxe",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
+    },
+    {
+      "login": "jrnail23",
+      "name": "James Nail",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/392612?v=4",
+      "profile": "https://github.com/jrnail23",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "nickebbitt",
+      "name": "Nick Ebbitt",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5111725?v=4",
+      "profile": "https://nickebbitt.github.io/",
+      "contributions": [
+        "ideas",
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "OliverJAsh",
+      "name": "Oliver Joseph Ash",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/921609?v=4",
+      "profile": "https://oliverjash.me/",
+      "contributions": [
+        "ideas",
+        "bug",
+        "code",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": false,
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
+  "types": {},
+  "skipCi": true
+}
