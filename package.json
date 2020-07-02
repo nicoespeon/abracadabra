@@ -64,7 +64,7 @@
     "jest": "25.1.0",
     "prettier": "1.17.1",
     "pretty-quick": "1.11.0",
-    "ts-jest": "25.2.1",
+    "ts-jest": "25.5.1",
     "ts-loader": "6.0.4",
     "tslint": "5.12.1",
     "typescript": "3.7.3",
