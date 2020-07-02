@@ -45,6 +45,11 @@ describe("Wrap In Function Call", () => {
         code: 'const a = window.confirm("are you sure?");',
         expected: 'const a = wrapped(window.confirm("are you sure?"));',
         selection: Selection.cursorAt(0, 17)
+      },
+      {
+        description: "call expression with generic",
+        code: 'const a = identity<string>("foo");',
+        expected: 'const a = wrapped(identity<string>("foo"));'
       }
     ],
     async ({ code, selection = Selection.cursorAt(0, 10), expected }) => {
