@@ -81,7 +81,7 @@
     "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",
-    "recast": "0.18.1"
+    "recast": "0.19.1"
   },
   "activationEvents": [
     "onCommand:abracadabra.addBracesToArrowFunction",
