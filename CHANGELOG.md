@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Update the Quick Fixes labels to put "✨" at the end. This allows you to use your keyboard to select a Quick Fix, as it's standard OS behavior. Thanks @OliverJAsh for reporting this accessibility issue!
+
 ### Added
 
 - "Extract Variable" now extracts substring if that's what you selected!

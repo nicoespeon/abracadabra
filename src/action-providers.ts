@@ -113,7 +113,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
   private buildCodeActionFor(refactoring: RefactoringWithActionProvider) {
     const action = new vscode.CodeAction(
-      `✨ ${refactoring.actionProvider.message}`,
+      `${refactoring.actionProvider.message} ✨`,
       vscode.CodeActionKind.RefactorRewrite
     );
 
