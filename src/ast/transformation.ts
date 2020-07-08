@@ -74,7 +74,7 @@ function isUsingTabs(ast: AST): boolean {
 function indentWithTabs(code: Code): Code {
   return code
     .split("\n")
-    .map(line => {
+    .map((line) => {
       const matches = line.match(/^\s+/);
       if (!matches) return line;
 

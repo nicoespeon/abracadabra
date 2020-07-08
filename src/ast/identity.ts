@@ -62,7 +62,7 @@ function isArrayExpressionElement(
 function areAllObjectProperties(
   nodes: (t.Node | null)[]
 ): nodes is t.ObjectProperty[] {
-  return nodes.every(node => t.isObjectProperty(node));
+  return nodes.every((node) => t.isObjectProperty(node));
 }
 
 function isUndefinedLiteral(
@@ -264,7 +264,7 @@ function isTemplateExpression(node: t.Node): node is TemplateExpression {
 type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
 
 function isInBranchedLogic(path: NodePath<t.ReturnStatement>) {
-  return path.getAncestry().some(path => t.isIfStatement(path));
+  return path.getAncestry().some((path) => t.isIfStatement(path));
 }
 
 function isInAlternate(path: NodePath<t.IfStatement>): boolean {

@@ -25,7 +25,7 @@ async function addBracesToArrowFunction(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, path => {
+    createVisitor(selection, (path) => {
       // Duplicate this type guard so TS can infer the type properly
       if (t.isBlockStatement(path.node.body)) return;
 

@@ -25,7 +25,7 @@ async function removeBracesFromJsxAttribute(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, path => {
+    createVisitor(selection, (path) => {
       if (
         t.isJSXAttribute(path.parent) &&
         t.isStringLiteral(path.node.expression)

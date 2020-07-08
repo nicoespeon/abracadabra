@@ -26,7 +26,7 @@ async function removeBracesFromIfStatement(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, path => {
+    createVisitor(selection, (path) => {
       if (!t.isSelectableNode(path.node.consequent)) return;
       if (isSelectionBefore(selection, path.node.consequent)) {
         path.node.consequent = statementWithoutBraces(path.node.consequent);

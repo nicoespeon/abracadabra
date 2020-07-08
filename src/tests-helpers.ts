@@ -6,7 +6,7 @@ function testEach<T>(
   fn: (...args: (Assertion & T)[]) => any
 ) {
   describe(label, () => {
-    assertions.forEach(assertion => {
+    assertions.forEach((assertion) => {
       const test = assertion.only ? it.only : assertion.skip ? it.skip : it;
       test(assertion.description, () => fn(assertion));
     });

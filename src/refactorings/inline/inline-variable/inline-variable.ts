@@ -39,7 +39,7 @@ async function inlineVariable(
     return;
   }
 
-  await editor.readThenWrite(inlinableCode.valueSelection, inlinedCode => {
+  await editor.readThenWrite(inlinableCode.valueSelection, (inlinedCode) => {
     return [
       // Replace all identifiers with inlined code
       ...inlinableCode.updateIdentifiersWith(inlinedCode),

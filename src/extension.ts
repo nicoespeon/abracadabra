@@ -94,7 +94,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  TS_LANGUAGES.forEach(language => {
+  TS_LANGUAGES.forEach((language) => {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([extractInterface]),
@@ -104,7 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  REACT_LANGUAGES.forEach(language => {
+  REACT_LANGUAGES.forEach((language) => {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([
@@ -117,7 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  ALL_LANGUAGES.forEach(language => {
+  ALL_LANGUAGES.forEach((language) => {
     vscode.languages.registerCodeActionsProvider(
       language,
       new RefactoringActionProvider([

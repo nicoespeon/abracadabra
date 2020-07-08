@@ -38,7 +38,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         // AssignmentExpression is contained in an ExpressionStatement
         // => replace parentPath's parent path
         parentPath.parentPath.replaceWith(
-          createIfStatement(selection, node, expression =>
+          createIfStatement(selection, node, (expression) =>
             createAssignment(operator, left, expression)
           )
         );
@@ -56,7 +56,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         // => replace parentPath's parent path
         parentPath.parentPath.replaceWithMultiple([
           createLetDeclaration(id),
-          createIfStatement(selection, node, expression =>
+          createIfStatement(selection, node, (expression) =>
             createAssignment("=", id, expression)
           )
         ]);
@@ -94,7 +94,7 @@ function createIfStatement(
   createNestedStatement: CreateNestedStatement
 ): t.IfStatement {
   if (isSelectedConditionalExpression(node.consequent, selection)) {
-    return createIfStatement(selection, node.consequent, expression =>
+    return createIfStatement(selection, node.consequent, (expression) =>
       createNestedStatement(
         t.conditionalExpression(node.test, expression, node.alternate)
       )
@@ -102,7 +102,7 @@ function createIfStatement(
   }
 
   if (isSelectedConditionalExpression(node.alternate, selection)) {
-    return createIfStatement(selection, node.alternate, expression =>
+    return createIfStatement(selection, node.alternate, (expression) =>
       createNestedStatement(
         t.conditionalExpression(node.test, node.consequent, expression)
       )

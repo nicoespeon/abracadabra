@@ -46,7 +46,7 @@ function findInlinableCode(
 
       const previous = id.properties[index - 1];
       const next = id.properties[index + 1];
-      const hasRestSibling = id.properties.some(p => ast.isRestElement(p));
+      const hasRestSibling = id.properties.some((p) => ast.isRestElement(p));
 
       result = new InlinableObjectPattern(
         child,
@@ -287,7 +287,7 @@ class InlinableTSTypeAlias implements InlinableCode {
   }
 
   updateIdentifiersWith(inlinedCode: Code): Modification[] {
-    return this.refToReplaceLocs.map(loc => ({
+    return this.refToReplaceLocs.map((loc) => ({
       code: inlinedCode,
       selection: Selection.fromAST(loc)
     }));

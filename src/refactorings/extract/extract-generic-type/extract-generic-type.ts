@@ -36,7 +36,7 @@ async function extractGenericType(
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
 
-  occurrences.forEach(occurrence => occurrence.transform());
+  occurrences.forEach((occurrence) => occurrence.transform());
 
   const anyOccurrence = occurrences[0];
   await editor.write(t.print(ast), anyOccurrence.symbolPosition);
@@ -51,15 +51,15 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
     ast,
     createVisitor(
       selection,
-      occurrence => (selectedOccurrence = occurrence),
-      occurrence => otherOccurrences.push(occurrence)
+      (occurrence) => (selectedOccurrence = occurrence),
+      (occurrence) => otherOccurrences.push(occurrence)
     )
   );
 
   return {
     selected: selectedOccurrence,
     others: otherOccurrences.filter(
-      occurrence =>
+      (occurrence) =>
         selectedOccurrence &&
         t.areEquivalent(occurrence.node, selectedOccurrence.node) &&
         // Don't include the selected occurrence
@@ -181,7 +181,7 @@ class Occurrence {
       ({ name }) => name
     );
     const availableNames = VALID_NAMES.filter(
-      name => !existingNames.includes(name)
+      (name) => !existingNames.includes(name)
     );
 
     return availableNames[0] || DEFAULT_NAME;

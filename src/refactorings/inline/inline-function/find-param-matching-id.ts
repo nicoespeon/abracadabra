@@ -77,7 +77,7 @@ function getPropertiesValues(
   param: ast.ObjectPattern
 ): ast.ObjectProperty["value"][] {
   return param.properties
-    .map(property => {
+    .map((property) => {
       if (ast.isRestElement(property)) return property;
       return property.value;
     })
@@ -162,7 +162,7 @@ class MatchingRestIdentifier implements MatchingParam {
     this.argument = argument;
     this.omittedIdNames = params
       .filter((param): param is ast.Identifier => ast.isIdentifier(param))
-      .map(param => param.name);
+      .map((param) => param.name);
   }
 
   get isMatch() {
@@ -177,7 +177,7 @@ class MatchingRestIdentifier implements MatchingParam {
 
   private resolveObjectExpressionValue(args: ast.ObjectProperty[]): Value {
     const pickedArgs = args.filter(
-      arg =>
+      (arg) =>
         !(
           ast.isIdentifier(arg.key) &&
           this.omittedIdNames.includes(arg.key.name)
@@ -217,7 +217,7 @@ class MatchingArray implements MatchingParam {
   }
 
   private resolveObjectExpressionValue(args: ast.ObjectProperty[]): Value {
-    return this.resolveArrayExpressionValue(args.map(arg => arg.value));
+    return this.resolveArrayExpressionValue(args.map((arg) => arg.value));
   }
 
   private resolveArrayExpressionValue(args: Value[]) {

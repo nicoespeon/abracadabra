@@ -7,7 +7,7 @@ export { findScopePath, findParentIfPath, getFunctionScopePath, isShadowIn };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
   return path.findParent(
-    parentPath =>
+    (parentPath) =>
       t.isExpressionStatement(parentPath) ||
       (t.isVariableDeclaration(parentPath) &&
         !t.isExportDeclaration(parentPath.parentPath)) ||
@@ -25,7 +25,7 @@ function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
 function findParentIfPath(
   path: NodePath<t.Node | null>
 ): NodePath<t.IfStatement> | undefined {
-  return path.findParent(parentPath => t.isIfStatement(parentPath)) as
+  return path.findParent((parentPath) => t.isIfStatement(parentPath)) as
     | NodePath<t.IfStatement>
     | undefined;
 }
@@ -46,7 +46,7 @@ function isShadowIn(
   function isDeclaredInFunction(node: t.Node): boolean {
     return (
       t.isFunctionDeclaration(node) &&
-      node.params.some(node => areEquivalent(id, node))
+      node.params.some((node) => areEquivalent(id, node))
     );
   }
 
@@ -54,10 +54,10 @@ function isShadowIn(
     return (
       t.isBlockStatement(node) &&
       node.body.some(
-        child =>
+        (child) =>
           t.isVariableDeclaration(child) &&
           child.declarations.some(
-            declaration =>
+            (declaration) =>
               t.isVariableDeclarator(declaration) &&
               areEquivalent(id, declaration.id) &&
               // Of course, if it's the inlined variable it's not a shadow!

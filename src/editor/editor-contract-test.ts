@@ -142,7 +142,7 @@ function createEditorContractTests(
         const [editor, getState] = createEditorOn(code);
         await editor.readThenWrite(
           new Selection([0, 13], [0, 18]),
-          readCode => [
+          (readCode) => [
             {
               code: `${readCode} you!`,
               selection: new Selection([0, 13], [0, 18])
@@ -270,7 +270,7 @@ function createEditorContractTests(
         const [editor, getState] = createEditorOn(code);
         await editor.readThenWrite(
           new Selection([0, 12], [0, 20]),
-          readCode => [
+          (readCode) => [
             {
               code: `const extracted = ${readCode};\n`,
               selection: Selection.cursorAt(0, 0)
@@ -289,13 +289,16 @@ console.log(extracted);`);
 ]);`;
 
         const [editor, getState] = createEditorOn(code);
-        await editor.readThenWrite(new Selection([0, 12], [2, 1]), readCode => [
-          {
-            code: `const extracted = ${readCode};\n`,
-            selection: Selection.cursorAt(0, 0)
-          },
-          { code: `extracted`, selection: new Selection([0, 12], [2, 1]) }
-        ]);
+        await editor.readThenWrite(
+          new Selection([0, 12], [2, 1]),
+          (readCode) => [
+            {
+              code: `const extracted = ${readCode};\n`,
+              selection: Selection.cursorAt(0, 0)
+            },
+            { code: `extracted`, selection: new Selection([0, 12], [2, 1]) }
+          ]
+        );
 
         expect(getState().code).toEqual(`const extracted = [
   "Hello!"

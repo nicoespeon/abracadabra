@@ -30,7 +30,7 @@ function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
         }
 
         // Pattern `export { foo, hello }`
-        node.specifiers.forEach(specifier => {
+        node.specifiers.forEach((specifier) => {
           if (!ast.isExportSpecifier(specifier)) return;
           result.push(specifier.local.name);
         });

@@ -23,7 +23,7 @@ async function addBracesToIfStatement(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, path => {
+    createVisitor(selection, (path) => {
       if (!t.isSelectableNode(path.node.consequent)) return;
       const endOfConsequent = Position.fromAST(path.node.consequent.loc.end);
 

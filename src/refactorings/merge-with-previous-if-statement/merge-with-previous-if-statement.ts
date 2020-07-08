@@ -111,7 +111,7 @@ function mergeIfStatementWithIfStatement(
   const nodesToMerge = t.getStatements(node.alternate);
 
   if (t.isIfStatement(alternate)) {
-    nodesToMerge.forEach(node => mergeWithIfStatement(alternate, node));
+    nodesToMerge.forEach((node) => mergeWithIfStatement(alternate, node));
   } else {
     ifStatement.alternate = alternate
       ? mergeWith(alternate, nodesToMerge)
