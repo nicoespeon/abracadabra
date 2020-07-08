@@ -25,7 +25,7 @@ function getReturnedStatement(
 
 function getAssignedStatement(
   node: t.Statement | null
-): t.ExpressionStatement & { expression: t.AssignmentExpression } | null {
+): (t.ExpressionStatement & { expression: t.AssignmentExpression }) | null {
   if (!t.isBlockStatement(node)) return null;
   if (node.body.length > 1) return null;
 
@@ -44,7 +44,7 @@ function getStatements(statement: t.Statement): t.Statement[] {
 
 function isEmpty(statement: t.Statement): boolean {
   const statements = getStatements(statement).filter(
-    child => child !== statement
+    (child) => child !== statement
   );
 
   return statements.length === 0;

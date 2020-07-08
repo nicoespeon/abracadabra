@@ -72,13 +72,13 @@ function createVisitor(
 
       const declarations = methods
         .filter(isPublic)
-        .filter(method => !isConstructor(method))
-        .map(method => {
+        .filter((method) => !isConstructor(method))
+        .map((method) => {
           return t.tsMethodSignature(
             method.key,
             null,
-            method.params.filter(
-              (param): param is t.Identifier => t.isIdentifier(param)
+            method.params.filter((param): param is t.Identifier =>
+              t.isIdentifier(param)
             ),
             t.isTSTypeAnnotation(method.returnType) ? method.returnType : null
           );
@@ -88,9 +88,8 @@ function createVisitor(
       const constructorDeclaration = methods.find(isConstructor);
       if (constructorDeclaration) {
         autoAssignedProperties = constructorDeclaration.params
-          .filter(
-            (param): param is t.TSParameterProperty =>
-              t.isTSParameterProperty(param)
+          .filter((param): param is t.TSParameterProperty =>
+            t.isTSParameterProperty(param)
           )
           .filter(isPublic)
           .reduce<t.TSPropertySignature[]>((memo, property) => {
@@ -119,9 +118,8 @@ function createVisitor(
       }
 
       const classProperties = path.node.body.body
-        .filter(
-          (property: any): property is t.ClassProperty =>
-            t.isClassProperty(property)
+        .filter((property: any): property is t.ClassProperty =>
+          t.isClassProperty(property)
         )
         .filter(isPublic)
         .map((property: t.ClassProperty) => {

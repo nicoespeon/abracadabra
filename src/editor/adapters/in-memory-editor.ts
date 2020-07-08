@@ -125,13 +125,13 @@ class InMemoryEditor implements Editor {
   private setCodeMatrix(code: Code) {
     this.codeMatrix = code
       .split(LINE_SEPARATOR)
-      .map(line => line.split(CHARS_SEPARATOR));
+      .map((line) => line.split(CHARS_SEPARATOR));
   }
 
   private read(codeMatrix: CodeMatrix): string {
     return codeMatrix
-      .map(line => line.join(CHARS_SEPARATOR))
-      .filter(line => line !== DELETED_LINE)
+      .map((line) => line.join(CHARS_SEPARATOR))
+      .filter((line) => line !== DELETED_LINE)
       .join(LINE_SEPARATOR);
   }
 }

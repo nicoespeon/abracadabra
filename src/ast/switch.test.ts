@@ -12,7 +12,7 @@ describe("AST Switch", () => {
   });
 
   describe("BinaryExpression", () => {
-    VALID_OPERATORS.forEach(operator =>
+    VALID_OPERATORS.forEach((operator) =>
       shouldIdentifyDiscriminantWith(operator)
     );
 
@@ -38,7 +38,7 @@ describe("AST Switch", () => {
       ">=",
       "<="
     ];
-    INVALID_OPERATORS.forEach(operator => shouldReturnNullWith(operator));
+    INVALID_OPERATORS.forEach((operator) => shouldReturnNullWith(operator));
 
     function shouldIdentifyDiscriminantWith(
       operator: t.BinaryExpression["operator"]

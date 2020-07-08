@@ -25,7 +25,7 @@ async function addBracesToJsxAttribute(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, path => {
+    createVisitor(selection, (path) => {
       // Wrap the string literal in a JSX Expression
       if (path.node.value && !t.isJSXExpressionContainer(path.node.value)) {
         path.node.value = t.jsxExpressionContainer(path.node.value);

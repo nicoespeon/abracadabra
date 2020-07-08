@@ -49,8 +49,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
       path.replaceWith(buildNestedIfStatementFor(node.consequent));
 
-      path.getAllPrevSiblings().forEach(path => path.remove());
-      path.getAllNextSiblings().forEach(path => path.remove());
+      path.getAllPrevSiblings().forEach((path) => path.remove());
+      path.getAllNextSiblings().forEach((path) => path.remove());
 
       path.stop();
     })

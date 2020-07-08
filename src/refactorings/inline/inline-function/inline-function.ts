@@ -80,7 +80,7 @@ function updateCode(
 
   const result = ast.transform(
     code,
-    createVisitorThat(path => {
+    createVisitorThat((path) => {
       const returnStatementsCount = countReturnStatementsIn(path);
       hasManyReturns = returnStatementsCount === StatementsCount.Many;
       if (hasManyReturns) return;
@@ -196,8 +196,8 @@ function replaceAllIdentifiersWithFunction(
 
   if (functionBinding) {
     functionBinding.referencePaths
-      .map(referencePath => referencePath.parentPath)
-      .forEach(scopePath => replaceAllIdentifiersInPath(scopePath, node));
+      .map((referencePath) => referencePath.parentPath)
+      .forEach((scopePath) => replaceAllIdentifiersInPath(scopePath, node));
   } else {
     // If we don't get the bindings, traverse all the parent nodes.
     parentPath.traverse({
@@ -219,7 +219,7 @@ function replaceAllIdentifiersInPath(
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
     const scopePath = path.findParent(
-      parentPath =>
+      (parentPath) =>
         ast.isVariableDeclarator(parentPath) ||
         ast.isAssignmentExpression(parentPath) ||
         ast.isCallExpression(parentPath)

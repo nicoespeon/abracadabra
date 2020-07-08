@@ -22,7 +22,7 @@ async function negateExpression(
   }
 
   const expressionSelection = Selection.fromAST(expression.loc);
-  await editor.readThenWrite(expressionSelection, code => [
+  await editor.readThenWrite(expressionSelection, (code) => [
     {
       code: negate(code),
       selection: expressionSelection

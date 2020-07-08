@@ -201,9 +201,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   }
 
   toVariableDeclaration(): Code {
-    return `const ${this.variable.name} = "${this.parts.selected}";\n${
-      this.indentation
-    }`;
+    return `const ${this.variable.name} = "${this.parts.selected}";\n${this.indentation}`;
   }
 
   get modification(): Modification {
@@ -237,7 +235,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
 
   private get selectedQuasi(): t.TemplateElement &
     t.SelectableNode & { index: number } {
-    const index = this.path.node.quasis.findIndex(quasi =>
+    const index = this.path.node.quasis.findIndex((quasi) =>
       this.userSelection.isInsideNode(quasi)
     );
 

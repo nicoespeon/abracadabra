@@ -37,14 +37,14 @@ async function extractVariable(
 
   await editor.readThenWrite(
     selectedOccurrence.selection,
-    extractedCode => [
+    (extractedCode) => [
       // Insert new variable declaration.
       {
         code: selectedOccurrence.toVariableDeclaration(extractedCode),
         selection: topMostOccurrence.scopeParentCursor
       },
       // Replace extracted code with new variable.
-      ...extractedOccurrences.map(occurrence => occurrence.modification)
+      ...extractedOccurrences.map((occurrence) => occurrence.modification)
     ],
     selectedOccurrence.positionOnExtractedId
   );

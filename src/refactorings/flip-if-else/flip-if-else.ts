@@ -73,11 +73,11 @@ function flipGuardClause(path: t.NodePath<t.IfStatement>) {
   const pathsBelow = path
     .getAllNextSiblings()
     .filter((path): path is t.NodePath<t.Statement> => t.isStatement(path));
-  const nodesBelow: t.Statement[] = pathsBelow.map(path => path.node);
+  const nodesBelow: t.Statement[] = pathsBelow.map((path) => path.node);
 
   path.node.consequent = t.blockStatement(nodesBelow);
   path.node.alternate = flipToGuardAlternate(ifBranch);
-  pathsBelow.forEach(path => path.remove());
+  pathsBelow.forEach((path) => path.remove());
 }
 
 function flipToGuardAlternate(

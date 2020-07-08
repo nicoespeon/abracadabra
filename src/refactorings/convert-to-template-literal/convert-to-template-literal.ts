@@ -25,7 +25,7 @@ async function convertToTemplateLiteral(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, path => {
+    createVisitor(selection, (path) => {
       const templateLiteral = t.templateLiteral(
         [t.templateElement(path.node.value)],
         []

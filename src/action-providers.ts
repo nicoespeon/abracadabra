@@ -28,9 +28,10 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       const ast = t.parse(document.getText());
       const selection = createSelectionFromVSCode(range);
 
-      return this.findApplicableRefactorings(ast, selection).map(refactoring =>
-        this.buildCodeActionFor(refactoring)
-      );
+      return this.findApplicableRefactorings(
+        ast,
+        selection
+      ).map((refactoring) => this.buildCodeActionFor(refactoring));
     } catch (_) {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
       return NO_ACTION;
@@ -38,7 +39,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private isNavigatingAnIgnoredFile(filePath: string): boolean {
-    return this.getIgnoredFolders().some(ignored =>
+    return this.getIgnoredFolders().some((ignored) =>
       filePath.includes(`/${ignored}/`)
     );
   }
@@ -68,8 +69,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     >();
 
     t.traverseAST(ast, {
-      enter: path => {
-        this.refactorings.forEach(refactoring => {
+      enter: (path) => {
+        this.refactorings.forEach((refactoring) => {
           const {
             actionProvider,
             command: { key }
@@ -77,7 +78,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
           const visitor = actionProvider.createVisitor(
             selection,
-            visitedPath => {
+            (visitedPath) => {
               if (actionProvider.updateMessage) {
                 actionProvider.message = actionProvider.updateMessage(
                   visitedPath

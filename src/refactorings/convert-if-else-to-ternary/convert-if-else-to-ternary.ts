@@ -41,7 +41,7 @@ function createVisitor(
       new ReturnedTernaryMatcher(path)
         .setNext(new AssignedTernaryMatcher(path))
         .setNext(new ImplicitReturnedTernaryMatcher(path))
-        .onMatch(node => onMatch(path, node));
+        .onMatch((node) => onMatch(path, node));
     }
   };
 }
