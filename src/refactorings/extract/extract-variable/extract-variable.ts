@@ -69,7 +69,9 @@ class VariableDeclarationModification implements Modification {
     const { name, value } = this.selectedOccurrence.toVariableDeclaration(
       this.value
     );
-    const indentation = this.indentationChar.repeat(this.indentationLevel);
+
+    const indentationLevel = this.selection.start.character;
+    const indentation = this.indentationChar.repeat(indentationLevel);
 
     return `const ${name} = ${value};\n${indentation}`;
   }
@@ -116,10 +118,6 @@ class VariableDeclarationModification implements Modification {
     }
   }
 
-  private get indentationLevel(): IndentationLevel {
-    return this.getParentScopePosition(this.selectedOccurrence).character;
-  }
-
   private getParentScopePosition(occurrence: Occurrence): Position {
     const parentPath = t.findScopePath(occurrence.path);
     const parent = parentPath ? parentPath.node : occurrence.path.node;
@@ -128,8 +126,6 @@ class VariableDeclarationModification implements Modification {
     return Position.fromAST(parent.loc.start);
   }
 }
-
-type IndentationLevel = number;
 
 function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;

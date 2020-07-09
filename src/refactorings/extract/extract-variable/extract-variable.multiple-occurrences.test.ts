@@ -131,10 +131,9 @@ sendMessage("Hello");`;
 
     const result = await doExtractVariable(code, selection);
 
-    // TODO: fix indentation
     const expectedCode = `function sayHello() {
   const hello = "Hello";
-    if (isValid) {
+  if (isValid) {
     track("said", hello);
   }
   console.log(hello);
