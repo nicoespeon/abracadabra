@@ -1,6 +1,5 @@
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
 
 import { renameSymbol } from "../../rename-symbol/rename-symbol";
@@ -36,29 +35,15 @@ async function extractVariable(
       : [selectedOccurrence];
   const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
 
-  let cursorOnCommonAncestor = topMostOccurrence.cursorOnParentScope;
-  if (extractedOccurrences.length > 1) {
-    try {
-      const commonAncestor = (topMostOccurrence.path.getEarliestCommonAncestorFrom(
-        extractedOccurrences.map((occurrence) => occurrence.path)
-        //TODO: fix types & encapsulate logic into AST
-      ) as any) as t.SelectablePath;
-      cursorOnCommonAncestor = Selection.cursorAtPosition(
-        Position.fromAST(commonAncestor.node.loc.start)
-      );
-    } catch {
-      // If occurrences don't have a common ancestor, top most occurrence scope is enough.
-      // E.g. declarations at Program root level
-    }
-  }
-
   await editor.readThenWrite(
     selectedOccurrence.selection,
     (extractedCode) => [
       // Insert new variable declaration.
       {
         code: selectedOccurrence.toVariableDeclaration(extractedCode),
-        selection: cursorOnCommonAncestor
+        selection: topMostOccurrence.cursorOnCommonAncestor(
+          extractedOccurrences
+        )
       },
       // Replace extracted code with new variable.
       ...extractedOccurrences.map((occurrence) => occurrence.modification)
