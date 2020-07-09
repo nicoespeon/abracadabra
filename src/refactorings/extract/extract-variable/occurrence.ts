@@ -87,8 +87,8 @@ class Occurrence<T extends t.Node = t.Node> {
     );
   }
 
-  get scopeParentCursor(): Selection {
-    const position = this.getScopeParentPosition();
+  get cursorOnParentScope(): Selection {
+    const position = this.getParentScopePosition();
     return Selection.fromPositions(position, position);
   }
 
@@ -114,10 +114,10 @@ class Occurrence<T extends t.Node = t.Node> {
   }
 
   private get indentationLevel(): IndentationLevel {
-    return this.getScopeParentPosition().character;
+    return this.getParentScopePosition().character;
   }
 
-  private getScopeParentPosition(): Position {
+  private getParentScopePosition(): Position {
     const parentPath = t.findScopePath(this.path);
     const parent = parentPath ? parentPath.node : this.path.node;
     if (!parent.loc) return this.selection.start;

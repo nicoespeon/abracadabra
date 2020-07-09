@@ -36,18 +36,16 @@ async function extractVariable(
       : [selectedOccurrence];
   const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
 
-  // TODO: encapsulate logic where it makes more sense
-  let commonAncestorCursor = topMostOccurrence.scopeParentCursor;
+  let cursorOnCommonAncestor = topMostOccurrence.cursorOnParentScope;
   if (extractedOccurrences.length > 1) {
     try {
       const commonAncestor = (topMostOccurrence.path.getEarliestCommonAncestorFrom(
         extractedOccurrences.map((occurrence) => occurrence.path)
         //TODO: fix types & encapsulate logic into AST
       ) as any) as t.SelectablePath;
-      //TODO: rename & encapsulate logic inside Selection
-      const start = Position.fromAST(commonAncestor.node.loc.start);
-
-      commonAncestorCursor = Selection.cursorAt(start.line, start.character);
+      cursorOnCommonAncestor = Selection.cursorAtPosition(
+        Position.fromAST(commonAncestor.node.loc.start)
+      );
     } catch {
       // If occurrences don't have a common ancestor, top most occurrence scope is enough.
       // E.g. declarations at Program root level
@@ -60,7 +58,7 @@ async function extractVariable(
       // Insert new variable declaration.
       {
         code: selectedOccurrence.toVariableDeclaration(extractedCode),
-        selection: commonAncestorCursor
+        selection: cursorOnCommonAncestor
       },
       // Replace extracted code with new variable.
       ...extractedOccurrences.map((occurrence) => occurrence.modification)

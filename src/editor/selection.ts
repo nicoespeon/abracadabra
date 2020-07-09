@@ -31,6 +31,10 @@ class Selection {
     return new Selection([line, char], [line, char]);
   }
 
+  static cursorAtPosition(position: Position): Selection {
+    return Selection.fromPositions(position, position);
+  }
+
   static areEqual(
     pathA: ast.SelectablePath,
     pathB: ast.SelectablePath
