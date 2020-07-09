@@ -83,6 +83,14 @@ class Occurrence<T extends t.Node = t.Node> {
     );
   }
 
+  get parentScopePosition(): Position {
+    const parentPath = t.findScopePath(this.path);
+    const parent = parentPath ? parentPath.node : this.path.node;
+    if (!parent.loc) return this.selection.start;
+
+    return Position.fromAST(parent.loc.start);
+  }
+
   toVariableDeclaration(code: Code): { name: Code; value: Code } {
     return {
       name: this.variable.name,

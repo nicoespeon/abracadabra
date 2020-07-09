@@ -5,6 +5,7 @@ import {
   Modification
 } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
 
 import { renameSymbol } from "../../rename-symbol/rename-symbol";
@@ -13,7 +14,6 @@ import {
   ReplacementStrategy,
   askReplacementStrategy
 } from "../replacement-strategy";
-import { Position } from "../../../editor/position";
 
 export { extractVariable };
 
@@ -78,8 +78,9 @@ class VariableDeclarationModification implements Modification {
 
   get selection(): Selection {
     const topMostOccurrence = this.allOccurrences.sort(topToBottom)[0];
-    const position = this.getParentScopePosition(topMostOccurrence);
-    let cursorOnCommonAncestor = Selection.fromPositions(position, position);
+    let cursorOnCommonAncestor = Selection.cursorAtPosition(
+      topMostOccurrence.parentScopePosition
+    );
 
     if (this.allOccurrences.length > 1) {
       try {
@@ -116,14 +117,6 @@ class VariableDeclarationModification implements Modification {
       // If it fails at runtime, fallback on a space.
       return " ";
     }
-  }
-
-  private getParentScopePosition(occurrence: Occurrence): Position {
-    const parentPath = t.findScopePath(occurrence.path);
-    const parent = parentPath ? parentPath.node : occurrence.path.node;
-    if (!parent.loc) return this.selection.start;
-
-    return Position.fromAST(parent.loc.start);
   }
 }
 
