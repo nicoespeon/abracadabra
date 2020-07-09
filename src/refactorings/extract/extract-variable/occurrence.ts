@@ -93,13 +93,16 @@ class Occurrence<T extends t.Node = t.Node> {
 
     if (allOccurrences.length > 1) {
       try {
-        const commonAncestor = (this.path.getEarliestCommonAncestorFrom(
+        const commonAncestor = t.findEarliestCommonAncestorFrom(
+          this.path,
           allOccurrences.map((occurrence) => occurrence.path)
-          //TODO: fix types & encapsulate logic into AST
-        ) as any) as t.SelectablePath;
-        cursor = Selection.cursorAtPosition(
-          Position.fromAST(commonAncestor.node.loc.start)
         );
+
+        if (t.isSelectableNode(commonAncestor.node)) {
+          cursor = Selection.cursorAtPosition(
+            Position.fromAST(commonAncestor.node.loc.start)
+          );
+        }
       } catch {
         // If occurrences don't have a common ancestor, top most occurrence scope is enough.
         // E.g. declarations at Program root level

@@ -3,7 +3,13 @@ import * as t from "@babel/types";
 
 import { areEquivalent } from "./identity";
 
-export { findScopePath, findParentIfPath, getFunctionScopePath, isShadowIn };
+export {
+  findScopePath,
+  findParentIfPath,
+  getFunctionScopePath,
+  isShadowIn,
+  findEarliestCommonAncestorFrom
+};
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
   return path.findParent(
@@ -66,4 +72,12 @@ function isShadowIn(
       )
     );
   }
+}
+
+function findEarliestCommonAncestorFrom(
+  path: NodePath,
+  otherPaths: NodePath[]
+) {
+  // Original type is incorrect, it will return a NodePath or throw
+  return (path.getEarliestCommonAncestorFrom(otherPaths) as any) as NodePath;
 }
