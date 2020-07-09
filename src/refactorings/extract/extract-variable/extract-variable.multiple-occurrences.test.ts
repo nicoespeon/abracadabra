@@ -117,6 +117,36 @@ sendMessage("Hello");`;
     expect(result.code).toBe(expectedCode);
   });
 
+  it("should make the extraction in the scope of all occurrences", async () => {
+    const code = `function sayHello() {
+  if (isValid) {
+    track("said", "Hello");
+  }
+  console.log("Hello");
+}
+
+sendMessage("Hello");`;
+    const selection = Selection.cursorAt(2, 19);
+    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+
+    const result = await doExtractVariable(code, selection);
+
+    // TODO: fix indentation
+    const expectedCode = `function sayHello() {
+  const hello = "Hello";
+    if (isValid) {
+    track("said", hello);
+  }
+  console.log(hello);
+}
+
+sendMessage("Hello");`;
+    expect(result.code).toBe(expectedCode);
+  });
+
+  // TODO: occurrences in switch statement => parent should accept code
+  // TODO: position incorrect if deepest ancestor is if statement (inserted between if & block => should be before if)
+
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should extract variables of type",
     [
