@@ -1,4 +1,9 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import {
+  Editor,
+  Code,
+  ErrorReason,
+  Modification
+} from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
 
@@ -33,18 +38,15 @@ async function extractVariable(
     choice === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
-  const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
 
   await editor.readThenWrite(
     selectedOccurrence.selection,
     (extractedCode) => [
-      // Insert new variable declaration.
-      {
-        code: selectedOccurrence.toVariableDeclaration(extractedCode),
-        selection: topMostOccurrence.cursorOnCommonAncestor(
-          extractedOccurrences
-        )
-      },
+      new VariableDeclarationModification(
+        extractedCode,
+        selectedOccurrence,
+        extractedOccurrences
+      ),
       // Replace extracted code with new variable.
       ...extractedOccurrences.map((occurrence) => occurrence.modification)
     ],
@@ -53,6 +55,24 @@ async function extractVariable(
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);
+}
+
+class VariableDeclarationModification implements Modification {
+  constructor(
+    private value: Code,
+    private selectedOccurrence: Occurrence,
+    private allOccurrences: Occurrence[]
+  ) {}
+
+  get code(): Code {
+    return this.selectedOccurrence.toVariableDeclaration(this.value);
+  }
+
+  get selection(): Selection {
+    const topMostOccurrence = this.allOccurrences.sort(topToBottom)[0];
+
+    return topMostOccurrence.cursorOnCommonAncestor(this.allOccurrences);
+  }
 }
 
 function topToBottom(a: Occurrence, b: Occurrence): number {
