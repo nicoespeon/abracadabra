@@ -76,7 +76,28 @@ class VariableDeclarationModification implements Modification {
 
   get selection(): Selection {
     const topMostOccurrence = this.allOccurrences.sort(topToBottom)[0];
-    return topMostOccurrence.cursorOnCommonAncestor(this.allOccurrences);
+    const position = this.getParentScopePosition(topMostOccurrence);
+    let cursorOnCommonAncestor = Selection.fromPositions(position, position);
+
+    if (this.allOccurrences.length > 1) {
+      try {
+        const commonAncestor = t.findEarliestCommonAncestorFrom(
+          topMostOccurrence.path,
+          this.allOccurrences.map((occurrence) => occurrence.path)
+        );
+
+        if (t.isSelectableNode(commonAncestor.node)) {
+          cursorOnCommonAncestor = Selection.cursorAtPosition(
+            Position.fromAST(commonAncestor.node.loc.start)
+          );
+        }
+      } catch {
+        // If occurrences don't have a common ancestor, top most occurrence scope is enough.
+        // E.g. declarations at Program root level
+      }
+    }
+
+    return cursorOnCommonAncestor;
   }
 
   private get indentationChar(): string {
@@ -96,14 +117,12 @@ class VariableDeclarationModification implements Modification {
   }
 
   private get indentationLevel(): IndentationLevel {
-    return this.getParentScopePosition().character;
+    return this.getParentScopePosition(this.selectedOccurrence).character;
   }
 
-  private getParentScopePosition(): Position {
-    const parentPath = t.findScopePath(this.selectedOccurrence.path);
-    const parent = parentPath
-      ? parentPath.node
-      : this.selectedOccurrence.path.node;
+  private getParentScopePosition(occurrence: Occurrence): Position {
+    const parentPath = t.findScopePath(occurrence.path);
+    const parent = parentPath ? parentPath.node : occurrence.path.node;
     if (!parent.loc) return this.selection.start;
 
     return Position.fromAST(parent.loc.start);

@@ -83,45 +83,11 @@ class Occurrence<T extends t.Node = t.Node> {
     );
   }
 
-  // TODO: move
-  cursorOnCommonAncestor(allOccurrences: Occurrence[]): Selection {
-    const position = this.getParentScopePosition();
-    let cursor = Selection.fromPositions(position, position);
-
-    if (allOccurrences.length > 1) {
-      try {
-        const commonAncestor = t.findEarliestCommonAncestorFrom(
-          this.path,
-          allOccurrences.map((occurrence) => occurrence.path)
-        );
-
-        if (t.isSelectableNode(commonAncestor.node)) {
-          cursor = Selection.cursorAtPosition(
-            Position.fromAST(commonAncestor.node.loc.start)
-          );
-        }
-      } catch {
-        // If occurrences don't have a common ancestor, top most occurrence scope is enough.
-        // E.g. declarations at Program root level
-      }
-    }
-
-    return cursor;
-  }
-
   toVariableDeclaration(code: Code): { name: Code; value: Code } {
     return {
       name: this.variable.name,
       value: t.isJSXText(this.path.node) ? `"${code}"` : code
     };
-  }
-
-  private getParentScopePosition(): Position {
-    const parentPath = t.findScopePath(this.path);
-    const parent = parentPath ? parentPath.node : this.path.node;
-    if (!parent.loc) return this.selection.start;
-
-    return Position.fromAST(parent.loc.start);
   }
 }
 
