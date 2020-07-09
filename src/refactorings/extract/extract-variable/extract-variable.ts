@@ -13,6 +13,7 @@ import {
   ReplacementStrategy,
   askReplacementStrategy
 } from "../replacement-strategy";
+import { Position } from "../../../editor/position";
 
 export { extractVariable };
 
@@ -65,15 +66,51 @@ class VariableDeclarationModification implements Modification {
   ) {}
 
   get code(): Code {
-    return this.selectedOccurrence.toVariableDeclaration(this.value);
+    const { name, value } = this.selectedOccurrence.toVariableDeclaration(
+      this.value
+    );
+    const indentation = this.indentationChar.repeat(this.indentationLevel);
+
+    return `const ${name} = ${value};\n${indentation}`;
   }
 
   get selection(): Selection {
     const topMostOccurrence = this.allOccurrences.sort(topToBottom)[0];
-
     return topMostOccurrence.cursorOnCommonAncestor(this.allOccurrences);
   }
+
+  private get indentationChar(): string {
+    try {
+      const {
+        line: sourceCodeChars
+        // @ts-ignore It's not typed, but it seems recast adds info at runtime.
+      } = this.selectedOccurrence.path.node.loc.lines.infos[
+        this.selectedOccurrence.loc.start.line - 1
+      ];
+
+      return sourceCodeChars[0];
+    } catch (_) {
+      // If it fails at runtime, fallback on a space.
+      return " ";
+    }
+  }
+
+  private get indentationLevel(): IndentationLevel {
+    return this.getParentScopePosition().character;
+  }
+
+  private getParentScopePosition(): Position {
+    const parentPath = t.findScopePath(this.selectedOccurrence.path);
+    const parent = parentPath
+      ? parentPath.node
+      : this.selectedOccurrence.path.node;
+    if (!parent.loc) return this.selection.start;
+
+    return Position.fromAST(parent.loc.start);
+  }
 }
+
+type IndentationLevel = number;
 
 function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;
