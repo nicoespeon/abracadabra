@@ -32,20 +32,15 @@ class VariableDeclarationModification implements Modification {
     );
 
     if (this.allOccurrences.length > 1) {
-      try {
-        const commonAncestor = t.findEarliestCommonAncestorFrom(
-          topMostOccurrence.path,
-          this.allOccurrences.map((occurrence) => occurrence.path)
-        );
+      const commonAncestor = t.findCommonAncestorToDeclareVariable(
+        topMostOccurrence.path,
+        this.allOccurrences.map((occurrence) => occurrence.path)
+      );
 
-        if (t.isSelectableNode(commonAncestor.node)) {
-          cursorOnCommonAncestor = Selection.cursorAtPosition(
-            Position.fromAST(commonAncestor.node.loc.start)
-          );
-        }
-      } catch {
-        // If occurrences don't have a common ancestor, top most occurrence scope is enough.
-        // E.g. declarations at Program root level
+      if (commonAncestor) {
+        cursorOnCommonAncestor = Selection.cursorAtPosition(
+          Position.fromAST(commonAncestor.node.loc.start)
+        );
       }
     }
 

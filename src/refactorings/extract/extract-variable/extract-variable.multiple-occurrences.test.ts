@@ -143,8 +143,65 @@ sendMessage("Hello");`;
     expect(result.code).toBe(expectedCode);
   });
 
-  // TODO: occurrences in switch statement => parent should accept code
-  // TODO: position incorrect if deepest ancestor is if statement (inserted between if & block => should be before if)
+  it("should make the extraction in the scope of all occurrences (switch statement)", async () => {
+    const code = `function addScore() {
+  switch (tempScore) {
+    case 0:
+      score += 'Love';
+      break;
+    case 1:
+      score += 'Fifteen';
+      break;
+    case 2:
+      score += 'Love';
+      break;
+  }
+}`;
+    const selection = Selection.cursorAt(3, 15);
+    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+
+    const result = await doExtractVariable(code, selection);
+
+    const expectedCode = `function addScore() {
+  const love = 'Love';
+  switch (tempScore) {
+    case 0:
+      score += love;
+      break;
+    case 1:
+      score += 'Fifteen';
+      break;
+    case 2:
+      score += love;
+      break;
+  }
+}`;
+    expect(result.code).toBe(expectedCode);
+  });
+
+  it("should make the extraction in the scope of all occurrences (if statement)", async () => {
+    const code = `function sayHello() {
+  if (isMorning) {
+    console.log("hello");
+    console.log("good morning");
+  }
+  console.log("hello");
+}`;
+    const selection = Selection.cursorAt(2, 17);
+    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+
+    const result = await doExtractVariable(code, selection);
+
+    const expectedCode = `function sayHello() {
+  const hello = "hello";
+  if (isMorning) {
+    console.log(hello);
+    console.log("good morning");
+  }
+  console.log(hello);
+}`;
+    expect(result.code).toBe(expectedCode);
+  });
 
   testEach<{ code: Code; selection?: Selection; expected: Code }>(
     "should extract variables of type",
