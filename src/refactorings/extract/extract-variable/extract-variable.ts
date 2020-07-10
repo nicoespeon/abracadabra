@@ -8,6 +8,7 @@ import {
   ReplacementStrategy,
   askReplacementStrategy
 } from "../replacement-strategy";
+import { VariableDeclarationModification } from "./variable-declaration-modification";
 
 export { extractVariable };
 
@@ -33,16 +34,15 @@ async function extractVariable(
     choice === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
-  const topMostOccurrence = extractedOccurrences.sort(topToBottom)[0];
 
   await editor.readThenWrite(
     selectedOccurrence.selection,
     (extractedCode) => [
-      // Insert new variable declaration.
-      {
-        code: selectedOccurrence.toVariableDeclaration(extractedCode),
-        selection: topMostOccurrence.scopeParentCursor
-      },
+      new VariableDeclarationModification(
+        extractedCode,
+        selectedOccurrence,
+        extractedOccurrences
+      ),
       // Replace extracted code with new variable.
       ...extractedOccurrences.map((occurrence) => occurrence.modification)
     ],
@@ -51,10 +51,6 @@ async function extractVariable(
 
   // Extracted symbol is located at `selection` => just trigger a rename.
   await renameSymbol(editor);
-}
-
-function topToBottom(a: Occurrence, b: Occurrence): number {
-  return a.selection.startsBefore(b.selection) ? -1 : 1;
 }
 
 function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {

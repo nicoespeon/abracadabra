@@ -2,8 +2,15 @@ import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 import { areEquivalent } from "./identity";
+import { isSelectablePath, SelectablePath } from "./selection";
 
-export { findScopePath, findParentIfPath, getFunctionScopePath, isShadowIn };
+export {
+  findScopePath,
+  findParentIfPath,
+  getFunctionScopePath,
+  isShadowIn,
+  findCommonAncestorToDeclareVariable
+};
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
   return path.findParent(
@@ -66,4 +73,32 @@ function isShadowIn(
       )
     );
   }
+}
+
+function findCommonAncestorToDeclareVariable(
+  path: NodePath,
+  otherPaths: NodePath[]
+): SelectablePath | null {
+  let ancestor: NodePath | null = null;
+
+  try {
+    // Original type is incorrect, it will return a NodePath or throw
+    ancestor = (path.getEarliestCommonAncestorFrom(
+      otherPaths
+    ) as any) as NodePath;
+  } catch {
+    // If it fails, it means it couldn't find the earliest ancestor.
+  }
+
+  return findAncestorThatCanHaveVariableDeclaration(ancestor);
+}
+
+function findAncestorThatCanHaveVariableDeclaration(
+  path: NodePath | null
+): SelectablePath | null {
+  if (path === null) return null;
+  if (path.isStatement() && isSelectablePath(path)) return path;
+  if (!path.parentPath) return null;
+
+  return findAncestorThatCanHaveVariableDeclaration(path.parentPath);
 }

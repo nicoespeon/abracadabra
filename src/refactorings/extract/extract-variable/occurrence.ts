@@ -69,10 +69,6 @@ class Occurrence<T extends t.Node = t.Node> {
     return Selection.fromAST(this.loc);
   }
 
-  get indentation(): Code {
-    return this.indentationChar.repeat(this.indentationLevel);
-  }
-
   get modification(): Modification {
     return {
       code: this.variable.id,
@@ -87,42 +83,19 @@ class Occurrence<T extends t.Node = t.Node> {
     );
   }
 
-  get scopeParentCursor(): Selection {
-    const position = this.getScopeParentPosition();
-    return Selection.fromPositions(position, position);
-  }
-
-  toVariableDeclaration(code: Code): Code {
-    const extractedCode = t.isJSXText(this.path.node) ? `"${code}"` : code;
-    const { name } = this.variable;
-
-    return `const ${name} = ${extractedCode};\n${this.indentation}`;
-  }
-
-  private get indentationChar(): string {
-    try {
-      // @ts-ignore It's not typed, but it seems recast adds info at runtime.
-      const { line: sourceCodeChars } = this.path.node.loc.lines.infos[
-        this.loc.start.line - 1
-      ];
-
-      return sourceCodeChars[0];
-    } catch (_) {
-      // If it fails at runtime, fallback on a space.
-      return " ";
-    }
-  }
-
-  private get indentationLevel(): IndentationLevel {
-    return this.getScopeParentPosition().character;
-  }
-
-  private getScopeParentPosition(): Position {
+  get parentScopePosition(): Position {
     const parentPath = t.findScopePath(this.path);
     const parent = parentPath ? parentPath.node : this.path.node;
     if (!parent.loc) return this.selection.start;
 
     return Position.fromAST(parent.loc.start);
+  }
+
+  toVariableDeclaration(code: Code): { name: Code; value: Code } {
+    return {
+      name: this.variable.name,
+      value: t.isJSXText(this.path.node) ? `"${code}"` : code
+    };
   }
 }
 
@@ -147,15 +120,15 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 }
 
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
-  toVariableDeclaration(code: Code): Code {
+  toVariableDeclaration(code: Code): { name: Code; value: Code } {
     if (this.path.node.computed) {
       return super.toVariableDeclaration(code);
     }
 
-    const extractedCode = t.generate(this.path.node.object);
-    const name = `{ ${this.variable.name} }`;
-
-    return `const ${name} = ${extractedCode};\n${this.indentation}`;
+    return {
+      name: `{ ${this.variable.name} }`,
+      value: t.generate(this.path.node.object)
+    };
   }
 }
 
@@ -200,8 +173,11 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     return true;
   }
 
-  toVariableDeclaration(): Code {
-    return `const ${this.variable.name} = "${this.parts.selected}";\n${this.indentation}`;
+  toVariableDeclaration(): { name: Code; value: Code } {
+    return {
+      name: this.variable.name,
+      value: `"${this.parts.selected}"`
+    };
   }
 
   get modification(): Modification {
@@ -262,5 +238,3 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     );
   }
 }
-
-type IndentationLevel = number;

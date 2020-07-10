@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- Update the Quick Fixes labels to put "✨" at the end. This allows you to use your keyboard to select a Quick Fix, as it's standard OS behavior. Thanks @OliverJAsh for reporting this accessibility issue!
-
 ### Added
 
 - "Extract Variable" now extracts substring if that's what you selected!
@@ -18,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 It will convert the string into a template literal accordingly. It doesn't work with multi-lines template literals yet, but it's already very convenient!
 
 ![][demo-extract-substring]
+
+### Fixed
+
+- "Extract Variable" now resolves the earliest common ancestor of multiple occurrences that wouldn't be in the same scope. That means there's now less cases where an extraction would be invalid!
+
+- Update the Quick Fixes labels to put "✨" at the end. This allows you to use your keyboard to select a Quick Fix, as it's standard OS behavior. Thanks @OliverJAsh for reporting this accessibility issue!
 
 ## [4.4.0] - 2020-06-13 - Let It Be 🌸
 
@@ -619,7 +621,7 @@ Consider the following code:
 
 ```js
 const { userId } = session;
-messages.map(message => ({ userId }));
+messages.map((message) => ({ userId }));
 ```
 
 If you tried to inline `userId`, it wouldn't work because destructured object patterns were not supported.
@@ -627,7 +629,7 @@ If you tried to inline `userId`, it wouldn't work because destructured object pa
 Now it would work as expected:
 
 ```js
-messages.map(message => ({ userId: session.userId }));
+messages.map((message) => ({ userId: session.userId }));
 ```
 
 Thanks to @noway for [bringing this one up](https://github.com/nicoespeon/abracadabra/issues/25).
