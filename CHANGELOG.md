@@ -17,6 +17,8 @@ It will convert the string into a template literal accordingly. It doesn't work 
 
 ### Fixed
 
+- "Extract Variable" now resolves the earliest common ancestor of multiple occurrences that wouldn't be in the same scope. That means there's now less cases where an extraction would be invalid!
+
 - Update the Quick Fixes labels to put "✨" at the end. This allows you to use your keyboard to select a Quick Fix, as it's standard OS behavior. Thanks @OliverJAsh for reporting this accessibility issue!
 
 ## [4.4.0] - 2020-06-13 - Let It Be 🌸
