@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.0] - 2020-07-10 - We all extract a yellow Substring ⚓
+
 ### Added
 
 - "Extract Variable" now extracts substring if that's what you selected!
@@ -888,7 +890,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.4.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.5.0...HEAD
+[4.5.0]: https://github.com/nicoespeon/abracadabra/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/nicoespeon/abracadabra/compare/4.3.0...4.4.0
 [4.3.0]: https://github.com/nicoespeon/abracadabra/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/nicoespeon/abracadabra/compare/4.1.0...4.2.0
