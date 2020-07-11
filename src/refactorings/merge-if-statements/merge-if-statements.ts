@@ -76,7 +76,6 @@ function mergeAlternateWithNestedIf(
   if (!nestedStatement) return;
 
   path.node.alternate = nestedStatement;
-  path.stop();
 }
 
 function mergeConsequentWithNestedIf(
@@ -95,8 +94,6 @@ function mergeConsequentWithNestedIf(
   path.node.consequent = t.blockStatement(
     t.getStatements(nestedIfStatement.consequent)
   );
-
-  path.stop();
 }
 
 function hasChildWhichMatchesSelection(

@@ -22,9 +22,10 @@ async function simplifyTernary(
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path, convertedNode) =>
-      path.replaceWith(convertedNode)
-    )
+    createVisitor(selection, (path, convertedNode) => {
+      path.replaceWith(convertedNode);
+      path.stop();
+    })
   );
 }
 
@@ -80,8 +81,6 @@ function createVisitor(
           t.logicalExpression("||", path.node.test, path.node.alternate)
         );
       }
-
-      path.stop();
     }
   };
 }

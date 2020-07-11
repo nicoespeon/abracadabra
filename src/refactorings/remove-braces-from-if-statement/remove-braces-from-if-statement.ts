@@ -36,6 +36,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (path.node.alternate) {
         path.node.alternate = statementWithoutBraces(path.node.alternate);
       }
+
+      path.stop();
     })
   );
 }
@@ -67,7 +69,6 @@ function createVisitor(
       if (!hasSingleStatementBlock(path, selection)) return;
 
       onMatch(path);
-      path.stop();
     }
   };
 }

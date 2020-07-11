@@ -61,19 +61,16 @@ function createVisitor(selection: Selection, onMatch: OnMatch): t.Visitor {
 
       if (t.isFalsy(test)) {
         onMatch(path, DeadCodeScenario.FalsyTest);
-        path.stop();
         return;
       }
 
       if (t.isTruthy(test)) {
         onMatch(path, DeadCodeScenario.TruthyTest);
-        path.stop();
         return;
       }
 
       if (isEmptyIfStatement(path.node)) {
         onMatch(path, DeadCodeScenario.EmptyIfStatement);
-        path.stop();
         return;
       }
 
