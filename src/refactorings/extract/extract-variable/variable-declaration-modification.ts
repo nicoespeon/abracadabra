@@ -57,7 +57,7 @@ class VariableDeclarationModification implements Modification {
       ];
 
       return sourceCodeChars[0];
-    } catch (_) {
+    } catch {
       // If it fails at runtime, fallback on a space.
       return " ";
     }

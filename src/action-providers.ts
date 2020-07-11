@@ -32,7 +32,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
         ast,
         selection
       ).map((refactoring) => this.buildCodeActionFor(refactoring));
-    } catch (_) {
+    } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
       return NO_ACTION;
     }
