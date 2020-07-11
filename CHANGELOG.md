@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "Convert If/Else to Ternary" now handles more complex assignments.
 
+### Fixed
+
+- "Negate Expression" stopped showing up in Quick Fixes for a while. This is now fixed!
+
 ## [4.5.0] - 2020-07-10 - We all extract a yellow Substring ⚓
 
 ### Added
