@@ -6,6 +6,8 @@ export {
   getReturnedStatement,
   getAssignedStatement,
   getStatements,
+  getNodesBelow,
+  getPathsBelow,
   isEmpty,
   replaceWithBodyOf,
   Primitive,
@@ -40,6 +42,16 @@ function getAssignedStatement(
 
 function getStatements(statement: t.Statement): t.Statement[] {
   return t.isBlockStatement(statement) ? statement.body : [statement];
+}
+
+function getNodesBelow(path: NodePath<t.IfStatement>): t.Statement[] {
+  return getPathsBelow(path).map((path) => path.node);
+}
+
+function getPathsBelow(path: NodePath<t.IfStatement>): NodePath<t.Statement>[] {
+  return path
+    .getAllNextSiblings()
+    .filter((path): path is NodePath<t.Statement> => t.isStatement(path));
 }
 
 function isEmpty(statement: t.Statement): boolean {
