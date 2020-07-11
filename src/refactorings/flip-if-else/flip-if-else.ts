@@ -21,6 +21,9 @@ async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
       // Until it's fixed, parse this pattern manually
       // https://github.com/benjamn/recast/issues/612
       .replace(/\)\n\s*{} else {/, ") {} else {")
+      // Created guard clause puts the return on the next line
+      // Make it one-line so it's easier to read
+      .replace(/\)\n\s*return/, ") return")
   );
 }
 
@@ -59,13 +62,23 @@ function createVisitor(
 }
 
 function flipIfStatement(path: t.NodePath<t.IfStatement>) {
-  const ifBranch = path.node.consequent;
-  const elseBranch = path.node.alternate || t.blockStatement([]);
+  if (canBeTurnedIntoGuardClause(path)) {
+    const body = t.getStatements(path.node.consequent);
+    path.node.consequent = t.returnStatement();
+    path.insertAfter(body);
+  } else {
+    const ifBranch = path.node.consequent;
+    const elseBranch = path.node.alternate || t.blockStatement([]);
 
-  path.node.consequent = t.isIfStatement(elseBranch)
-    ? t.blockStatement([elseBranch])
-    : elseBranch;
-  path.node.alternate = ifBranch;
+    path.node.consequent = t.isIfStatement(elseBranch)
+      ? t.blockStatement([elseBranch])
+      : elseBranch;
+    path.node.alternate = ifBranch;
+  }
+}
+
+function canBeTurnedIntoGuardClause(path: t.NodePath<t.IfStatement>): boolean {
+  return !path.node.alternate && getNodesBelow(path).length === 0;
 }
 
 function flipGuardClause(path: t.NodePath<t.IfStatement>) {
@@ -78,6 +91,13 @@ function flipGuardClause(path: t.NodePath<t.IfStatement>) {
   path.node.consequent = t.blockStatement(nodesBelow);
   path.node.alternate = flipToGuardAlternate(ifBranch);
   pathsBelow.forEach((path) => path.remove());
+}
+
+function getNodesBelow(path: t.NodePath<t.IfStatement>): t.Statement[] {
+  return path
+    .getAllNextSiblings()
+    .filter((path): path is t.NodePath<t.Statement> => t.isStatement(path))
+    .map((path) => path.node);
 }
 
 function flipToGuardAlternate(

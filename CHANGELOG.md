@@ -25,6 +25,37 @@ if (!(isValid || isSelected || isVIP)) {
 }
 ```
 
+- "Flip If/Else" now generates guard clauses when possible.
+
+```js
+// If you put cursor on the if statement and trigger "Flip if/else"
+function sayHello(isMorning) {
+  sayHi();
+
+  if (isMorning) {
+    sayHowAreYouDoing();
+  }
+}
+
+// Before, valid but uselessly complex 🤯
+function sayHello(isMorning) {
+  sayHi();
+
+  if (!isMorning) {
+  } else {
+    sayHowAreYouDoing();
+  }
+}
+
+// After, much better 👌
+function sayHello(isMorning) {
+  sayHi();
+
+  if (!isMorning) return;
+  sayHowAreYouDoing();
+}
+```
+
 ### Added
 
 - "Convert If/Else to Ternary" now handles more complex assignments.

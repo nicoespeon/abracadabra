@@ -42,6 +42,20 @@ doSomethingElse();`,
 doSomethingElse();`
       },
       {
+        description:
+          "no else branch and no other statement after (turn into guard clause)",
+        code: `doSomethingFirst();
+
+if (isValid) {
+  doSomething();
+}`,
+        selection: Selection.cursorAt(2, 0),
+        expected: `doSomethingFirst();
+
+if (!isValid) return;
+doSomething();`
+      },
+      {
         description: "an already flipped if statement",
         code: `if (!isValid) {
   doAnotherThing();
