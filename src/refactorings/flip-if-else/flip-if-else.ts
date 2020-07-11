@@ -83,21 +83,21 @@ function canBeTurnedIntoGuardClause(path: t.NodePath<t.IfStatement>): boolean {
 
 function flipGuardClause(path: t.NodePath<t.IfStatement>) {
   const ifBranch = path.node.consequent;
-  const pathsBelow = path
-    .getAllNextSiblings()
-    .filter((path): path is t.NodePath<t.Statement> => t.isStatement(path));
-  const nodesBelow: t.Statement[] = pathsBelow.map((path) => path.node);
-
-  path.node.consequent = t.blockStatement(nodesBelow);
+  path.node.consequent = t.blockStatement(getNodesBelow(path));
   path.node.alternate = flipToGuardAlternate(ifBranch);
-  pathsBelow.forEach((path) => path.remove());
+  getPathsBelow(path).forEach((path) => path.remove());
 }
 
 function getNodesBelow(path: t.NodePath<t.IfStatement>): t.Statement[] {
+  return getPathsBelow(path).map((path) => path.node);
+}
+
+function getPathsBelow(
+  path: t.NodePath<t.IfStatement>
+): t.NodePath<t.Statement>[] {
   return path
     .getAllNextSiblings()
-    .filter((path): path is t.NodePath<t.Statement> => t.isStatement(path))
-    .map((path) => path.node);
+    .filter((path): path is t.NodePath<t.Statement> => t.isStatement(path));
 }
 
 function flipToGuardAlternate(
