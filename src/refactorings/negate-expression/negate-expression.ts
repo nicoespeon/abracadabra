@@ -24,7 +24,7 @@ async function negateExpression(
   const expressionSelection = Selection.fromAST(expression.loc);
   await editor.readThenWrite(expressionSelection, (code) => [
     {
-      code: negate(code),
+      code: updateCode(code),
       selection: expressionSelection
     }
   ]);
@@ -170,27 +170,13 @@ function hasNegatableOperator(
   return NEGATABLE_OPERATORS.includes(operator);
 }
 
-function negate(code: Code): Code {
+function updateCode(code: Code): Code {
   const result = t.transform(code, {
     // Handle `||` and `&&` expressions
-    LogicalExpression(path) {
-      path.node.operator = getNegatedLogicalOperator(path.node.operator);
-      path.node.left = negateBranch(path.node.left);
-      path.node.right = negateBranch(path.node.right);
-      const negatedExpression = t.unaryExpression("!", path.node, true);
-
-      path.replaceWith(negatedExpression);
-      path.stop();
-    },
+    LogicalExpression: negate,
 
     // Handle operators like `>`, `<=`, etc.
-    BinaryExpression(path) {
-      path.node.operator = getNegatedBinaryOperator(path.node.operator);
-      const negatedExpression = t.unaryExpression("!", path.node, true);
-
-      path.replaceWith(negatedExpression);
-      path.stop();
-    }
+    BinaryExpression: negate
   });
 
   return (
@@ -202,6 +188,17 @@ function negate(code: Code): Code {
       // E.g. `!(!(a || b))` => `a || b`
       .replace(/^!\(\s*!\((.*)\)\s*\)$/, "$1")
   );
+}
+
+function negate(path: t.NodePath<t.BinaryExpression | t.LogicalExpression>) {
+  const negatedExpression = t.unaryExpression(
+    "!",
+    negateBranch(path.node),
+    true
+  );
+
+  path.replaceWith(negatedExpression);
+  path.stop();
 }
 
 function negateBranch(node: t.Expression): t.Expression {
