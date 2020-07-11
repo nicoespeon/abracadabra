@@ -104,7 +104,6 @@ describe("Negate Expression", () => {
       {
         description: "already negated expression",
         expression: "!(a != b && b != c)",
-        selection: Selection.cursorAt(0, 14),
         expected: "a == b || b == c"
       },
       {
@@ -113,25 +112,21 @@ describe("Negate Expression", () => {
   a != b &&
   b != c
 )`,
-        selection: Selection.cursorAt(0, 4),
         expected: `a == b || b == c`
       },
       {
         description: "identifiers (boolean values)",
         expression: "isValid || isCorrect",
-        selection: Selection.cursorAt(0, 13),
         expected: "!(!isValid && !isCorrect)"
       },
       {
         description: "negated identifiers (boolean values)",
         expression: "!isValid || isCorrect",
-        selection: Selection.cursorAt(0, 14),
         expected: "!(isValid && !isCorrect)"
       },
       {
         description: "non-negatable operators",
         expression: "a + b > 0",
-        selection: Selection.cursorAt(0, 6),
         expected: "!(a + b <= 0)"
       },
       {
