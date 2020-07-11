@@ -112,13 +112,11 @@ function buildNestedIfStatement(
   test: t.IfStatement["test"],
   alternate: t.IfStatement["alternate"]
 ): t.IfStatement {
-  const body = t.isBlockStatement(branch) ? branch.body : [branch];
-
   return t.ifStatement(
     test,
     t.blockStatement([
       ...previousSiblingStatements,
-      ...body,
+      ...t.getStatements(branch),
       ...nextSiblingStatements
     ]),
     alternate
