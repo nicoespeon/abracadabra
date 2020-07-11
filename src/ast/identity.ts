@@ -106,19 +106,8 @@ function areSameAssignments(
   expressionB: t.AssignmentExpression
 ): boolean {
   return (
-    haveSameLeftIdentifiers(expressionA, expressionB) &&
+    areEquivalent(expressionA.left, expressionB.left) &&
     expressionA.operator === expressionB.operator
-  );
-}
-
-function haveSameLeftIdentifiers(
-  expressionA: t.AssignmentExpression,
-  expressionB: t.AssignmentExpression
-): boolean {
-  return (
-    t.isIdentifier(expressionA.left) &&
-    t.isIdentifier(expressionB.left) &&
-    expressionA.left.name === expressionB.left.name
   );
 }
 

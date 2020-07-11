@@ -48,6 +48,16 @@ describe("Convert If/Else to Ternary", () => {
 }`
       },
       {
+        description: "with an assignment of a member expression",
+        code: `if (isJSXText(node)) {
+  result.parseExtractedCode = (code) => "JSX: " + code;
+} else {
+  result.parseExtractedCode = (code) => code;
+}`,
+        selection: Selection.cursorAt(0, 0),
+        expected: `result.parseExtractedCode = isJSXText(node) ? (code) => "JSX: " + code : (code) => code;`
+      },
+      {
         description: "with a return value and dead code after",
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
