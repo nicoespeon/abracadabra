@@ -29,13 +29,17 @@ describe("Flip If/Else", () => {
 }`
       },
       {
-        description: "else branch doesn't exist yet",
+        description: "no else branch",
         code: `if (isValid) {
   doSomething();
-}`,
+}
+
+doSomethingElse();`,
         expected: `if (!isValid) {} else {
   doSomething();
-}`
+}
+
+doSomethingElse();`
       },
       {
         description: "an already flipped if statement",
