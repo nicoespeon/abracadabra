@@ -213,6 +213,14 @@ function negateBranch(node: t.Expression): t.Expression {
     return { ...node, operator: getNegatedBinaryOperator(node.operator) };
   }
 
+  if (t.isLogicalExpression(node)) {
+    return t.logicalExpression(
+      getNegatedLogicalOperator(node.operator),
+      negateBranch(node.left),
+      negateBranch(node.right)
+    );
+  }
+
   return t.unaryExpression("!", node, true);
 }
 

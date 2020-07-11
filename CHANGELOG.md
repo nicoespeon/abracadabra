@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- "Negate Expression" now generates simpler logical expressions, as you'd expect.
+
+```js
+// If you put cursor on `!isVIP` and trigger `Negate the expression`
+if (!isValid && !isSelected && !isVIP) {
+}
+
+// Before, valid but uselessly complex 🤯
+if (!(!(!isValid && !isSelected) || isVIP)) {
+}
+
+// After, much better 👌
+if (!(isValid || isSelected || isVIP)) {
+}
+```
+
 ### Added
 
 - "Convert If/Else to Ternary" now handles more complex assignments.

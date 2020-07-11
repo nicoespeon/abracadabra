@@ -125,6 +125,12 @@ describe("Negate Expression", () => {
         expected: "!(isValid && !isCorrect)"
       },
       {
+        description: "3+ negated identifiers, cursor on last identifier",
+        expression: "!isValid && !isSelected && !isVIP",
+        selection: Selection.cursorAt(0, 32),
+        expected: "!(isValid || isSelected || isVIP)"
+      },
+      {
         description: "non-negatable operators",
         expression: "a + b > 0",
         expected: "!(a + b <= 0)"
