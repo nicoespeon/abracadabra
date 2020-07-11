@@ -172,14 +172,10 @@ describe("Negate Expression", () => {
         expected: "!(isValid && b != c)"
       }
     ],
-    async ({ expression, selection, expected }) => {
+    async ({ expression, selection = Selection.cursorAt(0, 4), expected }) => {
       const code = `if (${expression}) {}`;
-      const DEFAULT_SELECTION = Selection.cursorAt(0, 4);
 
-      const result = await doNegateExpression(
-        code,
-        selection || DEFAULT_SELECTION
-      );
+      const result = await doNegateExpression(code, selection);
 
       expect(result).toBe(`if (${expected}) {}`);
     }
