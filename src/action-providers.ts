@@ -70,6 +70,13 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
     t.traverseAST(ast, {
       enter: (path) => {
+        /**
+         * Hint for perf improvement
+         * =========================
+         *
+         * It seems we're trying each refactoring on each Node of the AST.
+         * We could filter nodes for which selection isn't inside!
+         */
         this.refactorings.forEach((refactoring) => {
           const {
             actionProvider,
