@@ -38,11 +38,13 @@ function findNegatableExpression(
 
   t.traverseAST(
     ast,
-    createVisitor(selection, ({ node }) => {
+    createVisitor(selection, (path) => {
       result = {
-        loc: node.loc,
-        negatedOperator: getNegatedOperator(node)
+        loc: path.node.loc,
+        negatedOperator: getNegatedOperator(path.node)
       };
+
+      path.stop();
     })
   );
 
@@ -72,9 +74,46 @@ function createVisitor(
         return;
       }
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path);
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    enter(childPath) {
+      const { node, parent } = childPath;
+      if (!isNegatable(node)) return;
+      if (!wouldChangeIfNegated(node)) return;
+      if (!selection.isInsideNode(node)) return;
+      if (!t.isSelectablePath(childPath)) return;
+
+      // If parent is unary expression we don't go further to double-negate it.
+      if (t.isUnaryExpression(parent)) return;
+
+      // E.g. `const foo = bar || "default"` => expression is not negatable
+      if (t.isVariableDeclarator(parent)) return;
+
+      // E.g. `if (!this.isValid && isCorrect)` => don't match `!this.isValid`
+      if (t.isUnaryExpression(node) && t.isLogicalExpression(parent)) {
+        return;
+      }
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 type NegatedOperator =
