@@ -20,7 +20,10 @@ class VariableDeclarationModification implements Modification {
     );
 
     const indentationLevel = this.selection.start.character;
-    const indentation = this.indentationChar.repeat(indentationLevel);
+    const indentationChar = t.isUsingTabs(this.selectedOccurrence.path.node)
+      ? "\t"
+      : " ";
+    const indentation = indentationChar.repeat(indentationLevel);
 
     return `const ${name} = ${value};\n${indentation}`;
   }
@@ -45,10 +48,6 @@ class VariableDeclarationModification implements Modification {
     }
 
     return cursorOnCommonAncestor;
-  }
-
-  private get indentationChar(): string {
-    return t.isUsingTabs(this.selectedOccurrence.path.node) ? "\t" : " ";
   }
 }
 
