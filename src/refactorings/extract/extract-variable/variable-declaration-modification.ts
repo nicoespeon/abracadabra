@@ -48,19 +48,7 @@ class VariableDeclarationModification implements Modification {
   }
 
   private get indentationChar(): string {
-    try {
-      const {
-        line: sourceCodeChars
-        // @ts-ignore It's not typed, but it seems recast adds info at runtime.
-      } = this.selectedOccurrence.path.node.loc.lines.infos[
-        this.selectedOccurrence.loc.start.line - 1
-      ];
-
-      return sourceCodeChars[0];
-    } catch {
-      // If it fails at runtime, fallback on a space.
-      return " ";
-    }
+    return t.isUsingTabs(this.selectedOccurrence.path.node) ? "\t" : " ";
   }
 }
 

@@ -28,6 +28,7 @@ export {
   Transformed,
   print,
   AST,
+  isUsingTabs,
   Binding
 };
 export { mergeCommentsInto };
@@ -50,7 +51,7 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
   };
 }
 
-function isUsingTabs(ast: AST): boolean {
+function isUsingTabs(ast: AST | t.Node): boolean {
   let useTabs = false;
 
   try {
