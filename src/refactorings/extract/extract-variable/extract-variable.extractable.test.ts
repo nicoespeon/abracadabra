@@ -321,6 +321,55 @@ export const something = {
 };`
       },
       {
+        description: "a default export",
+        code: `export default "something";`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const something = "something";
+export default something;`
+      },
+      {
+        description: "a default export (without trailing semicolon)",
+        code: `export default "something"`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const something = "something";
+export default something`
+      },
+      {
+        description: "a default export (with spaces after semicolon)",
+        code: `export default "something";   `,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const something = "something";
+export default something;   `
+      },
+      {
+        description: "a default export (with comment after semicolon)",
+        code: `export default "something"; // Do something`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const something = "something";
+export default something; // Do something`
+      },
+      {
+        description: "a default export (multiple lines)",
+        code: `export default {
+  tryTo: "extract me"
+};`,
+        selection: Selection.cursorAt(0, 16),
+        expected: `const extracted = {
+  tryTo: "extract me"
+};
+export default extracted;`
+      },
+      {
+        description:
+          "a default export (with statement after that has no semicolon)",
+        code: `export default "something";
+console.log("done")`,
+        selection: Selection.cursorAt(0, 17),
+        expected: `const something = "something";
+export default something;
+console.log("done")`
+      },
+      {
         description: "a value inside an arrow function",
         code: `() => (
   console.log("Hello")

@@ -59,6 +59,7 @@ function sayHello(isMorning) {
 ### Added
 
 - "Convert If/Else to Ternary" now handles more complex assignments.
+- "Extract Variable" now works on default exports too.
 
 ### Fixed
 

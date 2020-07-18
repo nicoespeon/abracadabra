@@ -1,4 +1,5 @@
 export * from "./domain";
+export * from "./export-default-workaround";
 export * from "./identity";
 export * from "./scope";
 export * from "./selection";

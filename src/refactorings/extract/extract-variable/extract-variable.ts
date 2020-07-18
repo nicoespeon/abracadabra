@@ -61,6 +61,11 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
 
   t.parseAndTraverseCode(code, {
     enter(path) {
+      // Export default declaration missing loc workaround.
+      if (path.parentPath && path.parentPath.isExportDefaultDeclaration()) {
+        path.node.loc = t.getExportDefaultDeclarationLoc(path.parentPath);
+      }
+
       if (!selection.isInsidePath(path)) return;
 
       if (!isExtractableContext(path.parent)) return;
@@ -160,7 +165,8 @@ function isExtractableContext(node: t.Node): boolean {
     t.isJSXExpressionContainer(node) ||
     t.isJSXAttribute(node) ||
     t.isSpreadElement(node) ||
-    t.isThrowStatement(node)
+    t.isThrowStatement(node) ||
+    t.isExportDeclaration(node)
   );
 }
 
