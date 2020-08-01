@@ -76,7 +76,7 @@
   "dependencies": {
     "@babel/parser": "7.10.4",
     "@babel/traverse": "7.9.0",
-    "@babel/types": "7.9.0",
+    "@babel/types": "7.11.0",
     "change-case": "3.1.0",
     "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",
