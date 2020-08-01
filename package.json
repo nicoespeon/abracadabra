@@ -58,7 +58,7 @@
     "@types/jscodeshift": "0.6.3",
     "@types/node": "10.12.21",
     "@types/pluralize": "0.0.29",
-    "all-contributors-cli": "6.16.1",
+    "all-contributors-cli": "6.17.0",
     "husky": "4.2.5",
     "hygen": "4.0.8",
     "jest": "25.1.0",
