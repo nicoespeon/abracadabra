@@ -78,7 +78,7 @@
     "@babel/traverse": "7.9.0",
     "@babel/types": "7.9.0",
     "change-case": "3.1.0",
-    "jscodeshift": "0.6.4",
+    "jscodeshift": "0.8.0",
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",
     "recast": "0.19.1"
