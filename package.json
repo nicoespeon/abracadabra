@@ -70,7 +70,7 @@
     "typescript": "3.7.3",
     "vsce": "1.61.0",
     "vscode": "1.1.28",
-    "webpack": "4.35.3",
+    "webpack": "4.44.1",
     "webpack-cli": "3.3.12"
   },
   "dependencies": {
