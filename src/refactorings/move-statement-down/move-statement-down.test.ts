@@ -215,13 +215,22 @@ const data = {
         expectedPosition: new Position(1, 14)
       },
       {
-        description: "object properties, one-liner",
+        description: "object properties, one-liner, cursor on first",
         code: `const data = { foo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
         selection: Selection.cursorAt(0, 16),
         expected: `console.log("Should move in this scenario");
 const data = { foo: "foo", bar: "bar" };`,
         expectedPosition: new Position(1, 16)
+      },
+      {
+        description: "object properties, one-liner, cursor on second",
+        code: `const data = { foo: "foo", bar: "bar" };
+console.log("Should move in this scenario");`,
+        selection: Selection.cursorAt(0, 28),
+        expected: `console.log("Should move in this scenario");
+const data = { foo: "foo", bar: "bar" };`,
+        expectedPosition: new Position(1, 28)
       },
       {
         description: "object properties, cursor after comma",
