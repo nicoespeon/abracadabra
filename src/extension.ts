@@ -7,6 +7,7 @@ import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-functio
 import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
 import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
+import convertFunctionDeclarationToArrowFunction from "./refactorings/convert-function-declaration-to-arrow-function";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
@@ -57,6 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
     addBracesToIfStatement,
     bubbleUpIfStatement,
     convertForToForeach,
+    convertFunctionDeclarationToArrowFunction,
     convertIfElseToSwitch,
     convertSwitchToIfElse,
     convertIfElseToTernary,
@@ -125,6 +127,7 @@ export function activate(context: vscode.ExtensionContext) {
         addBracesToIfStatement,
         bubbleUpIfStatement,
         convertForToForeach,
+        convertFunctionDeclarationToArrowFunction,
         convertIfElseToSwitch,
         convertSwitchToIfElse,
         convertIfElseToTernary,
