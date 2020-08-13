@@ -336,6 +336,29 @@ console.log("Should not move");`,
     expect(showErrorMessage).not.toBeCalled();
   });
 
+  it("should not move the parent node if the selected child node can't be moved", async () => {
+    const code = `class Node {
+  getSize() {
+    return 1;
+  }
+
+  getName() {
+    return "foo";
+  }
+}
+
+class Path {
+  getName() {
+    return "bar";
+  }
+}`;
+    const selection = Selection.cursorAt(5, 2);
+
+    const result = await doMoveStatementDown(code, selection);
+
+    expect(result.code).toBe(code);
+  });
+
   it("should show an error message for multi-lines selections", async () => {
     const code = `console.log("First");
 console.log("Second");

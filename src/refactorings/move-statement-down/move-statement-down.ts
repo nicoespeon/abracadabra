@@ -135,21 +135,6 @@ function hasChildWhichMatchesSelection(
     if (isBlockStatementDirectChild(childPath)) return;
     if (!matchesSelection(childPath, selection)) return;
 
-    if (typeof childPath.key !== "number") return;
-    const childPathBelowKey = childPath.key + 1;
-    const container = new Array().concat(childPath.container);
-    const hasPathBelow = childPathBelowKey < container.length;
-    if (!hasPathBelow) return;
-
-    const { node: childNode } = childPath;
-    const { node: childBelowNode } = childPath.getSibling(childPathBelowKey);
-    if (!ast.isSelectableNode(childBelowNode)) return;
-    if (!ast.isSelectableNode(childNode)) return;
-
-    const nodeSelection = Selection.fromAST(childNode.loc);
-    const nodeBelowSelection = Selection.fromAST(childBelowNode.loc);
-    if (nodeSelection.isSameLineThan(nodeBelowSelection)) return;
-
     result = true;
     childPath.stop();
   }
