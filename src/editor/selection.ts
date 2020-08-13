@@ -56,6 +56,10 @@ class Selection {
     return !this.start.isSameLineThan(this.end);
   }
 
+  get isOneLine(): boolean {
+    return !this.isMultiLines;
+  }
+
   get height(): number {
     return this.end.line - this.start.line;
   }
