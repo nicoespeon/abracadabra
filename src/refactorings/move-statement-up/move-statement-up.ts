@@ -128,6 +128,12 @@ function hasChildWhichMatchesSelection(
     if (isBlockStatementDirectChild(childPath)) return;
     if (!matchesSelection(childPath, selection)) return;
 
+    const { parent } = childPath;
+    if (!ast.isSelectableNode(parent)) return;
+    const parentSelection = Selection.fromAST(parent.loc);
+    if (childPath.isObjectProperty() && parentSelection.isOneLine) {
+      return;
+    }
 
     result = true;
     childPath.stop();

@@ -107,6 +107,33 @@ function doSomethingElse() {
         expectedPosition: new Position(3, 2)
       },
       {
+        description: "statement inside a container, cursor on object property",
+        code: `const hello = "world";
+
+function doSomethingElse() {
+  const a = 1;
+  const b = { foo: "bar" };
+
+  if (isValid) {
+    console.log("I shouldn't move");
+    console.log("Me neither");
+  }
+}`,
+        selection: Selection.cursorAt(4, 15),
+        expected: `const hello = "world";
+
+function doSomethingElse() {
+  const b = { foo: "bar" };
+  const a = 1;
+
+  if (isValid) {
+    console.log("I shouldn't move");
+    console.log("Me neither");
+  }
+}`,
+        expectedPosition: new Position(3, 15)
+      },
+      {
         description: "statement inside a container, cursor at start of line",
         code: `const hello = "world";
 
@@ -158,6 +185,15 @@ const data = { foo: "foo", bar: "bar" };`,
         expected: `const data = { foo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
         expectedPosition: new Position(0, 16)
+      },
+      {
+        description: "object properties, one-liner, cursor on second",
+        code: `console.log("Should move in this scenario");
+const data = { foo: "foo", bar: "bar" };`,
+        selection: Selection.cursorAt(1, 28),
+        expected: `const data = { foo: "foo", bar: "bar" };
+console.log("Should move in this scenario");`,
+        expectedPosition: new Position(0, 28)
       },
       {
         description: "object properties, cursor after comma",
