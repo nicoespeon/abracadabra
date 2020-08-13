@@ -128,18 +128,6 @@ function hasChildWhichMatchesSelection(
     if (isBlockStatementDirectChild(childPath)) return;
     if (!matchesSelection(childPath, selection)) return;
 
-    if (typeof childPath.key !== "number") return;
-    const childPathAboveKey = childPath.key - 1;
-    if (childPathAboveKey < 0) return;
-
-    const { node: childNode } = childPath;
-    const { node: childNodeAbove } = childPath.getSibling(childPathAboveKey);
-    if (!ast.isSelectableNode(childNodeAbove)) return;
-    if (!ast.isSelectableNode(childNode)) return;
-
-    const nodeSelection = Selection.fromAST(childNode.loc);
-    const nodeAboveSelection = Selection.fromAST(childNodeAbove.loc);
-    if (nodeSelection.isSameLineThan(nodeAboveSelection)) return;
 
     result = true;
     childPath.stop();
