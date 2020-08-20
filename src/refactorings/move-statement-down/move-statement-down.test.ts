@@ -215,13 +215,22 @@ const data = {
         expectedPosition: new Position(1, 14)
       },
       {
-        description: "object properties, one-liner",
+        description: "object properties, one-liner, cursor on first",
         code: `const data = { foo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
         selection: Selection.cursorAt(0, 16),
         expected: `console.log("Should move in this scenario");
 const data = { foo: "foo", bar: "bar" };`,
         expectedPosition: new Position(1, 16)
+      },
+      {
+        description: "object properties, one-liner, cursor on second",
+        code: `const data = { foo: "foo", bar: "bar" };
+console.log("Should move in this scenario");`,
+        selection: Selection.cursorAt(0, 28),
+        expected: `console.log("Should move in this scenario");
+const data = { foo: "foo", bar: "bar" };`,
+        expectedPosition: new Position(1, 28)
       },
       {
         description: "object properties, cursor after comma",
@@ -334,6 +343,29 @@ console.log("Should not move");`,
 
     expect(result.code).toBe(code);
     expect(showErrorMessage).not.toBeCalled();
+  });
+
+  it("should not move the parent node if the selected child node can't be moved", async () => {
+    const code = `class Node {
+  getSize() {
+    return 1;
+  }
+
+  getName() {
+    return "foo";
+  }
+}
+
+class Path {
+  getName() {
+    return "bar";
+  }
+}`;
+    const selection = Selection.cursorAt(5, 2);
+
+    const result = await doMoveStatementDown(code, selection);
+
+    expect(result.code).toBe(code);
   });
 
   it("should show an error message for multi-lines selections", async () => {

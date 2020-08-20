@@ -50,7 +50,7 @@ class VSCodeEditor implements Editor {
       const position = toVSCodePosition(newCursorPosition);
       this.editor.revealRange(
         new vscode.Range(position, position),
-        vscode.TextEditorRevealType.InCenter
+        vscode.TextEditorRevealType.Default
       );
     }
   }
