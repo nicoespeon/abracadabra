@@ -141,12 +141,12 @@
       },
       {
         "command": "abracadabra.convertForToForeach",
-        "title": "Convert For-Loop To ForEach",
+        "title": "Convert For-Loop to ForEach",
         "category": "Abracadabra"
       },
       {
         "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
-        "title": "Convert Function Declaration To Arrow Function",
+        "title": "Convert to Arrow Function",
         "category": "Abracadabra"
       },
       {

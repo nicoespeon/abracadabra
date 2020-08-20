@@ -9,10 +9,10 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "convertFunctionDeclarationToArrowFunction",
     operation: convertFunctionDeclarationToArrowFunction,
-    title: "Convert Function Declaration To Arrow Function"
+    title: "Convert to Arrow Function"
   },
   actionProvider: {
-    message: "Convert function declaration to arrow function",
+    message: "Convert to arrow function",
     createVisitor
   }
 };
