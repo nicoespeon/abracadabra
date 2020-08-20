@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- "Move Statements" UX got some love with 2 great improvements:
+
+  1. The editor scrolls only when it's necessary
+  2. It doesn't move the parent node unexpectedly!
+
+### Added
+
+- **[New Refactoring]** Convert to Arrow Function, thanks to @OliverJAsh 🙏
+
 ## [4.6.0] - 2020-07-30 - I was made for Refactorin' you baby 💋
 
 ### Changed
