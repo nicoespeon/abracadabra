@@ -1,4 +1,3 @@
-import { Selection } from "../../editor/selection";
 import { Editor, ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -12,48 +11,42 @@ describe("Add Braces to Arrow Function", () => {
     showErrorMessage = jest.fn();
   });
 
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should add braces to arrow function",
     [
       {
         description: "basic scenario",
-        code: `const sayHello = () => "Hello!";`,
-        selection: Selection.cursorAt(0, 17),
+        code: `const sayHello = [cursor]() => "Hello!";`,
         expected: `const sayHello = () => {
   return "Hello!";
 };`
       },
       {
         description: "nested arrow function, cursor on wrapper",
-        code: `const createSayHello = () => () => "Hello!";`,
-        selection: Selection.cursorAt(0, 23),
+        code: `const createSayHello = [cursor]() => () => "Hello!";`,
         expected: `const createSayHello = () => {
   return () => "Hello!";
 };`
       },
       {
         description: "nested arrow function, cursor on nested",
-        code: `const createSayHello = () => () => "Hello!";`,
-        selection: Selection.cursorAt(0, 29),
+        code: `const createSayHello = () => [cursor]() => "Hello!";`,
         expected: `const createSayHello = () => () => {
   return "Hello!";
 };`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doAddBracesToArrowFunction(code, selection);
-
-      expect(result).toBe(expected);
+    async ({ code, expected }) => {
+      expect(await doAddBracesToArrowFunction(code)).toBe(expected);
     }
   );
 
   it("should throw an error if can't find an arrow function", async () => {
     const code = `function getTotal() {
-  return fees * 10;
+  [cursor]return fees * 10;
 }`;
-    const selection = Selection.cursorAt(1, 2);
 
-    await doAddBracesToArrowFunction(code, selection);
+    await doAddBracesToArrowFunction(code);
 
     expect(showErrorMessage).toBeCalledWith(
       ErrorReason.DidNotFindArrowFunctionToAddBraces
@@ -62,24 +55,20 @@ describe("Add Braces to Arrow Function", () => {
 
   it("should throw an error if arrow function already has braces", async () => {
     const code = `const sayHello = () => {
-  return "Hello!";
+  [cursor]return "Hello!";
 }`;
-    const selection = Selection.cursorAt(1, 2);
 
-    await doAddBracesToArrowFunction(code, selection);
+    await doAddBracesToArrowFunction(code);
 
     expect(showErrorMessage).toBeCalledWith(
       ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
 
-  async function doAddBracesToArrowFunction(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
+  async function doAddBracesToArrowFunction(code: Code): Promise<Code> {
     const editor = new InMemoryEditor(code);
     editor.showError = showErrorMessage;
-    await addBracesToArrowFunction(code, selection, editor);
+    await addBracesToArrowFunction(editor);
     return editor.code;
   }
 });

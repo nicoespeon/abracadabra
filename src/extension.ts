@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  [renameSymbol].forEach(({ command }) =>
+  [addBracesToArrowFunction, renameSymbol].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
@@ -63,7 +63,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    addBracesToArrowFunction,
     addBracesToIfStatement,
     bubbleUpIfStatement,
     convertForToForeach,
