@@ -1,14 +1,14 @@
 import {
-  convertFunctionDeclarationToArrowFunction,
+  convertToArrowFunction,
   createVisitor
-} from "./convert-function-declaration-to-arrow-function";
+} from "./convert-to-arrow-function";
 
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
   command: {
     key: "convertFunctionDeclarationToArrowFunction",
-    operation: convertFunctionDeclarationToArrowFunction,
+    operation: convertToArrowFunction,
     title: "Convert to Arrow Function"
   },
   actionProvider: {

@@ -2,9 +2,9 @@ import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { convertFunctionDeclarationToArrowFunction } from "./convert-function-declaration-to-arrow-function";
+import { convertToArrowFunction } from "./convert-to-arrow-function";
 
-describe("Convert Function Declaration To Arrow Function", () => {
+describe("Convert To Arrow Function", () => {
   testEach<{ code: Code; expected: Code }>(
     "should convert function declaration to arrow function",
     [
@@ -32,7 +32,7 @@ describe("Convert Function Declaration To Arrow Function", () => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
-      await convertFunctionDeclarationToArrowFunction(editor);
+      await convertToArrowFunction(editor);
 
       expect(editor.code).toBe(expected);
     }
@@ -43,7 +43,7 @@ describe("Convert Function Declaration To Arrow Function", () => {
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
-    await convertFunctionDeclarationToArrowFunction(editor);
+    await convertToArrowFunction(editor);
 
     expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindFunctionDeclarationToConvert
