@@ -1,8 +1,8 @@
 import { simplifyTernary, canSimplifyTernary } from "./simplify-ternary";
 
-import { DeprecatedRefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: DeprecatedRefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "simplifyTernary",
     operation: simplifyTernary,

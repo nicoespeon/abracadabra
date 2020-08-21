@@ -83,7 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
     removeDeadCode,
     removeRedundantElse,
     renameSymbol,
-    replaceBinaryWithAssignment
+    replaceBinaryWithAssignment,
+    simplifyTernary
   ].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
@@ -93,11 +94,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  [
-    simplifyTernary,
-    splitDeclarationAndInitialization,
-    splitIfStatement
-  ].forEach(({ command }) =>
+  [splitDeclarationAndInitialization, splitIfStatement].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
