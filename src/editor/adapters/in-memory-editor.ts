@@ -14,6 +14,7 @@ export { InMemoryEditor };
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
 const DELETED_LINE = "___DELETED_LINE___";
+const CURSOR = "[cursor]";
 
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
@@ -21,7 +22,7 @@ class InMemoryEditor implements Editor {
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
-    this._position = position;
+    this.setPositionFromCursor(code, position);
   }
 
   get code(): Code {
@@ -129,7 +130,23 @@ class InMemoryEditor implements Editor {
   private setCodeMatrix(code: Code) {
     this.codeMatrix = code
       .split(LINE_SEPARATOR)
+      .map((line) => line.replace(CURSOR, ""))
       .map((line) => line.split(CHARS_SEPARATOR));
+  }
+
+  private setPositionFromCursor(code: Code, defaultPosition: Position): void {
+    let cursorLine = 0;
+
+    this._position = code.split(LINE_SEPARATOR).reduce((newPosition, line) => {
+      const cursorChar = line.indexOf(CURSOR);
+      if (cursorChar > -1) {
+        return new Position(cursorLine, cursorChar);
+      }
+
+      cursorLine++;
+
+      return newPosition;
+    }, defaultPosition);
   }
 
   private read(codeMatrix: CodeMatrix): string {
