@@ -1,5 +1,4 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -9,13 +8,7 @@ import { convertIfElseToSwitch } from "./convert-if-else-to-switch";
 // https://github.com/benjamn/recast/issues/180
 
 describe("Convert If/Else to Switch", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should convert if/else to switch",
     [
       {
@@ -157,7 +150,7 @@ default:
       {
         description: "nested if-else, cursor on nested",
         code: `if (name === "Jane") {
-  if (name === "John") {
+  [cursor]if (name === "John") {
     sayHelloToJohn();
   } else {
     sayHelloToJane();
@@ -165,7 +158,6 @@ default:
 } else {
   sayHello();
 }`,
-        selection: Selection.cursorAt(1, 2),
         expected: `if (name === "Jane") {
   switch (name) {
   case "John":
@@ -232,14 +224,16 @@ default:
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doConvertIfElseToSwitch(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await convertIfElseToSwitch(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection?: Selection }>(
+  testEach<{ code: Code }>(
     "should not convert",
     [
       {
@@ -293,31 +287,25 @@ default:
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
-      const result = await doConvertIfElseToSwitch(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result).toBe(code);
+      await convertIfElseToSwitch(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doConvertIfElseToSwitch(code, selection);
+    await convertIfElseToSwitch(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindIfElseToConvert
     );
   });
-
-  async function doConvertIfElseToSwitch(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await convertIfElseToSwitch(code, selection, editor);
-    return editor.code;
-  }
 });

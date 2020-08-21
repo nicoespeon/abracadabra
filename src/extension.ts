@@ -58,6 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
     addBracesToIfStatement,
     bubbleUpIfStatement,
     convertForToForeach,
+    convertIfElseToSwitch,
     convertToArrowFunction,
     renameSymbol
   ].forEach(({ command }) =>
@@ -70,7 +71,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    convertIfElseToSwitch,
     convertSwitchToIfElse,
     convertIfElseToTernary,
     convertTernaryToIfElse,
