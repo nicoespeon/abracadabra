@@ -1,18 +1,13 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import {
-  RefactoringWithActionProvider,
-  DeprecatedRefactoringWithActionProvider
-} from "./types";
+import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
 
 export { RefactoringActionProvider };
 
-type Refactoring =
-  | DeprecatedRefactoringWithActionProvider
-  | RefactoringWithActionProvider;
+type Refactoring = RefactoringWithActionProvider;
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
   private refactorings: Refactoring[];
