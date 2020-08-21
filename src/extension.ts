@@ -71,6 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
     flipTernary,
     inline,
     mergeIfStatements,
+    mergeWithPreviousIfStatement,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -82,7 +83,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    mergeWithPreviousIfStatement,
     moveStatementDown,
     moveStatementUp,
     negateExpression,
