@@ -9,11 +9,8 @@ export {
 };
 export { getNegatedBinaryOperator };
 
-async function negateExpression(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function negateExpression(editor: Editor) {
+  const { code, selection } = editor;
   const expression = findNegatableExpression(t.parse(code), selection);
 
   if (!expression) {

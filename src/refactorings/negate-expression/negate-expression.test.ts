@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import * as t from "../../ast";
@@ -7,212 +7,189 @@ import { testEach } from "../../tests-helpers";
 import { negateExpression, canNegateExpression } from "./negate-expression";
 
 describe("Negate Expression", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ selection: Selection }>(
+  testEach<{ code: Code }>(
     "should select expression if",
     [
       {
         description: "all expression is selected",
-        selection: new Selection([0, 4], [0, 10])
+        code: `if ([start]a == b[end]) {}`
       },
       {
         description: "cursor is on left identifier",
-        selection: Selection.cursorAt(0, 4)
+        code: `if ([cursor]a == b) {}`
       },
       {
         description: "cursor is on operator",
-        selection: Selection.cursorAt(0, 7)
+        code: `if (a =[cursor]= b) {}`
       },
       {
         description: "cursor is on right identifier",
-        selection: Selection.cursorAt(0, 9)
+        code: `if (a == [cursor]b) {}`
       }
     ],
-    async ({ selection }) => {
-      const code = `if (a == b) {}`;
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
 
-      const result = await doNegateExpression(code, selection);
+      await negateExpression(editor);
 
-      expect(result).toBe(`if (!(a != b)) {}`);
+      expect(editor.code).toBe(`if (!(a != b)) {}`);
     }
   );
 
   testEach<{
-    expression: Code;
-    selection?: Selection;
+    code: Code;
     expected: Code;
   }>(
     "should negate expression",
     [
       {
         description: "loose equality",
-        expression: "a == b",
-        expected: "!(a != b)"
+        code: "if ([cursor]a == b) {}",
+        expected: "if (!(a != b)) {}"
       },
       {
         description: "strict equality",
-        expression: "a === b",
-        expected: "!(a !== b)"
+        code: "if ([cursor]a === b) {}",
+        expected: "if (!(a !== b)) {}"
       },
       {
         description: "loose inequality",
-        expression: "a != b",
-        expected: "!(a == b)"
+        code: "if ([cursor]a != b) {}",
+        expected: "if (!(a == b)) {}"
       },
       {
         description: "strict inequality",
-        expression: "a !== b",
-        expected: "!(a === b)"
+        code: "if ([cursor]a !== b) {}",
+        expected: "if (!(a === b)) {}"
       },
       {
         description: "lower than",
-        expression: "a < b",
-        expected: "!(a >= b)"
+        code: "if ([cursor]a < b) {}",
+        expected: "if (!(a >= b)) {}"
       },
       {
         description: "lower or equal",
-        expression: "a <= b",
-        expected: "!(a > b)"
+        code: "if ([cursor]a <= b) {}",
+        expected: "if (!(a > b)) {}"
       },
       {
         description: "greater than",
-        expression: "a > b",
-        expected: "!(a <= b)"
+        code: "if ([cursor]a > b) {}",
+        expected: "if (!(a <= b)) {}"
       },
       {
         description: "greater or equal",
-        expression: "a >= b",
-        expected: "!(a < b)"
+        code: "if ([cursor]a >= b) {}",
+        expected: "if (!(a < b)) {}"
       },
       {
         description: "logical and",
-        expression: "a == b && b == c",
-        selection: Selection.cursorAt(0, 12),
-        expected: "!(a != b || b != c)"
+        code: "if (a == b &[cursor]& b == c) {}",
+        expected: "if (!(a != b || b != c)) {}"
       },
       {
         description: "logical or",
-        expression: "a == b || b == c",
-        selection: Selection.cursorAt(0, 12),
-        expected: "!(a != b && b != c)"
+        code: "if (a == b |[cursor]| b == c) {}",
+        expected: "if (!(a != b && b != c)) {}"
       },
       {
         description: "already negated expression",
-        expression: "!(a != b && b != c)",
-        expected: "a == b || b == c"
+        code: "if ([cursor]!(a != b && b != c)) {}",
+        expected: "if (a == b || b == c) {}"
       },
       {
         description: "already negated expression, multi-line",
-        expression: `!(
+        code: `if ([cursor]!(
   a != b &&
   b != c
-)`,
-        expected: `a == b || b == c`
+)) {}`,
+        expected: `if (a == b || b == c) {}`
       },
       {
         description: "identifiers (boolean values)",
-        expression: "isValid || isCorrect",
-        expected: "!(!isValid && !isCorrect)"
+        code: "if ([cursor]isValid || isCorrect) {}",
+        expected: "if (!(!isValid && !isCorrect)) {}"
       },
       {
         description: "negated identifiers (boolean values)",
-        expression: "!isValid || isCorrect",
-        expected: "!(isValid && !isCorrect)"
+        code: "if ([cursor]!isValid || isCorrect) {}",
+        expected: "if (!(isValid && !isCorrect)) {}"
       },
       {
         description: "3+ negated identifiers, cursor on last identifier",
-        expression: "!isValid && !isSelected && !isVIP",
-        selection: Selection.cursorAt(0, 32),
-        expected: "!(isValid || isSelected || isVIP)"
+        code: "if (!isValid && !isSelected && !isVI[cursor]P) {}",
+        expected: "if (!(isValid || isSelected || isVIP)) {}"
       },
       {
         description: "non-negatable operators",
-        expression: "a + b > 0",
-        expected: "!(a + b <= 0)"
+        code: "if ([cursor]a + b > 0) {}",
+        expected: "if (!(a + b <= 0)) {}"
       },
       {
         description: "equality with cursor on 'typeof' operator",
-        expression: "typeof location.lat === 'number'",
-        expected: "!(typeof location.lat !== 'number')"
+        code: "if ([cursor]typeof location.lat === 'number') {}",
+        expected: "if (!(typeof location.lat !== 'number')) {}"
       },
       {
         description:
           "logical expression with cursor on negated member expression",
-        expression: "!this.currentContext && isBackward",
-        selection: Selection.cursorAt(0, 12),
-        expected: "!(this.currentContext || !isBackward)"
+        code: "if (!this.curren[cursor]tContext && isBackward) {}",
+        expected: "if (!(this.currentContext || !isBackward)) {}"
       },
       {
         description: "left-side of a logical expression",
-        expression: "a == b || b == c",
-        selection: Selection.cursorAt(0, 6),
-        expected: "!(a != b) || b == c"
+        code: "if (a == b[cursor] || b == c) {}",
+        expected: "if (!(a != b) || b == c) {}"
       },
       {
         description: "right-side of a logical expression",
-        expression: "a == b || b == c",
-        selection: Selection.cursorAt(0, 15),
-        expected: "a == b || !(b != c)"
+        code: "if (a == b || b == [cursor]c) {}",
+        expected: "if (a == b || !(b != c)) {}"
       },
       {
         description: "whole logical expression if cursor is on identifier",
-        expression: "isValid || b == c",
-        selection: Selection.cursorAt(0, 6),
-        expected: "!(!isValid && b != c)"
+        code: "if (isVali[cursor]d || b == c) {}",
+        expected: "if (!(!isValid && b != c)) {}"
       },
       {
         description:
           "whole logical expression if cursor is on negated identifier",
-        expression: "!isValid || b == c",
-        selection: Selection.cursorAt(0, 6),
-        expected: "!(isValid && b != c)"
+        code: "if (!isVal[cursor]id || b == c) {}",
+        expected: "if (!(isValid && b != c)) {}"
       }
     ],
-    async ({ expression, selection = Selection.cursorAt(0, 4), expected }) => {
-      const code = `if (${expression}) {}`;
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      const result = await doNegateExpression(code, selection);
+      await negateExpression(editor);
 
-      expect(result).toBe(`if (${expected}) {}`);
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should show an error message if selection can't be negated", async () => {
     const code = `console.log("Nothing to negate here!")`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doNegateExpression(code, selection);
+    await negateExpression(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindNegatableExpression
     );
   });
 
   it("should not negate a logical `||` used to fallback a variable declaration", async () => {
-    const code = `const foo = bar || "default";`;
-    const selection = Selection.cursorAt(0, 17);
+    const code = `const foo = bar |[cursor]| "default";`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doNegateExpression(code, selection);
+    await negateExpression(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindNegatableExpression
     );
   });
-
-  async function doNegateExpression(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await negateExpression(code, selection, editor);
-    return editor.code;
-  }
 });
 
 describe("Finding negatable expression (quick fix)", () => {

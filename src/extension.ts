@@ -74,6 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
     mergeWithPreviousIfStatement,
     moveStatementDown,
     moveStatementUp,
+    negateExpression,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -85,7 +86,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    negateExpression,
     reactConvertToPureComponent,
     reactAddBracesToJsxAttribute,
     reactRemoveBracesFromJsxAttribute,

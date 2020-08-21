@@ -4,9 +4,9 @@ import {
   getNegatedOperator
 } from "./negate-expression";
 
-import { DeprecatedRefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: DeprecatedRefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "negateExpression",
     operation: negateExpression,
