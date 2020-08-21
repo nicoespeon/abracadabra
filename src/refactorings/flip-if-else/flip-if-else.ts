@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { last, allButLast } from "../../array-helpers";
@@ -7,7 +7,8 @@ import { getNegatedBinaryOperator } from "../negate-expression/negate-expression
 
 export { flipIfElse, createVisitor as hasIfElseToFlip };
 
-async function flipIfElse(code: Code, selection: Selection, editor: Editor) {
+async function flipIfElse(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {

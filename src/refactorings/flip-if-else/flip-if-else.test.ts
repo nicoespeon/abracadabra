@@ -1,18 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { flipIfElse } from "./flip-if-else";
 
 describe("Flip If/Else", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should flip if and else branch",
     [
       {
@@ -46,10 +39,9 @@ doSomethingElse();`
           "no else branch and no other statement after (turn into guard clause)",
         code: `doSomethingFirst();
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomething();
 }`,
-        selection: Selection.cursorAt(2, 0),
         expected: `doSomethingFirst();
 
 if (!isValid) return;
@@ -128,7 +120,7 @@ doSomething();`
       {
         description: "nested, cursor on nested",
         code: `if (isValid) {
-  if (isVIP) {
+  [cursor]if (isVIP) {
     doSomethingForVIP();
   } else {
     doSomething();
@@ -136,7 +128,6 @@ doSomething();`
 } else {
   doAnotherThing();
 }`,
-        selection: Selection.cursorAt(1, 2),
         expected: `if (isValid) {
   if (!isVIP) {
     doSomething();
@@ -190,11 +181,10 @@ doSomethingElse();`,
       {
         description: "guard clause with other statements above",
         code: `console.log("Hello");
-if (!isValid) return;
+if (!isValid) re[cursor]turn;
 
 doSomething();
 doSomethingElse();`,
-        selection: Selection.cursorAt(1, 16),
         expected: `console.log("Hello");
 if (isValid) {
   doSomething();
@@ -256,26 +246,22 @@ doSomethingElse();`,
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doFlipIfElse(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await flipIfElse(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should show an error message if selection has no if statement", async () => {
     const code = `console.log("no if statement")`;
-    const selection = Selection.cursorAt(0, 0);
-
-    await doFlipIfElse(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFindIfElseToFlip);
-  });
-
-  async function doFlipIfElse(code: Code, selection: Selection): Promise<Code> {
     const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await flipIfElse(code, selection, editor);
-    return editor.code;
-  }
+    jest.spyOn(editor, "showError");
+
+    await flipIfElse(editor);
+
+    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindIfElseToFlip);
+  });
 });
