@@ -5,7 +5,7 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
   camelName = h.changeCase.camel(name)
   pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
@@ -15,11 +15,8 @@ export { <%= camelName %>, createVisitor };
 export { <%= camelName %> };
 <% } -%>
 
-async function <%= camelName %>(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function <%= camelName %>(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
