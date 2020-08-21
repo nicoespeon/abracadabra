@@ -24,8 +24,12 @@ class InMemoryEditor implements Editor {
     this._position = position;
   }
 
-  get code() {
+  get code(): Code {
     return this.read(this.codeMatrix);
+  }
+
+  get selection(): Selection {
+    return Selection.cursorAtPosition(this._position);
   }
 
   get position() {

@@ -13,6 +13,8 @@ export {
 };
 
 interface Editor {
+  readonly code: Code;
+  readonly selection: Selection;
   write(code: Code, newCursorPosition?: Position): Promise<void>;
   readThenWrite(
     selection: Selection,
