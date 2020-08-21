@@ -1,8 +1,8 @@
 import { convertToPureComponent } from "./convert-to-pure-component";
 
-import { DeprecatedRefactoring } from "../../../types";
+import { Refactoring } from "../../../types";
 
-const config: DeprecatedRefactoring = {
+const config: Refactoring = {
   command: {
     key: "react.convertToPureComponent",
     operation: convertToPureComponent
