@@ -1,16 +1,23 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import { DeprecatedRefactoringWithActionProvider } from "./types";
+import {
+  RefactoringWithActionProvider,
+  DeprecatedRefactoringWithActionProvider
+} from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
 
 export { RefactoringActionProvider };
 
-class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private refactorings: DeprecatedRefactoringWithActionProvider[];
+type Refactoring =
+  | DeprecatedRefactoringWithActionProvider
+  | RefactoringWithActionProvider;
 
-  constructor(refactorings: DeprecatedRefactoringWithActionProvider[]) {
+class RefactoringActionProvider implements vscode.CodeActionProvider {
+  private refactorings: Refactoring[];
+
+  constructor(refactorings: Refactoring[]) {
     this.refactorings = refactorings;
   }
 
@@ -62,11 +69,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   private findApplicableRefactorings(
     ast: t.File,
     selection: Selection
-  ): DeprecatedRefactoringWithActionProvider[] {
-    const applicableRefactorings = new Map<
-      string,
-      DeprecatedRefactoringWithActionProvider
-    >();
+  ): Refactoring[] {
+    const applicableRefactorings = new Map<string, Refactoring>();
 
     t.traverseAST(ast, {
       enter: (path) => {
@@ -116,9 +120,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     }
   }
 
-  private buildCodeActionFor(
-    refactoring: DeprecatedRefactoringWithActionProvider
-  ) {
+  private buildCodeActionFor(refactoring: Refactoring) {
     const action = new vscode.CodeAction(
       `${refactoring.actionProvider.message} ✨`,
       vscode.CodeActionKind.RefactorRewrite
