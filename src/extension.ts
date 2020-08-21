@@ -66,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertToArrowFunction,
     convertToTemplateLiteral,
     extract,
+    extractInterface,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -77,7 +78,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    extractInterface,
     flipIfElse,
     flipTernary,
     inline,

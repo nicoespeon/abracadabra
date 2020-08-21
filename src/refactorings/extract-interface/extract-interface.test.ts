@@ -1,19 +1,12 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
+import { ErrorReason, Code } from "../../editor/editor";
 import { Position } from "../../editor/position";
-import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { extractInterface } from "./extract-interface";
 
 describe("Extract Interface", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should extract interface",
     [
       {
@@ -175,12 +168,11 @@ interface Extracted {
   }
 }
 
-class AnotherPosition {
+[cursor]class AnotherPosition {
   isEqualTo(position: Position): boolean {
     return true;
   }
 }`,
-        selection: Selection.cursorAt(6, 0),
         expected: `class Position {
   isEqualTo(position: Position): boolean {
     return true;
@@ -198,20 +190,23 @@ interface Extracted {
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doExtractInterface(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await extractInterface(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doExtractInterface(code, selection);
+    await extractInterface(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindClassToExtractInterface
     );
   });
@@ -227,21 +222,10 @@ interface Extracted {
   }
 }`;
     const editor = new InMemoryEditor(code);
-    const selection = Selection.cursorAt(0, 0);
-    const moveCursorTo = jest.spyOn(editor, "moveCursorTo");
+    jest.spyOn(editor, "moveCursorTo");
 
-    await extractInterface(code, selection, editor);
+    await extractInterface(editor);
 
-    expect(moveCursorTo).toBeCalledWith(new Position(10, 10));
+    expect(editor.moveCursorTo).toBeCalledWith(new Position(10, 10));
   });
-
-  async function doExtractInterface(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await extractInterface(code, selection, editor);
-    return editor.code;
-  }
 });

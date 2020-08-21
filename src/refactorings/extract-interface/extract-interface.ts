@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
@@ -6,11 +6,8 @@ import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export { extractInterface, createVisitor as canExtractInterface };
 
-async function extractInterface(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function extractInterface(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {

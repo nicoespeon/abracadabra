@@ -1,8 +1,8 @@
 import { extractInterface, canExtractInterface } from "./extract-interface";
 
-import { DeprecatedRefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: DeprecatedRefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "extractInterface",
     operation: extractInterface,
