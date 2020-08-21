@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { createDeprecatedCommand } from "./commands";
+import { createDeprecatedCommand, createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
@@ -53,6 +53,15 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  [renameSymbol].forEach(({ command }) =>
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        `abracadabra.${command.key}`,
+        createCommand(command.operation)
+      )
+    )
+  );
+
   [
     addBracesToArrowFunction,
     addBracesToIfStatement,
@@ -82,7 +91,6 @@ export function activate(context: vscode.ExtensionContext) {
     removeBracesFromIfStatement,
     removeDeadCode,
     removeRedundantElse,
-    renameSymbol,
     replaceBinaryWithAssignment,
     simplifyTernary,
     splitDeclarationAndInitialization,

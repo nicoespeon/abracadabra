@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
-import { DeprecatedOperation } from "./types";
+import { DeprecatedOperation, Operation } from "./types";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 
-export { createDeprecatedCommand, executeSafely };
+export { createCommand, createDeprecatedCommand, executeSafely };
 
 function createDeprecatedCommand(execute: DeprecatedOperation) {
   return async () => {
@@ -12,6 +12,15 @@ function createDeprecatedCommand(execute: DeprecatedOperation) {
 
     const editor = new VSCodeEditor(activeTextEditor);
     await executeSafely(() => execute(editor.code, editor.selection, editor));
+  };
+}
+
+function createCommand(execute: Operation) {
+  return async () => {
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (!activeTextEditor) return;
+
+    await executeSafely(() => execute(new VSCodeEditor(activeTextEditor)));
   };
 }
 
