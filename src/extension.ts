@@ -82,7 +82,8 @@ export function activate(context: vscode.ExtensionContext) {
     removeBracesFromIfStatement,
     removeDeadCode,
     removeRedundantElse,
-    renameSymbol
+    renameSymbol,
+    replaceBinaryWithAssignment
   ].forEach(({ command }) =>
     context.subscriptions.push(
       vscode.commands.registerCommand(
@@ -93,7 +94,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    replaceBinaryWithAssignment,
     simplifyTernary,
     splitDeclarationAndInitialization,
     splitIfStatement
