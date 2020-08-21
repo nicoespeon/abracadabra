@@ -18,7 +18,7 @@ const CURSOR = "[cursor]";
 
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
-  private _position: Position = new Position(0, 0);
+  private _selection: Selection = Selection.cursorAt(0, 0);
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
@@ -30,16 +30,18 @@ class InMemoryEditor implements Editor {
   }
 
   get selection(): Selection {
-    return Selection.cursorAtPosition(this._position);
+    return this._selection;
   }
 
   get position() {
-    return this._position;
+    return this.selection.start;
   }
 
   write(code: Code, newCursorPosition?: Position): Promise<void> {
     this.setCodeMatrix(code);
-    if (newCursorPosition) this._position = newCursorPosition;
+    if (newCursorPosition) {
+      this._selection = Selection.cursorAtPosition(newCursorPosition);
+    }
     return Promise.resolve();
   }
 
@@ -48,7 +50,9 @@ class InMemoryEditor implements Editor {
     getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void> {
-    if (newCursorPosition) this._position = newCursorPosition;
+    if (newCursorPosition) {
+      this._selection = Selection.cursorAtPosition(newCursorPosition);
+    }
     const { start, end } = selection;
 
     let readCodeMatrix: CodeMatrix = [];
@@ -137,7 +141,7 @@ class InMemoryEditor implements Editor {
   private setPositionFromCursor(code: Code, defaultPosition: Position): void {
     let cursorLine = 0;
 
-    this._position = code.split(LINE_SEPARATOR).reduce((newPosition, line) => {
+    const position = code.split(LINE_SEPARATOR).reduce((newPosition, line) => {
       const cursorChar = line.indexOf(CURSOR);
       if (cursorChar > -1) {
         return new Position(cursorLine, cursorChar);
@@ -147,6 +151,8 @@ class InMemoryEditor implements Editor {
 
       return newPosition;
     }, defaultPosition);
+
+    this._selection = Selection.cursorAtPosition(position);
   }
 
   private read(codeMatrix: CodeMatrix): string {
