@@ -8,9 +8,7 @@ export { createCommand, executeSafely };
 function createCommand(execute: DeprecatedOperation) {
   return async () => {
     const activeTextEditor = vscode.window.activeTextEditor;
-    if (!activeTextEditor) {
-      return;
-    }
+    if (!activeTextEditor) return;
 
     const editor = new VSCodeEditor(activeTextEditor);
     await executeSafely(() => execute(editor.code, editor.selection, editor));
