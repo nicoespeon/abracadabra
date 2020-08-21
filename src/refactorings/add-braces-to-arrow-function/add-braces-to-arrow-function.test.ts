@@ -1,16 +1,10 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { addBracesToArrowFunction } from "./add-braces-to-arrow-function";
 
 describe("Add Braces to Arrow Function", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
   testEach<{ code: Code; expected: Code }>(
     "should add braces to arrow function",
     [
@@ -37,7 +31,11 @@ describe("Add Braces to Arrow Function", () => {
       }
     ],
     async ({ code, expected }) => {
-      expect(await doAddBracesToArrowFunction(code)).toBe(expected);
+      const editor = new InMemoryEditor(code);
+
+      await addBracesToArrowFunction(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
@@ -45,10 +43,12 @@ describe("Add Braces to Arrow Function", () => {
     const code = `function getTotal() {
   [cursor]return fees * 10;
 }`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doAddBracesToArrowFunction(code);
+    await addBracesToArrowFunction(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
@@ -57,18 +57,13 @@ describe("Add Braces to Arrow Function", () => {
     const code = `const sayHello = () => {
   [cursor]return "Hello!";
 }`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doAddBracesToArrowFunction(code);
+    await addBracesToArrowFunction(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
-
-  async function doAddBracesToArrowFunction(code: Code): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await addBracesToArrowFunction(editor);
-    return editor.code;
-  }
 });
