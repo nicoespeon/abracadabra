@@ -31,5 +31,5 @@ interface RefactoringWithActionProvider {
 type Operation = (
   code: Code,
   selection: Selection,
-  write: Editor
+  editor: Editor
 ) => Promise<void>;
