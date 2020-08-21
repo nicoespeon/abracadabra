@@ -56,6 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
   [
     addBracesToArrowFunction,
     addBracesToIfStatement,
+    bubbleUpIfStatement,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -67,7 +68,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    bubbleUpIfStatement,
     convertForToForeach,
     convertFunctionDeclarationToArrowFunction,
     convertIfElseToSwitch,
