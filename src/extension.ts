@@ -78,6 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
     reactAddBracesToJsxAttribute,
     reactConvertToPureComponent,
     reactRemoveBracesFromJsxAttribute,
+    removeBracesFromArrowFunction,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -89,7 +90,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    removeBracesFromArrowFunction,
     removeBracesFromIfStatement,
     removeDeadCode,
     removeRedundantElse,
