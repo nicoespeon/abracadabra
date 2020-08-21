@@ -1,5 +1,4 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
@@ -9,7 +8,6 @@ import { extractVariable } from "./extract-variable";
 describe("Extract Variable - Objects we can extract", () => {
   testEach<{
     code: Code;
-    selection: Selection;
     expected: Code;
     expectedPosition?: Position;
   }>(
@@ -17,19 +15,17 @@ describe("Extract Variable - Objects we can extract", () => {
     [
       {
         description: "an object",
-        code: `console.log({ one: 1, foo: true, hello: 'World!' });`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]{ one: 1, foo: true, hello: 'World!' });`,
         expected: `const extracted = { one: 1, foo: true, hello: 'World!' };
 console.log(extracted);`
       },
       {
         description: "an object (multi-lines)",
-        code: `console.log({
+        code: `console.log([cursor]{
   one: 1,
   foo: true,
   hello: 'World!'
 });`,
-        selection: Selection.cursorAt(0, 12),
         expected: `const extracted = {
   one: 1,
   foo: true,
@@ -41,10 +37,9 @@ console.log(extracted);`
         description: "a multi-lines object when cursor is inside",
         code: `console.log({
   one: 1,
-  foo: true,
+  f[cursor]oo: true,
   hello: 'World!'
 });`,
-        selection: Selection.cursorAt(2, 3),
         expected: `const extracted = {
   one: 1,
   foo: true,
@@ -57,10 +52,9 @@ console.log(extracted);`
         code: `console.log({
   one: 1,
   foo: {
-    bar: "Hello!"
+    bar: [cursor]"Hello!"
   }
 });`,
-        selection: Selection.cursorAt(3, 9),
         expected: `const bar = "Hello!";
 console.log({
   one: 1,
@@ -72,10 +66,9 @@ console.log({
       {
         description: "an object property value (not the last one)",
         code: `console.log({
-  hello: "World",
+  hello: [cursor]"World",
   goodbye: "my old friend"
 });`,
-        selection: Selection.cursorAt(1, 9),
         expected: `const hello = "World";
 console.log({
   hello,
@@ -86,10 +79,9 @@ console.log({
       {
         description: "an object property value which key is not in camel case",
         code: `console.log({
-  hello_world: "World",
+  hello_world: "[cursor]World",
   goodbye: "my old friend"
 });`,
-        selection: Selection.cursorAt(1, 16),
         expected: `const hello_world = "World";
 console.log({
   hello_world,
@@ -99,9 +91,8 @@ console.log({
       {
         description: "an object property value which key is too long",
         code: `console.log({
-  somethingVeryVeryVeryLong: doSomething()
+  somethingVeryVeryVeryLong: doSo[cursor]mething()
 });`,
-        selection: Selection.cursorAt(1, 33),
         expected: `const somethingVeryVeryVeryLong = doSomething();
 console.log({
   somethingVeryVeryVeryLong
@@ -110,9 +101,8 @@ console.log({
       {
         description: "an object property value which key is a keyword",
         code: `console.log({
-  const: doSomething()
+  const: doS[cursor]omething()
 });`,
-        selection: Selection.cursorAt(1, 12),
         expected: `const extracted = doSomething();
 console.log({
   const: extracted
@@ -121,9 +111,8 @@ console.log({
       {
         description: "an object property value which key is a string",
         code: `console.log({
-  "hello.world": doSomething()
+  "hello.world": d[cursor]oSomething()
 });`,
-        selection: Selection.cursorAt(1, 18),
         expected: `const extracted = doSomething();
 console.log({
   "hello.world": extracted
@@ -135,10 +124,9 @@ console.log({
         code: `const a = {
   one: 1,
   foo: {
-    bar: "Hello!"
+    bar: [cursor]"Hello!"
   }
 };`,
-        selection: Selection.cursorAt(3, 9),
         expected: `const bar = "Hello!";
 const a = {
   one: 1,
@@ -149,33 +137,29 @@ const a = {
       },
       {
         description: "the whole object when cursor is on its property",
-        code: `console.log({ foo: "bar", one: true });`,
-        selection: Selection.cursorAt(0, 16),
+        code: `console.log({ fo[cursor]o: "bar", one: true });`,
         expected: `const extracted = { foo: "bar", one: true };
 console.log(extracted);`
       },
       {
         description: "a computed object property",
-        code: `const a = { [key]: "value" };`,
-        selection: Selection.cursorAt(0, 13),
+        code: `const a = { [[cursor]key]: "value" };`,
         expected: `const extracted = key;
 const a = { [extracted]: "value" };`
       },
       {
         description: "a computed object property value when cursor is on value",
-        code: `const a = { [key]: "value" };`,
-        selection: Selection.cursorAt(0, 19),
+        code: `const a = { [key]: [cursor]"value" };`,
         expected: `const extracted = "value";
 const a = { [key]: extracted };`
       },
       {
         description: "the whole object when cursor is on a method declaration",
         code: `console.log({
-  getFoo() {
+  [cursor]getFoo() {
     return "bar";
   }
 });`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const extracted = {
   getFoo() {
     return "bar";
@@ -186,17 +170,15 @@ console.log(extracted);`
       {
         description:
           "the nested object when cursor is on nested object property",
-        code: `console.log({ foo: { bar: true } });`,
-        selection: Selection.cursorAt(0, 21),
+        code: `console.log({ foo: { [cursor]bar: true } });`,
         expected: `const foo = { bar: true };
 console.log({ foo });`
       },
       {
         description: "an object returned from arrow function",
         code: `const something = () => ({
-  foo: "bar"
+  foo: "b[cursor]ar"
 });`,
-        selection: Selection.cursorAt(1, 9),
         expected: `const foo = "bar";
 const something = () => ({
   foo
@@ -205,31 +187,23 @@ const something = () => ({
       {
         description: "an object from a nested call expression",
         code: `assert.isTrue(
-  getError({ context: ["value"] })
+  getError({ co[cursor]ntext: ["value"] })
 );`,
-        selection: Selection.cursorAt(1, 15),
         expected: `const extracted = { context: ["value"] };
 assert.isTrue(
   getError(extracted)
 );`
       }
     ],
-    async ({ code, selection, expected, expectedPosition }) => {
-      const result = await doExtractVariable(code, selection);
-      expect(result.code).toBe(expected);
+    async ({ code, expected, expectedPosition }) => {
+      const editor = new InMemoryEditor(code);
 
+      await extractVariable(editor);
+
+      expect(editor.code).toBe(expected);
       if (expectedPosition) {
-        expect(result.position).toStrictEqual(expectedPosition);
+        expect(editor.position).toStrictEqual(expectedPosition);
       }
     }
   );
-
-  async function doExtractVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    await extractVariable(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

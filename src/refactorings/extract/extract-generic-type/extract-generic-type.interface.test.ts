@@ -1,5 +1,4 @@
 import { Code, Command } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
@@ -8,16 +7,15 @@ import { ReplacementStrategy } from "../replacement-strategy";
 import { Position } from "../../../editor/position";
 
 describe("Extract Generic Type - Interface declaration", () => {
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should extract generic type",
     [
       {
         description: "primitive type (number)",
         code: `interface Position {
-  x: number;
+  x: n[cursor]umber;
   y: number;
 }`,
-        selection: Selection.cursorAt(1, 6),
         expected: `interface Position<T = number> {
   x: T;
   y: number;
@@ -26,10 +24,9 @@ describe("Extract Generic Type - Interface declaration", () => {
       {
         description: "primitive type (string)",
         code: `interface Position {
-  x: string;
+  x: s[cursor]tring;
   y: number;
 }`,
-        selection: Selection.cursorAt(1, 6),
         expected: `interface Position<T = string> {
   x: T;
   y: number;
@@ -39,9 +36,8 @@ describe("Extract Generic Type - Interface declaration", () => {
         description: "with existing generics",
         code: `interface Position<T = number> {
   x: T;
-  y: number;
+  y: n[cursor]umber;
 }`,
-        selection: Selection.cursorAt(2, 6),
         expected: `interface Position<T = number, U = number> {
   x: T;
   y: U;
@@ -51,11 +47,10 @@ describe("Extract Generic Type - Interface declaration", () => {
         description: "with nested structure",
         code: `interface Position {
   data: {
-    x: number;
+    x: nu[cursor]mber;
     y: number;
   }
 }`,
-        selection: Selection.cursorAt(2, 9),
         expected: `interface Position<T = number> {
   data: {
     x: T;
@@ -70,11 +65,10 @@ describe("Extract Generic Type - Interface declaration", () => {
   data: {
     x: number;
     _position: {
-      y: number;
+      y: n[cursor]umber;
     }
   }
 }`,
-        selection: Selection.cursorAt(5, 10),
         expected: `interface Position<T = string, U = number> {
   timestamp: T;
   data: {
@@ -86,24 +80,30 @@ describe("Extract Generic Type - Interface declaration", () => {
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doExtractGenericType(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([_, selectedOccurrence]) =>
+          Promise.resolve(selectedOccurrence)
+        );
 
-      expect(result).toBe(expected);
+      await extractGenericType(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should rename extracted symbol", async () => {
     const code = `interface Position {
   x: number;
-  y: number;
+  y: number[cursor];
   isActive: boolean;
 }`;
-    const selection = Selection.cursorAt(2, 11);
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "delegate");
 
-    await extractGenericType(code, selection, editor);
+    await extractGenericType(editor);
 
     expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
   });
@@ -112,13 +112,12 @@ describe("Extract Generic Type - Interface declaration", () => {
     it("should put the cursor on extracted symbol", async () => {
       const code = `interface Position {
   x: number;
-  y: number;
+  y: number[cursor];
   isActive: boolean;
 }`;
-      const selection = Selection.cursorAt(2, 11);
       const editor = new InMemoryEditor(code);
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       /**
        * Produced code =>
@@ -132,13 +131,12 @@ describe("Extract Generic Type - Interface declaration", () => {
     it("should put the cursor on extracted symbol with existing type parameters", async () => {
       const code = `interface Position<T = boolean> {
   x: number;
-  y: number;
+  y: number[cursor];
   isActive: boolean;
 }`;
-      const selection = Selection.cursorAt(2, 11);
       const editor = new InMemoryEditor(code);
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       /**
        * Produced code =>
@@ -151,15 +149,14 @@ describe("Extract Generic Type - Interface declaration", () => {
 
     it("should put the cursor on extracted symbol when we extract an object", async () => {
       const code = `interface Position {
-  data: {
+  data: [cursor]{
     x: number;
     y: number;
   }
 }`;
-      const selection = Selection.cursorAt(1, 8);
       const editor = new InMemoryEditor(code);
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       /**
        * Produced code =>
@@ -173,15 +170,14 @@ describe("Extract Generic Type - Interface declaration", () => {
   describe("multiple occurrences", () => {
     it("should ask user to replace all occurrences", async () => {
       const code = `interface Position {
-  x: number;
+  x: [cursor]number;
   y: number;
   isActive: boolean;
 }`;
-      const selection = Selection.cursorAt(1, 5);
       const editor = new InMemoryEditor(code);
       jest.spyOn(editor, "askUser");
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       expect(editor.askUser).toBeCalledWith([
         {
@@ -198,10 +194,9 @@ describe("Extract Generic Type - Interface declaration", () => {
     it("should only replace the selected occurrence if user decides to", async () => {
       const code = `interface Position {
   x: number;
-  y: number;
+  y: [cursor]number;
   isActive: boolean;
 }`;
-      const selection = Selection.cursorAt(2, 5);
       const editor = new InMemoryEditor(code);
       jest
         .spyOn(editor, "askUser")
@@ -209,7 +204,7 @@ describe("Extract Generic Type - Interface declaration", () => {
           Promise.resolve(selectedOccurrence)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       const expected = `interface Position<T = number> {
   x: number;
@@ -221,11 +216,10 @@ describe("Extract Generic Type - Interface declaration", () => {
 
     it("should replace all occurrences if user decides to", async () => {
       const code = `interface Position {
-  x: number;
+  x: [cursor]number;
   y: number;
   isActive: boolean;
 }`;
-      const selection = Selection.cursorAt(1, 5);
       const editor = new InMemoryEditor(code);
       jest
         .spyOn(editor, "askUser")
@@ -233,7 +227,7 @@ describe("Extract Generic Type - Interface declaration", () => {
           Promise.resolve(allOccurrences)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       const expected = `interface Position<T = number> {
   x: T;
@@ -245,7 +239,7 @@ describe("Extract Generic Type - Interface declaration", () => {
 
     it("should only replace all occurrences of the same interface", async () => {
       const code = `interface Position {
-  x: number;
+  x: [cursor]number;
   y: number;
   isActive: boolean;
 }
@@ -253,7 +247,6 @@ describe("Extract Generic Type - Interface declaration", () => {
 interface Occurrence {
   id: number;
 }`;
-      const selection = Selection.cursorAt(1, 5);
       const editor = new InMemoryEditor(code);
       jest
         .spyOn(editor, "askUser")
@@ -261,7 +254,7 @@ interface Occurrence {
           Promise.resolve(allOccurrences)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       const expected = `interface Position<T = number> {
   x: T;
@@ -277,35 +270,21 @@ interface Occurrence {
 
     it("should replace nothing if user decides to", async () => {
       const code = `interface Position {
-  x: number;
+  x: [cursor]number;
   y: number;
   isActive: boolean;
 }`;
-      const selection = Selection.cursorAt(1, 5);
       const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
       jest
         .spyOn(editor, "askUser")
         .mockImplementation(([_all, _selected, nothing]) =>
           Promise.resolve(nothing)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
-      expect(editor.code).toBe(code);
+      expect(editor.code).toBe(originalCode);
     });
   });
-
-  async function doExtractGenericType(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUser")
-      .mockImplementation(([_, selectedOccurrence]) =>
-        Promise.resolve(selectedOccurrence)
-      );
-    await extractGenericType(code, selection, editor);
-    return editor.code;
-  }
 });

@@ -1,5 +1,4 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
@@ -7,42 +6,45 @@ import { testEach } from "../../../tests-helpers";
 import { extractGenericType } from "./extract-generic-type";
 
 describe("Extract Generic Type - Function declaration", () => {
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should extract generic type from a function",
     [
       {
         description: "a primitive type",
-        code: `function doSomething(message: string) {}`,
-        selection: Selection.cursorAt(0, 30),
+        code: `function doSomething(message: [cursor]string) {}`,
         expected: `function doSomething<T = string>(message: T) {}`
       },
       {
         description: "with existing generics",
-        code: `function doSomething<T>(message: string): T {}`,
-        selection: Selection.cursorAt(0, 33),
+        code: `function doSomething<T>(message: [cursor]string): T {}`,
         expected: `function doSomething<T, U = string>(message: U): T {}`
       },
       {
         description: "return type",
-        code: `function doSomething(message: string): boolean {}`,
-        selection: Selection.cursorAt(0, 39),
+        code: `function doSomething(message: string): [cursor]boolean {}`,
         expected: `function doSomething<T = boolean>(message: string): T {}`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doExtractGenericType(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([_, selectedOccurrence]) =>
+          Promise.resolve(selectedOccurrence)
+        );
 
-      expect(result).toBe(expected);
+      await extractGenericType(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   describe("cursor position", () => {
     it("should put the cursor on extracted symbol", async () => {
-      const code = `function doSomething(message: string) {}`;
-      const selection = Selection.cursorAt(0, 30);
+      const code = `function doSomething(message: [cursor]string) {}`;
       const editor = new InMemoryEditor(code);
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       /**
        * Produced code =>
@@ -54,11 +56,10 @@ describe("Extract Generic Type - Function declaration", () => {
     });
 
     it("should put the cursor on extracted symbol with existing type parameters", async () => {
-      const code = `function doSomething<T = number>(message: string): T {}`;
-      const selection = Selection.cursorAt(0, 42);
+      const code = `function doSomething<T = number>(message: [cursor]string): T {}`;
       const editor = new InMemoryEditor(code);
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       /**
        * Produced code =>
@@ -72,8 +73,7 @@ describe("Extract Generic Type - Function declaration", () => {
 
   describe("multiple occurrences", () => {
     it("should only replace the selected occurrence if user decides to", async () => {
-      const code = `function doSomething(message: string, reason: string) {}`;
-      const selection = Selection.cursorAt(0, 30);
+      const code = `function doSomething(message: [cursor]string, reason: string) {}`;
       const editor = new InMemoryEditor(code);
       jest
         .spyOn(editor, "askUser")
@@ -81,15 +81,14 @@ describe("Extract Generic Type - Function declaration", () => {
           Promise.resolve(selectedOccurrence)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       const expected = `function doSomething<T = string>(message: T, reason: string) {}`;
       expect(editor.code).toBe(expected);
     });
 
     it("should replace all occurrences if user decides to", async () => {
-      const code = `function doSomething(message: string, reason: string): string {}`;
-      const selection = Selection.cursorAt(0, 30);
+      const code = `function doSomething(message: [cursor]string, reason: string): string {}`;
       const editor = new InMemoryEditor(code);
       jest
         .spyOn(editor, "askUser")
@@ -97,7 +96,7 @@ describe("Extract Generic Type - Function declaration", () => {
           Promise.resolve(allOccurrences)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       const expected = `function doSomething<T = string>(message: T, reason: T): T {}`;
       expect(editor.code).toBe(expected);
@@ -105,8 +104,7 @@ describe("Extract Generic Type - Function declaration", () => {
 
     it("should only replace all occurrences of the same interface", async () => {
       const code = `function doSomething(message: string, reason: string) {}
-function doSomethingElse(message: string, reason: string) {}`;
-      const selection = Selection.cursorAt(1, 34);
+function doSomethingElse(message: [cursor]string, reason: string) {}`;
       const editor = new InMemoryEditor(code);
       jest
         .spyOn(editor, "askUser")
@@ -114,25 +112,11 @@ function doSomethingElse(message: string, reason: string) {}`;
           Promise.resolve(allOccurrences)
         );
 
-      await extractGenericType(code, selection, editor);
+      await extractGenericType(editor);
 
       const expected = `function doSomething(message: string, reason: string) {}
 function doSomethingElse<T = string>(message: T, reason: T) {}`;
       expect(editor.code).toBe(expected);
     });
   });
-
-  async function doExtractGenericType(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUser")
-      .mockImplementation(([_, selectedOccurrence]) =>
-        Promise.resolve(selectedOccurrence)
-      );
-    await extractGenericType(code, selection, editor);
-    return editor.code;
-  }
 });

@@ -1,53 +1,41 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Patterns we can't extract", () => {
-  testEach<{ code: Code; selection: Selection }>(
+  testEach<{ code: Code }>(
     "should not extract",
     [
       {
         description: "a function declaration",
-        code: `function sayHello() {
+        code: `[start]function sayHello() {
   console.log("hello");
-}`,
-        selection: new Selection([0, 0], [2, 1])
+}[end]`
       },
       {
         description: "a class property identifier",
         code: `class Logger {
-  message = "Hello!";
-}`,
-        selection: new Selection([1, 2], [1, 9])
+  [start]message[end] = "Hello!";
+}`
       },
       {
         description: "the identifier from a variable declaration",
-        code: `const foo = "bar";`,
-        selection: new Selection([0, 6], [0, 9])
+        code: `const [start]foo[end] = "bar";`
       },
       {
         description: "a type annotation",
-        code: `const toto: string = "";`,
-        selection: Selection.cursorAt(0, 13)
+        code: `const toto: s[cursor]tring = "";`
       }
     ],
-    async ({ code, selection }) => {
-      const result = await doExtractVariable(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result.code).toBe(code);
+      await extractVariable(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
-
-  async function doExtractVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    await extractVariable(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

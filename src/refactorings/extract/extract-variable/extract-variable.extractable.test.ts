@@ -1,6 +1,4 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
@@ -9,54 +7,47 @@ import { extractVariable } from "./extract-variable";
 describe("Extract Variable - Patterns we can extract", () => {
   testEach<{
     code: Code;
-    selection: Selection;
     expected: Code;
   }>(
     "should extract",
     [
       {
         description: "a number",
-        code: `console.log(12.5);`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]12.5);`,
         expected: `const extracted = 12.5;
 console.log(extracted);`
       },
       {
         description: "a boolean",
-        code: `console.log(false);`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]false);`,
         expected: `const extracted = false;
 console.log(extracted);`
       },
       {
         description: "null",
-        code: `console.log(null);`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]null);`,
         expected: `const extracted = null;
 console.log(extracted);`
       },
       {
         description: "undefined",
-        code: `console.log(undefined);`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]undefined);`,
         expected: `const extracted = undefined;
 console.log(extracted);`
       },
       {
         description: "an array",
-        code: `console.log([1, 2, 'three', [true, null]]);`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor][1, 2, 'three', [true, null]]);`,
         expected: `const extracted = [1, 2, 'three', [true, null]];
 console.log(extracted);`
       },
       {
         description: "an array (multi-lines)",
-        code: `console.log([
+        code: `console.log([cursor][
   1,
   'Two',
   [true, null]
 ]);`,
-        selection: Selection.cursorAt(0, 12),
         expected: `const extracted = [
   1,
   'Two',
@@ -66,10 +57,9 @@ console.log(extracted);`
       },
       {
         description: "a named function",
-        code: `console.log(function sayHello() {
+        code: `console.log([cursor]function sayHello() {
   return "Hello!";
 });`,
-        selection: Selection.cursorAt(0, 12),
         expected: `const extracted = function sayHello() {
   return "Hello!";
 };
@@ -77,24 +67,21 @@ console.log(extracted);`
       },
       {
         description: "an arrow function",
-        code: `console.log(() => "Hello!");`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]() => "Hello!");`,
         expected: `const extracted = () => "Hello!";
 console.log(extracted);`
       },
       {
         description: "a function call",
-        code: `console.log(sayHello("World"));`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]sayHello("World"));`,
         expected: `const extracted = sayHello("World");
 console.log(extracted);`
       },
       {
         description: "the correct variable when we have many",
         code: `console.log("Hello");
-console.log("the", "World!", "Alright.");
+console.log("the", [cursor]"World!", "Alright.");
 console.log("How are you doing?");`,
-        selection: Selection.cursorAt(1, 19),
         expected: `console.log("Hello");
 const world = "World!";
 console.log("the", world, "Alright.");
@@ -104,11 +91,10 @@ console.log("How are you doing?");`
         description: "an element in a multi-lines array",
         code: `const SUPPORTED_LANGUAGES = [
   "javascript",
-  "javascriptreact",
+  [cursor]"javascriptreact",
   "typescript",
   "typescriptreact"
 ];`,
-        selection: Selection.cursorAt(2, 2),
         expected: `const javascriptreact = "javascriptreact";
 const SUPPORTED_LANGUAGES = [
   "javascript",
@@ -123,11 +109,10 @@ const SUPPORTED_LANGUAGES = [
   1,
   [
     {
-      hello: "Hello!"
+      hello: [cursor]"Hello!"
     }
   ]
 ]);`,
-        selection: Selection.cursorAt(4, 13),
         expected: `const hello = "Hello!";
 console.log([
   1,
@@ -140,25 +125,22 @@ console.log([
       },
       {
         description: "a spread variable",
-        code: `console.log({ ...foo.bar });`,
-        selection: Selection.cursorAt(0, 22),
+        code: `console.log({ ...foo.b[cursor]ar });`,
         expected: `const { bar } = foo;
 console.log({ ...bar });`
       },
       {
         description: "a spread variable, cursor on spread",
-        code: `console.log({ ...foo.bar });`,
-        selection: Selection.cursorAt(0, 16),
+        code: `console.log({ ..[cursor].foo.bar });`,
         expected: `const extracted = { ...foo.bar };
 console.log(extracted);`
       },
       {
         description: "a spread function result",
         code: `console.log({
-  ...getInlinableCode(declaration),
+  ...getInl[cursor]inableCode(declaration),
   id: "name"
 });`,
-        selection: Selection.cursorAt(1, 11),
         expected: `const extracted = getInlinableCode(declaration);
 console.log({
   ...extracted,
@@ -168,39 +150,34 @@ console.log({
       {
         description:
           "a valid path when cursor is on a part of member expression",
-        code: `console.log(path.node.name);`,
-        selection: Selection.cursorAt(0, 17),
+        code: `console.log(path.[cursor]node.name);`,
         expected: `const { node } = path;
 console.log(node.name);`
       },
       {
         description:
           "a member expression when property name is not in camel case",
-        code: `console.log(path.some_node.name);`,
-        selection: Selection.cursorAt(0, 17),
+        code: `console.log(path.[cursor]some_node.name);`,
         expected: `const { some_node } = path;
 console.log(some_node.name);`
       },
       {
         description: "a member expression when property name is too long",
-        code: `console.log(path.somethingVeryVeryVeryLongThatWontFit.name);`,
-        selection: Selection.cursorAt(0, 17),
+        code: `console.log(path.[cursor]somethingVeryVeryVeryLongThatWontFit.name);`,
         expected: `const { somethingVeryVeryVeryLongThatWontFit } = path;
 console.log(somethingVeryVeryVeryLongThatWontFit.name);`
       },
       {
         description: "member expression with computed value",
-        code: `console.log(this.items[i].name);`,
-        selection: Selection.cursorAt(0, 23),
+        code: `console.log(this.items[[cursor]i].name);`,
         expected: `const extracted = this.items[i];
 console.log(extracted.name);`
       },
       {
         description: "a return value of a function",
         code: `function getMessage() {
-  return "Hello!";
+  return [cursor]"Hello!";
 }`,
-        selection: Selection.cursorAt(1, 9),
         expected: `function getMessage() {
   const hello = "Hello!";
   return hello;
@@ -208,17 +185,15 @@ console.log(extracted.name);`
       },
       {
         description: "an assigned variable",
-        code: `const message = "Hello!";`,
-        selection: Selection.cursorAt(0, 16),
+        code: `const message = [cursor]"Hello!";`,
         expected: `const hello = "Hello!";
 const message = hello;`
       },
       {
         description: "a class property assignment",
         code: `class Logger {
-  message = "Hello!";
+  message = [cursor]"Hello!";
 }`,
-        selection: Selection.cursorAt(1, 12),
         expected: `const hello = "Hello!";
 class Logger {
   message = hello;
@@ -227,9 +202,8 @@ class Logger {
       {
         description: "a computed class property",
         code: `class Logger {
-  [key] = "value";
+  [[cursor]key] = "value";
 }`,
-        selection: Selection.cursorAt(1, 3),
         expected: `const extracted = key;
 class Logger {
   [extracted] = "value";
@@ -237,25 +211,24 @@ class Logger {
       },
       {
         description: "an if statement (whole statement)",
-        code: "if (parents.length > 0 && type === 'refactor') doSomething();",
-        selection: new Selection([0, 4], [0, 45]),
+        code:
+          "if ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
         expected: `const extracted = parents.length > 0 && type === 'refactor';
 if (extracted) doSomething();`
       },
       {
         description: "an if statement (part of it)",
-        code: "if (parents.length > 0 && type === 'refactor') doSomething();",
-        selection: new Selection([0, 4], [0, 22]),
+        code:
+          "if ([start]parents.length > 0[end] && type === 'refactor') doSomething();",
         expected: `const extracted = parents.length > 0;
 if (extracted && type === 'refactor') doSomething();`
       },
       {
         description: "a multi-lines if statement (whole statement)",
         code: `if (
-  parents.length > 0 &&
-  type === 'refactor'
+  [start]parents.length > 0 &&
+  type === 'refactor'[end]
 ) doSomething();`,
-        selection: new Selection([1, 2], [2, 21]),
         expected: `const extracted = parents.length > 0 &&
   type === 'refactor';
 if (
@@ -266,9 +239,8 @@ if (
         description: "a multi-lines if statement (part of it)",
         code: `if (
   parents.length > 0 &&
-  type === 'refactor'
+  [start]type === 'refactor'[end]
 ) doSomething();`,
-        selection: new Selection([2, 2], [2, 21]),
         expected: `const extracted = type === 'refactor';
 if (
   parents.length > 0 &&
@@ -278,19 +250,17 @@ if (
       {
         description: "a while statement",
         code:
-          "while (parents.length > 0 && type === 'refactor') doSomething();",
-        selection: new Selection([0, 7], [0, 48]),
+          "while ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
         expected: `const extracted = parents.length > 0 && type === 'refactor';
 while (extracted) doSomething();`
       },
       {
         description: "a case statement",
         code: `switch (text) {
-  case "Hello!":
+  case [cursor]"Hello!":
   default:
     break;
 }`,
-        selection: Selection.cursorAt(1, 7),
         expected: `const hello = "Hello!";
 switch (text) {
   case hello:
@@ -301,9 +271,8 @@ switch (text) {
       {
         description: "an unamed function parameter when cursor is inside",
         code: `console.log(function () {
-  return "Hello!";
+[cursor]  return "Hello!";
 });`,
-        selection: Selection.cursorAt(1, 0),
         expected: `const extracted = function () {
   return "Hello!";
 };
@@ -312,9 +281,8 @@ console.log(extracted);`
       {
         description: "an exported variable declaration",
         code: `export const something = {
-  foo: "bar"
+  foo: "b[cursor]ar"
 };`,
-        selection: Selection.cursorAt(1, 9),
         expected: `const foo = "bar";
 export const something = {
   foo
@@ -322,38 +290,33 @@ export const something = {
       },
       {
         description: "a default export",
-        code: `export default "something";`,
-        selection: Selection.cursorAt(0, 17),
+        code: `export default "s[cursor]omething";`,
         expected: `const something = "something";
 export default something;`
       },
       {
         description: "a default export (without trailing semicolon)",
-        code: `export default "something"`,
-        selection: Selection.cursorAt(0, 17),
+        code: `export default "s[cursor]omething"`,
         expected: `const something = "something";
 export default something`
       },
       {
         description: "a default export (with spaces after semicolon)",
-        code: `export default "something";   `,
-        selection: Selection.cursorAt(0, 17),
+        code: `export default "s[cursor]omething";   `,
         expected: `const something = "something";
 export default something;   `
       },
       {
         description: "a default export (with comment after semicolon)",
-        code: `export default "something"; // Do something`,
-        selection: Selection.cursorAt(0, 17),
+        code: `export default "s[cursor]omething"; // Do something`,
         expected: `const something = "something";
 export default something; // Do something`
       },
       {
         description: "a default export (multiple lines)",
-        code: `export default {
+        code: `export default {[cursor]
   tryTo: "extract me"
 };`,
-        selection: Selection.cursorAt(0, 16),
         expected: `const extracted = {
   tryTo: "extract me"
 };
@@ -362,9 +325,8 @@ export default extracted;`
       {
         description:
           "a default export (with statement after that has no semicolon)",
-        code: `export default "something";
+        code: `export default "[cursor]something";
 console.log("done")`,
-        selection: Selection.cursorAt(0, 17),
         expected: `const something = "something";
 export default something;
 console.log("done")`
@@ -372,9 +334,8 @@ console.log("done")`
       {
         description: "a value inside an arrow function",
         code: `() => (
-  console.log("Hello")
+  console.log("H[cursor]ello")
 )`,
-        selection: Selection.cursorAt(1, 16),
         expected: `const hello = "Hello";
 () => (
   console.log(hello)
@@ -384,10 +345,9 @@ console.log("done")`
         description: "a multi-lines ternary",
         code: `function getText() {
   return isValid
-    ? "yes"
+    ? "y[cursor]es"
     : "no";
 }`,
-        selection: Selection.cursorAt(2, 8),
         expected: `function getText() {
   const yes = "yes";
   return isValid
@@ -398,11 +358,10 @@ console.log("done")`
       {
         description: "a multi-lines unary expression",
         code: `if (
-  !(threshold > 10 || isPaused)
+  !(threshold > 1[cursor]0 || isPaused)
 ) {
   console.log("Ship it");
 }`,
-        selection: Selection.cursorAt(1, 17),
         expected: `const extracted = 10;
 if (
   !(threshold > extracted || isPaused)
@@ -412,33 +371,29 @@ if (
       },
       {
         description: "a class instantiation (cursor on new expression)",
-        code: `console.log(new Card("jack"));`,
-        selection: Selection.cursorAt(0, 12),
+        code: `console.log([cursor]new Card("jack"));`,
         expected: `const extracted = new Card("jack");
 console.log(extracted);`
       },
       {
         description: "a class instantiation (cursor on class identifier)",
-        code: `console.log(new Card("jack"));`,
-        selection: Selection.cursorAt(0, 16),
+        code: `console.log(new [cursor]Card("jack"));`,
         expected: `const extracted = new Card("jack");
 console.log(extracted);`
       },
       {
         description: "a thrown error",
-        code: `throw new Error("It failed");`,
-        selection: Selection.cursorAt(0, 12),
+        code: `throw new Er[cursor]ror("It failed");`,
         expected: `const extracted = new Error("It failed");
 throw extracted;`
       },
       {
         description: "a call expression parameter (multi-lines)",
         code: `createIfStatement(
-  parentPath.node.operator,
+  parentPath.node.op[cursor]erator,
   parentPath.node.left,
   node.consequent
 );`,
-        selection: Selection.cursorAt(1, 20),
         expected: `const { operator } = parentPath.node;
 createIfStatement(
   operator,
@@ -449,10 +404,9 @@ createIfStatement(
       {
         description: "a conditional expression (multi-lines)",
         code: `const type = !!(
-  path.node.loc.length > 0
+  path.node.loc.l[cursor]ength > 0
 ) ? "with-loc"
   : "without-loc";`,
-        selection: Selection.cursorAt(1, 17),
         expected: `const { length } = path.node.loc;
 const type = !!(
   length > 0
@@ -462,9 +416,8 @@ const type = !!(
       {
         description: "a value in a new Expression",
         code: `new Author(
-  "name"
+  [cursor]"name"
 );`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const name = "name";
 new Author(
   name
@@ -473,9 +426,8 @@ new Author(
       {
         description: "a value in an Array argument of a function",
         code: `doSomething([
-  getValueOf("name")
+  [cursor]getValueOf("name")
 ]);`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const extracted = getValueOf("name");
 doSomething([
   extracted
@@ -484,9 +436,8 @@ doSomething([
       {
         description: "a new Expression in an Array argument of a function",
         code: `doSomething([
-  new Author("Eliott")
+  [cursor]new Author("Eliott")
 ]);`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const extracted = new Author("Eliott");
 doSomething([
   extracted
@@ -496,9 +447,8 @@ doSomething([
         description: "a value in a binary expression",
         code: `console.log(
   currentValue >
-  10
+  [cursor]10
 );`,
-        selection: Selection.cursorAt(2, 2),
         expected: `const extracted = 10;
 console.log(
   currentValue >
@@ -507,10 +457,9 @@ console.log(
       },
       {
         description: "an arrow function (cursor on params)",
-        code: `const sayHello = (name) => {
+        code: `const sayHello = (na[cursor]me) => {
   console.log(name);
 };`,
-        selection: Selection.cursorAt(0, 20),
         expected: `const extracted = (name) => {
   console.log(name);
 };
@@ -518,8 +467,7 @@ const sayHello = extracted;`
       },
       {
         description: "a for statement",
-        code: `for (var i = 0; i < this.items.length; i++) {}`,
-        selection: Selection.cursorAt(0, 27),
+        code: `for (var i = 0; i < this.it[cursor]ems.length; i++) {}`,
         expected: `const { items } = this;
 for (var i = 0; i < items.length; i++) {}`
       },
@@ -529,9 +477,8 @@ for (var i = 0; i < items.length; i++) {}`
 	const myVar = {
 		someArray: [{ somethingNested: 42 }]
 	};
-	console.log(myVar.someArray[0].somethingNested);
+	console.log(myVar.someAr[cursor]ray[0].somethingNested);
 }`,
-        selection: Selection.cursorAt(4, 25),
         expected: `function test() {
 	const myVar = {
 		someArray: [{ somethingNested: 42 }]
@@ -541,18 +488,12 @@ for (var i = 0; i < items.length; i++) {}`
 }`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doExtractVariable(code, selection);
-      expect(result.code).toBe(expected);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
+
+      await extractVariable(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
-
-  async function doExtractVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    await extractVariable(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

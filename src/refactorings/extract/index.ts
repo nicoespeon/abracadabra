@@ -7,9 +7,9 @@ import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
 
-import { DeprecatedRefactoring } from "../../types";
+import { Refactoring } from "../../types";
 
-const config: DeprecatedRefactoring = {
+const config: Refactoring = {
   command: {
     key: "extract",
     operation: extract
@@ -23,18 +23,12 @@ async function extract() {
   if (!activeTextEditor) return;
 
   await executeSafely(async () => {
-    const editorAttemptingExtraction = new VSCodeEditorAttemptingExtraction(
-      activeTextEditor
-    );
     await extractVariable(
-      editorAttemptingExtraction.code,
-      editorAttemptingExtraction.selection,
-      editorAttemptingExtraction
+      new VSCodeEditorAttemptingExtraction(activeTextEditor)
     );
 
-    if (!editorAttemptingExtraction.couldExtract) {
-      const editor = new VSCodeEditor(activeTextEditor);
-      await extractGenericType(editor.code, editor.selection, editor);
+    if (!new VSCodeEditorAttemptingExtraction(activeTextEditor).couldExtract) {
+      await extractGenericType(new VSCodeEditor(activeTextEditor));
     }
   });
 }

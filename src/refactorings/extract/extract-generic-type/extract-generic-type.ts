@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import { Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
@@ -11,11 +11,8 @@ import { last } from "../../../array-helpers";
 
 export { extractGenericType };
 
-async function extractGenericType(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function extractGenericType(editor: Editor) {
+  const { code, selection } = editor;
   const ast = t.parse(code);
 
   const {
