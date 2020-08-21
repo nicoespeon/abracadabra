@@ -18,7 +18,7 @@ const CURSOR = "[cursor]";
 
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
-  private _position: Position;
+  private _position: Position = new Position(0, 0);
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
