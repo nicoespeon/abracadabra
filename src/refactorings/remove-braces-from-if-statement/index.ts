@@ -3,9 +3,9 @@ import {
   hasIfStatementWithBraces
 } from "./remove-braces-from-if-statement";
 
-import { DeprecatedRefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: DeprecatedRefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "removeBracesFromIfStatement",
     operation: removeBracesFromIfStatement,

@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import * as t from "../../ast";
@@ -8,11 +8,8 @@ export {
   createVisitor as hasIfStatementWithBraces
 };
 
-async function removeBracesFromIfStatement(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function removeBracesFromIfStatement(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
