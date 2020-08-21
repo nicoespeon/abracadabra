@@ -1,18 +1,11 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { convertFunctionDeclarationToArrowFunction } from "./convert-function-declaration-to-arrow-function";
 
 describe("Convert Function Declaration To Arrow Function", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should convert function declaration to arrow function",
     [
       {
@@ -36,34 +29,24 @@ describe("Convert Function Declaration To Arrow Function", () => {
         expected: `const fn = async <T>(t: T): T => { return t; };`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doConvertFunctionDeclarationToArrowFunction(
-        code,
-        selection
-      );
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await convertFunctionDeclarationToArrowFunction(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
-    const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const code = `[cursor]// This is a comment, can't be refactored`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doConvertFunctionDeclarationToArrowFunction(code, selection);
+    await convertFunctionDeclarationToArrowFunction(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindFunctionDeclarationToConvert
     );
   });
-
-  async function doConvertFunctionDeclarationToArrowFunction(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await convertFunctionDeclarationToArrowFunction(code, selection, editor);
-    return editor.code;
-  }
 });
