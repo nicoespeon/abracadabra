@@ -1,14 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
 export { removeDeadCode, createVisitor as hasDeadCode };
 
-async function removeDeadCode(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function removeDeadCode(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
