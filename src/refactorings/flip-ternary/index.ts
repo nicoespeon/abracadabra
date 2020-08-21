@@ -1,8 +1,8 @@
 import { hasTernaryToFlip, flipTernary } from "./flip-ternary";
 
-import { DeprecatedRefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: DeprecatedRefactoringWithActionProvider = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "flipTernary",
     operation: flipTernary,
