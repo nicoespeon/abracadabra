@@ -1,5 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -7,15 +6,8 @@ import { testEach } from "../../tests-helpers";
 import { moveStatementUp } from "./move-statement-up";
 
 describe("Move Statement Up", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
   testEach<{
     code: Code;
-    selection: Selection;
     expected: Code;
     expectedPosition: Position;
   }>(
@@ -24,8 +16,7 @@ describe("Move Statement Up", () => {
       {
         description: "single-line statement",
         code: `console.log("I'm up");
-console.log("I'm down");`,
-        selection: Selection.cursorAt(1, 0),
+[cursor]console.log("I'm down");`,
         expected: `console.log("I'm down");
 console.log("I'm up");`,
         expectedPosition: new Position(0, 0)
@@ -34,10 +25,9 @@ console.log("I'm up");`,
         description: "multi-lines statement",
         code: `console.log("I'm up");
 
-if (isValid) {
+[cursor]if (isValid) {
   console.log("I'm down");
 }`,
-        selection: Selection.cursorAt(2, 0),
         expected: `if (isValid) {
   console.log("I'm down");
 }
@@ -51,8 +41,7 @@ console.log("I'm up");`,
   console.log("I'm up");
 }
 
-console.log("I'm down");`,
-        selection: Selection.cursorAt(4, 0),
+[cursor]console.log("I'm down");`,
         expected: `console.log("I'm down");
 
 if (isValid) {
@@ -66,10 +55,9 @@ if (isValid) {
   console.log("I'm up");
 }
 
-function saySomething() {
+[cursor]function saySomething() {
   console.log("I'm down");
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `function saySomething() {
   console.log("I'm down");
 }
@@ -85,14 +73,13 @@ if (isValid) {
 
 function doSomethingElse() {
   const a = 1;
-  const b = 2;
+  [cursor]const b = 2;
 
   if (isValid) {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
 }`,
-        selection: Selection.cursorAt(4, 2),
         expected: `const hello = "world";
 
 function doSomethingElse() {
@@ -112,14 +99,13 @@ function doSomethingElse() {
 
 function doSomethingElse() {
   const a = 1;
-  const b = { foo: "bar" };
+  const b = { f[cursor]oo: "bar" };
 
   if (isValid) {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
 }`,
-        selection: Selection.cursorAt(4, 15),
         expected: `const hello = "world";
 
 function doSomethingElse() {
@@ -139,14 +125,13 @@ function doSomethingElse() {
 
 function doSomethingElse() {
   const a = 1;
-  const b = 2;
+[cursor]  const b = 2;
 
   if (isValid) {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `const hello = "world";
 
 function doSomethingElse() {
@@ -165,10 +150,9 @@ function doSomethingElse() {
         code: `console.log("Should not move");
 const data = {
   foo: "foo",
-  bar: "bar",
+  [cursor]bar: "bar",
   baz: "baz"
 };`,
-        selection: Selection.cursorAt(3, 2),
         expected: `console.log("Should not move");
 const data = {
   bar: "bar",
@@ -180,8 +164,7 @@ const data = {
       {
         description: "object properties, one-liner",
         code: `console.log("Should move in this scenario");
-const data = { foo: "foo", bar: "bar" };`,
-        selection: Selection.cursorAt(1, 16),
+const data = { f[cursor]oo: "foo", bar: "bar" };`,
         expected: `const data = { foo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
         expectedPosition: new Position(0, 16)
@@ -189,8 +172,7 @@ console.log("Should move in this scenario");`,
       {
         description: "object properties, one-liner, cursor on second",
         code: `console.log("Should move in this scenario");
-const data = { foo: "foo", bar: "bar" };`,
-        selection: Selection.cursorAt(1, 28),
+const data = { foo: "foo", b[cursor]ar: "bar" };`,
         expected: `const data = { foo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
         expectedPosition: new Position(0, 28)
@@ -200,10 +182,9 @@ console.log("Should move in this scenario");`,
         code: `console.log("Should not move");
 const data = {
   foo: "foo",
-  bar: "bar",
+  bar: "bar",[cursor]
   baz: "baz"
 };`,
-        selection: Selection.cursorAt(3, 13),
         expected: `console.log("Should not move");
 const data = {
   bar: "bar",
@@ -217,9 +198,8 @@ const data = {
         code: `const data = {
   foo: "foo",
   bar: "bar",
-  baz: "baz"
+  [cursor]baz: "baz"
 };`,
-        selection: Selection.cursorAt(3, 2),
         expected: `const data = {
   foo: "foo",
   baz: "baz",
@@ -232,11 +212,10 @@ const data = {
         code: `const data = {
   foo: "foo",
   baz: "baz",
-  bar() {
+  [cursor]bar() {
     return "bar";
   }
 };`,
-        selection: Selection.cursorAt(3, 2),
         expected: `const data = {
   foo: "foo",
 
@@ -255,11 +234,10 @@ const data = {
     return "foo";
   }
 
-  getSize() {
+  [cursor]getSize() {
     return 1;
   }
 }`,
-        selection: Selection.cursorAt(5, 2),
         expected: `class Node {
   getSize() {
     return 1;
@@ -276,11 +254,10 @@ const data = {
         code: `class Node {
   name = "foo"
 
-  getSize() {
+  [cursor]getSize() {
     return 1;
   }
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `class Node {
   getSize() {
     return 1;
@@ -291,24 +268,28 @@ const data = {
         expectedPosition: new Position(1, 2)
       }
     ],
-    async ({ code, selection, expected, expectedPosition }) => {
-      const result = await doMoveStatementUp(code, selection);
+    async ({ code, expected, expectedPosition }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result.code).toBe(expected);
-      expect(result.position).toStrictEqual(expectedPosition);
+      await moveStatementUp(editor);
+
+      expect(editor.code).toBe(expected);
+      expect(editor.position).toStrictEqual(expectedPosition);
     }
   );
 
   it("should do nothing, nor show an error message if selected statement is at the top of the file", async () => {
     const code = `console.log(
   "nothing up this statement"
-)`;
-    const selection = Selection.cursorAt(2, 0);
+[cursor])`;
+    const editor = new InMemoryEditor(code);
+    const originalCode = editor.code;
+    jest.spyOn(editor, "showError");
 
-    const result = await doMoveStatementUp(code, selection);
+    await moveStatementUp(editor);
 
-    expect(result.code).toBe(code);
-    expect(showErrorMessage).not.toBeCalled();
+    expect(editor.code).toBe(originalCode);
+    expect(editor.showError).not.toBeCalled();
   });
 
   it("should not move the parent node if the selected child node can't be moved", async () => {
@@ -323,46 +304,31 @@ const data = {
 }
 
 class Path {
-  getName() {
+  [cursor]getName() {
     return "bar";
   }
 }`;
-    const selection = Selection.cursorAt(11, 2);
+    const editor = new InMemoryEditor(code);
+    const originalCode = editor.code;
 
-    const result = await doMoveStatementUp(code, selection);
+    await moveStatementUp(editor);
 
-    expect(result.code).toBe(code);
+    expect(editor.code).toBe(originalCode);
+
+    expect(editor.code).toBe(originalCode);
   });
 
   it("should show an error message for multi-lines selections", async () => {
     const code = `console.log("First");
-console.log("Second");
-console.log("Third")`;
-    const selection = new Selection([1, 0], [2, 0]);
+[start]console.log("Second");
+[end]console.log("Third")`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doMoveStatementUp(code, selection);
+    await moveStatementUp(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.CantMoveMultiLinesStatementUp
     );
   });
-
-  it("should show an error message if selection is invalid", async () => {
-    const code = `console.log("First");`;
-    const invalidSelection = Selection.cursorAt(2, 0);
-
-    await doMoveStatementUp(code, invalidSelection);
-
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.CantMoveStatementUp);
-  });
-
-  async function doMoveStatementUp(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await moveStatementUp(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });
