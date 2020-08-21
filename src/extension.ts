@@ -60,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertForToForeach,
     convertIfElseToSwitch,
     convertIfElseToTernary,
+    convertLetToConst,
     convertToArrowFunction,
     renameSymbol
   ].forEach(({ command }) =>
@@ -75,7 +76,6 @@ export function activate(context: vscode.ExtensionContext) {
     convertSwitchToIfElse,
     convertTernaryToIfElse,
     convertToTemplateLiteral,
-    convertLetToConst,
     extract,
     extractInterface,
     flipIfElse,
