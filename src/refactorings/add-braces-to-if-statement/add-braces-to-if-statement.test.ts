@@ -103,7 +103,7 @@ if (isValid) {
   );
 
   it("should show an error message if refactoring can't be made", async () => {
-    const code = `[cursor]// This is a comment, can't be refactored`;
+    const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
@@ -115,7 +115,7 @@ if (isValid) {
   });
 
   it("should throw an error if statement already has braces", async () => {
-    const code = `[cursor]if (!isValid) {
+    const code = `if (!isValid) {
  return;
 }`;
     const editor = new InMemoryEditor(code);

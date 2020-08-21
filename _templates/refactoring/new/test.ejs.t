@@ -33,7 +33,7 @@ describe("<%= titleName %>", () => {
   );
 
   it("should show an error message if refactoring can't be made", async () => {
-    const code = `[cursor]// This is a comment, can't be refactored`;
+    const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
