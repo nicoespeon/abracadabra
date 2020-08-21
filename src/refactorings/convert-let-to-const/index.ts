@@ -1,8 +1,8 @@
 import { convertLetToConst, createVisitor } from "./convert-let-to-const";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "convertLetToConst",
     operation: convertLetToConst,

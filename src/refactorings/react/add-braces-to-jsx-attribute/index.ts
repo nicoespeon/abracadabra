@@ -3,9 +3,9 @@ import {
   hasJsxAttributeToAddBracesTo
 } from "./add-braces-to-jsx-attribute";
 
-import { RefactoringWithActionProvider } from "../../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "addBracesToJsxAttribute",
     operation: addBracesToJsxAttribute,

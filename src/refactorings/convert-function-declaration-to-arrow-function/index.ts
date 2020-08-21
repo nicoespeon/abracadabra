@@ -3,9 +3,9 @@ import {
   createVisitor
 } from "./convert-function-declaration-to-arrow-function";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "convertFunctionDeclarationToArrowFunction",
     operation: convertFunctionDeclarationToArrowFunction,

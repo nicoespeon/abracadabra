@@ -4,9 +4,9 @@ import {
 } from "./replace-binary-with-assignment";
 
 import * as t from "../../ast";
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "replaceBinaryWithAssignment",
     operation: replaceBinaryWithAssignment,

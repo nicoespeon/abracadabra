@@ -7,9 +7,9 @@ import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
 
-import { Refactoring } from "../../types";
+import { DeprecatedRefactoring } from "../../types";
 
-const config: Refactoring = {
+const config: DeprecatedRefactoring = {
   command: {
     key: "inline",
     operation: inline

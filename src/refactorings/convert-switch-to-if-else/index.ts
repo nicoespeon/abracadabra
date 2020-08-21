@@ -3,9 +3,9 @@ import {
   hasSwitchToConvert
 } from "./convert-switch-to-if-else";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "convertSwitchToIfElse",
     operation: convertSwitchToIfElse,

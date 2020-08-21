@@ -1,9 +1,9 @@
 import { canMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 import * as t from "../../ast";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "mergeIfStatements",
     operation: mergeIfStatements,

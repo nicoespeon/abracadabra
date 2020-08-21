@@ -3,9 +3,9 @@ import {
   hasArrowFunctionToAddBraces
 } from "./add-braces-to-arrow-function";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "addBracesToArrowFunction",
     operation: addBracesToArrowFunction,

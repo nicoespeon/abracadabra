@@ -5,9 +5,9 @@ import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
 
 import { renameSymbol } from "./rename-symbol";
 
-import { Refactoring } from "../../types";
+import { DeprecatedRefactoring } from "../../types";
 
-const config: Refactoring = {
+const config: DeprecatedRefactoring = {
   command: {
     key: "renameSymbol",
     async operation() {

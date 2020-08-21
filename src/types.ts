@@ -2,20 +2,24 @@ import { Code, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
 
-export { Refactoring, RefactoringWithActionProvider, Operation };
+export {
+  DeprecatedRefactoring,
+  DeprecatedRefactoringWithActionProvider,
+  DeprecatedOperation
+};
 
-interface Refactoring {
+interface DeprecatedRefactoring {
   command: {
     key: string;
-    operation: Operation;
+    operation: DeprecatedOperation;
   };
 }
 
-interface RefactoringWithActionProvider {
+interface DeprecatedRefactoringWithActionProvider {
   command: {
     key: string;
     title: string;
-    operation: Operation;
+    operation: DeprecatedOperation;
   };
   actionProvider: {
     message: string;
@@ -28,7 +32,7 @@ interface RefactoringWithActionProvider {
   };
 }
 
-type Operation = (
+type DeprecatedOperation = (
   code: Code,
   selection: Selection,
   editor: Editor

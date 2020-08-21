@@ -3,9 +3,9 @@ import {
   hasIfStatementToAddBraces
 } from "./add-braces-to-if-statement";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "addBracesToIfStatement",
     operation: addBracesToIfStatement,

@@ -3,9 +3,9 @@ import {
   hasBracesToRemoveFromJsxAttribute
 } from "./remove-braces-from-jsx-attribute";
 
-import { RefactoringWithActionProvider } from "../../../types";
+import { DeprecatedRefactoringWithActionProvider } from "../../../types";
 
-const config: RefactoringWithActionProvider = {
+const config: DeprecatedRefactoringWithActionProvider = {
   command: {
     key: "removeBracesFromJsxAttribute",
     operation: removeBracesFromJsxAttribute,

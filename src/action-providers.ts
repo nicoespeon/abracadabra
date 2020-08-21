@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
 
 import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
-import { RefactoringWithActionProvider } from "./types";
+import { DeprecatedRefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
 
 export { RefactoringActionProvider };
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private refactorings: RefactoringWithActionProvider[];
+  private refactorings: DeprecatedRefactoringWithActionProvider[];
 
-  constructor(refactorings: RefactoringWithActionProvider[]) {
+  constructor(refactorings: DeprecatedRefactoringWithActionProvider[]) {
     this.refactorings = refactorings;
   }
 
@@ -62,10 +62,10 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   private findApplicableRefactorings(
     ast: t.File,
     selection: Selection
-  ): RefactoringWithActionProvider[] {
+  ): DeprecatedRefactoringWithActionProvider[] {
     const applicableRefactorings = new Map<
       string,
-      RefactoringWithActionProvider
+      DeprecatedRefactoringWithActionProvider
     >();
 
     t.traverseAST(ast, {
@@ -116,7 +116,9 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     }
   }
 
-  private buildCodeActionFor(refactoring: RefactoringWithActionProvider) {
+  private buildCodeActionFor(
+    refactoring: DeprecatedRefactoringWithActionProvider
+  ) {
     const action = new vscode.CodeAction(
       `${refactoring.actionProvider.message} ✨`,
       vscode.CodeActionKind.RefactorRewrite

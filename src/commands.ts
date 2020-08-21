@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
 
-import { Operation } from "./types";
+import { DeprecatedOperation } from "./types";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 
 export { createCommand, executeSafely };
 
-function createCommand(execute: Operation) {
+function createCommand(execute: DeprecatedOperation) {
   return async () => {
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) {
