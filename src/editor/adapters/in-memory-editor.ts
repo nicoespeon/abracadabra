@@ -15,6 +15,8 @@ const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
 const DELETED_LINE = "___DELETED_LINE___";
 const CURSOR = "[cursor]";
+const SELECTION_START = "[start]";
+const SELECTION_END = "[end]";
 
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
@@ -22,7 +24,7 @@ class InMemoryEditor implements Editor {
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
-    this.setPositionFromCursor(code, position);
+    this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
   get code(): Code {
@@ -135,24 +137,42 @@ class InMemoryEditor implements Editor {
     this.codeMatrix = code
       .split(LINE_SEPARATOR)
       .map((line) => line.replace(CURSOR, ""))
+      .map((line) => line.replace(SELECTION_START, ""))
+      .map((line) => line.replace(SELECTION_END, ""))
       .map((line) => line.split(CHARS_SEPARATOR));
   }
 
-  private setPositionFromCursor(code: Code, defaultPosition: Position): void {
-    let cursorLine = 0;
+  private setSelectionFromCursor(
+    code: Code,
+    defaultSelection: Selection
+  ): void {
+    let lineIndex = 0;
 
-    const position = code.split(LINE_SEPARATOR).reduce((newPosition, line) => {
+    this._selection = code.split(LINE_SEPARATOR).reduce((selection, line) => {
       const cursorChar = line.indexOf(CURSOR);
       if (cursorChar > -1) {
-        return new Position(cursorLine, cursorChar);
+        selection = Selection.cursorAt(lineIndex, cursorChar);
       }
+      line = line.replace(CURSOR, "");
 
-      cursorLine++;
+      const startChar = line.indexOf(SELECTION_START);
+      if (startChar > -1) {
+        selection = Selection.cursorAt(lineIndex, startChar);
+      }
+      line = line.replace(SELECTION_START, "");
 
-      return newPosition;
-    }, defaultPosition);
+      const endChar = line.indexOf(SELECTION_END);
+      if (endChar > -1) {
+        selection = selection.extendEndToStartOf(
+          Selection.cursorAt(lineIndex, endChar)
+        );
+      }
+      line = line.replace(SELECTION_END, "");
 
-    this._selection = Selection.cursorAtPosition(position);
+      lineIndex++;
+
+      return selection;
+    }, defaultSelection);
   }
 
   private read(codeMatrix: CodeMatrix): string {
