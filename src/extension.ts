@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { createCommand } from "./commands";
+import { createDeprecatedCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
@@ -91,7 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
-        createCommand(command.operation)
+        createDeprecatedCommand(command.operation)
       )
     )
   );
