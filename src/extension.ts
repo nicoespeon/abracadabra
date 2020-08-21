@@ -81,6 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
     removeBracesFromArrowFunction,
     removeBracesFromIfStatement,
     removeDeadCode,
+    removeRedundantElse,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -92,7 +93,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    removeRedundantElse,
     replaceBinaryWithAssignment,
     simplifyTernary,
     splitDeclarationAndInitialization,
