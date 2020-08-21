@@ -72,6 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
     inline,
     mergeIfStatements,
     mergeWithPreviousIfStatement,
+    moveStatementDown,
     renameSymbol
   ].forEach(({ command }) =>
     context.subscriptions.push(
@@ -83,7 +84,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   [
-    moveStatementDown,
     moveStatementUp,
     negateExpression,
     reactConvertToPureComponent,

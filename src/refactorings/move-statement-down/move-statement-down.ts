@@ -5,11 +5,8 @@ import * as ast from "../../ast";
 
 export { moveStatementDown };
 
-async function moveStatementDown(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function moveStatementDown(editor: Editor) {
+  const { code, selection } = editor;
   if (selection.isMultiLines) {
     // This should be implemented.
     // But it requires collecting all statements to move down to update the AST.

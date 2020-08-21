@@ -1,8 +1,8 @@
 import { moveStatementDown } from "./move-statement-down";
 
-import { DeprecatedRefactoring } from "../../types";
+import { Refactoring } from "../../types";
 
-const config: DeprecatedRefactoring = {
+const config: Refactoring = {
   command: {
     key: "moveStatementDown",
     operation: moveStatementDown
