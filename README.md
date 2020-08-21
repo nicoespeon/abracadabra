@@ -57,6 +57,7 @@ Related projects:
     1. [Split Declaration and Initialization](#split-declaration-and-initialization)
     1. [Convert let to const](#convert-let-to-const)
   - Working around the syntax:
+    1. [Convert to Arrow Function](#convert-to-arrow-function)
     1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
     1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
     1. [Add Braces to If Statement](#add-braces-to-if-statement)
@@ -371,6 +372,16 @@ Converts the declaration of a variable that is a `let` to a `const` if it's not 
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Convert to Arrow Function
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Converts a function declaration into an arrow function, which is convenient when you want to switch the syntax.
+
+![][demo-convert-to-arrow-function]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Add Braces to Arrow Function
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -564,6 +575,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors][all-contributors] specification.
@@ -679,6 +691,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-redundant-else.gif?raw=true
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-if-else.gif?raw=true
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/flip-ternary.gif?raw=true
+[demo-convert-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-arrow-function.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-ternary-to-if-else.gif?raw=true
 [demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-if-else-to-switch.gif?raw=true
