@@ -7,11 +7,8 @@ import { findExportedIdNames } from "../find-exported-id-names";
 
 export { inlineFunction };
 
-async function inlineFunction(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function inlineFunction(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(code, selection);
 
   if (updatedCode.hasManyReturns) {

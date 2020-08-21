@@ -7,9 +7,9 @@ import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
 
-import { DeprecatedRefactoring } from "../../types";
+import { Refactoring } from "../../types";
 
-const config: DeprecatedRefactoring = {
+const config: Refactoring = {
   command: {
     key: "inline",
     operation: inline
@@ -25,18 +25,10 @@ async function inline() {
   }
 
   await executeSafely(async () => {
-    const editorAttemptingInlining = new VSCodeEditorAttemptingInlining(
-      activeTextEditor
-    );
-    await inlineVariable(
-      editorAttemptingInlining.code,
-      editorAttemptingInlining.selection,
-      editorAttemptingInlining
-    );
+    await inlineVariable(new VSCodeEditorAttemptingInlining(activeTextEditor));
 
-    if (!editorAttemptingInlining.couldInlineCode) {
-      const editor = new VSCodeEditor(activeTextEditor);
-      await inlineFunction(editor.code, editor.selection, editor);
+    if (!new VSCodeEditorAttemptingInlining(activeTextEditor).couldInlineCode) {
+      await inlineFunction(new VSCodeEditor(activeTextEditor));
     }
   });
 }

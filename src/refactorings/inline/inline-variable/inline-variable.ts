@@ -12,11 +12,8 @@ import {
 
 export { inlineVariable };
 
-async function inlineVariable(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function inlineVariable(editor: Editor) {
+  const { code, selection } = editor;
   const inlinableCode = findInlinableCodeInAST(code, selection);
 
   if (!inlinableCode) {

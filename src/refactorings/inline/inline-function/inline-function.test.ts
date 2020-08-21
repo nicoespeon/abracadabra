@@ -1,19 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
+import { Code, ErrorReason } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { inlineFunction } from "./inline-function";
 
 describe("Inline Function", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should inline function",
     [
       {
@@ -66,7 +58,7 @@ console.log("Hello!");`
       {
         description: "nested functions, cursor on nested",
         code: `function doSomething() {
-  function sayHello() {
+  function say[cursor]Hello() {
     console.log("Hello!");
   }
 
@@ -74,7 +66,6 @@ console.log("Hello!");`
 }
 
 doSomething();`,
-        selection: Selection.cursorAt(1, 14),
         expected: `function doSomething() {
   console.log("Hello!");
 }
@@ -87,7 +78,7 @@ doSomething();`
   if (isValid) {
     logger("is valid");
 
-    function sayHello() {
+    [cursor]function sayHello() {
       console.log("Hello!");
     }
   }
@@ -99,7 +90,6 @@ function sayHelloToJane() {
   sayHello();
   console.log("Jane");
 }`,
-        selection: Selection.cursorAt(4, 4),
         expected: `function doSomething() {
   if (isValid) {
     logger("is valid");
@@ -117,7 +107,7 @@ function sayHelloToJane() {
         description: "function with top-level if statement",
         code: `let isMorning = true;
 
-function sayHello() {
+[cursor]function sayHello() {
   if (isMorning) {
     console.log("Good morning.");
   } else {
@@ -126,7 +116,6 @@ function sayHello() {
 }
 
 sayHello();`,
-        selection: Selection.cursorAt(2, 0),
         expected: `let isMorning = true;
 
 if (isMorning) {
@@ -445,37 +434,37 @@ if (isCorrect) {
 logData(); // => logged`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doInlineFunction(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result.code).toBe(expected);
+      await inlineFunction(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection?: Selection; expectedError: ErrorReason }>(
+  testEach<{ code: Code; expectedError: ErrorReason }>(
     "should show an error message",
     [
       {
         description: "cursor is not on a function",
         code: `const hello = "Hello"`,
-        selection: Selection.cursorAt(2, 0),
         expectedError: ErrorReason.DidNotFindInlinableCode
       },
       {
         description: "cursor is not on function word or id",
-        code: `function sayHello(name) {
+        code: `function sayHello([cursor]name) {
   console.log("Hello!", name);
 }
 
 sayHello("Jane");`,
-        selection: Selection.cursorAt(0, 18),
         expectedError: ErrorReason.DidNotFindInlinableCode
       },
       {
         description: "function has no reference in scope",
         code: `function limitedScope() {
   if (isValid) {
-    function doSomething(name) {
+    [cursor]function doSomething(name) {
       console.log(name);
     }
   }
@@ -483,7 +472,6 @@ sayHello("Jane");`,
 
 // Not in scope.
 doSomething();`,
-        selection: Selection.cursorAt(2, 4),
         expectedError: ErrorReason.DidNotFindInlinableCode
       },
       {
@@ -551,10 +539,13 @@ const firstName = hasName ? getFirstName() : null;`,
         expectedError: ErrorReason.CantInlineAssignedFunctionWithManyStatements
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expectedError }) => {
-      await doInlineFunction(code, selection);
+    async ({ code, expectedError }) => {
+      const editor = new InMemoryEditor(code);
+      jest.spyOn(editor, "showError");
 
-      expect(showErrorMessage).toBeCalledWith(expectedError);
+      await inlineFunction(editor);
+
+      expect(editor.showError).toBeCalledWith(expectedError);
     }
   );
 
@@ -566,10 +557,11 @@ const firstName = hasName ? getFirstName() : null;`,
 sayHello("John");
 
 export { sayHello }`;
-    const selection = Selection.cursorAt(0, 0);
 
     it("should not remove the function", async () => {
-      const result = await doInlineFunction(code, selection);
+      const editor = new InMemoryEditor(code);
+
+      await inlineFunction(editor);
 
       const expectedCode = `function sayHello(name) {
   console.log(name);
@@ -578,25 +570,18 @@ export { sayHello }`;
 console.log("John");
 
 export { sayHello }`;
-      expect(result.code).toBe(expectedCode);
+      expect(editor.code).toBe(expectedCode);
     });
 
     it("should show an error message to explain", async () => {
-      await doInlineFunction(code, selection);
+      const editor = new InMemoryEditor(code);
+      jest.spyOn(editor, "showError");
 
-      expect(showErrorMessage).toBeCalledWith(
+      await inlineFunction(editor);
+
+      expect(editor.showError).toBeCalledWith(
         ErrorReason.CantRemoveExportedFunction
       );
     });
   });
-
-  async function doInlineFunction(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await inlineFunction(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });
