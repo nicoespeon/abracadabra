@@ -5,10 +5,7 @@ import { inlineVariable } from "./inline-variable/inline-variable";
 
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
-import {
-  VSCodeEditor,
-  createSelectionFromVSCode
-} from "../../editor/adapters/vscode-editor";
+import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
 
 import { Refactoring } from "../../types";
 
@@ -27,21 +24,19 @@ async function inline() {
     return;
   }
 
-  const { document, selection } = activeTextEditor;
-
   await executeSafely(async () => {
-    const code = document.getText();
-    const selectionFromVSCode = createSelectionFromVSCode(selection);
+    const editorAttemptingInlining = new VSCodeEditorAttemptingInlining(
+      activeTextEditor
+    );
+    await inlineVariable(
+      editorAttemptingInlining.code,
+      editorAttemptingInlining.selection,
+      editorAttemptingInlining
+    );
 
-    const editor = new VSCodeEditorAttemptingInlining(activeTextEditor);
-    await inlineVariable(code, selectionFromVSCode, editor);
-
-    if (!editor.couldInlineCode) {
-      await inlineFunction(
-        code,
-        selectionFromVSCode,
-        new VSCodeEditor(activeTextEditor)
-      );
+    if (!editorAttemptingInlining.couldInlineCode) {
+      const editor = new VSCodeEditor(activeTextEditor);
+      await inlineFunction(editor.code, editor.selection, editor);
     }
   });
 }

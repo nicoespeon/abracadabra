@@ -5,10 +5,7 @@ import { extractVariable } from "./extract-variable/extract-variable";
 
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
-import {
-  VSCodeEditor,
-  createSelectionFromVSCode
-} from "../../editor/adapters/vscode-editor";
+import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
 
 import { Refactoring } from "../../types";
 
@@ -25,21 +22,19 @@ async function extract() {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) return;
 
-  const { document, selection } = activeTextEditor;
-
   await executeSafely(async () => {
-    const code = document.getText();
-    const selectionFromVSCode = createSelectionFromVSCode(selection);
+    const editorAttemptingExtraction = new VSCodeEditorAttemptingExtraction(
+      activeTextEditor
+    );
+    await extractVariable(
+      editorAttemptingExtraction.code,
+      editorAttemptingExtraction.selection,
+      editorAttemptingExtraction
+    );
 
-    const editor = new VSCodeEditorAttemptingExtraction(activeTextEditor);
-    await extractVariable(code, selectionFromVSCode, editor);
-
-    if (!editor.couldExtract) {
-      await extractGenericType(
-        code,
-        selectionFromVSCode,
-        new VSCodeEditor(activeTextEditor)
-      );
+    if (!editorAttemptingExtraction.couldExtract) {
+      const editor = new VSCodeEditor(activeTextEditor);
+      await extractGenericType(editor.code, editor.selection, editor);
     }
   });
 }
