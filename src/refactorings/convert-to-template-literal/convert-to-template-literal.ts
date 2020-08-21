@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
@@ -7,11 +7,8 @@ export {
   createVisitor as canConvertToTemplateLiteral
 };
 
-async function convertToTemplateLiteral(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function convertToTemplateLiteral(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
