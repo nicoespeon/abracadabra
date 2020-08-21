@@ -11,7 +11,7 @@ interface Refactoring {
   };
 }
 
-interface RefactoringWithActionProvider extends Refactoring {
+interface RefactoringWithActionProvider {
   command: {
     key: string;
     title: string;
