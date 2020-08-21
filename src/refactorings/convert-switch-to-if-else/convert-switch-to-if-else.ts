@@ -1,15 +1,12 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { last, allButLast } from "../../array-helpers";
 
 export { convertSwitchToIfElse, createVisitor as hasSwitchToConvert };
 
-async function convertSwitchToIfElse(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function convertSwitchToIfElse(editor: Editor) {
+  const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
