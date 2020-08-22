@@ -1,5 +1,5 @@
 import { Position } from "./position";
-import * as ast from "../ast";
+import * as t from "../ast";
 import { ASTSelection } from "../ast";
 
 export { Selection };
@@ -35,10 +35,7 @@ class Selection {
     return Selection.fromPositions(position, position);
   }
 
-  static areEqual(
-    pathA: ast.SelectablePath,
-    pathB: ast.SelectablePath
-  ): boolean {
+  static areEqual(pathA: t.SelectablePath, pathB: t.SelectablePath): boolean {
     return Selection.fromAST(pathA.node.loc).isEqualTo(
       Selection.fromAST(pathB.node.loc)
     );
@@ -107,13 +104,13 @@ class Selection {
       : this;
   }
 
-  isInsidePath(path: ast.NodePath): path is ast.SelectablePath {
+  isInsidePath(path: t.NodePath): path is t.SelectablePath {
     return this.isInsideNode(path.node);
   }
 
-  isInsideNode(node: ast.Node): node is ast.SelectableNode {
+  isInsideNode(node: t.Node): node is t.SelectableNode {
     return (
-      ast.isSelectableNode(node) && this.isInside(Selection.fromAST(node.loc))
+      t.isSelectableNode(node) && this.isInside(Selection.fromAST(node.loc))
     );
   }
 
@@ -123,13 +120,13 @@ class Selection {
     );
   }
 
-  isStrictlyInsidePath(path: ast.NodePath): path is ast.SelectablePath {
+  isStrictlyInsidePath(path: t.NodePath): path is t.SelectablePath {
     return this.isStrictlyInsideNode(path.node);
   }
 
-  isStrictlyInsideNode(node: ast.Node): node is ast.SelectableNode {
+  isStrictlyInsideNode(node: t.Node): node is t.SelectableNode {
     return (
-      ast.isSelectableNode(node) &&
+      t.isSelectableNode(node) &&
       this.isStrictlyInside(Selection.fromAST(node.loc))
     );
   }

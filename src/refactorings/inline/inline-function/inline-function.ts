@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
-import * as ast from "../../../ast";
+import * as t from "../../../ast";
 
 import { findParamMatchingId } from "./find-param-matching-id";
 import { findExportedIdNames } from "../find-exported-id-names";
@@ -47,7 +47,7 @@ let isFunctionAssigned: boolean;
 function updateCode(
   code: Code,
   selection: Selection
-): ast.Transformed & {
+): t.Transformed & {
   isExported: boolean;
   hasManyReturns: boolean;
   isAssignedWithoutReturn: boolean;
@@ -59,7 +59,7 @@ function updateCode(
   let isAssignedWithManyStatements = false;
   isFunctionAssigned = false;
 
-  const canInlineFunction = ast.transform(
+  const canInlineFunction = t.transform(
     code,
     createVisitorThat(replaceAllIdentifiersWithFunction, selection)
   ).hasCodeChanged;
@@ -75,7 +75,7 @@ function updateCode(
     };
   }
 
-  const result = ast.transform(
+  const result = t.transform(
     code,
     createVisitorThat((path) => {
       const returnStatementsCount = countReturnStatementsIn(path);
@@ -93,7 +93,7 @@ function updateCode(
       if (isAssignedWithoutReturn) return;
 
       const { node } = path;
-      const scope = ast.getFunctionScopePath(path).node;
+      const scope = t.getFunctionScopePath(path).node;
       isExported =
         !!node.id && findExportedIdNames(scope).includes(node.id.name);
       if (isExported) return;
@@ -112,15 +112,15 @@ function updateCode(
 }
 
 function createVisitorThat(
-  update: (path: ast.NodePath<ast.FunctionDeclaration>) => void,
+  update: (path: t.NodePath<t.FunctionDeclaration>) => void,
   selection: Selection
 ) {
   return {
-    FunctionDeclaration(path: ast.NodePath<ast.FunctionDeclaration>) {
+    FunctionDeclaration(path: t.NodePath<t.FunctionDeclaration>) {
       const { node } = path;
       if (!node.id) return;
-      if (!ast.isSelectableNode(node)) return;
-      if (!ast.isSelectableNode(node.id)) return;
+      if (!t.isSelectableNode(node)) return;
+      if (!t.isSelectableNode(node.id)) return;
 
       // We limit the valid selection to the `function nameOfFunction` part
       // to avoid conflicts with "Inline Variable" refactoring.
@@ -139,12 +139,12 @@ function createVisitorThat(
   };
 }
 
-function countStatementsIn(path: ast.NodePath): StatementsCount {
+function countStatementsIn(path: t.NodePath): StatementsCount {
   let result = StatementsCount.Zero;
 
   path.traverse({
     Statement(path) {
-      if (ast.isBlockStatement(path)) return;
+      if (t.isBlockStatement(path)) return;
 
       result =
         result === StatementsCount.Zero
@@ -156,7 +156,7 @@ function countStatementsIn(path: ast.NodePath): StatementsCount {
   return result;
 }
 
-function countReturnStatementsIn(path: ast.NodePath): StatementsCount {
+function countReturnStatementsIn(path: t.NodePath): StatementsCount {
   let result = StatementsCount.Zero;
 
   path.traverse({
@@ -167,7 +167,7 @@ function countReturnStatementsIn(path: ast.NodePath): StatementsCount {
           : StatementsCount.Many;
 
       // If return is in branched logic, then there is at least 2 returns.
-      if (ast.isInBranchedLogic(path)) {
+      if (t.isInBranchedLogic(path)) {
         result = StatementsCount.Many;
       }
     }
@@ -183,12 +183,12 @@ enum StatementsCount {
 }
 
 function replaceAllIdentifiersWithFunction(
-  path: ast.NodePath<ast.FunctionDeclaration>
+  path: t.NodePath<t.FunctionDeclaration>
 ) {
   const { node } = path;
   if (!node.id) return;
 
-  const parentPath = ast.getFunctionScopePath(path);
+  const parentPath = t.getFunctionScopePath(path);
   const functionBinding = parentPath.scope.getBinding(node.id.name);
 
   if (functionBinding) {
@@ -206,20 +206,20 @@ function replaceAllIdentifiersWithFunction(
 }
 
 function replaceAllIdentifiersInPath(
-  path: ast.NodePath,
-  functionDeclaration: ast.FunctionDeclaration
+  path: t.NodePath,
+  functionDeclaration: t.FunctionDeclaration
 ) {
   const { node } = path;
 
-  if (ast.isCallExpression(node)) {
+  if (t.isCallExpression(node)) {
     const identifier = node.callee;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
     const scopePath = path.findParent(
       (parentPath) =>
-        ast.isVariableDeclarator(parentPath) ||
-        ast.isAssignmentExpression(parentPath) ||
-        ast.isCallExpression(parentPath)
+        t.isVariableDeclarator(parentPath) ||
+        t.isAssignmentExpression(parentPath) ||
+        t.isCallExpression(parentPath)
     );
 
     // Set the global variable, as we know if it's assigned.
@@ -232,22 +232,22 @@ function replaceAllIdentifiersInPath(
     );
   }
 
-  if (ast.isVariableDeclarator(node)) {
+  if (t.isVariableDeclarator(node)) {
     const identifier = node.init;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
-    node.init = ast.functionExpression(
+    node.init = t.functionExpression(
       null,
       functionDeclaration.params,
       functionDeclaration.body
     );
   }
 
-  if (ast.isReturnStatement(node)) {
+  if (t.isReturnStatement(node)) {
     const identifier = node.argument;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
-    node.argument = ast.functionExpression(
+    node.argument = t.functionExpression(
       null,
       functionDeclaration.params,
       functionDeclaration.body
@@ -256,21 +256,21 @@ function replaceAllIdentifiersInPath(
 }
 
 function isMatchingIdentifier(
-  identifier: ast.Node | null,
-  functionDeclaration: ast.FunctionDeclaration
-): identifier is ast.Identifier {
+  identifier: t.Node | null,
+  functionDeclaration: t.FunctionDeclaration
+): identifier is t.Identifier {
   if (!functionDeclaration.id) return false;
 
   return (
-    ast.isIdentifier(identifier) &&
+    t.isIdentifier(identifier) &&
     identifier.name === functionDeclaration.id.name
   );
 }
 
 function replaceWithFunctionBody(
-  path: ast.NodePath,
-  values: ast.CallExpression["arguments"],
-  functionDeclaration: ast.FunctionDeclaration
+  path: t.NodePath,
+  values: t.CallExpression["arguments"],
+  functionDeclaration: t.FunctionDeclaration
 ) {
   path.replaceWithMultiple(
     applyArgumentsToFunction(path, values, functionDeclaration)
@@ -278,11 +278,11 @@ function replaceWithFunctionBody(
 }
 
 function applyArgumentsToFunction(
-  path: ast.NodePath,
-  values: ast.CallExpression["arguments"],
-  functionDeclaration: ast.FunctionDeclaration
-): ast.Statement[] {
-  const functionBodyWithValuesApplied = ast.transformCopy(
+  path: t.NodePath,
+  values: t.CallExpression["arguments"],
+  functionDeclaration: t.FunctionDeclaration
+): t.Statement[] {
+  const functionBodyWithValuesApplied = t.transformCopy(
     path,
     functionDeclaration.body,
     {
@@ -293,14 +293,14 @@ function applyArgumentsToFunction(
         );
         if (!param.isMatch) return;
 
-        const value = param.resolveValue(values) || ast.identifier("undefined");
+        const value = param.resolveValue(values) || t.identifier("undefined");
         idPath.replaceWith(value);
       },
 
       ReturnStatement(returnPath) {
-        if (ast.isInBranchedLogic(returnPath)) return;
+        if (t.isInBranchedLogic(returnPath)) return;
 
-        const scopeWithReturnValueApplied = ast.transformCopy(path, path.node, {
+        const scopeWithReturnValueApplied = t.transformCopy(path, path.node, {
           CallExpression(childPath) {
             const identifier = childPath.node.callee;
             if (!isMatchingIdentifier(identifier, functionDeclaration)) return;

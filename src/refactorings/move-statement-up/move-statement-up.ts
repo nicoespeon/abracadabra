@@ -1,7 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { moveStatementUp };
 
@@ -30,14 +30,14 @@ async function moveStatementUp(editor: Editor) {
 function updateCode(
   code: Code,
   selection: Selection
-): ast.Transformed & {
+): t.Transformed & {
   isFirstStatement: boolean;
   newStatementPosition: Position;
 } {
   let isFirstStatement = false;
   let newStatementPosition = selection.start;
 
-  const result = ast.transform(code, {
+  const result = t.transform(code, {
     Statement: visitPath,
     ObjectProperty: visitPath,
     ObjectMethod: visitPath,
@@ -47,7 +47,7 @@ function updateCode(
 
   return { ...result, isFirstStatement, newStatementPosition };
 
-  function visitPath(path: ast.NodePath) {
+  function visitPath(path: t.NodePath) {
     if (!matchesSelection(path, selection)) return;
     // Since we visit nodes from parent to children, first check
     // if a child would match the selection closer.
@@ -61,7 +61,7 @@ function updateCode(
     }
 
     const pathAbove = path.getSibling(pathAboveKey);
-    if (!ast.isSelectableNode(pathAbove.node)) return;
+    if (!t.isSelectableNode(pathAbove.node)) return;
 
     newStatementPosition = Position.fromAST(
       pathAbove.node.loc.start
@@ -71,8 +71,8 @@ function updateCode(
     // Same if `path` is an object method.
     // Adapt the new statement position accordingly.
     if (
-      ast.isFunction(pathAbove) ||
-      (ast.isObjectMethod(path) && typeof path.key === "number")
+      t.isFunction(pathAbove) ||
+      (t.isObjectMethod(path) && typeof path.key === "number")
     ) {
       const pathBelowKey = path.key + 1;
       const container = new Array().concat(path.container);
@@ -99,7 +99,7 @@ function updateCode(
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -114,7 +114,7 @@ function hasChildWhichMatchesSelection(
 
   return result;
 
-  function visitPath(childPath: ast.NodePath) {
+  function visitPath(childPath: t.NodePath) {
     /**
      * `if (isValid) {` have 2 statements: `IfStatement` and `BlockStatement`.
      * `BlockStatement` can be a valid statement to move. But here, we would
@@ -126,7 +126,7 @@ function hasChildWhichMatchesSelection(
     if (!matchesSelection(childPath, selection)) return;
 
     const { parent } = childPath;
-    if (!ast.isSelectableNode(parent)) return;
+    if (!t.isSelectableNode(parent)) return;
     const parentSelection = Selection.fromAST(parent.loc);
     if (childPath.isObjectProperty() && parentSelection.isOneLine) {
       return;
@@ -136,14 +136,14 @@ function hasChildWhichMatchesSelection(
     childPath.stop();
   }
 
-  function isBlockStatementDirectChild(childPath: ast.NodePath): boolean {
-    return childPath.parentPath === path && ast.isBlockStatement(childPath);
+  function isBlockStatementDirectChild(childPath: t.NodePath): boolean {
+    return childPath.parentPath === path && t.isBlockStatement(childPath);
   }
 }
 
-function matchesSelection(path: ast.NodePath, selection: Selection): boolean {
+function matchesSelection(path: t.NodePath, selection: Selection): boolean {
   const { node } = path;
-  if (!ast.isSelectableNode(node)) return false;
+  if (!t.isSelectableNode(node)) return false;
 
   const extendedSelection = Selection.fromAST(node.loc)
     .extendToStartOfLine()

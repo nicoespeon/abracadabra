@@ -1,6 +1,6 @@
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
-import * as ast from "../../../ast";
+import * as t from "../../../ast";
 
 import {
   findInlinableCode,
@@ -55,20 +55,20 @@ function findInlinableCodeInAST(
 ): InlinableCode | null {
   let result: InlinableCode | null = null;
 
-  ast.parseAndTraverseCode(code, {
+  t.parseAndTraverseCode(code, {
     VariableDeclaration(path) {
       const { node, parent } = path;
 
       // It seems variable declaration inside a named export may have no loc.
       // Use the named export loc in that situation.
-      if (ast.isExportNamedDeclaration(parent) && !ast.isSelectableNode(node)) {
+      if (t.isExportNamedDeclaration(parent) && !t.isSelectableNode(node)) {
         node.loc = parent.loc;
       }
 
       if (!selection.isInsideNode(node)) return;
 
       const declarations = node.declarations.filter(
-        ast.isSelectableVariableDeclarator
+        t.isSelectableVariableDeclarator
       );
 
       if (declarations.length === 1) {
@@ -96,14 +96,14 @@ function findInlinableCodeInAST(
 
       // It seems variable declaration inside a named export may have no loc.
       // Use the named export loc in that situation.
-      if (ast.isExportNamedDeclaration(parent) && !ast.isSelectableNode(node)) {
+      if (t.isExportNamedDeclaration(parent) && !t.isSelectableNode(node)) {
         node.loc = parent.loc;
       }
 
       if (!selection.isInsideNode(node)) return;
 
       const { typeAnnotation } = node;
-      if (!ast.isSelectablePath(path)) return;
+      if (!t.isSelectablePath(path)) return;
 
       // So, this one is funny 🤡
       // We can't use `ast.isSelectableNode(typeAnnotation)` guard clause.

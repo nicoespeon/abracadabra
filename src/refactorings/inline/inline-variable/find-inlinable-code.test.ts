@@ -1,5 +1,4 @@
-import * as ast from "../../../ast";
-
+import * as t from "../../../ast";
 import { Selection } from "../../../editor/selection";
 import { Modification } from "../../../editor/editor";
 
@@ -90,15 +89,12 @@ class FakeInlinable implements InlinableCode {
 }
 
 function createInlinableObjectPattern(child: InlinableCode, initName: string) {
-  const ANY_LOC: ast.SourceLocation = {
+  const ANY_LOC: t.SourceLocation = {
     start: { line: 0, column: 0 },
     end: { line: 0, column: 0 }
   };
-  const ANY_PROPERTY = ast.objectProperty(
-    ast.identifier(""),
-    ast.identifier("")
-  );
-  const ANY_SELECTABLE_PROPERTY: ast.SelectableObjectProperty = {
+  const ANY_PROPERTY = t.objectProperty(t.identifier(""), t.identifier(""));
+  const ANY_SELECTABLE_PROPERTY: t.SelectableObjectProperty = {
     ...ANY_PROPERTY,
     loc: ANY_LOC,
     key: {

@@ -1,7 +1,7 @@
 import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { moveStatementDown };
 
@@ -30,14 +30,14 @@ async function moveStatementDown(editor: Editor) {
 function updateCode(
   code: Code,
   selection: Selection
-): ast.Transformed & {
+): t.Transformed & {
   isLastStatement: boolean;
   newStatementPosition: Position;
 } {
   let isLastStatement = false;
   let newStatementPosition = selection.start;
 
-  const result = ast.transform(code, {
+  const result = t.transform(code, {
     Statement: visitPath,
     ObjectProperty: visitPath,
     ObjectMethod: visitPath,
@@ -47,7 +47,7 @@ function updateCode(
 
   return { ...result, isLastStatement, newStatementPosition };
 
-  function visitPath(path: ast.NodePath) {
+  function visitPath(path: t.NodePath) {
     if (!matchesSelection(path, selection)) return;
     // Since we visit nodes from parent to children, first check
     // if a child would match the selection closer.
@@ -63,8 +63,8 @@ function updateCode(
     }
 
     const pathBelow = path.getSibling(pathBelowKey);
-    if (!ast.isSelectableNode(pathBelow.node)) return;
-    if (!ast.isSelectableNode(path.node)) return;
+    if (!t.isSelectableNode(pathBelow.node)) return;
+    if (!t.isSelectableNode(path.node)) return;
 
     const nodeSelection = Selection.fromAST(path.node.loc);
     const nodeBelowSelection = Selection.fromAST(pathBelow.node.loc);
@@ -80,8 +80,8 @@ function updateCode(
     // Same if `path` is an object method.
     // Adapt the new statement position accordingly.
     if (
-      ast.isFunction(pathBelow) ||
-      (ast.isObjectMethod(path) && typeof path.key === "number")
+      t.isFunction(pathBelow) ||
+      (t.isObjectMethod(path) && typeof path.key === "number")
     ) {
       const hasPathAbove = path.key > 0;
       const extracted = path.getSibling(path.key - 1);
@@ -106,7 +106,7 @@ function updateCode(
 }
 
 function hasChildWhichMatchesSelection(
-  path: ast.NodePath,
+  path: t.NodePath,
   selection: Selection
 ): boolean {
   let result = false;
@@ -121,7 +121,7 @@ function hasChildWhichMatchesSelection(
 
   return result;
 
-  function visitPath(childPath: ast.NodePath) {
+  function visitPath(childPath: t.NodePath) {
     /**
      * `if (isValid) {` have 2 statements: `IfStatement` and `BlockStatement`.
      * `BlockStatement` can be a valid statement to move. But here, we would
@@ -133,7 +133,7 @@ function hasChildWhichMatchesSelection(
     if (!matchesSelection(childPath, selection)) return;
 
     const { parent } = childPath;
-    if (!ast.isSelectableNode(parent)) return;
+    if (!t.isSelectableNode(parent)) return;
     const parentSelection = Selection.fromAST(parent.loc);
     if (childPath.isObjectProperty() && parentSelection.isOneLine) return;
 
@@ -141,14 +141,14 @@ function hasChildWhichMatchesSelection(
     childPath.stop();
   }
 
-  function isBlockStatementDirectChild(childPath: ast.NodePath): boolean {
-    return childPath.parentPath === path && ast.isBlockStatement(childPath);
+  function isBlockStatementDirectChild(childPath: t.NodePath): boolean {
+    return childPath.parentPath === path && t.isBlockStatement(childPath);
   }
 }
 
-function matchesSelection(path: ast.NodePath, selection: Selection): boolean {
+function matchesSelection(path: t.NodePath, selection: Selection): boolean {
   const { node } = path;
-  if (!ast.isSelectableNode(node)) return false;
+  if (!t.isSelectableNode(node)) return false;
 
   const extendedSelection = Selection.fromAST(node.loc)
     .extendToStartOfLine()

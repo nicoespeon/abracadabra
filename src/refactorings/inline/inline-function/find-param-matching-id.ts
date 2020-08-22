@@ -1,4 +1,4 @@
-import * as ast from "../../../ast";
+import * as t from "../../../ast";
 
 export { findParamMatchingId };
 
@@ -33,33 +33,33 @@ export { findParamMatchingId };
  */
 
 function findParamMatchingId(
-  id: ast.Identifier,
-  params: (ast.Node | null)[]
+  id: t.Identifier,
+  params: (t.Node | null)[]
 ): MatchingParam {
   return params.reduce((result: MatchingParam, param, index) => {
     if (result.isMatch) return result;
 
-    if (ast.isIdentifier(param)) {
+    if (t.isIdentifier(param)) {
       return new MatchingIdentifier(index, id, param);
     }
 
-    if (ast.isAssignmentPattern(param)) {
+    if (t.isAssignmentPattern(param)) {
       return new MatchingAssignment(index, id, param);
     }
 
-    if (ast.isArrayPattern(param)) {
+    if (t.isArrayPattern(param)) {
       return new MatchingArray(index, findParamMatchingId(id, param.elements));
     }
 
-    if (ast.isObjectPattern(param)) {
+    if (t.isObjectPattern(param)) {
       const values = getPropertiesValues(param);
       return new MatchingObject(index, findParamMatchingId(id, values));
     }
 
-    if (ast.isRestElement(param)) {
+    if (t.isRestElement(param)) {
       const argument = param.argument;
 
-      if (ast.isIdentifier(argument)) {
+      if (t.isIdentifier(argument)) {
         return new MatchingRestIdentifier(index, params, id, argument);
       }
 
@@ -74,14 +74,14 @@ function findParamMatchingId(
 }
 
 function getPropertiesValues(
-  param: ast.ObjectPattern
-): ast.ObjectProperty["value"][] {
+  param: t.ObjectPattern
+): t.ObjectProperty["value"][] {
   return param.properties
     .map((property) => {
-      if (ast.isRestElement(property)) return property;
+      if (t.isRestElement(property)) return property;
       return property.value;
     })
-    .filter((el): el is ast.ObjectProperty["value"] => el !== null);
+    .filter((el): el is t.ObjectProperty["value"] => el !== null);
 }
 
 // 🎭 Component interface
@@ -91,7 +91,7 @@ interface MatchingParam {
   resolveValue: (args: Value[]) => Value;
 }
 
-type Value = ast.Node | null;
+type Value = t.Node | null;
 
 // 🍂 Leaves
 
@@ -105,10 +105,10 @@ class NoMatch implements MatchingParam {
 
 class MatchingIdentifier implements MatchingParam {
   private index: number;
-  private id: ast.Identifier;
-  private param: ast.Identifier;
+  private id: t.Identifier;
+  private param: t.Identifier;
 
-  constructor(index: number, id: ast.Identifier, param: ast.Identifier) {
+  constructor(index: number, id: t.Identifier, param: t.Identifier) {
     this.index = index;
     this.id = id;
     this.param = param;
@@ -125,10 +125,10 @@ class MatchingIdentifier implements MatchingParam {
 
 class MatchingAssignment implements MatchingParam {
   private index: number;
-  private id: ast.Identifier;
-  private param: ast.AssignmentPattern;
+  private id: t.Identifier;
+  private param: t.AssignmentPattern;
 
-  constructor(index: number, id: ast.Identifier, param: ast.AssignmentPattern) {
+  constructor(index: number, id: t.Identifier, param: t.AssignmentPattern) {
     this.index = index;
     this.id = id;
     this.param = param;
@@ -136,7 +136,7 @@ class MatchingAssignment implements MatchingParam {
 
   get isMatch() {
     return (
-      ast.isIdentifier(this.param.left) && this.id.name === this.param.left.name
+      t.isIdentifier(this.param.left) && this.id.name === this.param.left.name
     );
   }
 
@@ -147,21 +147,21 @@ class MatchingAssignment implements MatchingParam {
 
 class MatchingRestIdentifier implements MatchingParam {
   private index: number;
-  private id: ast.Identifier;
-  private argument: ast.Identifier;
-  private omittedIdNames: ast.Identifier["name"][];
+  private id: t.Identifier;
+  private argument: t.Identifier;
+  private omittedIdNames: t.Identifier["name"][];
 
   constructor(
     index: number,
-    params: (ast.Node | null)[],
-    id: ast.Identifier,
-    argument: ast.Identifier
+    params: (t.Node | null)[],
+    id: t.Identifier,
+    argument: t.Identifier
   ) {
     this.index = index;
     this.id = id;
     this.argument = argument;
     this.omittedIdNames = params
-      .filter((param): param is ast.Identifier => ast.isIdentifier(param))
+      .filter((param): param is t.Identifier => t.isIdentifier(param))
       .map((param) => param.name);
   }
 
@@ -170,28 +170,23 @@ class MatchingRestIdentifier implements MatchingParam {
   }
 
   resolveValue(args: Value[]) {
-    return ast.areAllObjectProperties(args)
+    return t.areAllObjectProperties(args)
       ? this.resolveObjectExpressionValue(args)
       : this.resolveArrayExpressionValue(args);
   }
 
-  private resolveObjectExpressionValue(args: ast.ObjectProperty[]): Value {
+  private resolveObjectExpressionValue(args: t.ObjectProperty[]): Value {
     const pickedArgs = args.filter(
       (arg) =>
-        !(
-          ast.isIdentifier(arg.key) &&
-          this.omittedIdNames.includes(arg.key.name)
-        )
+        !(t.isIdentifier(arg.key) && this.omittedIdNames.includes(arg.key.name))
     );
 
-    return ast.objectExpression(pickedArgs);
+    return t.objectExpression(pickedArgs);
   }
 
   private resolveArrayExpressionValue(args: Value[]): Value {
-    const elements = args
-      .slice(this.index)
-      .filter(ast.isArrayExpressionElement);
-    return ast.arrayExpression(elements);
+    const elements = args.slice(this.index).filter(t.isArrayExpressionElement);
+    return t.arrayExpression(elements);
   }
 }
 
@@ -211,18 +206,18 @@ class MatchingArray implements MatchingParam {
   }
 
   resolveValue(args: Value[]) {
-    return ast.areAllObjectProperties(args)
+    return t.areAllObjectProperties(args)
       ? this.resolveObjectExpressionValue(args)
       : this.resolveArrayExpressionValue(args);
   }
 
-  private resolveObjectExpressionValue(args: ast.ObjectProperty[]): Value {
+  private resolveObjectExpressionValue(args: t.ObjectProperty[]): Value {
     return this.resolveArrayExpressionValue(args.map((arg) => arg.value));
   }
 
   private resolveArrayExpressionValue(args: Value[]) {
     const value = args[this.index];
-    if (!ast.isArrayExpression(value)) return value;
+    if (!t.isArrayExpression(value)) return value;
     return this.child.resolveValue(value.elements);
   }
 }
@@ -242,10 +237,10 @@ class MatchingObject implements MatchingParam {
 
   resolveValue(args: Value[]) {
     const value = args[this.index];
-    if (!ast.isObjectExpression(value)) return value;
+    if (!t.isObjectExpression(value)) return value;
 
     const property = this.child.resolveValue(value.properties);
-    if (!ast.isObjectProperty(property)) return property;
+    if (!t.isObjectProperty(property)) return property;
 
     return property.value;
   }

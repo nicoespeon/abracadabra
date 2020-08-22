@@ -1,23 +1,23 @@
-import * as ast from "../../ast";
+import * as t from "../../ast";
 
 export { findExportedIdNames };
 
-function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
-  let result: ast.Identifier["name"][] = [];
+function findExportedIdNames(scope: t.Node): t.Identifier["name"][] {
+  let result: t.Identifier["name"][] = [];
 
-  ast.traverseNode(scope, {
+  t.traverseNode(scope, {
     enter(node) {
       // Pattern `export default foo`
       if (
-        ast.isExportDefaultDeclaration(node) &&
-        ast.isIdentifier(node.declaration)
+        t.isExportDefaultDeclaration(node) &&
+        t.isIdentifier(node.declaration)
       ) {
         result.push(node.declaration.name);
       }
 
-      if (ast.isExportNamedDeclaration(node)) {
+      if (t.isExportNamedDeclaration(node)) {
         // Pattern `export const foo = "bar", hello = "world"`
-        if (ast.isVariableDeclaration(node.declaration)) {
+        if (t.isVariableDeclaration(node.declaration)) {
           node.declaration.declarations.forEach(({ id }) => {
             if (!("name" in id)) return;
             result.push(id.name);
@@ -25,13 +25,13 @@ function findExportedIdNames(scope: ast.Node): ast.Identifier["name"][] {
         }
 
         // Pattern `export type Value = "one" | "many" | "none";`
-        if (ast.isTSTypeAliasDeclaration(node.declaration)) {
+        if (t.isTSTypeAliasDeclaration(node.declaration)) {
           result.push(node.declaration.id.name);
         }
 
         // Pattern `export { foo, hello }`
         node.specifiers.forEach((specifier) => {
-          if (!ast.isExportSpecifier(specifier)) return;
+          if (!t.isExportSpecifier(specifier)) return;
           result.push(specifier.local.name);
         });
       }

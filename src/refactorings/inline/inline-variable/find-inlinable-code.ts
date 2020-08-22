@@ -1,6 +1,6 @@
 import { Code, Modification } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
-import * as ast from "../../../ast";
+import * as t from "../../../ast";
 import { last } from "../../../array-helpers";
 
 import { findExportedIdNames } from "../find-exported-id-names";
@@ -16,24 +16,24 @@ export {
 
 function findInlinableCode(
   selection: Selection,
-  parent: ast.Node,
+  parent: t.Node,
   declaration: Declaration
 ): InlinableCode | null {
   const { id, init } = declaration;
-  if (!ast.isSelectableNode(init)) return null;
+  if (!t.isSelectableNode(init)) return null;
 
-  if (ast.isSelectableIdentifier(id)) {
+  if (t.isSelectableIdentifier(id)) {
     return new InlinableIdentifier(id, parent, init.loc);
   }
 
-  if (ast.isObjectPattern(id)) {
-    if (!ast.isSelectableNode(id)) return null;
+  if (t.isObjectPattern(id)) {
+    if (!t.isSelectableNode(id)) return null;
 
     let result: InlinableCode | null = null;
     id.properties.forEach((property, index) => {
       if (!selection.isInsideNode(property)) return;
-      if (ast.isRestElement(property)) return;
-      if (!ast.isSelectableObjectProperty(property)) return;
+      if (t.isRestElement(property)) return;
+      if (!t.isSelectableObjectProperty(property)) return;
 
       const child = findInlinableCode(selection, parent, {
         id: property.value,
@@ -46,7 +46,7 @@ function findInlinableCode(
 
       const previous = id.properties[index - 1];
       const next = id.properties[index + 1];
-      const hasRestSibling = id.properties.some((p) => ast.isRestElement(p));
+      const hasRestSibling = id.properties.some((p) => t.isRestElement(p));
 
       result = new InlinableObjectPattern(
         child,
@@ -61,14 +61,14 @@ function findInlinableCode(
     return wrapInTopLevelPattern(result, declaration, id.loc);
   }
 
-  if (ast.isArrayPattern(id)) {
-    if (!ast.isSelectableNode(id)) return null;
+  if (t.isArrayPattern(id)) {
+    if (!t.isSelectableNode(id)) return null;
 
     let result: InlinableCode | null = null;
     id.elements.forEach((element, index) => {
       if (!element) return;
       if (!selection.isInsideNode(element)) return;
-      if (!ast.isSelectableNode(element)) return;
+      if (!t.isSelectableNode(element)) return;
 
       const child = findInlinableCode(selection, parent, {
         id: element,
@@ -88,17 +88,17 @@ function findInlinableCode(
   return null;
 }
 
-function getInitName(init: ast.Node): string | null {
-  if (ast.isIdentifier(init)) return init.name;
+function getInitName(init: t.Node): string | null {
+  if (t.isIdentifier(init)) return init.name;
 
-  if (ast.isMemberExpression(init)) {
+  if (t.isMemberExpression(init)) {
     const { property, computed } = init;
 
-    const propertyName = ast.isNumericLiteral(property)
+    const propertyName = t.isNumericLiteral(property)
       ? `[${property.value}]`
-      : ast.isStringLiteral(property)
+      : t.isStringLiteral(property)
       ? `["${property.value}"]`
-      : ast.isIdentifier(property) && computed
+      : t.isIdentifier(property) && computed
       ? `[${property.name}]`
       : `.${getInitName(property)}`;
 
@@ -110,11 +110,11 @@ function getInitName(init: ast.Node): string | null {
     return `${getInitName(init.object)}${propertyName}`;
   }
 
-  if (ast.isObjectProperty(init)) {
+  if (t.isObjectProperty(init)) {
     return getInitName(init.key);
   }
 
-  if (ast.isThisExpression(init)) {
+  if (t.isThisExpression(init)) {
     return "this";
   }
 
@@ -124,18 +124,18 @@ function getInitName(init: ast.Node): string | null {
 function wrapInTopLevelPattern(
   child: InlinableCode | null,
   declaration: Declaration,
-  loc: ast.SourceLocation
+  loc: t.SourceLocation
 ): InlinableCode | null {
   if (!child) return child;
 
-  const isTopLevelObjectPattern = ast.isVariableDeclarator(declaration);
+  const isTopLevelObjectPattern = t.isVariableDeclarator(declaration);
 
   return isTopLevelObjectPattern
     ? new InlinableTopLevelPattern(child, loc)
     : child;
 }
 
-type Declaration = { id: ast.Node; init: ast.Node | null };
+type Declaration = { id: t.Node; init: t.Node | null };
 
 // 🎭 Component interface
 
@@ -155,14 +155,14 @@ class InlinableIdentifier implements InlinableCode {
   shouldExtendSelectionToDeclaration = true;
   valueSelection: Selection;
 
-  private id: ast.SelectableIdentifier;
-  private scope: ast.Node;
+  private id: t.SelectableIdentifier;
+  private scope: t.Node;
   private identifiersToReplace: IdentifierToReplace[] = [];
 
   constructor(
-    id: ast.SelectableIdentifier,
-    scope: ast.Node,
-    valueLoc: ast.SourceLocation
+    id: t.SelectableIdentifier,
+    scope: t.Node,
+    valueLoc: t.SourceLocation
   ) {
     this.id = id;
     this.scope = scope;
@@ -175,10 +175,10 @@ class InlinableIdentifier implements InlinableCode {
 
     // We have to alias `this` because traversal rebinds the context of the options.
     const self = this;
-    ast.traverseNode(this.scope, {
+    t.traverseNode(this.scope, {
       enter(node) {
-        if (!ast.isAssignmentExpression(node)) return;
-        if (!ast.areEquivalent(self.id, node.left)) return;
+        if (!t.isAssignmentExpression(node)) return;
+        if (!t.areEquivalent(self.id, node.left)) return;
 
         result = true;
       }
@@ -217,11 +217,11 @@ class InlinableIdentifier implements InlinableCode {
   private computeIdentifiersToReplace() {
     // We have to alias `this` because traversal rebinds the context of the options.
     const self = this;
-    ast.traverseNode(this.scope, {
+    t.traverseNode(this.scope, {
       enter(node, ancestors) {
-        if (!ast.isSelectableNode(node)) return;
-        if (!ast.areEquivalent(self.id, node)) return;
-        if (ast.isShadowIn(self.id, ancestors)) return;
+        if (!t.isSelectableNode(node)) return;
+        if (!t.areEquivalent(self.id, node)) return;
+        if (t.isShadowIn(self.id, ancestors)) return;
 
         const selection = Selection.fromAST(node.loc);
         const isSameIdentifier = selection.isInsideNode(self.id);
@@ -229,12 +229,12 @@ class InlinableIdentifier implements InlinableCode {
 
         const parent = last(ancestors);
         if (!parent) return;
-        if (ast.isFunctionDeclaration(parent)) return;
-        if (ast.isObjectProperty(parent.node) && parent.node.key === node) {
+        if (t.isFunctionDeclaration(parent)) return;
+        if (t.isObjectProperty(parent.node) && parent.node.key === node) {
           return;
         }
         if (
-          ast.isMemberExpression(parent.node) &&
+          t.isMemberExpression(parent.node) &&
           parent.node.property === node
         ) {
           return;
@@ -242,11 +242,11 @@ class InlinableIdentifier implements InlinableCode {
 
         self.identifiersToReplace.push({
           loc: node.loc,
-          isInUnaryExpression: ast.isUnaryExpression(parent.node),
+          isInUnaryExpression: t.isUnaryExpression(parent.node),
           shorthandKey:
-            ast.isObjectProperty(parent.node) &&
+            t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&
-            ast.isIdentifier(node)
+            t.isIdentifier(node)
               ? node.name
               : null
         });
@@ -263,12 +263,12 @@ class InlinableTSTypeAlias implements InlinableCode {
   // Type aliases can't be redeclared.
   isRedeclared = false;
 
-  private path: ast.SelectablePath<ast.TSTypeAliasDeclaration>;
-  private refToReplaceLocs: ast.SourceLocation[] = [];
+  private path: t.SelectablePath<t.TSTypeAliasDeclaration>;
+  private refToReplaceLocs: t.SourceLocation[] = [];
 
   constructor(
-    path: ast.SelectablePath<ast.TSTypeAliasDeclaration>,
-    valueLoc: ast.SourceLocation
+    path: t.SelectablePath<t.TSTypeAliasDeclaration>,
+    valueLoc: t.SourceLocation
   ) {
     this.path = path;
     this.codeToRemoveSelection = Selection.fromAST(path.node.loc);
@@ -298,8 +298,8 @@ class InlinableTSTypeAlias implements InlinableCode {
     const self = this;
     this.path.parentPath.traverse({
       TSTypeReference(path) {
-        if (!ast.isSelectablePath(path)) return;
-        if (!ast.areEquivalent(self.path.node.id, path.node.typeName)) return;
+        if (!t.isSelectablePath(path)) return;
+        if (!t.areEquivalent(self.path.node.id, path.node.typeName)) return;
 
         self.refToReplaceLocs.push(path.node.loc);
       }
@@ -308,7 +308,7 @@ class InlinableTSTypeAlias implements InlinableCode {
 }
 
 interface IdentifierToReplace {
-  loc: ast.SourceLocation;
+  loc: t.SourceLocation;
   isInUnaryExpression: boolean;
   shorthandKey: string | null;
 }
@@ -363,13 +363,13 @@ class SingleDeclaration extends CompositeInlinable {
 }
 
 class MultipleDeclarations extends CompositeInlinable {
-  private previous: ast.SelectableNode;
-  private next: ast.SelectableNode | undefined;
+  private previous: t.SelectableNode;
+  private next: t.SelectableNode | undefined;
 
   constructor(
     child: InlinableCode,
-    previous: ast.SelectableNode,
-    next?: ast.SelectableNode
+    previous: t.SelectableNode,
+    next?: t.SelectableNode
   ) {
     super(child);
     this.previous = previous;
@@ -391,29 +391,29 @@ class MultipleDeclarations extends CompositeInlinable {
 
 class InlinableObjectPattern extends CompositeInlinable {
   private initName: string;
-  private property: ast.SelectableObjectProperty;
-  private previous: ast.SelectableObjectProperty | undefined;
-  private next: ast.SelectableObjectProperty | undefined;
+  private property: t.SelectableObjectProperty;
+  private previous: t.SelectableObjectProperty | undefined;
+  private next: t.SelectableObjectProperty | undefined;
   private hasRestSibling: boolean;
 
   constructor(
     child: InlinableCode,
     initName: string,
-    property: ast.SelectableObjectProperty,
+    property: t.SelectableObjectProperty,
     hasRestSibling: boolean,
-    previous?: ast.Node | null,
-    next?: ast.Node | null
+    previous?: t.Node | null,
+    next?: t.Node | null
   ) {
     super(child);
     this.initName = initName;
     this.property = property;
     this.hasRestSibling = hasRestSibling;
 
-    if (previous && ast.isSelectableObjectProperty(previous)) {
+    if (previous && t.isSelectableObjectProperty(previous)) {
       this.previous = previous;
     }
 
-    if (next && ast.isSelectableObjectProperty(next)) {
+    if (next && t.isSelectableObjectProperty(next)) {
       this.next = next;
     }
   }
@@ -438,7 +438,7 @@ class InlinableObjectPattern extends CompositeInlinable {
       const keySelection = Selection.fromAST(this.property.key.loc);
       const NO_SELECTION = Selection.cursorAt(0, 0);
 
-      return ast.isObjectPattern(this.property.value)
+      return t.isObjectPattern(this.property.value)
         ? valueSelection.extendStartToEndOf(keySelection)
         : NO_SELECTION;
     }
@@ -477,26 +477,26 @@ class InlinableObjectPattern extends CompositeInlinable {
 
 class InlinableArrayPattern extends CompositeInlinable {
   private index: number;
-  private element: ast.SelectableNode;
-  private previous: ast.SelectableNode | undefined;
-  private next: ast.SelectableNode | undefined;
+  private element: t.SelectableNode;
+  private previous: t.SelectableNode | undefined;
+  private next: t.SelectableNode | undefined;
 
   constructor(
     child: InlinableCode,
     index: number,
-    element: ast.SelectableNode,
-    previous?: ast.Node | null,
-    next?: ast.Node | null
+    element: t.SelectableNode,
+    previous?: t.Node | null,
+    next?: t.Node | null
   ) {
     super(child);
     this.index = index;
     this.element = element;
 
-    if (previous && ast.isSelectableNode(previous)) {
+    if (previous && t.isSelectableNode(previous)) {
       this.previous = previous;
     }
 
-    if (next && ast.isSelectableNode(next)) {
+    if (next && t.isSelectableNode(next)) {
       this.next = next;
     }
   }
@@ -527,9 +527,9 @@ class InlinableArrayPattern extends CompositeInlinable {
 }
 
 class InlinableTopLevelPattern extends CompositeInlinable {
-  private loc: ast.SourceLocation;
+  private loc: t.SourceLocation;
 
-  constructor(child: InlinableCode, loc: ast.SourceLocation) {
+  constructor(child: InlinableCode, loc: t.SourceLocation) {
     super(child);
     this.loc = loc;
   }
