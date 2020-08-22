@@ -1,85 +1,69 @@
-import { Selection } from "../../editor/selection";
-import { Editor, ErrorReason, Code } from "../../editor/editor";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { addBracesToArrowFunction } from "./add-braces-to-arrow-function";
 
 describe("Add Braces to Arrow Function", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should add braces to arrow function",
     [
       {
         description: "basic scenario",
-        code: `const sayHello = () => "Hello!";`,
-        selection: Selection.cursorAt(0, 17),
+        code: `const sayHello = [cursor]() => "Hello!";`,
         expected: `const sayHello = () => {
   return "Hello!";
 };`
       },
       {
         description: "nested arrow function, cursor on wrapper",
-        code: `const createSayHello = () => () => "Hello!";`,
-        selection: Selection.cursorAt(0, 23),
+        code: `const createSayHello = [cursor]() => () => "Hello!";`,
         expected: `const createSayHello = () => {
   return () => "Hello!";
 };`
       },
       {
         description: "nested arrow function, cursor on nested",
-        code: `const createSayHello = () => () => "Hello!";`,
-        selection: Selection.cursorAt(0, 29),
+        code: `const createSayHello = () => [cursor]() => "Hello!";`,
         expected: `const createSayHello = () => () => {
   return "Hello!";
 };`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doAddBracesToArrowFunction(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await addBracesToArrowFunction(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should throw an error if can't find an arrow function", async () => {
     const code = `function getTotal() {
-  return fees * 10;
+  [cursor]return fees * 10;
 }`;
-    const selection = Selection.cursorAt(1, 2);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doAddBracesToArrowFunction(code, selection);
+    await addBracesToArrowFunction(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
 
   it("should throw an error if arrow function already has braces", async () => {
     const code = `const sayHello = () => {
-  return "Hello!";
+  [cursor]return "Hello!";
 }`;
-    const selection = Selection.cursorAt(1, 2);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doAddBracesToArrowFunction(code, selection);
+    await addBracesToArrowFunction(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindArrowFunctionToAddBraces
     );
   });
-
-  async function doAddBracesToArrowFunction(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await addBracesToArrowFunction(code, selection, editor);
-    return editor.code;
-  }
 });

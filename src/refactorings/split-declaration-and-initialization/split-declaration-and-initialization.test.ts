@@ -1,18 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { splitDeclarationAndInitialization } from "./split-declaration-and-initialization";
 
 describe("Split Declaration and Initialization", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should split declaration and initialization",
     [
       {
@@ -50,8 +43,7 @@ const lastName = "Doe";`
       {
         description: "multi-lines assignment (selection in the middle)",
         code: `const firstName =
-  "Jane";`,
-        selection: Selection.cursorAt(1, 2),
+  [cursor]"Jane";`,
         expected: `let firstName;
 firstName = "Jane";`
       },
@@ -75,7 +67,6 @@ lastName = "Doe";`
   const lastName = "Doe";
   return lastName;
 };`,
-        selection: Selection.cursorAt(0, 0),
         expected: `let getLastName;
 
 getLastName = () => {
@@ -86,10 +77,9 @@ getLastName = () => {
       {
         description: "nested declaration, cursor on nested",
         code: `const getLastName = () => {
-  const lastName = "Doe";
+  [cursor]const lastName = "Doe";
   return lastName;
 };`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const getLastName = () => {
   let lastName;
   lastName = "Doe";
@@ -97,42 +87,36 @@ getLastName = () => {
 };`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doSplitDeclarationAndInitialization(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await splitDeclarationAndInitialization(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should throw an error if there is nothing to split", async () => {
-    const code = `passengersCount = 1;`;
-    const selection = Selection.cursorAt(0, 4);
+    const code = `pass[cursor]engersCount = 1;`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doSplitDeclarationAndInitialization(code, selection);
+    await splitDeclarationAndInitialization(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindDeclarationToSplit
     );
   });
 
   it("should throw an error if variable is not initialized", async () => {
-    const code = `var firstName;`;
-    const selection = Selection.cursorAt(0, 4);
+    const code = `var [cursor]firstName;`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doSplitDeclarationAndInitialization(code, selection);
+    await splitDeclarationAndInitialization(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindDeclarationToSplit
     );
   });
-
-  async function doSplitDeclarationAndInitialization(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await splitDeclarationAndInitialization(code, selection, editor);
-    return editor.code;
-  }
 });

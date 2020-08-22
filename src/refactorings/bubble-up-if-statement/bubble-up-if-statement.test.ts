@@ -1,24 +1,17 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { bubbleUpIfStatement } from "./bubble-up-if-statement";
 
 describe("Bubble Up If Statement", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should bubble up if statement",
     [
       {
         description: "simple if nested in another if",
         code: `if (isValid) {
-  if (isCorrect) {
+  [cursor]if (isCorrect) {
     doSomething();
   }
 }`,
@@ -31,7 +24,7 @@ describe("Bubble Up If Statement", () => {
       {
         description: "simple if nested in another if with else",
         code: `if (isValid) {
-  if (isCorrect) {
+  [cursor]if (isCorrect) {
     doSomething();
   }
 } else {
@@ -50,7 +43,7 @@ describe("Bubble Up If Statement", () => {
       {
         description: "if-else nested in a simple if",
         code: `if (isValid) {
-  if (isCorrect) {
+  [cursor]if (isCorrect) {
     doSomething();
   } else {
     doAnotherThing();
@@ -69,7 +62,7 @@ describe("Bubble Up If Statement", () => {
       {
         description: "if-else nested in another if-else",
         code: `if (isValid) {
-  if (isCorrect) {
+  [cursor]if (isCorrect) {
     doSomething();
   } else {
     doAnotherThing();
@@ -94,7 +87,7 @@ describe("Bubble Up If Statement", () => {
       {
         description: "deeply nested if, cursor on intermediate if",
         code: `if (isValid) {
-  if (isCorrect) {
+  [cursor]if (isCorrect) {
     if (shouldDoSomething) {
       doSomething();
     }
@@ -112,12 +105,11 @@ describe("Bubble Up If Statement", () => {
         description: "deeply nested if, cursor on deepest if",
         code: `if (isValid) {
   if (isCorrect) {
-    if (shouldDoSomething) {
+    [cursor]if (shouldDoSomething) {
       doSomething();
     }
   }
 }`,
-        selection: Selection.cursorAt(2, 4),
         expected: `if (isValid) {
   if (shouldDoSomething) {
     if (isCorrect) {
@@ -135,11 +127,10 @@ describe("Bubble Up If Statement", () => {
 }
 
 if (shouldLog) {
-  if (canLog) {
+  [cursor]if (canLog) {
     logData();
   }
 }`,
-        selection: Selection.cursorAt(7, 2),
         expected: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -157,13 +148,12 @@ if (canLog) {
         code: `if (isCorrect) {
   doSomething();
 
-  if (isValid) {
+  [cursor]if (isValid) {
     doSomethingElse();
   }
 
   logData();
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -185,7 +175,7 @@ if (canLog) {
         code: `if (isCorrect) {
   doSomething();
 
-  if (isValid) {
+  [cursor]if (isValid) {
     doSomethingElse();
   } else {
     doNothing();
@@ -193,7 +183,6 @@ if (canLog) {
 
   logData();
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -218,7 +207,7 @@ if (canLog) {
         code: `if (isCorrect) {
   doSomething();
 
-  if (isValid) {
+  [cursor]if (isValid) {
     doSomethingElse();
   } else {
     doNothing();
@@ -228,7 +217,6 @@ if (canLog) {
 } else {
   doAnotherThing();
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -252,14 +240,16 @@ if (canLog) {
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(1, 2), expected }) => {
-      const result = await doBubbleUpIfStatement(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await bubbleUpIfStatement(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection: Selection }>(
+  testEach<{ code: Code }>(
     "should not bubble up",
     [
       // We don't handle scenarios where nested if is in the else node.
@@ -269,36 +259,29 @@ if (canLog) {
         code: `if (isCorrect) {
   doSomething();
 } else {
-  if (isValid) {
+  [cursor]if (isValid) {
     doSomethingElse();
   }
-}`,
-        selection: Selection.cursorAt(3, 2)
+}`
       }
     ],
-    async ({ code, selection }) => {
-      const result = await doBubbleUpIfStatement(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result).toBe(code);
+      await bubbleUpIfStatement(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
-
-    await doBubbleUpIfStatement(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.DidNotFindNestedIf);
-  });
-
-  async function doBubbleUpIfStatement(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
     const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await bubbleUpIfStatement(code, selection, editor);
-    return editor.code;
-  }
+    jest.spyOn(editor, "showError");
+
+    await bubbleUpIfStatement(editor);
+
+    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindNestedIf);
+  });
 });

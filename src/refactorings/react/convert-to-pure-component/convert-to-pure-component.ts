@@ -4,15 +4,11 @@ import * as reactCodemod from "react-codemod/transforms/pure-component";
 const pureComponent = reactCodemod.default;
 
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 
 export { convertToPureComponent };
 
-async function convertToPureComponent(
-  code: Code,
-  _selection: Selection,
-  editor: Editor
-) {
+async function convertToPureComponent(editor: Editor) {
+  const { code } = editor;
   const useArrowsChoice = await editor.askUser([
     { value: true, label: "Use an arrow function" },
     { value: false, label: "Use a function declaration" }

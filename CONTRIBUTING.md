@@ -41,6 +41,15 @@ In short, most of our tests are unit tests. We test business logic in isolation 
 
 We don't have VS Code integration tests. [We've documented why in this ADR][adr-no-integration-tests].
 
+To do so, we're using an `InMemoryEditor` implementation that behaves as expected. To ensure it behaves as expected, we have written contract tests (in theory, we should be able to run these same tests on the `VSCodeEditor`).
+
+The InMemory editor has convenient features that makes tests easier to write:
+
+- `[start]` and `[end]` are parsed as if it was the selection of the user
+- `[cursor]` is parsed as if it was the cursor of the user (the cursor really is an empty selection, so that's a shorthand for `[start][end]`)
+
+Have a look at existing tests, you'll see that this leads to very easy to read specifications.
+
 ## Create a new refactoring
 
 Run `yarn new` and follow the tool, it will ask you the relevant questions.

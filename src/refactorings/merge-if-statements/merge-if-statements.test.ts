@@ -1,18 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { mergeIfStatements } from "./merge-if-statements";
 
 describe("Split If Statement", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should merge if statements",
     [
       {
@@ -37,14 +30,13 @@ describe("Split If Statement", () => {
       },
       {
         description: "nested if statements, cursor on wrapper",
-        code: `if (isValid) {
+        code: `if ([cursor]isValid) {
   if (isCorrect) {
     if (shouldDoSomething) {
       doSomething();
     }
   }
 }`,
-        selection: Selection.cursorAt(0, 4),
         expected: `if (isValid && isCorrect) {
   if (shouldDoSomething) {
     doSomething();
@@ -54,13 +46,12 @@ describe("Split If Statement", () => {
       {
         description: "nested if statements, cursor on nested",
         code: `if (isValid) {
-  if (isCorrect) {
+  if ([cursor]isCorrect) {
     if (shouldDoSomething) {
       doSomething();
     }
   }
 }`,
-        selection: Selection.cursorAt(1, 6),
         expected: `if (isValid) {
   if (isCorrect && shouldDoSomething) {
     doSomething();
@@ -71,12 +62,11 @@ describe("Split If Statement", () => {
         description: "nested if statements, cursor on deepest nested",
         code: `if (isValid) {
   if (isCorrect) {
-    if (shouldDoSomething) {
+    if ([cursor]shouldDoSomething) {
       doSomething();
     }
   }
 }`,
-        selection: Selection.cursorAt(2, 8),
         expected: `if (isValid) {
   if (isCorrect && shouldDoSomething) {
     doSomething();
@@ -88,14 +78,13 @@ describe("Split If Statement", () => {
           "nested if statements, cursor on nested, deepest nested has an alternate node",
         code: `if (isValid) {
   if (isCorrect) {
-    if (shouldDoSomething) {
+    if ([cursor]shouldDoSomething) {
       doSomething();
     } else {
       doAnotherThing();
     }
   }
 }`,
-        selection: Selection.cursorAt(2, 8),
         expected: `if (isValid && isCorrect) {
   if (shouldDoSomething) {
     doSomething();
@@ -109,11 +98,10 @@ describe("Split If Statement", () => {
         code: `if (isValid) {
   doSomething();
 } else {
-  if (isCorrect) {
+  if ([cursor]isCorrect) {
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(3, 6),
         expected: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -125,13 +113,12 @@ describe("Split If Statement", () => {
         code: `if (isValid) {
   doSomething();
 } else {
-  if (isCorrect) {
+  if ([cursor]isCorrect) {
     doAnotherThing();
   } else {
     doNothing();
   }
 }`,
-        selection: Selection.cursorAt(3, 6),
         expected: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -149,14 +136,13 @@ describe("Split If Statement", () => {
   if (isCorrect) {
     doAnotherThing();
   } else {
-    if (hasNothingToDo) {
+    if ([cursor]hasNothingToDo) {
       doNothing();
     } else {
       logSomething();
     }
   }
 }`,
-        selection: Selection.cursorAt(6, 6),
         expected: `if (isValid) {
   doSomething();
 } else {
@@ -175,14 +161,13 @@ describe("Split If Statement", () => {
   doSomething();
 } else {
   if (isCorrect) {
-    if (shouldDoSomething) {
+    if ([cursor]shouldDoSomething) {
       doAnotherThing();
     }
   } else {
     doNothing();
   }
 }`,
-        selection: Selection.cursorAt(4, 6),
         expected: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -204,7 +189,6 @@ describe("Split If Statement", () => {
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -220,11 +204,10 @@ describe("Split If Statement", () => {
     doSomething();
   }
 } else {
-  if (shouldDoSomething) {
+[cursor]  if (shouldDoSomething) {
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(5, 0),
         expected: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -240,11 +223,10 @@ describe("Split If Statement", () => {
 } else {
   if (shouldDoSomething) {
     if (isCorrect) {
-      doAnotherThing();
+[cursor]      doAnotherThing();
     }
   }
 }`,
-        selection: Selection.cursorAt(5, 0),
         expected: `if (isValid) {
   doSomething();
 } else {
@@ -261,11 +243,10 @@ describe("Split If Statement", () => {
     doSomething();
   } else {
     if (isCorrect) {
-      doAnotherThing();
+[cursor]      doAnotherThing();
     }
   }
 }`,
-        selection: Selection.cursorAt(5, 0),
         expected: `if (isValid) {
   if (shouldDoSomething) {
     doSomething();
@@ -279,11 +260,10 @@ describe("Split If Statement", () => {
         code: `if (isValid) {
   doSomething();
 } else if (shouldDoSomething) {
-  if (isCorrect) {
+[cursor]  if (isCorrect) {
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(3, 0),
         expected: `if (isValid) {
   doSomething();
 } else if (shouldDoSomething && isCorrect) {
@@ -296,12 +276,11 @@ describe("Split If Statement", () => {
   doSomething();
 } else {
   if (shouldDoSomething) {
-    doSomethingElse();
+[cursor]    doSomethingElse();
   } else if (isCorrect) {
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `if (isValid) {
   doSomething();
 } else if (shouldDoSomething) {
@@ -315,7 +294,7 @@ describe("Split If Statement", () => {
         code: `if (isValid) {
   doSomething();
 } else {
-  if (shouldDoSomething) {
+  [cursor]if (shouldDoSomething) {
     doSomethingElse();
   } else {
     if (isCorrect) {
@@ -323,7 +302,6 @@ describe("Split If Statement", () => {
     }
   }
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `if (isValid) {
   doSomething();
 } else if (shouldDoSomething) {
@@ -341,13 +319,12 @@ describe("Split If Statement", () => {
 } else {
   if (shouldDoSomething) {
     doSomethingElse();
-  } else {
+  } [cursor]else {
     if (isCorrect) {
       doAnotherThing();
     }
   }
 }`,
-        selection: Selection.cursorAt(5, 4),
         expected: `if (isValid) {
   doSomething();
 } else {
@@ -359,14 +336,16 @@ describe("Split If Statement", () => {
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doMergeIfStatements(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await mergeIfStatements(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection?: Selection }>(
+  testEach<{ code: Code }>(
     "should not merge if statements",
     [
       {
@@ -404,40 +383,33 @@ describe("Split If Statement", () => {
         code: `if (isValid) {
   doSomething();
 } else {
-  if (isCorrect) {
+  if[cursor] (isCorrect) {
     doSomethingElse();
   }
 
   doAnotherThing();
-}`,
-        selection: Selection.cursorAt(3, 4)
+}`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
-      const result = await doMergeIfStatements(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result).toBe(code);
+      await mergeIfStatements(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should throw an error if there is nothing to merge", async () => {
-    const code = `if (isValid) {}`;
-    const selection = Selection.cursorAt(0, 4);
+    const code = `if ([cursor]isValid) {}`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doMergeIfStatements(code, selection);
+    await mergeIfStatements(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindIfStatementsToMerge
     );
   });
-
-  async function doMergeIfStatements(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await mergeIfStatements(code, selection, editor);
-    return editor.code;
-  }
 });

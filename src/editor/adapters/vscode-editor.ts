@@ -23,6 +23,14 @@ class VSCodeEditor implements Editor {
     this.document = editor.document;
   }
 
+  get code(): Code {
+    return this.document.getText();
+  }
+
+  get selection(): Selection {
+    return createSelectionFromVSCode(this.editor.selection);
+  }
+
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
     // We need to register initial position BEFORE we update the document.
     const cursorAtInitialStartPosition = new vscode.Selection(

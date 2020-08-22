@@ -14,27 +14,36 @@ export { InMemoryEditor };
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
 const DELETED_LINE = "___DELETED_LINE___";
+const CURSOR = "[cursor]";
+const SELECTION_START = "[start]";
+const SELECTION_END = "[end]";
 
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
-  private _position: Position;
+  private _selection: Selection = Selection.cursorAt(0, 0);
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
-    this._position = position;
+    this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
-  get code() {
+  get code(): Code {
     return this.read(this.codeMatrix);
   }
 
+  get selection(): Selection {
+    return this._selection;
+  }
+
   get position() {
-    return this._position;
+    return this.selection.start;
   }
 
   write(code: Code, newCursorPosition?: Position): Promise<void> {
     this.setCodeMatrix(code);
-    if (newCursorPosition) this._position = newCursorPosition;
+    if (newCursorPosition) {
+      this._selection = Selection.cursorAtPosition(newCursorPosition);
+    }
     return Promise.resolve();
   }
 
@@ -43,7 +52,9 @@ class InMemoryEditor implements Editor {
     getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void> {
-    if (newCursorPosition) this._position = newCursorPosition;
+    if (newCursorPosition) {
+      this._selection = Selection.cursorAtPosition(newCursorPosition);
+    }
     const { start, end } = selection;
 
     let readCodeMatrix: CodeMatrix = [];
@@ -125,7 +136,43 @@ class InMemoryEditor implements Editor {
   private setCodeMatrix(code: Code) {
     this.codeMatrix = code
       .split(LINE_SEPARATOR)
+      .map((line) => line.replace(CURSOR, ""))
+      .map((line) => line.replace(SELECTION_START, ""))
+      .map((line) => line.replace(SELECTION_END, ""))
       .map((line) => line.split(CHARS_SEPARATOR));
+  }
+
+  private setSelectionFromCursor(
+    code: Code,
+    defaultSelection: Selection
+  ): void {
+    let lineIndex = 0;
+
+    this._selection = code.split(LINE_SEPARATOR).reduce((selection, line) => {
+      const cursorChar = line.indexOf(CURSOR);
+      if (cursorChar > -1) {
+        selection = Selection.cursorAt(lineIndex, cursorChar);
+      }
+      line = line.replace(CURSOR, "");
+
+      const startChar = line.indexOf(SELECTION_START);
+      if (startChar > -1) {
+        selection = Selection.cursorAt(lineIndex, startChar);
+      }
+      line = line.replace(SELECTION_START, "");
+
+      const endChar = line.indexOf(SELECTION_END);
+      if (endChar > -1) {
+        selection = selection.extendEndToStartOf(
+          Selection.cursorAt(lineIndex, endChar)
+        );
+      }
+      line = line.replace(SELECTION_END, "");
+
+      lineIndex++;
+
+      return selection;
+    }, defaultSelection);
   }
 
   private read(codeMatrix: CodeMatrix): string {

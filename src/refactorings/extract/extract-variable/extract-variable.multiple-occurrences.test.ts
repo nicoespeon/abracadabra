@@ -1,6 +1,4 @@
-import { Editor, Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
+import { Code } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 
 import { extractVariable } from "./extract-variable";
@@ -8,29 +6,25 @@ import { ReplacementStrategy } from "../replacement-strategy";
 import { testEach } from "../../../tests-helpers";
 
 describe("Extract Variable - Multiple occurrences", () => {
-  let askUser: Editor["askUser"];
-
-  beforeEach(() => {
-    askUser = jest.fn();
-  });
-
   it("should not ask the user if there is only one occurrence", async () => {
-    const code = `console.log("Hello");`;
-    const selection = Selection.cursorAt(0, 15);
+    const code = `console.log("Hel[cursor]lo");`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "askUser");
 
-    await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
-    expect(askUser).not.toBeCalled();
+    expect(editor.askUser).not.toBeCalled();
   });
 
   it("should ask the user what to replace if there are multiple occurrences", async () => {
-    const code = `console.log("Hello");
+    const code = `console.log("Hel[cursor]lo");
 sendMessage("Hello");`;
-    const selection = Selection.cursorAt(0, 15);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "askUser");
 
-    await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
-    expect(askUser).toBeCalledWith([
+    expect(editor.askUser).toBeCalledWith([
       {
         value: ReplacementStrategy.AllOccurrences,
         label: "Replace all 2 occurrences"
@@ -43,69 +37,86 @@ sendMessage("Hello");`;
   });
 
   it("should stop extraction if user doesn't select a choice", async () => {
-    const code = `console.log("Hello");
+    const code = `console.log("Hel[cursor]lo");
 sendMessage("Hello");`;
-    const selection = Selection.cursorAt(0, 15);
-    askUser = jest.fn(() => Promise.resolve(undefined));
+    const editor = new InMemoryEditor(code);
+    const originalCode = editor.code;
+    jest.spyOn(editor, "askUser").mockResolvedValue(undefined);
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
-    expect(result.code).toBe(code);
+    expect(editor.code).toBe(originalCode);
   });
 
   it("should extract only selected occurrence if user says so", async () => {
-    const code = `console.log("Hello");
+    const code = `console.log("Hel[cursor]lo");
 sendMessage("Hello");`;
-    const selection = Selection.cursorAt(0, 15);
-    askUser = jest.fn(([_, thisOccurrence]) => Promise.resolve(thisOccurrence));
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([_, thisOccurrence]) =>
+        Promise.resolve(thisOccurrence)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `const hello = "Hello";
 console.log(hello);
 sendMessage("Hello");`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
   it("should extract all occurrences if user says so", async () => {
-    const code = `console.log("Hello");
+    const code = `console.log("Hel[cursor]lo");
 sendMessage("Hello");`;
-    const selection = Selection.cursorAt(0, 15);
-    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `const hello = "Hello";
 console.log(hello);
 sendMessage(hello);`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
   it("should put the extraction above the top most occurrence", async () => {
     const code = `console.log("Hello");
-sendMessage("Hello");`;
-    const selection = Selection.cursorAt(1, 15);
-    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+sendMessage("He[cursor]llo");`;
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `const hello = "Hello";
 console.log(hello);
 sendMessage(hello);`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
   it("should only extract occurrences in the scope of selected one", async () => {
     const code = `function sayHello() {
-  track("said", "Hello");
+  track("said", "H[cursor]ello");
   console.log("Hello");
 }
 
 sendMessage("Hello");`;
-    const selection = Selection.cursorAt(1, 18);
-    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `function sayHello() {
   const hello = "Hello";
@@ -114,22 +125,26 @@ sendMessage("Hello");`;
 }
 
 sendMessage("Hello");`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
   it("should make the extraction in the scope of all occurrences", async () => {
     const code = `function sayHello() {
   if (isValid) {
-    track("said", "Hello");
+    track("said", "[cursor]Hello");
   }
   console.log("Hello");
 }
 
 sendMessage("Hello");`;
-    const selection = Selection.cursorAt(2, 19);
-    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `function sayHello() {
   const hello = "Hello";
@@ -140,14 +155,14 @@ sendMessage("Hello");`;
 }
 
 sendMessage("Hello");`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
   it("should make the extraction in the scope of all occurrences (switch statement)", async () => {
     const code = `function addScore() {
   switch (tempScore) {
     case 0:
-      score += 'Love';
+      score += [cursor]'Love';
       break;
     case 1:
       score += 'Fifteen';
@@ -157,10 +172,14 @@ sendMessage("Hello");`;
       break;
   }
 }`;
-    const selection = Selection.cursorAt(3, 15);
-    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `function addScore() {
   const love = 'Love';
@@ -176,21 +195,25 @@ sendMessage("Hello");`;
       break;
   }
 }`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
   it("should make the extraction in the scope of all occurrences (if statement)", async () => {
     const code = `function sayHello() {
   if (isMorning) {
-    console.log("hello");
+    console.log("[cursor]hello");
     console.log("good morning");
   }
   console.log("hello");
 }`;
-    const selection = Selection.cursorAt(2, 17);
-    askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
 
-    const result = await doExtractVariable(code, selection);
+    await extractVariable(editor);
 
     const expectedCode = `function sayHello() {
   const hello = "hello";
@@ -200,15 +223,15 @@ sendMessage("Hello");`;
   }
   console.log(hello);
 }`;
-    expect(result.code).toBe(expectedCode);
+    expect(editor.code).toBe(expectedCode);
   });
 
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should extract variables of type",
     [
       {
         description: "string",
-        code: `console.log("Hello");
+        code: `console.log([cursor]"Hello");
 sendMessage("Hello");`,
         expected: `const hello = "Hello";
 console.log(hello);
@@ -216,7 +239,7 @@ sendMessage(hello);`
       },
       {
         description: "number",
-        code: `console.log(10);
+        code: `console.log([cursor]10);
 sendMessage(10);`,
         expected: `const extracted = 10;
 console.log(extracted);
@@ -224,7 +247,7 @@ sendMessage(extracted);`
       },
       {
         description: "boolean",
-        code: `console.log(true);
+        code: `console.log([cursor]true);
 sendMessage(true);`,
         expected: `const extracted = true;
 console.log(extracted);
@@ -232,7 +255,7 @@ sendMessage(extracted);`
       },
       {
         description: "null",
-        code: `console.log(null);
+        code: `console.log([cursor]null);
 sendMessage(null);`,
         expected: `const extracted = null;
 console.log(extracted);
@@ -240,7 +263,7 @@ sendMessage(extracted);`
       },
       {
         description: "undefined",
-        code: `console.log(undefined);
+        code: `console.log([cursor]undefined);
 sendMessage(undefined);`,
         expected: `const extracted = undefined;
 console.log(extracted);
@@ -248,7 +271,7 @@ sendMessage(extracted);`
       },
       {
         description: "array",
-        code: `console.log([1, 3, 4]);
+        code: `console.log([cursor][1, 3, 4]);
 sendMessage([1, 3, 4]);`,
         expected: `const extracted = [1, 3, 4];
 console.log(extracted);
@@ -256,7 +279,7 @@ sendMessage(extracted);`
       },
       {
         description: "only identical arrays",
-        code: `console.log([1, 3, 4]);
+        code: `console.log([cursor][1, 3, 4]);
 sendMessage([1, 3, 4]);
 const dontExtract = [];`,
         expected: `const extracted = [1, 3, 4];
@@ -266,7 +289,7 @@ const dontExtract = [];`
       },
       {
         description: "object",
-        code: `console.log({ one: 1, foo: "bar" });
+        code: `console.log([cursor]{ one: 1, foo: "bar" });
 sendMessage({ one: 1, foo: "bar" });`,
         expected: `const extracted = { one: 1, foo: "bar" };
 console.log(extracted);
@@ -274,7 +297,7 @@ sendMessage(extracted);`
       },
       {
         description: "object",
-        code: `console.log([
+        code: `console.log([cursor][
   {
     one: 1,
     foo: "bar",
@@ -300,7 +323,7 @@ sendMessage(extracted);`
       },
       {
         description: "arrow function expression",
-        code: `console.log(() => "Hello");
+        code: `console.log([cursor]() => "Hello");
 sendMessage(() => "Hello");`,
         expected: `const extracted = () => "Hello";
 console.log(extracted);
@@ -308,7 +331,7 @@ sendMessage(extracted);`
       },
       {
         description: "call expression",
-        code: `console.log(sayHello());
+        code: `console.log([cursor]sayHello());
 sendMessage(sayHello());`,
         expected: `const extracted = sayHello();
 console.log(extracted);
@@ -316,7 +339,7 @@ sendMessage(extracted);`
       },
       {
         description: "call expression with arguments",
-        code: `console.log(sayHello(name));
+        code: `console.log([cursor]sayHello(name));
 sendMessage(sayHello(name));`,
         expected: `const extracted = sayHello(name);
 console.log(extracted);
@@ -324,25 +347,23 @@ sendMessage(extracted);`
       },
       {
         description: "binary expression",
-        code: `console.log(days <= 10);
+        code: `console.log(days <[cursor]= 10);
 sendMessage(days <= 10);`,
-        selection: Selection.cursorAt(0, 18),
         expected: `const extracted = days <= 10;
 console.log(extracted);
 sendMessage(extracted);`
       },
       {
         description: "logical expression",
-        code: `console.log(isValid && days > 10);
+        code: `console.log(isValid &[cursor]& days > 10);
 sendMessage(isValid && days > 10);`,
-        selection: Selection.cursorAt(0, 21),
         expected: `const extracted = isValid && days > 10;
 console.log(extracted);
 sendMessage(extracted);`
       },
       {
         description: "unary expression",
-        code: `console.log(!(isValid && days > 10));
+        code: `console.log([cursor]!(isValid && days > 10));
 sendMessage(!(isValid && days > 10));`,
         expected: `const extracted = !(isValid && days > 10);
 console.log(extracted);
@@ -350,16 +371,15 @@ sendMessage(extracted);`
       },
       {
         description: "member expression",
-        code: `console.log(this.items[i]);
+        code: `console.log(this.items[i][cursor]);
 sendMessage(this.items[i]);`,
-        selection: Selection.cursorAt(0, 25),
         expected: `const extracted = this.items[i];
 console.log(extracted);
 sendMessage(extracted);`
       },
       {
         description: "new expression",
-        code: `console.log(new Actor("John"));
+        code: `console.log([cursor]new Actor("John"));
 sendMessage(new Actor("John"));`,
         expected: `const extracted = new Actor("John");
 console.log(extracted);
@@ -367,7 +387,7 @@ sendMessage(extracted);`
       },
       {
         description: "JSX Element",
-        code: `console.log(<p>Hello</p>);
+        code: `console.log([cursor]<p>Hello</p>);
 sendMessage(<p>Hello</p>);`,
         expected: `const extracted = <p>Hello</p>;
 console.log(extracted);
@@ -375,7 +395,7 @@ sendMessage(extracted);`
       },
       {
         description: "JSX Element with attributes",
-        code: `console.log(<p color="black">Hello</p>);
+        code: `console.log([cursor]<p color="black">Hello</p>);
 sendMessage(<p color="black">Hello</p>);`,
         expected: `const extracted = <p color="black">Hello</p>;
 console.log(extracted);
@@ -383,29 +403,24 @@ sendMessage(extracted);`
       },
       {
         description: "self-closing JSX Element",
-        code: `console.log(<Dialog color="black" />);
+        code: `console.log([cursor]<Dialog color="black" />);
 sendMessage(<Dialog color="black" />);`,
         expected: `const extracted = <Dialog color="black" />;
 console.log(extracted);
 sendMessage(extracted);`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 12), expected }) => {
-      askUser = jest.fn(([allOccurrences]) => Promise.resolve(allOccurrences));
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUser")
+        .mockImplementation(([allOccurrences]) =>
+          Promise.resolve(allOccurrences)
+        );
 
-      const result = await doExtractVariable(code, selection);
+      await extractVariable(editor);
 
-      expect(result.code).toBe(expected);
+      expect(editor.code).toBe(expected);
     }
   );
-
-  async function doExtractVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    editor.askUser = askUser;
-    await extractVariable(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

@@ -1,5 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -7,15 +6,8 @@ import { testEach } from "../../tests-helpers";
 import { moveStatementDown } from "./move-statement-down";
 
 describe("Move Statement Down", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
   testEach<{
     code: Code;
-    selection: Selection;
     expected: Code;
     expectedPosition: Position;
   }>(
@@ -25,7 +17,6 @@ describe("Move Statement Down", () => {
         description: "single-line statement",
         code: `console.log("I'm up");
 console.log("I'm down");`,
-        selection: Selection.cursorAt(0, 0),
         expected: `console.log("I'm down");
 console.log("I'm up");`,
         expectedPosition: new Position(1, 0)
@@ -37,7 +28,6 @@ console.log("I'm up");`,
 if (isValid) {
   console.log("I'm down");
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `if (isValid) {
   console.log("I'm down");
 }
@@ -52,7 +42,6 @@ console.log("I'm up");`,
 }
 
 console.log("I'm down");`,
-        selection: Selection.cursorAt(0, 0),
         expected: `console.log("I'm down");
 
 if (isValid) {
@@ -69,7 +58,6 @@ if (isValid) {
 function saySomething() {
   console.log("I'm down");
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `function saySomething() {
   console.log("I'm down");
 }
@@ -82,7 +70,7 @@ if (isValid) {
       {
         description: "statement inside a container",
         code: `function doSomethingElse() {
-  const a = 1;
+  [cursor]const a = 1;
   const b = 2;
 
   if (isValid) {
@@ -92,7 +80,6 @@ if (isValid) {
 }
 
 const hello = "world";`,
-        selection: Selection.cursorAt(1, 2),
         expected: `function doSomethingElse() {
   const b = 2;
   const a = 1;
@@ -109,7 +96,7 @@ const hello = "world";`,
       {
         description: "statement inside a container, cursor at start of line",
         code: `function doSomethingElse() {
-  const a = 1;
+[cursor]  const a = 1;
   const b = 2;
 
   if (isValid) {
@@ -119,7 +106,6 @@ const hello = "world";`,
 }
 
 const hello = "world";`,
-        selection: Selection.cursorAt(1, 0),
         expected: `function doSomethingElse() {
   const b = 2;
   const a = 1;
@@ -139,7 +125,6 @@ const hello = "world";`,
 function doSomething() {
   console.log("Second");
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `function doSomething() {
   console.log("Second");
 }
@@ -154,7 +139,6 @@ console.log("First");`,
 function doSomething() {
   console.log("Second");
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `function doSomething() {
   console.log("Second");
 }
@@ -166,11 +150,10 @@ console.log("First");`,
         description:
           "statement below is a function, without space in-between + statement above",
         code: `console.log("First");
-console.log("Second");
+[cursor]console.log("Second");
 function doSomething() {
   console.log("Third");
 }`,
-        selection: Selection.cursorAt(1, 0),
         expected: `console.log("First");
 
 function doSomething() {
@@ -183,12 +166,11 @@ console.log("Second");`,
       {
         description: "object properties",
         code: `const data = {
-  foo: "foo",
+  [cursor]foo: "foo",
   bar: "bar",
   baz: "baz"
 };
 console.log("Should not move");`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const data = {
   bar: "bar",
   foo: "foo",
@@ -199,13 +181,12 @@ console.log("Should not move");`,
       },
       {
         description: "object properties, cursor on closing bracket",
-        code: `const data = {
+        code: `const data = {[cursor]
   foo: "foo",
   bar: "bar",
   baz: "baz"
 };
 console.log("Should move");`,
-        selection: Selection.cursorAt(0, 14),
         expected: `console.log("Should move");
 const data = {
   foo: "foo",
@@ -216,18 +197,16 @@ const data = {
       },
       {
         description: "object properties, one-liner, cursor on first",
-        code: `const data = { foo: "foo", bar: "bar" };
+        code: `const data = { f[cursor]oo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
-        selection: Selection.cursorAt(0, 16),
         expected: `console.log("Should move in this scenario");
 const data = { foo: "foo", bar: "bar" };`,
         expectedPosition: new Position(1, 16)
       },
       {
         description: "object properties, one-liner, cursor on second",
-        code: `const data = { foo: "foo", bar: "bar" };
+        code: `const data = { foo: "foo", b[cursor]ar: "bar" };
 console.log("Should move in this scenario");`,
-        selection: Selection.cursorAt(0, 28),
         expected: `console.log("Should move in this scenario");
 const data = { foo: "foo", bar: "bar" };`,
         expectedPosition: new Position(1, 28)
@@ -235,12 +214,11 @@ const data = { foo: "foo", bar: "bar" };`,
       {
         description: "object properties, cursor after comma",
         code: `const data = {
-  foo: "foo",
+  foo: "foo",[cursor]
   bar: "bar",
   baz: "baz"
 };
 console.log("Should not move");`,
-        selection: Selection.cursorAt(1, 13),
         expected: `const data = {
   bar: "bar",
   foo: "foo",
@@ -253,10 +231,9 @@ console.log("Should not move");`,
         description: "object property, respecting trailing commas",
         code: `const data = {
   foo: "foo",
-  bar: "bar",
+  [cursor]bar: "bar",
   baz: "baz"
 };`,
-        selection: Selection.cursorAt(2, 2),
         expected: `const data = {
   foo: "foo",
   baz: "baz",
@@ -267,12 +244,11 @@ console.log("Should not move");`,
       {
         description: "object method",
         code: `const data = {
-  foo() {
+  [cursor]foo() {
     return "foo";
   },
   bar: "bar"
 };`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const data = {
   bar: "bar",
 
@@ -285,7 +261,7 @@ console.log("Should not move");`,
       {
         description: "class method",
         code: `class Node {
-  getName() {
+  [cursor]getName() {
     return "foo";
   }
 
@@ -293,7 +269,6 @@ console.log("Should not move");`,
     return 1;
   }
 }`,
-        selection: Selection.cursorAt(1, 2),
         expected: `class Node {
   getSize() {
     return 1;
@@ -308,13 +283,12 @@ console.log("Should not move");`,
       {
         description: "class property",
         code: `class Node {
-  name = "foo"
+  [cursor]name = "foo"
 
   getSize() {
     return 1;
   }
 }`,
-        selection: Selection.cursorAt(1, 2),
         expected: `class Node {
   getSize() {
     return 1;
@@ -325,11 +299,13 @@ console.log("Should not move");`,
         expectedPosition: new Position(5, 2)
       }
     ],
-    async ({ code, selection, expected, expectedPosition }) => {
-      const result = await doMoveStatementDown(code, selection);
+    async ({ code, expected, expectedPosition }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result.code).toBe(expected);
-      expect(result.position).toStrictEqual(expectedPosition);
+      await moveStatementDown(editor);
+
+      expect(editor.code).toBe(expected);
+      expect(editor.position).toStrictEqual(expectedPosition);
     }
   );
 
@@ -337,12 +313,14 @@ console.log("Should not move");`,
     const code = `console.log(
   "nothing below this statement"
 )`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    const originalCode = editor.code;
+    jest.spyOn(editor, "showError");
 
-    const result = await doMoveStatementDown(code, selection);
+    await moveStatementDown(editor);
 
-    expect(result.code).toBe(code);
-    expect(showErrorMessage).not.toBeCalled();
+    expect(editor.code).toBe(originalCode);
+    expect(editor.showError).not.toBeCalled();
   });
 
   it("should not move the parent node if the selected child node can't be moved", async () => {
@@ -351,7 +329,7 @@ console.log("Should not move");`,
     return 1;
   }
 
-  getName() {
+  [cursor]getName() {
     return "foo";
   }
 }
@@ -361,42 +339,25 @@ class Path {
     return "bar";
   }
 }`;
-    const selection = Selection.cursorAt(5, 2);
+    const editor = new InMemoryEditor(code);
+    const originalCode = editor.code;
 
-    const result = await doMoveStatementDown(code, selection);
+    await moveStatementDown(editor);
 
-    expect(result.code).toBe(code);
+    expect(editor.code).toBe(originalCode);
   });
 
   it("should show an error message for multi-lines selections", async () => {
     const code = `console.log("First");
-console.log("Second");
-console.log("Third")`;
-    const selection = new Selection([1, 0], [2, 0]);
+[start]console.log("Second");
+[end]console.log("Third")`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doMoveStatementDown(code, selection);
+    await moveStatementDown(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.CantMoveMultiLinesStatementDown
     );
   });
-
-  it("should show an error message if selection is invalid", async () => {
-    const code = `console.log("First");`;
-    const invalidSelection = Selection.cursorAt(2, 0);
-
-    await doMoveStatementDown(code, invalidSelection);
-
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.CantMoveStatementDown);
-  });
-
-  async function doMoveStatementDown(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await moveStatementDown(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

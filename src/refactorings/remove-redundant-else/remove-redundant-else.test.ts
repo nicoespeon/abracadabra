@@ -1,18 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { removeRedundantElse } from "./remove-redundant-else";
 
 describe("Remove Redundant Else", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should remove redundant else",
     [
       {
@@ -20,17 +13,16 @@ describe("Remove Redundant Else", () => {
         code: `function doSomethingIfValid() {
   console.log("Start working");
 
-  if (!isValid) {
+  i[start]f (!isValid) {
     showWarning();
     return;
   } else {
     doSomething();
     doAnotherThing();
-  }
+  }[end]
 
   doSomeFinalThing();
 }`,
-        selection: new Selection([3, 3], [9, 3]),
         expected: `function doSomethingIfValid() {
   console.log("Start working");
 
@@ -48,14 +40,13 @@ describe("Remove Redundant Else", () => {
       {
         description: "basic scenario with tabs",
         code: `function doSomethingIfValid() {
-\tif (!isValid) {
+\t[start]if (!isValid) {
 \t\tshowWarning();
 \t\treturn;
 \t} else {
 \t\tdoSomething();
-\t}
+\t}[end]
 }`,
-        selection: new Selection([1, 1], [6, 2]),
         expected: `function doSomethingIfValid() {
 \tif (!isValid) {
 \t\tshowWarning();
@@ -67,13 +58,13 @@ describe("Remove Redundant Else", () => {
       {
         description: "only the selected one",
         code: `function doSomethingIfValid() {
-  if (!isValid) {
+  i[start]f (!isValid) {
     showWarning();
     return;
   } else {
     doSomething();
     doAnotherThing();
-  }
+  }[end]
 
   if (!isCorrect) {
     showWarning();
@@ -82,7 +73,6 @@ describe("Remove Redundant Else", () => {
     showMessage();
   }
 }`,
-        selection: new Selection([1, 3], [7, 3]),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
@@ -105,13 +95,12 @@ describe("Remove Redundant Else", () => {
         code: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
-    return;
+    [cursor]return;
   } else {
     doSomething();
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(3, 3),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
@@ -126,12 +115,11 @@ describe("Remove Redundant Else", () => {
         code: `function doSomethingIfValid() {
   if (!isValid) {
     throw new Error("Oh no!");
-  } else {
+  }[cursor] else {
     doSomething();
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(3, 3),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     throw new Error("Oh no!");
@@ -144,14 +132,13 @@ describe("Remove Redundant Else", () => {
         description: "with else if",
         code: `function doSomethingIfValid() {
   if (!isValid) {
-    throw new Error("Oh no!");
+    [cursor]throw new Error("Oh no!");
   } else if (isCorrect) {
     doSomething();
   } else {
     doAnotherThing();
   }
 }`,
-        selection: Selection.cursorAt(2, 4),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     throw new Error("Oh no!");
@@ -166,7 +153,7 @@ describe("Remove Redundant Else", () => {
       {
         description: "nested, cursor on wrapper",
         code: `function doSomethingIfValid() {
-  if (!isValid) {
+  [cursor]if (!isValid) {
     if (shouldShowWarning) {
       showWarning();
       return;
@@ -178,7 +165,6 @@ describe("Remove Redundant Else", () => {
     doSomething();
   }
 }`,
-        selection: Selection.cursorAt(1, 2),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     if (shouldShowWarning) {
@@ -196,7 +182,7 @@ describe("Remove Redundant Else", () => {
         description: "nested, cursor on nested",
         code: `function doSomethingIfValid() {
   if (!isValid) {
-    if (shouldShowWarning) {
+    [cursor]if (shouldShowWarning) {
       showWarning();
       return;
     } else {
@@ -207,7 +193,6 @@ describe("Remove Redundant Else", () => {
     doSomething();
   }
 }`,
-        selection: Selection.cursorAt(2, 4),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     if (shouldShowWarning) {
@@ -226,7 +211,7 @@ describe("Remove Redundant Else", () => {
         description: "invalid nested, cursor on nested",
         code: `function doSomethingIfValid() {
   if (!isValid) {
-    if (shouldShowWarning) {
+    [cursor]if (shouldShowWarning) {
       showWarning();
     }
     return;
@@ -234,7 +219,6 @@ describe("Remove Redundant Else", () => {
     doSomething();
   }
 }`,
-        selection: Selection.cursorAt(2, 4),
         expected: `function doSomethingIfValid() {
   if (!isValid) {
     if (shouldShowWarning) {
@@ -246,36 +230,29 @@ describe("Remove Redundant Else", () => {
 }`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doRemoveRedundantElse(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await removeRedundantElse(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should show an error message if selection has no redundant else", async () => {
-    const code = `if (!isValid) {
+    const code = `[start]if (!isValid) {
   showWarning();
 } else {
   doSomething();
   doAnotherThing();
-}`;
-    const selection = new Selection([0, 0], [5, 1]);
+}[end]`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doRemoveRedundantElse(code, selection);
+    await removeRedundantElse(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindRedundantElse
     );
   });
-
-  async function doRemoveRedundantElse(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await removeRedundantElse(code, selection, editor);
-    return editor.code;
-  }
 });

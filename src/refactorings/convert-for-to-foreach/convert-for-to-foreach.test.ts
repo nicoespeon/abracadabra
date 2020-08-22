@@ -1,18 +1,11 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { convertForToForeach } from "./convert-for-to-foreach";
 
 describe("Convert For To Foreach", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should convert for to foreach",
     [
       {
@@ -41,10 +34,9 @@ describe("Convert For To Foreach", () => {
   console.log(items[i]);
 }
 
-for (let i = 0; i < items.length; i++) {
+[cursor]for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 }
@@ -62,7 +54,6 @@ items.forEach(item => {
     console.log(items[j]);
   }
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `items.forEach(item => {
   console.log(item);
 
@@ -76,11 +67,10 @@ items.forEach(item => {
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
-  for (let j = 0; j < items.length; j++) {
+  [cursor]for (let j = 0; j < items.length; j++) {
     console.log(items[j]);
   }
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
@@ -94,11 +84,10 @@ items.forEach(item => {
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
-  for (let j = 0; j < 10; j++) {
+  [cursor]for (let j = 0; j < 10; j++) {
     console.log(items[j]);
   }
 }`,
-        selection: Selection.cursorAt(3, 2),
         expected: `items.forEach(item => {
   console.log(item);
 
@@ -163,10 +152,12 @@ items.forEach(item => {
 });`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doConvertForToForeach(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await convertForToForeach(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
@@ -193,32 +184,24 @@ items.forEach(item => {
       }
     ],
     async ({ code }) => {
-      const selection = Selection.cursorAt(0, 0);
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      const result = await doConvertForToForeach(code, selection);
+      await convertForToForeach(editor);
 
-      expect(result).toBe(code);
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doConvertForToForeach(code, selection);
+    await convertForToForeach(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindForLoopToConvert
     );
   });
-
-  async function doConvertForToForeach(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await convertForToForeach(code, selection, editor);
-    return editor.code;
-  }
 });

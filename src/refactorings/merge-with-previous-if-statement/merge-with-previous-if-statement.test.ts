@@ -1,18 +1,11 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { mergeWithPreviousIfStatement } from "./merge-with-previous-if-statement";
 
 describe("Merge With Previous If Statement", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should merge with previous if statement",
     [
       {
@@ -21,8 +14,7 @@ describe("Merge With Previous If Statement", () => {
   doSomething();
 }
 
-doSomethingElse();`,
-        selection: Selection.cursorAt(4, 0),
+[cursor]doSomethingElse();`,
         expected: `if (isValid) {
   doSomething();
 
@@ -41,8 +33,7 @@ if (isValid) {
   doSomething();
 }
 
-doSomethingElse();`,
-        selection: Selection.cursorAt(10, 0),
+[cursor]doSomethingElse();`,
         expected: `if (isCorrect) {
   doAnotherThing();
 }
@@ -66,9 +57,8 @@ if (isValid) {
     doSomething();
   }
 
-  doSomethingElse();
+  [cursor]doSomethingElse();
 }`,
-        selection: Selection.cursorAt(9, 2),
         expected: `if (isCorrect) {
   doAnotherThing();
 }
@@ -91,10 +81,9 @@ if (isValid) {
   if (isValid) {
     doSomething();
 
-    doSomethingElse();
+  [cursor]  doSomethingElse();
   }
 }`,
-        selection: Selection.cursorAt(8, 2),
         expected: `if (isCorrect) {
   doAnotherThing();
 
@@ -111,8 +100,7 @@ if (isValid) {
         description: "if has no block statement",
         code: `if (isValid) doSomething();
 
-doSomethingElse();`,
-        selection: Selection.cursorAt(2, 0),
+[cursor]doSomethingElse();`,
         expected: `if (isValid) {
   doSomething();
 
@@ -127,8 +115,7 @@ doSomethingElse();`,
   doAnotherThing();
 }
 
-doSomethingElse();`,
-        selection: Selection.cursorAt(6, 0),
+[cursor]doSomethingElse();`,
         expected: `if (isValid) {
   doSomething();
 
@@ -149,8 +136,7 @@ doSomethingElse();`,
   doAnotherThing();
 }
 
-doSomethingElse();`,
-        selection: Selection.cursorAt(8, 0),
+[cursor]doSomethingElse();`,
         expected: `if (isValid) {
   doSomething();
 
@@ -171,10 +157,9 @@ doSomethingElse();`,
   doSomething();
 }
 
-if (isCorrect) {
+[cursor]if (isCorrect) {
   doSomethingElse();
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `if (isValid) {
   doSomething();
 
@@ -189,10 +174,9 @@ if (isCorrect) {
   doSomething();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -204,10 +188,9 @@ if (isValid) {
   doSomething();
 }
 
-if (name === "John" && age > 10) {
+[cursor]if (name === "John" && age > 10) {
   doSomethingElse();
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `if (name === "John" && age > 10) {
   doSomething();
   doSomethingElse();
@@ -221,10 +204,9 @@ if (name === "John" && age > 10) {
   doAnotherThing();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 }`,
-        selection: Selection.cursorAt(6, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -240,12 +222,11 @@ if (isValid) {
   doAnotherThing();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 } else {
   sayHello();
 }`,
-        selection: Selection.cursorAt(6, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -260,12 +241,11 @@ if (isValid) {
   doSomething();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 } else {
   sayHello();
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -283,12 +263,11 @@ if (isValid) {
   doNothing();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 } else {
   sayHello();
 }`,
-        selection: Selection.cursorAt(8, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -310,14 +289,13 @@ if (isValid) {
   doNothing();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 } else if (isCorrect) {
   sayHello();
 } else {
   sayGoodbye();
 }`,
-        selection: Selection.cursorAt(8, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -329,7 +307,6 @@ if (isValid) {
   sayGoodbye();
 }`
       },
-
       {
         description:
           "merge if-elseif-else with if-elseif-else, different tests",
@@ -341,14 +318,13 @@ if (isValid) {
   doNothing();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 } else if (shouldSayHello) {
   sayHello();
 } else {
   sayGoodbye();
 }`,
-        selection: Selection.cursorAt(8, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -374,14 +350,13 @@ if (isValid) {
   doSomething();
 }
 
-if (isValid) {
+[cursor]if (isValid) {
   doSomethingElse();
 } else if (isCorrect) {
   sayHello();
 } else {
   sayGoodbye();
 }`,
-        selection: Selection.cursorAt(4, 0),
         expected: `if (isValid) {
   doSomething();
   doSomethingElse();
@@ -392,14 +367,16 @@ if (isValid) {
 }`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doMergeWithPreviousIfStatement(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await mergeWithPreviousIfStatement(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection: Selection }>(
+  testEach<{ code: Code }>(
     "should not merge",
     [
       {
@@ -408,8 +385,7 @@ if (isValid) {
   doSomething();
 }
 
-doSomethingElse();`,
-        selection: Selection.cursorAt(4, 0)
+[cursor]doSomethingElse();`
       },
       {
         description: "has no statement before",
@@ -417,8 +393,7 @@ doSomethingElse();`,
 
 if (isValid) {
   doSomething();
-}`,
-        selection: Selection.cursorAt(0, 0)
+}`
       },
       {
         description: "if statement is 2 nodes above",
@@ -427,35 +402,28 @@ if (isValid) {
 }
 
 doSomethingElse();
-doAnotherThing();`,
-        selection: Selection.cursorAt(5, 0)
+[cursor]doAnotherThing();`
       }
     ],
-    async ({ code, selection }) => {
-      const result = await doMergeWithPreviousIfStatement(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result).toBe(code);
+      await mergeWithPreviousIfStatement(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doMergeWithPreviousIfStatement(code, selection);
+    await mergeWithPreviousIfStatement(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindStatementToMerge
     );
   });
-
-  async function doMergeWithPreviousIfStatement(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await mergeWithPreviousIfStatement(code, selection, editor);
-    return editor.code;
-  }
 });

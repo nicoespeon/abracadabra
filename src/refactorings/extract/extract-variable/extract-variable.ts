@@ -12,11 +12,8 @@ import { VariableDeclarationModification } from "./variable-declaration-modifica
 
 export { extractVariable };
 
-async function extractVariable(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function extractVariable(editor: Editor) {
+  const { code, selection } = editor;
   const {
     selected: selectedOccurrence,
     others: otherOccurrences

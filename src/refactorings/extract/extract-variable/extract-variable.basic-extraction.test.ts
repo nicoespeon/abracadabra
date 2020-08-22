@@ -1,85 +1,70 @@
-import { Editor, Code, Command, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
+import { Command, ErrorReason } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Basic extraction behaviour", () => {
-  let delegateToEditor: Editor["delegate"];
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    delegateToEditor = jest.fn();
-    showErrorMessage = jest.fn();
-  });
-
-  const code = `console.log("Hello!");`;
-  const extractableSelection = new Selection([0, 12], [0, 20]);
-
   it("should update code with extractable selection", async () => {
-    const result = await doExtractVariable(code, extractableSelection);
+    const editor = new InMemoryEditor(`console.log([cursor]"Hello!");`);
 
-    expect(result.code).toBe(`const hello = "Hello!";
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const hello = "Hello!";
 console.log(hello);`);
   });
 
   it("should expand selection to the nearest extractable code", async () => {
-    const selectionInExtractableCode = Selection.cursorAt(0, 15);
+    const editor = new InMemoryEditor(`console.log("He[cursor]llo!");`);
 
-    const result = await doExtractVariable(code, selectionInExtractableCode);
+    await extractVariable(editor);
 
-    expect(result.code).toBe(`const hello = "Hello!";
+    expect(editor.code).toBe(`const hello = "Hello!";
 console.log(hello);`);
   });
 
   it("should rename extracted symbol", async () => {
-    await doExtractVariable(code, extractableSelection);
+    const editor = new InMemoryEditor(`console.log([cursor]"Hello!");`);
+    jest.spyOn(editor, "delegate");
 
-    expect(delegateToEditor).toBeCalledTimes(1);
-    expect(delegateToEditor).toBeCalledWith(Command.RenameSymbol);
+    await extractVariable(editor);
+
+    expect(editor.delegate).toBeCalledTimes(1);
+    expect(editor.delegate).toBeCalledWith(Command.RenameSymbol);
   });
 
   it("should extract with correct indentation", async () => {
     const code = `    function sayHello() {
-      console.log("Hello!");
+      console.log([cursor]"Hello!");
     }`;
-    const extractableSelection = new Selection([1, 18], [1, 26]);
+    const editor = new InMemoryEditor(code);
 
-    const result = await doExtractVariable(code, extractableSelection);
+    await extractVariable(editor);
 
-    expect(result.code).toBe(`    function sayHello() {
+    expect(editor.code).toBe(`    function sayHello() {
       const hello = "Hello!";
       console.log(hello);
     }`);
   });
 
   describe("invalid selection", () => {
-    const invalidSelection = new Selection([0, 10], [0, 14]);
-
     it("should not extract anything", async () => {
-      const result = await doExtractVariable(code, invalidSelection);
+      const editor = new InMemoryEditor(`console.lo[cursor]g("Hello!");`);
+      const originalCode = editor.code;
 
-      expect(result.code).toBe(code);
+      await extractVariable(editor);
+
+      expect(editor.code).toBe(originalCode);
     });
 
     it("should show an error message", async () => {
-      await doExtractVariable(code, invalidSelection);
+      const editor = new InMemoryEditor(`console.lo[cursor]g("Hello!");`);
+      jest.spyOn(editor, "showError");
 
-      expect(showErrorMessage).toBeCalledWith(
+      await extractVariable(editor);
+
+      expect(editor.showError).toBeCalledWith(
         ErrorReason.DidNotFindExtractableCode
       );
     });
   });
-
-  async function doExtractVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    editor.delegate = delegateToEditor;
-    await extractVariable(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

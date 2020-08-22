@@ -1,4 +1,4 @@
-import { Code, Editor } from "./editor/editor";
+import { Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
 
@@ -11,7 +11,7 @@ interface Refactoring {
   };
 }
 
-interface RefactoringWithActionProvider extends Refactoring {
+interface RefactoringWithActionProvider {
   command: {
     key: string;
     title: string;
@@ -28,8 +28,4 @@ interface RefactoringWithActionProvider extends Refactoring {
   };
 }
 
-type Operation = (
-  code: Code,
-  selection: Selection,
-  write: Editor
-) => Promise<void>;
+type Operation = (editor: Editor) => Promise<void>;

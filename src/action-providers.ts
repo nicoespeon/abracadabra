@@ -7,10 +7,12 @@ import { Selection } from "./editor/selection";
 
 export { RefactoringActionProvider };
 
-class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private refactorings: RefactoringWithActionProvider[];
+type Refactoring = RefactoringWithActionProvider;
 
-  constructor(refactorings: RefactoringWithActionProvider[]) {
+class RefactoringActionProvider implements vscode.CodeActionProvider {
+  private refactorings: Refactoring[];
+
+  constructor(refactorings: Refactoring[]) {
     this.refactorings = refactorings;
   }
 
@@ -62,11 +64,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   private findApplicableRefactorings(
     ast: t.File,
     selection: Selection
-  ): RefactoringWithActionProvider[] {
-    const applicableRefactorings = new Map<
-      string,
-      RefactoringWithActionProvider
-    >();
+  ): Refactoring[] {
+    const applicableRefactorings = new Map<string, Refactoring>();
 
     t.traverseAST(ast, {
       enter: (path) => {
@@ -116,7 +115,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     }
   }
 
-  private buildCodeActionFor(refactoring: RefactoringWithActionProvider) {
+  private buildCodeActionFor(refactoring: Refactoring) {
     const action = new vscode.CodeAction(
       `${refactoring.actionProvider.message} ✨`,
       vscode.CodeActionKind.RefactorRewrite

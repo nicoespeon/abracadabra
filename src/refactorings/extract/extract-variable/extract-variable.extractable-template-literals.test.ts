@@ -1,5 +1,4 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
@@ -9,22 +8,19 @@ import { extractVariable } from "./extract-variable";
 describe("Extract Variable - Template Literals we can extract", () => {
   testEach<{
     code: Code;
-    selection: Selection;
     expected: Code | { code: Code; position: Position };
   }>(
     "should extract",
     [
       {
         description: "a template literal when cursor is on a subpart of it",
-        code: "console.log(`Hello ${world}! How are you doing?`);",
-        selection: Selection.cursorAt(0, 15),
+        code: "console.log(`He[cursor]llo ${world}! How are you doing?`);",
         expected: `const extracted = \`Hello \${world}! How are you doing?\`;
 console.log(extracted);`
       },
       {
         description: "a selected part of a template literal",
-        code: "console.log(`Hello world! How are you doing?`);",
-        selection: new Selection([0, 19], [0, 24]),
+        code: "console.log(`Hello [start]world[end]! How are you doing?`);",
         expected: {
           code: `const world = "world";
 console.log(\`Hello \${world}! How are you doing?\`);`,
@@ -33,8 +29,8 @@ console.log(\`Hello \${world}! How are you doing?\`);`,
       },
       {
         description: "a selected part of a template literal with expressions",
-        code: "console.log(`${hello} world! How are ${you} doing?`);",
-        selection: new Selection([0, 22], [0, 27]),
+        code:
+          "console.log(`${hello} [start]world[end]! How are ${you} doing?`);",
         expected: {
           code: `const world = "world";
 console.log(\`\${hello} \${world}! How are \${you} doing?\`);`,
@@ -43,77 +39,70 @@ console.log(\`\${hello} \${world}! How are \${you} doing?\`);`,
       },
       {
         description: "a selected expression of a template literal",
-        code: "console.log(`${hello} world! How are ${you} doing?`);",
-        selection: new Selection([0, 15], [0, 17]),
+        code:
+          "console.log(`${[start]he[end]llo} world! How are ${you} doing?`);",
         expected: `const extracted = hello;
 console.log(\`\${extracted} world! How are \${you} doing?\`);`
       },
       {
         description:
           "a selected template literal (selection across quasi and expression)",
-        code: "console.log(`${hello} world! How are ${you} doing?`);",
-        selection: new Selection([0, 19], [0, 25]),
+        code:
+          "console.log(`${hell[start]o} wor[end]ld! How are ${you} doing?`);",
         expected: `const extracted = \`\${hello} world! How are \${you} doing?\`;
 console.log(extracted);`
       },
       {
         description:
           "a selected template literal (selection over expression braces)",
-        code: "console.log(`${hello} world! How are ${you} doing?`);",
-        selection: new Selection([0, 14], [0, 17]),
+        code:
+          "console.log(`$[start]{he[end]llo} world! How are ${you} doing?`);",
         expected: `const extracted = \`\${hello} world! How are \${you} doing?\`;
 console.log(extracted);`
       },
       {
         description:
           "a selected template literal (selection over template bounds)",
-        code: "console.log({ text: `${hello} world! How are ${you} doing?` });",
-        selection: new Selection([0, 19], [0, 26]),
+        code:
+          "console.log({ text:[start] `${hel[end]lo} world! How are ${you} doing?` });",
         expected: `const extracted = { text: \`\${hello} world! How are \${you} doing?\` };
 console.log(extracted);`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doExtractVariable(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
+
+      await extractVariable(editor);
 
       if (typeof expected === "object") {
-        // Use 2 assertions to have a more readable breakdown
-        expect(result.code).toBe(expected.code);
-        expect(result.position).toStrictEqual(expected.position);
+        expect(editor.code).toBe(expected.code);
+        expect(editor.position).toStrictEqual(expected.position);
       } else {
-        expect(result.code).toBe(expected);
+        expect(editor.code).toBe(expected);
       }
     }
   );
 
-  testEach<{ code: Code; expected: Code; selection: Selection }>(
+  testEach<{ code: Code; expected: Code }>(
     "should not extract a subset but the whole string",
     [
       {
         description: "from a multi-line template literal",
         code: `console.log(\`Hello world!
-How are you doing?
+How are [start]you[end] doing?
 All right!\`);`,
         expected: `const extracted = \`Hello world!
 How are you doing?
 All right!\`;
-console.log(extracted);`,
-        selection: new Selection([1, 8], [1, 11])
+console.log(extracted);`
       }
     ],
-    async ({ code, expected, selection }) => {
-      const result = await doExtractVariable(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result.code).toBe(expected);
+      await extractVariable(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
-
-  async function doExtractVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<{ code: Code; position: Position }> {
-    const editor = new InMemoryEditor(code);
-    await extractVariable(code, selection, editor);
-    return { code: editor.code, position: editor.position };
-  }
 });

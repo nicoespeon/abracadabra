@@ -7,11 +7,11 @@ import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-functio
 import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
 import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
-import convertFunctionDeclarationToArrowFunction from "./refactorings/convert-function-declaration-to-arrow-function";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
+import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import convertLetToConst from "./refactorings/convert-let-to-const";
 import extract from "./refactorings/extract";
@@ -58,13 +58,13 @@ export function activate(context: vscode.ExtensionContext) {
     addBracesToIfStatement,
     bubbleUpIfStatement,
     convertForToForeach,
-    convertFunctionDeclarationToArrowFunction,
     convertIfElseToSwitch,
-    convertSwitchToIfElse,
     convertIfElseToTernary,
-    convertTernaryToIfElse,
-    convertToTemplateLiteral,
     convertLetToConst,
+    convertSwitchToIfElse,
+    convertTernaryToIfElse,
+    convertToArrowFunction,
+    convertToTemplateLiteral,
     extract,
     extractInterface,
     flipIfElse,
@@ -75,8 +75,8 @@ export function activate(context: vscode.ExtensionContext) {
     moveStatementDown,
     moveStatementUp,
     negateExpression,
-    reactConvertToPureComponent,
     reactAddBracesToJsxAttribute,
+    reactConvertToPureComponent,
     reactRemoveBracesFromJsxAttribute,
     removeBracesFromArrowFunction,
     removeBracesFromIfStatement,
@@ -127,11 +127,11 @@ export function activate(context: vscode.ExtensionContext) {
         addBracesToIfStatement,
         bubbleUpIfStatement,
         convertForToForeach,
-        convertFunctionDeclarationToArrowFunction,
         convertIfElseToSwitch,
         convertSwitchToIfElse,
         convertIfElseToTernary,
         convertTernaryToIfElse,
+        convertToArrowFunction,
         convertToTemplateLiteral,
         convertLetToConst,
         flipIfElse,

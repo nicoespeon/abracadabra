@@ -1,18 +1,11 @@
-import { Editor, ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { replaceBinaryWithAssignment } from "./replace-binary-with-assignment";
 
 describe("Replace Binary With Assignment Expression", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should replace binary with assignment expression",
     [
       {
@@ -98,17 +91,16 @@ fees = fees + 10;`,
 fees = fees + 10;`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doReplaceBinaryWithAssignmentExpression(
-        code,
-        selection
-      );
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await replaceBinaryWithAssignment(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection?: Selection }>(
+  testEach<{ code: Code }>(
     "should not replace binary with assignment expression",
     [
       {
@@ -172,34 +164,25 @@ fees = fees + 10;`
         code: `total = 1 - total;`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0) }) => {
-      const result = await doReplaceBinaryWithAssignmentExpression(
-        code,
-        selection
-      );
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result).toBe(code);
+      await replaceBinaryWithAssignment(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doReplaceBinaryWithAssignmentExpression(code, selection);
+    await replaceBinaryWithAssignment(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindBinaryExpression
     );
   });
-
-  async function doReplaceBinaryWithAssignmentExpression(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await replaceBinaryWithAssignment(code, selection, editor);
-    return editor.code;
-  }
 });

@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -9,12 +9,6 @@ import {
 } from "./convert-to-template-literal";
 
 describe("Convert To Template Literal", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
   testEach<{ code: Code; selection?: Selection }>(
     "should not show refactoring",
     [
@@ -46,32 +40,33 @@ describe("Convert To Template Literal", () => {
     }
   );
 
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should convert to template literal",
     [
       {
         description: "a simple string",
-        code: `const name = "Jane";`,
+        code: `const name = [cursor]"Jane";`,
         expected: "const name = `Jane`;"
       },
       {
         description: "only selected string",
-        code: `const name = "Jane";
+        code: `const name = [cursor]"Jane";
 const lastName = "Doe";`,
         expected: `const name = \`Jane\`;
 const lastName = "Doe";`
       },
       {
         description: "JSX attribute without braces",
-        code: `<TestComponent testProp="test" />`,
-        selection: Selection.cursorAt(0, 26),
+        code: `<TestComponent testProp="t[cursor]est" />`,
         expected: `<TestComponent testProp={\`test\`} />`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 13), expected }) => {
-      const result = await doConvertToTemplateLiteral(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await convertToTemplateLiteral(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
@@ -80,46 +75,40 @@ const lastName = "Doe";`
     [
       {
         description: "other binary expression operators",
-        code: `const name = "Jane-" - 12 + "Doe";`
+        code: `const name = "[cursor]Jane-" - 12 + "Doe";`
       },
       {
         description: "binary expression without string",
-        code: "const total = price + 10 + 20;"
+        code: "const total = [cursor]price + 10 + 20;"
       },
       {
         description: "concatenation (handled by VS Code)",
-        code: `const name = "Jane-" + 1;`
+        code: `const name = "[cursor]Jane-" + 1;`
       },
       {
         description: "import statement",
-        code: `import MyComponent from "./MyComponent"`
+        code: `import MyCompo[cursor]nent from "./MyComponent"`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 14) }) => {
-      const result = await doConvertToTemplateLiteral(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
 
-      expect(result).toBe(code);
+      await convertToTemplateLiteral(editor);
+
+      expect(editor.code).toBe(originalCode);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doConvertToTemplateLiteral(code, selection);
+    await convertToTemplateLiteral(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindStringToConvert
     );
   });
-
-  async function doConvertToTemplateLiteral(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await convertToTemplateLiteral(code, selection, editor);
-    return editor.code;
-  }
 });

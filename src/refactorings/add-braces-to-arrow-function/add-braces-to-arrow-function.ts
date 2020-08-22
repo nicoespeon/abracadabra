@@ -1,4 +1,4 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
@@ -7,11 +7,9 @@ export {
   createVisitor as hasArrowFunctionToAddBraces
 };
 
-async function addBracesToArrowFunction(
-  code: Code,
-  selection: Selection,
-  editor: Editor
-) {
+async function addBracesToArrowFunction(editor: Editor) {
+  const code = editor.code;
+  const selection = editor.selection;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {

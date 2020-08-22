@@ -1,18 +1,11 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
+import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
 import { splitIfStatement } from "./split-if-statement";
 
 describe("Split If Statement", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should split if statement",
     [
       {
@@ -61,12 +54,11 @@ describe("Split If Statement", () => {
       },
       {
         description: "nested ifs, cursor on wrapper",
-        code: `if (isValid && size > 10) {
+        code: `if ([cursor]isValid && size > 10) {
   if (isCorrect || shouldDoSomething) {
     doSomething();
   }
 }`,
-        selection: Selection.cursorAt(0, 4),
         expected: `if (isValid) {
   if (size > 10) {
     if (isCorrect || shouldDoSomething) {
@@ -79,10 +71,9 @@ describe("Split If Statement", () => {
         description: "nested ifs, cursor on nested",
         code: `if (isValid && size > 10) {
   if (isCorrect || shouldDoSomething) {
-    doSomething();
+    [cursor]doSomething();
   }
 }`,
-        selection: Selection.cursorAt(2, 4),
         expected: `if (isValid && size > 10) {
   if (isCorrect) {
     doSomething();
@@ -136,13 +127,12 @@ describe("Split If Statement", () => {
       {
         description: "logical expression in elseif, cursor outside of elseif",
         code: `if (isValid || isCorrect) {
-  doSomething();
+[cursor]  doSomething();
 } else if (isSelected && shouldDoAnotherThing) {
   doAnotherThing();
 } else {
   doNothing();
 }`,
-        selection: Selection.cursorAt(1, 0),
         expected: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -158,11 +148,10 @@ describe("Split If Statement", () => {
         code: `if (isValid || isCorrect) {
   doSomething();
 } else if (isSelected && shouldDoAnotherThing) {
-  doAnotherThing();
+[cursor]  doAnotherThing();
 } else {
   doNothing();
 }`,
-        selection: Selection.cursorAt(3, 0),
         expected: `if (isValid || isCorrect) {
   doSomething();
 } else if (isSelected) {
@@ -182,9 +171,8 @@ describe("Split If Statement", () => {
 } else if (isSelected && shouldDoAnotherThing) {
   doAnotherThing();
 } else if (size === 0 && !canDoSomething) {
-  doNothing();
+[cursor]  doNothing();
 }`,
-        selection: Selection.cursorAt(5, 0),
         expected: `if (isValid || isCorrect) {
   doSomething();
 } else if (isSelected && shouldDoAnotherThing) {
@@ -196,42 +184,36 @@ describe("Split If Statement", () => {
 }`
       }
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await doSplitIfStatement(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await splitIfStatement(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should throw an error if logical expression can't be split", async () => {
-    const code = `if (isValid) {}`;
-    const selection = Selection.cursorAt(0, 4);
+    const code = `if ([cursor]isValid) {}`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doSplitIfStatement(code, selection);
+    await splitIfStatement(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindIfStatementToSplit
     );
   });
 
   it("should throw an error if logical expression is not in if statement", async () => {
-    const code = `const isValid = size > 10 && isRequired;`;
-    const selection = Selection.cursorAt(0, 27);
+    const code = `const isValid = size > 10 &[cursor]& isRequired;`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doSplitIfStatement(code, selection);
+    await splitIfStatement(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindIfStatementToSplit
     );
   });
-
-  async function doSplitIfStatement(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await splitIfStatement(code, selection, editor);
-    return editor.code;
-  }
 });

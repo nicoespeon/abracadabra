@@ -1,130 +1,121 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
+import { Code, ErrorReason } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { inlineVariable } from "./inline-variable";
 
 describe("Inline Variable", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ selection: Selection }>(
+  testEach<{ code: Code; expected: Code }>(
     "should select variable value if",
     [
       {
         description: "all variable declaration is selected",
-        selection: new Selection([0, 0], [0, 18])
+        code: `[start]const foo = "bar";[end]
+console.log(foo);`,
+        expected: `console.log("bar");`
       },
       {
         description: "cursor is on value",
-        selection: Selection.cursorAt(0, 14)
+        code: `const foo = [cursor]"bar";
+console.log(foo);`,
+        expected: `console.log("bar");`
       },
       {
         description: "cursor is on identifier",
-        selection: Selection.cursorAt(0, 7)
+        code: `const f[cursor]oo = "bar";
+console.log(foo);`,
+        expected: `console.log("bar");`
       },
       {
         description: "cursor is on declarator",
-        selection: Selection.cursorAt(0, 2)
+        code: `co[cursor]nst foo = "bar";
+console.log(foo);`,
+        expected: `console.log("bar");`
       }
     ],
-    async ({ selection }) => {
-      const code = `const foo = "bar";
-console.log(foo);`;
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      const result = await doInlineVariable(code, selection);
+      await inlineVariable(editor);
 
-      expect(result).toBe(`console.log("bar");`);
+      expect(editor.code).toBe(expected);
     }
   );
 
-  testEach<{ code: Code; selection: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should inline the variable value",
     [
       {
         description: "basic scenario",
-        code: `const foo = "bar";
+        code: `[start]const foo = "bar";[end]
 const hello = "World!";
 console.log(foo);`,
-        selection: new Selection([0, 0], [0, 18]),
         expected: `const hello = "World!";
 console.log("bar");`
       },
       {
         description: "many references",
-        code: `const hello = "Hello!";
+        code: `[start]const hello = "Hel[end]lo!";
 console.log(hello);
 sendMessageSaying(hello).to(world);`,
-        selection: new Selection([0, 0], [0, 18]),
         expected: `console.log("Hello!");
 sendMessageSaying("Hello!").to(world);`
       },
       {
         description: "property key with the same name",
-        code: `const hello = "Hello!";
+        code: `const hello = [cursor]"Hello!";
 console.log({
   hello: hello
 });`,
-        selection: Selection.cursorAt(0, 14),
         expected: `console.log({
   hello: "Hello!"
 });`
       },
       {
         description: "property key, shorthand version",
-        code: `const hello = "Hello!";
+        code: `const hello = [cursor]"Hello!";
 console.log({
   hello
 });`,
-        selection: Selection.cursorAt(0, 14),
         expected: `console.log({
   hello: "Hello!"
 });`
       },
       {
         description: "member expression with the same name",
-        code: `const world = props.world;
+        code: `const wor[cursor]ld = props.world;
 const helloWorld = sayHelloTo(world);
 console.log(around.the.world);`,
-        selection: Selection.cursorAt(0, 9),
         expected: `const helloWorld = sayHelloTo(props.world);
 console.log(around.the.world);`
       },
       {
         description: "variable declarator on a different line",
         code: `const world =
-  "Hello!";
+  [cursor]"Hello!";
 const helloWorld = sayHelloTo(world);`,
-        selection: Selection.cursorAt(1, 2),
         expected: `const helloWorld = sayHelloTo("Hello!");`
       },
       {
         description: "unary expression",
-        code: `const isCorrect = "Hello!";
+        code: `const [cursor]isCorrect = "Hello!";
 return !isCorrect;`,
-        selection: Selection.cursorAt(0, 6),
         expected: `return !("Hello!");`
       },
       {
         description: "object",
-        code: `const foo = { value: "foo" };
+        code: `const [cursor]foo = { value: "foo" };
 console.log(foo.value);`,
-        selection: Selection.cursorAt(0, 6),
         expected: `console.log({ value: "foo" }.value);`
       },
       {
         description: "limited scope",
         code: `function sayHello() {
-  const hello = "Hello!";
+  const hello [cursor]= "Hello!";
   console.log(hello);
 }
 
 console.log(hello);`,
-        selection: Selection.cursorAt(1, 14),
         expected: `function sayHello() {
   console.log("Hello!");
 }
@@ -133,7 +124,7 @@ console.log(hello);`
       },
       {
         description: "shadowed variable",
-        code: `const hello = "Hello!";
+        code: `const hello = [cursor]"Hello!";
 console.log(hello);
 
 if (isHappy) {
@@ -149,7 +140,6 @@ if (isHappy) {
 function sayHello(yo, hello) {
   console.log(hello);
 }`,
-        selection: Selection.cursorAt(0, 14),
         expected: `console.log("Hello!");
 
 if (isHappy) {
@@ -169,13 +159,12 @@ function sayHello(yo, hello) {
       {
         description: "export outside of declaration scope",
         code: `function sayHello() {
-  const hello = "Hello!";
+  const hello = [cursor]"Hello!";
   console.log(hello);
 }
 
 const hello = "Some other thing";
 export { hello };`,
-        selection: Selection.cursorAt(1, 14),
         expected: `function sayHello() {
   console.log("Hello!");
 }
@@ -189,7 +178,6 @@ export { hello };`
 interface Something {
   value: Value;
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `interface Something {
   value: "one" | "many" | "none";
 }`
@@ -201,7 +189,6 @@ interface Something {
   value: Value;
   otherValue: Value;
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `interface Something {
   value: "one" | "many" | "none";
   otherValue: "one" | "many" | "none";
@@ -215,7 +202,6 @@ interface Something {
   value: Value;
   key: Key;
 }`,
-        selection: Selection.cursorAt(0, 0),
         expected: `type Key = string;
 interface Something {
   value: "one" | "many" | "none";
@@ -223,63 +209,72 @@ interface Something {
 }`
       }
     ],
-    async ({ code, selection, expected }) => {
-      const result = await doInlineVariable(code, selection);
-      expect(result).toBe(expected);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
+
+      await inlineVariable(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   describe("multiple variables declaration", () => {
-    const code = `const one = 1, two = 2, three = 3;
-const result = one + two + three;`;
-
     it("should select the correct variable value (basic scenario)", async () => {
-      const selection = Selection.cursorAt(0, 15);
+      const code = `const one = 1, [cursor]two = 2, three = 3;
+const result = one + two + three;`;
+      const editor = new InMemoryEditor(code);
 
-      const result = await doInlineVariable(code, selection);
+      await inlineVariable(editor);
 
-      expect(result).toBe(`const one = 1, three = 3;
+      expect(editor.code).toBe(`const one = 1, three = 3;
 const result = one + 2 + three;`);
     });
 
     it("should select the correct variable value (last variable)", async () => {
-      const selection = Selection.cursorAt(0, 24);
+      const code = `const one = 1, two = 2, [cursor]three = 3;
+const result = one + two + three;`;
+      const editor = new InMemoryEditor(code);
 
-      const result = await doInlineVariable(code, selection);
+      await inlineVariable(editor);
 
-      expect(result).toBe(`const one = 1, two = 2;
+      expect(editor.code).toBe(`const one = 1, two = 2;
 const result = one + two + 3;`);
     });
 
     it("should select the correct variable value (first variable)", async () => {
-      const selection = Selection.cursorAt(0, 6);
+      const code = `const [cursor]one = 1, two = 2, three = 3;
+const result = one + two + three;`;
+      const editor = new InMemoryEditor(code);
 
-      const result = await doInlineVariable(code, selection);
+      await inlineVariable(editor);
 
-      expect(result).toBe(`const two = 2, three = 3;
+      expect(editor.code).toBe(`const two = 2, three = 3;
 const result = 1 + two + three;`);
     });
 
     it("should not inline code if cursor is not explicitly on one of the variables", async () => {
-      const selectionOnDeclarator = Selection.cursorAt(0, 0);
+      const code = `const one = 1, two = 2, three = 3;
+const result = one + two + three;`;
+      const editor = new InMemoryEditor(code);
+      jest.spyOn(editor, "showError");
 
-      await doInlineVariable(code, selectionOnDeclarator);
+      await inlineVariable(editor);
 
-      expect(showErrorMessage).toBeCalledWith(
+      expect(editor.showError).toBeCalledWith(
         ErrorReason.DidNotFindInlinableCode
       );
     });
 
     it("should work on multi-lines declarations", async () => {
       const code = `const one = 1,
-  two = 2,
+  [cursor]two = 2,
   three = 3;
 const result = one + two + three;`;
-      const selection = Selection.cursorAt(1, 2);
+      const editor = new InMemoryEditor(code);
 
-      const result = await doInlineVariable(code, selection);
+      await inlineVariable(editor);
 
-      expect(result).toBe(`const one = 1,
+      expect(editor.code).toBe(`const one = 1,
   three = 3;
 const result = one + 2 + three;`);
     });
@@ -287,16 +282,16 @@ const result = one + 2 + three;`);
     it("should work on multi-lines declarations, with declaration on previous line", async () => {
       const code = `const one =
     1,
-  two =
+  [cursor]two =
     2,
   three =
     3;
 const result = one + two + three;`;
-      const selection = Selection.cursorAt(2, 2);
+      const editor = new InMemoryEditor(code);
 
-      const result = await doInlineVariable(code, selection);
+      await inlineVariable(editor);
 
-      expect(result).toBe(`const one =
+      expect(editor.code).toBe(`const one =
     1,
   three =
     3;
@@ -308,89 +303,90 @@ const result = one + 2 + three;`);
 
   it("should show an error message if selection is not inlinable", async () => {
     const code = `console.log("Nothing to inline here!")`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doInlineVariable(code, selection);
+    await inlineVariable(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindInlinableCode
     );
   });
 
   it("should show an error message if variable is not used", async () => {
     const code = `const hello = "Hello!";`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doInlineVariable(code, selection);
+    await inlineVariable(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindInlinableCodeIdentifiers
     );
   });
 
   it("should show an error message if type alias is not used", async () => {
     const code = `type Value = "one" | "many" | "none";`;
-    const selection = Selection.cursorAt(0, 0);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doInlineVariable(code, selection);
+    await inlineVariable(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindInlinableCodeIdentifiers
     );
   });
 
-  testEach<{ code: Code; selection: Selection }>(
+  testEach<{ code: Code }>(
     "should not inline an exported variable",
     [
       {
         description: "export declaration",
-        code: `export const foo = "bar", hello = "world";
-console.log(foo);`,
-        selection: Selection.cursorAt(0, 19)
+        code: `export const foo = [cursor]"bar", hello = "world";
+console.log(foo);`
       },
       {
         description: "export after declaration",
-        code: `const foo = "bar", hello = "world";
+        code: `const foo = [cursor]"bar", hello = "world";
 console.log(foo);
 
-export { hello, foo };`,
-        selection: Selection.cursorAt(0, 12)
+export { hello, foo };`
       },
       {
         description: "export before declaration",
         code: `export { foo };
-const foo = "bar", hello = "world";
-console.log(foo);`,
-        selection: Selection.cursorAt(1, 12)
+const foo = [cursor]"bar", hello = "world";
+console.log(foo);`
       },
       {
         description: "default export after declaration",
-        code: `const foo = "bar", hello = "world";
+        code: `const foo = [cursor]"bar", hello = "world";
 console.log(foo);
 
-export default foo;`,
-        selection: Selection.cursorAt(0, 12)
+export default foo;`
       }
     ],
-    async ({ code, selection }) => {
-      await doInlineVariable(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      jest.spyOn(editor, "showError");
 
-      expect(showErrorMessage).toBeCalledWith(
+      await inlineVariable(editor);
+
+      expect(editor.showError).toBeCalledWith(
         ErrorReason.CantInlineExportedVariables
       );
     }
   );
 
-  testEach<{ code: Code; selection: Selection }>(
+  testEach<{ code: Code }>(
     "should not inline an exported type alias",
     [
       {
         description: "export declaration",
-        code: `export type Value = "one" | "many" | "none";
+        code: `export type [cursor]Value = "one" | "many" | "none";
 interface Something {
   value: Value;
-}`,
-        selection: Selection.cursorAt(0, 12)
+}`
       },
       {
         description: "export after declaration",
@@ -399,17 +395,15 @@ interface Something {
   value: Value;
 }
 
-export { Value };`,
-        selection: Selection.cursorAt(0, 0)
+export { Value };`
       },
       {
         description: "export before declaration",
         code: `export { Value };
-type Value = "one" | "many" | "none";
+[cursor]type Value = "one" | "many" | "none";
 interface Something {
   value: Value;
-}`,
-        selection: Selection.cursorAt(1, 0)
+}`
       },
       {
         description: "default export after declaration",
@@ -418,39 +412,32 @@ interface Something {
   value: Value;
 }
 
-export default Value;`,
-        selection: Selection.cursorAt(0, 0)
+export default Value;`
       }
     ],
-    async ({ code, selection }) => {
-      await doInlineVariable(code, selection);
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      jest.spyOn(editor, "showError");
 
-      expect(showErrorMessage).toBeCalledWith(
+      await inlineVariable(editor);
+
+      expect(editor.showError).toBeCalledWith(
         ErrorReason.CantInlineExportedVariables
       );
     }
   );
 
   it("should not inline a redeclared variable", async () => {
-    const code = `let hello = "Hello!";
+    const code = `let h[cursor]ello = "Hello!";
 console.log(hello);
 hello = "World!";`;
-    const selection = Selection.cursorAt(0, 5);
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-    await doInlineVariable(code, selection);
+    await inlineVariable(editor);
 
-    expect(showErrorMessage).toBeCalledWith(
+    expect(editor.showError).toBeCalledWith(
       ErrorReason.CantInlineRedeclaredVariables
     );
   });
-
-  async function doInlineVariable(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
-    const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await inlineVariable(code, selection, editor);
-    return editor.code;
-  }
 });

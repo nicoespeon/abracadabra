@@ -10,7 +10,7 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 
   pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
-import { Editor, ErrorReason, Code } from "../../editor/editor";
+import { ErrorReason, Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
@@ -18,40 +18,27 @@ import { testEach } from "../../tests-helpers";
 import { <%= camelName %> } from "./<%= dashedName %>";
 
 describe("<%= titleName %>", () => {
-  let showErrorMessage: Editor["showError"];
-
-  beforeEach(() => {
-    showErrorMessage = jest.fn();
-  });
-
-  testEach<{ code: Code; selection?: Selection; expected: Code }>(
+  testEach<{ code: Code; expected: Code }>(
     "should <%= noCaseName %>",
     [
       // TODO: write successful test cases here
     ],
-    async ({ code, selection = Selection.cursorAt(0, 0), expected }) => {
-      const result = await do<%= pascalName %>(code, selection);
+    async ({ code, expected }) => {
+      const editor = new InMemoryEditor(code);
 
-      expect(result).toBe(expected);
+      await <%= pascalName %>(editor);
+
+      expect(editor.code).toBe(expected);
     }
   );
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
-    const selection = Selection.cursorAt(0, 0);
-
-    await do<%= pascalName %>(code, selection);
-
-    expect(showErrorMessage).toBeCalledWith(ErrorReason.<%= pascalErrorName %>);
-  });
-
-  async function do<%= pascalName %>(
-    code: Code,
-    selection: Selection
-  ): Promise<Code> {
     const editor = new InMemoryEditor(code);
-    editor.showError = showErrorMessage;
-    await <%= camelName %>(code, selection, editor);
-    return editor.code;
-  }
+    jest.spyOn(editor, "showError");
+
+    await <%= pascalName %>(editor);
+
+    expect(editor.showError).toBeCalledWith(ErrorReason.<%= pascalErrorName %>);
+  });
 });
