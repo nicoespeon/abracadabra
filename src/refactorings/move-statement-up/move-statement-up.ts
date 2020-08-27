@@ -42,7 +42,9 @@ function updateCode(
     ObjectProperty: visitPath,
     ObjectMethod: visitPath,
     ClassMethod: visitPath,
-    ClassProperty: visitPath
+    ClassProperty: visitPath,
+    ArrayExpression: visitPath,
+    Literal: visitPath
   });
 
   return { ...result, isFirstStatement, newStatementPosition };
@@ -109,7 +111,9 @@ function hasChildWhichMatchesSelection(
     ObjectProperty: visitPath,
     ObjectMethod: visitPath,
     ClassMethod: visitPath,
-    ClassProperty: visitPath
+    ClassProperty: visitPath,
+    ArrayExpression: visitPath,
+    Literal: visitPath
   });
 
   return result;
@@ -129,6 +133,9 @@ function hasChildWhichMatchesSelection(
     if (!t.isSelectableNode(parent)) return;
     const parentSelection = Selection.fromAST(parent.loc);
     if (childPath.isObjectProperty() && parentSelection.isOneLine) {
+      return;
+    }
+    if (childPath.isLiteral() && !path.isArrayExpression()) {
       return;
     }
 

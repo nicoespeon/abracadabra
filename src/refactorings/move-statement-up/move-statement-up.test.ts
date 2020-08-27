@@ -146,6 +146,22 @@ function doSomethingElse() {
         expectedPosition: new Position(3, 0)
       },
       {
+        description: "array elements",
+        code: `console.log("Should not move");
+const data = [
+  "foo",
+  [cursor]"bar",
+  "baz"
+];`,
+        expected: `console.log("Should not move");
+const data = [
+  "bar",
+  "foo",
+  "baz"
+];`,
+        expectedPosition: new Position(2, 2)
+      },
+      {
         description: "object properties",
         code: `console.log("Should not move");
 const data = {
