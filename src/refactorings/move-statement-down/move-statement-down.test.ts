@@ -164,6 +164,30 @@ console.log("Second");`,
         expectedPosition: new Position(6, 0)
       },
       {
+        description: "array elements",
+        code: `const data = [
+  [cursor]"foo",
+  "bar",
+  "baz"
+];
+console.log("Should not move");`,
+        expected: `const data = [
+  "bar",
+  "foo",
+  "baz"
+];
+console.log("Should not move");`,
+        expectedPosition: new Position(2, 2)
+      },
+      {
+        description: "array elements, one-liner",
+        code: `const data = [[cursor]"foo", "bar", "baz"];
+console.log("Should move in this scenario");`,
+        expected: `console.log("Should move in this scenario");
+const data = ["foo", "bar", "baz"];`,
+        expectedPosition: new Position(2, 2)
+      },
+      {
         description: "object properties",
         code: `const data = {
   [cursor]foo: "foo",
