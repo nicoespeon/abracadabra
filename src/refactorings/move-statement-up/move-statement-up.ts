@@ -136,10 +136,10 @@ function hasChildWhichMatchesSelection(
     const parentSelection = Selection.fromAST(parent.loc);
     if (childPath.isObjectProperty() && parentSelection.isOneLine) return;
 
-    if (childPath.isLiteral() && !path.isArrayExpression()) return;
-
     const childSelection = Selection.fromAST(node.loc);
     if (childPath.isArrayExpression() && childSelection.isOneLine) return;
+
+    if (childPath.isLiteral() && !path.isArrayExpression()) return;
 
     result = true;
     childPath.stop();
