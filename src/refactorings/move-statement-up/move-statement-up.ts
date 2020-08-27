@@ -131,13 +131,11 @@ function hasChildWhichMatchesSelection(
 
     const { parent } = childPath;
     if (!t.isSelectableNode(parent)) return;
+
     const parentSelection = Selection.fromAST(parent.loc);
-    if (childPath.isObjectProperty() && parentSelection.isOneLine) {
-      return;
-    }
-    if (childPath.isLiteral() && !path.isArrayExpression()) {
-      return;
-    }
+    if (childPath.isObjectProperty() && parentSelection.isOneLine) return;
+
+    if (childPath.isLiteral() && !path.isArrayExpression()) return;
 
     result = true;
     childPath.stop();
