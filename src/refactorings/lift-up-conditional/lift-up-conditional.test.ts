@@ -2,11 +2,11 @@ import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { bubbleUpIfStatement } from "./bubble-up-if-statement";
+import { liftUpConditional } from "./lift-up-conditional";
 
-describe("Bubble Up If Statement", () => {
+describe("Lift Up Conditional", () => {
   testEach<{ code: Code; expected: Code }>(
-    "should bubble up if statement",
+    "should lift up conditional",
     [
       {
         description: "simple if nested in another if",
@@ -243,14 +243,14 @@ if (canLog) {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
-      await bubbleUpIfStatement(editor);
+      await liftUpConditional(editor);
 
       expect(editor.code).toBe(expected);
     }
   );
 
   testEach<{ code: Code }>(
-    "should not bubble up",
+    "should not lift up",
     [
       // We don't handle scenarios where nested if is in the else node.
       // This would be an improvement: handle if & if-else nested in else node.
@@ -269,7 +269,7 @@ if (canLog) {
       const editor = new InMemoryEditor(code);
       const originalCode = editor.code;
 
-      await bubbleUpIfStatement(editor);
+      await liftUpConditional(editor);
 
       expect(editor.code).toBe(originalCode);
     }
@@ -280,7 +280,7 @@ if (canLog) {
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
-    await bubbleUpIfStatement(editor);
+    await liftUpConditional(editor);
 
     expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindNestedIf);
   });

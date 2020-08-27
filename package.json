@@ -86,7 +86,6 @@
   "activationEvents": [
     "onCommand:abracadabra.addBracesToArrowFunction",
     "onCommand:abracadabra.addBracesToIfStatement",
-    "onCommand:abracadabra.bubbleUpIfStatement",
     "onCommand:abracadabra.convertForToForeach",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
     "onCommand:abracadabra.convertIfElseToTernary",
@@ -100,6 +99,7 @@
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
     "onCommand:abracadabra.inline",
+    "onCommand:abracadabra.liftUpConditional",
     "onCommand:abracadabra.mergeIfStatements",
     "onCommand:abracadabra.mergeWithPreviousIfStatement",
     "onCommand:abracadabra.moveStatementDown",
@@ -132,11 +132,6 @@
       {
         "command": "abracadabra.addBracesToIfStatement",
         "title": "Add Braces to If Statement",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.bubbleUpIfStatement",
-        "title": "Bubble up If Statement",
         "category": "Abracadabra"
       },
       {
@@ -202,6 +197,11 @@
       {
         "command": "abracadabra.inline",
         "title": "Inline",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.liftUpConditional",
+        "title": "Lift Up Conditional",
         "category": "Abracadabra"
       },
       {
@@ -368,22 +368,6 @@
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.bubbleUpIfStatement",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.bubbleUpIfStatement",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.bubbleUpIfStatement",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.bubbleUpIfStatement",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
           "command": "abracadabra.convertForToForeach",
           "when": "editorLangId == javascript"
         },
@@ -581,6 +565,22 @@
         },
         {
           "command": "abracadabra.inline",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.liftUpConditional",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.liftUpConditional",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.liftUpConditional",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.liftUpConditional",
           "when": "editorLangId == typescriptreact"
         },
         {

@@ -82,7 +82,7 @@ function toString(reason: ErrorReason): string {
       return didNotFind("a statement to merge with");
 
     case ErrorReason.DidNotFindNestedIf:
-      return didNotFind("a nested if to bubble up");
+      return didNotFind("a nested if to lift up");
 
     case ErrorReason.DidNotFindBinaryExpression:
       return didNotFind("a binary expression to convert");

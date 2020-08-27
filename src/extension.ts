@@ -5,7 +5,6 @@ import { RefactoringActionProvider } from "./action-providers";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
 import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
-import bubbleUpIfStatement from "./refactorings/bubble-up-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
@@ -19,6 +18,7 @@ import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
 import inline from "./refactorings/inline";
+import liftUpConditional from "./refactorings/lift-up-conditional";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
@@ -56,7 +56,6 @@ export function activate(context: vscode.ExtensionContext) {
   [
     addBracesToArrowFunction,
     addBracesToIfStatement,
-    bubbleUpIfStatement,
     convertForToForeach,
     convertIfElseToSwitch,
     convertIfElseToTernary,
@@ -70,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
     flipIfElse,
     flipTernary,
     inline,
+    liftUpConditional,
     mergeIfStatements,
     mergeWithPreviousIfStatement,
     moveStatementDown,
@@ -125,7 +125,6 @@ export function activate(context: vscode.ExtensionContext) {
       new RefactoringActionProvider([
         addBracesToArrowFunction,
         addBracesToIfStatement,
-        bubbleUpIfStatement,
         convertForToForeach,
         convertIfElseToSwitch,
         convertSwitchToIfElse,
@@ -136,6 +135,7 @@ export function activate(context: vscode.ExtensionContext) {
         convertLetToConst,
         flipIfElse,
         flipTernary,
+        liftUpConditional,
         mergeIfStatements,
         mergeWithPreviousIfStatement,
         negateExpression,

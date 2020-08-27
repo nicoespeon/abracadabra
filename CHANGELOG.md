@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   1. The editor scrolls only when it's necessary
   2. It doesn't move the parent node unexpectedly!
 
+- "Bubble up If Statement" has been renamed "Lift Up Conditional", which is the most widespread name for this refactoring
+
 ### Added
 
 - "Move Statements" now handles array elements the same way it handles object properties

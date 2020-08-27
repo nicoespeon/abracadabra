@@ -50,7 +50,7 @@ Related projects:
     1. [Split If Statement](#split-if-statement)
     1. [Merge If Statements](#merge-if-statements)
     1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
-    1. [Bubble up If Statement](#bubble-up-if-statement)
+    1. [Lift Up Conditional](#lift-up-conditional)
   - Moving Features:
     1. [Remove Dead Code](#remove-dead-code)
   - Organizing data:
@@ -330,7 +330,7 @@ If you want to merge 2 consecutive if statements, it will resolve the dead code 
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Bubble up If Statement
+### Lift Up Conditional
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
@@ -338,7 +338,7 @@ Useful when you need to have the similar conditionals at the top level. If you g
 
 Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting code will have the same behaviour.
 
-![][demo-bubble-up-if-statement]
+![][demo-lift-up-conditional]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -708,7 +708,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
-[demo-bubble-up-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/bubble-up-if-statement.gif?raw=true
+[demo-lift-up-conditional]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/lift-up-conditional.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
 [demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-for-to-foreach.gif?raw=true
