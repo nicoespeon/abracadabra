@@ -9,7 +9,7 @@ const config: RefactoringWithActionProvider = {
     title: "Lift Up Conditional"
   },
   actionProvider: {
-    message: "Lift Up Conditional",
+    message: "Lift up conditional",
     createVisitor: canliftUpConditional,
     isPreferred: true
   }
