@@ -178,6 +178,14 @@ const data = {
         expectedPosition: new Position(2, 2)
       },
       {
+        description: "array elements, one-liner",
+        code: `console.log("Should move in this scenario");
+const data = ["foo", [cursor]"bar", "baz"];`,
+        expected: `const data = ["foo", "bar", "baz"];
+console.log("Should move in this scenario");`,
+        expectedPosition: new Position(0, 21)
+      },
+      {
         description: "object properties, one-liner",
         code: `console.log("Should move in this scenario");
 const data = { f[cursor]oo: "foo", bar: "bar" };`,
