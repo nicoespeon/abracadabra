@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- "Move Statements" now handles array elements the same way it handles object properties
 - **[New Refactoring]** Convert to Arrow Function, thanks to @OliverJAsh 🙏
 
 ## [4.6.0] - 2020-07-30 - I was made for Refactorin' you baby 💋
