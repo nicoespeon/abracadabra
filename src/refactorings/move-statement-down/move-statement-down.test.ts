@@ -185,7 +185,7 @@ console.log("Should not move");`,
 console.log("Should move in this scenario");`,
         expected: `console.log("Should move in this scenario");
 const data = ["foo", "bar", "baz"];`,
-        expectedPosition: new Position(2, 2)
+        expectedPosition: new Position(1, 14)
       },
       {
         description: "object properties",
