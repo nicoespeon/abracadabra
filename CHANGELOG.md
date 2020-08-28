@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- "Move Statements" UX got some love with 2 great improvements:
+- "Move Statements" UX got some love with 3 great improvements:
 
   1. The editor scrolls only when it's necessary
   2. It doesn't move the parent node unexpectedly!
+  3. Cursor ends up more often at the expected position
 
 - "Bubble up If Statement" has been renamed "Lift Up Conditional", which is the most widespread name for this refactoring
 
