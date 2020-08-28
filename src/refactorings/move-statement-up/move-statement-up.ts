@@ -82,6 +82,20 @@ function updateCode(
       }
     }
 
+    if (hasComments(path)) {
+      path.node.leadingComments.forEach((comment) => {
+        const { height } = Selection.fromAST(comment.loc);
+        newStatementPosition = newStatementPosition.addLines(height + 1);
+      });
+    }
+
+    if (hasComments(pathAbove)) {
+      pathAbove.node.leadingComments.forEach((comment) => {
+        const { height } = Selection.fromAST(comment.loc);
+        newStatementPosition = newStatementPosition.addLines(-(height + 1));
+      });
+    }
+
     // Preserve the `loc` of the above path & reset the one of the moved node.
     // Use `path.node` intead of `node` or TS won't build. I don't know why.
     const newNodeAbove = { ...path.node, loc: pathAbove.node.loc };
@@ -90,6 +104,12 @@ function updateCode(
     path.replaceWith(newNode);
     path.stop();
   }
+}
+
+function hasComments<T extends t.NodePath>(
+  path: T
+): path is T & { node: { leadingComments: t.Comment[] } } {
+  return !!path.node.leadingComments && path.node.leadingComments.length > 0;
 }
 
 function hasChildWhichMatchesSelection(

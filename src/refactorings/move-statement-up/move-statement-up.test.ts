@@ -356,6 +356,42 @@ function sayByeBye() {
   console.log("ByeBye")
 }`,
         expectedPosition: new Position(0, 0)
+      },
+      {
+        description: "three functions with comments",
+        code: `// Helpers
+function sayHello() {
+  console.log("Hello")
+}
+
+/**
+ * Say bye to people
+ */
+// Farewell, friends
+[cursor]function sayBye() {
+  console.log("Bye")
+}
+
+function sayByeBye() {
+  console.log("ByeBye")
+}`,
+        expected: `/**
+ * Say bye to people
+ */
+// Farewell, friends
+function sayBye() {
+  console.log("Bye")
+}
+
+// Helpers
+function sayHello() {
+  console.log("Hello")
+}
+
+function sayByeBye() {
+  console.log("ByeBye")
+}`,
+        expectedPosition: new Position(4, 0)
       }
     ],
     async ({ code, expected, expectedPosition }) => {

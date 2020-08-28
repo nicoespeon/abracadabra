@@ -361,6 +361,44 @@ console.log("Should not move");`,
   }
 }`,
         expectedPosition: new Position(4, 2)
+      },
+      {
+        description: "three functions with comments",
+        code: `// Helpers
+// And stuff…
+[cursor]function sayHello() {
+  console.log("Hello")
+}
+
+/**
+ * Say bye to people
+ */
+// Farewell, friends
+function sayBye() {
+  console.log("Bye")
+}
+
+function sayByeBye() {
+  console.log("ByeBye")
+}`,
+        expected: `/**
+ * Say bye to people
+ */
+// Farewell, friends
+function sayBye() {
+  console.log("Bye")
+}
+
+// Helpers
+// And stuff…
+function sayHello() {
+  console.log("Hello")
+}
+
+function sayByeBye() {
+  console.log("ByeBye")
+}`,
+        expectedPosition: new Position(10, 0)
       }
     ],
     async ({ code, expected, expectedPosition }) => {
