@@ -330,6 +330,32 @@ const data = {
   }
 }`,
         expectedPosition: new Position(1, 2)
+      },
+      {
+        description: "three functions, cursor on the middle one",
+        code: `function sayHello() {
+  console.log("Hello")
+}
+
+[cursor]function sayBye() {
+  console.log("Bye")
+}
+
+function sayByeBye() {
+  console.log("ByeBye")
+}`,
+        expected: `function sayBye() {
+  console.log("Bye")
+}
+
+function sayHello() {
+  console.log("Hello")
+}
+
+function sayByeBye() {
+  console.log("ByeBye")
+}`,
+        expectedPosition: new Position(0, 0)
       }
     ],
     async ({ code, expected, expectedPosition }) => {

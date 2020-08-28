@@ -69,34 +69,14 @@ function updateCode(
       pathAbove.node.loc.start
     ).putAtSameCharacter(selection.start);
 
-    // If `pathAbove` is a function, recast creates new lines when moved.
-    // Same if `path` is an object method.
+    // If `path` is an object method, recast creates new lines when moved.
     // Adapt the new statement position accordingly.
-    if (
-      t.isFunction(pathAbove) ||
-      (t.isObjectMethod(path) && typeof path.key === "number")
-    ) {
-      const pathBelowKey = path.key + 1;
-      const container = new Array().concat(path.container);
-      const hasPathBelow = pathBelowKey < container.length;
+    if (path.isObjectMethod() && typeof path.key === "number") {
       const extracted = path.getSibling(path.key - 1);
 
-      if (hasPathBelow && !Position.hasSpaceBetweenPaths(path, extracted)) {
-        newStatementPosition = newStatementPosition.putAtNextLine();
-      }
-
       if (
-        path.isObjectMethod() &&
         pathAbove.isObjectProperty() &&
         !Position.hasSpaceBetweenPaths(path, extracted)
-      ) {
-        newStatementPosition = newStatementPosition.putAtNextLine();
-      }
-
-      if (
-        !path.isClassMethod() &&
-        !path.isObjectMethod() &&
-        !Position.hasSpaceBetweenPaths(pathAbove, path)
       ) {
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
