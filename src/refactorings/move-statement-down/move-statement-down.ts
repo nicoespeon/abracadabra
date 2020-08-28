@@ -78,7 +78,7 @@ function updateCode(
       nextStatementHeight + blankLinesBetweenNodes
     );
 
-    // If `pathBelow` is a function, it may create new lines when moved.
+    // If `pathBelow` is a function, recast creates new lines when moved.
     // Same if `path` is an object method.
     // Adapt the new statement position accordingly.
     if (
@@ -92,7 +92,19 @@ function updateCode(
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
 
-      if (!Position.hasSpaceBetweenPaths(path, pathBelow)) {
+      if (
+        path.isObjectMethod() &&
+        pathBelow.isObjectProperty() &&
+        !Position.hasSpaceBetweenPaths(path, extracted)
+      ) {
+        newStatementPosition = newStatementPosition.putAtNextLine();
+      }
+
+      if (
+        !path.isClassMethod() &&
+        !path.isObjectMethod() &&
+        !Position.hasSpaceBetweenPaths(path, pathBelow)
+      ) {
         newStatementPosition = newStatementPosition.putAtNextLine();
       }
     }

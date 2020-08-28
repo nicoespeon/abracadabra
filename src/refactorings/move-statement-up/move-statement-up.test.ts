@@ -290,6 +290,46 @@ const data = {
   name = "foo";
 }`,
         expectedPosition: new Position(1, 2)
+      },
+      {
+        description: "class method without space between methods",
+        code: `class Node {
+  getName() {
+    return "foo";
+  }
+  [cursor]getSize() {
+    return 1;
+  }
+}`,
+        expected: `class Node {
+  getSize() {
+    return 1;
+  }
+  getName() {
+    return "foo";
+  }
+}`,
+        expectedPosition: new Position(1, 2)
+      },
+      {
+        description: "object method without space between methods",
+        code: `const node = {
+  getName() {
+    return "foo";
+  },
+  [cursor]getSize() {
+    return 1;
+  }
+}`,
+        expected: `const node = {
+  getSize() {
+    return 1;
+  },
+  getName() {
+    return "foo";
+  }
+}`,
+        expectedPosition: new Position(1, 2)
       }
     ],
     async ({ code, expected, expectedPosition }) => {
