@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.7.0] - 2020-08-28 - I like to Move it, Move it 🇲🇬
+
 ### Changed
 
 - "Move Statements" UX got some love with 3 great improvements:
@@ -965,7 +967,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.6.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...HEAD
+[4.7.0]: https://github.com/nicoespeon/abracadabra/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/nicoespeon/abracadabra/compare/4.5.0...4.6.0
 [4.5.0]: https://github.com/nicoespeon/abracadabra/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/nicoespeon/abracadabra/compare/4.3.0...4.4.0
