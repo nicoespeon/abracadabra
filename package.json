@@ -30,7 +30,8 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": "^1.34.0"
+    "vscode": "^1.34.0",
+    "node": ">=10.13.0"
   },
   "main": "./out/extension.js",
   "scripts": {
