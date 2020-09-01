@@ -55,7 +55,7 @@
   "devDependencies": {
     "@types/babel__traverse": "7.0.9",
     "@types/jest": "26.0.12",
-    "@types/jscodeshift": "0.6.3",
+    "@types/jscodeshift": "0.7.1",
     "@types/node": "10.12.21",
     "@types/pluralize": "0.0.29",
     "all-contributors-cli": "6.17.0",
