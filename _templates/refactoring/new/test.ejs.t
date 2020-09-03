@@ -3,7 +3,6 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 ---
 <%
   camelName = h.changeCase.camel(name)
-  pascalName = h.changeCase.pascalCase(name)
   dashedName = h.changeCase.param(name)
   titleName = h.changeCase.titleCase(name)
   noCaseName = h.changeCase.noCase(name)
@@ -11,7 +10,6 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
   pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
 import { ErrorReason, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -26,7 +24,7 @@ describe("<%= titleName %>", () => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
-      await <%= pascalName %>(editor);
+      await <%= camelName %>(editor);
 
       expect(editor.code).toBe(expected);
     }
@@ -37,7 +35,7 @@ describe("<%= titleName %>", () => {
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
-    await <%= pascalName %>(editor);
+    await <%= camelName %>(editor);
 
     expect(editor.showError).toBeCalledWith(ErrorReason.<%= pascalErrorName %>);
   });
