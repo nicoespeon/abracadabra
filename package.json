@@ -61,7 +61,7 @@
     "@types/pluralize": "0.0.29",
     "all-contributors-cli": "6.17.0",
     "husky": "4.2.5",
-    "hygen": "4.0.8",
+    "hygen": "6.0.4",
     "jest": "25.5.4",
     "prettier": "2.1.1",
     "pretty-quick": "3.0.0",
