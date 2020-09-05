@@ -39,13 +39,7 @@ class VSCodeEditor implements Editor {
     );
 
     const edit = new vscode.WorkspaceEdit();
-    const allDocumentRange = new vscode.Range(
-      new vscode.Position(0, 0),
-      new vscode.Position(this.document.lineCount, 0)
-    );
-
-    edit.set(this.document.uri, [new vscode.TextEdit(allDocumentRange, code)]);
-
+    edit.set(this.document.uri, [new vscode.TextEdit(this.editRange, code)]);
     await vscode.workspace.applyEdit(edit);
 
     // Put cursor at correct position
@@ -61,6 +55,13 @@ class VSCodeEditor implements Editor {
         vscode.TextEditorRevealType.Default
       );
     }
+  }
+
+  private get editRange(): vscode.Range {
+    return new vscode.Range(
+      new vscode.Position(0, 0),
+      new vscode.Position(this.document.lineCount, 0)
+    );
   }
 
   async readThenWrite(
