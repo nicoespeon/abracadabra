@@ -92,7 +92,7 @@ function updateCode(
     if (hasComments(pathAbove)) {
       pathAbove.node.leadingComments.forEach((comment) => {
         const { height } = Selection.fromAST(comment.loc);
-        newStatementPosition = newStatementPosition.addLines(-(height + 1));
+        newStatementPosition = newStatementPosition.removeLines(height + 1);
       });
     }
 

@@ -43,8 +43,8 @@ class VueVSCodeEditor implements Editor {
     const vsCodeSelection = createSelectionFromVSCode(this.editor.selection);
 
     return Selection.fromPositions(
-      vsCodeSelection.start.addLines(-lastLine),
-      vsCodeSelection.end.addLines(-lastLine)
+      vsCodeSelection.start.removeLines(lastLine),
+      vsCodeSelection.end.removeLines(lastLine)
     );
   }
 
