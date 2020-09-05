@@ -17,7 +17,10 @@ class VueVSCodeEditor extends VSCodeEditor {
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
-    return super.write(code, this.offsetNewPosition(newCursorPosition));
+    return super.write(
+      code,
+      newCursorPosition && this.offsetNewPosition(newCursorPosition)
+    );
   }
 
   protected get editRange(): vscode.Range {
@@ -51,7 +54,7 @@ class VueVSCodeEditor extends VSCodeEditor {
     getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void> {
-    const gotOffsetModifications = (code: Code) => {
+    const getOffsetModifications = (code: Code) => {
       return getModifications(code).map(({ code, selection }) => ({
         code,
         selection: this.offsetSelection(selection)
@@ -60,9 +63,13 @@ class VueVSCodeEditor extends VSCodeEditor {
 
     return super.readThenWrite(
       this.offsetSelection(selection),
-      gotOffsetModifications,
-      this.offsetNewPosition(newCursorPosition)
+      getOffsetModifications,
+      newCursorPosition && this.offsetNewPosition(newCursorPosition)
     );
+  }
+
+  moveCursorTo(position: Position) {
+    return super.moveCursorTo(this.offsetNewPosition(position));
   }
 
   private offsetSelection(selection: Selection): Selection {
@@ -74,15 +81,9 @@ class VueVSCodeEditor extends VSCodeEditor {
     );
   }
 
-  private offsetNewPosition(newPosition?: Position): Position | undefined {
-    return (
-      newPosition &&
-      newPosition.addLines(this.toOffsetLinesCount(this.openingTagOffset))
-    );
+  private offsetNewPosition(newPosition: Position): Position {
+    return newPosition.addLines(this.toOffsetLinesCount(this.openingTagOffset));
   }
-
-  // TODO: offset selection accordingly
-  // moveCursorTo(position: Position)
 }
 
 type Offset = number;
