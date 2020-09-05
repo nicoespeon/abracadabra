@@ -11,7 +11,7 @@
 [![Build Status](https://travis-ci.org/nicoespeon/abracadabra.svg?branch=master)](https://travis-ci.org/nicoespeon/abracadabra)
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
-Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript.
+Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript. Works in `.js`, `.jsx`, `.ts`, `.tsx` and `.vue` files.
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
 
