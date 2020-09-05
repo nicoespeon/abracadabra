@@ -24,28 +24,38 @@ class VueVSCodeEditor implements Editor {
   }
 
   get code(): Code {
-    const fullCode = this.document.getText();
-    const openingScriptTagPosition =
-      fullCode.indexOf("<script>") + "<script>".length;
-    const closingScriptTagPosition = fullCode.indexOf("</script>");
-
-    return fullCode.slice(openingScriptTagPosition, closingScriptTagPosition);
+    return this.fullCode.slice(
+      this.openingScriptTagOffset,
+      this.closingScriptTagOffset
+    );
   }
 
   get selection(): Selection {
-    const fullCode = this.document.getText();
-    const openingScriptTagPosition =
-      fullCode.indexOf("<script>") + "<script>".length;
-    const offsetCode = fullCode.slice(0, openingScriptTagPosition);
-    const fullCodeWithLines = offsetCode.split("\n");
-    const lastLine = fullCodeWithLines.length - 1;
+    const offsetCodeLines = this.fullCode
+      .slice(0, this.openingScriptTagOffset)
+      .split("\n");
+    const offsetLinesCount = offsetCodeLines.length - 1;
 
+    // TODO: replace with super.selection if we subclass VSCodeEditor
     const vsCodeSelection = createSelectionFromVSCode(this.editor.selection);
 
     return Selection.fromPositions(
-      vsCodeSelection.start.removeLines(lastLine),
-      vsCodeSelection.end.removeLines(lastLine)
+      vsCodeSelection.start.removeLines(offsetLinesCount),
+      vsCodeSelection.end.removeLines(offsetLinesCount)
     );
+  }
+
+  private get openingScriptTagOffset(): Offset {
+    return this.fullCode.indexOf("<script>") + "<script>".length;
+  }
+
+  private get closingScriptTagOffset(): Offset {
+    return this.fullCode.indexOf("</script>");
+  }
+
+  private get fullCode(): Code {
+    // TODO: replace with super.code if we subclass VSCodeEditor
+    return this.document.getText();
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
@@ -132,6 +142,8 @@ class VueVSCodeEditor implements Editor {
     return Promise.resolve();
   }
 }
+
+type Offset = number;
 
 function createSelectionFromVSCode(
   selection: vscode.Selection | vscode.Range
