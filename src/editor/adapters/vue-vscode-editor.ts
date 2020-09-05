@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { Code } from "../editor";
+import { Code, Modification } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";
 import { VSCodeEditor } from "./vscode-editor";
@@ -13,23 +13,11 @@ class VueVSCodeEditor extends VSCodeEditor {
   }
 
   get selection(): Selection {
-    const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
-
-    return Selection.fromPositions(
-      super.selection.start.removeLines(offsetLinesCount),
-      super.selection.end.removeLines(offsetLinesCount)
-    );
+    return this.offsetSelection(super.selection);
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
-    return newCursorPosition
-      ? super.write(
-          code,
-          newCursorPosition.addLines(
-            this.toOffsetLinesCount(this.openingTagOffset)
-          )
-        )
-      : super.write(code);
+    return super.write(code, this.offsetNewPosition(newCursorPosition));
   }
 
   protected get editRange(): vscode.Range {
@@ -58,12 +46,40 @@ class VueVSCodeEditor extends VSCodeEditor {
     return super.code.indexOf("</script>");
   }
 
-  // TODO: replace code in script tags when we write
-  // async readThenWrite(
-  //   selection: Selection,
-  //   getModifications: (code: Code) => Modification[],
-  //   newCursorPosition?: Position
-  // ): Promise<void>
+  async readThenWrite(
+    selection: Selection,
+    getModifications: (code: Code) => Modification[],
+    newCursorPosition?: Position
+  ): Promise<void> {
+    const gotOffsetModifications = (code: Code) => {
+      return getModifications(code).map(({ code, selection }) => ({
+        code,
+        selection: this.offsetSelection(selection)
+      }));
+    };
+
+    return super.readThenWrite(
+      this.offsetSelection(selection),
+      gotOffsetModifications,
+      this.offsetNewPosition(newCursorPosition)
+    );
+  }
+
+  private offsetSelection(selection: Selection): Selection {
+    const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
+
+    return Selection.fromPositions(
+      selection.start.removeLines(offsetLinesCount),
+      selection.end.removeLines(offsetLinesCount)
+    );
+  }
+
+  private offsetNewPosition(newPosition?: Position): Position | undefined {
+    return (
+      newPosition &&
+      newPosition.addLines(this.toOffsetLinesCount(this.openingTagOffset))
+    );
+  }
 
   // TODO: offset selection accordingly
   // moveCursorTo(position: Position)
