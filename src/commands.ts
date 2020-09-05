@@ -11,8 +11,6 @@ function createCommand(execute: Operation) {
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) return;
 
-    await executeSafely(() => execute(new VSCodeEditor(activeTextEditor)));
-
     const editor =
       activeTextEditor.document.languageId === "vue"
         ? new VueVSCodeEditor(activeTextEditor)
