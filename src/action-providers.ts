@@ -10,8 +10,6 @@ export { RefactoringActionProvider };
 type Refactoring = RefactoringWithActionProvider;
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private editor = createVSCodeEditor();
-
   constructor(private refactorings: Refactoring[]) {}
 
   provideCodeActions(
@@ -23,16 +21,15 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       return NO_ACTION;
     }
 
-    if (!this.editor) {
-      return NO_ACTION;
-    }
+    const editor = createVSCodeEditor();
+    if (!editor) return NO_ACTION;
 
     try {
-      const ast = t.parse(this.editor.code);
+      const ast = t.parse(editor.code);
 
       return this.findApplicableRefactorings(
         ast,
-        this.editor.selection
+        editor.selection
       ).map((refactoring) => this.buildCodeActionFor(refactoring));
     } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
