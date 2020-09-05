@@ -20,14 +20,14 @@ export default config;
 
 async function inline() {
   const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
+  if (!activeTextEditor) return;
+
+  const editor = new VSCodeEditorAttemptingInlining(activeTextEditor);
 
   await executeSafely(async () => {
-    await inlineVariable(new VSCodeEditorAttemptingInlining(activeTextEditor));
+    await inlineVariable(editor);
 
-    if (!new VSCodeEditorAttemptingInlining(activeTextEditor).couldInlineCode) {
+    if (!editor.couldInlineCode) {
       await inlineFunction(new VSCodeEditor(activeTextEditor));
     }
   });

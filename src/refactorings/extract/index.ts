@@ -22,12 +22,12 @@ async function extract() {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) return;
 
-  await executeSafely(async () => {
-    await extractVariable(
-      new VSCodeEditorAttemptingExtraction(activeTextEditor)
-    );
+  const editor = new VSCodeEditorAttemptingExtraction(activeTextEditor);
 
-    if (!new VSCodeEditorAttemptingExtraction(activeTextEditor).couldExtract) {
+  await executeSafely(async () => {
+    await extractVariable(editor);
+
+    if (!editor.couldExtract) {
       await extractGenericType(new VSCodeEditor(activeTextEditor));
     }
   });
