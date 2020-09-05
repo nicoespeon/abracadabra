@@ -1,20 +1,14 @@
 import * as vscode from "vscode";
 
 import { Operation } from "./types";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
-import { VueVSCodeEditor } from "./editor/adapters/vue-vscode-editor";
+import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 
 export { createCommand, executeSafely };
 
 function createCommand(execute: Operation) {
   return async () => {
-    const activeTextEditor = vscode.window.activeTextEditor;
-    if (!activeTextEditor) return;
-
-    const editor =
-      activeTextEditor.document.languageId === "vue"
-        ? new VueVSCodeEditor(activeTextEditor)
-        : new VSCodeEditor(activeTextEditor);
+    const editor = createVSCodeEditor();
+    if (!editor) return;
 
     await executeSafely(() => execute(editor));
   };

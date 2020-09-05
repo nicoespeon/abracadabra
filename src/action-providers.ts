@@ -3,27 +3,16 @@ import * as vscode from "vscode";
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
-import { Editor } from "./editor/editor";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
-import { VueVSCodeEditor } from "./editor/adapters/vue-vscode-editor";
+import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 
 export { RefactoringActionProvider };
 
 type Refactoring = RefactoringWithActionProvider;
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private editor?: Editor;
+  private editor = createVSCodeEditor();
 
-  constructor(private refactorings: Refactoring[]) {
-    const activeTextEditor = vscode.window.activeTextEditor;
-    if (activeTextEditor) {
-      // TODO: extract in a common place
-      this.editor =
-        activeTextEditor.document.languageId === "vue"
-          ? new VueVSCodeEditor(activeTextEditor)
-          : new VSCodeEditor(activeTextEditor);
-    }
-  }
+  constructor(private refactorings: Refactoring[]) {}
 
   provideCodeActions(
     document: vscode.TextDocument
