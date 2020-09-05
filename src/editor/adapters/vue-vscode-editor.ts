@@ -8,17 +8,11 @@ export { VueVSCodeEditor };
 
 class VueVSCodeEditor extends VSCodeEditor {
   get code(): Code {
-    return super.code.slice(
-      this.openingScriptTagOffset,
-      this.closingScriptTagOffset
-    );
+    return super.code.slice(this.openingTagOffset, this.closingTagOffset);
   }
 
   get selection(): Selection {
-    const offsetCodeLines = super.code
-      .slice(0, this.openingScriptTagOffset)
-      .split("\n");
-    const offsetLinesCount = offsetCodeLines.length - 1;
+    const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
 
     return Selection.fromPositions(
       super.selection.start.removeLines(offsetLinesCount),
@@ -26,29 +20,30 @@ class VueVSCodeEditor extends VSCodeEditor {
     );
   }
 
-  private get openingScriptTagOffset(): Offset {
-    return super.code.indexOf("<script>") + "<script>".length;
-  }
-
-  private get closingScriptTagOffset(): Offset {
-    return super.code.indexOf("</script>");
-  }
-
   protected get editRange(): vscode.Range {
-    const offsetCodeLines = super.code
-      .slice(0, this.openingScriptTagOffset)
-      .split("\n");
-    const offsetLinesCount = offsetCodeLines.length - 1;
-
-    const offsetCodeLines2 = super.code
-      .slice(0, this.closingScriptTagOffset)
-      .split("\n");
-    const offsetLinesCount2 = offsetCodeLines2.length - 1;
-
     return new vscode.Range(
-      new vscode.Position(offsetLinesCount, "<script>".length),
-      new vscode.Position(offsetLinesCount2, 0)
+      new vscode.Position(
+        this.toOffsetLinesCount(this.openingTagOffset),
+        this.openingTag.length
+      ),
+      new vscode.Position(this.toOffsetLinesCount(this.closingTagOffset), 0)
     );
+  }
+
+  private toOffsetLinesCount(offset: Offset): number {
+    return super.code.slice(0, offset).split("\n").length - 1;
+  }
+
+  private get openingTagOffset(): Offset {
+    return super.code.indexOf(this.openingTag) + this.openingTag.length;
+  }
+
+  private get openingTag(): string {
+    return "<script>";
+  }
+
+  private get closingTagOffset(): Offset {
+    return super.code.indexOf("</script>");
   }
 
   // TODO: replace code in script tags when we write
