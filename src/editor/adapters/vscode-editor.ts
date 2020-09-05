@@ -12,7 +12,7 @@ import {
 import { Selection } from "../selection";
 import { Position } from "../position";
 
-export { VSCodeEditor, createSelectionFromVSCode };
+export { VSCodeEditor };
 
 class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
