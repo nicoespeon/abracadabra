@@ -27,11 +27,11 @@ class VueVSCodeEditor implements Editor {
     const fullCode = this.document.getText();
     const openingScriptTagPosition = fullCode.indexOf("<script>");
     const closingScriptTagPosition = fullCode.indexOf("</script>");
-    const code = fullCode.slice(
+
+    return fullCode.slice(
       openingScriptTagPosition + "<script>".length,
       closingScriptTagPosition
     );
-    return code;
   }
 
   get selection(): Selection {
