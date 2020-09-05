@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 import { Code } from "../editor";
+import { Position } from "../position";
 import { Selection } from "../selection";
 import { VSCodeEditor } from "./vscode-editor";
 
@@ -18,6 +19,17 @@ class VueVSCodeEditor extends VSCodeEditor {
       super.selection.start.removeLines(offsetLinesCount),
       super.selection.end.removeLines(offsetLinesCount)
     );
+  }
+
+  async write(code: Code, newCursorPosition?: Position): Promise<void> {
+    return newCursorPosition
+      ? super.write(
+          code,
+          newCursorPosition.addLines(
+            this.toOffsetLinesCount(this.openingTagOffset)
+          )
+        )
+      : super.write(code);
   }
 
   protected get editRange(): vscode.Range {
