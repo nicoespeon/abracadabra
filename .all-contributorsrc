@@ -143,6 +143,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "albertoxamin",
+      "name": "Alberto Xamin",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6067659?v=4",
+      "profile": "http://www.linkedin.com/in/albertoxamin",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
