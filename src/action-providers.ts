@@ -10,11 +10,7 @@ export { RefactoringActionProvider };
 type Refactoring = RefactoringWithActionProvider;
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private refactorings: Refactoring[];
-
-  constructor(refactorings: Refactoring[]) {
-    this.refactorings = refactorings;
-  }
+  constructor(private refactorings: Refactoring[]) {}
 
   provideCodeActions(
     document: vscode.TextDocument,
