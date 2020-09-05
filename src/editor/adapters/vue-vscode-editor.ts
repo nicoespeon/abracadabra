@@ -25,22 +25,18 @@ class VueVSCodeEditor implements Editor {
 
   get code(): Code {
     const fullCode = this.document.getText();
-    const openingScriptTagPosition = fullCode.indexOf("<script>");
+    const openingScriptTagPosition =
+      fullCode.indexOf("<script>") + "<script>".length;
     const closingScriptTagPosition = fullCode.indexOf("</script>");
 
-    return fullCode.slice(
-      openingScriptTagPosition + "<script>".length,
-      closingScriptTagPosition
-    );
+    return fullCode.slice(openingScriptTagPosition, closingScriptTagPosition);
   }
 
   get selection(): Selection {
     const fullCode = this.document.getText();
-    const openingScriptTagPosition = fullCode.indexOf("<script>");
-    const offsetCode = fullCode.slice(
-      0,
-      openingScriptTagPosition + "<script>".length
-    );
+    const openingScriptTagPosition =
+      fullCode.indexOf("<script>") + "<script>".length;
+    const offsetCode = fullCode.slice(0, openingScriptTagPosition);
     const fullCodeWithLines = offsetCode.split("\n");
     const lastLine = fullCodeWithLines.length - 1;
 
