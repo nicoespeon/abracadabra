@@ -1,20 +1,32 @@
 import * as vscode from "vscode";
 
-import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
+import { Editor } from "./editor/editor";
+import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import { VueVSCodeEditor } from "./editor/adapters/vue-vscode-editor";
 
 export { RefactoringActionProvider };
 
 type Refactoring = RefactoringWithActionProvider;
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  constructor(private refactorings: Refactoring[]) {}
+  private editor?: Editor;
+
+  constructor(private refactorings: Refactoring[]) {
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (activeTextEditor) {
+      // TODO: extract in a common place
+      this.editor =
+        activeTextEditor.document.languageId === "vue"
+          ? new VueVSCodeEditor(activeTextEditor)
+          : new VSCodeEditor(activeTextEditor);
+    }
+  }
 
   provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
+    document: vscode.TextDocument
   ): vscode.ProviderResult<vscode.CodeAction[]> {
     const NO_ACTION: vscode.CodeAction[] = [];
 
@@ -22,13 +34,16 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       return NO_ACTION;
     }
 
+    if (!this.editor) {
+      return NO_ACTION;
+    }
+
     try {
-      const ast = t.parse(document.getText());
-      const selection = createSelectionFromVSCode(range);
+      const ast = t.parse(this.editor.code);
 
       return this.findApplicableRefactorings(
         ast,
-        selection
+        this.editor.selection
       ).map((refactoring) => this.buildCodeActionFor(refactoring));
     } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
