@@ -57,7 +57,7 @@ class VSCodeEditor implements Editor {
     }
   }
 
-  private get editRange(): vscode.Range {
+  protected get editRange(): vscode.Range {
     return new vscode.Range(
       new vscode.Position(0, 0),
       new vscode.Position(this.document.lineCount, 0)

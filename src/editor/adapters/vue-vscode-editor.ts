@@ -1,3 +1,5 @@
+import * as vscode from "vscode";
+
 import { Code } from "../editor";
 import { Selection } from "../selection";
 import { VSCodeEditor } from "./vscode-editor";
@@ -32,8 +34,22 @@ class VueVSCodeEditor extends VSCodeEditor {
     return super.code.indexOf("</script>");
   }
 
-  // TODO: offset selection accordingly
-  // async write(code: Code, newCursorPosition?: Position): Promise<void>
+  protected get editRange(): vscode.Range {
+    const offsetCodeLines = super.code
+      .slice(0, this.openingScriptTagOffset)
+      .split("\n");
+    const offsetLinesCount = offsetCodeLines.length - 1;
+
+    const offsetCodeLines2 = super.code
+      .slice(0, this.closingScriptTagOffset)
+      .split("\n");
+    const offsetLinesCount2 = offsetCodeLines2.length - 1;
+
+    return new vscode.Range(
+      new vscode.Position(offsetLinesCount, "<script>".length),
+      new vscode.Position(offsetLinesCount2, 0)
+    );
+  }
 
   // TODO: replace code in script tags when we write
   // async readThenWrite(
