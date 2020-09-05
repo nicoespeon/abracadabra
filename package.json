@@ -17,7 +17,8 @@
     "legacy code",
     "javascript",
     "typescript",
-    "react"
+    "react",
+    "vue"
   ],
   "categories": [
     "Formatters",
