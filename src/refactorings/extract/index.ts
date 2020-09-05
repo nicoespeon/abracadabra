@@ -1,5 +1,3 @@
-import * as vscode from "vscode";
-
 import { extractGenericType } from "./extract-generic-type/extract-generic-type";
 import { extractVariable } from "./extract-variable/extract-variable";
 
@@ -7,7 +5,7 @@ import { Refactoring } from "../../types";
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/attempting-editor";
-import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
+import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
 const config: Refactoring = {
   command: {
@@ -19,9 +17,8 @@ const config: Refactoring = {
 export default config;
 
 async function extract() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) return;
-  const vscodeEditor = new VSCodeEditor(activeTextEditor);
+  const vscodeEditor = createVSCodeEditor();
+  if (!vscodeEditor) return;
 
   const attemptingEditor = new AttemptingEditor(
     vscodeEditor,
