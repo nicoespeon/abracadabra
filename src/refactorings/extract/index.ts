@@ -3,11 +3,11 @@ import * as vscode from "vscode";
 import { extractGenericType } from "./extract-generic-type/extract-generic-type";
 import { extractVariable } from "./extract-variable/extract-variable";
 
+import { Refactoring } from "../../types";
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
+import { AttemptingEditor } from "../../editor/attempting-editor";
 import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
-
-import { Refactoring } from "../../types";
 
 const config: Refactoring = {
   command: {
@@ -21,27 +21,18 @@ export default config;
 async function extract() {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) return;
+  const vscodeEditor = new VSCodeEditor(activeTextEditor);
 
-  const editor = new VSCodeEditorAttemptingExtraction(activeTextEditor);
+  const attemptingEditor = new AttemptingEditor(
+    vscodeEditor,
+    ErrorReason.DidNotFindExtractableCode
+  );
 
   await executeSafely(async () => {
-    await extractVariable(editor);
+    await extractVariable(attemptingEditor);
 
-    if (!editor.couldExtract) {
-      await extractGenericType(new VSCodeEditor(activeTextEditor));
+    if (!attemptingEditor.attemptSucceeded) {
+      await extractGenericType(vscodeEditor);
     }
   });
-}
-
-class VSCodeEditorAttemptingExtraction extends VSCodeEditor {
-  couldExtract = true;
-
-  async showError(reason: ErrorReason) {
-    if (reason === ErrorReason.DidNotFindExtractableCode) {
-      this.couldExtract = false;
-      return Promise.resolve();
-    }
-
-    await super.showError(reason);
-  }
 }
