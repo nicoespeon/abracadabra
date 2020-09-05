@@ -13,13 +13,13 @@ class VueVSCodeEditor extends VSCodeEditor {
   }
 
   get selection(): Selection {
-    return this.offsetSelection(super.selection);
+    return this.offsetEditorSelection(super.selection);
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
     return super.write(
       code,
-      newCursorPosition && this.offsetNewPosition(newCursorPosition)
+      newCursorPosition && this.offsetPosition(newCursorPosition)
     );
   }
 
@@ -31,22 +31,6 @@ class VueVSCodeEditor extends VSCodeEditor {
       ),
       new vscode.Position(this.toOffsetLinesCount(this.closingTagOffset), 0)
     );
-  }
-
-  private toOffsetLinesCount(offset: Offset): number {
-    return super.code.slice(0, offset).split("\n").length - 1;
-  }
-
-  private get openingTagOffset(): Offset {
-    return super.code.indexOf(this.openingTag) + this.openingTag.length;
-  }
-
-  private get openingTag(): string {
-    return "<script>";
-  }
-
-  private get closingTagOffset(): Offset {
-    return super.code.indexOf("</script>");
   }
 
   async readThenWrite(
@@ -64,15 +48,15 @@ class VueVSCodeEditor extends VSCodeEditor {
     return super.readThenWrite(
       this.offsetSelection(selection),
       getOffsetModifications,
-      newCursorPosition && this.offsetNewPosition(newCursorPosition)
+      newCursorPosition && this.offsetPosition(newCursorPosition)
     );
   }
 
   moveCursorTo(position: Position) {
-    return super.moveCursorTo(this.offsetNewPosition(position));
+    return super.moveCursorTo(this.offsetPosition(position));
   }
 
-  private offsetSelection(selection: Selection): Selection {
+  private offsetEditorSelection(selection: Selection): Selection {
     const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
 
     return Selection.fromPositions(
@@ -81,8 +65,33 @@ class VueVSCodeEditor extends VSCodeEditor {
     );
   }
 
-  private offsetNewPosition(newPosition: Position): Position {
-    return newPosition.addLines(this.toOffsetLinesCount(this.openingTagOffset));
+  private offsetSelection(selection: Selection): Selection {
+    const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
+
+    return Selection.fromPositions(
+      selection.start.addLines(offsetLinesCount),
+      selection.end.addLines(offsetLinesCount)
+    );
+  }
+
+  private offsetPosition(position: Position): Position {
+    return position.addLines(this.toOffsetLinesCount(this.openingTagOffset));
+  }
+
+  private toOffsetLinesCount(offset: Offset): number {
+    return super.code.slice(0, offset).split("\n").length - 1;
+  }
+
+  private get openingTagOffset(): Offset {
+    return super.code.indexOf(this.openingTag) + this.openingTag.length;
+  }
+
+  private get openingTag(): string {
+    return "<script>";
+  }
+
+  private get closingTagOffset(): Offset {
+    return super.code.indexOf("</script>");
   }
 }
 
