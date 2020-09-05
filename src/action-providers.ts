@@ -1,24 +1,19 @@
 import * as vscode from "vscode";
 
-import { createSelectionFromVSCode } from "./editor/adapters/vscode-editor";
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
+import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 
 export { RefactoringActionProvider };
 
 type Refactoring = RefactoringWithActionProvider;
 
 class RefactoringActionProvider implements vscode.CodeActionProvider {
-  private refactorings: Refactoring[];
-
-  constructor(refactorings: Refactoring[]) {
-    this.refactorings = refactorings;
-  }
+  constructor(private refactorings: Refactoring[]) {}
 
   provideCodeActions(
-    document: vscode.TextDocument,
-    range: vscode.Range | vscode.Selection
+    document: vscode.TextDocument
   ): vscode.ProviderResult<vscode.CodeAction[]> {
     const NO_ACTION: vscode.CodeAction[] = [];
 
@@ -26,13 +21,15 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       return NO_ACTION;
     }
 
+    const editor = createVSCodeEditor();
+    if (!editor) return NO_ACTION;
+
     try {
-      const ast = t.parse(document.getText());
-      const selection = createSelectionFromVSCode(range);
+      const ast = t.parse(editor.code);
 
       return this.findApplicableRefactorings(
         ast,
-        selection
+        editor.selection
       ).map((refactoring) => this.buildCodeActionFor(refactoring));
     } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).

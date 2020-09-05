@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
 
 import { Operation } from "./types";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 
 export { createCommand, executeSafely };
 
 function createCommand(execute: Operation) {
   return async () => {
-    const activeTextEditor = vscode.window.activeTextEditor;
-    if (!activeTextEditor) return;
+    const editor = createVSCodeEditor();
+    if (!editor) return;
 
-    await executeSafely(() => execute(new VSCodeEditor(activeTextEditor)));
+    await executeSafely(() => execute(editor));
   };
 }
 

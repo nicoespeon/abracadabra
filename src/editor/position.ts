@@ -73,6 +73,10 @@ class Position {
     return new Position(this.line + lines, this.character);
   }
 
+  removeLines(lines: number): Position {
+    return new Position(this.line - lines, this.character);
+  }
+
   addCharacters(characters: number): Position {
     return new Position(this.line, this.character + characters);
   }

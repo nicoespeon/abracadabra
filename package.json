@@ -17,7 +17,8 @@
     "legacy code",
     "javascript",
     "typescript",
-    "react"
+    "react",
+    "vue"
   ],
   "categories": [
     "Formatters",
@@ -121,7 +122,8 @@
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
-    "onLanguage:typescriptreact"
+    "onLanguage:typescriptreact",
+    "onLanguage:vue"
   ],
   "contributes": {
     "commands": [
@@ -353,6 +355,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.addBracesToArrowFunction",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.addBracesToIfStatement",
           "when": "editorLangId == javascript"
         },
@@ -367,6 +373,10 @@
         {
           "command": "abracadabra.addBracesToIfStatement",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.addBracesToIfStatement",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.convertForToForeach",
@@ -385,6 +395,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.convertForToForeach",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
           "when": "editorLangId == javascript"
         },
@@ -399,6 +413,10 @@
         {
           "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.convertIfElseToTernary",
@@ -417,6 +435,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.convertIfElseToTernary",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.convertIfElseToSwitch",
           "when": "editorLangId == javascript"
         },
@@ -431,6 +453,10 @@
         {
           "command": "abracadabra.convertIfElseToSwitch",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertIfElseToSwitch",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.convertSwitchToIfElse",
@@ -449,6 +475,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.convertSwitchToIfElse",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.convertTernaryToIfElse",
           "when": "editorLangId == javascript"
         },
@@ -463,6 +493,10 @@
         {
           "command": "abracadabra.convertTernaryToIfElse",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertTernaryToIfElse",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.convertToTemplateLiteral",
@@ -481,6 +515,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.convertToTemplateLiteral",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.convertLetToConst",
           "when": "editorLangId == javascript"
         },
@@ -497,6 +535,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.extract",
           "when": "editorLangId == javascript"
         },
@@ -511,6 +553,10 @@
         {
           "command": "abracadabra.extract",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extract",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.extractInterface",
@@ -521,6 +567,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.extractInterface",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.flipIfElse",
           "when": "editorLangId == javascript"
         },
@@ -535,6 +585,10 @@
         {
           "command": "abracadabra.flipIfElse",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.flipIfElse",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.flipTernary",
@@ -553,6 +607,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.flipTernary",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.inline",
           "when": "editorLangId == javascript"
         },
@@ -567,6 +625,10 @@
         {
           "command": "abracadabra.inline",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.inline",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.liftUpConditional",
@@ -585,6 +647,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.liftUpConditional",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.mergeIfStatements",
           "when": "editorLangId == javascript"
         },
@@ -599,6 +665,10 @@
         {
           "command": "abracadabra.mergeIfStatements",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.mergeIfStatements",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.mergeWithPreviousIfStatement",
@@ -617,6 +687,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.mergeWithPreviousIfStatement",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.moveStatementDown",
           "when": "editorLangId == javascript"
         },
@@ -633,6 +707,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.moveStatementDown",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.moveStatementUp",
           "when": "editorLangId == javascript"
         },
@@ -649,6 +727,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.moveStatementUp",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.negateExpression",
           "when": "editorLangId == javascript"
         },
@@ -663,6 +745,10 @@
         {
           "command": "abracadabra.negateExpression",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.negateExpression",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.react.addBracesToJsxAttribute",
@@ -673,12 +759,20 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.react.addBracesToJsxAttribute",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.react.convertToPureComponent",
           "when": "editorLangId == javascriptreact"
         },
         {
           "command": "abracadabra.react.convertToPureComponent",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.react.convertToPureComponent",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.react.removeBracesFromJsxAttribute",
@@ -689,6 +783,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.react.removeBracesFromJsxAttribute",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.removeBracesFromArrowFunction",
           "when": "editorLangId == javascript"
         },
@@ -703,6 +801,10 @@
         {
           "command": "abracadabra.removeBracesFromArrowFunction",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.removeBracesFromArrowFunction",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.removeBracesFromIfStatement",
@@ -721,6 +823,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.removeBracesFromIfStatement",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.removeDeadCode",
           "when": "editorLangId == javascript"
         },
@@ -735,6 +841,10 @@
         {
           "command": "abracadabra.removeDeadCode",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.removeDeadCode",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.removeRedundantElse",
@@ -753,6 +863,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.removeRedundantElse",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.renameSymbol",
           "when": "editorLangId == javascript"
         },
@@ -767,6 +881,10 @@
         {
           "command": "abracadabra.renameSymbol",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.renameSymbol",
+          "when": "editorLangId == vue"
         },
         {
           "command": "abracadabra.replaceBinaryWithAssignment",
@@ -785,6 +903,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.simplifyTernary",
           "when": "editorLangId == javascript"
         },
@@ -801,6 +923,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.simplifyTernary",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.splitDeclarationAndInitialization",
           "when": "editorLangId == javascript"
         },
@@ -817,6 +943,10 @@
           "when": "editorLangId == typescriptreact"
         },
         {
+          "command": "abracadabra.splitDeclarationAndInitialization",
+          "when": "editorLangId == vue"
+        },
+        {
           "command": "abracadabra.splitIfStatement",
           "when": "editorLangId == javascript"
         },
@@ -831,6 +961,10 @@
         {
           "command": "abracadabra.splitIfStatement",
           "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.splitIfStatement",
+          "when": "editorLangId == vue"
         }
       ]
     }

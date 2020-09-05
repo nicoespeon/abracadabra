@@ -43,7 +43,8 @@ const ALL_LANGUAGES = [
   "javascript",
   "javascriptreact",
   "typescript",
-  "typescriptreact"
+  "typescriptreact",
+  "vue"
 ];
 
 export function activate(context: vscode.ExtensionContext) {

@@ -1,13 +1,11 @@
-import * as vscode from "vscode";
-
 import { inlineFunction } from "./inline-function/inline-function";
 import { inlineVariable } from "./inline-variable/inline-variable";
 
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
-import { VSCodeEditor } from "../../editor/adapters/vscode-editor";
-
+import { AttemptingEditor } from "../../editor/attempting-editor";
 import { Refactoring } from "../../types";
+import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
 const config: Refactoring = {
   command: {
@@ -19,29 +17,19 @@ const config: Refactoring = {
 export default config;
 
 async function inline() {
-  const activeTextEditor = vscode.window.activeTextEditor;
-  if (!activeTextEditor) {
-    return;
-  }
+  const vscodeEditor = createVSCodeEditor();
+  if (!vscodeEditor) return;
+
+  const attemptingEditor = new AttemptingEditor(
+    vscodeEditor,
+    ErrorReason.DidNotFindInlinableCode
+  );
 
   await executeSafely(async () => {
-    await inlineVariable(new VSCodeEditorAttemptingInlining(activeTextEditor));
+    await inlineVariable(attemptingEditor);
 
-    if (!new VSCodeEditorAttemptingInlining(activeTextEditor).couldInlineCode) {
-      await inlineFunction(new VSCodeEditor(activeTextEditor));
+    if (!attemptingEditor.attemptSucceeded) {
+      await inlineFunction(vscodeEditor);
     }
   });
-}
-
-class VSCodeEditorAttemptingInlining extends VSCodeEditor {
-  couldInlineCode = true;
-
-  async showError(reason: ErrorReason) {
-    if (reason === ErrorReason.DidNotFindInlinableCode) {
-      this.couldInlineCode = false;
-      return Promise.resolve();
-    }
-
-    await super.showError(reason);
-  }
 }
