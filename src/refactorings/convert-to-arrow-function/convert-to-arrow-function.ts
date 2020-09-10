@@ -37,8 +37,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         arrowFunctionExpression
       );
 
-      path.replaceWith(t.variableDeclaration("const", [declarator]));
+      const variableDeclaration = t.variableDeclaration("const", [declarator]);
+      // @ts-expect-error Recast does use a `comments` attribute.
+      variableDeclaration.comments = node.comments;
 
+      path.replaceWith(variableDeclaration);
       path.stop();
     })
   );

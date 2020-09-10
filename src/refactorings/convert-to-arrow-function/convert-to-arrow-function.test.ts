@@ -27,6 +27,29 @@ describe("Convert To Arrow Function", () => {
         description: "generic async",
         code: `async function fn<T>(t: T): T { return t; }`,
         expected: `const fn = async <T>(t: T): T => { return t; };`
+      },
+      {
+        description: "preserves leading comment",
+        code: `// This is a comment.
+
+[cursor]function test() {}`,
+        expected: `// This is a comment.
+
+const test = () => {};`
+      },
+      {
+        description: "preserves inner comment",
+        code: `function test() {
+  // This is a comment.
+}`,
+        expected: `const test = () => {
+  // This is a comment.
+};`
+      },
+      {
+        description: "preserves trailing comment",
+        code: `function test() {} // This is a comment.`,
+        expected: `const test = () => {}; // This is a comment.`
       }
     ],
     async ({ code, expected }) => {
