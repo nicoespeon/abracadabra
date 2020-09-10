@@ -1,3 +1,4 @@
+import * as t from "./domain";
 import { transform } from "./transformation";
 
 describe("Transformation", () => {
@@ -66,6 +67,41 @@ await doSomething();`;
       });
 
       expect(result).toBe(`  console.log("Tabs still here?")`);
+    });
+
+    it("should preserve interpreter directive (shebang)", () => {
+      const code = `#!/usr/bin/env node
+
+function test() {}`;
+
+      const { code: result } = transform(code, {
+        FunctionDeclaration(path) {
+          path.replaceWith(
+            t.variableDeclaration("const", [
+              t.variableDeclarator(
+                t.identifier("hello"),
+                t.stringLiteral("world")
+              )
+            ])
+          );
+        }
+      });
+
+      expect(result).toBe(`#!/usr/bin/env node
+
+const hello = "world";`);
+    });
+
+    it("should preserve interpreter directive (shebang) when no transformation is made", () => {
+      const code = `#!/usr/bin/env node
+
+function test() {}`;
+
+      const { code: result } = transform(code, {});
+
+      expect(result).toBe(`#!/usr/bin/env node
+
+function test() {}`);
     });
   });
 });

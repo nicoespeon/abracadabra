@@ -50,6 +50,15 @@ const test = () => {};`
         description: "preserves trailing comment",
         code: `function test() {} // This is a comment.`,
         expected: `const test = () => {}; // This is a comment.`
+      },
+      {
+        description: "with an interpreter directive",
+        code: `#!/usr/bin/env node
+
+[cursor]function test() {}`,
+        expected: `#!/usr/bin/env node
+
+const test = () => {};`
       }
     ],
     async ({ code, expected }) => {

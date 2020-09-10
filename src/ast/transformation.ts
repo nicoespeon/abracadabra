@@ -43,12 +43,19 @@ function transform(code: Code, options: TraverseOptions): Transformed {
 
 function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const code = print(ast);
-  const newCode = print(traverseAST(ast, options));
+  const newCode = fixShebang(print(traverseAST(ast, options)));
 
   return {
     code: isUsingTabs(ast) ? indentWithTabs(newCode) : newCode,
     hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
   };
+}
+
+// Recast doesn't handle shebangs well: https://github.com/benjamn/recast/issues/376
+// Babel parses it, but Recast messes up the printed code by omitting spaces
+function fixShebang(newCode: Code): Code {
+  const [, shebang] = newCode.match(/(#![\/\w+]+ node)\w/) || [];
+  return shebang ? newCode.replace(shebang, `${shebang}\n\n`) : newCode;
 }
 
 function isUsingTabs(ast: AST | t.Node): boolean {
