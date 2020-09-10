@@ -22,7 +22,7 @@ function getExportDefaultDeclarationLoc(
   try {
     const { end: endOfExport } = Selection.fromAST(path.node.loc);
 
-    // @ts-ignore Recast does add `tokens` information
+    // @ts-expect-error Recast does add `tokens` information
     const lastLine = (path.node.loc.tokens as Token[]).reduce(
       (result, line) => {
         const { start: startOfLine } = Selection.fromAST(line.loc);

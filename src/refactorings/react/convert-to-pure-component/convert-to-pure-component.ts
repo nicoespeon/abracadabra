@@ -1,5 +1,5 @@
 import jscodeshift from "jscodeshift";
-// @ts-ignore Directly import the source code from "react-codemod"
+// @ts-expect-error Directly import the source code from "react-codemod"
 import * as reactCodemod from "react-codemod/transforms/pure-component";
 const pureComponent = reactCodemod.default;
 

@@ -107,7 +107,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
 
     const visitorNode = visitor[path.node.type];
     if (typeof visitorNode === "function") {
-      // @ts-ignore visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+      // @ts-expect-error visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
       visitorNode.bind(visitor)(path, path.state);
     }
   }

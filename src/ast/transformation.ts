@@ -55,7 +55,7 @@ function isUsingTabs(ast: AST | t.Node): boolean {
   let useTabs = false;
 
   try {
-    // @ts-ignore Recast does add these information
+    // @ts-expect-error Recast does add these information
     for (let info of ast.loc.lines.infos) {
       const firstChar = info.line[0];
 
@@ -202,11 +202,11 @@ function transformCopy<T extends t.Node>(
 // We need to copy {leading,trailing}Comments to preserve them.
 // See: https://github.com/benjamn/recast/issues/572
 function preserveCommentsForRecast(path: NodePath) {
-  // @ts-ignore Recast does use a `comment` attribute.
+  // @ts-expect-error Recast does use a `comment` attribute.
   path.node.comments = path.node.leadingComments;
 
   if (!path.isBlockStatement() && isLastNode()) {
-    // @ts-ignore Recast does use a `comments` attribute.
+    // @ts-expect-error Recast does use a `comments` attribute.
     path.node.comments = [
       ...(path.node.leadingComments || []),
       ...(path.node.trailingComments || [])
@@ -232,7 +232,7 @@ function mergeCommentsInto<T extends t.Node>(
   return {
     ...node,
     comments: commentedNodes.reduce(
-      // @ts-ignore Recast does use a `comments` attribute.
+      // @ts-expect-error Recast does use a `comments` attribute.
       (memo, { comments }) => memo.concat(comments),
       []
     )
