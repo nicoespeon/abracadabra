@@ -130,25 +130,25 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
 
     return {
       name: `{ ${this.variable.name} }`,
-      value: t.generate(this.path.node.object)
+      value: this.parentObject
     };
   }
 
   async askUser(editor: Editor) {
     await editor.askUser([
       {
-        label: `Destructure => \`const { ${this.variable.name} } = ${t.generate(
-          this.path.node.object
-        )}\``,
+        label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
         value: DestructureStrategy.Destructure
       },
       {
-        label: `Preserve => \`const ${this.variable.name} = ${t.generate(
-          this.path.node.object
-        )}.${this.variable.name}\``,
+        label: `Preserve => \`const ${this.variable.name} = ${this.parentObject}.${this.variable.name}\``,
         value: DestructureStrategy.Preserve
       }
     ]);
+  }
+
+  private get parentObject(): Code {
+    return t.generate(this.path.node.object);
   }
 }
 
