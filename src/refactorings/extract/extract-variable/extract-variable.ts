@@ -24,11 +24,14 @@ async function extractVariable(editor: Editor) {
     return;
   }
 
-  const choice = await askReplacementStrategy(otherOccurrences, editor);
-  if (choice === ReplacementStrategy.None) return;
+  const replacementStrategy = await askReplacementStrategy(
+    otherOccurrences,
+    editor
+  );
+  if (replacementStrategy === ReplacementStrategy.None) return;
 
   const extractedOccurrences =
-    choice === ReplacementStrategy.AllOccurrences
+    replacementStrategy === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
 
