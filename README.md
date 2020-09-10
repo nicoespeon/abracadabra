@@ -4,7 +4,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -571,6 +571,9 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://nickebbitt.github.io/"><img src="https://avatars3.githubusercontent.com/u/5111725?v=4" width="100px;" alt=""/><br /><sub><b>Nick Ebbitt</b></sub></a><br /><a href="#ideas-nickebbitt" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=nickebbitt" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=nickebbitt" title="Documentation">📖</a></td>
     <td align="center"><a href="https://oliverjash.me/"><img src="https://avatars2.githubusercontent.com/u/921609?v=4" width="100px;" alt=""/><br /><sub><b>Oliver Joseph Ash</b></sub></a><br /><a href="#ideas-OliverJAsh" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3AOliverJAsh" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=OliverJAsh" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=OliverJAsh" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.linkedin.com/in/albertoxamin"><img src="https://avatars3.githubusercontent.com/u/6067659?v=4" width="100px;" alt=""/><br /><sub><b>Alberto Xamin</b></sub></a><br /><a href="#ideas-albertoxamin" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sluukkonen"><img src="https://avatars1.githubusercontent.com/u/39655?v=4" width="100px;" alt=""/><br /><sub><b>Sakumatti Luukkonen</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Asluukkonen" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
