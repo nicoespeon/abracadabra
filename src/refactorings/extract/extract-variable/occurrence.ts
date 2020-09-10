@@ -1,4 +1,4 @@
-import { Code, Modification } from "../../../editor/editor";
+import { Code, Editor, Modification } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
@@ -10,6 +10,7 @@ import {
   ShorthandVariable
 } from "./variable";
 import { Parts } from "./parts";
+import { DestructureStrategy } from "./destructure-strategy";
 
 export { createOccurrence, Occurrence };
 
@@ -97,6 +98,8 @@ class Occurrence<T extends t.Node = t.Node> {
       value: t.isJSXText(this.path.node) ? `"${code}"` : code
     };
   }
+
+  async askUser(_editor: Editor) {}
 }
 
 class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
@@ -129,6 +132,23 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
       name: `{ ${this.variable.name} }`,
       value: t.generate(this.path.node.object)
     };
+  }
+
+  async askUser(editor: Editor) {
+    await editor.askUser([
+      {
+        label: `Destructure => \`const { ${this.variable.name} } = ${t.generate(
+          this.path.node.object
+        )}\``,
+        value: DestructureStrategy.Destructure
+      },
+      {
+        label: `Preserve => \`const ${this.variable.name} = ${t.generate(
+          this.path.node.object
+        )}.${this.variable.name}\``,
+        value: DestructureStrategy.Preserve
+      }
+    ]);
   }
 }
 

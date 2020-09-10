@@ -4,6 +4,7 @@ import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { extractVariable } from "./extract-variable";
+import { DestructureStrategy } from "./destructure-strategy";
 
 describe("Extract Variable - Objects we can extract", () => {
   testEach<{
@@ -206,4 +207,33 @@ assert.isTrue(
       }
     }
   );
+
+  it("should ask if user wants to destructure or not", async () => {
+    const code = `console.log(foo.bar.b[cursor]az)`;
+    const editor = new InMemoryEditor(code);
+    spyOn(editor, "askUser");
+
+    await extractVariable(editor);
+
+    expect(editor.askUser).toBeCalledWith([
+      {
+        label: "Destructure => `const { baz } = foo.bar`",
+        value: DestructureStrategy.Destructure
+      },
+      {
+        label: "Preserve => `const baz = foo.bar.baz`",
+        value: DestructureStrategy.Preserve
+      }
+    ]);
+  });
+
+  it("should not ask if user wants to destructure if it can't be", async () => {
+    const code = `console.log([cursor]"hello")`;
+    const editor = new InMemoryEditor(code);
+    spyOn(editor, "askUser");
+
+    await extractVariable(editor);
+
+    expect(editor.askUser).not.toBeCalled();
+  });
 });
