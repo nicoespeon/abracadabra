@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- "Convert to Arrow Function" now preserves comments.
+
+- Refactorings used to mess up with Interperter Directives (aka Shebangs). Not anymore! For example, "Convert to Arrow Function" used to turn:
+
+```js
+#!/usr/bin/env node
+
+function test() {}
+```
+
+Into this:
+
+```js
+#!/usr/bin/env nodeconst test = () => {}
+
+```
+
+Now it works as expected:
+
+```js
+#!/usr/bin/env node
+
+const test = () => {};
+```
+
 ### Added
 
 - **Support for `.vue` files**. You can now run automated refactorings within the `<script>` tags of your single-file component ✨
