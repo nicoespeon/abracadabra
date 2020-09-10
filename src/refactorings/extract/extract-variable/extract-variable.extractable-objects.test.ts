@@ -211,7 +211,7 @@ assert.isTrue(
   it("should ask if user wants to destructure or not", async () => {
     const code = `console.log(foo.bar.b[cursor]az)`;
     const editor = new InMemoryEditor(code);
-    spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUser");
 
     await extractVariable(editor);
 
@@ -230,7 +230,7 @@ assert.isTrue(
   it("should not ask if user wants to destructure if it can't be", async () => {
     const code = `console.log([cursor]"hello")`;
     const editor = new InMemoryEditor(code);
-    spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUser");
 
     await extractVariable(editor);
 
