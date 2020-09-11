@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.8.0] - 2020-09-10 - Vue.js Killed The Radio Star 📻
+
 ### Changed
 
 - "Convert to Arrow Function" now preserves comments.
@@ -998,7 +1000,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.8.0...HEAD
+[4.8.0]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/nicoespeon/abracadabra/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/nicoespeon/abracadabra/compare/4.5.0...4.6.0
 [4.5.0]: https://github.com/nicoespeon/abracadabra/compare/4.4.0...4.5.0
