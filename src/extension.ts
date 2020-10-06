@@ -14,7 +14,6 @@ import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import convertLetToConst from "./refactorings/convert-let-to-const";
 import extract from "./refactorings/extract";
-import extractClass from "./refactorings/extract-class";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
@@ -37,6 +36,9 @@ import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assi
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
+import { ExtractClassActionProvider } from "./refactorings/extract-class/ExtractClassActionProvider";
+import { ExtractClassCommand } from "./refactorings/extract-class/ExtractClassCommand";
+import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 
 const TS_LANGUAGES = ["typescript", "typescriptreact"];
 const REACT_LANGUAGES = ["javascriptreact", "typescriptreact"];
@@ -67,7 +69,6 @@ export function activate(context: vscode.ExtensionContext) {
     convertToArrowFunction,
     convertToTemplateLiteral,
     extract,
-    extractClass,
     extractInterface,
     flipIfElse,
     flipTernary,
@@ -96,6 +97,13 @@ export function activate(context: vscode.ExtensionContext) {
         `abracadabra.${command.key}`,
         createCommand(command.operation)
       )
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand(
+      ABRACADABRA_EXTRACT_CLASS_COMMAND,
+      ExtractClassCommand.execute
     )
   );
 
@@ -136,7 +144,6 @@ export function activate(context: vscode.ExtensionContext) {
         convertToArrowFunction,
         convertToTemplateLiteral,
         convertLetToConst,
-        extractClass,
         flipIfElse,
         flipTernary,
         liftUpConditional,
@@ -155,6 +162,12 @@ export function activate(context: vscode.ExtensionContext) {
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
       }
+    );
+
+    vscode.languages.registerCodeActionsProvider(
+      language,
+      new ExtractClassActionProvider(),
+      { providedCodeActionKinds: [vscode.CodeActionKind.RefactorExtract] }
     );
   });
 }

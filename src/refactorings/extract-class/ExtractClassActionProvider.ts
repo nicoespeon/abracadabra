@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { EXTRACT_CLASS_COMMAND } from "./EXTRACT_CLASS_COMMAND";
+import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./EXTRACT_CLASS_COMMAND";
 import { classNameMatcher } from "./classNameMatcher";
 
 export class ExtractClassActionProvider implements vscode.CodeActionProvider {
@@ -16,11 +16,11 @@ export class ExtractClassActionProvider implements vscode.CodeActionProvider {
 
   private createExtractClassCommand() {
     const action = new vscode.CodeAction(
-      "Extract class",
+      "Extract class ✨",
       vscode.CodeActionKind.RefactorExtract
     );
     action.command = {
-      command: EXTRACT_CLASS_COMMAND,
+      command: ABRACADABRA_EXTRACT_CLASS_COMMAND,
       title: "Extract class",
       tooltip: "Select instance members to extract"
     };
