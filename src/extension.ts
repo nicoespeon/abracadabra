@@ -14,6 +14,7 @@ import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import convertLetToConst from "./refactorings/convert-let-to-const";
 import extract from "./refactorings/extract";
+import extractClass from "./refactorings/extract-class";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
@@ -66,6 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
     convertToArrowFunction,
     convertToTemplateLiteral,
     extract,
+    extractClass,
     extractInterface,
     flipIfElse,
     flipTernary,
@@ -134,6 +136,7 @@ export function activate(context: vscode.ExtensionContext) {
         convertToArrowFunction,
         convertToTemplateLiteral,
         convertLetToConst,
+        extractClass,
         flipIfElse,
         flipTernary,
         liftUpConditional,
