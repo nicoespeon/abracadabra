@@ -236,4 +236,17 @@ assert.isTrue(
 
     expect(editor.askUser).not.toBeCalled();
   });
+
+  it("should preserve member expression if user says so", async () => {
+    const code = `console.log(foo.bar.b[cursor]az);`;
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUser")
+      .mockImplementation(([, preserve]) => Promise.resolve(preserve));
+
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const baz = foo.bar.baz;
+console.log(baz);`);
+  });
 });

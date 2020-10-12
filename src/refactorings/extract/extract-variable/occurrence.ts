@@ -99,7 +99,9 @@ class Occurrence<T extends t.Node = t.Node> {
     };
   }
 
-  async askUser(_editor: Editor) {}
+  askModificationDetails(_editor: Editor): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
@@ -123,8 +125,14 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 }
 
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
+  private destructureStrategy = DestructureStrategy.Destructure;
+
   toVariableDeclaration(code: Code): { name: Code; value: Code } {
     if (this.path.node.computed) {
+      return super.toVariableDeclaration(code);
+    }
+
+    if (this.destructureStrategy === DestructureStrategy.Preserve) {
       return super.toVariableDeclaration(code);
     }
 
@@ -134,8 +142,8 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
     };
   }
 
-  async askUser(editor: Editor) {
-    await editor.askUser([
+  async askModificationDetails(editor: Editor) {
+    const choice = await editor.askUser([
       {
         label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
         value: DestructureStrategy.Destructure
@@ -145,6 +153,10 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
         value: DestructureStrategy.Preserve
       }
     ]);
+
+    if (choice) {
+      this.destructureStrategy = choice.value;
+    }
   }
 
   private get parentObject(): Code {

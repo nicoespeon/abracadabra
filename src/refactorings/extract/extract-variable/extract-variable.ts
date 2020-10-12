@@ -35,7 +35,7 @@ async function extractVariable(editor: Editor) {
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
 
-  await selectedOccurrence.askUser(editor);
+  await selectedOccurrence.askModificationDetails(editor);
 
   await editor.readThenWrite(
     selectedOccurrence.selection,
