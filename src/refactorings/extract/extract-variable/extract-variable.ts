@@ -174,7 +174,7 @@ function isExtractableContext(node: t.Node): boolean {
 
 function isExtractable(path: t.NodePath): boolean {
   return (
-    !t.isPartOfMemberExpression(path) &&
+    !t.isPropertyOfMemberExpression(path) &&
     !t.isClassPropertyIdentifier(path) &&
     !t.isVariableDeclarationIdentifier(path) &&
     !t.isFunctionCallIdentifier(path) &&
