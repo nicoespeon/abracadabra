@@ -8,7 +8,7 @@ export {
   isVariableDeclarationIdentifier,
   isFunctionCallIdentifier,
   isJSXPartialElement,
-  isPartOfMemberExpression,
+  isPropertyOfMemberExpression,
   isArrayExpressionElement,
   areAllObjectProperties,
   isUndefinedLiteral,
@@ -49,8 +49,12 @@ function isJSXPartialElement(path: NodePath): boolean {
   return t.isJSXOpeningElement(path) || t.isJSXClosingElement(path);
 }
 
-function isPartOfMemberExpression(path: NodePath): boolean {
-  return t.isMemberExpression(path.parent) && t.isIdentifier(path);
+function isPropertyOfMemberExpression(path: NodePath): boolean {
+  return (
+    t.isMemberExpression(path.parent) &&
+    t.isIdentifier(path) &&
+    !areEquivalent(path.node, path.parent.object)
+  );
 }
 
 function isArrayExpressionElement(

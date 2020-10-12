@@ -1,4 +1,4 @@
-import { Code, Modification } from "../../../editor/editor";
+import { Code, Editor, Modification } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
@@ -10,6 +10,7 @@ import {
   ShorthandVariable
 } from "./variable";
 import { Parts } from "./parts";
+import { DestructureStrategy } from "./destructure-strategy";
 
 export { createOccurrence, Occurrence };
 
@@ -97,6 +98,10 @@ class Occurrence<T extends t.Node = t.Node> {
       value: t.isJSXText(this.path.node) ? `"${code}"` : code
     };
   }
+
+  askModificationDetails(_editor: Editor): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
@@ -120,15 +125,42 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 }
 
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
+  private destructureStrategy = DestructureStrategy.Destructure;
+
   toVariableDeclaration(code: Code): { name: Code; value: Code } {
     if (this.path.node.computed) {
       return super.toVariableDeclaration(code);
     }
 
+    if (this.destructureStrategy === DestructureStrategy.Preserve) {
+      return super.toVariableDeclaration(code);
+    }
+
     return {
       name: `{ ${this.variable.name} }`,
-      value: t.generate(this.path.node.object)
+      value: this.parentObject
     };
+  }
+
+  async askModificationDetails(editor: Editor) {
+    const choice = await editor.askUser([
+      {
+        label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
+        value: DestructureStrategy.Destructure
+      },
+      {
+        label: `Preserve => \`const ${this.variable.name} = ${this.parentObject}.${this.variable.name}\``,
+        value: DestructureStrategy.Preserve
+      }
+    ]);
+
+    if (choice) {
+      this.destructureStrategy = choice.value;
+    }
+  }
+
+  private get parentObject(): Code {
+    return t.generate(this.path.node.object);
   }
 }
 

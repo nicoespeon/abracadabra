@@ -24,13 +24,18 @@ async function extractVariable(editor: Editor) {
     return;
   }
 
-  const choice = await askReplacementStrategy(otherOccurrences, editor);
-  if (choice === ReplacementStrategy.None) return;
+  const replacementStrategy = await askReplacementStrategy(
+    otherOccurrences,
+    editor
+  );
+  if (replacementStrategy === ReplacementStrategy.None) return;
 
   const extractedOccurrences =
-    choice === ReplacementStrategy.AllOccurrences
+    replacementStrategy === ReplacementStrategy.AllOccurrences
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
+
+  await selectedOccurrence.askModificationDetails(editor);
 
   await editor.readThenWrite(
     selectedOccurrence.selection,
@@ -169,7 +174,7 @@ function isExtractableContext(node: t.Node): boolean {
 
 function isExtractable(path: t.NodePath): boolean {
   return (
-    !t.isPartOfMemberExpression(path) &&
+    !t.isPropertyOfMemberExpression(path) &&
     !t.isClassPropertyIdentifier(path) &&
     !t.isVariableDeclarationIdentifier(path) &&
     !t.isFunctionCallIdentifier(path) &&
