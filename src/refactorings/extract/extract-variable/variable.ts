@@ -52,7 +52,12 @@ class Variable {
       "case",
       "default",
       "import",
-      "export"
+      "export",
+      "return",
+      "class",
+      "enum",
+      "for",
+      "while"
     ];
 
     return !startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value);

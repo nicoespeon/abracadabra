@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Some string literals couldn't be correctly extracted if they matched reserved words like `return` or `class`. This is now fixed!
+
 ## [4.8.0] - 2020-09-10 - Vue.js Killed The Radio Star 📻
 
 ### Changed
