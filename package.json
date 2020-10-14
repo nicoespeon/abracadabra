@@ -47,7 +47,8 @@
     "vscode:prepublish": "webpack --mode production",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
-    "package:install": "code --install-extension dist/*.vsix"
+    "package:install": "code --install-extension dist/*.vsix",
+    "deploy": "vsce publish"
   },
   "husky": {
     "hooks": {
