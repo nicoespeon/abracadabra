@@ -47,7 +47,8 @@
     "vscode:prepublish": "webpack --mode production",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
-    "package:install": "code --install-extension dist/*.vsix"
+    "package:install": "code --install-extension dist/*.vsix",
+    "deploy": "vsce publish"
   },
   "husky": {
     "hooks": {
@@ -70,7 +71,7 @@
     "ts-loader": "6.0.4",
     "tslint": "6.1.3",
     "typescript": "4.0.3",
-    "vsce": "1.61.0",
+    "vsce": "1.81.1",
     "vscode": "1.1.37",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12"
