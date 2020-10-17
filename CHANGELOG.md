@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.0] - 2020-10-17 - Extract Class Hero 🐄
+
 ### Added
 
 - **[New Refactoring]** Extract Class, such a useful refactoring implemented by @justerest 🙏
@@ -1032,7 +1034,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.8.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...HEAD
+[4.9.0]: https://github.com/nicoespeon/abracadabra/compare/4.8.0...4.9.0
 [4.8.0]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/nicoespeon/abracadabra/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/nicoespeon/abracadabra/compare/4.5.0...4.6.0
