@@ -156,6 +156,13 @@ console.log(node.name);`
       },
       {
         description:
+          "a valid path when cursor is on the first parent of the member expression",
+        code: `console.log([cursor]path.node.name);`,
+        expected: `const extracted = path;
+console.log(extracted.node.name);`
+      },
+      {
+        description:
           "a member expression when property name is not in camel case",
         code: `console.log(path.[cursor]some_node.name);`,
         expected: `const { some_node } = path;

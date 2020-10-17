@@ -1,4 +1,4 @@
-import { camel } from "change-case";
+import { camelCase } from "change-case";
 
 import { Code } from "../../../editor/editor";
 import * as t from "../../../ast";
@@ -52,7 +52,12 @@ class Variable {
       "case",
       "default",
       "import",
-      "export"
+      "export",
+      "return",
+      "class",
+      "enum",
+      "for",
+      "while"
     ];
 
     return !startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value);
@@ -62,7 +67,7 @@ class Variable {
 class StringLiteralVariable extends Variable {
   constructor(protected node: t.StringLiteral, parent: t.Node) {
     super(node, parent);
-    this.tryToSetNameWith(camel(node.value));
+    this.tryToSetNameWith(camelCase(node.value));
   }
 
   protected isValidName(value: string): boolean {

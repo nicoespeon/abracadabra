@@ -47,7 +47,8 @@
     "vscode:prepublish": "webpack --mode production",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
-    "package:install": "code --install-extension dist/*.vsix"
+    "package:install": "code --install-extension dist/*.vsix",
+    "deploy": "vsce publish"
   },
   "husky": {
     "hooks": {
@@ -56,21 +57,21 @@
   },
   "devDependencies": {
     "@types/babel__traverse": "7.0.9",
-    "@types/jest": "26.0.12",
+    "@types/jest": "26.0.14",
     "@types/jscodeshift": "0.6.3",
-    "@types/node": "10.12.21",
+    "@types/node": "13.13.25",
     "@types/pluralize": "0.0.29",
     "all-contributors-cli": "6.17.4",
     "husky": "4.2.5",
     "hygen": "6.0.4",
-    "jest": "26.4.2",
+    "jest": "26.5.3",
     "prettier": "2.1.1",
-    "pretty-quick": "3.0.0",
+    "pretty-quick": "3.0.2",
     "ts-jest": "26.3.0",
-    "ts-loader": "6.0.4",
+    "ts-loader": "8.0.5",
     "tslint": "6.1.3",
     "typescript": "4.0.3",
-    "vsce": "1.61.0",
+    "vsce": "1.81.1",
     "vscode": "1.1.37",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12"
@@ -79,7 +80,7 @@
     "@babel/parser": "7.11.5",
     "@babel/traverse": "7.9.0",
     "@babel/types": "7.9.0",
-    "change-case": "3.1.0",
+    "change-case": "4.1.1",
     "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",

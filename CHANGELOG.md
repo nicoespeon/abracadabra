@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Extracting a member expression used to destructure it by default. But sometimes, it's not convenient. Consider the following code:
+
+```ts
+console.log(a1.length + a2.length);
+```
+
+If you want to extract both `length`, you'll end up with such code:
+
+```ts
+const { length: a1Length } = a1;
+const { length: a2Length } = a2;
+console.log(a1Length + a2Length);
+```
+
+It's a bit verbose. Now, in such case, you'll be prompt whether you want to destructure or not. So you can easily extract variables into this:
+
+```ts
+const a1Length = a1.length;
+const a2Length = a2.length;
+console.log(a1Length + a2Length);
+```
+
+### Fixed
+
+- Some string literals couldn't be correctly extracted if they matched reserved words like `return` or `class`. This is now fixed!
+
 ## [4.8.0] - 2020-09-10 - Vue.js Killed The Radio Star 📻
 
 ### Changed
