@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Extract Class, such a useful refactoring implemented by @justerest 🙏
+
 ### Changed
 
 - Extracting a member expression used to destructure it by default. But sometimes, it's not convenient. Consider the following code:
