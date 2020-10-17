@@ -51,6 +51,8 @@ Related projects:
     1. [Merge If Statements](#merge-if-statements)
     1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
     1. [Lift Up Conditional](#lift-up-conditional)
+  - Encapsulation:
+    1. [Extract Class](#extract-class)
   - Moving Features:
     1. [Remove Dead Code](#remove-dead-code)
   - Organizing data:
@@ -342,6 +344,18 @@ Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting 
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Extract Class
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Often, classes grow too big and do too many things. You want to split them by extracting some behavior in a new class.
+
+This is where Abracadabra comes in and automate most of the grunt work for you. It can extract the properties and function you want in a keystrokes! It will take care of creating the new class while preserving existing behavior—it's a refactoring after all.
+
+![][demo-extract-class]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Remove Dead Code
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -580,6 +594,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors][all-contributors] specification.
@@ -724,6 +739,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-add-braces-to-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-jsx-attribute.gif?raw=true
 [demo-remove-braces-from-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-jsx-attribute.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-interface.gif?raw=true
+[demo-extract-class]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-class.gif?raw=true
 
 <!-- Logo -->
 
