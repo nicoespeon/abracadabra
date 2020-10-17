@@ -20,7 +20,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (_path) => {
-      // TODO: implement the transformation here 🧙‍
+      // TODO: implement the transformation here 🧙 https://github.com/nicoespeon/abracadabra/issues/180‍
     })
   );
 }
@@ -29,6 +29,6 @@ function createVisitor(
   _selection: Selection,
   _onMatch: (path: t.NodePath) => void
 ): t.Visitor {
-  // TODO: implement the check here 🧙‍
+  // TODO: implement the check here 🧙 https://github.com/nicoespeon/abracadabra/issues/180‍
   return {};
 }

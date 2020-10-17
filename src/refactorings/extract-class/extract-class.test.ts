@@ -8,7 +8,7 @@ describe("Extract Class", () => {
   testEach<{ code: Code; expected: Code }>(
     "should extract class",
     [
-      // TODO: write successful test cases here
+      // TODO: write successful test cases here https://github.com/nicoespeon/abracadabra/issues/180
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
