@@ -67,9 +67,9 @@ Related projects:
     1. [Convert to Template Literal](#convert-to-template-literal)
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
-  - TS specific:
+  - Specific to TypeScript:
     1. [Extract Interface](#extract-interface)
-  - React specific:
+  - Specific to React:
     1. [Convert to Pure Component](#convert-to-pure-component)
     1. [Add braces to JSX attribute](#add-braces-to-jsx-attribute)
     1. [Remove braces from JSX attribute](#remove-braces-from-jsx-attribute)
