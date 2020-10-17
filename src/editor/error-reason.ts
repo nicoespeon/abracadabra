@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  CanNotExtractClass,
   DidNotFindFunctionDeclarationToConvert,
   DidNotFindLetToConvertToConst,
   DidNotFindSwitchToConvert,
@@ -46,6 +47,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.CanNotExtractClass:
+      return didNotFind("a class to extract");
+
     case ErrorReason.DidNotFindFunctionDeclarationToConvert:
       return didNotFind("a function declaration to convert");
 

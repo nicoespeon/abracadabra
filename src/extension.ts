@@ -36,6 +36,9 @@ import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assi
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
+import { ExtractClassActionProvider } from "./refactorings/extract-class/ExtractClassActionProvider";
+import { ExtractClassCommand } from "./refactorings/extract-class/ExtractClassCommand";
+import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 
 const TS_LANGUAGES = ["typescript", "typescriptreact"];
 const REACT_LANGUAGES = ["javascriptreact", "typescriptreact"];
@@ -97,6 +100,13 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand(
+      ABRACADABRA_EXTRACT_CLASS_COMMAND,
+      ExtractClassCommand.execute
+    )
+  );
+
   TS_LANGUAGES.forEach((language) => {
     vscode.languages.registerCodeActionsProvider(
       language,
@@ -152,6 +162,12 @@ export function activate(context: vscode.ExtensionContext) {
       {
         providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
       }
+    );
+
+    vscode.languages.registerCodeActionsProvider(
+      language,
+      new ExtractClassActionProvider(),
+      { providedCodeActionKinds: [vscode.CodeActionKind.RefactorExtract] }
     );
   });
 }
