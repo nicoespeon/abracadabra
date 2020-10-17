@@ -99,6 +99,7 @@
     "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.convertLetToConst",
     "onCommand:abracadabra.extract",
+    "onCommand:abracadabra.extractClass",
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
@@ -182,6 +183,11 @@
       {
         "command": "abracadabra.extract",
         "title": "Extract",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.extractClass",
+        "title": "Extract Class",
         "category": "Abracadabra"
       },
       {
@@ -558,6 +564,26 @@
         },
         {
           "command": "abracadabra.extract",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.extractClass",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.extractClass",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.extractClass",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extractClass",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extractClass",
           "when": "editorLangId == vue"
         },
         {
