@@ -161,6 +161,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "justerest",
+      "name": "Sergey Klevakin",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/24754883?v=4",
+      "profile": "https://github.com/justerest",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
