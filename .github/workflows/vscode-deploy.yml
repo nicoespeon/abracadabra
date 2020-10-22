@@ -18,4 +18,4 @@ jobs:
           node-version: 13.5.0
           registry-url: https://registry.npmjs.org/
       - run: yarn
-      - run: yarn deploy -p {{ secrets.VSCODE_ACCESS_TOKEN }}
+      - run: yarn deploy -p ${{ secrets.VSCODE_ACCESS_TOKEN }}
