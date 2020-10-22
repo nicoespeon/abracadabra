@@ -67,6 +67,7 @@
     "husky": "4.2.5",
     "hygen": "6.0.4",
     "jest": "26.5.3",
+    "ovsx": "0.1.0-next.e000fdb",
     "prettier": "2.1.1",
     "pretty-quick": "3.0.2",
     "ts-jest": "26.3.0",
