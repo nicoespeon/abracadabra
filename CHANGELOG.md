@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.1] - 2020-10-22
+
 ### Fixed
 
 - Extract Class now handles classes that implement multiple interfaces
@@ -1038,7 +1040,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.1...HEAD
+[4.9.1]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...4.9.1
 [4.9.0]: https://github.com/nicoespeon/abracadabra/compare/4.8.0...4.9.0
 [4.8.0]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/nicoespeon/abracadabra/compare/4.6.0...4.7.0
