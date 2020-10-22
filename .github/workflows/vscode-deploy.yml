@@ -18,6 +18,6 @@ jobs:
           node-version: 13.5.0
           registry-url: https://registry.npmjs.org/
       - run: yarn
-      - run: yarn deploy
+      - run: yarn deploy:vscode
         env:
           VSCE_PAT: ${{ secrets.VSCODE_ACCESS_TOKEN }}

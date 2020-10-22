@@ -48,7 +48,8 @@
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
     "package:install": "code --install-extension dist/*.vsix",
-    "deploy": "vsce publish"
+    "deploy": "yarn deploy:vscode",
+    "deploy:vscode": "vsce publish"
   },
   "husky": {
     "hooks": {
