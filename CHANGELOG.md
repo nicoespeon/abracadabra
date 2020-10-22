@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.2] - 2020-10-22
+
+> No change in the extension itself.
+
+Abracadabra is now deployed to [the Open VSX Registry](https://open-vsx.org/), making it available for VS Code alternatives as [VS Codium](https://vscodium.com/).
+
 ## [4.9.1] - 2020-10-22
 
 ### Fixed
@@ -1040,7 +1046,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.2...HEAD
+[4.9.2]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...4.9.2
 [4.9.1]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...4.9.1
 [4.9.0]: https://github.com/nicoespeon/abracadabra/compare/4.8.0...4.9.0
 [4.8.0]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...4.8.0
