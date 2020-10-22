@@ -59,10 +59,14 @@ export class TypescriptClassNode implements ClassNode {
     );
     clone.node.getStaticMembers().forEach((field) => field.remove());
     clone.node.getDecorators().forEach((field) => field.remove());
-    clone.node
-      .getImplements()
-      .forEach((_, i) => clone.node.removeImplements(i));
+    clone.removeAllImplements();
     return clone;
+  }
+
+  private removeAllImplements(): void {
+    while (this.node.getImplements().length) {
+      this.node.removeImplements(0);
+    }
   }
 
   serialize(): string {
