@@ -78,7 +78,10 @@ function getNegatedIfTest(
 
   // Simplify simple binary expressions
   // E.g. `a > b` => `a <= b` instead of `!(a > b)`
-  if (t.isBinaryExpression(test)) {
+  if (
+    t.isBinaryExpression(test) &&
+    !["instanceof", "in"].includes(test.operator)
+  ) {
     return {
       ...test,
       operator: getNegatedBinaryOperator(test.operator)

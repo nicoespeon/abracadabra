@@ -40,6 +40,11 @@ describe("Flip Ternary", () => {
         expected: `const hello = isMorning
   ? !isMonday ? "Good morning" : "Good monday morning!"
   : "Hello";`
+      },
+      {
+        description: "with instanceof operator",
+        code: `const hello = day inst[cursor]anceof Morning ? "Good morning" : "Hello";`,
+        expected: `const hello = !(day instanceof Morning) ? "Hello" : "Good morning";`
       }
     ],
     async ({ code, expected }) => {

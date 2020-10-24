@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Flip ternary now works correctly with `instanceof` and `in` operators
+
 ## [4.9.2] - 2020-10-22
 
 > No change in the extension itself.
