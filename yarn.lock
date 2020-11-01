@@ -7292,10 +7292,10 @@ ts-loader@8.0.5:
     micromatch "^4.0.0"
     semver "^6.0.0"
 
-ts-morph@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-8.1.0.tgz#f8534e66bda86bfd444718ea5efb533510f185f1"
-  integrity sha512-Wc3SAqdh5E1/AEr6Tuwx3EANy4RmAwzHaaG/gbsQf5OVxu5audGSYof2TcZDmCodkzH9Ke/E3d//7rCOeZ7fSw==
+ts-morph@^8.1.2:
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-8.1.2.tgz#f0bee6be6fbd8c3174ac5d6c0423a035e36c2bbd"
+  integrity sha512-5w4TzmMzECrBunIku1T6/Y0Y2IJ9sHT6hAlfF59WugXnsq1dv6DSioA+s6LgUiswxjgaJgZndOKgu8BrLcYjKw==
   dependencies:
     "@dsherret/to-absolute-glob" "^2.0.2"
     "@ts-morph/common" "~0.6.0"
