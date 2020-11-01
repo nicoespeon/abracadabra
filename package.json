@@ -88,7 +88,7 @@
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",
     "recast": "0.20.4",
-    "ts-morph": "^8.1.0"
+    "ts-morph": "^8.1.2"
   },
   "activationEvents": [
     "onCommand:abracadabra.addBracesToArrowFunction",
