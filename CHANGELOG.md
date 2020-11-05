@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Flip ternary now works correctly with `instanceof` and `in` operators
+- Extract Variable stop asking for destructuring strategy when member expression is computed
 
 ## [4.9.2] - 2020-10-22
 

@@ -27,7 +27,7 @@ function createOccurrence(
     }
   }
 
-  if (path.isMemberExpression()) {
+  if (path.isMemberExpression() && !path.node.computed) {
     return new MemberExpressionOccurrence(
       path,
       loc,
@@ -128,10 +128,6 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   private destructureStrategy = DestructureStrategy.Destructure;
 
   toVariableDeclaration(code: Code): { name: Code; value: Code } {
-    if (this.path.node.computed) {
-      return super.toVariableDeclaration(code);
-    }
-
     if (this.destructureStrategy === DestructureStrategy.Preserve) {
       return super.toVariableDeclaration(code);
     }

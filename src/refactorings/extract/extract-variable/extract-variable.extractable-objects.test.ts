@@ -227,6 +227,16 @@ assert.isTrue(
     ]);
   });
 
+  it("should not ask to destructure computed member expressions", async () => {
+    const code = `console.log([start]foo.bar.children[0][end].selection)`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "askUser");
+
+    await extractVariable(editor);
+
+    expect(editor.askUser).not.toBeCalled();
+  });
+
   it("should not ask if user wants to destructure if it can't be", async () => {
     const code = `console.log([cursor]"hello")`;
     const editor = new InMemoryEditor(code);
