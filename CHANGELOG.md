@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.3] - 2020-11-05
+
 ### Fixed
 
 - Flip ternary now works correctly with `instanceof` and `in` operators
@@ -1051,8 +1053,9 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.2...HEAD
-[4.9.2]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...4.9.2
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.3...HEAD
+[4.9.3]: https://github.com/nicoespeon/abracadabra/compare/4.9.2...4.9.3
+[4.9.2]: https://github.com/nicoespeon/abracadabra/compare/4.9.1...4.9.2
 [4.9.1]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...4.9.1
 [4.9.0]: https://github.com/nicoespeon/abracadabra/compare/4.8.0...4.9.0
 [4.8.0]: https://github.com/nicoespeon/abracadabra/compare/4.7.0...4.8.0
