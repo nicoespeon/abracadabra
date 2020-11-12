@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Inline Variable now works on computed properties, so this would work:
+
+```ts
+// Inline `name` will now work…
+const name = "John";
+console.log({ [name]: "Doe" });
+
+// … and generate this code:
+console.log({ ["John"]: "Doe" });
+```
+
 ## [4.9.3] - 2020-11-05
 
 ### Fixed

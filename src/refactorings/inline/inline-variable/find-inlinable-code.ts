@@ -230,7 +230,11 @@ class InlinableIdentifier implements InlinableCode {
         const parent = last(ancestors);
         if (!parent) return;
         if (t.isFunctionDeclaration(parent)) return;
-        if (t.isObjectProperty(parent.node) && parent.node.key === node) {
+        if (
+          t.isObjectProperty(parent.node) &&
+          parent.node.key === node &&
+          !parent.node.computed
+        ) {
           return;
         }
         if (

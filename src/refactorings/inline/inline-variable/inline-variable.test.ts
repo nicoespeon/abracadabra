@@ -207,6 +207,13 @@ interface Something {
   value: "one" | "many" | "none";
   key: Key;
 }`
+      },
+      {
+        description: "variable is computed",
+        code: `const foo[cursor] = "bar";
+console.log({ [foo]: "Hello" });`,
+        expected: `console.log({ ["bar"]: "Hello" });`
+        // only: true
       }
     ],
     async ({ code, expected }) => {
