@@ -115,15 +115,14 @@ function hasChildWhichMatchesSelection(
 
 type NegatedOperator =
   | t.BinaryExpression["operator"]
-  | t.LogicalExpression["operator"]
-  | null;
+  | t.LogicalExpression["operator"];
 
 interface NegatableExpression {
   loc: t.SourceLocation;
   negatedOperator: NegatedOperator;
 }
 
-function getNegatedOperator(node: t.Node): NegatedOperator {
+function getNegatedOperator(node: t.Node): NegatedOperator | null {
   return t.isLogicalExpression(node)
     ? getNegatedLogicalOperator(node.operator)
     : t.isBinaryExpression(node)

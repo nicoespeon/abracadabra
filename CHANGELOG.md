@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Negate Expression quick fix stop saying "(use null instead)" when it can't compute the negated operator
 - Inline Variable now works on computed properties, so this would work:
 
 ```ts
