@@ -119,7 +119,7 @@ type NegatedOperator =
 
 interface NegatableExpression {
   loc: t.SourceLocation;
-  negatedOperator: NegatedOperator;
+  negatedOperator: NegatedOperator | null;
 }
 
 function getNegatedOperator(node: t.Node): NegatedOperator | null {
