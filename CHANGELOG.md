@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.10.0] - 2020-11-16 - Block to be Alive 🐶
+
 ### Changed
 
-- Negate Expression quick fix stop saying "(use null instead)" when it can't compute the negated operator
+- Negate Expression quick fix stops saying "(use null instead)" when it can't compute the negated operator
 - Inline Variable now works on computed properties, so this would work:
 
 ```ts
@@ -1095,7 +1097,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.9.3...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.10.0...HEAD
+[4.10.0]: https://github.com/nicoespeon/abracadabra/compare/4.9.3...4.10.0
 [4.9.3]: https://github.com/nicoespeon/abracadabra/compare/4.9.2...4.9.3
 [4.9.2]: https://github.com/nicoespeon/abracadabra/compare/4.9.1...4.9.2
 [4.9.1]: https://github.com/nicoespeon/abracadabra/compare/4.9.0...4.9.1
