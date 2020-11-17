@@ -4,7 +4,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -589,12 +589,12 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
   <tr>
     <td align="center"><a href="https://github.com/sluukkonen"><img src="https://avatars1.githubusercontent.com/u/39655?v=4" width="100px;" alt=""/><br /><sub><b>Sakumatti Luukkonen</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Asluukkonen" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/justerest"><img src="https://avatars3.githubusercontent.com/u/24754883?v=4" width="100px;" alt=""/><br /><sub><b>Sergey Klevakin</b></sub></a><br /><a href="#ideas-justerest" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=justerest" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/ajanian"><img src="https://avatars1.githubusercontent.com/u/99716?v=4" width="100px;" alt=""/><br /><sub><b>Andrew Janian</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aajanian" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors][all-contributors] specification.
