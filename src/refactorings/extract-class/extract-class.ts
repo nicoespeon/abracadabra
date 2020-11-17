@@ -4,6 +4,8 @@ import * as t from "../../ast";
 
 export { extractClass, createVisitor };
 
+// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
+
 async function extractClass(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);

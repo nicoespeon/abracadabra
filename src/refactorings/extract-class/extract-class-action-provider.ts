@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./EXTRACT_CLASS_COMMAND";
 import { classNameMatcher } from "./class-name-matcher";
 
+// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
+
 export class ExtractClassActionProvider implements vscode.CodeActionProvider {
   provideCodeActions(
     document: vscode.TextDocument,

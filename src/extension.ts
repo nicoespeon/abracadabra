@@ -36,6 +36,7 @@ import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assi
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
+// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
 import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
 import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
 import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";

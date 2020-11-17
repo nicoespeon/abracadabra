@@ -6,6 +6,8 @@ import { UmlNotation } from "./uml-notation";
 import { assert } from "./utils/assert";
 import { classNameMatcher } from "./class-name-matcher";
 
+// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
+
 export class ExtractClassCommand {
   static execute(textEditor: vscode.TextEditor): Promise<void> {
     const classNode = new ClassParser(textEditor).parseClassAtCurrentLine();
