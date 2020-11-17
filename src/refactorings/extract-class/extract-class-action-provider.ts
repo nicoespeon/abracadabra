@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./EXTRACT_CLASS_COMMAND";
-import { classNameMatcher } from "./classNameMatcher";
+import { classNameMatcher } from "./class-name-matcher";
 
 export class ExtractClassActionProvider implements vscode.CodeActionProvider {
   provideCodeActions(

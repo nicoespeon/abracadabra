@@ -1,6 +1,6 @@
-import { ClassRefactor } from "./ClassRefactor";
-import { TypescriptClassNode } from "./TypescriptClassNode";
-import { formatTs } from "./formatTs";
+import { ClassRefactor } from "./class-refactor";
+import { TypescriptClassNode } from "./typescript-class-node";
+import { formatTs } from "./format-ts";
 
 describe(ClassRefactor.name, () => {
   describe(ClassRefactor.prototype.extractClass.name, () => {

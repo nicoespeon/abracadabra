@@ -1,4 +1,4 @@
-import { ClassNode, InstanceMember } from "./ClassNode";
+import { ClassNode, InstanceMember } from "./class-node";
 import {
   ClassDeclaration,
   ClassInstanceMemberTypes,
@@ -8,7 +8,7 @@ import {
   ParameterDeclaration
 } from "ts-morph";
 import { camelCase } from "change-case";
-import { parseClassDeclaration } from "./parseClassDeclaration";
+import { parseClassDeclaration } from "./parse-class-declaration";
 
 export class TypescriptClassNode implements ClassNode {
   static from(source: string): TypescriptClassNode {

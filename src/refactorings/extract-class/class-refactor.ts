@@ -1,4 +1,4 @@
-import { ClassNode, InstanceMember } from "./ClassNode";
+import { ClassNode, InstanceMember } from "./class-node";
 
 export class ClassRefactor {
   constructor(private node: ClassNode) {}

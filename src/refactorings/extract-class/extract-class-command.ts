@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { Project, ClassDeclaration, ParameterDeclaration } from "ts-morph";
-import { ClassRefactor } from "./ClassRefactor";
-import { TypescriptClassNode } from "./TypescriptClassNode";
-import { UmlNotation } from "./UmlNotation";
+import { ClassRefactor } from "./class-refactor";
+import { TypescriptClassNode } from "./typescript-class-node";
+import { UmlNotation } from "./uml-notation";
 import { assert } from "./utils/assert";
-import { classNameMatcher } from "./classNameMatcher";
+import { classNameMatcher } from "./class-name-matcher";
 
 export class ExtractClassCommand {
   static execute(textEditor: vscode.TextEditor): Promise<void> {

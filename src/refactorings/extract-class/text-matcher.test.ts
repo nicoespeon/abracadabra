@@ -1,5 +1,5 @@
-import { TextMatcher } from "./TextMatcher";
-import { classNameMatcher } from "./classNameMatcher";
+import { TextMatcher } from "./text-matcher";
+import { classNameMatcher } from "./class-name-matcher";
 
 describe(TextMatcher.name, () => {
   it('should find class name word after "class" pattern', () => {

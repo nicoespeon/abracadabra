@@ -1,4 +1,4 @@
-import { TypescriptClassNode } from "./TypescriptClassNode";
+import { TypescriptClassNode } from "./typescript-class-node";
 
 describe(TypescriptClassNode.name, () => {
   describe(

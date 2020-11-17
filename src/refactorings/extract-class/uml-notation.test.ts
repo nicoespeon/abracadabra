@@ -2,8 +2,8 @@ import {
   UmlNotation,
   MethodUmlNotation,
   PropertyUmlNotation
-} from "./UmlNotation";
-import { parseClassDeclaration } from "./parseClassDeclaration";
+} from "./uml-notation";
+import { parseClassDeclaration } from "./parse-class-declaration";
 
 describe(PropertyUmlNotation.name, () => {
   describe(PropertyUmlNotation.prototype.serialize.name, () => {

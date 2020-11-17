@@ -36,8 +36,8 @@ import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assi
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 import simplifyTernary from "./refactorings/simplify-ternary";
-import { ExtractClassActionProvider } from "./refactorings/extract-class/ExtractClassActionProvider";
-import { ExtractClassCommand } from "./refactorings/extract-class/ExtractClassCommand";
+import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
+import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
 import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 
 const TS_LANGUAGES = ["typescript", "typescriptreact"];
