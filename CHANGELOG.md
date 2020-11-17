@@ -21,6 +21,34 @@ console.log({ [name]: "Doe" });
 console.log({ ["John"]: "Doe" });
 ```
 
+### Fixed
+
+- Extract Variable now works fine when executed inside block statements and it matches multiple occurrences. It means that this code:
+
+```js
+function venueBtnName() {
+  if (window.location.href.includes("raw")) {
+    document.getElementById("venueExampleBtn").innerHTML = "Venue Examples";
+  } else {
+    document.getElementById("venueExampleBtn").innerHTML =
+      "Venue Group Details";
+  }
+}
+```
+
+Will produce this code, as expected:
+
+```js
+function venueBtnName() {
+  const extracted = document.getElementById("venueExampleBtn");
+  if (window.location.href.includes("raw")) {
+    extracted.innerHTML = "Venue Examples";
+  } else {
+    extracted.innerHTML = "Venue Group Details";
+  }
+}
+```
+
 ## [4.9.3] - 2020-11-05
 
 ### Fixed

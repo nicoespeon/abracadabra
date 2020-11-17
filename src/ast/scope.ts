@@ -97,8 +97,13 @@ function findAncestorThatCanHaveVariableDeclaration(
   path: NodePath | null
 ): SelectablePath | null {
   if (path === null) return null;
-  if (path.isStatement() && isSelectablePath(path)) return path;
-  if (!path.parentPath) return null;
+  if (
+    path.isStatement() &&
+    !path.isBlockStatement() &&
+    isSelectablePath(path)
+  ) {
+    return path;
+  }
 
   return findAncestorThatCanHaveVariableDeclaration(path.parentPath);
 }

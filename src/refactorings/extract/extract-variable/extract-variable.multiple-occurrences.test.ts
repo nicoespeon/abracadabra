@@ -408,6 +408,24 @@ sendMessage(<Dialog color="black" />);`,
         expected: `const extracted = <Dialog color="black" />;
 console.log(extracted);
 sendMessage(extracted);`
+      },
+      {
+        description: "inside an if statement",
+        code: `function venueBtnName() {
+  if (window.location.href.includes('raw')) {
+    [start]document.getElementById('venueExampleBtn')[end].innerHTML = 'Venue Examples';
+  } else {
+    document.getElementById('venueExampleBtn').innerHTML = 'Venue Group Details';
+  }
+}`,
+        expected: `function venueBtnName() {
+  const extracted = document.getElementById('venueExampleBtn');
+  if (window.location.href.includes('raw')) {
+    extracted.innerHTML = 'Venue Examples';
+  } else {
+    extracted.innerHTML = 'Venue Group Details';
+  }
+}`
       }
     ],
     async ({ code, expected }) => {
