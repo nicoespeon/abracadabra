@@ -171,6 +171,15 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "ajanian",
+      "name": "Andrew Janian",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/99716?v=4",
+      "profile": "https://github.com/ajanian",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
