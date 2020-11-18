@@ -40,7 +40,7 @@ class AttemptingEditor implements Editor {
     );
   }
 
-  delegate(command: Command): Promise<void> {
+  delegate(command: Command) {
     return this.editor.delegate(command);
   }
 

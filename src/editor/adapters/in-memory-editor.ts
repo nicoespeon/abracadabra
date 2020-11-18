@@ -4,7 +4,8 @@ import {
   Modification,
   Command,
   ErrorReason,
-  Choice
+  Choice,
+  Result
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -118,7 +119,7 @@ class InMemoryEditor implements Editor {
   }
 
   delegate(_command: Command) {
-    return Promise.resolve();
+    return Promise.resolve(Result.OK);
   }
 
   showError(_reason: ErrorReason) {

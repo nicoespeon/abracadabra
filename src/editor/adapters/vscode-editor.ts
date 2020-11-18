@@ -7,7 +7,8 @@ import {
   Command,
   ErrorReason,
   errorReasonToString,
-  Choice
+  Choice,
+  Result
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -98,6 +99,7 @@ class VSCodeEditor implements Editor {
 
   async delegate(command: Command) {
     await vscode.commands.executeCommand(toVSCodeCommand(command));
+    return Result.OK;
   }
 
   async showError(reason: ErrorReason) {

@@ -7,6 +7,7 @@ export {
   Modification,
   Code,
   Command,
+  Result,
   Choice,
   ErrorReason,
   toString as errorReasonToString
@@ -21,7 +22,7 @@ interface Editor {
     getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position
   ): Promise<void>;
-  delegate(command: Command): Promise<void>;
+  delegate(command: Command): Promise<Result>;
   showError(reason: ErrorReason): Promise<void>;
   askUser<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
@@ -36,6 +37,11 @@ type Code = string;
 
 enum Command {
   RenameSymbol
+}
+
+enum Result {
+  OK,
+  NotSupported
 }
 
 type Choice<T> = {
