@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { Code, Modification } from "../editor";
+import { Code, Command, Modification, Result } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";
 import { VSCodeEditor } from "./vscode-editor";
@@ -14,6 +14,14 @@ class VueVSCodeEditor extends VSCodeEditor {
 
   get selection(): Selection {
     return this.offsetEditorSelection(super.selection);
+  }
+
+  async delegate(command: Command) {
+    if (command === Command.RenameSymbol) {
+      return Result.NotSupported;
+    }
+
+    return super.delegate(command);
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
