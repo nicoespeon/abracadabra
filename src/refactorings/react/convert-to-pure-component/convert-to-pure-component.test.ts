@@ -75,7 +75,7 @@ describe("(React) Convert To Pure Component", () => {
 }`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementationOnce(async ([_, noArrows]) => noArrows)
       .mockImplementationOnce(async ([destructuring]) => destructuring);
 
@@ -98,7 +98,7 @@ describe("(React) Convert To Pure Component", () => {
 }`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementationOnce(async ([useArrows]) => useArrows)
       .mockImplementationOnce(async ([_, noDestructuring]) => noDestructuring);
 

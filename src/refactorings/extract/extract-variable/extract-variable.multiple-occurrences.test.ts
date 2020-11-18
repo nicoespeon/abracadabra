@@ -9,22 +9,22 @@ describe("Extract Variable - Multiple occurrences", () => {
   it("should not ask the user if there is only one occurrence", async () => {
     const code = `console.log("Hel[cursor]lo");`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUserChoice");
 
     await extractVariable(editor);
 
-    expect(editor.askUser).not.toBeCalled();
+    expect(editor.askUserChoice).not.toBeCalled();
   });
 
   it("should ask the user what to replace if there are multiple occurrences", async () => {
     const code = `console.log("Hel[cursor]lo");
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUserChoice");
 
     await extractVariable(editor);
 
-    expect(editor.askUser).toBeCalledWith([
+    expect(editor.askUserChoice).toBeCalledWith([
       {
         value: ReplacementStrategy.AllOccurrences,
         label: "Replace all 2 occurrences"
@@ -41,7 +41,7 @@ sendMessage("Hello");`;
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
     const originalCode = editor.code;
-    jest.spyOn(editor, "askUser").mockResolvedValue(undefined);
+    jest.spyOn(editor, "askUserChoice").mockResolvedValue(undefined);
 
     await extractVariable(editor);
 
@@ -53,7 +53,7 @@ sendMessage("Hello");`;
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([_, thisOccurrence]) =>
         Promise.resolve(thisOccurrence)
       );
@@ -71,7 +71,7 @@ sendMessage("Hello");`;
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([allOccurrences]) =>
         Promise.resolve(allOccurrences)
       );
@@ -89,7 +89,7 @@ sendMessage(hello);`;
 sendMessage("He[cursor]llo");`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([allOccurrences]) =>
         Promise.resolve(allOccurrences)
       );
@@ -111,7 +111,7 @@ sendMessage(hello);`;
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([allOccurrences]) =>
         Promise.resolve(allOccurrences)
       );
@@ -139,7 +139,7 @@ sendMessage("Hello");`;
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([allOccurrences]) =>
         Promise.resolve(allOccurrences)
       );
@@ -174,7 +174,7 @@ sendMessage("Hello");`;
 }`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([allOccurrences]) =>
         Promise.resolve(allOccurrences)
       );
@@ -208,7 +208,7 @@ sendMessage("Hello");`;
 }`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([allOccurrences]) =>
         Promise.resolve(allOccurrences)
       );
@@ -431,7 +431,7 @@ sendMessage(extracted);`
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([allOccurrences]) =>
           Promise.resolve(allOccurrences)
         );

@@ -83,7 +83,7 @@ describe("Extract Generic Type - Interface declaration", () => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([_, selectedOccurrence]) =>
           Promise.resolve(selectedOccurrence)
         );
@@ -175,11 +175,11 @@ describe("Extract Generic Type - Interface declaration", () => {
   isActive: boolean;
 }`;
       const editor = new InMemoryEditor(code);
-      jest.spyOn(editor, "askUser");
+      jest.spyOn(editor, "askUserChoice");
 
       await extractGenericType(editor);
 
-      expect(editor.askUser).toBeCalledWith([
+      expect(editor.askUserChoice).toBeCalledWith([
         {
           value: ReplacementStrategy.AllOccurrences,
           label: "Replace all 2 occurrences"
@@ -199,7 +199,7 @@ describe("Extract Generic Type - Interface declaration", () => {
 }`;
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([_, selectedOccurrence]) =>
           Promise.resolve(selectedOccurrence)
         );
@@ -222,7 +222,7 @@ describe("Extract Generic Type - Interface declaration", () => {
 }`;
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([allOccurrences]) =>
           Promise.resolve(allOccurrences)
         );
@@ -249,7 +249,7 @@ interface Occurrence {
 }`;
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([allOccurrences]) =>
           Promise.resolve(allOccurrences)
         );
@@ -277,7 +277,7 @@ interface Occurrence {
       const editor = new InMemoryEditor(code);
       const originalCode = editor.code;
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([_all, _selected, nothing]) =>
           Promise.resolve(nothing)
         );

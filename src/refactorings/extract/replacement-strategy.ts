@@ -9,7 +9,7 @@ async function askReplacementStrategy(
   const occurrencesCount = otherOccurrences.length;
   if (occurrencesCount <= 0) return ReplacementStrategy.SelectedOccurrence;
 
-  const choice = await editor.askUser([
+  const choice = await editor.askUserChoice([
     {
       value: ReplacementStrategy.AllOccurrences,
       label: `Replace all ${occurrencesCount + 1} occurrences`

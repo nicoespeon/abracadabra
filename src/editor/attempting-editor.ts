@@ -53,8 +53,8 @@ class AttemptingEditor implements Editor {
     await this.editor.showError(reason);
   }
 
-  askUser<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined> {
-    return this.editor.askUser(choices);
+  askUserChoice<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined> {
+    return this.editor.askUserChoice(choices);
   }
 
   moveCursorTo(position: Position): Promise<void> {

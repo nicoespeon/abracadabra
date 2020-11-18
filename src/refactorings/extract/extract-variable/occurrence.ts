@@ -139,7 +139,7 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   }
 
   async askModificationDetails(editor: Editor) {
-    const choice = await editor.askUser([
+    const choice = await editor.askUserChoice([
       {
         label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
         value: DestructureStrategy.Destructure

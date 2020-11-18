@@ -211,11 +211,11 @@ assert.isTrue(
   it("should ask if user wants to destructure or not", async () => {
     const code = `console.log(foo.bar.b[cursor]az)`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUserChoice");
 
     await extractVariable(editor);
 
-    expect(editor.askUser).toBeCalledWith([
+    expect(editor.askUserChoice).toBeCalledWith([
       {
         label: "Destructure => `const { baz } = foo.bar`",
         value: DestructureStrategy.Destructure
@@ -230,28 +230,28 @@ assert.isTrue(
   it("should not ask to destructure computed member expressions", async () => {
     const code = `console.log([start]foo.bar.children[0][end].selection)`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUserChoice");
 
     await extractVariable(editor);
 
-    expect(editor.askUser).not.toBeCalled();
+    expect(editor.askUserChoice).not.toBeCalled();
   });
 
   it("should not ask if user wants to destructure if it can't be", async () => {
     const code = `console.log([cursor]"hello")`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUser");
+    jest.spyOn(editor, "askUserChoice");
 
     await extractVariable(editor);
 
-    expect(editor.askUser).not.toBeCalled();
+    expect(editor.askUserChoice).not.toBeCalled();
   });
 
   it("should preserve member expression if user says so", async () => {
     const code = `console.log(foo.bar.b[cursor]az);`;
     const editor = new InMemoryEditor(code);
     jest
-      .spyOn(editor, "askUser")
+      .spyOn(editor, "askUserChoice")
       .mockImplementation(([, preserve]) => Promise.resolve(preserve));
 
     await extractVariable(editor);

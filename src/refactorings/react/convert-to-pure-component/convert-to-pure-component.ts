@@ -9,14 +9,14 @@ export { convertToPureComponent };
 
 async function convertToPureComponent(editor: Editor) {
   const { code } = editor;
-  const useArrowsChoice = await editor.askUser([
+  const useArrowsChoice = await editor.askUserChoice([
     { value: true, label: "Use an arrow function" },
     { value: false, label: "Use a function declaration" }
   ]);
 
   if (!useArrowsChoice) return;
 
-  const destructuringChoice = await editor.askUser([
+  const destructuringChoice = await editor.askUserChoice([
     { value: true, label: "Destructure props" },
     { value: false, label: "Don't destructure props" }
   ]);

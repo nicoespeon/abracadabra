@@ -106,7 +106,7 @@ class VSCodeEditor implements Editor {
     await vscode.window.showErrorMessage(errorReasonToString(reason));
   }
 
-  async askUser<T>(choices: Choice<T>[]) {
+  async askUserChoice<T>(choices: Choice<T>[]) {
     return await vscode.window.showQuickPick(choices);
   }
 

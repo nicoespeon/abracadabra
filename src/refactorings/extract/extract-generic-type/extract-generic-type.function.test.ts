@@ -28,7 +28,7 @@ describe("Extract Generic Type - Function declaration", () => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([_, selectedOccurrence]) =>
           Promise.resolve(selectedOccurrence)
         );
@@ -76,7 +76,7 @@ describe("Extract Generic Type - Function declaration", () => {
       const code = `function doSomething(message: [cursor]string, reason: string) {}`;
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([_, selectedOccurrence]) =>
           Promise.resolve(selectedOccurrence)
         );
@@ -91,7 +91,7 @@ describe("Extract Generic Type - Function declaration", () => {
       const code = `function doSomething(message: [cursor]string, reason: string): string {}`;
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([allOccurrences]) =>
           Promise.resolve(allOccurrences)
         );
@@ -107,7 +107,7 @@ describe("Extract Generic Type - Function declaration", () => {
 function doSomethingElse(message: [cursor]string, reason: string) {}`;
       const editor = new InMemoryEditor(code);
       jest
-        .spyOn(editor, "askUser")
+        .spyOn(editor, "askUserChoice")
         .mockImplementation(([allOccurrences]) =>
           Promise.resolve(allOccurrences)
         );
