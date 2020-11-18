@@ -1,5 +1,5 @@
-import { InMemoryEditor } from "./adapters/in-memory-editor";
-import { ErrorReason } from "./error-reason";
+import { InMemoryEditor } from "./in-memory-editor";
+import { ErrorReason } from "../error-reason";
 import { AttemptingEditor } from "./attempting-editor";
 
 describe("AttemptingEditor", () => {

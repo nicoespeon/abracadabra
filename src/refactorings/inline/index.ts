@@ -3,7 +3,7 @@ import { inlineVariable } from "./inline-variable/inline-variable";
 
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
-import { AttemptingEditor } from "../../editor/attempting-editor";
+import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
 import { Refactoring } from "../../types";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 

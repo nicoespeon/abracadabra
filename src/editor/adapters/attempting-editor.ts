@@ -5,9 +5,9 @@ import {
   Editor,
   ErrorReason,
   Modification
-} from "./editor";
-import { Position } from "./position";
-import { Selection } from "./selection";
+} from "../editor";
+import { Position } from "../position";
+import { Selection } from "../selection";
 
 export { AttemptingEditor };
 
