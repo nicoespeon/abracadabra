@@ -1,4 +1,4 @@
-import { Command } from "../../editor/editor";
+import { Command, Result } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 
 import { renameSymbol } from "./rename-symbol";
@@ -11,5 +11,113 @@ describe("Rename Symbol", () => {
     await renameSymbol(editor);
 
     expect(editor.delegate).toBeCalledWith(Command.RenameSymbol);
+  });
+
+  describe("rename not supported by editor", () => {
+    it("should ask user for new name, using current one as default", async () => {
+      const editor = new InMemoryEditor("const [cursor]hello = 'world'");
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput");
+
+      await renameSymbol(editor);
+
+      expect(editor.askUserInput).toBeCalledWith("hello");
+    });
+
+    it("should not ask user for new name if cursor isn't on an Identifier", async () => {
+      const editor = new InMemoryEditor("const hello = 'w[cursor]orld'");
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput");
+
+      await renameSymbol(editor);
+
+      expect(editor.askUserInput).not.toBeCalled();
+    });
+
+    it("renames identifier with user input", async () => {
+      const editor = new InMemoryEditor("const [cursor]hello = 'world'");
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe("const aBrandNewName = 'world'");
+    });
+
+    it("doesn't rename if user returns no input", async () => {
+      const editor = new InMemoryEditor("const [cursor]hello = 'world'");
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue(undefined);
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe("const hello = 'world'");
+    });
+
+    it("doesn't rename if user returns the same name", async () => {
+      const editor = new InMemoryEditor("const [cursor]hello = 'world'");
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("hello");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe("const hello = 'world'");
+    });
+
+    it("renames all occurrences with user input", async () => {
+      const editor = new InMemoryEditor(`const hello = 'world';
+console.log([cursor]hello);
+const goodMorning = \`Good morning \${hello}!\``);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`const aBrandNewName = 'world';
+console.log(aBrandNewName);
+const goodMorning = \`Good morning \${aBrandNewName}!\``);
+    });
+
+    it("doesn't rename occurrences that are not in the same scope", async () => {
+      const editor = new InMemoryEditor(`function sayHello() {
+  const hello = 'world';
+  console.log([cursor]hello);
+}
+
+let hello = 'my friend';
+const goodMorning = \`Good morning \${hello}!\``);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`function sayHello() {
+  const aBrandNewName = 'world';
+  console.log(aBrandNewName);
+}
+
+let hello = 'my friend';
+const goodMorning = \`Good morning \${hello}!\``);
+    });
+
+    it("doesn't rename occurrences that are shadow", async () => {
+      const editor = new InMemoryEditor(`let hello[cursor] = 'friends';
+
+function sayHello() {
+  const hello = 'world';
+  console.log(hello);
+}`);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`let aBrandNewName = 'friends';
+
+function sayHello() {
+  const hello = 'world';
+  console.log(hello);
+}`);
+    });
   });
 });

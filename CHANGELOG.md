@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Rename Symbol now works on `.vue` files. The UX is slightly different as we didn't managed to get the input pop next to the renamed symbol, but it's very similar to what you can do in any other language.
+
+This means other refactorings like "Extract Variable" are now smoother in `.vue` files, since they rely on "Rename Symbol" to reduce the amount of keystrokes you need to do!
+
 ## [4.10.0] - 2020-11-16 - Block to be Alive 🐶
 
 ### Changed
