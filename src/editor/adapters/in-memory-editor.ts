@@ -130,6 +130,10 @@ class InMemoryEditor implements Editor {
     return Promise.resolve(choices[0]);
   }
 
+  askUserInput(defaultValue?: string): Promise<string | undefined> {
+    return Promise.resolve(defaultValue);
+  }
+
   moveCursorTo(_position: Position) {
     return Promise.resolve();
   }

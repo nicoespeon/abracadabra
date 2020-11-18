@@ -110,6 +110,10 @@ class VSCodeEditor implements Editor {
     return await vscode.window.showQuickPick(choices);
   }
 
+  async askUserInput(defaultValue?: string) {
+    return await vscode.window.showInputBox({ value: defaultValue });
+  }
+
   moveCursorTo(position: Position) {
     this.editor.selection = toVSCodeCursor(position);
     return Promise.resolve();

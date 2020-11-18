@@ -57,6 +57,10 @@ class AttemptingEditor implements Editor {
     return this.editor.askUserChoice(choices);
   }
 
+  askUserInput(defaultValue?: string) {
+    return this.editor.askUserInput(defaultValue);
+  }
+
   moveCursorTo(position: Position): Promise<void> {
     return this.editor.moveCursorTo(position);
   }
