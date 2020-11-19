@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.11.0] - 2020-11-19 - The Vue has Changed 👩‍🚀
+
 ### Added
 
 - Rename Symbol now works on `.vue` files. The UX is slightly different as we didn't managed to get the input pop next to the renamed symbol, but it's very similar to what you can do in any other language.
@@ -1105,7 +1107,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.10.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.11.0...HEAD
+[4.11.0]: https://github.com/nicoespeon/abracadabra/compare/4.10.0...4.11.0
 [4.10.0]: https://github.com/nicoespeon/abracadabra/compare/4.9.3...4.10.0
 [4.9.3]: https://github.com/nicoespeon/abracadabra/compare/4.9.2...4.9.3
 [4.9.2]: https://github.com/nicoespeon/abracadabra/compare/4.9.1...4.9.2
