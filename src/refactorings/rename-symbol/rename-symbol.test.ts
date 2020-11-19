@@ -78,6 +78,56 @@ console.log(aBrandNewName);
 const goodMorning = \`Good morning \${aBrandNewName}!\``);
     });
 
+    it("renames destructured variable correctly (shorthand)", async () => {
+      const editor = new InMemoryEditor(`const { value[cursor] } = { value: 2 };
+console.log(value);`);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`const { value: aBrandNewName } = { value: 2 };
+console.log(aBrandNewName);`);
+    });
+
+    it("renames destructured variable correctly (cursor on value)", async () => {
+      const editor = new InMemoryEditor(`const { value: somethingElse[cursor] } = { value: 2 };
+console.log(somethingElse);`);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`const { value: aBrandNewName } = { value: 2 };
+console.log(aBrandNewName);`);
+    });
+
+    // We don't handle renaming object properties keys for the moment.
+    // As we delegate work to babel, it would be nice to upgrade babel first. Maybe they handle it in recent versions.
+    it("doesn't rename destructured variable if cursor on key", async () => {
+      const editor = new InMemoryEditor(`const { value[cursor]: somethingElse } = { value: 2 };
+console.log(somethingElse);`);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`const { value: somethingElse } = { value: 2 };
+console.log(somethingElse);`);
+    });
+
+    it("doesn't rename object property key", async () => {
+      const editor = new InMemoryEditor(`const { value } = { value[cursor]: 2 };
+console.log(value);`);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`const { value } = { value: 2 };
+console.log(value);`);
+    });
+
     it("doesn't rename occurrences that are not in the same scope", async () => {
       const editor = new InMemoryEditor(`function sayHello() {
   const hello = 'world';
