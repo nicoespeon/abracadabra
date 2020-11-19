@@ -311,6 +311,11 @@
         "when": "editorTextFocus"
       },
       {
+        "command": "abracadabra.renameSymbol",
+        "key": "f2",
+        "when": "editorTextFocus"
+      },
+      {
         "command": "abracadabra.extract",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",

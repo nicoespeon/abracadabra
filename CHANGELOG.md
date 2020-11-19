@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This means other refactorings like "Extract Variable" are now smoother in `.vue` files, since they rely on "Rename Symbol" to reduce the amount of keystrokes you need to do!
 
+It works when you press `F2` like anywhere else.
+
 ## [4.10.0] - 2020-11-16 - Block to be Alive 🐶
 
 ### Changed

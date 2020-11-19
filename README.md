@@ -102,15 +102,17 @@ All other refactorings are available through [VS Code Quick Fixes][vscode-quick-
 
 ### Rename Symbol
 
-| Keybinding (VS Code internal) |
-| :---------------------------- |
-| `F2`                          |
+| Keybinding |
+| :--------- |
+| `F2`       |
 
 > A `Symbol` is typically a variable or a function name.
 
 This refactoring allows you to rename things and make sure all references in your code follow! It's easier and safer to use than a classic "Find and Replace".
 
 [VS Code does this refactoring][vscode-rename-symbol] very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
+
+Note that **it handles `.vue` files with a similar UX** while VS Code doesn't handle it natively yet.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -596,6 +598,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors][all-contributors] specification.
