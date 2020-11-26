@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Convert to Arrow Function" used to convert the top-most function declaration, which was unexpected when you have nested ones! It now converts function that's the closest to the cursor position.
+
 ## [4.11.0] - 2020-11-19 - The Vue has Changed 👩‍🚀
 
 ### Added

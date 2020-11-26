@@ -59,6 +59,32 @@ const test = () => {};`
         expected: `#!/usr/bin/env node
 
 const test = () => {};`
+      },
+      {
+        description: "nested, cursor on outer function",
+        code: `function outer[cursor]() {
+  function inner() {
+    return null
+  }
+}`,
+        expected: `const outer = () => {
+  function inner() {
+    return null
+  }
+};`
+      },
+      {
+        description: "nested, cursor on inner function",
+        code: `function outer() {
+  function inner() {
+    return null[cursor]
+  }
+}`,
+        expected: `function outer() {
+  const inner = () => {
+    return null
+  };
+}`
       }
     ],
     async ({ code, expected }) => {
