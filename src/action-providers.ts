@@ -64,6 +64,16 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   ): Refactoring[] {
     const applicableRefactorings = new Map<string, Refactoring>();
 
+    const refactoringsToCheck = this.refactorings.filter(
+      ({ command: { key } }) => {
+        const shouldBeProposed = vscode.workspace
+          .getConfiguration("abracadabra")
+          .get(`${key}.showInQuickFix`);
+
+        return typeof shouldBeProposed === "boolean" ? shouldBeProposed : true;
+      }
+    );
+
     t.traverseAST(ast, {
       enter: (path) => {
         /**
@@ -73,7 +83,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
          * It seems we're trying each refactoring on each Node of the AST.
          * We could filter nodes for which selection isn't inside!
          */
-        this.refactorings.forEach((refactoring) => {
+        refactoringsToCheck.forEach((refactoring) => {
           const {
             actionProvider,
             command: { key }

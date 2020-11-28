@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
+import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
 import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
@@ -41,15 +42,69 @@ import { ExtractClassActionProvider } from "./refactorings/extract-class/extract
 import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
 import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 
-const TS_LANGUAGES = ["typescript", "typescriptreact"];
-const REACT_LANGUAGES = ["javascriptreact", "typescriptreact"];
-const ALL_LANGUAGES = [
-  "javascript",
-  "javascriptreact",
-  "typescript",
-  "typescriptreact",
-  "vue"
-];
+const refactorings: { [key: string]: ConfiguredRefactoring } = {
+  typescriptOnly: {
+    languages: ["typescript", "typescriptreact"],
+    withoutActionProvider: [],
+    withActionProvider: [extractInterface]
+  },
+  reactOnly: {
+    languages: ["javascriptreact", "typescriptreact"],
+    withoutActionProvider: [reactConvertToPureComponent],
+    withActionProvider: [
+      reactAddBracesToJsxAttribute,
+      reactRemoveBracesFromJsxAttribute
+    ]
+  },
+  allLanguages: {
+    languages: [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "vue"
+    ],
+    withoutActionProvider: [
+      extract,
+      inline,
+      moveStatementDown,
+      moveStatementUp,
+      renameSymbol
+    ],
+    withActionProvider: [
+      addBracesToArrowFunction,
+      addBracesToIfStatement,
+      convertForToForeach,
+      convertIfElseToSwitch,
+      convertIfElseToTernary,
+      convertLetToConst,
+      convertSwitchToIfElse,
+      convertTernaryToIfElse,
+      convertToArrowFunction,
+      convertToTemplateLiteral,
+      flipIfElse,
+      flipTernary,
+      liftUpConditional,
+      mergeIfStatements,
+      mergeWithPreviousIfStatement,
+      negateExpression,
+      removeBracesFromArrowFunction,
+      removeBracesFromIfStatement,
+      removeDeadCode,
+      removeRedundantElse,
+      replaceBinaryWithAssignment,
+      simplifyTernary,
+      splitDeclarationAndInitialization,
+      splitIfStatement
+    ]
+  }
+};
+
+type ConfiguredRefactoring = {
+  languages: string[];
+  withoutActionProvider: Refactoring[];
+  withActionProvider: RefactoringWithActionProvider[];
+};
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -58,47 +113,27 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  [
-    addBracesToArrowFunction,
-    addBracesToIfStatement,
-    convertForToForeach,
-    convertIfElseToSwitch,
-    convertIfElseToTernary,
-    convertLetToConst,
-    convertSwitchToIfElse,
-    convertTernaryToIfElse,
-    convertToArrowFunction,
-    convertToTemplateLiteral,
-    extract,
-    extractInterface,
-    flipIfElse,
-    flipTernary,
-    inline,
-    liftUpConditional,
-    mergeIfStatements,
-    mergeWithPreviousIfStatement,
-    moveStatementDown,
-    moveStatementUp,
-    negateExpression,
-    reactAddBracesToJsxAttribute,
-    reactConvertToPureComponent,
-    reactRemoveBracesFromJsxAttribute,
-    removeBracesFromArrowFunction,
-    removeBracesFromIfStatement,
-    removeDeadCode,
-    removeRedundantElse,
-    renameSymbol,
-    replaceBinaryWithAssignment,
-    simplifyTernary,
-    splitDeclarationAndInitialization,
-    splitIfStatement
-  ].forEach(({ command }) =>
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        `abracadabra.${command.key}`,
-        createCommand(command.operation)
-      )
-    )
+  Object.values(refactorings).forEach(
+    ({ withoutActionProvider, withActionProvider, languages }) => {
+      withoutActionProvider
+        .concat(withActionProvider)
+        .forEach(({ command }) =>
+          context.subscriptions.push(
+            vscode.commands.registerCommand(
+              `abracadabra.${command.key}`,
+              createCommand(command.operation)
+            )
+          )
+        );
+
+      languages.forEach((language) => {
+        vscode.languages.registerCodeActionsProvider(
+          language,
+          new RefactoringActionProvider(withActionProvider),
+          { providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite] }
+        );
+      });
+    }
   );
 
   context.subscriptions.push(
@@ -108,63 +143,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  TS_LANGUAGES.forEach((language) => {
-    vscode.languages.registerCodeActionsProvider(
-      language,
-      new RefactoringActionProvider([extractInterface]),
-      {
-        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
-      }
-    );
-  });
-
-  REACT_LANGUAGES.forEach((language) => {
-    vscode.languages.registerCodeActionsProvider(
-      language,
-      new RefactoringActionProvider([
-        reactAddBracesToJsxAttribute,
-        reactRemoveBracesFromJsxAttribute
-      ]),
-      {
-        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
-      }
-    );
-  });
-
-  ALL_LANGUAGES.forEach((language) => {
-    vscode.languages.registerCodeActionsProvider(
-      language,
-      new RefactoringActionProvider([
-        addBracesToArrowFunction,
-        addBracesToIfStatement,
-        convertForToForeach,
-        convertIfElseToSwitch,
-        convertSwitchToIfElse,
-        convertIfElseToTernary,
-        convertTernaryToIfElse,
-        convertToArrowFunction,
-        convertToTemplateLiteral,
-        convertLetToConst,
-        flipIfElse,
-        flipTernary,
-        liftUpConditional,
-        mergeIfStatements,
-        mergeWithPreviousIfStatement,
-        negateExpression,
-        removeBracesFromArrowFunction,
-        removeBracesFromIfStatement,
-        removeDeadCode,
-        removeRedundantElse,
-        replaceBinaryWithAssignment,
-        simplifyTernary,
-        splitDeclarationAndInitialization,
-        splitIfStatement
-      ]),
-      {
-        providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite]
-      }
-    );
-
+  refactorings.allLanguages.languages.forEach((language) => {
     vscode.languages.registerCodeActionsProvider(
       language,
       new ExtractClassActionProvider(),

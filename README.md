@@ -1,5 +1,9 @@
 # 🧙‍ Abracadabra
 
+> **Refactoring** (noun): a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.
+>
+> — _"Refactoring: Improving the Design of Existing Code" by Martin Fowler_
+
 ![][logo-abracadabra]
 
 <!-- prettier-ignore-start -->
@@ -14,12 +18,6 @@
 Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript. Works in `.js`, `.jsx`, `.ts`, `.tsx` and `.vue` files.
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
-
-> **Refactoring** (noun): a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.
->
-> — _"Refactoring: Improving the Design of Existing Code" by Martin Fowler_
-
-![Gif showing refactoring operations this extension can do][demo-extension]
 
 Related projects:
 
@@ -81,7 +79,6 @@ Related projects:
   - [Good First Issues](#good-first-issues)
 - [Contributors](#contributors)
 - [Alternatives](#alternatives)
-  - [Why building yet another refactoring extension then?](#why-building-yet-another-refactoring-extension-then)
 - [License](#license)
 
 ## Installation
@@ -99,6 +96,8 @@ All refactorings are available through the [Command Palette][command-palette].
 Some refactorings have default keybindings configured, but [you can change that][change-keybindings].
 
 All other refactorings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You can access them by clicking on the lightbulb that appear next to the code 💡 or use the default shortcut `Alt ↵`.
+
+Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings][vscode-settings] 🔥 (look for _Abracadabra_)
 
 ### Rename Symbol
 
@@ -124,6 +123,8 @@ Note that **it handles `.vue` files with a similar UX** while VS Code doesn't ha
 
 This refactoring helps you give a meaning to the hardcoded constants and low-level expressions. It makes your source code easier to read and maintain.
 
+<details><summary>See it in action</summary>
+
 ![][demo-extract-variable]
 
 It will extract the closest element from your cursor or partial selection.
@@ -133,6 +134,8 @@ It will extract the closest element from your cursor or partial selection.
 It will also handle multiple occurrences.
 
 ![][demo-extract-variable-multiple-occurrences]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -144,7 +147,11 @@ It will also handle multiple occurrences.
 
 Just like for variables, this TS-specific refactoring will extract a type to make it generic.
 
+<details><summary>See it in action</summary>
+
 ![][demo-extract-generic-type]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -156,7 +163,11 @@ Just like for variables, this TS-specific refactoring will extract a type to mak
 
 This refactoring is the opposite of _Extract Variable_. It replaces a redundant usage of a variable or a constant with its initializer. It's usually helpful to inline things so you can extract them differently.
 
+<details><summary>See it in action</summary>
+
 ![][demo-inline-variable]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -168,7 +179,11 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 
 This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
 
+<details><summary>See it in action</summary>
+
 ![][demo-inline-function]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -184,7 +199,11 @@ Moves the whole selected statement up. If the selected statement and the one abo
 
 As for all refactorings, it works even if you partially select the statement, or if the cursor is on the statement.
 
+<details><summary>See it in action</summary>
+
 ![][demo-move-statement-up]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -196,11 +215,15 @@ As for all refactorings, it works even if you partially select the statement, or
 
 Same as _Move Statement Up_, but it moves the selected statement down. Like, the other direction. That's it.
 
+<details><summary>See it in action</summary>
+
 ![][demo-move-statement-down]
 
 _Move Statement Up_ and _Move Statement Down_ also work on object properties. They always produce valid code, so **you don't have to bother with the trailing comma anymore**!
 
 ![][demo-move-statement-object-property]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -210,11 +233,15 @@ _Move Statement Up_ and _Move Statement Down_ also work on object properties. Th
 
 Negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
 
+<details><summary>See it in action</summary>
+
 ![][demo-negate-expression]
 
 It will negate the closest expression from your cursor or partial selection.
 
 ![][demo-negate-expression-partial]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -224,7 +251,11 @@ It will negate the closest expression from your cursor or partial selection.
 
 Removes the `else` keyword when it's not necessary, resulting in less nested code. This refactoring helps you [replace nested conditional with guard clauses][replace-nested-conditional-with-guard-clauses] to make your code easier to read.
 
+<details><summary>See it in action</summary>
+
 ![][demo-remove-redundant-else]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -234,7 +265,11 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 
 Simplify ternary expressions that you might end up with after executing other refactorings.
 
+<details><summary>See it in action</summary>
+
 ![][demo-simplify-ternary]
+
+</details><br />
 
 ### Flip If/Else
 
@@ -242,7 +277,11 @@ Simplify ternary expressions that you might end up with after executing other re
 
 Flips the `if` and `else` statements. It's a useful refactoring to have in your toolbelt to simplify logical expressions.
 
+<details><summary>See it in action</summary>
+
 ![][demo-flip-if-else]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -252,7 +291,11 @@ Flips the `if` and `else` statements. It's a useful refactoring to have in your 
 
 Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
+<details><summary>See it in action</summary>
+
 ![][demo-flip-ternary]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -262,7 +305,11 @@ Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 Converts an if/else statement into a (shorter) ternary expression. This is very handy to improve code readability.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-if-else-to-ternary]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -272,7 +319,11 @@ Converts an if/else statement into a (shorter) ternary expression. This is very 
 
 Converts a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-ternary-to-if-else]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -282,7 +333,11 @@ Converts a ternary expression into an if/else statement. It reverses _Convert If
 
 Converts an if/else statement into a switch statement. This is typically what you do before introducing polymorphism to clean object-oriented code.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-if-else-to-switch]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -292,7 +347,11 @@ Converts an if/else statement into a switch statement. This is typically what yo
 
 Converts a switch statement into an if/else statement. It reverses _Convert If/Else to Switch_ refactoring.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-switch-to-if-else]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -302,7 +361,11 @@ Converts a switch statement into an if/else statement. It reverses _Convert If/E
 
 Splits the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
 
+<details><summary>See it in action</summary>
+
 ![][demo-split-if-statement]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -312,11 +375,15 @@ Splits the logical expression of the closest if statement. This is an helpful to
 
 This is the opposite of _Split If Statement_. It consolidates **nested** ifs to clean up the code.
 
+<details><summary>See it in action</summary>
+
 ![][demo-merge-if-statements]
 
 It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -326,11 +393,15 @@ It also works with `else-if`.
 
 Merges selected statement with the if statement that is above. This is handy when you want to [decompose a conditional][decompose-conditional] to clean the code.
 
+<details><summary>See it in action</summary>
+
 ![][demo-merge-with-previous-if-statement]
 
 If you want to merge 2 consecutive if statements, it will resolve the dead code for you:
 
 ![][demo-merge-if-with-previous-if-statement]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -342,7 +413,11 @@ Useful when you need to have the similar conditionals at the top level. If you g
 
 Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting code will have the same behaviour.
 
+<details><summary>See it in action</summary>
+
 ![][demo-lift-up-conditional]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -354,7 +429,11 @@ Often, classes grow too big and do too many things. You want to split them by ex
 
 This is where Abracadabra comes in and automate most of the grunt work for you. It can extract the properties and function you want in a keystrokes! It will take care of creating the new class while preserving existing behavior—it's a refactoring after all.
 
+<details><summary>See it in action</summary>
+
 ![][demo-extract-class]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -364,7 +443,11 @@ This is where Abracadabra comes in and automate most of the grunt work for you. 
 
 Sometimes, Abracadabra can determine that some code can't be reached. If so, it can also get rid of the dead code for you.
 
+<details><summary>See it in action</summary>
+
 ![][demo-remove-dead-code]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -374,7 +457,11 @@ Sometimes, Abracadabra can determine that some code can't be reached. If so, it 
 
 Splits the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
 
+<details><summary>See it in action</summary>
+
 ![][demo-split-declaration-and-initialization]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -384,7 +471,11 @@ Splits the declaration of the variable and its initialization. If it's a `const`
 
 Converts the declaration of a variable that is a `let` to a `const` if it's not mutated within the scope.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-let-to-const]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -394,7 +485,11 @@ Converts the declaration of a variable that is a `let` to a `const` if it's not 
 
 Converts a function declaration into an arrow function, which is convenient when you want to switch the syntax.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-to-arrow-function]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -406,7 +501,11 @@ Useful when you need to add code in the body of an arrow function.
 
 VS Code provides this refactoring, but it only works if you have the correct selection. This one works wherever your cursor is!
 
+<details><summary>See it in action</summary>
+
 ![][demo-add-braces-to-arrow-function]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -416,7 +515,11 @@ VS Code provides this refactoring, but it only works if you have the correct sel
 
 Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
 
+<details><summary>See it in action</summary>
+
 ![][demo-remove-braces-from-arrow-function]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -426,7 +529,11 @@ Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Cod
 
 Useful when you need to add code in the body of an `if` or `else` statement.
 
+<details><summary>See it in action</summary>
+
 ![][demo-add-braces-to-if-statement]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -436,7 +543,11 @@ Useful when you need to add code in the body of an `if` or `else` statement.
 
 Does the contrary of _Add Braces to If Statement_: Removes braces from single-statement blocks in an `if` or `else` statement.
 
+<details><summary>See it in action</summary>
+
 ![][demo-remove-braces-from-if-statement]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -452,7 +563,11 @@ This is too bad because it's convenient to turn an existing string into a templa
 
 Hence, Abracadabra is proposing the refactoring for such scenario!
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-to-template-literal]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -462,7 +577,11 @@ Hence, Abracadabra is proposing the refactoring for such scenario!
 
 This one might seem obscure, but it's really replacing `+` with `+=`. Whenever it's possible, Abracadabra will propose you to refactor the code for a shorter (assignment) syntax.
 
+<details><summary>See it in action</summary>
+
 ![][demo-replace-binary-with-assignment]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -472,7 +591,11 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 
 When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-for-to-foreach]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -484,7 +607,11 @@ Extract the interface from a class.
 
 This is very useful when you need to invert a dependency: create an interface from an existing class, so you can provide a different implementation of this interface.
 
+<details><summary>See it in action</summary>
+
 ![][demo-extract-interface]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -496,7 +623,11 @@ This one is specific to React and comes from [react codemod][react-codemod].
 
 It converts ES6 classes that only have a `render()` method, only have safe properties (statics and props), and do not have refs to Functional Components.
 
+<details><summary>See it in action</summary>
+
 ![][demo-convert-to-pure-component]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -508,7 +639,11 @@ This refactoring is specific to React.
 
 It adds curly braces to a JSX string literal, converting it into a JSX expression.
 
+<details><summary>See it in action</summary>
+
 ![][demo-add-braces-to-jsx-attribute]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -520,7 +655,11 @@ This refactoring is specific to React.
 
 If a JSX attribute is a JSX expression containing only a string literal, it refactors the JSX expression into a string literal by removing the curly braces.
 
+<details><summary>See it in action</summary>
+
 ![][demo-remove-braces-from-jsx-attribute]
+
+</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -529,6 +668,8 @@ If a JSX attribute is a JSX expression containing only a string literal, it refa
 | Setting                      | Description                                | Default                             |
 | ---------------------------- | ------------------------------------------ | ----------------------------------- |
 | `abracadabra.ignoredFolders` | Folders where it won't propose Quick Fixes | `["node_modules", "dist", "build"]` |
+
+All refactorings that appear in Quick Fix suggestions can also be disabled in [your VS Code settings][vscode-settings] 🔥 (look for _Abracadabra_)
 
 ## Release Notes
 
@@ -685,6 +826,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [vscode-refactorings]: https://code.visualstudio.com/docs/editor/refactoring
 [vscode-quick-fixes]: https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings
 [vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
+[vscode-settings]: https://code.visualstudio.com/docs/getstarted/settings
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [js-booster]: https://marketplace.visualstudio.com/items?itemName=sburg.vscode-javascript-booster
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
@@ -701,7 +843,6 @@ When we'll have more experience, we'll probably ping the authors of other extens
 
 <!-- Demo images -->
 
-[demo-extension]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extension.gif?raw=true
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/command-palette.png?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-partial.gif?raw=true
