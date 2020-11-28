@@ -1,5 +1,9 @@
 # 🧙‍ Abracadabra
 
+> **Refactoring** (noun): a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.
+>
+> — _"Refactoring: Improving the Design of Existing Code" by Martin Fowler_
+
 ![][logo-abracadabra]
 
 <!-- prettier-ignore-start -->
@@ -14,12 +18,6 @@
 Abracadabra is a Visual Studio Code extension that brings you automated refactorings for JavaScript and TypeScript. Works in `.js`, `.jsx`, `.ts`, `.tsx` and `.vue` files.
 
 Our goal is to provide you with easy-to-use, intuitive refactorings. They help you clean the code and understand what's going on.
-
-> **Refactoring** (noun): a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.
->
-> — _"Refactoring: Improving the Design of Existing Code" by Martin Fowler_
-
-![Gif showing refactoring operations this extension can do][demo-extension]
 
 Related projects:
 
@@ -685,6 +683,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [vscode-refactorings]: https://code.visualstudio.com/docs/editor/refactoring
 [vscode-quick-fixes]: https://code.visualstudio.com/docs/editor/refactoring#_code-actions-quick-fixes-and-refactorings
 [vscode-rename-symbol]: https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol
+[vscode-settings]: https://code.visualstudio.com/docs/getstarted/settings
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [js-booster]: https://marketplace.visualstudio.com/items?itemName=sburg.vscode-javascript-booster
 [changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
@@ -701,7 +700,6 @@ When we'll have more experience, we'll probably ping the authors of other extens
 
 <!-- Demo images -->
 
-[demo-extension]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extension.gif?raw=true
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/command-palette.png?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-partial.gif?raw=true
