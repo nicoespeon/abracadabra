@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Added
+
+- You can now hide refactorings from Quick Fix suggestions!
+
+There are over 30 refactorings supported by the extension now, and you may not be using all of them. If you want to reduce the noise, you can now disable the suggestions you don't use from [[VS Code settings](https://code.visualstudio.com/docs/getstarted/settings).
+
+### Changed
 
 - "Convert to Arrow Function" used to convert the top-most function declaration, which was unexpected when you have nested ones! It now converts function that's the closest to the cursor position.
 

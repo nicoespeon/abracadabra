@@ -97,6 +97,8 @@ Some refactorings have default keybindings configured, but [you can change that]
 
 All other refactorings are available through [VS Code Quick Fixes][vscode-quick-fixes]. You can access them by clicking on the lightbulb that appear next to the code 💡 or use the default shortcut `Alt ↵`.
 
+Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings][vscode-settings] 🔥 (look for _Abracadabra_)
+
 ### Rename Symbol
 
 | Keybinding |
@@ -666,6 +668,8 @@ If a JSX attribute is a JSX expression containing only a string literal, it refa
 | Setting                      | Description                                | Default                             |
 | ---------------------------- | ------------------------------------------ | ----------------------------------- |
 | `abracadabra.ignoredFolders` | Folders where it won't propose Quick Fixes | `["node_modules", "dist", "build"]` |
+
+All refactorings that appear in Quick Fix suggestions can also be disabled in [your VS Code settings][vscode-settings] 🔥 (look for _Abracadabra_)
 
 ## Release Notes
 
