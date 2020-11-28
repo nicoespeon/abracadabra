@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now hide refactorings from Quick Fix suggestions!
 
-There are over 30 refactorings supported by the extension now, and you may not be using all of them. If you want to reduce the noise, you can now disable the suggestions you don't use from [[VS Code settings](https://code.visualstudio.com/docs/getstarted/settings).
+There are over 30 refactorings supported by the extension now, and you may not be using all of them. If you want to reduce the noise, you can now disable the suggestions you don't use from [VS Code settings](https://code.visualstudio.com/docs/getstarted/settings).
 
 ### Changed
 
