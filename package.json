@@ -400,11 +400,6 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
-        "abracadabra.extract.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
         "abracadabra.extractClass.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -425,11 +420,6 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
-        "abracadabra.inline.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
         "abracadabra.liftUpConditional.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -445,27 +435,12 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
-        "abracadabra.moveStatementDown.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.moveStatementUp.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
         "abracadabra.negateExpression.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.react.addBracesToJsxAttribute.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.react.convertToPureComponent.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -491,11 +466,6 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.removeRedundantElse.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.renameSymbol.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
