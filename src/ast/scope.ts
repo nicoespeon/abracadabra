@@ -9,7 +9,8 @@ export {
   findParentIfPath,
   getFunctionScopePath,
   isShadowIn,
-  findCommonAncestorToDeclareVariable
+  findCommonAncestorToDeclareVariable,
+  bindingNamesInScope
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -109,4 +110,8 @@ function findAncestorThatCanHaveVariableDeclaration(
   }
 
   return findAncestorThatCanHaveVariableDeclaration(path.parentPath);
+}
+
+function bindingNamesInScope<T>(path: NodePath<T>): string[] {
+  return Object.keys(path.scope.getAllBindings());
 }

@@ -11,9 +11,24 @@ export {
 };
 
 class Variable<T = t.Node> {
-  protected _name = "extracted";
+  protected _name: string;
 
-  constructor(protected path: t.NodePath<T>) {}
+  constructor(protected path: t.NodePath<T>) {
+    this._name = this.initName();
+  }
+
+  private initName(): string {
+    let name = "extracted";
+
+    const bindingNamesInScope = t.bindingNamesInScope(this.path);
+    let i = 1;
+    while (bindingNamesInScope.includes(name)) {
+      name = `extracted${i}`;
+      i++;
+    }
+
+    return name;
+  }
 
   get name(): string {
     return this._name;
@@ -60,7 +75,11 @@ class Variable<T = t.Node> {
       "while"
     ];
 
-    return !startsWithNumber && !BLACKLISTED_KEYWORDS.includes(value);
+    return (
+      !startsWithNumber &&
+      !BLACKLISTED_KEYWORDS.includes(value) &&
+      !t.bindingNamesInScope(this.path).includes(value)
+    );
   }
 }
 

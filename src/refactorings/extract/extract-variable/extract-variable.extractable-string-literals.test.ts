@@ -62,6 +62,16 @@ console.log(\`Hello \${world}! How are you doing?\`);`,
         code: "console.log([start]'Hello world! [end]How are you doing?');",
         expected: `const extracted = 'Hello world! How are you doing?';
 console.log(extracted);`
+      },
+      {
+        description: "a string that would shadow existing variable",
+        code: `function brokenScenario(extracted, hello) {
+  console.log("hello[cursor]", extracted, hello);
+}`,
+        expected: `function brokenScenario(extracted, hello) {
+  const extracted1 = "hello";
+  console.log(extracted1, extracted, hello);
+}`
       }
     ],
     async ({ code, expected }) => {
