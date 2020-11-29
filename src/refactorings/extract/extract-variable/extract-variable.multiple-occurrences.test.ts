@@ -199,11 +199,9 @@ sendMessage("Hello");`;
   });
 
   it("should make the extraction in the scope of all occurrences (if statement)", async () => {
-    const code = `function sayHello() {
-  if (isMorning) {
-    console.log("[cursor]hello");
-    console.log("good morning");
-  }
+    const code = `if (isMorning) {
+  console.log("[cursor]hello");
+} else {
   console.log("hello");
 }`;
     const editor = new InMemoryEditor(code);
@@ -215,12 +213,10 @@ sendMessage("Hello");`;
 
     await extractVariable(editor);
 
-    const expectedCode = `function sayHello() {
-  const hello = "hello";
-  if (isMorning) {
-    console.log(hello);
-    console.log("good morning");
-  }
+    const expectedCode = `const hello = "hello";
+if (isMorning) {
+  console.log(hello);
+} else {
   console.log(hello);
 }`;
     expect(editor.code).toBe(expectedCode);

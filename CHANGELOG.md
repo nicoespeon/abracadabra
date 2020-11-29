@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Variable now find the correct scope when the only common ancestor is the Program. So extracting these `"hello"` will now generate the correct code:
+
+```js
+if (isValid) {
+  console.log("hello");
+} else {
+  console.log("hello");
+}
+```
+
 ## [4.12.0] - 2020-11-28 - Hide and Seek 🙈
 
 ### Added

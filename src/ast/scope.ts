@@ -88,21 +88,24 @@ function findCommonAncestorToDeclareVariable(
     ) as any) as NodePath;
   } catch {
     // If it fails, it means it couldn't find the earliest ancestor.
+    ancestor = getProgramPath(path);
   }
 
   return findAncestorThatCanHaveVariableDeclaration(ancestor);
+}
+
+function getProgramPath(path: NodePath): NodePath {
+  const allAncestors = path.getAncestry();
+  return allAncestors[allAncestors.length - 1];
 }
 
 function findAncestorThatCanHaveVariableDeclaration(
   path: NodePath | null
 ): SelectablePath | null {
   if (path === null) return null;
-  if (
-    path.isStatement() &&
-    !path.isBlockStatement() &&
-    isSelectablePath(path)
-  ) {
-    return path;
+  if (isSelectablePath(path)) {
+    if (path.isProgram()) return path;
+    if (path.isStatement() && !path.isBlockStatement()) return path;
   }
 
   return findAncestorThatCanHaveVariableDeclaration(path.parentPath);
