@@ -17,7 +17,45 @@ if (isValid) {
 } else {
   console.log("hello");
 }
+
+// 🚫 Used to generate:
+if (isValid) {
+  const hello = "hello";
+  console.log(hello);
+} else {
+  console.log(hello);
+}
+
+// ✅ Will now generate:
+const hello = "hello";
+if (isValid) {
+  console.log(hello);
+} else {
+  console.log(hello);
+}
 ```
+
+- Extract Variable won't suggest a name that would shadow a binding in scope. That should prevent breaking code when the string literal you want to extract has the same value than an existing variable.
+
+```js
+function greeting(extracted, hello) {
+  console.log("hello", extracted, hello);
+}
+
+// 🚫 Used to generate:
+function greeting(extracted, hello) {
+  const hello = "hello";
+  console.log(hello, extracted, hello);
+}
+
+// ✅ Will now generate:
+function greeting(extracted, hello) {
+  const extracted1 = "hello";
+  console.log(extracted1, extracted, hello);
+}
+```
+
+It also means you can extract multiple variables
 
 ## [4.12.0] - 2020-11-28 - Hide and Seek 🙈
 
