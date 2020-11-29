@@ -20,7 +20,7 @@ function createOccurrence(
   selection: Selection
 ): Occurrence {
   if (t.canBeShorthand(path)) {
-    const variable = new ShorthandVariable(path.node, path.parent);
+    const variable = new ShorthandVariable(path);
 
     if (variable.isValid) {
       return new ShorthandOccurrence(path, loc, variable);
@@ -31,7 +31,7 @@ function createOccurrence(
     return new MemberExpressionOccurrence(
       path,
       loc,
-      new MemberExpressionVariable(path.node, path.parent)
+      new MemberExpressionVariable(path)
     );
   }
 
@@ -44,7 +44,7 @@ function createOccurrence(
     return new Occurrence(
       path,
       loc,
-      new StringLiteralVariable(path.node, path.parent)
+      new StringLiteralVariable(path, path.node.value)
     );
   }
 
@@ -56,7 +56,7 @@ function createOccurrence(
     return new PartialTemplateLiteralOccurrence(path, loc, selection);
   }
 
-  return new Occurrence(path, loc, new Variable(path.node, path.parent));
+  return new Occurrence(path, loc, new Variable(path));
 }
 
 class Occurrence<T extends t.Node = t.Node> {
@@ -166,14 +166,10 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     loc: t.SourceLocation,
     private readonly userSelection: Selection
   ) {
-    super(path, loc, new Variable(path.node, path.parent));
+    super(path, loc, new Variable(path));
 
     // Override variable after `this` is set
-    this.variable = new StringLiteralVariable(
-      t.stringLiteral(this.parts.selected),
-      // We don't care about the parent since it's made up
-      t.blockStatement([])
-    );
+    this.variable = new StringLiteralVariable(path, this.parts.selected);
   }
 
   static isValid(

@@ -10,10 +10,10 @@ export {
   ShorthandVariable
 };
 
-class Variable {
+class Variable<T = t.Node> {
   protected _name = "extracted";
 
-  constructor(protected node: t.Node, private parent: t.Node) {}
+  constructor(protected path: t.NodePath<T>) {}
 
   get name(): string {
     return this._name;
@@ -25,9 +25,9 @@ class Variable {
 
   get id(): Code {
     const shouldWrapInBraces =
-      t.isJSXAttribute(this.parent) ||
-      (t.isJSX(this.parent) &&
-        (t.isJSXElement(this.node) || t.isJSXText(this.node)));
+      this.path.parentPath.isJSXAttribute() ||
+      (this.path.parentPath.isJSX() &&
+        (this.path.isJSXElement() || this.path.isJSXText()));
 
     return shouldWrapInBraces ? `{${this.name}}` : this.name;
   }
@@ -64,10 +64,10 @@ class Variable {
   }
 }
 
-class StringLiteralVariable extends Variable {
-  constructor(protected node: t.StringLiteral, parent: t.Node) {
-    super(node, parent);
-    this.tryToSetNameWith(camelCase(node.value));
+class StringLiteralVariable extends Variable<t.Node> {
+  constructor(path: t.NodePath<t.Node>, proposedName: string) {
+    super(path);
+    this.tryToSetNameWith(camelCase(proposedName));
   }
 
   protected isValidName(value: string): boolean {
@@ -75,10 +75,10 @@ class StringLiteralVariable extends Variable {
   }
 }
 
-class MemberExpressionVariable extends Variable {
-  constructor(protected node: t.MemberExpression, parent: t.Node) {
-    super(node, parent);
-    const { property, computed } = node;
+class MemberExpressionVariable extends Variable<t.MemberExpression> {
+  constructor(path: t.NodePath<t.MemberExpression>) {
+    super(path);
+    const { property, computed } = path.node;
 
     if (t.isIdentifier(property) && !computed) {
       this.tryToSetNameWith(property.name);
@@ -86,13 +86,13 @@ class MemberExpressionVariable extends Variable {
   }
 }
 
-class ShorthandVariable extends Variable {
-  constructor(protected node: t.ObjectProperty, parent: t.Node) {
-    super(node, parent);
-    this.tryToSetNameWith(node.key.name);
+class ShorthandVariable extends Variable<t.ObjectProperty> {
+  constructor(path: t.NodePath<t.ObjectProperty>) {
+    super(path);
+    this.tryToSetNameWith(path.node.key.name);
   }
 
   get isValid(): boolean {
-    return this.isValidName(this.node.key.name);
+    return this.isValidName(this.path.node.key.name);
   }
 }
