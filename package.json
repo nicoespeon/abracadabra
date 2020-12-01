@@ -64,7 +64,7 @@
     "@types/node": "13.13.30",
     "@types/pluralize": "0.0.29",
     "all-contributors-cli": "6.17.4",
-    "husky": "4.2.5",
+    "husky": "4.3.0",
     "hygen": "6.0.4",
     "jest": "26.5.3",
     "ovsx": "0.1.0-next.e000fdb",
