@@ -61,7 +61,7 @@
     "@types/babel__traverse": "7.0.9",
     "@types/jest": "26.0.15",
     "@types/jscodeshift": "0.6.3",
-    "@types/node": "13.13.30",
+    "@types/node": "13.13.34",
     "@types/pluralize": "0.0.29",
     "all-contributors-cli": "6.19.0",
     "husky": "4.3.0",
