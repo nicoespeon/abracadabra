@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.12.1] - 2020-12-07
+
 ### Fixed
 
 - Extract Variable now find the correct scope when the only common ancestor is the Program. So extracting these `"hello"` will now generate the correct code:
@@ -1171,7 +1173,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.12.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.12.1...HEAD
+[4.12.1]: https://github.com/nicoespeon/abracadabra/compare/4.12.0...4.12.1
 [4.12.0]: https://github.com/nicoespeon/abracadabra/compare/4.11.0...4.12.0
 [4.11.0]: https://github.com/nicoespeon/abracadabra/compare/4.10.0...4.11.0
 [4.10.0]: https://github.com/nicoespeon/abracadabra/compare/4.9.3...4.10.0
