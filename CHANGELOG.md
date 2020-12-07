@@ -57,6 +57,8 @@ function greeting(extracted, hello) {
 
 It also means you can extract multiple variables
 
+- Prevents "Convert to Arrow Function" to be executed on code if function is referenced above. This is because generated code would be invalid since the function declaration wouldn't be hoisted anymore.
+
 ## [4.12.0] - 2020-11-28 - Hide and Seek 🙈
 
 ### Added

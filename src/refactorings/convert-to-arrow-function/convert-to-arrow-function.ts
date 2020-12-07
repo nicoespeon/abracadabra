@@ -6,18 +6,32 @@ export { convertToArrowFunction, createVisitor };
 
 async function convertToArrowFunction(editor: Editor) {
   const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+  const { updatedCode, hasReferenceBefore } = updateCode(
+    t.parse(code),
+    selection
+  );
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindFunctionDeclarationToConvert);
     return;
   }
 
+  if (hasReferenceBefore) {
+    editor.showError(
+      ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore
+    );
+    return;
+  }
+
   await editor.write(updatedCode.code);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): { updatedCode: t.Transformed; hasReferenceBefore: boolean } {
+  let hasReferenceBefore = false;
+  const updatedCode = t.transformAST(
     ast,
     createVisitor(selection, (path) => {
       const { node } = path;
@@ -41,10 +55,21 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       // @ts-expect-error Recast does use a `comments` attribute.
       variableDeclaration.comments = node.comments;
 
+      if (t.isSelectablePath(path)) {
+        const pathSelection = Selection.fromAST(path.node.loc);
+        hasReferenceBefore = t.referencesInScope(path).some((reference) => {
+          if (!t.isSelectablePath(reference)) return false;
+          const referenceSelection = Selection.fromAST(reference.node.loc);
+          return referenceSelection.startsBefore(pathSelection);
+        });
+      }
+
       path.replaceWith(variableDeclaration);
       path.stop();
     })
   );
+
+  return { updatedCode, hasReferenceBefore };
 }
 
 function createVisitor(

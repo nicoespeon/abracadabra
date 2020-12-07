@@ -3,6 +3,7 @@ export { ErrorReason, toString };
 enum ErrorReason {
   CanNotExtractClass,
   DidNotFindFunctionDeclarationToConvert,
+  CantConvertFunctionDeclarationBecauseUsedBefore,
   DidNotFindLetToConvertToConst,
   DidNotFindSwitchToConvert,
   DidNotFindJsxAttributeToAddBracesTo,
@@ -52,6 +53,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindFunctionDeclarationToConvert:
       return didNotFind("a function declaration to convert");
+
+    case ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore:
+      return cantDoIt("convert this function declaration, it's used before");
 
     case ErrorReason.DidNotFindLetToConvertToConst:
       return didNotFind(

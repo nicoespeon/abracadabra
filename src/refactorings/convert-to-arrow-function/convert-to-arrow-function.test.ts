@@ -85,6 +85,15 @@ const test = () => {};`
     return null
   };
 }`
+      },
+      {
+        description: "with reference after declaration",
+        code: `function [cursor]doSomething() {}
+
+doSomething();`,
+        expected: `const doSomething = () => {};
+
+doSomething();`
       }
     ],
     async ({ code, expected }) => {
@@ -95,6 +104,20 @@ const test = () => {};`
       expect(editor.code).toBe(expected);
     }
   );
+
+  it("should show an error message if there's a reference before declaration", async () => {
+    const code = `doSomething();
+
+function [cursor]doSomething() {}`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
+
+    await convertToArrowFunction(editor);
+
+    expect(editor.showError).toBeCalledWith(
+      ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore
+    );
+  });
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;

@@ -1,4 +1,4 @@
-import { NodePath } from "@babel/traverse";
+import { NodePath, Binding } from "@babel/traverse";
 import * as t from "@babel/types";
 
 import { areEquivalent } from "./identity";
@@ -10,7 +10,8 @@ export {
   getFunctionScopePath,
   isShadowIn,
   findCommonAncestorToDeclareVariable,
-  bindingNamesInScope
+  bindingNamesInScope,
+  referencesInScope
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -114,4 +115,10 @@ function findAncestorThatCanHaveVariableDeclaration(
 
 function bindingNamesInScope<T>(path: NodePath<T>): string[] {
   return Object.keys(path.scope.getAllBindings());
+}
+
+function referencesInScope<T>(path: NodePath<T>): NodePath[] {
+  return Object.values(path.scope.getAllBindings()).flatMap(
+    (binding: Binding) => binding.referencePaths
+  );
 }
