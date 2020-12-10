@@ -8,7 +8,8 @@ import {
   ErrorReason,
   errorReasonToString,
   Choice,
-  Result
+  Result,
+  Path
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -26,6 +27,10 @@ class VSCodeEditor implements Editor {
 
   get code(): Code {
     return this.document.getText();
+  }
+
+  async codeOf(_relativePath: Path): Promise<Code> {
+    return "";
   }
 
   get selection(): Selection {

@@ -4,7 +4,8 @@ import {
   Command,
   Editor,
   ErrorReason,
-  Modification
+  Modification,
+  Path
 } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";
@@ -18,6 +19,10 @@ class AttemptingEditor implements Editor {
 
   get code(): Code {
     return this.editor.code;
+  }
+
+  async codeOf(relativePath: Path): Promise<Code> {
+    return this.editor.codeOf(relativePath);
   }
 
   get selection(): Selection {

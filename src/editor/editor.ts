@@ -6,6 +6,7 @@ export { Editor };
 export {
   Modification,
   Code,
+  Path,
   Command,
   Result,
   Choice,
@@ -15,6 +16,7 @@ export {
 
 interface Editor {
   readonly code: Code;
+  codeOf(relativePath: Path): Promise<Code>;
   readonly selection: Selection;
   write(code: Code, newCursorPosition?: Position): Promise<void>;
   readThenWrite(
@@ -35,6 +37,8 @@ type Modification = {
 };
 
 type Code = string;
+
+type Path = string;
 
 enum Command {
   RenameSymbol

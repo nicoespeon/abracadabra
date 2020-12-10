@@ -33,7 +33,8 @@ doNothing();`
       await moveToExistingFile(editor);
 
       expect(editor.code).toBe(currentFile.expected);
-      expect(editor.codeOf(otherFile.relativePath)).toBe(otherFile.expected);
+      const otherFileCode = await editor.codeOf(otherFile.relativePath);
+      expect(otherFileCode).toBe(otherFile.expected);
     }
   );
 

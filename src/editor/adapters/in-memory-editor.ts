@@ -5,7 +5,8 @@ import {
   Command,
   ErrorReason,
   Choice,
-  Result
+  Result,
+  Path
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -33,6 +34,13 @@ class InMemoryEditor implements Editor {
     return this.read(this.codeMatrix);
   }
 
+  async codeOf(relativePath: Path): Promise<Code> {
+    const otherFile = this.otherFiles.get(relativePath);
+    if (!otherFile) return "";
+
+    return otherFile.code;
+  }
+
   get selection(): Selection {
     return this._selection;
   }
@@ -43,13 +51,6 @@ class InMemoryEditor implements Editor {
 
   createOtherFile(relativePath: Path, code: Code) {
     this.otherFiles.set(relativePath, new InMemoryEditor(code));
-  }
-
-  codeOf(relativePath: Path): Code {
-    const otherFile = this.otherFiles.get(relativePath);
-    if (!otherFile) return "";
-
-    return otherFile.code;
   }
 
   write(code: Code, newCursorPosition?: Position): Promise<void> {
@@ -203,4 +204,3 @@ class InMemoryEditor implements Editor {
 type CodeMatrix = Line[];
 type Line = Char[];
 type Char = string;
-type Path = string;
