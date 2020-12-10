@@ -11,16 +11,25 @@ async function moveToExistingFile(editor: Editor) {
   // TODO: Get list of files in the workspace (can take from VSCode?)
   // TODO: Let user select one based on input search (can leverage VSCode behavior?)
   const relativePath = "./other-file";
-  const updatedCode = updateCode(t.parse(code), selection, relativePath);
+
+  const { updatedCode, movedNode } = updateCode(
+    t.parse(code),
+    selection,
+    relativePath
+  );
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindCodeToMove);
     return;
   }
 
-  // TODO: Write code in other file
-  // TODO: Export code from other file
+  const otherFileCode = await editor.codeOf(relativePath);
+  const otherFileUpdatedCode = updateOtherFileCode(
+    t.parse(otherFileCode),
+    movedNode
+  );
 
+  await editor.writeIn(relativePath, otherFileUpdatedCode.code);
   await editor.write(updatedCode.code);
 }
 
@@ -28,8 +37,10 @@ function updateCode(
   ast: t.AST,
   selection: Selection,
   relativePath: string
-): t.Transformed {
-  return t.transformAST(
+): { updatedCode: t.Transformed; movedNode: t.Node } {
+  let movedNode: t.Node = t.emptyStatement();
+
+  const updatedCode = t.transformAST(
     ast,
     createVisitor(selection, (path, importIdentifier, programPath) => {
       const importStatement = t.importDeclaration(
@@ -37,10 +48,24 @@ function updateCode(
         t.stringLiteral(relativePath)
       );
 
+      movedNode = path.node;
       programPath.node.body.unshift(importStatement);
       path.remove();
     })
   );
+
+  return { updatedCode, movedNode };
+}
+
+function updateOtherFileCode(ast: t.AST, movedNode: t.Node): t.Transformed {
+  return t.transformAST(ast, {
+    Program(path) {
+      const exportedStatement = t.toStatement(
+        t.exportNamedDeclaration(movedNode)
+      );
+      path.node.body.push(exportedStatement);
+    }
+  });
 }
 
 function createVisitor(
