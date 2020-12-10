@@ -6,25 +6,29 @@ export { moveToExistingFile, createVisitor };
 
 async function moveToExistingFile(editor: Editor) {
   const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+
+  // TODO: Ask user to select other existing file to move to
+  // TODO: Get list of files in the workspace (can take from VSCode?)
+  // TODO: Let user select one based on input search (can leverage VSCode behavior?)
+  const relativePath = "./other-file";
+  const updatedCode = updateCode(t.parse(code), selection, relativePath);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindCodeToMove);
     return;
   }
 
-  // TODO: Ask user to select other existing file to move to
-  // TODO: Get list of files in the workspace (can take from VSCode?)
-  // TODO: Let user select one based on input search (can leverage VSCode behavior?)
   // TODO: Write code in other file
   // TODO: Export code from other file
 
   await editor.write(updatedCode.code);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  const relativePath = "./other-file";
-
+function updateCode(
+  ast: t.AST,
+  selection: Selection,
+  relativePath: string
+): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, importIdentifier, programPath) => {
