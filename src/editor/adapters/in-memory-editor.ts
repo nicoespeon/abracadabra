@@ -22,6 +22,7 @@ const SELECTION_END = "[end]";
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
+  private otherFiles = new Map<Path, Editor>();
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
@@ -38,6 +39,17 @@ class InMemoryEditor implements Editor {
 
   get position() {
     return this.selection.start;
+  }
+
+  createOtherFile(relativePath: Path, code: Code) {
+    this.otherFiles.set(relativePath, new InMemoryEditor(code));
+  }
+
+  codeOf(relativePath: Path): Code {
+    const otherFile = this.otherFiles.get(relativePath);
+    if (!otherFile) return "";
+
+    return otherFile.code;
   }
 
   write(code: Code, newCursorPosition?: Position): Promise<void> {
@@ -191,3 +203,4 @@ class InMemoryEditor implements Editor {
 type CodeMatrix = Line[];
 type Line = Char[];
 type Char = string;
+type Path = string;

@@ -26,13 +26,14 @@ doNothing();`
         }
       }
     ],
-    async ({ currentFile }) => {
-      // TODO: verify other file too
+    async ({ currentFile, otherFile }) => {
       const editor = new InMemoryEditor(currentFile.code);
+      editor.createOtherFile(otherFile.relativePath, otherFile.code);
 
       await moveToExistingFile(editor);
 
       expect(editor.code).toBe(currentFile.expected);
+      expect(editor.codeOf(otherFile.relativePath)).toBe(otherFile.expected);
     }
   );
 
