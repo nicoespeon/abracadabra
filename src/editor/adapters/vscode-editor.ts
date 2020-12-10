@@ -30,6 +30,7 @@ class VSCodeEditor implements Editor {
   }
 
   async codeOf(_relativePath: Path): Promise<Code> {
+    // TODO: implement
     return "";
   }
 
