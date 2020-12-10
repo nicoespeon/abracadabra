@@ -6,35 +6,35 @@ import { moveToExistingFile } from "./move-to-existing-file";
 
 describe("Move To Existing File", () => {
   testEach<{
-    currentFile: { code: Code; expected: Code };
-    otherFile: { relativePath: string; code: Code; expected: Code };
+    setup: { currentFile: Code; otherFile: Code; relativePath: string };
+    expected: { currentFile: Code; otherFile: Code };
   }>(
     "should move to existing file",
     [
       {
         description: "a root-level function declaration",
-        currentFile: {
-          code: `function [cursor]doNothing() {}
+        setup: {
+          currentFile: `function [cursor]doNothing() {}
 doNothing();`,
-          expected: `import { doNothing } from "./other-file";
-doNothing();`
+          otherFile: "",
+          relativePath: "./other-file"
         },
-        otherFile: {
-          relativePath: "./other-file",
-          code: ``,
-          expected: `export function doNothing() {}`
+        expected: {
+          currentFile: `import { doNothing } from "./other-file";
+doNothing();`,
+          otherFile: `export function doNothing() {}`
         }
       }
     ],
-    async ({ currentFile, otherFile }) => {
-      const editor = new InMemoryEditor(currentFile.code);
-      editor.writeIn(otherFile.relativePath, otherFile.code);
+    async ({ setup, expected }) => {
+      const editor = new InMemoryEditor(setup.currentFile);
+      editor.writeIn(setup.relativePath, setup.otherFile);
 
       await moveToExistingFile(editor);
 
-      expect(editor.code).toBe(currentFile.expected);
-      const otherFileCode = await editor.codeOf(otherFile.relativePath);
-      expect(otherFileCode).toBe(otherFile.expected);
+      expect(editor.code).toBe(expected.currentFile);
+      const otherFileCode = await editor.codeOf(setup.relativePath);
+      expect(otherFileCode).toBe(expected.otherFile);
     }
   );
 
