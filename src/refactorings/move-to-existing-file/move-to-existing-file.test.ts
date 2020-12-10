@@ -28,7 +28,7 @@ doNothing();`
     ],
     async ({ currentFile, otherFile }) => {
       const editor = new InMemoryEditor(currentFile.code);
-      editor.createOtherFile(otherFile.relativePath, otherFile.code);
+      editor.writeIn(otherFile.relativePath, otherFile.code);
 
       await moveToExistingFile(editor);
 

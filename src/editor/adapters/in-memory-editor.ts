@@ -49,16 +49,16 @@ class InMemoryEditor implements Editor {
     return this.selection.start;
   }
 
-  createOtherFile(relativePath: Path, code: Code) {
-    this.otherFiles.set(relativePath, new InMemoryEditor(code));
-  }
-
   write(code: Code, newCursorPosition?: Position): Promise<void> {
     this.setCodeMatrix(code);
     if (newCursorPosition) {
       this._selection = Selection.cursorAtPosition(newCursorPosition);
     }
     return Promise.resolve();
+  }
+
+  async writeIn(relativePath: Path, code: Code): Promise<void> {
+    this.otherFiles.set(relativePath, new InMemoryEditor(code));
   }
 
   readThenWrite(

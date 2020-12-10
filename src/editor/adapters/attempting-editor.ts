@@ -21,7 +21,7 @@ class AttemptingEditor implements Editor {
     return this.editor.code;
   }
 
-  async codeOf(relativePath: Path): Promise<Code> {
+  codeOf(relativePath: Path): Promise<Code> {
     return this.editor.codeOf(relativePath);
   }
 
@@ -31,6 +31,10 @@ class AttemptingEditor implements Editor {
 
   write(code: Code, newCursorPosition?: Position): Promise<void> {
     return this.editor.write(code, newCursorPosition);
+  }
+
+  writeIn(relativePath: Path, code: Code): Promise<void> {
+    return this.editor.writeIn(relativePath, code);
   }
 
   readThenWrite(

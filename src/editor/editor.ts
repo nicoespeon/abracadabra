@@ -19,6 +19,7 @@ interface Editor {
   codeOf(relativePath: Path): Promise<Code>;
   readonly selection: Selection;
   write(code: Code, newCursorPosition?: Position): Promise<void>;
+  writeIn(relativePath: Path, code: Code): Promise<void>;
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],

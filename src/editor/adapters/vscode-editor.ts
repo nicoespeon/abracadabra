@@ -63,6 +63,10 @@ class VSCodeEditor implements Editor {
     }
   }
 
+  async writeIn(_relativePath: Path, _code: Code): Promise<void> {
+    // TODO: implement
+  }
+
   protected get editRange(): vscode.Range {
     return new vscode.Range(
       new vscode.Position(0, 0),
