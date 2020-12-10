@@ -41,6 +41,7 @@ doNothing();`,
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
+    editor.writeIn("./some-other-file.ts", "");
     jest.spyOn(editor, "showError");
 
     await moveToExistingFile(editor);

@@ -7,11 +7,14 @@ export { moveToExistingFile, createVisitor };
 async function moveToExistingFile(editor: Editor) {
   const { code, selection } = editor;
 
-  // TODO: Ask user to select other existing file to move to
-  // TODO: Get list of files in the workspace (can take from VSCode?)
-  // TODO: Let user select one based on input search (can leverage VSCode behavior?)
-  const relativePath = "./other-file";
+  // TODO: what if there's no other file?
+  // TODO: Fine-tune when there are many (matchOnDescription + placeholder)
+  const selectedFile = await editor.askUserChoice(
+    editor.workspaceFiles.map((path) => ({ label: path, value: path }))
+  );
+  if (!selectedFile) return;
 
+  const relativePath = selectedFile.value;
   const { updatedCode, movedNode } = updateCode(
     t.parse(code),
     selection,
