@@ -25,6 +25,12 @@ class VSCodeEditor implements Editor {
     this.document = editor.document;
   }
 
+  get workspaceFiles(): Path[] {
+    // TODO: implement
+    // TODO: ignore folders? gitignore?
+    return [];
+  }
+
   get code(): Code {
     return this.document.getText();
   }

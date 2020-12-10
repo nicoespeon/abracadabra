@@ -15,6 +15,7 @@ export {
 };
 
 interface Editor {
+  readonly workspaceFiles: Path[];
   readonly selection: Selection;
   readonly code: Code;
   codeOf(relativePath: Path): Promise<Code>;

@@ -30,6 +30,10 @@ class InMemoryEditor implements Editor {
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
+  get workspaceFiles(): Path[] {
+    return Array.from(this.otherFiles.keys());
+  }
+
   get code(): Code {
     return this.read(this.codeMatrix);
   }

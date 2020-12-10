@@ -17,6 +17,10 @@ class AttemptingEditor implements Editor {
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
+  get workspaceFiles(): Path[] {
+    return this.editor.workspaceFiles;
+  }
+
   get code(): Code {
     return this.editor.code;
   }
