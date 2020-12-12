@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 import {
   Editor,
@@ -25,10 +26,16 @@ class VSCodeEditor implements Editor {
     this.document = editor.document;
   }
 
-  get workspaceFiles(): Path[] {
-    // TODO: implement
-    // TODO: ignore folders? gitignore?
-    return [];
+  async workspaceFiles(): Promise<Path[]> {
+    // TODO: cache for performance? (need to update it on change though)
+    const uris = await vscode.workspace.findFiles(
+      // TODO: override by editor for Vue
+      "**/*.{js,jsx,ts,tsx,vue}",
+      // TODO: check default ignores for our projects
+      "**/node_modules/**"
+    );
+
+    return uris.map((uri) => path.relative(this.document.uri.path, uri.path));
   }
 
   get code(): Code {

@@ -30,7 +30,7 @@ class InMemoryEditor implements Editor {
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
-  get workspaceFiles(): Path[] {
+  async workspaceFiles(): Promise<Path[]> {
     return Array.from(this.otherFiles.keys());
   }
 

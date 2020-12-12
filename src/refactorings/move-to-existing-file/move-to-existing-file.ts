@@ -9,8 +9,9 @@ async function moveToExistingFile(editor: Editor) {
 
   // TODO: what if there's no other file?
   // TODO: Fine-tune when there are many (matchOnDescription + placeholder)
+  const files = await editor.workspaceFiles();
   const selectedFile = await editor.askUserChoice(
-    editor.workspaceFiles.map((path) => ({ label: path, value: path }))
+    files.map((path) => ({ label: path, value: path }))
   );
   if (!selectedFile) return;
 

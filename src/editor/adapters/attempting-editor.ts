@@ -17,8 +17,8 @@ class AttemptingEditor implements Editor {
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
-  get workspaceFiles(): Path[] {
-    return this.editor.workspaceFiles;
+  workspaceFiles(): Promise<Path[]> {
+    return this.editor.workspaceFiles();
   }
 
   get code(): Code {
