@@ -42,9 +42,11 @@ class VSCodeEditor implements Editor {
     return this.document.getText();
   }
 
-  async codeOf(_relativePath: Path): Promise<Code> {
-    // TODO: implement
-    return "";
+  async codeOf(relativePath: Path): Promise<Code> {
+    const fileUri = this.fileUriAt(relativePath);
+    const file = await vscode.workspace.fs.readFile(fileUri);
+
+    return file.toString();
   }
 
   get selection(): Selection {
@@ -77,8 +79,23 @@ class VSCodeEditor implements Editor {
     }
   }
 
-  async writeIn(_relativePath: Path, _code: Code): Promise<void> {
-    // TODO: implement
+  async writeIn(relativePath: Path, code: Code): Promise<void> {
+    const edit = new vscode.WorkspaceEdit();
+    const fileUri = this.fileUriAt(relativePath);
+    const WHOLE_DOCUMENT = new vscode.Range(
+      new vscode.Position(0, 0),
+      new vscode.Position(Infinity, 0)
+    );
+    edit.set(fileUri, [new vscode.TextEdit(WHOLE_DOCUMENT, code)]);
+    await vscode.workspace.applyEdit(edit);
+  }
+
+  private fileUriAt(relativePath: string) {
+    const filePath = path.join(
+      path.dirname(this.document.uri.path),
+      relativePath
+    );
+    return this.document.uri.with({ path: filePath });
   }
 
   protected get editRange(): vscode.Range {
