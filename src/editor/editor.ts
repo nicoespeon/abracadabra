@@ -1,4 +1,5 @@
 import { Selection } from "./selection";
+import { Path } from "./path";
 import { Position } from "./position";
 import { ErrorReason, toString } from "./error-reason";
 
@@ -39,10 +40,6 @@ type Modification = {
 };
 
 type Code = string;
-
-class Path {
-  constructor(readonly value: string) {}
-}
 
 enum Command {
   RenameSymbol
