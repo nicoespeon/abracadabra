@@ -86,7 +86,7 @@ class VSCodeEditor implements Editor {
     const fileUri = this.fileUriAt(relativePath.value);
     const WHOLE_DOCUMENT = new vscode.Range(
       new vscode.Position(0, 0),
-      new vscode.Position(Infinity, 0)
+      new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
     );
     edit.set(fileUri, [new vscode.TextEdit(WHOLE_DOCUMENT, code)]);
     await vscode.workspace.applyEdit(edit);
