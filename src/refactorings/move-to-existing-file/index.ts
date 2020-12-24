@@ -9,7 +9,7 @@ const config: RefactoringWithActionProvider = {
     title: "Move to Existing File"
   },
   actionProvider: {
-    message: "Move to existing file",
+    message: "Move to an existing file",
     createVisitor
   }
 };
