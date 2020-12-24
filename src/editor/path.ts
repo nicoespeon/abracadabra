@@ -8,12 +8,19 @@ class Path {
   get withoutExtension(): string {
     return this.value.replace(/\.\w+$/, "");
   }
+
+  protected get isValueAbsolute(): boolean {
+    return this.value.startsWith(path.sep);
+  }
 }
 
 class AbsolutePath extends Path {
   constructor(value: string) {
-    // TODO: implement invariant
     super(value);
+
+    if (!this.isValueAbsolute) {
+      throw new Error(`${value} is not an absolute path`);
+    }
   }
 
   relativeTo(value: string): RelativePath {
@@ -24,8 +31,11 @@ class AbsolutePath extends Path {
 
 class RelativePath extends Path {
   constructor(value: string) {
-    // TODO: implement invariant
     super(value);
+
+    if (this.isValueAbsolute) {
+      throw new Error(`${value} is not a relative path`);
+    }
   }
 
   absoluteFrom(value: string): AbsolutePath {

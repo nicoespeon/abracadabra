@@ -31,6 +31,10 @@ describe("AbsolutePath", () => {
 
     expect(path).toStrictEqual(new AbsolutePath(filePath));
   });
+
+  it("throw if given path is relative", () => {
+    expect(() => new AbsolutePath("../some/file.ts")).toThrow();
+  });
 });
 
 describe("RelativePath", () => {
@@ -44,5 +48,9 @@ describe("RelativePath", () => {
     expect(path).toStrictEqual(
       new AbsolutePath("/Users/some/folder/path/to/some-file.ts")
     );
+  });
+
+  it("throw if given path is absolute", () => {
+    expect(() => new RelativePath("/Users/some/file.ts")).toThrow();
   });
 });
