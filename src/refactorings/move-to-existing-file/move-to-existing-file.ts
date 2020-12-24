@@ -1,4 +1,4 @@
-import { Editor, ErrorReason, Path } from "../../editor/editor";
+import { Editor, ErrorReason, RelativePath } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
@@ -40,7 +40,7 @@ async function moveToExistingFile(editor: Editor) {
 function updateCode(
   ast: t.AST,
   selection: Selection,
-  relativePath: Path
+  relativePath: RelativePath
 ): { updatedCode: t.Transformed; movedNode: t.Node } {
   let movedNode: t.Node = t.emptyStatement();
 

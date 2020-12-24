@@ -5,7 +5,7 @@ import {
   Editor,
   ErrorReason,
   Modification,
-  Path
+  RelativePath
 } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";
@@ -17,7 +17,7 @@ class AttemptingEditor implements Editor {
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
-  workspaceFiles(): Promise<Path[]> {
+  workspaceFiles(): Promise<RelativePath[]> {
     return this.editor.workspaceFiles();
   }
 
@@ -25,8 +25,8 @@ class AttemptingEditor implements Editor {
     return this.editor.code;
   }
 
-  codeOf(relativePath: Path): Promise<Code> {
-    return this.editor.codeOf(relativePath);
+  codeOf(path: RelativePath): Promise<Code> {
+    return this.editor.codeOf(path);
   }
 
   get selection(): Selection {
@@ -37,8 +37,8 @@ class AttemptingEditor implements Editor {
     return this.editor.write(code, newCursorPosition);
   }
 
-  writeIn(relativePath: Path, code: Code): Promise<void> {
-    return this.editor.writeIn(relativePath, code);
+  writeIn(path: RelativePath, code: Code): Promise<void> {
+    return this.editor.writeIn(path, code);
   }
 
   readThenWrite(

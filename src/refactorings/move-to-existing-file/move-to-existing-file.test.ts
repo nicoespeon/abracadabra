@@ -1,4 +1,4 @@
-import { ErrorReason, Code, Path } from "../../editor/editor";
+import { ErrorReason, Code, RelativePath } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -6,7 +6,7 @@ import { moveToExistingFile } from "./move-to-existing-file";
 
 describe("Move To Existing File", () => {
   testEach<{
-    setup: { currentFile: Code; otherFile: Code; relativePath: Path };
+    setup: { currentFile: Code; otherFile: Code; path: RelativePath };
     expected: { currentFile: Code; otherFile: Code };
   }>(
     "should move to existing file",
@@ -17,7 +17,7 @@ describe("Move To Existing File", () => {
           currentFile: `function [cursor]doNothing() {}
 doNothing();`,
           otherFile: "",
-          relativePath: new Path("./other-file.ts")
+          path: new RelativePath("./other-file.ts")
         },
         expected: {
           currentFile: `import { doNothing } from "./other-file";
@@ -28,12 +28,12 @@ doNothing();`,
     ],
     async ({ setup, expected }) => {
       const editor = new InMemoryEditor(setup.currentFile);
-      editor.writeIn(setup.relativePath, setup.otherFile);
+      editor.writeIn(setup.path, setup.otherFile);
 
       await moveToExistingFile(editor);
 
       expect(editor.code).toBe(expected.currentFile);
-      const otherFileCode = await editor.codeOf(setup.relativePath);
+      const otherFileCode = await editor.codeOf(setup.path);
       expect(otherFileCode).toBe(expected.otherFile);
     }
   );
@@ -41,7 +41,7 @@ doNothing();`,
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    editor.writeIn(new Path("./some-other-file.ts"), "");
+    editor.writeIn(new RelativePath("./some-other-file.ts"), "");
     jest.spyOn(editor, "showError");
 
     await moveToExistingFile(editor);

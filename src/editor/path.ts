@@ -1,6 +1,6 @@
 import * as path from "path";
 
-export { Path };
+export { Path, AbsolutePath, RelativePath };
 
 class Path {
   constructor(readonly value: string) {}
@@ -8,14 +8,28 @@ class Path {
   get withoutExtension(): string {
     return this.value.replace(/\.\w+$/, "");
   }
+}
 
-  relativeTo(value: string): Path {
-    const relativeValue = path.relative(path.dirname(value), this.value);
-    return new Path(relativeValue);
+class AbsolutePath extends Path {
+  constructor(value: string) {
+    // TODO: implement invariant
+    super(value);
   }
 
-  absoluteFrom(value: string): Path {
+  relativeTo(value: string): RelativePath {
+    const relativeValue = path.relative(path.dirname(value), this.value);
+    return new RelativePath(relativeValue);
+  }
+}
+
+class RelativePath extends Path {
+  constructor(value: string) {
+    // TODO: implement invariant
+    super(value);
+  }
+
+  absoluteFrom(value: string): AbsolutePath {
     const absoluteValue = path.join(path.dirname(value), this.value);
-    return new Path(absoluteValue);
+    return new AbsolutePath(absoluteValue);
   }
 }

@@ -6,7 +6,7 @@ import {
   ErrorReason,
   Choice,
   Result,
-  Path
+  RelativePath
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -23,14 +23,14 @@ const SELECTION_END = "[end]";
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
-  private otherFiles = new Map<Path, Editor>();
+  private otherFiles = new Map<RelativePath, Editor>();
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
-  async workspaceFiles(): Promise<Path[]> {
+  async workspaceFiles(): Promise<RelativePath[]> {
     return Array.from(this.otherFiles.keys());
   }
 
@@ -38,8 +38,8 @@ class InMemoryEditor implements Editor {
     return this.read(this.codeMatrix);
   }
 
-  async codeOf(relativePath: Path): Promise<Code> {
-    const otherFile = this.otherFiles.get(relativePath);
+  async codeOf(path: RelativePath): Promise<Code> {
+    const otherFile = this.otherFiles.get(path);
     if (!otherFile) return "";
 
     return otherFile.code;
@@ -61,8 +61,8 @@ class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
-  async writeIn(relativePath: Path, code: Code): Promise<void> {
-    this.otherFiles.set(relativePath, new InMemoryEditor(code));
+  async writeIn(path: RelativePath, code: Code): Promise<void> {
+    this.otherFiles.set(path, new InMemoryEditor(code));
   }
 
   readThenWrite(

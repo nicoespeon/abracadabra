@@ -1,5 +1,5 @@
 import { Selection } from "./selection";
-import { Path } from "./path";
+import { AbsolutePath, RelativePath } from "./path";
 import { Position } from "./position";
 import { ErrorReason, toString } from "./error-reason";
 
@@ -7,7 +7,8 @@ export { Editor };
 export {
   Modification,
   Code,
-  Path,
+  AbsolutePath,
+  RelativePath,
   Command,
   Result,
   Choice,
@@ -16,12 +17,12 @@ export {
 };
 
 interface Editor {
-  workspaceFiles(): Promise<Path[]>;
+  workspaceFiles(): Promise<RelativePath[]>;
   readonly selection: Selection;
   readonly code: Code;
-  codeOf(relativePath: Path): Promise<Code>;
+  codeOf(path: RelativePath): Promise<Code>;
   write(code: Code, newCursorPosition?: Position): Promise<void>;
-  writeIn(relativePath: Path, code: Code): Promise<void>;
+  writeIn(path: RelativePath, code: Code): Promise<void>;
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],

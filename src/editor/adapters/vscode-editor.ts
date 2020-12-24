@@ -8,11 +8,11 @@ import {
   ErrorReason,
   errorReasonToString,
   Choice,
-  Result,
-  Path
+  Result
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
+import { AbsolutePath, RelativePath } from "../path";
 
 export { VSCodeEditor };
 
@@ -25,7 +25,7 @@ class VSCodeEditor implements Editor {
     this.document = editor.document;
   }
 
-  async workspaceFiles(): Promise<Path[]> {
+  async workspaceFiles(): Promise<RelativePath[]> {
     // TODO: cache for performance? (need to update it on change though)
     const uris = await vscode.workspace.findFiles(
       "**/*.{js,jsx,ts,tsx}",
@@ -34,7 +34,7 @@ class VSCodeEditor implements Editor {
     );
 
     return uris
-      .map((uri) => new Path(uri.path))
+      .map((uri) => new AbsolutePath(uri.path))
       .map((path) => path.relativeTo(this.document.uri.path));
   }
 
@@ -42,8 +42,8 @@ class VSCodeEditor implements Editor {
     return this.document.getText();
   }
 
-  async codeOf(relativePath: Path): Promise<Code> {
-    const fileUri = this.fileUriAt(relativePath);
+  async codeOf(path: RelativePath): Promise<Code> {
+    const fileUri = this.fileUriAt(path);
     const file = await vscode.workspace.fs.readFile(fileUri);
 
     return file.toString();
@@ -79,9 +79,9 @@ class VSCodeEditor implements Editor {
     }
   }
 
-  async writeIn(relativePath: Path, code: Code): Promise<void> {
+  async writeIn(path: RelativePath, code: Code): Promise<void> {
     const edit = new vscode.WorkspaceEdit();
-    const fileUri = this.fileUriAt(relativePath);
+    const fileUri = this.fileUriAt(path);
     const WHOLE_DOCUMENT = new vscode.Range(
       new vscode.Position(0, 0),
       new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
@@ -90,8 +90,8 @@ class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
   }
 
-  private fileUriAt(relativePath: Path) {
-    const filePath = relativePath.absoluteFrom(this.document.uri.path);
+  private fileUriAt(path: RelativePath): vscode.Uri {
+    const filePath = path.absoluteFrom(this.document.uri.path);
     return this.document.uri.with({ path: filePath.value });
   }
 

@@ -1,4 +1,4 @@
-import { Path } from "./path";
+import { Path, AbsolutePath, RelativePath } from "./path";
 
 describe("Path", () => {
   it("should trim the extension", () => {
@@ -6,31 +6,43 @@ describe("Path", () => {
 
     expect(path.withoutExtension).toBe("../path/to/some-file");
   });
+});
 
-  it("resolves from a relative path", () => {
-    const path = new Path("/Users/some/folder/path/to/some-file.ts").relativeTo(
+describe("AbsolutePath", () => {
+  it("converts to a relative path", () => {
+    const absolutePath = new AbsolutePath(
+      "/Users/some/folder/path/to/some-file.ts"
+    );
+
+    const path = absolutePath.relativeTo(
       "/Users/some/folder/another/path/file.ts"
     );
 
-    expect(path.value).toBe("../../path/to/some-file.ts");
+    expect(path).toStrictEqual(new RelativePath("../../path/to/some-file.ts"));
   });
 
-  it("resolves to an absolute path", () => {
-    const path = new Path("../../path/to/some-file.ts").absoluteFrom(
-      "/Users/some/folder/another/path/file.ts"
-    );
-
-    expect(path.value).toBe("/Users/some/folder/path/to/some-file.ts");
-  });
-
-  it("resolves the correct path after being converted to relative and absolute", () => {
+  it("converts to a relative path and back to an absolute one", () => {
     const filePath = "/Users/some/folder/path/to/some-file.ts";
     const otherFilePath = "/Users/some/folder/another/folder/file.ts";
 
-    const path = new Path(filePath)
+    const path = new AbsolutePath(filePath)
       .relativeTo(otherFilePath)
       .absoluteFrom(otherFilePath);
 
-    expect(path.value).toBe(filePath);
+    expect(path).toStrictEqual(new AbsolutePath(filePath));
+  });
+});
+
+describe("RelativePath", () => {
+  it("convert to an absolute path", () => {
+    const relativePath = new RelativePath("../../path/to/some-file.ts");
+
+    const path = relativePath.absoluteFrom(
+      "/Users/some/folder/another/path/file.ts"
+    );
+
+    expect(path).toStrictEqual(
+      new AbsolutePath("/Users/some/folder/path/to/some-file.ts")
+    );
   });
 });
