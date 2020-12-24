@@ -1,4 +1,4 @@
-import { ErrorReason, Code } from "../../editor/editor";
+import { ErrorReason, Code, Path } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -6,7 +6,7 @@ import { moveToExistingFile } from "./move-to-existing-file";
 
 describe("Move To Existing File", () => {
   testEach<{
-    setup: { currentFile: Code; otherFile: Code; relativePath: string };
+    setup: { currentFile: Code; otherFile: Code; relativePath: Path };
     expected: { currentFile: Code; otherFile: Code };
   }>(
     "should move to existing file",
@@ -17,7 +17,7 @@ describe("Move To Existing File", () => {
           currentFile: `function [cursor]doNothing() {}
 doNothing();`,
           otherFile: "",
-          relativePath: "./other-file"
+          relativePath: new Path("./other-file")
         },
         expected: {
           currentFile: `import { doNothing } from "./other-file";
@@ -41,7 +41,7 @@ doNothing();`,
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    editor.writeIn("./some-other-file.ts", "");
+    editor.writeIn(new Path("./some-other-file.ts"), "");
     jest.spyOn(editor, "showError");
 
     await moveToExistingFile(editor);

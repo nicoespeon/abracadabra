@@ -40,7 +40,9 @@ type Modification = {
 
 type Code = string;
 
-type Path = string;
+class Path {
+  constructor(readonly value: string) {}
+}
 
 enum Command {
   RenameSymbol

@@ -35,7 +35,9 @@ class VSCodeEditor implements Editor {
       "**/node_modules/**"
     );
 
-    return uris.map((uri) => path.relative(this.document.uri.path, uri.path));
+    return uris
+      .map((uri) => path.relative(this.document.uri.path, uri.path))
+      .map((path) => new Path(path));
   }
 
   get code(): Code {
@@ -43,7 +45,7 @@ class VSCodeEditor implements Editor {
   }
 
   async codeOf(relativePath: Path): Promise<Code> {
-    const fileUri = this.fileUriAt(relativePath);
+    const fileUri = this.fileUriAt(relativePath.value);
     const file = await vscode.workspace.fs.readFile(fileUri);
 
     return file.toString();
@@ -81,7 +83,7 @@ class VSCodeEditor implements Editor {
 
   async writeIn(relativePath: Path, code: Code): Promise<void> {
     const edit = new vscode.WorkspaceEdit();
-    const fileUri = this.fileUriAt(relativePath);
+    const fileUri = this.fileUriAt(relativePath.value);
     const WHOLE_DOCUMENT = new vscode.Range(
       new vscode.Position(0, 0),
       new vscode.Position(Infinity, 0)

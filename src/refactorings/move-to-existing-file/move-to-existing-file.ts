@@ -1,4 +1,4 @@
-import { Editor, ErrorReason } from "../../editor/editor";
+import { Editor, ErrorReason, Path } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
@@ -11,7 +11,7 @@ async function moveToExistingFile(editor: Editor) {
   // TODO: Fine-tune when there are many (matchOnDescription + placeholder)
   const files = await editor.workspaceFiles();
   const selectedFile = await editor.askUserChoice(
-    files.map((path) => ({ label: path, value: path }))
+    files.map((path) => ({ label: path.value, value: path }))
   );
   if (!selectedFile) return;
 
@@ -40,7 +40,7 @@ async function moveToExistingFile(editor: Editor) {
 function updateCode(
   ast: t.AST,
   selection: Selection,
-  relativePath: string
+  relativePath: Path
 ): { updatedCode: t.Transformed; movedNode: t.Node } {
   let movedNode: t.Node = t.emptyStatement();
 
@@ -49,7 +49,7 @@ function updateCode(
     createVisitor(selection, (path, importIdentifier, programPath) => {
       const importStatement = t.importDeclaration(
         [t.importSpecifier(importIdentifier, importIdentifier)],
-        t.stringLiteral(relativePath)
+        t.stringLiteral(relativePath.value)
       );
 
       movedNode = path.node;
