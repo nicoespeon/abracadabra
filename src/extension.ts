@@ -24,6 +24,7 @@ import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
+import moveToExistingFile from "./refactorings/move-to-existing-file";
 import negateExpression from "./refactorings/negate-expression";
 import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
 import reactAddBracesToJsxAttribute from "./refactorings/react/add-braces-to-jsx-attribute";
@@ -87,6 +88,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       liftUpConditional,
       mergeIfStatements,
       mergeWithPreviousIfStatement,
+      moveToExistingFile,
       negateExpression,
       removeBracesFromArrowFunction,
       removeBracesFromIfStatement,
