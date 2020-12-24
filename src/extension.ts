@@ -57,6 +57,16 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       reactRemoveBracesFromJsxAttribute
     ]
   },
+  allButVue: {
+    languages: [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    withoutActionProvider: [],
+    withActionProvider: [moveToExistingFile]
+  },
   allLanguages: {
     languages: [
       "javascript",
@@ -88,7 +98,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       liftUpConditional,
       mergeIfStatements,
       mergeWithPreviousIfStatement,
-      moveToExistingFile,
       negateExpression,
       removeBracesFromArrowFunction,
       removeBracesFromIfStatement,

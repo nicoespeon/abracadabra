@@ -29,7 +29,6 @@ class VSCodeEditor implements Editor {
   async workspaceFiles(): Promise<Path[]> {
     // TODO: cache for performance? (need to update it on change though)
     const uris = await vscode.workspace.findFiles(
-      // TODO: disable feature for Vue files (can't export)
       "**/*.{js,jsx,ts,tsx}",
       // TODO: check default ignores for our projects
       "**/node_modules/**"

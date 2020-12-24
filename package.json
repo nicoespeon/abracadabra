@@ -928,10 +928,6 @@
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.moveToExistingFile",
-          "when": "editorLangId == vue"
-        },
-        {
           "command": "abracadabra.negateExpression",
           "when": "editorLangId == javascript"
         },
