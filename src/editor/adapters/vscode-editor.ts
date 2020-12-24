@@ -93,10 +93,7 @@ class VSCodeEditor implements Editor {
   }
 
   private fileUriAt(relativePath: string) {
-    const filePath = path.join(
-      path.dirname(this.document.uri.path),
-      relativePath
-    );
+    const filePath = path.join(this.document.uri.path, relativePath);
     return this.document.uri.with({ path: filePath });
   }
 
