@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 
 import {
   Editor,
@@ -35,8 +34,8 @@ class VSCodeEditor implements Editor {
     );
 
     return uris
-      .map((uri) => path.relative(this.document.uri.path, uri.path))
-      .map((path) => new Path(path));
+      .map((uri) => new Path(uri.path))
+      .map((path) => path.relativeTo(this.document.uri.path));
   }
 
   get code(): Code {
@@ -44,7 +43,7 @@ class VSCodeEditor implements Editor {
   }
 
   async codeOf(relativePath: Path): Promise<Code> {
-    const fileUri = this.fileUriAt(relativePath.value);
+    const fileUri = this.fileUriAt(relativePath);
     const file = await vscode.workspace.fs.readFile(fileUri);
 
     return file.toString();
@@ -82,7 +81,7 @@ class VSCodeEditor implements Editor {
 
   async writeIn(relativePath: Path, code: Code): Promise<void> {
     const edit = new vscode.WorkspaceEdit();
-    const fileUri = this.fileUriAt(relativePath.value);
+    const fileUri = this.fileUriAt(relativePath);
     const WHOLE_DOCUMENT = new vscode.Range(
       new vscode.Position(0, 0),
       new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
@@ -91,9 +90,9 @@ class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
   }
 
-  private fileUriAt(relativePath: string) {
-    const filePath = path.join(this.document.uri.path, relativePath);
-    return this.document.uri.with({ path: filePath });
+  private fileUriAt(relativePath: Path) {
+    const filePath = relativePath.absoluteFrom(this.document.uri.path);
+    return this.document.uri.with({ path: filePath.value });
   }
 
   protected get editRange(): vscode.Range {
