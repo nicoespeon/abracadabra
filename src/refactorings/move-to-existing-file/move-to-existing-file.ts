@@ -49,7 +49,7 @@ function updateCode(
     createVisitor(selection, (path, importIdentifier, programPath) => {
       const importStatement = t.importDeclaration(
         [t.importSpecifier(importIdentifier, importIdentifier)],
-        t.stringLiteral(relativePath.value)
+        t.stringLiteral(relativePath.withoutExtension)
       );
 
       movedNode = path.node;

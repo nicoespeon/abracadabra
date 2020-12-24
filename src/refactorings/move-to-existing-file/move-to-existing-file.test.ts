@@ -17,7 +17,7 @@ describe("Move To Existing File", () => {
           currentFile: `function [cursor]doNothing() {}
 doNothing();`,
           otherFile: "",
-          relativePath: new Path("./other-file")
+          relativePath: new Path("./other-file.ts")
         },
         expected: {
           currentFile: `import { doNothing } from "./other-file";
