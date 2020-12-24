@@ -6,6 +6,12 @@ describe("Path", () => {
 
     expect(path.withoutExtension).toBe("../path/to/some-file");
   });
+
+  it("detects when it points to the same file", () => {
+    const filePath = "/Users/some/folder/file.ts";
+
+    expect(new Path(filePath).equals(filePath)).toBe(true);
+  });
 });
 
 describe("AbsolutePath", () => {

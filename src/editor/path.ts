@@ -5,6 +5,10 @@ export { Path, AbsolutePath, RelativePath };
 class Path {
   constructor(readonly value: string) {}
 
+  equals(otherValue: string): boolean {
+    return this.value === otherValue;
+  }
+
   get withoutExtension(): string {
     return this.value.replace(/\.\w+$/, "");
   }
