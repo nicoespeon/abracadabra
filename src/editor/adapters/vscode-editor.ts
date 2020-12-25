@@ -36,6 +36,7 @@ class VSCodeEditor implements Editor {
     return uris
       .map((uri) => new AbsolutePath(uri.path))
       .filter((path) => !path.equals(this.document.uri.path))
+      .filter((path) => !path.fileName.endsWith(".d.ts"))
       .map((path) => path.relativeTo(this.document.uri.path));
   }
 
