@@ -3,7 +3,11 @@ import * as path from "path";
 export { Path, AbsolutePath, RelativePath };
 
 class Path {
-  constructor(readonly value: string) {}
+  constructor(protected _value: string) {}
+
+  get value(): string {
+    return this._value;
+  }
 
   equals(otherValue: string): boolean {
     return this.value === otherValue;
@@ -11,6 +15,14 @@ class Path {
 
   get withoutExtension(): string {
     return this.value.replace(/\.\w+$/, "");
+  }
+
+  get fileName(): string {
+    return path.basename(this.value);
+  }
+
+  get withoutFileName(): string {
+    return path.dirname(this.value) + path.sep;
   }
 
   protected get isValueAbsolute(): boolean {
@@ -39,6 +51,10 @@ class RelativePath extends Path {
 
     if (this.isValueAbsolute) {
       throw new Error(`${value} is not a relative path`);
+    }
+
+    if (!this._value.startsWith(".")) {
+      this._value = `.${path.sep}${this._value}`;
     }
   }
 

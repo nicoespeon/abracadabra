@@ -7,6 +7,18 @@ describe("Path", () => {
     expect(path.withoutExtension).toBe("../path/to/some-file");
   });
 
+  it("should trim the path", () => {
+    const path = new Path("../path/to/some-file.ts");
+
+    expect(path.fileName).toBe("some-file.ts");
+  });
+
+  it("should trim the file name", () => {
+    const path = new Path("../path/to/some-file.ts");
+
+    expect(path.withoutFileName).toBe("../path/to/");
+  });
+
   it("detects when it points to the same file", () => {
     const filePath = "/Users/some/folder/file.ts";
 
@@ -44,6 +56,12 @@ describe("AbsolutePath", () => {
 });
 
 describe("RelativePath", () => {
+  it("prefixes with current folder", () => {
+    const path = new RelativePath("another/file.ts");
+
+    expect(path.value).toBe("./another/file.ts");
+  });
+
   it("convert to an absolute path", () => {
     const relativePath = new RelativePath("../../path/to/some-file.ts");
 
