@@ -11,7 +11,13 @@ async function moveToExistingFile(editor: Editor) {
   // TODO: Fine-tune when there are many (matchOnDescription + placeholder)
   const files = await editor.workspaceFiles();
   const selectedFile = await editor.askUserChoice(
-    files.map((path) => ({ label: path.value, value: path }))
+    files.map((path) => ({
+      value: path,
+      label: path.fileName,
+      description: path.withoutFileName,
+      icon: "file-code"
+    })),
+    "Search files by name and pick one"
   );
   if (!selectedFile) return;
 

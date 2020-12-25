@@ -31,7 +31,10 @@ interface Editor {
   delegate(command: Command): Promise<Result>;
   showError(reason: ErrorReason): Promise<void>;
   askUserInput(defaultValue?: string): Promise<string | undefined>;
-  askUserChoice<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined>;
+  askUserChoice<T>(
+    choices: Choice<T>[],
+    placeHolder?: string
+  ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
 }
 

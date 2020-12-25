@@ -66,8 +66,11 @@ class AttemptingEditor implements Editor {
     await this.editor.showError(reason);
   }
 
-  askUserChoice<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined> {
-    return this.editor.askUserChoice(choices);
+  askUserChoice<T>(
+    choices: Choice<T>[],
+    placeHolder?: string
+  ): Promise<Choice<T> | undefined> {
+    return this.editor.askUserChoice(choices, placeHolder);
   }
 
   askUserInput(defaultValue?: string) {

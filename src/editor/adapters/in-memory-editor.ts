@@ -143,7 +143,10 @@ class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
-  askUserChoice<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined> {
+  askUserChoice<T>(
+    choices: Choice<T>[],
+    _placeHolder?: string
+  ): Promise<Choice<T> | undefined> {
     return Promise.resolve(choices[0]);
   }
 

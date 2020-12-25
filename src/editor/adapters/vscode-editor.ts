@@ -145,13 +145,14 @@ class VSCodeEditor implements Editor {
     await vscode.window.showErrorMessage(errorReasonToString(reason));
   }
 
-  async askUserChoice<T>(choices: Choice<T>[]) {
+  async askUserChoice<T>(choices: Choice<T>[], placeHolder?: string) {
     return await vscode.window.showQuickPick(
       choices.map(({ label, value, description, icon }) => ({
         label: icon ? `$(${icon}) ${label}` : label,
-        value: value,
-        description: description
-      }))
+        value,
+        description
+      })),
+      { placeHolder, matchOnDescription: true }
     );
   }
 
