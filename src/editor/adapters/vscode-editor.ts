@@ -145,7 +145,13 @@ class VSCodeEditor implements Editor {
   }
 
   async askUserChoice<T>(choices: Choice<T>[]) {
-    return await vscode.window.showQuickPick(choices);
+    return await vscode.window.showQuickPick(
+      choices.map(({ label, value, description, icon }) => ({
+        label: icon ? `$(${icon}) ${label}` : label,
+        value: value,
+        description: description
+      }))
+    );
   }
 
   async askUserInput(defaultValue?: string) {

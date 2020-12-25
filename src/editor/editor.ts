@@ -54,4 +54,6 @@ enum Result {
 type Choice<T> = {
   value: T;
   label: string;
+  description?: string;
+  icon?: "file-code";
 };
