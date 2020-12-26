@@ -14,15 +14,39 @@ describe("Move To Existing File", () => {
       {
         description: "a root-level function declaration",
         setup: {
-          currentFile: `function [cursor]doNothing() {}
+          currentFile: `import { someValue } from "lib";
+
+function [cursor]doNothing() {}
+
 doNothing();`,
           otherFile: "",
           path: new RelativePath("./other-file.ts")
         },
         expected: {
           currentFile: `import { doNothing } from "./other-file";
+import { someValue } from "lib";
+
 doNothing();`,
           otherFile: `export function doNothing() {}`
+        }
+      },
+      {
+        description: "in another file with exports already",
+        setup: {
+          currentFile: `function [cursor]doNothing() {}
+doNothing();`,
+          otherFile: `function doSomething() {}
+
+export { doSomething }`,
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { doNothing } from "./other-file";
+doNothing();`,
+          otherFile: `function doSomething() {}
+
+export { doSomething }
+export function doNothing() {}`
         }
       }
     ],
