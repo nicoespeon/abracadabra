@@ -4,6 +4,10 @@ import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
 import { Selection } from "./editor/selection";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
+import {
+  getIgnoredFolders,
+  shouldShowInQuickFix
+} from "./vscode-configuration";
 
 export { RefactoringActionProvider };
 
@@ -38,24 +42,9 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private isNavigatingAnIgnoredFile(filePath: string): boolean {
-    return this.getIgnoredFolders().some((ignored) =>
+    return getIgnoredFolders().some((ignored) =>
       filePath.includes(`/${ignored}/`)
     );
-  }
-
-  private getIgnoredFolders(): string[] {
-    const ignoredFolders = vscode.workspace
-      .getConfiguration("abracadabra")
-      .get("ignoredFolders");
-
-    if (!Array.isArray(ignoredFolders)) {
-      console.log(
-        `abracadabra.ignoredFolders should be an array but current value is ${ignoredFolders}`
-      );
-      return [];
-    }
-
-    return ignoredFolders;
   }
 
   private findApplicableRefactorings(
@@ -65,13 +54,7 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     const applicableRefactorings = new Map<string, Refactoring>();
 
     const refactoringsToCheck = this.refactorings.filter(
-      ({ command: { key } }) => {
-        const shouldBeProposed = vscode.workspace
-          .getConfiguration("abracadabra")
-          .get(`${key}.showInQuickFix`);
-
-        return typeof shouldBeProposed === "boolean" ? shouldBeProposed : true;
-      }
+      ({ command: { key } }) => shouldShowInQuickFix(key)
     );
 
     t.traverseAST(ast, {
