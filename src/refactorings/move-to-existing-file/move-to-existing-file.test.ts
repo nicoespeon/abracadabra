@@ -66,6 +66,14 @@ export function doNothing() {}`
     "should not move",
     [
       {
+        description: "if cursor is inside function body",
+        code: `function sayHello() {[cursor]
+  console.log("hello");
+}
+
+sayHello();`
+      },
+      {
         description: "a nested function declaration",
         code: `function doSomething() {
   function [cursor]doNothing() {}
