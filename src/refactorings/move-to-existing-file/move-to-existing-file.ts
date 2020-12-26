@@ -56,13 +56,31 @@ function updateCode(
   const updatedCode = t.transformAST(
     ast,
     createVisitor(selection, (path, importIdentifier, programPath) => {
-      const importStatement = t.importDeclaration(
-        [t.importSpecifier(importIdentifier, importIdentifier)],
-        t.stringLiteral(relativePath.withoutExtension)
+      movedNode = path.node;
+
+      const importSpecifier = t.importSpecifier(
+        importIdentifier,
+        importIdentifier
       );
 
-      movedNode = path.node;
-      programPath.node.body.unshift(importStatement);
+      const existingDeclaration = programPath.node.body
+        .filter((statement): statement is t.ImportDeclaration =>
+          t.isImportDeclaration(statement)
+        )
+        .find(
+          ({ source: { value } }) => value === relativePath.withoutExtension
+        );
+
+      if (existingDeclaration) {
+        existingDeclaration.specifiers.push(importSpecifier);
+      } else {
+        const importStatement = t.importDeclaration(
+          [importSpecifier],
+          t.stringLiteral(relativePath.withoutExtension)
+        );
+        programPath.node.body.unshift(importStatement);
+      }
+
       path.remove();
     })
   );

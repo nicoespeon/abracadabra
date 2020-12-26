@@ -48,6 +48,42 @@ doNothing();`,
 export { doSomething }
 export function doNothing() {}`
         }
+      },
+      {
+        description: "with existing import from other file",
+        setup: {
+          currentFile: `import { doSomething } from "./other-file";
+
+function [cursor]doNothing() {}
+doNothing();`,
+          otherFile: `export function doSomething() {}`,
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { doSomething, doNothing } from "./other-file";
+
+doNothing();`,
+          otherFile: `export function doSomething() {}
+export function doNothing() {}`
+        }
+      },
+      {
+        description: "with existing default import from other file",
+        setup: {
+          currentFile: `import otherFile from "./other-file";
+
+function [cursor]doNothing() {}
+doNothing();`,
+          otherFile: `export function doSomething() {}`,
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import otherFile, { doNothing } from "./other-file";
+
+doNothing();`,
+          otherFile: `export function doSomething() {}
+export function doNothing() {}`
+        }
       }
     ],
     async ({ setup, expected }) => {
