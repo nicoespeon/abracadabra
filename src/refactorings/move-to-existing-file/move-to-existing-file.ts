@@ -13,7 +13,6 @@ async function moveToExistingFile(editor: Editor) {
     return;
   }
 
-  // TODO: Fine-tune when there are many
   const selectedFile = await editor.askUserChoice(
     files.map((path) => ({
       value: path,

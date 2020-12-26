@@ -27,7 +27,6 @@ class VSCodeEditor implements Editor {
   }
 
   async workspaceFiles(): Promise<RelativePath[]> {
-    // TODO: cache for performance? (need to update it on change though)
     const ignoredFoldersGlobPattern = `{${getIgnoredFolders().join(",")}}`;
     const uris = await vscode.workspace.findFiles(
       "**/*.{js,jsx,ts,tsx}",
