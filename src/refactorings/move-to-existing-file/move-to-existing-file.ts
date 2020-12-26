@@ -7,9 +7,13 @@ export { moveToExistingFile, createVisitor };
 async function moveToExistingFile(editor: Editor) {
   const { code, selection } = editor;
 
-  // TODO: what if there's no other file?
-  // TODO: Fine-tune when there are many (matchOnDescription + placeholder)
   const files = await editor.workspaceFiles();
+  if (files.length === 0) {
+    editor.showError(ErrorReason.DidNotFindOtherFiles);
+    return;
+  }
+
+  // TODO: Fine-tune when there are many
   const selectedFile = await editor.askUserChoice(
     files.map((path) => ({
       value: path,

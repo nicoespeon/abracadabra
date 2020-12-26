@@ -48,4 +48,14 @@ doNothing();`,
 
     expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindCodeToMove);
   });
+
+  it("should show an error message if there's no other file in the workspace", async () => {
+    const code = `function [cursor]doSomething() {}`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
+
+    await moveToExistingFile(editor);
+
+    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindOtherFiles);
+  });
 });

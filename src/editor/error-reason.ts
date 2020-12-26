@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindOtherFiles,
   DidNotFindCodeToMove,
   CanNotExtractClass,
   DidNotFindFunctionDeclarationToConvert,
@@ -49,6 +50,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindOtherFiles:
+      return didNotFind("other files in the workspace");
+
     case ErrorReason.DidNotFindCodeToMove:
       return didNotFind("the code to move");
 
