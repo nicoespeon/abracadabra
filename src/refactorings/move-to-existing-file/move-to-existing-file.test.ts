@@ -62,6 +62,32 @@ export function doNothing() {}`
     }
   );
 
+  testEach<{ code: Code }>(
+    "should not move",
+    [
+      {
+        description: "a nested function declaration",
+        code: `function doSomething() {
+  function [cursor]doNothing() {}
+
+  doNothing();
+}`
+      }
+    ],
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
+      const otherFile = new RelativePath("./other-file.ts");
+      editor.writeIn(otherFile, "// No change expected");
+
+      await moveToExistingFile(editor);
+
+      expect(editor.code).toBe(originalCode);
+      const otherFileCode = await editor.codeOf(otherFile);
+      expect(otherFileCode).toBe("// No change expected");
+    }
+  );
+
   it("should ask user to select among other files", async () => {
     const code = `function [cursor]doSomething() {}`;
     const editor = new InMemoryEditor(code);

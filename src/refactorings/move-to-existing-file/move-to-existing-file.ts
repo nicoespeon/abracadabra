@@ -95,6 +95,12 @@ function createVisitor(
       if (!path.node.id) return;
       if (!selection.isInsidePath(path)) return;
 
+      const body = path.get("body");
+      if (!t.isSelectablePath(body)) return;
+
+      const bodySelection = Selection.fromAST(body.node.loc);
+      if (selection.end.isAfter(bodySelection.start)) return;
+
       onMatch(path, path.node.id, path.parentPath);
     }
   };
