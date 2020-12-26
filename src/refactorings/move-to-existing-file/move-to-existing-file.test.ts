@@ -74,6 +74,14 @@ export function doNothing() {}`
 sayHello();`
       },
       {
+        description: "if function is directly exported",
+        code: `export function [cursor]sayHello() {
+  console.log("hello");
+}
+
+sayHello();`
+      },
+      {
         description: "a nested function declaration",
         code: `function doSomething() {
   function [cursor]doNothing() {}
