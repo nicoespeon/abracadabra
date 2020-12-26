@@ -665,9 +665,9 @@ If a JSX attribute is a JSX expression containing only a string literal, it refa
 
 ## Configuration
 
-| Setting                      | Description                                | Default                             |
-| ---------------------------- | ------------------------------------------ | ----------------------------------- |
-| `abracadabra.ignoredFolders` | Folders where it won't propose Quick Fixes | `["node_modules", "dist", "build"]` |
+| Setting                      | Description                                 | Default                             |
+| ---------------------------- | ------------------------------------------- | ----------------------------------- |
+| `abracadabra.ignoredFolders` | Folders where it won't propose refactorings | `["node_modules", "dist", "build"]` |
 
 All refactorings that appear in Quick Fix suggestions can also be disabled in [your VS Code settings][vscode-settings] 🔥 (look for _Abracadabra_)
 

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { getIgnoredFolders } from "../../vscode-configuration";
 import {
   Editor,
   Code,
@@ -27,10 +28,10 @@ class VSCodeEditor implements Editor {
 
   async workspaceFiles(): Promise<RelativePath[]> {
     // TODO: cache for performance? (need to update it on change though)
+    const ignoredFoldersGlobPattern = `{${getIgnoredFolders().join(",")}}`;
     const uris = await vscode.workspace.findFiles(
       "**/*.{js,jsx,ts,tsx}",
-      // TODO: check default ignores for our projects
-      "**/node_modules/**"
+      `**/${ignoredFoldersGlobPattern}/**`
     );
 
     return uris
