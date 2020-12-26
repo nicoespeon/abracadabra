@@ -38,6 +38,28 @@ doNothing();`,
     }
   );
 
+  it("should ask user to select among other files", async () => {
+    const code = `function [cursor]doSomething() {}`;
+    const editor = new InMemoryEditor(code);
+    editor.writeIn(new RelativePath("./some-other-file.ts"), "");
+    editor.writeIn(new RelativePath("./yet-another-file.js"), "");
+    editor.writeIn(new RelativePath("../../another-react-file.tsx"), "");
+    editor.writeIn(new RelativePath("./yet-another-react-file.jsx"), "");
+    jest.spyOn(editor, "askUserChoice");
+
+    await moveToExistingFile(editor);
+
+    expect(editor.askUserChoice).toBeCalledWith(
+      [
+        expect.objectContaining({ label: "some-other-file.ts" }),
+        expect.objectContaining({ label: "yet-another-file.js" }),
+        expect.objectContaining({ label: "another-react-file.tsx" }),
+        expect.objectContaining({ label: "yet-another-react-file.jsx" })
+      ],
+      "Search files by name and pick one"
+    );
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
