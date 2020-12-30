@@ -28,6 +28,16 @@ class Path {
   protected get isValueAbsolute(): boolean {
     return this.value.startsWith(path.sep);
   }
+
+  relativeTo(otherPath: Path): RelativePath;
+  relativeTo(value: string): RelativePath;
+  relativeTo(pathOrValue: Path | string): RelativePath {
+    const value =
+      typeof pathOrValue === "string" ? pathOrValue : pathOrValue.value;
+
+    const relativeValue = path.relative(path.dirname(value), this.value);
+    return new RelativePath(relativeValue);
+  }
 }
 
 class AbsolutePath extends Path {
@@ -37,11 +47,6 @@ class AbsolutePath extends Path {
     if (!this.isValueAbsolute) {
       throw new Error(`${value} is not an absolute path`);
     }
-  }
-
-  relativeTo(value: string): RelativePath {
-    const relativeValue = path.relative(path.dirname(value), this.value);
-    return new RelativePath(relativeValue);
   }
 }
 

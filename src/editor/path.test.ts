@@ -77,4 +77,13 @@ describe("RelativePath", () => {
   it("throw if given path is absolute", () => {
     expect(() => new RelativePath("/Users/some/file.ts")).toThrow();
   });
+
+  it("resolves relative path from another one", () => {
+    const originalPath = new RelativePath("../constants.ts");
+    const newPath = new RelativePath("./nested/file.ts");
+
+    const result = originalPath.relativeTo(newPath);
+
+    expect(result).toStrictEqual(new RelativePath("../../constants.ts"));
+  });
 });
