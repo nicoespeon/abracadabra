@@ -62,7 +62,7 @@ describe("RelativePath", () => {
     expect(path.value).toBe("./another/file.ts");
   });
 
-  it("convert to an absolute path", () => {
+  it("converts to an absolute path", () => {
     const relativePath = new RelativePath("../../path/to/some-file.ts");
 
     const path = relativePath.absoluteFrom(
