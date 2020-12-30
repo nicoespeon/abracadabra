@@ -101,7 +101,13 @@ function updateOtherFileCode(
   return t.transformAST(ast, {
     Program(path) {
       declarationsToImport.forEach((declaration) => {
-        path.node.body.unshift(declaration);
+        declaration.specifiers.forEach((specifier) => {
+          t.addImportDeclaration(
+            path,
+            specifier.local,
+            declaration.source.value
+          );
+        });
       });
 
       const exportedStatement = t.toStatement(

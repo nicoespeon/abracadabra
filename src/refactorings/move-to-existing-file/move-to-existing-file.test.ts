@@ -91,11 +91,11 @@ export function doNothing() {}`
           currentFile: `import { HELLO, WORLD } from "../constants";
 
 function [cursor]sayHello() {
-  console.log(HELLO);
+  console.log(HELLO, WORLD);
 }
 
 sayHello();`,
-          otherFile: ``,
+          otherFile: `import { GOODBYE } from "../../constants";`,
           path: new RelativePath("./nested/other-file.ts")
         },
         expected: {
@@ -103,10 +103,10 @@ sayHello();`,
 import { HELLO, WORLD } from "../constants";
 
 sayHello();`,
-          otherFile: `import { HELLO } from "../../constants";
+          otherFile: `import { GOODBYE, HELLO, WORLD } from "../../constants";
 
 export function sayHello() {
-  console.log(HELLO);
+  console.log(HELLO, WORLD);
 }`
         }
       }

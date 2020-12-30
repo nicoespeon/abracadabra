@@ -136,20 +136,18 @@ function getReferencedImportDeclarations(
     Identifier(childPath) {
       if (!childPath.isReferenced()) return;
 
-      result = importDeclarations.reduce<t.ImportDeclaration[]>(
-        (memo, declaration) => {
-          const matchingSpecifiers = declaration.specifiers.filter(
-            ({ local }) => areEquivalent(local, childPath.node)
-          );
-          if (matchingSpecifiers.length === 0) return memo;
+      importDeclarations.forEach((declaration) => {
+        const matchingSpecifier = declaration.specifiers.find(({ local }) =>
+          areEquivalent(local, childPath.node)
+        );
 
-          return memo.concat({
+        if (matchingSpecifier) {
+          result.push({
             ...declaration,
-            specifiers: matchingSpecifiers
+            specifiers: [matchingSpecifier]
           });
-        },
-        []
-      );
+        }
+      });
     }
   });
 
