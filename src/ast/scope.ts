@@ -11,7 +11,8 @@ export {
   isShadowIn,
   findCommonAncestorToDeclareVariable,
   bindingNamesInScope,
-  referencesInScope
+  referencesInScope,
+  getReferencedImportDeclarations
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -121,4 +122,34 @@ function referencesInScope<T>(path: NodePath<T>): NodePath[] {
   return Object.values(path.scope.getAllBindings()).flatMap(
     (binding: Binding) => binding.referencePaths
   );
+}
+
+function getReferencedImportDeclarations(
+  functionPath: NodePath<t.FunctionDeclaration>,
+  importDeclarations: t.ImportDeclaration[]
+): t.ImportDeclaration[] {
+  let result: t.ImportDeclaration[] = [];
+
+  functionPath.get("body").traverse({
+    Identifier(childPath) {
+      if (!childPath.isReferenced()) return;
+
+      result = importDeclarations.reduce<t.ImportDeclaration[]>(
+        (memo, declaration) => {
+          const matchingSpecifiers = declaration.specifiers.filter(
+            ({ local }) => areEquivalent(local, childPath.node)
+          );
+          if (matchingSpecifiers.length === 0) return memo;
+
+          return memo.concat({
+            ...declaration,
+            specifiers: matchingSpecifiers
+          });
+        },
+        []
+      );
+    }
+  });
+
+  return result;
 }

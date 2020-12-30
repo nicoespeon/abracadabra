@@ -84,6 +84,31 @@ doNothing();`,
           otherFile: `export function doSomething() {}
 export function doNothing() {}`
         }
+      },
+      {
+        description: "with imported references",
+        setup: {
+          currentFile: `import { HELLO, WORLD } from "../constants";
+
+function [cursor]sayHello() {
+  console.log(HELLO);
+}
+
+sayHello();`,
+          otherFile: ``,
+          path: new RelativePath("./nested/other-file.ts")
+        },
+        expected: {
+          currentFile: `import { sayHello } from "./nested/other-file";
+import { HELLO, WORLD } from "../constants";
+
+sayHello();`,
+          otherFile: `import { HELLO } from "../../constants";
+
+export function sayHello() {
+  console.log(HELLO);
+}`
+        }
       }
     ],
     async ({ setup, expected }) => {

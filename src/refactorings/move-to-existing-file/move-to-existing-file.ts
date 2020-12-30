@@ -25,7 +25,7 @@ async function moveToExistingFile(editor: Editor) {
   if (!selectedFile) return;
 
   const relativePath = selectedFile.value;
-  const { updatedCode, movedNode } = updateCode(
+  const { updatedCode, movedNode, declarationsToImport } = updateCode(
     t.parse(code),
     selection,
     relativePath
@@ -39,7 +39,8 @@ async function moveToExistingFile(editor: Editor) {
   const otherFileCode = await editor.codeOf(relativePath);
   const otherFileUpdatedCode = updateOtherFileCode(
     t.parse(otherFileCode),
-    movedNode
+    movedNode,
+    declarationsToImport
   );
 
   await editor.writeIn(relativePath, otherFileUpdatedCode.code);
@@ -50,8 +51,13 @@ function updateCode(
   ast: t.AST,
   selection: Selection,
   relativePath: RelativePath
-): { updatedCode: t.Transformed; movedNode: t.Node } {
+): {
+  updatedCode: t.Transformed;
+  movedNode: t.Node;
+  declarationsToImport: t.ImportDeclaration[];
+} {
   let movedNode: t.Node = t.emptyStatement();
+  let declarationsToImport: t.ImportDeclaration[] = [];
 
   const updatedCode = t.transformAST(
     ast,
@@ -63,13 +69,14 @@ function updateCode(
         importIdentifier
       );
 
-      const existingDeclaration = programPath.node.body
-        .filter((statement): statement is t.ImportDeclaration =>
+      const importDeclarations = programPath.node.body.filter(
+        (statement): statement is t.ImportDeclaration =>
           t.isImportDeclaration(statement)
-        )
-        .find(
-          ({ source: { value } }) => value === relativePath.withoutExtension
-        );
+      );
+
+      const existingDeclaration = importDeclarations.find(
+        ({ source: { value } }) => value === relativePath.withoutExtension
+      );
 
       if (existingDeclaration) {
         existingDeclaration.specifiers.push(importSpecifier);
@@ -81,16 +88,40 @@ function updateCode(
         programPath.node.body.unshift(importStatement);
       }
 
+      declarationsToImport = t
+        .getReferencedImportDeclarations(path, importDeclarations)
+        .map((declaration) => {
+          const importRelativePath = new RelativePath(
+            declaration.source.value
+          ).relativeTo(relativePath);
+
+          return {
+            ...declaration,
+            source: {
+              ...declaration.source,
+              value: importRelativePath.value
+            }
+          };
+        });
+
       path.remove();
     })
   );
 
-  return { updatedCode, movedNode };
+  return { updatedCode, movedNode, declarationsToImport };
 }
 
-function updateOtherFileCode(ast: t.AST, movedNode: t.Node): t.Transformed {
+function updateOtherFileCode(
+  ast: t.AST,
+  movedNode: t.Node,
+  declarationsToImport: t.ImportDeclaration[]
+): t.Transformed {
   return t.transformAST(ast, {
     Program(path) {
+      declarationsToImport.forEach((declaration) => {
+        path.node.body.unshift(declaration);
+      });
+
       const exportedStatement = t.toStatement(
         t.exportNamedDeclaration(movedNode)
       );
