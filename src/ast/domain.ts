@@ -3,6 +3,7 @@ import * as t from "@babel/types";
 
 export * from "@babel/types";
 export {
+  getImportDeclarations,
   getReturnedStatement,
   getAssignedStatement,
   getStatements,
@@ -13,6 +14,15 @@ export {
   Primitive,
   forEach
 };
+
+function getImportDeclarations(
+  programPath: NodePath<t.Program>
+): t.ImportDeclaration[] {
+  return programPath.node.body.filter(
+    (statement): statement is t.ImportDeclaration =>
+      t.isImportDeclaration(statement)
+  );
+}
 
 function getReturnedStatement(
   node: t.Statement | null

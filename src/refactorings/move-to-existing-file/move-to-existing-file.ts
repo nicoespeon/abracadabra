@@ -69,14 +69,11 @@ function updateCode(
         importIdentifier
       );
 
-      const importDeclarations = programPath.node.body.filter(
-        (statement): statement is t.ImportDeclaration =>
-          t.isImportDeclaration(statement)
-      );
-
-      const existingDeclaration = importDeclarations.find(
-        ({ source: { value } }) => value === relativePath.withoutExtension
-      );
+      const existingDeclaration = t
+        .getImportDeclarations(programPath)
+        .find(
+          ({ source: { value } }) => value === relativePath.withoutExtension
+        );
 
       if (existingDeclaration) {
         existingDeclaration.specifiers.push(importSpecifier);
@@ -89,7 +86,10 @@ function updateCode(
       }
 
       declarationsToImport = t
-        .getReferencedImportDeclarations(path, importDeclarations)
+        .getReferencedImportDeclarations(
+          path,
+          t.getImportDeclarations(programPath)
+        )
         .map((declaration) => {
           const importRelativePath = new RelativePath(
             declaration.source.value
