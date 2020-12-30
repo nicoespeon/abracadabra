@@ -64,27 +64,6 @@ function updateCode(
     createVisitor(selection, (path, importIdentifier, programPath) => {
       movedNode = path.node;
 
-      const importSpecifier = t.importSpecifier(
-        importIdentifier,
-        importIdentifier
-      );
-
-      const existingDeclaration = t
-        .getImportDeclarations(programPath)
-        .find(
-          ({ source: { value } }) => value === relativePath.withoutExtension
-        );
-
-      if (existingDeclaration) {
-        existingDeclaration.specifiers.push(importSpecifier);
-      } else {
-        const importStatement = t.importDeclaration(
-          [importSpecifier],
-          t.stringLiteral(relativePath.withoutExtension)
-        );
-        programPath.node.body.unshift(importStatement);
-      }
-
       declarationsToImport = t
         .getReferencedImportDeclarations(path, programPath)
         .map((declaration) => {
@@ -100,6 +79,12 @@ function updateCode(
             }
           };
         });
+
+      t.addImportDeclaration(
+        programPath,
+        importIdentifier,
+        relativePath.withoutExtension
+      );
 
       path.remove();
     })
