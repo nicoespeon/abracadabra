@@ -1,5 +1,6 @@
 import { NodePath, Binding } from "@babel/traverse";
 import * as t from "@babel/types";
+import { getImportDeclarations } from "./domain";
 
 import { areEquivalent } from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
@@ -126,10 +127,11 @@ function referencesInScope<T>(path: NodePath<T>): NodePath[] {
 
 function getReferencedImportDeclarations(
   functionPath: NodePath<t.FunctionDeclaration>,
-  importDeclarations: t.ImportDeclaration[]
+  programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
   let result: t.ImportDeclaration[] = [];
 
+  const importDeclarations = getImportDeclarations(programPath);
   functionPath.get("body").traverse({
     Identifier(childPath) {
       if (!childPath.isReferenced()) return;

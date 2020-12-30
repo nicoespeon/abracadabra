@@ -86,10 +86,7 @@ function updateCode(
       }
 
       declarationsToImport = t
-        .getReferencedImportDeclarations(
-          path,
-          t.getImportDeclarations(programPath)
-        )
+        .getReferencedImportDeclarations(path, programPath)
         .map((declaration) => {
           const importRelativePath = new RelativePath(
             declaration.source.value
