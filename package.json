@@ -62,7 +62,7 @@
     "@types/jscodeshift": "0.6.3",
     "@types/node": "13.13.34",
     "@types/pluralize": "0.0.29",
-    "@types/vscode": "1.45.0",
+    "@types/vscode": "1.52.0",
     "all-contributors-cli": "6.19.0",
     "husky": "4.3.0",
     "hygen": "6.0.4",
