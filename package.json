@@ -82,7 +82,7 @@
     "@babel/parser": "7.11.5",
     "@babel/traverse": "7.9.0",
     "@babel/types": "7.9.0",
-    "change-case": "4.1.1",
+    "change-case": "4.1.2",
     "jscodeshift": "0.6.4",
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",
