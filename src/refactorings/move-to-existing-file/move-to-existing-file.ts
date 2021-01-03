@@ -25,14 +25,20 @@ async function moveToExistingFile(editor: Editor) {
   if (!selectedFile) return;
 
   const relativePath = selectedFile.value;
-  const { updatedCode, movedNode, declarationsToImport } = updateCode(
-    t.parse(code),
-    selection,
-    relativePath
-  );
+  const {
+    updatedCode,
+    hasReferencesThatCantBeImported,
+    movedNode,
+    declarationsToImport
+  } = updateCode(t.parse(code), selection, relativePath);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindCodeToMove);
+    return;
+  }
+
+  if (hasReferencesThatCantBeImported) {
+    editor.showError(ErrorReason.CantImportReferences);
     return;
   }
 
@@ -53,9 +59,11 @@ function updateCode(
   relativePath: RelativePath
 ): {
   updatedCode: t.Transformed;
+  hasReferencesThatCantBeImported: boolean;
   movedNode: t.Node;
   declarationsToImport: t.ImportDeclaration[];
 } {
+  let hasReferencesThatCantBeImported = false;
   let movedNode: t.Node = t.emptyStatement();
   let declarationsToImport: t.ImportDeclaration[] = [];
 
@@ -63,6 +71,11 @@ function updateCode(
     ast,
     createVisitor(selection, (path, importIdentifier, programPath) => {
       movedNode = path.node;
+
+      hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+        path,
+        programPath
+      );
 
       declarationsToImport = t
         .getReferencedImportDeclarations(path, programPath)
@@ -90,7 +103,12 @@ function updateCode(
     })
   );
 
-  return { updatedCode, movedNode, declarationsToImport };
+  return {
+    updatedCode,
+    hasReferencesThatCantBeImported,
+    movedNode,
+    declarationsToImport
+  };
 }
 
 function updateOtherFileCode(

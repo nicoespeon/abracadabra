@@ -149,6 +149,22 @@ sayHello();`
 
   doNothing();
 }`
+      },
+      {
+        description:
+          "a function declaration with references defined in the same file",
+        code: `import importedReferenceIsFine from "./other-file";
+
+const someVariable = "world";
+
+function [cursor]doSomething() {
+  console.log("This is fine, it's a global");
+  importedReferenceIsFine();
+
+  referencedHere(someVariable);
+}
+
+function referencedHere() {}`
       }
     ],
     async ({ code }) => {
