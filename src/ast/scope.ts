@@ -13,7 +13,8 @@ export {
   findCommonAncestorToDeclareVariable,
   bindingNamesInScope,
   referencesInScope,
-  getReferencedImportDeclarations
+  getReferencedImportDeclarations,
+  hasReferencesDefinedInSameScope
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -148,6 +149,35 @@ function getReferencedImportDeclarations(
           });
         }
       });
+    }
+  });
+
+  return result;
+}
+
+function hasReferencesDefinedInSameScope(
+  functionPath: NodePath<t.FunctionDeclaration>,
+  programPath: NodePath<t.Program>
+): boolean {
+  let result = false;
+
+  const scopeReferencesNames = bindingNamesInScope(functionPath);
+  const importDeclarations = getImportDeclarations(programPath);
+  const importReferencesNames = importDeclarations
+    .flatMap(({ specifiers }) => specifiers)
+    .map(({ local }) => local.name);
+  const referencesDefinedInSameScope = scopeReferencesNames.filter(
+    (name) => !importReferencesNames.includes(name)
+  );
+
+  functionPath.get("body").traverse({
+    Identifier(path) {
+      if (!path.isReferenced()) return;
+
+      if (referencesDefinedInSameScope.includes(path.node.name)) {
+        result = true;
+        path.stop();
+      }
     }
   });
 
