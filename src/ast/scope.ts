@@ -133,12 +133,12 @@ function getReferencedImportDeclarations(
 
   const importDeclarations = getImportDeclarations(programPath);
   functionPath.get("body").traverse({
-    Identifier(childPath) {
-      if (!childPath.isReferenced()) return;
+    Identifier(path) {
+      if (!path.isReferenced()) return;
 
       importDeclarations.forEach((declaration) => {
         const matchingSpecifier = declaration.specifiers.find(({ local }) =>
-          areEquivalent(local, childPath.node)
+          areEquivalent(local, path.node)
         );
 
         if (matchingSpecifier) {
