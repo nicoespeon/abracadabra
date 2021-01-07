@@ -166,9 +166,10 @@ function hasReferencesDefinedInSameScope(
   const importReferencesNames = importDeclarations
     .flatMap(({ specifiers }) => specifiers)
     .map(({ local }) => local.name);
-  const referencesDefinedInSameScope = scopeReferencesNames.filter(
-    (name) => !importReferencesNames.includes(name)
-  );
+  const functionParamsNames = functionPath.node.params.flatMap(getNames);
+  const referencesDefinedInSameScope = scopeReferencesNames
+    .filter((name) => !importReferencesNames.includes(name))
+    .filter((name) => !functionParamsNames.includes(name));
 
   functionPath.get("body").traverse({
     Identifier(path) {
@@ -182,4 +183,14 @@ function hasReferencesDefinedInSameScope(
   });
 
   return result;
+}
+
+function getNames(node: t.Node | null): string[] {
+  if (t.isArrayPattern(node)) return node.elements.flatMap(getNames);
+  if (t.isAssignmentPattern(node)) return getNames(node.left);
+  if (t.isIdentifier(node)) return [node.name];
+  if (t.isRestElement(node)) return getNames(node.argument);
+  if (t.isObjectPattern(node)) return node.properties.flatMap(getNames);
+  if (t.isObjectProperty(node)) return getNames(node.key);
+  return [];
 }

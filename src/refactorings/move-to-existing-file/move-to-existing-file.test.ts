@@ -31,6 +31,26 @@ doNothing();`,
         }
       },
       {
+        description: "a root-level function declaration, with params",
+        setup: {
+          currentFile: `function [cursor]sayHello(name) {
+  console.log("Hello " + name);
+}
+
+sayHello("Jane");`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { sayHello } from "./other-file";
+
+sayHello("Jane");`,
+          otherFile: `export function sayHello(name) {
+  console.log("Hello " + name);
+}`
+        }
+      },
+      {
         description: "in another file with exports already",
         setup: {
           currentFile: `function [cursor]doNothing() {}
