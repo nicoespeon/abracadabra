@@ -52,6 +52,7 @@ Related projects:
   - Encapsulation:
     1. [Extract Class](#extract-class)
   - Moving Features:
+    1. [Move to Existing File](#move-to-existing-file)
     1. [Remove Dead Code](#remove-dead-code)
   - Organizing data:
     1. [Split Declaration and Initialization](#split-declaration-and-initialization)
@@ -432,6 +433,24 @@ This is where Abracadabra comes in and automate most of the grunt work for you. 
 <details><summary>See it in action</summary>
 
 ![][demo-extract-class]
+
+</details><br />
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Move to Existing File
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+VS Code allows you to move things to new files. But how do you move things to _existing_ files?
+
+Well, now you can with Abracadabra ✨
+
+Trigger the refactoring on a function you want to move, select the destination file, let it take care of the rest. It works for top-level function declarations, resolves required imports, and prevents you from creating circular dependencies.
+
+<details><summary>See it in action</summary>
+
+![][demo-move-to-existing-file]
 
 </details><br />
 
@@ -876,6 +895,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-with-previous-if-statement.gif?raw=true
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
 [demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-for-to-foreach.gif?raw=true
+[demo-move-to-existing-file]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-to-existing-file.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-dead-code.gif?raw=true
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-pure-component.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/simplify-ternary.gif?raw=true
