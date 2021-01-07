@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Move to _existing_ file. Long-time awaited feature and a nice complement to VS Code's native "Move to new file". It only works for function declarations (for now).
+
 ## [4.12.1] - 2020-12-07
 
 ### Fixed
