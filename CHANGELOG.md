@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** Move to _existing_ file. Long-time awaited feature and a nice complement to VS Code's native "Move to new file". It only works for function declarations (for now).
 
+### Fixed
+
+- Extract Variable resulted in broken code when executed on the condition of an `else` statement. The variable declaration was inserted in the middle of the if statement: not good. This is solved now!
+
 ## [4.12.1] - 2020-12-07
 
 ### Fixed

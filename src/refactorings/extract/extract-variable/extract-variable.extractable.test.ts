@@ -255,6 +255,20 @@ if (
 ) doSomething();`
       },
       {
+        description: "if statement, cursor on else clause",
+        code: `if (isMorning) {
+  sayGoodMorning();
+} else if ([cursor]isAfternoon) {
+  sayHello();
+}`,
+        expected: `const extracted = isAfternoon;
+if (isMorning) {
+  sayGoodMorning();
+} else if (extracted) {
+  sayHello();
+}`
+      },
+      {
         description: "a while statement",
         code:
           "while ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",

@@ -25,7 +25,8 @@ function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
         !t.isExportDeclaration(parentPath.parentPath)) ||
       t.isReturnStatement(parentPath) ||
       t.isClassDeclaration(parentPath) ||
-      t.isIfStatement(parentPath) ||
+      (t.isIfStatement(parentPath) &&
+        !t.isIfStatement(parentPath.parentPath)) ||
       t.isWhileStatement(parentPath) ||
       t.isSwitchStatement(parentPath) ||
       t.isExportDeclaration(parentPath) ||
