@@ -1,6 +1,9 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  CantImportReferences,
+  DidNotFindOtherFiles,
+  DidNotFindCodeToMove,
   CanNotExtractClass,
   DidNotFindFunctionDeclarationToConvert,
   CantConvertFunctionDeclarationBecauseUsedBefore,
@@ -48,6 +51,17 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.CantImportReferences:
+      return cantDoIt(
+        "move this, it has references that can't be imported (circular reference)"
+      );
+
+    case ErrorReason.DidNotFindOtherFiles:
+      return didNotFind("other files in the workspace");
+
+    case ErrorReason.DidNotFindCodeToMove:
+      return didNotFind("the code to move");
+
     case ErrorReason.CanNotExtractClass:
       return didNotFind("a class to extract");
 

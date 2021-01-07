@@ -111,6 +111,7 @@
     "onCommand:abracadabra.mergeWithPreviousIfStatement",
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
+    "onCommand:abracadabra.moveToExistingFile",
     "onCommand:abracadabra.negateExpression",
     "onCommand:abracadabra.react.addBracesToJsxAttribute",
     "onCommand:abracadabra.react.convertToPureComponent",
@@ -235,6 +236,11 @@
       {
         "command": "abracadabra.moveStatementUp",
         "title": "Move Statement Up",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.moveToExistingFile",
+        "title": "Move to Existing File",
         "category": "Abracadabra"
       },
       {
@@ -430,6 +436,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.mergeWithPreviousIfStatement.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.moveToExistingFile.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -904,6 +915,22 @@
         {
           "command": "abracadabra.moveStatementUp",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.moveToExistingFile",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.moveToExistingFile",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.moveToExistingFile",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.moveToExistingFile",
+          "when": "editorLangId == typescriptreact"
         },
         {
           "command": "abracadabra.negateExpression",

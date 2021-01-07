@@ -3,6 +3,8 @@ import * as t from "@babel/types";
 
 export * from "@babel/types";
 export {
+  addImportDeclaration,
+  getImportDeclarations,
   getReturnedStatement,
   getAssignedStatement,
   getStatements,
@@ -13,6 +15,38 @@ export {
   Primitive,
   forEach
 };
+
+function addImportDeclaration(
+  programPath: NodePath<t.Program>,
+  identifier: t.Identifier,
+  sourcePath: string
+) {
+  const importSpecifier = t.importSpecifier(identifier, identifier);
+
+  const existingDeclaration = getImportDeclarations(programPath).find(
+    ({ source: { value } }) => value === sourcePath
+  );
+
+  if (existingDeclaration) {
+    existingDeclaration.specifiers.push(importSpecifier);
+    return;
+  }
+
+  const importStatement = t.importDeclaration(
+    [importSpecifier],
+    t.stringLiteral(sourcePath)
+  );
+  programPath.node.body.unshift(importStatement);
+}
+
+function getImportDeclarations(
+  programPath: NodePath<t.Program>
+): t.ImportDeclaration[] {
+  return programPath.node.body.filter(
+    (statement): statement is t.ImportDeclaration =>
+      t.isImportDeclaration(statement)
+  );
+}
 
 function getReturnedStatement(
   node: t.Statement | null

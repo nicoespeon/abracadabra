@@ -1,5 +1,6 @@
 import { NodePath, Binding } from "@babel/traverse";
 import * as t from "@babel/types";
+import { getImportDeclarations } from "./domain";
 
 import { areEquivalent } from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
@@ -11,7 +12,9 @@ export {
   isShadowIn,
   findCommonAncestorToDeclareVariable,
   bindingNamesInScope,
-  referencesInScope
+  referencesInScope,
+  getReferencedImportDeclarations,
+  hasReferencesDefinedInSameScope
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -121,4 +124,73 @@ function referencesInScope<T>(path: NodePath<T>): NodePath[] {
   return Object.values(path.scope.getAllBindings()).flatMap(
     (binding: Binding) => binding.referencePaths
   );
+}
+
+function getReferencedImportDeclarations(
+  functionPath: NodePath<t.FunctionDeclaration>,
+  programPath: NodePath<t.Program>
+): t.ImportDeclaration[] {
+  let result: t.ImportDeclaration[] = [];
+
+  const importDeclarations = getImportDeclarations(programPath);
+  functionPath.get("body").traverse({
+    Identifier(path) {
+      if (!path.isReferenced()) return;
+
+      importDeclarations.forEach((declaration) => {
+        const matchingSpecifier = declaration.specifiers.find(({ local }) =>
+          areEquivalent(local, path.node)
+        );
+
+        if (matchingSpecifier) {
+          result.push({
+            ...declaration,
+            specifiers: [matchingSpecifier]
+          });
+        }
+      });
+    }
+  });
+
+  return result;
+}
+
+function hasReferencesDefinedInSameScope(
+  functionPath: NodePath<t.FunctionDeclaration>,
+  programPath: NodePath<t.Program>
+): boolean {
+  let result = false;
+
+  const scopeReferencesNames = bindingNamesInScope(functionPath);
+  const importDeclarations = getImportDeclarations(programPath);
+  const importReferencesNames = importDeclarations
+    .flatMap(({ specifiers }) => specifiers)
+    .map(({ local }) => local.name);
+  const functionParamsNames = functionPath.node.params.flatMap(getNames);
+  const referencesDefinedInSameScope = scopeReferencesNames
+    .filter((name) => !importReferencesNames.includes(name))
+    .filter((name) => !functionParamsNames.includes(name));
+
+  functionPath.get("body").traverse({
+    Identifier(path) {
+      if (!path.isReferenced()) return;
+
+      if (referencesDefinedInSameScope.includes(path.node.name)) {
+        result = true;
+        path.stop();
+      }
+    }
+  });
+
+  return result;
+}
+
+function getNames(node: t.Node | null): string[] {
+  if (t.isArrayPattern(node)) return node.elements.flatMap(getNames);
+  if (t.isAssignmentPattern(node)) return getNames(node.left);
+  if (t.isIdentifier(node)) return [node.name];
+  if (t.isRestElement(node)) return getNames(node.argument);
+  if (t.isObjectPattern(node)) return node.properties.flatMap(getNames);
+  if (t.isObjectProperty(node)) return getNames(node.key);
+  return [];
 }

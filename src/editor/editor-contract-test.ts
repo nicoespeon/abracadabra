@@ -1,4 +1,4 @@
-import { Editor, Code } from "./editor";
+import { Editor, Code, RelativePath } from "./editor";
 import { Position } from "./position";
 import { Selection } from "./selection";
 
@@ -328,5 +328,31 @@ console.log(extracted);`);
 
       expect(getState().position).toEqual(position);
     });
+  });
+
+  it("should write in a given file", async () => {
+    const [editor] = createEditorOn("");
+    const filePath = new RelativePath("./some-file.ts");
+    const code = `function sayHello() {
+console.log("hello");
+}`;
+
+    await editor.writeIn(filePath, code);
+
+    expect(await editor.codeOf(filePath)).toBe(code);
+  });
+
+  it("should return the list of files in the workspace", async () => {
+    const [editor] = createEditorOn("");
+    const files = [
+      new RelativePath("README.md"),
+      new RelativePath("./src/some-file.ts"),
+      new RelativePath("./scr/some-file.test.ts")
+    ];
+    files.forEach((file) => editor.writeIn(file, ""));
+
+    const result = await editor.workspaceFiles();
+
+    expect(result).toEqual(files);
   });
 }

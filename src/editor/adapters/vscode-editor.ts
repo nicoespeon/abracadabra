@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { getIgnoredFolders } from "../../vscode-configuration";
 import {
   Editor,
   Code,
@@ -12,6 +13,7 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
+import { AbsolutePath, RelativePath } from "../path";
 
 export { VSCodeEditor };
 
@@ -24,8 +26,29 @@ class VSCodeEditor implements Editor {
     this.document = editor.document;
   }
 
+  async workspaceFiles(): Promise<RelativePath[]> {
+    const ignoredFoldersGlobPattern = `{${getIgnoredFolders().join(",")}}`;
+    const uris = await vscode.workspace.findFiles(
+      "**/*.{js,jsx,ts,tsx}",
+      `**/${ignoredFoldersGlobPattern}/**`
+    );
+
+    return uris
+      .map((uri) => new AbsolutePath(uri.path))
+      .filter((path) => !path.equals(this.document.uri.path))
+      .filter((path) => !path.fileName.endsWith(".d.ts"))
+      .map((path) => path.relativeTo(this.document.uri.path));
+  }
+
   get code(): Code {
     return this.document.getText();
+  }
+
+  async codeOf(path: RelativePath): Promise<Code> {
+    const fileUri = this.fileUriAt(path);
+    const file = await vscode.workspace.fs.readFile(fileUri);
+
+    return file.toString();
   }
 
   get selection(): Selection {
@@ -56,6 +79,22 @@ class VSCodeEditor implements Editor {
         vscode.TextEditorRevealType.Default
       );
     }
+  }
+
+  async writeIn(path: RelativePath, code: Code): Promise<void> {
+    const edit = new vscode.WorkspaceEdit();
+    const fileUri = this.fileUriAt(path);
+    const WHOLE_DOCUMENT = new vscode.Range(
+      new vscode.Position(0, 0),
+      new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
+    );
+    edit.set(fileUri, [new vscode.TextEdit(WHOLE_DOCUMENT, code)]);
+    await vscode.workspace.applyEdit(edit);
+  }
+
+  private fileUriAt(path: RelativePath): vscode.Uri {
+    const filePath = path.absoluteFrom(this.document.uri.path);
+    return this.document.uri.with({ path: filePath.value });
   }
 
   protected get editRange(): vscode.Range {
@@ -106,8 +145,15 @@ class VSCodeEditor implements Editor {
     await vscode.window.showErrorMessage(errorReasonToString(reason));
   }
 
-  async askUserChoice<T>(choices: Choice<T>[]) {
-    return await vscode.window.showQuickPick(choices);
+  async askUserChoice<T>(choices: Choice<T>[], placeHolder?: string) {
+    return await vscode.window.showQuickPick(
+      choices.map(({ label, value, description, icon }) => ({
+        label: icon ? `$(${icon}) ${label}` : label,
+        value,
+        description
+      })),
+      { placeHolder, matchOnDescription: true }
+    );
   }
 
   async askUserInput(defaultValue?: string) {

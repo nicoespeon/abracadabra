@@ -4,7 +4,8 @@ import {
   Command,
   Editor,
   ErrorReason,
-  Modification
+  Modification,
+  RelativePath
 } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";
@@ -16,8 +17,16 @@ class AttemptingEditor implements Editor {
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
+  workspaceFiles(): Promise<RelativePath[]> {
+    return this.editor.workspaceFiles();
+  }
+
   get code(): Code {
     return this.editor.code;
+  }
+
+  codeOf(path: RelativePath): Promise<Code> {
+    return this.editor.codeOf(path);
   }
 
   get selection(): Selection {
@@ -26,6 +35,10 @@ class AttemptingEditor implements Editor {
 
   write(code: Code, newCursorPosition?: Position): Promise<void> {
     return this.editor.write(code, newCursorPosition);
+  }
+
+  writeIn(path: RelativePath, code: Code): Promise<void> {
+    return this.editor.writeIn(path, code);
   }
 
   readThenWrite(
@@ -53,8 +66,11 @@ class AttemptingEditor implements Editor {
     await this.editor.showError(reason);
   }
 
-  askUserChoice<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined> {
-    return this.editor.askUserChoice(choices);
+  askUserChoice<T>(
+    choices: Choice<T>[],
+    placeHolder?: string
+  ): Promise<Choice<T> | undefined> {
+    return this.editor.askUserChoice(choices, placeHolder);
   }
 
   askUserInput(defaultValue?: string) {

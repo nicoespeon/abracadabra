@@ -5,7 +5,8 @@ import {
   Command,
   ErrorReason,
   Choice,
-  Result
+  Result,
+  RelativePath
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -22,14 +23,26 @@ const SELECTION_END = "[end]";
 class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
+  private otherFiles = new Map<RelativePath, Editor>();
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
+  async workspaceFiles(): Promise<RelativePath[]> {
+    return Array.from(this.otherFiles.keys());
+  }
+
   get code(): Code {
     return this.read(this.codeMatrix);
+  }
+
+  async codeOf(path: RelativePath): Promise<Code> {
+    const otherFile = this.otherFiles.get(path);
+    if (!otherFile) return "";
+
+    return otherFile.code;
   }
 
   get selection(): Selection {
@@ -46,6 +59,10 @@ class InMemoryEditor implements Editor {
       this._selection = Selection.cursorAtPosition(newCursorPosition);
     }
     return Promise.resolve();
+  }
+
+  async writeIn(path: RelativePath, code: Code): Promise<void> {
+    this.otherFiles.set(path, new InMemoryEditor(code));
   }
 
   readThenWrite(
@@ -126,7 +143,10 @@ class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
-  askUserChoice<T>(choices: Choice<T>[]): Promise<Choice<T> | undefined> {
+  askUserChoice<T>(
+    choices: Choice<T>[],
+    _placeHolder?: string
+  ): Promise<Choice<T> | undefined> {
     return Promise.resolve(choices[0]);
   }
 
