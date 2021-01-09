@@ -3,7 +3,7 @@ import { Project, ClassDeclaration, ParameterDeclaration } from "ts-morph";
 import { ClassRefactor } from "./class-refactor";
 import { TypescriptClassNode } from "./typescript-class-node";
 import { UmlNotation } from "./uml-notation";
-import { assert } from "./utils/assert";
+import { assert } from "../../assert";
 import { classNameMatcher } from "./class-name-matcher";
 
 // REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180

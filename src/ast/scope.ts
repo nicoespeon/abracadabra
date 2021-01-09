@@ -121,9 +121,14 @@ function bindingNamesInScope<T>(path: NodePath<T>): string[] {
   return Object.keys(path.scope.getAllBindings());
 }
 
-function referencesInScope<T>(path: NodePath<T>): NodePath[] {
-  return Object.values(path.scope.getAllBindings()).flatMap(
-    (binding: Binding) => binding.referencePaths
+function referencesInScope(path: NodePath<t.FunctionDeclaration>): NodePath[] {
+  const allBindings = Object.values(path.scope.getAllBindings()) as Binding[];
+
+  return (
+    allBindings
+      // Omit imports that are bound to the program and would appear in the list
+      .filter((binding) => binding.path.isFunctionDeclaration())
+      .flatMap((binding) => binding.referencePaths)
   );
 }
 

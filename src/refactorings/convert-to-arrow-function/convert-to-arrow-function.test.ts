@@ -94,6 +94,19 @@ doSomething();`,
         expected: `const doSomething = () => {};
 
 doSomething();`
+      },
+      {
+        description: "with imported type referenced in another function",
+        code: `import { Input } from "./types";
+
+function checkAnswer(input: Input) {}
+
+function [cursor]doNothing() {}`,
+        expected: `import { Input } from "./types";
+
+function checkAnswer(input: Input) {}
+
+const doNothing = () => {};`
       }
     ],
     async ({ code, expected }) => {
