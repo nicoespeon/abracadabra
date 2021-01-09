@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Extract Variable resulted in broken code when executed on the condition of an `else` statement. The variable declaration was inserted in the middle of the if statement: not good. This is solved now!
+- Convert to Arrow Function would not work if some imported types were used before the function declaration. That was weird, but it has been fixed 😄
 
 ## [4.12.1] - 2020-12-07
 
