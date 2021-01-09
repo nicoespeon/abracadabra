@@ -1,6 +1,6 @@
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { last } from "../../array-helpers";
+import { last } from "../../array";
 import * as t from "../../ast";
 
 export { removeRedundantElse, createVisitor as hasRedundantElse };

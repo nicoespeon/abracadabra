@@ -1,7 +1,7 @@
 import { Code, Modification } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
-import { last } from "../../../array-helpers";
+import { last } from "../../../array";
 
 import { findExportedIdNames } from "../find-exported-id-names";
 

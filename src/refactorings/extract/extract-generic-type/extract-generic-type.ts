@@ -7,7 +7,7 @@ import {
   ReplacementStrategy
 } from "../replacement-strategy";
 import { renameSymbol } from "../../rename-symbol/rename-symbol";
-import { last } from "../../../array-helpers";
+import { last } from "../../../array";
 
 export { extractGenericType };
 

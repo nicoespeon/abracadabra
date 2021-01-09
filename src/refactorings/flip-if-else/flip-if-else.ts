@@ -1,7 +1,7 @@
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { last, allButLast } from "../../array-helpers";
+import { last, allButLast } from "../../array";
 
 import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
 

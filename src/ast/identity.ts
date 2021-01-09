@@ -1,7 +1,7 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-import { last } from "../array-helpers";
+import { last } from "../array";
 
 export {
   isClassPropertyIdentifier,
