@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.13.1] - 2021-01-10
+
+No user-facing change. Configuration was fixed so the extension can be deployed again.
+
 ## [4.13.0] - 2021-01-10 - Moves Like Function 🎬
 
 ### Added
@@ -1184,7 +1188,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.13.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.13.1...HEAD
+[4.13.1]: https://github.com/nicoespeon/abracadabra/compare/4.13.0...4.13.1
 [4.13.0]: https://github.com/nicoespeon/abracadabra/compare/4.12.1...4.13.0
 [4.12.1]: https://github.com/nicoespeon/abracadabra/compare/4.12.0...4.12.1
 [4.12.0]: https://github.com/nicoespeon/abracadabra/compare/4.11.0...4.12.0
