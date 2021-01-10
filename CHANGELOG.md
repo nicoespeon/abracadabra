@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.13.0] - 2021-01-10 - Moves Like Function 🎬
+
 ### Added
 
 - **[New Refactoring]** Move to _existing_ file. Long-time awaited feature and a nice complement to VS Code's native "Move to new file". It only works for function declarations (for now).
@@ -1182,7 +1184,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.12.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.13.0...HEAD
+[4.13.0]: https://github.com/nicoespeon/abracadabra/compare/4.12.1...4.13.0
 [4.12.1]: https://github.com/nicoespeon/abracadabra/compare/4.12.0...4.12.1
 [4.12.0]: https://github.com/nicoespeon/abracadabra/compare/4.11.0...4.12.0
 [4.11.0]: https://github.com/nicoespeon/abracadabra/compare/4.10.0...4.11.0
