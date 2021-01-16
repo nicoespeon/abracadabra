@@ -40,6 +40,8 @@
     "hygen": "hygen",
     "new": "hygen refactoring new",
     "test": "jest",
+    "pretest:contract": "tsc -p ./",
+    "test:contract": "node ./out/test/run-contract-tests.js",
     "build": "webpack --mode none",
     "watch": "webpack --mode none --watch",
     "prepackage": "rm -rf dist/*.vsix && rm -rf out/",

@@ -6,6 +6,19 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Contract Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/test/mocha-test-runner"
+      ],
+      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
+      "preLaunchTask": "npm: pretest:contract",
+    },
+    {
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
