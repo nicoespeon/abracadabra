@@ -9,8 +9,7 @@ import { InMemoryEditor } from "./in-memory-editor";
 
 suite("InMemory Editor", () => {
   createEditorContractTests((code, position = new Position(0, 0)) => {
-    const editor = new InMemoryEditor(code, position);
-    return [editor, () => ({ code: editor.code, position: editor.position })];
+    return new InMemoryEditor(code, position);
   });
 
   test("should parse [cursor] as position", () => {

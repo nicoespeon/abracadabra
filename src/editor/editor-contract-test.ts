@@ -23,10 +23,7 @@ export { createEditorContractTests };
  */
 
 function createEditorContractTests(
-  createEditorOn: (
-    code: Code,
-    position?: Position
-  ) => [Editor, () => { code: Code; position: Position }]
+  createEditorOn: (code: Code, position?: Position) => Editor
 ) {
   suite("write", () => {
     test("should update code with the given one", async () => {
@@ -38,7 +35,7 @@ function createEditorContractTests(
   console.log("How are you doing?");
 }`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.write(newCode);
 
       assert.strictEqual(editor.code, newCode);
@@ -54,7 +51,7 @@ function createEditorContractTests(
 }`;
       const newPosition = new Position(2, 3);
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.write(newCode, newPosition);
 
       assert.deepStrictEqual(editor.selection.start, newPosition);
@@ -70,7 +67,7 @@ function createEditorContractTests(
 }`;
       const position = new Position(0, 1);
 
-      const [editor] = createEditorOn(code, position);
+      const editor = createEditorOn(code, position);
       await editor.write(newCode);
 
       assert.deepStrictEqual(editor.selection.start, position);
@@ -82,7 +79,7 @@ function createEditorContractTests(
       const code = `console.log("Hello")`;
       const getModifications = sinon.stub().returns([]);
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), getModifications);
 
       sinon.assert.calledWith(getModifications, "");
@@ -92,7 +89,7 @@ function createEditorContractTests(
       const code = `console.log("Hello")`;
       const getModifications = sinon.stub().returns([]);
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([0, 13], [0, 18]),
         getModifications
@@ -107,7 +104,7 @@ function createEditorContractTests(
 }`;
       const getModifications = sinon.stub().returns([]);
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([0, 9], [2, 1]),
         getModifications
@@ -124,7 +121,7 @@ function createEditorContractTests(
     test("should not change given code if no updates are given", async () => {
       const code = `console.log("Hello")`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => []);
 
       assert.strictEqual(editor.code, code);
@@ -133,7 +130,7 @@ function createEditorContractTests(
     test("should apply update at cursor", async () => {
       const code = `console.log("Hello")`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         { code: " World!", selection: Selection.cursorAt(0, 18) }
       ]);
@@ -144,7 +141,7 @@ function createEditorContractTests(
     test("should use read code to update code", async () => {
       const code = `console.log("Hello")`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([0, 13], [0, 18]),
         (readCode) => [
@@ -163,7 +160,7 @@ function createEditorContractTests(
   console.log("Hello");
 }`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         { code: `logger`, selection: new Selection([1, 2], [1, 13]) }
       ]);
@@ -181,7 +178,7 @@ function createEditorContractTests(
 
   console.log("World!");`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `console.log("Goodbye");`,
@@ -204,7 +201,7 @@ function createEditorContractTests(
   console.log("Boooh!");
 }`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `console.log("Hello World!");`,
@@ -225,7 +222,7 @@ function createEditorContractTests(
   // Replace me with some code
 }`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `console.log("Hello");
@@ -254,7 +251,7 @@ function createEditorContractTests(
   }
 }`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `{
@@ -287,7 +284,7 @@ function createEditorContractTests(
     test("should apply multiple updates, in parallel", async () => {
       const code = `console.log("Hello!");`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([0, 12], [0, 20]),
         (readCode) => [
@@ -311,7 +308,7 @@ console.log(extracted);`
   "Hello!"
 ]);`;
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(new Selection([0, 12], [2, 1]), (readCode) => [
         {
           code: `const extracted = ${readCode};\n`,
@@ -335,7 +332,7 @@ console.log(extracted);`
 }`;
       const newPosition = new Position(2, 1);
 
-      const [editor] = createEditorOn(code);
+      const editor = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([1, 2], [1, 30]),
         () => [],
@@ -351,7 +348,7 @@ console.log(extracted);`
 }`;
       const position = new Position(1, 2);
 
-      const [editor] = createEditorOn(code, position);
+      const editor = createEditorOn(code, position);
       await editor.readThenWrite(new Selection([1, 2], [1, 30]), () => []);
 
       assert.deepStrictEqual(editor.selection.start, position);
@@ -359,7 +356,7 @@ console.log(extracted);`
   });
 
   test("should write in a given file", async () => {
-    const [editor] = createEditorOn("");
+    const editor = createEditorOn("");
     const filePath = new RelativePath("./some-file.ts");
     const code = `function sayHello() {
 console.log("hello");
@@ -371,7 +368,7 @@ console.log("hello");
   });
 
   test("should return the list of files in the workspace", async () => {
-    const [editor] = createEditorOn("");
+    const editor = createEditorOn("");
     const files = [
       new RelativePath("README.md"),
       new RelativePath("./src/some-file.ts"),
