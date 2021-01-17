@@ -1,3 +1,7 @@
+import * as assert from "assert";
+import { suite, test } from "mocha";
+import * as sinon from "sinon";
+
 import { Editor, Code, RelativePath } from "./editor";
 import { Position } from "./position";
 import { Selection } from "./selection";
@@ -24,8 +28,8 @@ function createEditorContractTests(
     position?: Position
   ) => [Editor, () => { code: Code; position: Position }]
 ) {
-  describe("write", () => {
-    it("should update code with the given one", async () => {
+  suite("write", () => {
+    test("should update code with the given one", async () => {
       const code = `function sayHello() {
   // Replace me with some code
 }`;
@@ -34,13 +38,13 @@ function createEditorContractTests(
   console.log("How are you doing?");
 }`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.write(newCode);
 
-      expect(getState().code).toEqual(newCode);
+      assert.strictEqual(editor.code, newCode);
     });
 
-    it("should set position to the given one", async () => {
+    test("should set position to the given one", async () => {
       const code = `function sayHello() {
   // Replace me with some code
 }`;
@@ -50,13 +54,13 @@ function createEditorContractTests(
 }`;
       const newPosition = new Position(2, 3);
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.write(newCode, newPosition);
 
-      expect(getState().position).toEqual(newPosition);
+      assert.deepStrictEqual(editor.selection.start, newPosition);
     });
 
-    it("should default to initial position if no position is given", async () => {
+    test("should default to initial position if no position is given", async () => {
       const code = `function sayHello() {
   // Replace me with some code
 }`;
@@ -66,27 +70,27 @@ function createEditorContractTests(
 }`;
       const position = new Position(0, 1);
 
-      const [editor, getState] = createEditorOn(code, position);
+      const [editor] = createEditorOn(code, position);
       await editor.write(newCode);
 
-      expect(getState().position).toEqual(position);
+      assert.deepStrictEqual(editor.selection.start, position);
     });
   });
 
-  describe("readThenWrite", () => {
-    it("should call `getModifications()` with an empty string if given selection is a cursor", async () => {
+  suite("readThenWrite", () => {
+    test("should call `getModifications()` with an empty string if given selection is a cursor", async () => {
       const code = `console.log("Hello")`;
-      const getModifications = jest.fn().mockReturnValue([]);
+      const getModifications = sinon.stub().returns([]);
 
       const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), getModifications);
 
-      expect(getModifications).toBeCalledWith("");
+      sinon.assert.calledWith(getModifications, "");
     });
 
-    it("should call `getModifications()` with the result of given selection", async () => {
+    test("should call `getModifications()` with the result of given selection", async () => {
       const code = `console.log("Hello")`;
-      const getModifications = jest.fn().mockReturnValue([]);
+      const getModifications = sinon.stub().returns([]);
 
       const [editor] = createEditorOn(code);
       await editor.readThenWrite(
@@ -94,14 +98,14 @@ function createEditorContractTests(
         getModifications
       );
 
-      expect(getModifications).toBeCalledWith("Hello");
+      sinon.assert.calledWith(getModifications, "Hello");
     });
 
-    it("should call `getModifications()` with the result of given multi-lines selection", async () => {
+    test("should call `getModifications()` with the result of given multi-lines selection", async () => {
       const code = `function sayHello() {
   console.log("Hello");
 }`;
-      const getModifications = jest.fn().mockReturnValue([]);
+      const getModifications = sinon.stub().returns([]);
 
       const [editor] = createEditorOn(code);
       await editor.readThenWrite(
@@ -109,35 +113,38 @@ function createEditorContractTests(
         getModifications
       );
 
-      expect(getModifications).toBeCalledWith(`sayHello() {
+      sinon.assert.calledWith(
+        getModifications,
+        `sayHello() {
   console.log("Hello");
-}`);
+}`
+      );
     });
 
-    it("should not change given code if no updates are given", async () => {
+    test("should not change given code if no updates are given", async () => {
       const code = `console.log("Hello")`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => []);
 
-      expect(getState().code).toEqual(code);
+      assert.strictEqual(editor.code, code);
     });
 
-    it("should apply update at cursor", async () => {
+    test("should apply update at cursor", async () => {
       const code = `console.log("Hello")`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         { code: " World!", selection: Selection.cursorAt(0, 18) }
       ]);
 
-      expect(getState().code).toEqual(`console.log("Hello World!")`);
+      assert.strictEqual(editor.code, `console.log("Hello World!")`);
     });
 
-    it("should use read code to update code", async () => {
+    test("should use read code to update code", async () => {
       const code = `console.log("Hello")`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([0, 13], [0, 18]),
         (readCode) => [
@@ -148,30 +155,33 @@ function createEditorContractTests(
         ]
       );
 
-      expect(getState().code).toEqual(`console.log("Hello you!")`);
+      assert.strictEqual(editor.code, `console.log("Hello you!")`);
     });
 
-    it("should apply update instead of selection", async () => {
+    test("should apply update instead of selection", async () => {
       const code = `function sayHello() {
   console.log("Hello");
 }`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         { code: `logger`, selection: new Selection([1, 2], [1, 13]) }
       ]);
 
-      expect(getState().code).toEqual(`function sayHello() {
+      assert.strictEqual(
+        editor.code,
+        `function sayHello() {
   logger("Hello");
-}`);
+}`
+      );
     });
 
-    it("should preserve empty lines", async () => {
+    test("should preserve empty lines", async () => {
       const code = `console.log("Hello");
 
   console.log("World!");`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `console.log("Goodbye");`,
@@ -179,19 +189,22 @@ function createEditorContractTests(
         }
       ]);
 
-      expect(getState().code).toEqual(`console.log("Goodbye");
+      assert.strictEqual(
+        editor.code,
+        `console.log("Goodbye");
 
-  console.log("World!");`);
+  console.log("World!");`
+      );
     });
 
-    it("should apply update instead of multi-line selection", async () => {
+    test("should apply update instead of multi-line selection", async () => {
       const code = `function sayHello() {
   console.log("Hello");
   console.log("World");
   console.log("Boooh!");
 }`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `console.log("Hello World!");`,
@@ -199,17 +212,20 @@ function createEditorContractTests(
         }
       ]);
 
-      expect(getState().code).toEqual(`function sayHello() {
+      assert.strictEqual(
+        editor.code,
+        `function sayHello() {
   console.log("Hello World!");
-}`);
+}`
+      );
     });
 
-    it("should apply a multi-line update instead of selection", async () => {
+    test("should apply a multi-line update instead of selection", async () => {
       const code = `function sayHello() {
   // Replace me with some code
 }`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `console.log("Hello");
@@ -218,13 +234,16 @@ function createEditorContractTests(
         }
       ]);
 
-      expect(getState().code).toEqual(`function sayHello() {
+      assert.strictEqual(
+        editor.code,
+        `function sayHello() {
   console.log("Hello");
   console.log("World");
-}`);
+}`
+      );
     });
 
-    it("should apply a multi-line update on a multi-line selection", async () => {
+    test("should apply a multi-line update on a multi-line selection", async () => {
       const code = `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
@@ -235,7 +254,7 @@ function createEditorContractTests(
   }
 }`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(Selection.cursorAt(0, 0), () => [
         {
           code: `{
@@ -251,7 +270,9 @@ function createEditorContractTests(
         }
       ]);
 
-      expect(getState().code).toEqual(`function doSomethingIfValid() {
+      assert.strictEqual(
+        editor.code,
+        `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
     return;
@@ -259,13 +280,14 @@ function createEditorContractTests(
 
   doSomething();
   doAnotherThing();
-}`);
+}`
+      );
     });
 
-    it("should apply multiple updates, in parallel", async () => {
+    test("should apply multiple updates, in parallel", async () => {
       const code = `console.log("Hello!");`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([0, 12], [0, 20]),
         (readCode) => [
@@ -277,16 +299,19 @@ function createEditorContractTests(
         ]
       );
 
-      expect(getState().code).toEqual(`const extracted = "Hello!";
-console.log(extracted);`);
+      assert.strictEqual(
+        editor.code,
+        `const extracted = "Hello!";
+console.log(extracted);`
+      );
     });
 
-    it("should apply multiple multi-lines updates, in parallel", async () => {
+    test("should apply multiple multi-lines updates, in parallel", async () => {
       const code = `console.log([
   "Hello!"
 ]);`;
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(new Selection([0, 12], [2, 1]), (readCode) => [
         {
           code: `const extracted = ${readCode};\n`,
@@ -295,42 +320,45 @@ console.log(extracted);`);
         { code: `extracted`, selection: new Selection([0, 12], [2, 1]) }
       ]);
 
-      expect(getState().code).toEqual(`const extracted = [
+      assert.strictEqual(
+        editor.code,
+        `const extracted = [
   "Hello!"
 ];
-console.log(extracted);`);
+console.log(extracted);`
+      );
     });
 
-    it("should set position to the given one", async () => {
+    test("should set position to the given one", async () => {
       const code = `function sayHello() {
   // Replace me with some code
 }`;
       const newPosition = new Position(2, 1);
 
-      const [editor, getState] = createEditorOn(code);
+      const [editor] = createEditorOn(code);
       await editor.readThenWrite(
         new Selection([1, 2], [1, 30]),
         () => [],
         newPosition
       );
 
-      expect(getState().position).toEqual(newPosition);
+      assert.deepStrictEqual(editor.selection.start, newPosition);
     });
 
-    it("should default to initial position if no position is given", async () => {
+    test("should default to initial position if no position is given", async () => {
       const code = `function sayHello() {
   // Replace me with some code
 }`;
       const position = new Position(1, 2);
 
-      const [editor, getState] = createEditorOn(code, position);
+      const [editor] = createEditorOn(code, position);
       await editor.readThenWrite(new Selection([1, 2], [1, 30]), () => []);
 
-      expect(getState().position).toEqual(position);
+      assert.deepStrictEqual(editor.selection.start, position);
     });
   });
 
-  it("should write in a given file", async () => {
+  test("should write in a given file", async () => {
     const [editor] = createEditorOn("");
     const filePath = new RelativePath("./some-file.ts");
     const code = `function sayHello() {
@@ -339,10 +367,10 @@ console.log("hello");
 
     await editor.writeIn(filePath, code);
 
-    expect(await editor.codeOf(filePath)).toBe(code);
+    assert.strictEqual(await editor.codeOf(filePath), code);
   });
 
-  it("should return the list of files in the workspace", async () => {
+  test("should return the list of files in the workspace", async () => {
     const [editor] = createEditorOn("");
     const files = [
       new RelativePath("README.md"),
@@ -353,6 +381,6 @@ console.log("hello");
 
     const result = await editor.workspaceFiles();
 
-    expect(result).toEqual(files);
+    assert.deepStrictEqual(result, files);
   });
 }
