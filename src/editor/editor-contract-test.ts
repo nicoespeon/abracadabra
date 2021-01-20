@@ -372,7 +372,7 @@ console.log("hello");
     const files = [
       new RelativePath("README.md"),
       new RelativePath("./src/some-file.ts"),
-      new RelativePath("./scr/some-file.test.ts")
+      new RelativePath("./src/some-file.test.ts")
     ];
     files.forEach((file) => editor.writeIn(file, ""));
 
