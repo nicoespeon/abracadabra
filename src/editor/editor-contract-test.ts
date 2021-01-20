@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import { suite, test } from "mocha";
+import { suite, test, afterEach } from "mocha";
 import * as sinon from "sinon";
 
 import { Editor, Code, RelativePath } from "./editor";
@@ -23,8 +23,11 @@ export { createEditorContractTests };
  */
 
 function createEditorContractTests(
-  createEditorOn: (code: Code, position?: Position) => Promise<Editor>
+  createEditorOn: (code: Code, position?: Position) => Promise<Editor>,
+  cleanUp: () => Promise<void> = async () => {}
 ) {
+  afterEach(async () => await cleanUp());
+
   suite("write", () => {
     test("should update code with the given one", async () => {
       const code = `function sayHello() {
