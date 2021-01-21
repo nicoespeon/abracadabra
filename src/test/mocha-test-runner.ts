@@ -5,7 +5,8 @@ import glob from "glob";
 export function run(): Promise<void> {
   const mocha = new Mocha({
     ui: "tdd",
-    color: true
+    color: true,
+    timeout: "10s"
   });
 
   // The folder containing the source code where tests are located
