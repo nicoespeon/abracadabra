@@ -42,6 +42,7 @@
     "test": "jest",
     "pretest:contract": "tsc -p ./",
     "test:contract": "node ./out/test/run-contract-tests.js",
+    "test:ci": "yarn test && yarn test:contract",
     "build": "webpack --mode none",
     "watch": "webpack --mode none --watch",
     "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
