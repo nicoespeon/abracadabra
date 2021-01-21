@@ -4,7 +4,7 @@ Date: 2019-05-24
 
 ## Status
 
-Accepted
+Superceded by [10. Integration tests](0010-integration-tests.md)
 
 ## Context
 
