@@ -86,14 +86,30 @@ class VSCodeEditor implements Editor {
   }
 
   async writeIn(path: RelativePath, code: Code): Promise<void> {
-    const edit = new vscode.WorkspaceEdit();
     const fileUri = this.fileUriAt(path);
+    await VSCodeEditor.ensureFileExists(fileUri);
+
+    const edit = new vscode.WorkspaceEdit();
     const WHOLE_DOCUMENT = new vscode.Range(
       new vscode.Position(0, 0),
       new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
     );
     edit.set(fileUri, [new vscode.TextEdit(WHOLE_DOCUMENT, code)]);
     await vscode.workspace.applyEdit(edit);
+
+    const updatedDocument = await vscode.workspace.openTextDocument(fileUri);
+    await updatedDocument.save();
+  }
+
+  static async ensureFileExists(fileUri: vscode.Uri) {
+    try {
+      await vscode.workspace.fs.readFile(fileUri);
+    } catch {
+      // If file doesn't exist, reading it will throw.
+      // We assume that's the only reason it would throw here.
+      const NO_CONTENT = new Uint8Array();
+      await vscode.workspace.fs.writeFile(fileUri, NO_CONTENT);
+    }
   }
 
   protected fileUriAt(path: RelativePath): vscode.Uri {
