@@ -27,17 +27,21 @@ class VSCodeEditor implements Editor {
   }
 
   async workspaceFiles(): Promise<RelativePath[]> {
-    const ignoredFoldersGlobPattern = `{${getIgnoredFolders().join(",")}}`;
-    const uris = await vscode.workspace.findFiles(
-      "**/*.{js,jsx,ts,tsx}",
-      `**/${ignoredFoldersGlobPattern}/**`
-    );
+    const uris = await this.findFileUris();
 
     return uris
       .map((uri) => new AbsolutePath(uri.path))
       .filter((path) => !path.equals(this.document.uri.path))
       .filter((path) => !path.fileName.endsWith(".d.ts"))
       .map((path) => path.relativeTo(this.document.uri.path));
+  }
+
+  protected async findFileUris(): Promise<vscode.Uri[]> {
+    const ignoredFoldersGlobPattern = `{${getIgnoredFolders().join(",")}}`;
+    return vscode.workspace.findFiles(
+      "**/*.{js,jsx,ts,tsx}",
+      `**/${ignoredFoldersGlobPattern}/**`
+    );
   }
 
   get code(): Code {
