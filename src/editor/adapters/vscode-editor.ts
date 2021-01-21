@@ -96,7 +96,7 @@ class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
   }
 
-  private fileUriAt(path: RelativePath): vscode.Uri {
+  protected fileUriAt(path: RelativePath): vscode.Uri {
     const filePath = path.absoluteFrom(this.document.uri.path);
     return this.document.uri.with({ path: filePath.value });
   }
