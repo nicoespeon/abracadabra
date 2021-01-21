@@ -26,7 +26,7 @@ function createEditorContractTests(
   createEditorOn: (code: Code, position?: Position) => Promise<Editor>,
   cleanUp: () => Promise<void> = async () => {}
 ) {
-  afterEach(async () => await cleanUp());
+  afterEach(cleanUp);
 
   suite("write", () => {
     test("should update code with the given one", async () => {

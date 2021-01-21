@@ -50,7 +50,7 @@ suite("VSCode Editor", () => {
       return editor;
     },
     async () => {
-      return vscode.workspace.fs.delete(PLAYGROUND_FOLDER_URI, {
+      await vscode.workspace.fs.delete(PLAYGROUND_FOLDER_URI, {
         recursive: true,
         useTrash: false
       });
