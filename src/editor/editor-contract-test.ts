@@ -377,7 +377,9 @@ console.log("hello");
       new RelativePath("./src/some-file.ts"),
       new RelativePath("./src/some-file.test.ts")
     ];
-    files.forEach((file) => editor.writeIn(file, ""));
+    for (let file of files) {
+      await editor.writeIn(file, "");
+    }
 
     const result = await editor.workspaceFiles();
 
