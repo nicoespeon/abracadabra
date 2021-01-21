@@ -1,5 +1,5 @@
-import * as assert from "assert";
 import { suite, test, afterEach } from "mocha";
+import { assert } from "chai";
 import * as sinon from "sinon";
 
 import { Editor, Code, RelativePath } from "./editor";
@@ -383,6 +383,6 @@ console.log("hello");
 
     const result = await editor.workspaceFiles();
 
-    assert.deepStrictEqual(result, files);
+    assert.sameDeepMembers(result, files);
   });
 }
