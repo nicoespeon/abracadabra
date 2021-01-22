@@ -26,4 +26,4 @@ You can use `yarn new` to create a new refactoring.
 
 Follow the tool, it will ask you the relevant questions.
 
-If you want to contribute, check [hygen documentation](https://www.hygen.io/quick-start) to learn how it works.
+If you want to contribute, check [hygen documentation](https://www.hygen.io/docs/quick-start) to learn how it works.
