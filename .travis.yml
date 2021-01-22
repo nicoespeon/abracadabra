@@ -2,7 +2,6 @@ language: node_js
 node_js:
   - "14.15.0"
 os:
-  - osx
   - linux
 sudo: false
 before_install:
