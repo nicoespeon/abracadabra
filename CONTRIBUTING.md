@@ -148,7 +148,7 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 [babel-handbook-transformation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-transformation-operations
 [babel-handbook-manipulation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#manipulation
 [all-contributors-bot-command]: https://allcontributors.org/docs/en/bot/usage#all-contributors-add
-[hygen-documentation]: https://www.hygen.io/quick-start
+[hygen-documentation]: https://www.hygen.io/docs/quick-start
 
 <!-- Repo links -->
 
