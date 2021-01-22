@@ -189,6 +189,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "iulspop",
+      "name": "Iuliu Pop",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53665722?v=4",
+      "profile": "https://github.com/iulspop",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
