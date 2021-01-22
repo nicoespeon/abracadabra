@@ -38,6 +38,7 @@ import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assi
 import simplifyTernary from "./refactorings/simplify-ternary";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
+import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 // REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
 import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
 import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
@@ -106,7 +107,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       replaceBinaryWithAssignment,
       simplifyTernary,
       splitDeclarationAndInitialization,
-      splitIfStatement
+      splitIfStatement,
+      splitMultipleDeclarations
     ]
   }
 };
