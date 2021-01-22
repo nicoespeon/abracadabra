@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindMultipleDeclarationsToSplit,
   CantImportReferences,
   DidNotFindOtherFiles,
   DidNotFindCodeToMove,
@@ -51,6 +52,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindMultipleDeclarationsToSplit:
+      return didNotFind("multiple variable declarations to split");
+
     case ErrorReason.CantImportReferences:
       return cantDoIt(
         "move this, it has references that can't be imported (circular reference)"
