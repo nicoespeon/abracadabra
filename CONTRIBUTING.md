@@ -9,6 +9,8 @@ Architecture decisions for this project [are documented here][adrs], using the [
 - [Getting started](#getting-started)
 - [Run the tests](#run-the-tests)
   - [About tests](#about-tests)
+  - [Running the contract tests](#runnig-the-contract-tests)
+  - [Specificities of the InMemory editor](#specificities-of-the-inmemory-editor)
 - [Create a new refactoring](#create-a-new-refactoring)
 - [Useful resources to start changing the code](#useful-resources-to-start-changing-the-code)
 - [Code Style](#code-style)
@@ -23,13 +25,13 @@ Architecture decisions for this project [are documented here][adrs], using the [
 
 1. Clone the repo: `git clone git@github.com:nicoespeon/abracadabra.git`
 1. Go into the cloned repository: `cd abracadabra`
-1. Install dependencies: `yarn install`
+1. Install dependencies: `yarn install`
 
 The project uses [TypeScript][typescript], [Jest][jest] for the tests and [Prettier][prettier] for the formatting.
 
 ## Run the tests
 
-You can run tests with `yarn test`.
+You can run unit tests with `yarn test`.
 
 To run tests in watch mode, use `yarn test --watch`.
 
@@ -37,13 +39,47 @@ We use [Jest][jest] under the hood, so you can pass any valid Jest command to `y
 
 ### About tests
 
-In short, most of our tests are unit tests. We test business logic in isolation from VS Code API.
+We write 2 kind of tests:
 
-We don't have VS Code integration tests. [We've documented why in this ADR][adr-no-integration-tests].
+1. **Unit Tests**
+2. Integration Tests (we call them **Contract Tests**)
 
-To do so, we're using an `InMemoryEditor` implementation that behaves as expected. To ensure it behaves as expected, we have written contract tests (in theory, we should be able to run these same tests on the `VSCodeEditor`).
+Now, people have different definitions of what a "unit" is and what "integration" tests are. So here's an explaination of how it works in _this_ project 🤠
 
-The InMemory editor has convenient features that makes tests easier to write:
+Most of our tests are testing the business logic, isolated from VS Code API. It's pure logic and doesn't rely on a specific environment to run. That's what we call that "unit tests". Some would call them "integration tests" because we don't mock much. Others would call that [sociable unit tests](https://martinfowler.com/bliki/UnitTest.html). **What really matters is that they are reliable, fast, and don't test implementation details.**
+
+To make this possible, we're using an `InMemoryEditor` implementation that behaves as expected. To ensure it behaves as expected, we have written contract tests. These same tests will run against the `VSCodeEditor` implementation, ensuring we can replace one with the other. These contract tests are what we'd call "integration tests". But, we simply call them contract tests.
+
+Here's a little schema to illustrate how it works:
+
+![][how-tests-work]
+
+[_Too small to read? Check the SVG 👍_][how-tests-work-svg]
+
+### Running the contract tests
+
+You can run the contract tests with `yarn test:contract`.
+
+It's a distinct command because these tests are slower. They will integrate with VS Code API to actually do changes in a playground environment. Hopefully, we don't need to run them often—not until we have to change editors' behavior.
+
+VS Code has a limitation. It can't launch tests that access VS Code API while another instance of the editor is running.
+
+Thus, there are 2 ways to actually launch the tests:
+
+1. Use [VS Code Insiders](https://code.visualstudio.com/insiders/), which has less restrictions, but is riskier to use—it has the most recent code pushes and may lead to the occasional broken build.
+2. Lauch tests through the VS Code debugger. We created a dedicated task you can launch. It will compile the code, open a playground editor and run the tests inside.
+
+![Run contract tests from the debugger, or use F5][contract-tests-debugger]
+
+The test report is available in the `Debug Console`.
+
+![][contract-tests-report]
+
+**Finally, both unit & contract tests are run in CI**. If you open a PR and CI is green, then you know everything is fine and you did an amazing job ✅
+
+### Specificities of the InMemory editor
+
+On top of expected editor behaviors, the InMemory editor has convenient features that makes tests easier to write:
 
 - `[start]` and `[end]` are parsed as if it was the selection of the user
 - `[cursor]` is parsed as if it was the cursor of the user (the cursor really is an empty selection, so that's a shorthand for `[start][end]`)
@@ -102,6 +138,8 @@ You can use [VS Code's built-in debugger][vscode-debug-extension] on the project
 
 To build the project, press `F5`.
 
+_Note: if pressing `F5` runs the "Contract Tests", please select the "Run Extension" task instead and press `F5` again._
+
 ![][debugger-build]
 
 It will open an "Extension Development Host" window, overriding your "Abracadabra" extension with your local code. This is helpful to test your changes in integration with VS Code API.
@@ -153,7 +191,6 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 <!-- Repo links -->
 
 [adrs]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr
-[adr-no-integration-tests]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0002-no-integration-test.md
 [adr-create-generator]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0006-create-generator-to-bootstrap-new-refactorings.md
 
 <!-- Images -->
@@ -161,3 +198,7 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 [debugger-build]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/debugger-build.png?raw=true
 [extension-development-host]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/extension-development-host.png?raw=true
 [debugger-rebuild]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/debugger-rebuild.png?raw=true
+[how-tests-work]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/how-tests-work.png?raw=true
+[how-tests-work-svg]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/how-tests-work.svg?raw=true
+[contract-tests-debugger]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/contract-tests-debugger.png?raw=true
+[contract-tests-report]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/contract-tests-report.png?raw=true
