@@ -19,8 +19,8 @@ async function splitMultipleDeclarations(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path) => {
-      // TODO: implement the transformation here 🧙‍
+    createVisitor(selection, (path: t.NodePath) => {
+      path;
     })
   );
 }
@@ -29,6 +29,10 @@ function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath) => void
 ): t.Visitor {
-  // TODO: implement the check here 🧙‍
-  return {};
+  return {
+    VariableDeclaration(path) {
+      selection;
+      onMatch(path);
+    }
+  };
 }
