@@ -194,6 +194,12 @@ const something = () => ({
 assert.isTrue(
   getError(extracted)
 );`
+      },
+      {
+        description: "a property to destructure",
+        code: `console.log(foo.bar.b[cursor]az);`,
+        expected: `const { baz } = foo.bar;
+console.log(baz);`
       }
     ],
     async ({ code, expected, expectedPosition }) => {
