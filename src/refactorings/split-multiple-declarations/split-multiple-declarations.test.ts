@@ -8,7 +8,12 @@ describe("Split Multiple Declarations", () => {
   testEach<{ code: Code; expected: Code }>(
     "should split multiple declarations",
     [
-      // TODO: write successful test cases here
+      {
+        description: "basic let multiple declarations",
+        code: `let firstName, lastName;`,
+        expected: `let firstName;
+let lastName;`
+      }
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
