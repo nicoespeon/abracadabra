@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindTypeToExtract,
   CantImportReferences,
   DidNotFindOtherFiles,
   DidNotFindCodeToMove,
@@ -51,6 +52,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindTypeToExtract:
+      return didNotFind("a type to extract");
+
     case ErrorReason.CantImportReferences:
       return cantDoIt(
         "move this, it has references that can't be imported (circular reference)"
