@@ -11,7 +11,10 @@ import {
 } from "./variable";
 import { Parts } from "./parts";
 import { DestructureStrategy } from "./destructure-strategy";
-import { VariableDeclarationModification } from "./variable-declaration-modification";
+import {
+  DeclarationOnCommonAncestor,
+  VariableDeclarationModification
+} from "./variable-declaration-modification";
 
 export { createOccurrence, Occurrence };
 
@@ -98,11 +101,22 @@ class Occurrence<T extends t.Node = t.Node> {
     allOccurrences: Occurrence[]
   ): Modification {
     const { name, value } = this.variableDeclarationParts(extractedCode);
+    const useTabs = t.isUsingTabs(this.path.node);
+
+    if (allOccurrences.length > 1) {
+      return new DeclarationOnCommonAncestor(
+        name,
+        value,
+        useTabs,
+        allOccurrences
+      );
+    }
+
     return new VariableDeclarationModification(
       name,
       value,
-      t.isUsingTabs(this.path.node),
-      allOccurrences
+      useTabs,
+      Selection.cursorAtPosition(this.parentScopePosition)
     );
   }
 
