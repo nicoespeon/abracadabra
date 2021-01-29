@@ -155,15 +155,33 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   private destructureStrategy = DestructureStrategy.Destructure;
 
-  protected variableDeclarationParts(code: Code): { name: Code; value: Code } {
+  toVariableDeclaration(
+    extractedCode: Code,
+    allOccurrences: Occurrence[]
+  ): Modification {
     if (this.destructureStrategy === DestructureStrategy.Preserve) {
-      return super.variableDeclarationParts(code);
+      return super.toVariableDeclaration(extractedCode, allOccurrences);
     }
 
-    return {
-      name: `{ ${this.variable.name} }`,
-      value: this.parentObject
-    };
+    const name = `{ ${this.variable.name} }`;
+    const value = this.parentObject;
+    const useTabs = t.isUsingTabs(this.path.node);
+
+    if (allOccurrences.length > 1) {
+      return new DeclarationOnCommonAncestor(
+        name,
+        value,
+        useTabs,
+        allOccurrences
+      );
+    }
+
+    return new VariableDeclarationModification(
+      name,
+      value,
+      useTabs,
+      Selection.cursorAtPosition(this.parentScopePosition)
+    );
   }
 
   async askModificationDetails(editor: Editor) {
