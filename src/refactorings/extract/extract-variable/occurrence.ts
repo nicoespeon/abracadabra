@@ -11,6 +11,7 @@ import {
 } from "./variable";
 import { Parts } from "./parts";
 import { DestructureStrategy } from "./destructure-strategy";
+import { VariableDeclarationModification } from "./variable-declaration-modification";
 
 export { createOccurrence, Occurrence };
 
@@ -92,7 +93,20 @@ class Occurrence<T extends t.Node = t.Node> {
     return Position.fromAST(parent.loc.start);
   }
 
-  toVariableDeclaration(code: Code): { name: Code; value: Code } {
+  toVariableDeclaration(
+    extractedCode: Code,
+    allOccurrences: Occurrence[]
+  ): Modification {
+    const { name, value } = this.variableDeclarationParts(extractedCode);
+    return new VariableDeclarationModification(
+      name,
+      value,
+      t.isUsingTabs(this.path.node),
+      allOccurrences
+    );
+  }
+
+  protected variableDeclarationParts(code: Code): { name: Code; value: Code } {
     return {
       name: this.variable.name,
       value: t.isJSXText(this.path.node) ? `"${code}"` : code
@@ -127,9 +141,9 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   private destructureStrategy = DestructureStrategy.Destructure;
 
-  toVariableDeclaration(code: Code): { name: Code; value: Code } {
+  protected variableDeclarationParts(code: Code): { name: Code; value: Code } {
     if (this.destructureStrategy === DestructureStrategy.Preserve) {
-      return super.toVariableDeclaration(code);
+      return super.variableDeclarationParts(code);
     }
 
     return {
@@ -188,7 +202,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
       );
 
       // If any of these throws, Occurrence is invalid
-      occurrence.toVariableDeclaration();
+      occurrence.variableDeclarationParts();
       occurrence.modification;
     } catch {
       return false;
@@ -197,7 +211,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     return true;
   }
 
-  toVariableDeclaration(): { name: Code; value: Code } {
+  protected variableDeclarationParts(): { name: Code; value: Code } {
     return {
       name: this.variable.name,
       value: `"${this.parts.selected}"`

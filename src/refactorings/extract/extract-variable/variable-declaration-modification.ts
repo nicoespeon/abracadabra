@@ -9,23 +9,18 @@ export { VariableDeclarationModification };
 
 class VariableDeclarationModification implements Modification {
   constructor(
-    private value: Code,
-    private selectedOccurrence: Occurrence,
+    private name: string,
+    private value: string,
+    private useTabs: boolean,
     private allOccurrences: Occurrence[]
   ) {}
 
   get code(): Code {
-    const { name, value } = this.selectedOccurrence.toVariableDeclaration(
-      this.value
-    );
-
     const indentationLevel = this.selection.start.character;
-    const indentationChar = t.isUsingTabs(this.selectedOccurrence.path.node)
-      ? "\t"
-      : " ";
+    const indentationChar = this.useTabs ? "\t" : " ";
     const indentation = indentationChar.repeat(indentationLevel);
 
-    return `const ${name} = ${value};\n${indentation}`;
+    return `const ${this.name} = ${this.value};\n${indentation}`;
   }
 
   get selection(): Selection {

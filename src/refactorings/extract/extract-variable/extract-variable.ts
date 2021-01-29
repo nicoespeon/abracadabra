@@ -8,7 +8,6 @@ import {
   ReplacementStrategy,
   askReplacementStrategy
 } from "../replacement-strategy";
-import { VariableDeclarationModification } from "./variable-declaration-modification";
 
 export { extractVariable };
 
@@ -40,9 +39,8 @@ async function extractVariable(editor: Editor) {
   await editor.readThenWrite(
     selectedOccurrence.selection,
     (extractedCode) => [
-      new VariableDeclarationModification(
+      selectedOccurrence.toVariableDeclaration(
         extractedCode,
-        selectedOccurrence,
         extractedOccurrences
       ),
       // Replace extracted code with new variable.
