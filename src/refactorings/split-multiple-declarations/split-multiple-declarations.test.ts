@@ -31,6 +31,14 @@ const lastName;`
         code: `const firstName = 'John', lastName = 'Doe';`,
         expected: `const firstName = 'John';
 const lastName = 'Doe';`
+      },
+      {
+        description:
+          "mixed multiple declarations with initialization and without initialization",
+        code: `let firstName = 'John', lastName, details = {age: 10, country: "Moon"};`,
+        expected: `let firstName = 'John';
+let lastName;
+let details = {age: 10, country: "Moon"};`
       }
     ],
     async ({ code, expected }) => {
