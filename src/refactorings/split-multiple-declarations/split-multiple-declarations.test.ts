@@ -25,6 +25,12 @@ var lastName;`
         code: `const firstName, lastName;`,
         expected: `const firstName;
 const lastName;`
+      },
+      {
+        description: "multiple declarations with initialization",
+        code: `const firstName = 'John', lastName = 'Doe';`,
+        expected: `const firstName = 'John';
+const lastName = 'Doe';`
       }
     ],
     async ({ code, expected }) => {
