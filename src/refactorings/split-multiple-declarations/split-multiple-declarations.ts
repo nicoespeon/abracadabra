@@ -20,13 +20,14 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path: t.NodePath<t.VariableDeclaration>) => {
-      const declarations = path.node.declarations;
+      const declarators = path.node.declarations;
       const kind = path.node.kind;
 
-      path.replaceWithMultiple([
-        t.variableDeclaration(kind, declarations.slice(0, 1)),
-        t.variableDeclaration(kind, declarations.slice(1, 2))
-      ]);
+      const declarations = declarators.map(function (declarator) {
+        return t.variableDeclaration(kind, [declarator]);
+      });
+
+      path.replaceWithMultiple(declarations);
     })
   );
 }
