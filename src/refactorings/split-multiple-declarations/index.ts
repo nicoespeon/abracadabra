@@ -1,6 +1,6 @@
 import {
   splitMultipleDeclarations,
-  createVisitor
+  canSplitMultipleDeclarations
 } from "./split-multiple-declarations";
 
 import { RefactoringWithActionProvider } from "../../types";
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Split multiple declarations",
-    createVisitor
+    createVisitor: canSplitMultipleDeclarations
   }
 };
 
