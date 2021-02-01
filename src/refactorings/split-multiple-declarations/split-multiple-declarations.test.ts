@@ -22,9 +22,9 @@ var lastName;`
       },
       {
         description: "basic const multiple declarations",
-        code: `const firstName, lastName;`,
-        expected: `const firstName;
-const lastName;`
+        code: `const firstName = "Jane", lastName = "Doe";`,
+        expected: `const firstName = "Jane";
+const lastName = "Doe";`
       },
       {
         description:
