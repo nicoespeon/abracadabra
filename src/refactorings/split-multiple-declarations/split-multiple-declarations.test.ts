@@ -39,6 +39,13 @@ const lastName = 'Doe';`
         expected: `let firstName = 'John';
 let lastName;
 let details = {age: 10, country: "Moon"};`
+      },
+      {
+        description:
+          "typescript multiple declarations split conserves type annotations",
+        code: `let firstName: string = 'John', age: number = 7`,
+        expected: `let firstName: string = 'John';
+let age: number = 7;`
       }
     ],
     async ({ code, expected }) => {
