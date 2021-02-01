@@ -13,6 +13,18 @@ describe("Split Multiple Declarations", () => {
         code: `let firstName, lastName;`,
         expected: `let firstName;
 let lastName;`
+      },
+      {
+        description: "basic var multiple declarations",
+        code: `var firstName, lastName;`,
+        expected: `var firstName;
+var lastName;`
+      },
+      {
+        description: "basic const multiple declarations",
+        code: `const firstName, lastName;`,
+        expected: `const firstName;
+const lastName;`
       }
     ],
     async ({ code, expected }) => {
