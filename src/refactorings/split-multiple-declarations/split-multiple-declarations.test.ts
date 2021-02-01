@@ -27,12 +27,6 @@ var lastName;`
 const lastName;`
       },
       {
-        description: "multiple declarations with initialization",
-        code: `const firstName = 'John', lastName = 'Doe';`,
-        expected: `const firstName = 'John';
-const lastName = 'Doe';`
-      },
-      {
         description:
           "mixed multiple declarations with initialization and without initialization",
         code: `let firstName = 'John', lastName, details = {age: 10, country: "Moon"};`,
