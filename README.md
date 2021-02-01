@@ -493,7 +493,7 @@ Splits multiple variables declarated together onto a single line each.
 
 <details><summary>See it in action</summary>
 
-TODO: Add gif demonstration
+![][demo-split-multiple-declarations]
 
 </details><br />
 
@@ -904,6 +904,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
+[demo-split-multiple-declarations]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-multiple-declarations.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 [demo-lift-up-conditional]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/lift-up-conditional.gif?raw=true
