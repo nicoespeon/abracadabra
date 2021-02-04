@@ -136,6 +136,7 @@
     "onCommand:abracadabra.simplifyTernary",
     "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
+    "onCommand:abracadabra.splitMultipleDeclarations",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -507,6 +508,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.splitIfStatement.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.splitMultipleDeclarations.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1177,6 +1183,26 @@
         },
         {
           "command": "abracadabra.splitIfStatement",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.splitMultipleDeclarations",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.splitMultipleDeclarations",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.splitMultipleDeclarations",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.splitMultipleDeclarations",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.splitMultipleDeclarations",
           "when": "editorLangId == vue"
         }
       ]

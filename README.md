@@ -56,6 +56,7 @@ Related projects:
     1. [Remove Dead Code](#remove-dead-code)
   - Organizing data:
     1. [Split Declaration and Initialization](#split-declaration-and-initialization)
+    1. [Split Multiple Declarations](#split-multiple-declarations)
     1. [Convert let to const](#convert-let-to-const)
   - Working around the syntax:
     1. [Convert to Arrow Function](#convert-to-arrow-function)
@@ -484,6 +485,20 @@ Splits the declaration of the variable and its initialization. If it's a `const`
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Split Multiple Declarations
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Splits multiple variables declarated together onto a single line each.
+
+<details><summary>See it in action</summary>
+
+![][demo-split-multiple-declarations]
+
+</details><br />
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Convert let to const
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -890,6 +905,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-declaration-and-initialization.gif?raw=true
+[demo-split-multiple-declarations]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-multiple-declarations.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-template-literal.gif?raw=true
 [demo-replace-binary-with-assignment]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/replace-binary-with-assignment.gif?raw=true
 [demo-lift-up-conditional]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/lift-up-conditional.gif?raw=true
