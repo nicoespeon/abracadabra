@@ -13,6 +13,14 @@ describe("Extract Type", () => {
         code: `let something: number[cursor];`,
         expected: `type Extracted = number;
 let something: Extracted;`
+      },
+      {
+        description: "selected type only",
+        code: `let something: number[cursor];
+let somethingElse: string;`,
+        expected: `type Extracted = number;
+let something: Extracted;
+let somethingElse: string;`
       }
     ],
     async ({ code, expected }) => {

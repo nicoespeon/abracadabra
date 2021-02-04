@@ -46,7 +46,8 @@ function createVisitor(
 ): t.Visitor {
   return {
     TSTypeAnnotation(path) {
-      // TODO: use selection
+      if (!selection.isInsidePath(path)) return;
+
       onMatch(path);
     }
   };
