@@ -13,7 +13,8 @@ async function extractType(editor: Editor) {
     return;
   }
 
-  await editor.write(updatedCode.code);
+  // When we create interfaces it generates a double `;` by mistake
+  await editor.write(updatedCode.code.replace(/;;/gm, ";"));
   // TODO: rename extracted type
 }
 
@@ -27,11 +28,21 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (!pathWhereToDeclareType) return;
 
       const typeIdentifier = t.identifier("Extracted");
-      const typeDeclaration = t.tsTypeAliasDeclaration(
+      // TODO: refactor
+      let typeDeclaration: t.Node = t.tsTypeAliasDeclaration(
         typeIdentifier,
         null,
         path.node.typeAnnotation
       );
+
+      if (t.isTSTypeLiteral(path.node.typeAnnotation)) {
+        typeDeclaration = t.tsInterfaceDeclaration(
+          typeIdentifier,
+          null,
+          null,
+          t.tsInterfaceBody(path.node.typeAnnotation.members)
+        );
+      }
 
       pathWhereToDeclareType.insertBefore(typeDeclaration);
       // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS

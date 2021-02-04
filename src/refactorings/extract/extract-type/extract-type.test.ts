@@ -21,6 +21,15 @@ let somethingElse: string;`,
         expected: `type Extracted = number;
 let something: Extracted;
 let somethingElse: string;`
+      },
+      {
+        description: "create interface if extracted type is an object",
+        code: `let something: [start]{ hello: string; }[end];`,
+        expected: `interface Extracted {
+  hello: string;
+}
+
+let something: Extracted;`
       }
     ],
     async ({ code, expected }) => {
