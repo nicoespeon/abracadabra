@@ -753,7 +753,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/justerest"><img src="https://avatars3.githubusercontent.com/u/24754883?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sergey Klevakin</b></sub></a><br /><a href="#ideas-justerest" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=justerest" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ajanian"><img src="https://avatars1.githubusercontent.com/u/99716?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andrew Janian</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aajanian" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/leosdad"><img src="https://avatars1.githubusercontent.com/u/7026091?v=4?s=100" width="100px;" alt=""/><br /><sub><b>leosdad</b></sub></a><br /><a href="#ideas-leosdad" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/iulspop"><img src="https://avatars.githubusercontent.com/u/53665722?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Iuliu Pop</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=iulspop" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/iulspop"><img src="https://avatars.githubusercontent.com/u/53665722?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Iuliu Pop</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=iulspop" title="Documentation">📖</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=iulspop" title="Code">💻</a></td>
   </tr>
 </table>
 
