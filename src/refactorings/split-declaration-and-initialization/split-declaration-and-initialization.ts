@@ -34,7 +34,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           .filter(isDeclarationInitialized)
           .map(function ({ id, init }) {
             if (id.type == "Identifier" && "typeAnnotation" in id) {
-              id = t.identifier(id.name);
+              id = t.identifier(id.name); // new identifier without annotation
             }
             return t.expressionStatement(t.assignmentExpression("=", id, init));
           })
