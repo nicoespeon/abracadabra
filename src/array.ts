@@ -1,4 +1,8 @@
-export { last, allButLast, isLast };
+export { first, last, allButLast, isLast };
+
+function first<T>(array: T[] | ReadonlyArray<T>): T | undefined {
+  return array[0];
+}
 
 function last<T>(array: T[] | ReadonlyArray<T>): T | undefined {
   return array[array.length - 1];
