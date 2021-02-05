@@ -62,6 +62,13 @@ firstName = "Jane";
 lastName = "Doe";`
       },
       {
+        description: "declarations with type annotations",
+        code: `const firstName: string = "Jane", age: number = 90;`,
+        expected: `let firstName: string, age: number;
+firstName = "Jane";
+age = 90;`
+      },
+      {
         description: "nested declaration, cursor on wrapper",
         code: `const getLastName = () => {
   const lastName = "Doe";
