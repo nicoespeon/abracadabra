@@ -33,8 +33,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         ...declarations
           .filter(isDeclarationInitialized)
           .map(function ({ id, init }) {
-            if ("typeAnnotation" in id) {
-              id.typeAnnotation = null;
+            if (id.type == "Identifier" && "typeAnnotation" in id) {
+              id = t.identifier(id.name);
             }
             return t.expressionStatement(t.assignmentExpression("=", id, init));
           })
