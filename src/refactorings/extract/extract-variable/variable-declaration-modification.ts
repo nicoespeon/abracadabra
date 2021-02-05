@@ -6,7 +6,11 @@ import { assert } from "../../../assert";
 
 import { Occurrence } from "./occurrence";
 
-export { VariableDeclarationModification, DeclarationOnCommonAncestor };
+export {
+  VariableDeclarationModification,
+  DeclarationOnCommonAncestor,
+  MergeDestructuredDeclaration
+};
 
 class VariableDeclarationModification implements Modification {
   constructor(
@@ -67,4 +71,21 @@ class DeclarationOnCommonAncestor extends VariableDeclarationModification {
 
 function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;
+}
+
+class MergeDestructuredDeclaration implements Modification {
+  constructor(
+    private name: string,
+    private lastDestructuredProperty: t.SelectableNode
+  ) {}
+
+  get code(): Code {
+    return `, ${this.name}`;
+  }
+
+  get selection(): Selection {
+    return Selection.cursorAtPosition(
+      Position.fromAST(this.lastDestructuredProperty.loc.end)
+    );
+  }
 }

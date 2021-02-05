@@ -200,6 +200,21 @@ assert.isTrue(
         code: `console.log(foo.bar.b[cursor]az);`,
         expected: `const { baz } = foo.bar;
 console.log(baz);`
+      },
+      {
+        description: "a property to destructure from an existing assignment",
+        code: `const { x } = obj;
+      function someScope() {
+        function test() {
+          return x + obj.y[cursor] * x;
+        }
+      }`,
+        expected: `const { x, y } = obj;
+      function someScope() {
+        function test() {
+          return x + y * x;
+        }
+      }`
       }
     ],
     async ({ code, expected, expectedPosition }) => {

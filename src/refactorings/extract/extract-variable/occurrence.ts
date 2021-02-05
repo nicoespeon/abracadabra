@@ -13,8 +13,10 @@ import { Parts } from "./parts";
 import { DestructureStrategy } from "./destructure-strategy";
 import {
   DeclarationOnCommonAncestor,
+  MergeDestructuredDeclaration,
   VariableDeclarationModification
 } from "./variable-declaration-modification";
+import { last } from "../../../array";
 
 export { createOccurrence, Occurrence };
 
@@ -161,6 +163,20 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   ): Modification {
     if (this.destructureStrategy === DestructureStrategy.Preserve) {
       return super.toVariableDeclaration(extractedCode, allOccurrences);
+    }
+
+    const existingDeclaration = t.findFirstExistingDeclaration(
+      this.path.get("object")
+    );
+
+    if (existingDeclaration) {
+      const lastProperty = last(existingDeclaration.node.id.properties);
+      if (lastProperty && t.isSelectableNode(lastProperty)) {
+        return new MergeDestructuredDeclaration(
+          this.variable.name,
+          lastProperty
+        );
+      }
     }
 
     const name = `{ ${this.variable.name} }`;
