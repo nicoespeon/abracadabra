@@ -61,6 +61,11 @@ class Selection {
     return this.end.line - this.start.line;
   }
 
+  get width(): number {
+    // Maybe this only make sense for single-line selections though…
+    return this.end.character - this.start.character;
+  }
+
   isEmpty(): boolean {
     return this.start.isEqualTo(this.end);
   }
