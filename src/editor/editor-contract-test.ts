@@ -329,6 +329,29 @@ console.log(extracted);`
       );
     });
 
+    test("should apply multiple updates on the same line, in parallel", async () => {
+      const code = `console.log(data.response.code, data.response.user.id);`;
+      const editor = await createEditorOn(code);
+
+      await editor.readThenWrite(
+        new Selection([0, 37], [0, 45]),
+        (readCode) => [
+          {
+            code: `const { ${readCode} } = data;\n`,
+            selection: Selection.cursorAt(0, 0)
+          },
+          { code: `response`, selection: new Selection([0, 32], [0, 45]) },
+          { code: `response`, selection: new Selection([0, 12], [0, 25]) }
+        ]
+      );
+
+      assert.strictEqual(
+        editor.code,
+        `const { response } = data;
+console.log(response.code, response.user.id);`
+      );
+    });
+
     test("should set position to the given one", async () => {
       const code = `function sayHello() {
   // Replace me with some code
