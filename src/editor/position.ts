@@ -83,6 +83,10 @@ class Position {
     return new Position(this.line, this.character + characters);
   }
 
+  removeCharacters(characters: number): Position {
+    return new Position(this.line, this.character - characters);
+  }
+
   putAtSameCharacter(position: Position): Position {
     return new Position(this.line, position.character);
   }
