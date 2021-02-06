@@ -204,17 +204,17 @@ console.log(baz);`
       {
         description: "a property to destructure from an existing assignment",
         code: `const { x } = obj;
-      function someScope() {
-        function test() {
-          return x + obj.y[cursor] * x;
-        }
-      }`,
+function someScope() {
+  function test() {
+    return x + obj.y[cursor] * x;
+  }
+}`,
         expected: `const { x, y } = obj;
-      function someScope() {
-        function test() {
-          return x + y * x;
-        }
-      }`
+function someScope() {
+  function test() {
+    return x + y * x;
+  }
+}`
       }
     ],
     async ({ code, expected, expectedPosition }) => {
