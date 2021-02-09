@@ -30,14 +30,12 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           kind,
           declarations.map(({ id }) => t.variableDeclarator(id))
         ),
-        ...declarations
-          .filter(isDeclarationInitialized)
-          .map(function ({ id, init }) {
-            if (id.type == "Identifier" && "typeAnnotation" in id) {
-              id = t.identifier(id.name); // new identifier without annotation
-            }
-            return t.expressionStatement(t.assignmentExpression("=", id, init));
-          })
+        ...declarations.filter(isDeclarationInitialized).map(({ id, init }) => {
+          if (id.type == "Identifier" && "typeAnnotation" in id) {
+            id = t.identifier(id.name); // new identifier without annotation
+          }
+          return t.expressionStatement(t.assignmentExpression("=", id, init));
+        })
       ]);
     })
   );
