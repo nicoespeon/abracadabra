@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** Split Multiple Declarations, to create distinct variable declarations from a single one. Thanks to @iulspop for this one!
 
+### Fixed
+
+- Split Declaration and Initialization would duplicate type annotations in TypeScript. @iulspop fixed that 🔥
+
 ## [4.13.1] - 2021-01-10
 
 No user-facing change. Configuration was fixed so the extension can be deployed again.
