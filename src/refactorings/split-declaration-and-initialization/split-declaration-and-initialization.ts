@@ -32,9 +32,12 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         ),
         ...declarations
           .filter(isDeclarationInitialized)
-          .map(({ id, init }) =>
-            t.expressionStatement(t.assignmentExpression("=", id, init))
-          )
+          .map(function ({ id, init }) {
+            if (id.type == "Identifier" && "typeAnnotation" in id) {
+              id = t.identifier(id.name); // new identifier without annotation
+            }
+            return t.expressionStatement(t.assignmentExpression("=", id, init));
+          })
       ]);
     })
   );
