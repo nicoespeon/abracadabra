@@ -1,4 +1,4 @@
-import { Editor, ErrorReason } from "../../../editor/editor";
+import { Command, Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
 
@@ -15,7 +15,7 @@ async function extractType(editor: Editor) {
 
   // When we create interfaces it generates a double `;` by mistake
   await editor.write(updatedCode.code.replace(/;;/gm, ";"));
-  // TODO: rename extracted type
+  await editor.delegate(Command.RenameSymbol);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
