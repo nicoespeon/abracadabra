@@ -102,4 +102,20 @@ describe("Position", () => {
       });
     });
   });
+
+  describe("goToNextNthWordInCode", () => {
+    it("should jump given number of words in given code", async () => {
+      const code = `const hey = "ho";
+
+interface Extracted {
+  world: string;
+  morning: boolean;
+}`;
+      const position = new Position(1, 0);
+
+      const result = position.goToNextNthWordInCode(2, code);
+
+      expect(result).toStrictEqual(new Position(2, 10));
+    });
+  });
 });
