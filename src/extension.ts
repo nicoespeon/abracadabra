@@ -15,6 +15,7 @@ import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import convertLetToConst from "./refactorings/convert-let-to-const";
 import extract from "./refactorings/extract";
+import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
@@ -47,7 +48,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
     languages: ["typescript", "typescriptreact"],
     withoutActionProvider: [],
-    withActionProvider: [extractInterface]
+    withActionProvider: [extractGenericType, extractInterface]
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
