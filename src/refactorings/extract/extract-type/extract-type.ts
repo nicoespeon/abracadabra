@@ -14,7 +14,12 @@ async function extractType(editor: Editor) {
   }
 
   // When we create interfaces it generates a double `;` by mistake
-  await editor.write(updatedCode.code.replace(/;;/gm, ";"));
+  await editor.write(
+    updatedCode.code.replace(/;;/gm, ";"),
+    selection.start
+      .putAtStartOfLine()
+      .goToNextNthWordInCode(2, updatedCode.code)
+  );
   await editor.delegate(Command.RenameSymbol);
 }
 

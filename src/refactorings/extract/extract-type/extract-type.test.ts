@@ -1,8 +1,9 @@
-import { ErrorReason, Code } from "../../../editor/editor";
+import { ErrorReason, Code, Command } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { extractType } from "./extract-type";
+import { Selection } from "../../../editor/selection";
 
 describe("Extract Type", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -51,5 +52,39 @@ let something: Extracted;`
     expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindTypeToExtract
     );
+  });
+
+  it("should rename identifier (type)", async () => {
+    const editor = new InMemoryEditor(`let hello: stri[cursor]ng;`);
+    jest.spyOn(editor, "delegate");
+
+    await extractType(editor);
+
+    expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
+    expect(editor.code).toEqual(`type Extracted = string;
+let hello: Extracted;`);
+    expect(editor.selection).toStrictEqual(Selection.cursorAt(0, 5));
+  });
+
+  it("should rename identifier (interface)", async () => {
+    const editor = new InMemoryEditor(`const hey = "ho";
+let hello: [start]{
+  world: string;
+  morning: boolean;
+}[end];`);
+    jest.spyOn(editor, "delegate");
+
+    await extractType(editor);
+
+    expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
+    expect(editor.code).toEqual(`const hey = "ho";
+
+interface Extracted {
+  world: string;
+  morning: boolean;
+}
+
+let hello: Extracted;`);
+    expect(editor.selection).toStrictEqual(Selection.cursorAt(2, 10));
   });
 });
