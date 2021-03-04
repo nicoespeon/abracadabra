@@ -1,7 +1,7 @@
-import { Code } from "../../../editor/editor";
-import { Position } from "../../../editor/position";
-import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-import { testEach } from "../../../tests-helpers";
+import { Code } from "../../editor/editor";
+import { Position } from "../../editor/position";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { testEach } from "../../tests-helpers";
 
 import { extractGenericType } from "./extract-generic-type";
 
