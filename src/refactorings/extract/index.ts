@@ -1,5 +1,5 @@
-import { extractGenericType } from "./extract-generic-type/extract-generic-type";
 import { extractVariable } from "./extract-variable/extract-variable";
+import { extractType } from "./extract-type/extract-type";
 
 import { Refactoring } from "../../types";
 import { executeSafely } from "../../commands";
@@ -29,7 +29,7 @@ async function extract() {
     await extractVariable(attemptingEditor);
 
     if (!attemptingEditor.attemptSucceeded) {
-      await extractGenericType(vscodeEditor);
+      await extractType(vscodeEditor);
     }
   });
 }
