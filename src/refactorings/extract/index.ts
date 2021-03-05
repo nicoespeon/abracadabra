@@ -26,10 +26,10 @@ async function extract() {
   );
 
   await executeSafely(async () => {
-    await extractVariable(attemptingEditor);
+    await extractType(vscodeEditor);
 
     if (!attemptingEditor.attemptSucceeded) {
-      await extractType(vscodeEditor);
+      await extractVariable(attemptingEditor);
     }
   });
 }
