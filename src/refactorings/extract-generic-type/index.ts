@@ -10,7 +10,8 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Extract generic type",
-    createVisitor
+    createVisitor: (selection, onMatch) =>
+      createVisitor(selection, (occurrence) => onMatch(occurrence.path))
   }
 };
 

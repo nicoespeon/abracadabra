@@ -48,7 +48,7 @@ function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
     ast,
     createVisitor(
       selection,
-      (_path, occurrence) => (selectedOccurrence = occurrence),
+      (occurrence) => (selectedOccurrence = occurrence),
       (occurrence) => otherOccurrences.push(occurrence)
     )
   );
@@ -72,7 +72,7 @@ interface AllOccurrences {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath, occurrence: Occurrence) => void,
+  onMatch: (occurrence: Occurrence) => void,
   onVisit: (occurrence: Occurrence) => void = () => {}
 ): t.Visitor {
   return {
@@ -88,14 +88,14 @@ function createVisitor(
         onVisit(new Occurrence(path, interfaceDeclaration));
         if (!selection.isInsidePath(path)) return;
 
-        onMatch(path, new SelectedOccurrence(path, interfaceDeclaration));
+        onMatch(new SelectedOccurrence(path, interfaceDeclaration));
       } else if (functionDeclaration) {
         if (!functionDeclaration.contains(selection)) return;
 
         onVisit(new Occurrence(path, functionDeclaration));
         if (!selection.isInsidePath(path)) return;
 
-        onMatch(path, new SelectedOccurrence(path, functionDeclaration));
+        onMatch(new SelectedOccurrence(path, functionDeclaration));
       }
     }
   };
