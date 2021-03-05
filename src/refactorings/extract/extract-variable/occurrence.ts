@@ -11,6 +11,10 @@ import {
 } from "./variable";
 import { Parts } from "./parts";
 import { DestructureStrategy } from "./destructure-strategy";
+import {
+  DeclarationOnCommonAncestor,
+  VariableDeclarationModification
+} from "./variable-declaration-modification";
 
 export { createOccurrence, Occurrence };
 
@@ -92,7 +96,31 @@ class Occurrence<T extends t.Node = t.Node> {
     return Position.fromAST(parent.loc.start);
   }
 
-  toVariableDeclaration(code: Code): { name: Code; value: Code } {
+  toVariableDeclaration(
+    extractedCode: Code,
+    allOccurrences: Occurrence[]
+  ): Modification {
+    const { name, value } = this.variableDeclarationParts(extractedCode);
+    const useTabs = t.isUsingTabs(this.path.node);
+
+    if (allOccurrences.length > 1) {
+      return new DeclarationOnCommonAncestor(
+        name,
+        value,
+        useTabs,
+        allOccurrences
+      );
+    }
+
+    return new VariableDeclarationModification(
+      name,
+      value,
+      useTabs,
+      Selection.cursorAtPosition(this.parentScopePosition)
+    );
+  }
+
+  protected variableDeclarationParts(code: Code): { name: Code; value: Code } {
     return {
       name: this.variable.name,
       value: t.isJSXText(this.path.node) ? `"${code}"` : code
@@ -127,15 +155,33 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   private destructureStrategy = DestructureStrategy.Destructure;
 
-  toVariableDeclaration(code: Code): { name: Code; value: Code } {
+  toVariableDeclaration(
+    extractedCode: Code,
+    allOccurrences: Occurrence[]
+  ): Modification {
     if (this.destructureStrategy === DestructureStrategy.Preserve) {
-      return super.toVariableDeclaration(code);
+      return super.toVariableDeclaration(extractedCode, allOccurrences);
     }
 
-    return {
-      name: `{ ${this.variable.name} }`,
-      value: this.parentObject
-    };
+    const name = `{ ${this.variable.name} }`;
+    const value = this.parentObject;
+    const useTabs = t.isUsingTabs(this.path.node);
+
+    if (allOccurrences.length > 1) {
+      return new DeclarationOnCommonAncestor(
+        name,
+        value,
+        useTabs,
+        allOccurrences
+      );
+    }
+
+    return new VariableDeclarationModification(
+      name,
+      value,
+      useTabs,
+      Selection.cursorAtPosition(this.parentScopePosition)
+    );
   }
 
   async askModificationDetails(editor: Editor) {
@@ -188,7 +234,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
       );
 
       // If any of these throws, Occurrence is invalid
-      occurrence.toVariableDeclaration();
+      occurrence.variableDeclarationParts();
       occurrence.modification;
     } catch {
       return false;
@@ -197,7 +243,7 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     return true;
   }
 
-  toVariableDeclaration(): { name: Code; value: Code } {
+  protected variableDeclarationParts(): { name: Code; value: Code } {
     return {
       name: this.variable.name,
       value: `"${this.parts.selected}"`

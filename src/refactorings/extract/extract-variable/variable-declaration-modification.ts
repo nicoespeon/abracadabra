@@ -2,52 +2,66 @@ import { Code, Modification } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
+import { assert } from "../../../assert";
 
 import { Occurrence } from "./occurrence";
 
-export { VariableDeclarationModification };
+export { VariableDeclarationModification, DeclarationOnCommonAncestor };
 
 class VariableDeclarationModification implements Modification {
   constructor(
-    private value: Code,
-    private selectedOccurrence: Occurrence,
-    private allOccurrences: Occurrence[]
+    private name: string,
+    private value: string,
+    private useTabs: boolean,
+    private _selection: Selection
   ) {}
 
   get code(): Code {
-    const { name, value } = this.selectedOccurrence.toVariableDeclaration(
-      this.value
-    );
-
     const indentationLevel = this.selection.start.character;
-    const indentationChar = t.isUsingTabs(this.selectedOccurrence.path.node)
-      ? "\t"
-      : " ";
+    const indentationChar = this.useTabs ? "\t" : " ";
     const indentation = indentationChar.repeat(indentationLevel);
 
-    return `const ${name} = ${value};\n${indentation}`;
+    return `const ${this.name} = ${this.value};\n${indentation}`;
   }
 
   get selection(): Selection {
-    const topMostOccurrence = this.allOccurrences.sort(topToBottom)[0];
-    let cursorOnCommonAncestor = Selection.cursorAtPosition(
-      topMostOccurrence.parentScopePosition
+    return this._selection;
+  }
+}
+
+class DeclarationOnCommonAncestor extends VariableDeclarationModification {
+  constructor(
+    name: string,
+    value: string,
+    useTabs: boolean,
+    private allOccurrences: Occurrence[]
+  ) {
+    super(name, value, useTabs, Selection.cursorAt(0, 0));
+    assert(
+      allOccurrences.length > 0,
+      "Can't find common ancestor without occurrence"
+    );
+  }
+
+  get selection(): Selection {
+    const commonAncestor = t.findCommonAncestorToDeclareVariable(
+      this.topMostOccurrence.path,
+      this.allOccurrences.map((occurrence) => occurrence.path)
     );
 
-    if (this.allOccurrences.length > 1) {
-      const commonAncestor = t.findCommonAncestorToDeclareVariable(
-        topMostOccurrence.path,
-        this.allOccurrences.map((occurrence) => occurrence.path)
+    if (!commonAncestor) {
+      return Selection.cursorAtPosition(
+        this.topMostOccurrence.parentScopePosition
       );
-
-      if (commonAncestor) {
-        cursorOnCommonAncestor = Selection.cursorAtPosition(
-          Position.fromAST(commonAncestor.node.loc.start)
-        );
-      }
     }
 
-    return cursorOnCommonAncestor;
+    return Selection.cursorAtPosition(
+      Position.fromAST(commonAncestor.node.loc.start)
+    );
+  }
+
+  private get topMostOccurrence(): Occurrence {
+    return this.allOccurrences.sort(topToBottom)[0];
   }
 }
 
