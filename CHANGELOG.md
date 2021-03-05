@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2021-03-04 - Typing In the Name 🤖
+
 ### Changed
 
 - **(Breaking)** Extract Generic Type can't be triggered with `Ctrl + Alt + V` anymore. We assigned this shortcut to the new Extract Type refactoring instead (more intuitive). This refactoring is now available through a Quick Fix though 💡
@@ -1201,7 +1203,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/4.13.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/nicoespeon/abracadabra/compare/4.13.1...5.0.0
 [4.13.1]: https://github.com/nicoespeon/abracadabra/compare/4.13.0...4.13.1
 [4.13.0]: https://github.com/nicoespeon/abracadabra/compare/4.12.1...4.13.0
 [4.12.1]: https://github.com/nicoespeon/abracadabra/compare/4.12.0...4.12.1
