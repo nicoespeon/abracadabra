@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **(Breaking)** Extract Generic Type can't be triggered with `Ctrl + Alt + V` anymore. We assigned this shortcut to the new Extract Type refactoring instead (more intuitive). This refactoring is now available through a Quick Fix though 💡
+
 ### Added
 
+- **[New Refactoring]** Extract Type! It works exactly like Extract Variable, but for types. Even more convenient: the shortcut is the same (`Ctrl + Alt + V` / `⌥ ⌘ V` on MacOS). If you're on a _variable_, it will extract the _variable_. If you're on a _type_, it will extract the _type_ 😉
 - **[New Refactoring]** Split Multiple Declarations, to create distinct variable declarations from a single one. Thanks to @iulspop for this one!
 
 ### Fixed

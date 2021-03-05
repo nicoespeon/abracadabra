@@ -1,5 +1,5 @@
-import { ErrorReason } from "../../../editor/editor";
-import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { ErrorReason } from "../../editor/editor";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 
 import { extractGenericType } from "./extract-generic-type";
 

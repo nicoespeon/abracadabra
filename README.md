@@ -30,7 +30,7 @@ Related projects:
   - The Essentials:
     1. [Rename Symbol](#rename-symbol)
     1. [Extract Variable](#extract-variable)
-    1. [Extract Generic Type](#extract-generic-type)
+    1. [Extract Type](#extract-type)
     1. [Inline Variable](#inline-variable)
     1. [Inline Function](#inline-function)
     1. [Move Statement Up](#move-statement-up)
@@ -68,6 +68,7 @@ Related projects:
     1. [Replace Binary with Assignment](#replace-binary-with-assignment)
     1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
   - Specific to TypeScript:
+    1. [Extract Generic Type](#extract-generic-type)
     1. [Extract Interface](#extract-interface)
   - Specific to React:
     1. [Convert to Pure Component](#convert-to-pure-component)
@@ -141,17 +142,17 @@ It will also handle multiple occurrences.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Extract Generic Type
+### Extract Type
 
 | Keybinding       | On Mac  |
 | :--------------- | :------ |
 | `Ctrl + Alt + V` | `⌥ ⌘ V` |
 
-Just like for variables, this TS-specific refactoring will extract a type to make it generic.
+This does exactly the same as Extract Variable, but for types!
 
 <details><summary>See it in action</summary>
 
-![][demo-extract-generic-type]
+![][demo-extract-type]
 
 </details><br />
 
@@ -633,6 +634,20 @@ When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Extract Generic Type
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+This refactoring will turn an existing type into a generic. Very handy when you need to make an interface more generic.
+
+<details><summary>See it in action</summary>
+
+![][demo-extract-generic-type]
+
+</details><br />
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Extract Interface
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -879,6 +894,7 @@ When we'll have more experience, we'll probably ping the authors of other extens
 <!-- Demo images -->
 
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/command-palette.png?raw=true
+[demo-extract-type]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-type.gif?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-partial.gif?raw=true
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true

@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindTypeToExtract,
   DidNotFindMultipleDeclarationsToSplit,
   CantImportReferences,
   DidNotFindOtherFiles,
@@ -52,6 +53,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindTypeToExtract:
+      return didNotFind("a type to extract");
+
     case ErrorReason.DidNotFindMultipleDeclarationsToSplit:
       return didNotFind("multiple variable declarations to split");
 

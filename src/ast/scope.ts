@@ -11,6 +11,7 @@ export {
   getFunctionScopePath,
   isShadowIn,
   findCommonAncestorToDeclareVariable,
+  findAncestorThatCanHaveVariableDeclaration,
   bindingNamesInScope,
   referencesInScope,
   getReferencedImportDeclarations,

@@ -113,6 +113,7 @@
     "onCommand:abracadabra.convertLetToConst",
     "onCommand:abracadabra.extract",
     "onCommand:abracadabra.extractClass",
+    "onCommand:abracadabra.extractGenericType",
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
@@ -203,6 +204,11 @@
       {
         "command": "abracadabra.extractClass",
         "title": "Extract Class",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.extractGenericType",
+        "title": "Extract Generic Type",
         "category": "Abracadabra"
       },
       {
@@ -418,6 +424,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.extractClass.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.extractGenericType.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -759,6 +770,18 @@
         },
         {
           "command": "abracadabra.extractClass",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.extractGenericType",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extractGenericType",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extractGenericType",
           "when": "editorLangId == vue"
         },
         {
