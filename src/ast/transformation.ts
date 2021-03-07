@@ -106,60 +106,66 @@ function parseAndTraverseCode(code: Code, opts: TraverseOptions): AST {
 }
 
 function parse(code: Code): AST {
-  return recast.parse(code, {
-    parser: {
-      parse: (source: Code) =>
-        babelParse(source, {
-          sourceType: "module",
-          allowImportExportEverywhere: true,
-          allowReturnOutsideFunction: true,
-          startLine: 1,
+  try {
+    return recast.parse(code, {
+      parser: {
+        parse: (source: Code) =>
+          babelParse(source, {
+            sourceType: "module",
+            allowImportExportEverywhere: true,
+            allowReturnOutsideFunction: true,
+            startLine: 1,
 
-          // Tokens are necessary for Recast to do its magic ✨
-          tokens: true,
+            // Tokens are necessary for Recast to do its magic ✨
+            tokens: true,
 
-          plugins: [
-            "asyncGenerators",
-            "bigInt",
-            "classPrivateMethods",
-            "classPrivateProperties",
-            "classProperties",
-            // Not compatible with "decorators-legacy"
-            // "decorators",
-            "decorators-legacy",
-            "doExpressions",
-            "dynamicImport",
-            // Make tests fail, not sure why
-            // "estree",
-            "exportDefaultFrom",
-            "exportNamespaceFrom",
-            // Not compatible with "typescript"
-            // "flow",
-            // "flowComments",
-            "functionBind",
-            "functionSent",
-            "importMeta",
-            "jsx",
-            "logicalAssignment",
-            "nullishCoalescingOperator",
-            "numericSeparator",
-            "objectRestSpread",
-            "optionalCatchBinding",
-            "optionalChaining",
-            "partialApplication",
-            ["pipelineOperator", { proposal: "minimal" }],
-            "placeholders",
-            "throwExpressions",
-            "topLevelAwait",
-            "typescript"
-            // Not compatible with "placeholders"
-            // "v8intrinsic"
-          ]
-        })
-    },
-    // VS Code considers tabs to be of size 1
-    tabWidth: 1
-  });
+            plugins: [
+              "asyncGenerators",
+              "bigInt",
+              "classPrivateMethods",
+              "classPrivateProperties",
+              "classProperties",
+              // Not compatible with "decorators-legacy"
+              // "decorators",
+              "decorators-legacy",
+              "doExpressions",
+              "dynamicImport",
+              // Make tests fail, not sure why
+              // "estree",
+              "exportDefaultFrom",
+              "exportNamespaceFrom",
+              // Not compatible with "typescript"
+              // "flow",
+              // "flowComments",
+              "functionBind",
+              "functionSent",
+              "importMeta",
+              "jsx",
+              "logicalAssignment",
+              "nullishCoalescingOperator",
+              "numericSeparator",
+              "objectRestSpread",
+              "optionalCatchBinding",
+              "optionalChaining",
+              "partialApplication",
+              ["pipelineOperator", { proposal: "minimal" }],
+              "placeholders",
+              "throwExpressions",
+              "topLevelAwait",
+              "typescript"
+              // Not compatible with "placeholders"
+              // "v8intrinsic"
+            ]
+          })
+      },
+      // VS Code considers tabs to be of size 1
+      tabWidth: 1
+    });
+  } catch (e) {
+    throw new Error(
+      `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${e.message}`
+    );
+  }
 }
 
 function traverseAST(ast: AST, opts: TraverseOptions): AST {
