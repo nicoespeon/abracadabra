@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.1] - 2021-03-08
+
 ### Fixed
 
 - Attempting to extract a variable was hijacked with the new Extract Type refactoring. This is fixed so we can now execute both again!
@@ -1207,7 +1209,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.0.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.0.1...HEAD
+[5.0.1]: https://github.com/nicoespeon/abracadabra/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/nicoespeon/abracadabra/compare/4.13.1...5.0.0
 [4.13.1]: https://github.com/nicoespeon/abracadabra/compare/4.13.0...4.13.1
 [4.13.0]: https://github.com/nicoespeon/abracadabra/compare/4.12.1...4.13.0
