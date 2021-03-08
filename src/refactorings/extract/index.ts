@@ -22,14 +22,14 @@ async function extract() {
 
   const attemptingEditor = new AttemptingEditor(
     vscodeEditor,
-    ErrorReason.DidNotFindExtractableCode
+    ErrorReason.DidNotFindTypeToExtract
   );
 
   await executeSafely(async () => {
-    await extractType(vscodeEditor);
+    await extractType(attemptingEditor);
 
     if (!attemptingEditor.attemptSucceeded) {
-      await extractVariable(attemptingEditor);
+      await extractVariable(vscodeEditor);
     }
   });
 }

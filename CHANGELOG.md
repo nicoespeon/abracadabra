@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Attempting to extract a variable was hijacked with the new Extract Type refactoring. This is fixed so we can now execute both again!
+
 ## [5.0.0] - 2021-03-04 - Typing In the Name 🤖
 
 ### Changed
