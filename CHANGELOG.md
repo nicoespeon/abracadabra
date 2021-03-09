@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- @chrstnbrn improved error messages for when the AST can't be built. That should help you understand what went wrong when things don't work 👍
+
 ## [5.0.1] - 2021-03-08
 
 ### Fixed
