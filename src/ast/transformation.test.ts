@@ -1,5 +1,5 @@
 import * as t from "./domain";
-import { transform } from "./transformation";
+import { parse, transform } from "./transformation";
 
 describe("Transformation", () => {
   describe("transform", () => {
@@ -102,6 +102,14 @@ function test() {}`;
       expect(result).toBe(`#!/usr/bin/env node
 
 function test() {}`);
+    });
+  });
+
+  describe("parse", () => {
+    it("throw if code contains syntax error", () => {
+      const code = "function { console.log('missing }'); ";
+
+      expect(() => parse(code)).toThrow();
     });
   });
 });
