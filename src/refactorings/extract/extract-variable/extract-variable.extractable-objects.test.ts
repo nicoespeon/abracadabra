@@ -1,5 +1,6 @@
 import { Code } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
@@ -279,5 +280,16 @@ function someScope() {
 
     expect(editor.code).toBe(`const baz = foo.bar.baz;
 console.log(baz);`);
+  });
+
+  it("should rename the correct identifier for multiple occurrences on the same line", async () => {
+    const code = `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`;
+    const editor = new InMemoryEditor(code);
+
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const { response } = data;
+console.log(response.code, response.user.id, response.user.name);`);
+    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 35));
   });
 });

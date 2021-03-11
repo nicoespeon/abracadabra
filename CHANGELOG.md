@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - @chrstnbrn improved error messages for when the AST can't be built. That should help you understand what went wrong when things don't work 👍
 - Convert to Arrow Function will only prompt a quick fix if your cursor is on the function declaration, not its body. This will reduce the noise when working with large functions.
 
+### Fixed
+
+- Extracting multiple variables on the same line will correctly position the cursor to trigger a rename. That was an annoying edge-case, not anymore!
+
 ## [5.0.1] - 2021-03-08
 
 ### Fixed

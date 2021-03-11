@@ -83,7 +83,20 @@ class Occurrence<T extends t.Node = t.Node> {
     };
   }
 
-  get positionOnExtractedId(): Position {
+  cursorOnIdentifier(otherOccurrences: Occurrence[]): Position {
+    const offset = otherOccurrences
+      .map(({ modification }) => modification)
+      .filter(({ selection }) => selection.isOneLine)
+      .filter(({ selection }) =>
+        selection.startsBefore(this.modification.selection)
+      )
+      .map(({ code, selection }) => selection.width - code.length)
+      .reduce((a, b) => a + b, 0);
+
+    return this.positionOnExtractedId.removeCharacters(offset);
+  }
+
+  protected get positionOnExtractedId(): Position {
     return new Position(
       this.selection.start.line + this.selection.height + 1,
       this.selection.start.character + this.variable.length
