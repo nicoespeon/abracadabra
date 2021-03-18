@@ -1,5 +1,6 @@
 import { Command, Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
 
 export { extractType };
@@ -23,8 +24,13 @@ async function extractType(editor: Editor) {
   await editor.delegate(Command.RenameSymbol);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): t.Transformed & { newNodePosition: Position } {
+  let newNodePosition = selection.start;
+
+  const result = t.transformAST(
     ast,
     createVisitor(selection, (path) => {
       const pathWhereToDeclareType = t.findAncestorThatCanHaveVariableDeclaration(
@@ -33,7 +39,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (!pathWhereToDeclareType) return;
 
       const typeIdentifier = t.identifier("Extracted");
-      // TODO: refactor
       let typeDeclaration: t.Node = t.tsTypeAliasDeclaration(
         typeIdentifier,
         null,
@@ -54,6 +59,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.node.typeAnnotation = t.genericTypeAnnotation(typeIdentifier);
     })
   );
+
+  return { ...result, newNodePosition };
 }
 
 function createVisitor(
