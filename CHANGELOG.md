@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Type will now puts the cursor at the proper position to rename the extracted type when leading comments are present. Thanks @fabien0102 for catching this!
+
 ### Changed
 
 - @chrstnbrn improved error messages for when the AST can't be built. That should help you understand what went wrong when things don't work 👍

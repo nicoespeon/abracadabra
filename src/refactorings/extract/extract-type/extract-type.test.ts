@@ -31,6 +31,14 @@ let somethingElse: string;`
 }
 
 let something: Extracted;`
+      },
+      {
+        description: "with comment above",
+        code: `// Hello there!
+let something: number[cursor];`,
+        expected: `type [cursor]Extracted = number;
+// Hello there!
+let something: Extracted;`
       }
     ],
     async ({ code, expected }) => {
@@ -38,7 +46,15 @@ let something: Extracted;`
 
       await extractType(editor);
 
-      expect(editor.code).toBe(expected);
+      const {
+        code: expectedCode,
+        selection: expectedSelection
+      } = new InMemoryEditor(expected);
+
+      expect(editor.code).toBe(expectedCode);
+      if (!expectedSelection.isEqualTo(Selection.cursorAt(0, 0))) {
+        expect(editor.selection).toStrictEqual(expectedSelection);
+      }
     }
   );
 

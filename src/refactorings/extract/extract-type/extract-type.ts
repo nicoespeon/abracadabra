@@ -17,7 +17,7 @@ async function extractType(editor: Editor) {
   // When we create interfaces it generates a double `;` by mistake
   await editor.write(
     updatedCode.code.replace(/;;/gm, ";"),
-    selection.start
+    updatedCode.newNodePosition
       .putAtStartOfLine()
       .goToNextNthWordInCode(2, updatedCode.code)
   );
@@ -54,6 +54,10 @@ function updateCode(
         );
       }
 
+      const leadingComments = pathWhereToDeclareType.node.leadingComments || [];
+      const start =
+        leadingComments[0]?.loc.start || pathWhereToDeclareType.node.loc.start;
+      newNodePosition = Position.fromAST(start);
       pathWhereToDeclareType.insertBefore(typeDeclaration);
       // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
       path.node.typeAnnotation = t.genericTypeAnnotation(typeIdentifier);
