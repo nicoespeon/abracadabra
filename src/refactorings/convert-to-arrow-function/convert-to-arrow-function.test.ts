@@ -76,8 +76,8 @@ const test = () => {};`
       {
         description: "nested, cursor on inner function",
         code: `function outer() {
-  function inner() {
-    return null[cursor]
+  function [cursor]inner() {
+    return null
   }
 }`,
         expected: `function outer() {
