@@ -143,4 +143,17 @@ function [cursor]doSomething() {}`;
       ErrorReason.DidNotFindFunctionDeclarationToConvert
     );
   });
+
+  it("should not refactor if cursor is inside function body", async () => {
+    const code = `function dontConvertMe() {
+  // Some code[cursor]
+}`;
+    const editor = new InMemoryEditor(code);
+
+    await convertToArrowFunction(editor);
+
+    expect(editor.code).toBe(`function dontConvertMe() {
+  // Some code
+}`);
+  });
 });

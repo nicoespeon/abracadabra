@@ -79,6 +79,7 @@ function createVisitor(
   return {
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
+      if (selection.isInsidePath(path.get("body"))) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
