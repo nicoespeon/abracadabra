@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@types/babel__traverse": "7.0.9",
-    "@types/chai": "4.2.14",
+    "@types/chai": "4.2.15",
     "@types/jest": "26.0.20",
     "@types/jscodeshift": "0.6.3",
     "@types/mocha": "8.2.0",
@@ -70,7 +70,7 @@
     "@types/sinon": "9.0.10",
     "@types/vscode": "1.52.0",
     "all-contributors-cli": "6.20.0",
-    "chai": "4.2.0",
+    "chai": "4.3.4",
     "glob": "7.1.6",
     "husky": "4.3.0",
     "hygen": "6.0.4",
