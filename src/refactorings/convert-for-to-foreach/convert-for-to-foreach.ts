@@ -19,38 +19,51 @@ async function convertForToForeach(editor: Editor) {
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
-    ast,
-    createVisitor(selection, (path, accessor, list) => {
-      const { body } = path.node;
-
-      const item = t.identifier(singular(getListName(list)));
-      const forEachBody = t.isBlockStatement(body)
-        ? body
-        : t.blockStatement([body]);
-
-      replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
-
-      // After we replaced, we check if there are remaining accessors.
-      const params = isAccessorReferencedIn(forEachBody, accessor)
-        ? [item, accessor]
-        : [item];
-
-      path.replaceWith(t.forEach(list, params, forEachBody));
-
-      path.stop();
-    })
-  );
+  return t.transformAST(ast, createVisitor(selection));
 }
 
-function createVisitor(
-  selection: Selection,
-  onMatch: (
-    path: t.NodePath<t.ForStatement>,
-    accessor: t.Identifier,
-    list: List
-  ) => void
-): t.Visitor {
+function onMatchFor(
+  path: t.NodePath<t.ForStatement>,
+  accessor: t.Identifier,
+  list: List
+) {
+  const { body } = path.node;
+
+  const item = t.identifier(singular(getListName(list)));
+  const forEachBody = t.isBlockStatement(body)
+    ? body
+    : t.blockStatement([body]);
+
+  replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
+
+  // After we replaced, we check if there are remaining accessors.
+  const params = isAccessorReferencedIn(forEachBody, accessor)
+    ? [item, accessor]
+    : [item];
+
+  path.replaceWith(t.forEach(list, params, forEachBody));
+
+  path.stop();
+}
+
+function onMatchForOf(
+  path: t.NodePath<t.ForOfStatement>,
+  identifier: t.Identifier | t.ObjectPattern | t.ArrayPattern,
+  list: List
+) {
+  const { body } = path.node;
+
+  const forEachBody = t.isBlockStatement(body)
+    ? body
+    : t.blockStatement([body]);
+  const params = [identifier];
+
+  path.replaceWith(t.forEach(list, params, forEachBody));
+
+  path.stop();
+}
+
+function createVisitor(selection: Selection): t.Visitor {
   return {
     ForStatement(path) {
       if (!selection.isInsidePath(path)) return;
@@ -69,10 +82,41 @@ function createVisitor(
 
       const list = getList(test, init);
       if (!list) return;
+      onMatchFor(path, left, list);
+    },
+    ForOfStatement(path) {
+      const { left, right } = path.node;
+      if (!t.isVariableDeclaration(left)) return;
+      if (!isList(right, path)) return;
+      const identifier = getIdentifier(left);
+      if (!identifier) return;
 
-      onMatch(path, left, list);
+      const list = right as List;
+      onMatchForOf(path, identifier, list);
+
+      return;
     }
   };
+}
+
+function isList(expression: t.Expression, path: t.NodePath<t.ForOfStatement>) {
+  if (t.isArrayExpression(expression)) return true;
+  if (!t.isIdentifier(expression)) return false;
+  const identifier = expression as t.Identifier;
+  return identifierPointsToArray(identifier.name, path);
+}
+
+function identifierPointsToArray(
+  name: string,
+  path: t.NodePath<t.ForOfStatement>
+) {
+  const binding = path.scope.getBinding(name);
+  if (!binding) return false;
+  const parent = binding.path.parent as t.VariableDeclaration;
+  if (!t.isVariableDeclaration(parent)) return false;
+  if (parent.declarations.length !== 1) return false;
+  const value = parent.declarations[0].init;
+  return t.isArrayExpression(value);
 }
 
 function hasChildWhichMatchesSelection(
@@ -156,6 +200,17 @@ function getListFromMemberExpression(node: t.Node): List | undefined {
   if (!(t.isIdentifier(object) || t.isMemberExpression(object))) return;
 
   return object;
+}
+
+function getIdentifier(
+  declaration: t.VariableDeclaration
+): t.Identifier | t.ObjectPattern | t.ArrayPattern | undefined {
+  // for...of doesn't support multiple declarations anyway.
+  if (declaration.declarations.length !== 1) return;
+  const id = declaration.declarations[0].id;
+  if (!t.isIdentifier(id) && !t.isObjectPattern(id) && !t.isArrayPattern(id))
+    return;
+  return id;
 }
 
 function getListName(list: List): string {
