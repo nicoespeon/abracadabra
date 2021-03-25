@@ -242,9 +242,16 @@ function test() {
 
       await extractVariable(editor);
 
-      expect(editor.code).toBe(expected);
+      const {
+        code: expectedCode,
+        selection: expectedSelection
+      } = new InMemoryEditor(expected);
+      expect(editor.code).toBe(expectedCode);
       if (expectedPosition) {
         expect(editor.position).toStrictEqual(expectedPosition);
+      }
+      if (!expectedSelection.isCursorAtTopOfDocument) {
+        expect(editor.selection).toStrictEqual(expectedSelection);
       }
     }
   );
