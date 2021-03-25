@@ -216,6 +216,25 @@ function someScope() {
     return x + y * x;
   }
 }`
+      },
+      {
+        description:
+          "a property to destructure, existing assignment in different scope",
+        code: `{
+  const { x } = obj;
+  console.log(x);
+}
+function test() {
+  return obj.y[cursor];
+}`,
+        expected: `{
+  const { x } = obj;
+  console.log(x);
+}
+function test() {
+  const { y } = obj;
+  return y;
+}`
       }
     ],
     async ({ code, expected, expectedPosition }) => {
