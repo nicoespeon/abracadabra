@@ -52,7 +52,7 @@ let something: Extracted;`
       } = new InMemoryEditor(expected);
 
       expect(editor.code).toBe(expectedCode);
-      if (!expectedSelection.isEqualTo(Selection.cursorAt(0, 0))) {
+      if (!expectedSelection.isCursorAtTopOfDocument) {
         expect(editor.selection).toStrictEqual(expectedSelection);
       }
     }

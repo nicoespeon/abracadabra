@@ -66,6 +66,10 @@ class Selection {
     return this.end.character - this.start.character;
   }
 
+  get isCursorAtTopOfDocument(): boolean {
+    return this.isEqualTo(Selection.cursorAt(0, 0));
+  }
+
   isEmpty(): boolean {
     return this.start.isEqualTo(this.end);
   }
