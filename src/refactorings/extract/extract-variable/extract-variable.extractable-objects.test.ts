@@ -1,5 +1,4 @@
 import { Code } from "../../../editor/editor";
-import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
@@ -11,7 +10,6 @@ describe("Extract Variable - Objects we can extract", () => {
   testEach<{
     code: Code;
     expected: Code;
-    expectedPosition?: Position;
   }>(
     "should extract",
     [
@@ -73,10 +71,9 @@ console.log({
 });`,
         expected: `const hello = "World";
 console.log({
-  hello,
+  hello[cursor],
   goodbye: "my old friend"
-});`,
-        expectedPosition: new Position(2, 7)
+});`
       },
       {
         description: "an object property value which key is not in camel case",
@@ -237,7 +234,7 @@ function test() {
 }`
       }
     ],
-    async ({ code, expected, expectedPosition }) => {
+    async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
       await extractVariable(editor);
@@ -246,10 +243,8 @@ function test() {
         code: expectedCode,
         selection: expectedSelection
       } = new InMemoryEditor(expected);
+
       expect(editor.code).toBe(expectedCode);
-      if (expectedPosition) {
-        expect(editor.position).toStrictEqual(expectedPosition);
-      }
       if (!expectedSelection.isCursorAtTopOfDocument) {
         expect(editor.selection).toStrictEqual(expectedSelection);
       }
