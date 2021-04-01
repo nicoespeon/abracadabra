@@ -15,6 +15,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - @chrstnbrn improved error messages for when the AST can't be built. That should help you understand what went wrong when things don't work 👍
 - Convert to Arrow Function will only prompt a quick fix if your cursor is on the function declaration, not its body. This will reduce the noise when working with large functions.
+- Extract Variable will re-use existing destructured declaration. So for this code:
+
+```ts
+function test(obj) {
+  return obj.x + obj.y * obj.x + obj.y;
+}
+```
+
+After extracting `x` and `y` (and choosing to "destructure" it) the end result will now be:
+
+```ts
+function test(obj) {
+  const { x, y } = obj;
+  return x + y * x + y;
+}
+```
 
 ### Fixed
 
