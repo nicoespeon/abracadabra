@@ -210,7 +210,7 @@ function someScope() {
         expected: `const { x, y } = obj;
 function someScope() {
   function test() {
-    return x + y * x;
+    return x + y[cursor] * x;
   }
 }`
       },
@@ -230,7 +230,7 @@ function test() {
 }
 function test() {
   const { y } = obj;
-  return y;
+  return y[cursor];
 }`
       }
     ],

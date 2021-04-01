@@ -233,6 +233,17 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   private get parentObject(): Code {
     return t.generate(this.path.node.object);
   }
+
+  get positionOnExtractedId(): Position {
+    const existingDeclaration = t.findFirstExistingDeclaration(
+      this.path.get("object")
+    );
+    if (existingDeclaration) {
+      return super.positionOnExtractedId.removeLines(1);
+    }
+
+    return super.positionOnExtractedId;
+  }
 }
 
 class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
