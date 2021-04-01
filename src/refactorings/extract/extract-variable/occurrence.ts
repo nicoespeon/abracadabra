@@ -13,8 +13,10 @@ import { Parts } from "./parts";
 import { DestructureStrategy } from "./destructure-strategy";
 import {
   DeclarationOnCommonAncestor,
+  MergeDestructuredDeclaration,
   VariableDeclarationModification
 } from "./variable-declaration-modification";
+import { last } from "../../../array";
 
 export { createOccurrence, Occurrence };
 
@@ -81,7 +83,20 @@ class Occurrence<T extends t.Node = t.Node> {
     };
   }
 
-  get positionOnExtractedId(): Position {
+  cursorOnIdentifier(otherOccurrences: Occurrence[]): Position {
+    const offset = otherOccurrences
+      .map(({ modification }) => modification)
+      .filter(({ selection }) => selection.isOneLine)
+      .filter(({ selection }) =>
+        selection.startsBefore(this.modification.selection)
+      )
+      .map(({ code, selection }) => selection.width - code.length)
+      .reduce((a, b) => a + b, 0);
+
+    return this.positionOnExtractedId.removeCharacters(offset);
+  }
+
+  protected get positionOnExtractedId(): Position {
     return new Position(
       this.selection.start.line + this.selection.height + 1,
       this.selection.start.character + this.variable.length
@@ -163,6 +178,20 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
       return super.toVariableDeclaration(extractedCode, allOccurrences);
     }
 
+    const existingDeclaration = t.findFirstExistingDeclaration(
+      this.path.get("object")
+    );
+
+    if (existingDeclaration) {
+      const lastProperty = last(existingDeclaration.node.id.properties);
+      if (lastProperty && t.isSelectableNode(lastProperty)) {
+        return new MergeDestructuredDeclaration(
+          this.variable.name,
+          lastProperty
+        );
+      }
+    }
+
     const name = `{ ${this.variable.name} }`;
     const value = this.parentObject;
     const useTabs = t.isUsingTabs(this.path.node);
@@ -203,6 +232,21 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
 
   private get parentObject(): Code {
     return t.generate(this.path.node.object);
+  }
+
+  get positionOnExtractedId(): Position {
+    if (this.destructureStrategy === DestructureStrategy.Preserve) {
+      return super.positionOnExtractedId;
+    }
+
+    const existingDeclaration = t.findFirstExistingDeclaration(
+      this.path.get("object")
+    );
+    if (existingDeclaration) {
+      return super.positionOnExtractedId.removeLines(1);
+    }
+
+    return super.positionOnExtractedId;
   }
 }
 

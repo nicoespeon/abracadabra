@@ -1,5 +1,5 @@
 import { Code } from "../../../editor/editor";
-import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
@@ -10,7 +10,7 @@ describe("Extract Variable - Objects we can extract", () => {
   testEach<{
     code: Code;
     expected: Code;
-    expectedPosition?: Position;
+    shouldPreserve?: boolean;
   }>(
     "should extract",
     [
@@ -72,10 +72,9 @@ console.log({
 });`,
         expected: `const hello = "World";
 console.log({
-  hello,
+  hello[cursor],
   goodbye: "my old friend"
-});`,
-        expectedPosition: new Position(2, 7)
+});`
       },
       {
         description: "an object property value which key is not in camel case",
@@ -200,16 +199,74 @@ assert.isTrue(
         code: `console.log(foo.bar.b[cursor]az);`,
         expected: `const { baz } = foo.bar;
 console.log(baz);`
+      },
+      {
+        description: "a property to destructure from an existing assignment",
+        code: `const { x } = obj;
+function someScope() {
+  function test() {
+    return x + obj.y[cursor] * x;
+  }
+}`,
+        expected: `const { x, y } = obj;
+function someScope() {
+  function test() {
+    return x + y[cursor] * x;
+  }
+}`
+      },
+      {
+        description:
+          "a property to destructure from an existing assignment, but user decides to preserve",
+        code: `function test() {
+  const { x } = obj;
+  return x + obj.y[cursor] * x;
+}`,
+        shouldPreserve: true,
+        expected: `function test() {
+  const { x } = obj;
+  const y = obj.y;
+  return x + y[cursor] * x;
+}`
+      },
+      {
+        description:
+          "a property to destructure, existing assignment in different scope",
+        code: `{
+  const { x } = obj;
+  console.log(x);
+}
+function test() {
+  return obj.y[cursor];
+}`,
+        expected: `{
+  const { x } = obj;
+  console.log(x);
+}
+function test() {
+  const { y } = obj;
+  return y[cursor];
+}`
       }
     ],
-    async ({ code, expected, expectedPosition }) => {
+    async ({ code, expected, shouldPreserve }) => {
       const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUserChoice")
+        .mockImplementation(([destructure, preserve]) =>
+          Promise.resolve(shouldPreserve ? preserve : destructure)
+        );
 
       await extractVariable(editor);
 
-      expect(editor.code).toBe(expected);
-      if (expectedPosition) {
-        expect(editor.position).toStrictEqual(expectedPosition);
+      const {
+        code: expectedCode,
+        selection: expectedSelection
+      } = new InMemoryEditor(expected);
+
+      expect(editor.code).toBe(expectedCode);
+      if (!expectedSelection.isCursorAtTopOfDocument) {
+        expect(editor.selection).toStrictEqual(expectedSelection);
       }
     }
   );
@@ -264,5 +321,16 @@ console.log(baz);`
 
     expect(editor.code).toBe(`const baz = foo.bar.baz;
 console.log(baz);`);
+  });
+
+  it("should rename the correct identifier for multiple occurrences on the same line", async () => {
+    const code = `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`;
+    const editor = new InMemoryEditor(code);
+
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const { response } = data;
+console.log(response.code, response.user.id, response.user.name);`);
+    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 35));
   });
 });

@@ -1,5 +1,6 @@
 import { NodePath, Binding } from "@babel/traverse";
 import * as t from "@babel/types";
+import { first } from "../array";
 import { getImportDeclarations } from "./domain";
 
 import { areEquivalent } from "./identity";
@@ -10,6 +11,7 @@ export {
   findParentIfPath,
   getFunctionScopePath,
   isShadowIn,
+  findFirstExistingDeclaration,
   findCommonAncestorToDeclareVariable,
   findAncestorThatCanHaveVariableDeclaration,
   bindingNamesInScope,
@@ -81,6 +83,27 @@ function isShadowIn(
     );
   }
 }
+
+function findFirstExistingDeclaration(expressionPath: NodePath<t.Expression>) {
+  const existingDeclarations: NodePath<
+    DestructuredVariableDeclarator
+  >[] = Object.values(expressionPath.scope.getAllBindings())
+    .map(({ path }) => path)
+    .filter(
+      (path): path is NodePath<DestructuredVariableDeclarator> =>
+        path.isVariableDeclarator() &&
+        path.get("id").isObjectPattern() &&
+        path.get("init").isIdentifier()
+    )
+    .filter((path) => areEquivalent(expressionPath.node, path.node.init));
+
+  return first(existingDeclarations);
+}
+
+type DestructuredVariableDeclarator = t.VariableDeclarator & {
+  id: t.ObjectPattern;
+  init: t.Identifier;
+};
 
 function findCommonAncestorToDeclareVariable(
   path: NodePath,

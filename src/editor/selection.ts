@@ -61,6 +61,15 @@ class Selection {
     return this.end.line - this.start.line;
   }
 
+  get width(): number {
+    // Maybe this only make sense for single-line selections though…
+    return this.end.character - this.start.character;
+  }
+
+  get isCursorAtTopOfDocument(): boolean {
+    return this.isEqualTo(Selection.cursorAt(0, 0));
+  }
+
   isEmpty(): boolean {
     return this.start.isEqualTo(this.end);
   }

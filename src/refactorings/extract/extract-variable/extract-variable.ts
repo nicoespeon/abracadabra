@@ -46,7 +46,7 @@ async function extractVariable(editor: Editor) {
       // Replace extracted code with new variable.
       ...extractedOccurrences.map((occurrence) => occurrence.modification)
     ],
-    selectedOccurrence.positionOnExtractedId
+    selectedOccurrence.cursorOnIdentifier(otherOccurrences)
   );
 
   // Extracted symbol is located at `selection` => just trigger a rename.

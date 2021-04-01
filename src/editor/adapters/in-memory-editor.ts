@@ -91,28 +91,23 @@ class InMemoryEditor implements Editor {
       readCodeMatrix.push(this.codeMatrix[end.line].slice(0, end.character));
     }
 
-    // Since we insert updates progressively as new elements, keep track
-    // of them so we can indent properly.
-    const previousUpdatesOnLine: { [key: number]: number } = {};
-    getModifications(this.read(readCodeMatrix)).forEach(
-      ({ code, selection }) => {
+    getModifications(this.read(readCodeMatrix))
+      // Start with right-most modifications so selection isn't messed up.
+      .sort((a, b) => (a.selection.startsBefore(b.selection) ? 1 : -1))
+      .forEach(({ code, selection }) => {
         const { start, end } = selection;
-
-        if (!previousUpdatesOnLine[start.line]) {
-          previousUpdatesOnLine[start.line] = 0;
-        }
 
         if (start.line === end.line) {
           // Replace selected code with updated code.
           this.codeMatrix[start.line].splice(
-            start.character + previousUpdatesOnLine[start.line],
+            start.character,
             end.character - start.character,
             code
           );
         } else if (end.line > start.line) {
           // Replace selected code with updated code.
           this.codeMatrix[start.line].splice(
-            start.character + previousUpdatesOnLine[start.line],
+            start.character,
             this.codeMatrix[start.line].length - start.character,
             code
           );
@@ -127,10 +122,7 @@ class InMemoryEditor implements Editor {
             this.codeMatrix[i] = [DELETED_LINE];
           }
         }
-
-        previousUpdatesOnLine[start.line] += 1;
-      }
-    );
+      });
 
     return Promise.resolve();
   }
