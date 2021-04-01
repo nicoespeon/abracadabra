@@ -10,6 +10,7 @@ describe("Extract Variable - Objects we can extract", () => {
   testEach<{
     code: Code;
     expected: Code;
+    shouldPreserve?: boolean;
   }>(
     "should extract",
     [
@@ -216,6 +217,20 @@ function someScope() {
       },
       {
         description:
+          "a property to destructure from an existing assignment, but user decides to preserve",
+        code: `function test() {
+  const { x } = obj;
+  return x + obj.y[cursor] * x;
+}`,
+        shouldPreserve: true,
+        expected: `function test() {
+  const { x } = obj;
+  const y = obj.y;
+  return x + y[cursor] * x;
+}`
+      },
+      {
+        description:
           "a property to destructure, existing assignment in different scope",
         code: `{
   const { x } = obj;
@@ -234,8 +249,13 @@ function test() {
 }`
       }
     ],
-    async ({ code, expected }) => {
+    async ({ code, expected, shouldPreserve }) => {
       const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUserChoice")
+        .mockImplementation(([destructure, preserve]) =>
+          Promise.resolve(shouldPreserve ? preserve : destructure)
+        );
 
       await extractVariable(editor);
 

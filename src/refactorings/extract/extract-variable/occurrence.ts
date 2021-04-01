@@ -235,6 +235,10 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   }
 
   get positionOnExtractedId(): Position {
+    if (this.destructureStrategy === DestructureStrategy.Preserve) {
+      return super.positionOnExtractedId;
+    }
+
     const existingDeclaration = t.findFirstExistingDeclaration(
       this.path.get("object")
     );
