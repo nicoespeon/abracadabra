@@ -22,24 +22,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(ast, createVisitor(selection));
 }
 
-function onMatchFor(
-  path: t.NodePath<t.ForStatement>,
-  accessor: t.Identifier,
-  list: List
-) {
-  onMatch__NEW(
-    path,
-    (body) => {
-      const item = t.identifier(singular(getListName(list)));
-      replaceListWithItemIn(body, list, accessor, item, path.scope);
-
-      // After we replaced, we check if there are remaining accessors.
-      return isAccessorReferencedIn(body, accessor) ? [item, accessor] : [item];
-    },
-    list
-  );
-}
-
 function onMatch__NEW(
   path: t.NodePath<t.ForStatement | t.ForOfStatement>,
   getParams: (
@@ -78,7 +60,17 @@ function createVisitor(selection: Selection): t.Visitor {
 
       const list = getList(test, init);
       if (!list) return;
-      onMatchFor(path, left, list);
+      onMatch__NEW(
+        path,
+        (body) => {
+          const item = t.identifier(singular(getListName(list)));
+          replaceListWithItemIn(body, list, left, item, path.scope);
+
+          // After we replaced, we check if there are remaining accessors.
+          return isAccessorReferencedIn(body, left) ? [item, left] : [item];
+        },
+        list
+      );
     },
     ForOfStatement(path) {
       if (!selection.isInsidePath(path)) return;
