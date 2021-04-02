@@ -85,6 +85,8 @@ function createVisitor(selection: Selection): t.Visitor {
       onMatchFor(path, left, list);
     },
     ForOfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
       const { left, right } = path.node;
       if (!t.isVariableDeclaration(left)) return;
       if (!isList(right, path)) return;

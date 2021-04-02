@@ -155,7 +155,7 @@ items.forEach(item => {
         description: "for-of",
         code: `const items = ['foo', 'bar', 'baz'];
 
-for (const val of items) {
+[cursor]for (const val of items) {
   console.log(val);
 }`,
         expected: `const items = ['foo', 'bar', 'baz'];
@@ -165,10 +165,31 @@ items.forEach(val => {
 });`
       },
       {
+        description: "selected for-of only",
+        code: `const items = ['foo', 'bar', 'baz'];
+
+for (const val of items) {
+  console.log(val);
+}
+
+[cursor]for (const val of items) {
+  console.log(val);
+}`,
+        expected: `const items = ['foo', 'bar', 'baz'];
+
+for (const val of items) {
+  console.log(val);
+}
+
+items.forEach(val => {
+  console.log(val);
+});`
+      },
+      {
         description: "for-of, with object destructuring",
         code: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
 
-for (const {name, age} of items) {
+[cursor]for (const {name, age} of items) {
   console.log(name, age);
 }`,
         expected: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
@@ -181,7 +202,7 @@ items.forEach(({name, age}) => {
         description: "for-of, with array destructuring",
         code: `const items = [[0, 1], [1, 2], [2, 3]];
 
-for (const [one, two] of items) {
+[cursor]for (const [one, two] of items) {
   console.log(one, two);
 }`,
         expected: `const items = [[0, 1], [1, 2], [2, 3]];
@@ -194,7 +215,7 @@ items.forEach(([one, two]) => {
         description: "for-of, without block statement",
         code: `const items = ['foo', 'bar', 'baz'];
 
-for (const item of items)
+[cursor]for (const item of items)
   console.log(item);`,
         expected: `const items = ['foo', 'bar', 'baz'];
 
