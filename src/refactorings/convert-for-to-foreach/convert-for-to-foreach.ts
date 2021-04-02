@@ -45,20 +45,14 @@ function onMatchForOf(
   identifier: t.Identifier | t.ObjectPattern | t.ArrayPattern,
   list: List
 ) {
-  const { body } = path.node;
-
-  const forEachBody = t.isBlockStatement(body)
-    ? body
-    : t.blockStatement([body]);
-  const params = [identifier];
-
-  path.replaceWith(t.forEach(list, params, forEachBody));
-  path.stop();
+  onMatch__NEW(path, () => [identifier], list);
 }
 
 function onMatch__NEW(
-  path: t.NodePath<t.ForStatement>,
-  getParams: (body: t.BlockStatement) => t.Identifier[],
+  path: t.NodePath<t.ForStatement | t.ForOfStatement>,
+  getParams: (
+    body: t.BlockStatement
+  ) => (t.Identifier | t.ObjectPattern | t.ArrayPattern)[],
   list: List
 ) {
   const { body } = path.node;
