@@ -29,20 +29,18 @@ function onMatchFor(
 ) {
   const { body } = path.node;
 
-  const item = t.identifier(singular(getListName(list)));
   const forEachBody = t.isBlockStatement(body)
     ? body
     : t.blockStatement([body]);
 
+  const item = t.identifier(singular(getListName(list)));
   replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
-
   // After we replaced, we check if there are remaining accessors.
   const params = isAccessorReferencedIn(forEachBody, accessor)
     ? [item, accessor]
     : [item];
 
   path.replaceWith(t.forEach(list, params, forEachBody));
-
   path.stop();
 }
 
@@ -59,7 +57,6 @@ function onMatchForOf(
   const params = [identifier];
 
   path.replaceWith(t.forEach(list, params, forEachBody));
-
   path.stop();
 }
 
