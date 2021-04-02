@@ -30,14 +30,11 @@ function onMatch(
   list: List
 ) {
   const { body } = path.node;
-
   const forEachBody = t.isBlockStatement(body)
     ? body
     : t.blockStatement([body]);
 
-  const params = getParams(forEachBody);
-
-  path.replaceWith(t.forEach(list, params, forEachBody));
+  path.replaceWith(t.forEach(list, getParams(forEachBody), forEachBody));
   path.stop();
 }
 
