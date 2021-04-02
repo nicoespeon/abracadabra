@@ -155,9 +155,9 @@ items.forEach(item => {
         description: "for-of",
         code: `const items = ['foo', 'bar', 'baz'];
 
-  for (const val of items) {
-    console.log(val);
-  }`,
+for (const val of items) {
+  console.log(val);
+}`,
         expected: `const items = ['foo', 'bar', 'baz'];
 
 items.forEach(val => {
@@ -168,9 +168,9 @@ items.forEach(val => {
         description: "for-of, with object destructuring",
         code: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
 
-  for (const {name, age} of items) {
-    console.log(name, age);
-  }`,
+for (const {name, age} of items) {
+  console.log(name, age);
+}`,
         expected: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
 
 items.forEach(({name, age}) => {
@@ -194,8 +194,8 @@ items.forEach(([one, two]) => {
         description: "for-of, without block statement",
         code: `const items = ['foo', 'bar', 'baz'];
 
-  for (const item of items)
-    console.log(item);`,
+for (const item of items)
+  console.log(item);`,
         expected: `const items = ['foo', 'bar', 'baz'];
 
 items.forEach(item => {
@@ -244,7 +244,7 @@ items.forEach(item => {
       {
         description: "for-of but a string",
         code: `const str = 'abcde';
-        for (let character of str) {
+  for (let character of str) {
   console.log(character);
 }`
       },
