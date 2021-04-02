@@ -21,23 +21,13 @@ async function convertForToForeach(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path, accessor, list) => {
+    createVisitor(selection, (path, getParams, list) => {
       const { body } = path.node;
-
-      const item = t.identifier(singular(getListName(list)));
       const forEachBody = t.isBlockStatement(body)
         ? body
         : t.blockStatement([body]);
 
-      replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
-
-      // After we replaced, we check if there are remaining accessors.
-      const params = isAccessorReferencedIn(forEachBody, accessor)
-        ? [item, accessor]
-        : [item];
-
-      path.replaceWith(t.forEach(list, params, forEachBody));
-
+      path.replaceWith(t.forEach(list, getParams(forEachBody), forEachBody));
       path.stop();
     })
   );
@@ -46,9 +36,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.ForStatement>,
-    accessor: t.Identifier,
-    list: List
+    path: t.NodePath<t.ForStatement | t.ForOfStatement>,
+    getParams: (
+      body: t.BlockStatement
+    ) => (t.Identifier | t.ObjectPattern | t.ArrayPattern)[],
+    list: List | t.Expression
   ) => void
 ): t.Visitor {
   return {
@@ -70,9 +62,52 @@ function createVisitor(
       const list = getList(test, init);
       if (!list) return;
 
-      onMatch(path, left, list);
+      onMatch(
+        path,
+        (body) => {
+          const item = t.identifier(singular(getListName(list)));
+          replaceListWithItemIn(body, list, left, item, path.scope);
+
+          // After we replaced, we check if there are remaining accessors.
+          return isAccessorReferencedIn(body, left) ? [item, left] : [item];
+        },
+        list
+      );
+    },
+
+    ForOfStatement(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const { left, right } = path.node;
+      if (!t.isVariableDeclaration(left)) return;
+      if (!isList(right, path)) return;
+
+      const identifier = getIdentifier(left);
+      if (!identifier) return;
+
+      onMatch(path, () => [identifier], right);
     }
   };
+}
+
+function isList(expression: t.Expression, path: t.NodePath<t.ForOfStatement>) {
+  if (t.isArrayExpression(expression)) return true;
+  if (!t.isIdentifier(expression)) return false;
+  const identifier = expression as t.Identifier;
+  return identifierPointsToArray(identifier.name, path);
+}
+
+function identifierPointsToArray(
+  name: string,
+  path: t.NodePath<t.ForOfStatement>
+) {
+  const binding = path.scope.getBinding(name);
+  if (!binding) return false;
+  const parent = binding.path.parent as t.VariableDeclaration;
+  if (!t.isVariableDeclaration(parent)) return false;
+  if (parent.declarations.length !== 1) return false;
+  const value = parent.declarations[0].init;
+  return t.isArrayExpression(value);
 }
 
 function hasChildWhichMatchesSelection(
@@ -156,6 +191,17 @@ function getListFromMemberExpression(node: t.Node): List | undefined {
   if (!(t.isIdentifier(object) || t.isMemberExpression(object))) return;
 
   return object;
+}
+
+function getIdentifier(
+  declaration: t.VariableDeclaration
+): t.Identifier | t.ObjectPattern | t.ArrayPattern | undefined {
+  // for...of doesn't support multiple declarations anyway.
+  if (declaration.declarations.length !== 1) return;
+  const id = declaration.declarations[0].id;
+  if (!t.isIdentifier(id) && !t.isObjectPattern(id) && !t.isArrayPattern(id))
+    return;
+  return id;
 }
 
 function getListName(list: List): string {

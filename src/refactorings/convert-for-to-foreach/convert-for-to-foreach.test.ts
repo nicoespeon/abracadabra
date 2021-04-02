@@ -1,8 +1,13 @@
 import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
+import * as t from "../../ast";
 
-import { convertForToForeach } from "./convert-for-to-foreach";
+import {
+  canConvertForLoop,
+  convertForToForeach
+} from "./convert-for-to-foreach";
+import { Selection } from "../../editor/selection";
 
 describe("Convert For To Foreach", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -150,6 +155,86 @@ items.forEach(item => {
         expected: `this.data[0].items.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "for-of",
+        code: `const items = ['foo', 'bar', 'baz'];
+
+[cursor]for (const val of items) {
+  console.log(val);
+}`,
+        expected: `const items = ['foo', 'bar', 'baz'];
+
+items.forEach(val => {
+  console.log(val);
+});`
+      },
+      {
+        description: "selected for-of only",
+        code: `const items = ['foo', 'bar', 'baz'];
+
+for (const val of items) {
+  console.log(val);
+}
+
+[cursor]for (const val of items) {
+  console.log(val);
+}`,
+        expected: `const items = ['foo', 'bar', 'baz'];
+
+for (const val of items) {
+  console.log(val);
+}
+
+items.forEach(val => {
+  console.log(val);
+});`
+      },
+      {
+        description: "for-of, with object destructuring",
+        code: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
+
+[cursor]for (const {name, age} of items) {
+  console.log(name, age);
+}`,
+        expected: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
+
+items.forEach(({name, age}) => {
+  console.log(name, age);
+});`
+      },
+      {
+        description: "for-of, with array destructuring",
+        code: `const items = [[0, 1], [1, 2], [2, 3]];
+
+[cursor]for (const [one, two] of items) {
+  console.log(one, two);
+}`,
+        expected: `const items = [[0, 1], [1, 2], [2, 3]];
+
+items.forEach(([one, two]) => {
+  console.log(one, two);
+});`
+      },
+      {
+        description: "for-of, without block statement",
+        code: `const items = ['foo', 'bar', 'baz'];
+
+[cursor]for (const item of items)
+  console.log(item);`,
+        expected: `const items = ['foo', 'bar', 'baz'];
+
+items.forEach(item => {
+  console.log(item);
+});`
+      },
+      {
+        description: "for-of, inline",
+        code: `for (const item of ['foo', 'bar', 'baz'])
+  console.log(item);`,
+        expected: `['foo', 'bar', 'baz'].forEach(item => {
+  console.log(item);
+});`
       }
     ],
     async ({ code, expected }) => {
@@ -181,6 +266,44 @@ items.forEach(item => {
         code: `for (let i = 1; i < items.length; i++) {
   console.log(items[i]);
 }`
+      },
+      {
+        description: "for-of but a string",
+        code: `const str = 'abcde';
+  for (let character of str) {
+  console.log(character);
+}`
+      },
+      {
+        description: "for-of but an inline string",
+        code: `for (let character of 'abcde') {
+  console.log(character);
+}`
+      },
+      // 👇 These patterns could be converted (they support forEach) but are not implemented yet.
+      {
+        description: "for-of but a map",
+        code: `const map = new Map();
+map.set('Me', {text: 'hello'});
+for (let entry of map) {
+  console.log(entry);
+}`
+      },
+      {
+        description: "for-of but a set",
+        code: `const set = new Set();
+set.add('Me');
+for (let entry of set) {
+  console.log(entry);
+}`
+      },
+      {
+        description: "for-of but a set",
+        code: `const typedArray = new Int8Array(8);
+typedArray[0] = 32;
+for (let entry of typedArray) {
+  console.log(entry);
+}`
       }
     ],
     async ({ code }) => {
@@ -192,6 +315,26 @@ items.forEach(item => {
       expect(editor.code).toBe(originalCode);
     }
   );
+
+  it("should call onMatch for a matching for-loop", async () => {
+    const code = `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}`;
+    const onMatch = jest.fn();
+
+    t.traverseAST(t.parse(code), {
+      enter(path) {
+        const visitor = canConvertForLoop(Selection.cursorAt(0, 0), onMatch);
+        const visitorNode = visitor[path.node.type];
+        if (typeof visitorNode === "function") {
+          // @ts-expect-error visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+          visitorNode.bind(visitor)(path, path.state);
+        }
+      }
+    });
+
+    expect(onMatch).toHaveBeenCalled();
+  });
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
