@@ -254,7 +254,7 @@ items.forEach(item => {
   console.log(character);
 }`
       },
-      // TODO: add support for Map conversion. It supports forEach.
+      // 👇 These patterns could be converted (they support forEach) but are not implemented yet.
       {
         description: "for-of but a map",
         code: `const map = new Map();
@@ -263,7 +263,6 @@ for (let entry of map) {
   console.log(entry);
 }`
       },
-      // TODO: add support for Set conversion. It supports forEach.
       {
         description: "for-of but a set",
         code: `const set = new Set();
@@ -272,7 +271,6 @@ for (let entry of set) {
   console.log(entry);
 }`
       },
-      // TODO: add support for TypedArray conversion. It supports forEach.
       {
         description: "for-of but a set",
         code: `const typedArray = new Int8Array(8);
@@ -281,7 +279,6 @@ for (let entry of typedArray) {
   console.log(entry);
 }`
       }
-      //
     ],
     async ({ code }) => {
       const editor = new InMemoryEditor(code);
