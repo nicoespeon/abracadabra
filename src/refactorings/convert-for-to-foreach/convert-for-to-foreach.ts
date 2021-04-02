@@ -40,14 +40,6 @@ function onMatchFor(
   );
 }
 
-function onMatchForOf(
-  path: t.NodePath<t.ForOfStatement>,
-  identifier: t.Identifier | t.ObjectPattern | t.ArrayPattern,
-  list: List
-) {
-  onMatch__NEW(path, () => [identifier], list);
-}
-
 function onMatch__NEW(
   path: t.NodePath<t.ForStatement | t.ForOfStatement>,
   getParams: (
@@ -98,7 +90,7 @@ function createVisitor(selection: Selection): t.Visitor {
       if (!identifier) return;
 
       const list = right as List;
-      onMatchForOf(path, identifier, list);
+      onMatch__NEW(path, () => [identifier], list);
 
       return;
     }
