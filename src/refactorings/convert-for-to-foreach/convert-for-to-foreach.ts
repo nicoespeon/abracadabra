@@ -27,21 +27,17 @@ function onMatchFor(
   accessor: t.Identifier,
   list: List
 ) {
-  const { body } = path.node;
+  onMatch__NEW(
+    path,
+    (body) => {
+      const item = t.identifier(singular(getListName(list)));
+      replaceListWithItemIn(body, list, accessor, item, path.scope);
 
-  const forEachBody = t.isBlockStatement(body)
-    ? body
-    : t.blockStatement([body]);
-
-  const item = t.identifier(singular(getListName(list)));
-  replaceListWithItemIn(forEachBody, list, accessor, item, path.scope);
-  // After we replaced, we check if there are remaining accessors.
-  const params = isAccessorReferencedIn(forEachBody, accessor)
-    ? [item, accessor]
-    : [item];
-
-  path.replaceWith(t.forEach(list, params, forEachBody));
-  path.stop();
+      // After we replaced, we check if there are remaining accessors.
+      return isAccessorReferencedIn(body, accessor) ? [item, accessor] : [item];
+    },
+    list
+  );
 }
 
 function onMatchForOf(
@@ -55,6 +51,23 @@ function onMatchForOf(
     ? body
     : t.blockStatement([body]);
   const params = [identifier];
+
+  path.replaceWith(t.forEach(list, params, forEachBody));
+  path.stop();
+}
+
+function onMatch__NEW(
+  path: t.NodePath<t.ForStatement>,
+  getParams: (body: t.BlockStatement) => t.Identifier[],
+  list: List
+) {
+  const { body } = path.node;
+
+  const forEachBody = t.isBlockStatement(body)
+    ? body
+    : t.blockStatement([body]);
+
+  const params = getParams(forEachBody);
 
   path.replaceWith(t.forEach(list, params, forEachBody));
   path.stop();
