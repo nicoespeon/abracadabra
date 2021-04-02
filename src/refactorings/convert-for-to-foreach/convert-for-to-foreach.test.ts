@@ -1,8 +1,13 @@
 import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
+import * as t from "../../ast";
 
-import { convertForToForeach } from "./convert-for-to-foreach";
+import {
+  canConvertForLoop,
+  convertForToForeach
+} from "./convert-for-to-foreach";
+import { Selection } from "../../editor/selection";
 
 describe("Convert For To Foreach", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -310,6 +315,26 @@ for (let entry of typedArray) {
       expect(editor.code).toBe(originalCode);
     }
   );
+
+  it("should call onMatch for a matching for-loop", async () => {
+    const code = `for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}`;
+    const onMatch = jest.fn();
+
+    t.traverseAST(t.parse(code), {
+      enter(path) {
+        const visitor = canConvertForLoop(Selection.cursorAt(0, 0), onMatch);
+        const visitorNode = visitor[path.node.type];
+        if (typeof visitorNode === "function") {
+          // @ts-expect-error visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
+          visitorNode.bind(visitor)(path, path.state);
+        }
+      }
+    });
+
+    expect(onMatch).toHaveBeenCalled();
+  });
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;

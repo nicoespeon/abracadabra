@@ -19,26 +19,30 @@ async function convertForToForeach(editor: Editor) {
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(ast, createVisitor(selection));
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, getParams, list) => {
+      const { body } = path.node;
+      const forEachBody = t.isBlockStatement(body)
+        ? body
+        : t.blockStatement([body]);
+
+      path.replaceWith(t.forEach(list, getParams(forEachBody), forEachBody));
+      path.stop();
+    })
+  );
 }
 
-function onMatch(
-  path: t.NodePath<t.ForStatement | t.ForOfStatement>,
-  getParams: (
-    body: t.BlockStatement
-  ) => (t.Identifier | t.ObjectPattern | t.ArrayPattern)[],
-  list: List | t.Expression
-) {
-  const { body } = path.node;
-  const forEachBody = t.isBlockStatement(body)
-    ? body
-    : t.blockStatement([body]);
-
-  path.replaceWith(t.forEach(list, getParams(forEachBody), forEachBody));
-  path.stop();
-}
-
-function createVisitor(selection: Selection): t.Visitor {
+function createVisitor(
+  selection: Selection,
+  onMatch: (
+    path: t.NodePath<t.ForStatement | t.ForOfStatement>,
+    getParams: (
+      body: t.BlockStatement
+    ) => (t.Identifier | t.ObjectPattern | t.ArrayPattern)[],
+    list: List | t.Expression
+  ) => void
+): t.Visitor {
   return {
     ForStatement(path) {
       if (!selection.isInsidePath(path)) return;
