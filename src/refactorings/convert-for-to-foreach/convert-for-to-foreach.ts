@@ -27,7 +27,7 @@ function onMatch(
   getParams: (
     body: t.BlockStatement
   ) => (t.Identifier | t.ObjectPattern | t.ArrayPattern)[],
-  list: List
+  list: List | t.Expression
 ) {
   const { body } = path.node;
   const forEachBody = t.isBlockStatement(body)
@@ -57,6 +57,7 @@ function createVisitor(selection: Selection): t.Visitor {
 
       const list = getList(test, init);
       if (!list) return;
+
       onMatch(
         path,
         (body) => {
@@ -69,19 +70,18 @@ function createVisitor(selection: Selection): t.Visitor {
         list
       );
     },
+
     ForOfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
       const { left, right } = path.node;
       if (!t.isVariableDeclaration(left)) return;
       if (!isList(right, path)) return;
+
       const identifier = getIdentifier(left);
       if (!identifier) return;
 
-      const list = right as List;
-      onMatch(path, () => [identifier], list);
-
-      return;
+      onMatch(path, () => [identifier], right);
     }
   };
 }
