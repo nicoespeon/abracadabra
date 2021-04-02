@@ -22,7 +22,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(ast, createVisitor(selection));
 }
 
-function onMatch__NEW(
+function onMatch(
   path: t.NodePath<t.ForStatement | t.ForOfStatement>,
   getParams: (
     body: t.BlockStatement
@@ -60,7 +60,7 @@ function createVisitor(selection: Selection): t.Visitor {
 
       const list = getList(test, init);
       if (!list) return;
-      onMatch__NEW(
+      onMatch(
         path,
         (body) => {
           const item = t.identifier(singular(getListName(list)));
@@ -82,7 +82,7 @@ function createVisitor(selection: Selection): t.Visitor {
       if (!identifier) return;
 
       const list = right as List;
-      onMatch__NEW(path, () => [identifier], list);
+      onMatch(path, () => [identifier], list);
 
       return;
     }
