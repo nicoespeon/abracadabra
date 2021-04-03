@@ -73,11 +73,14 @@ function createVisitor(
       const { parentPath } = path;
       if (!selection.isInsidePath(path)) return;
 
+      const isAssignedToVariable =
+        t.isVariableDeclarator(parentPath.node) &&
+        t.isVariableDeclaration(parentPath.parent);
+
       if (
         t.isReturnStatement(parentPath.node) ||
         t.isAssignmentExpression(parentPath.node) ||
-        (t.isVariableDeclarator(parentPath.node) &&
-          t.isVariableDeclaration(parentPath.parent))
+        isAssignedToVariable
       ) {
         onMatch(path);
       }
