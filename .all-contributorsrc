@@ -220,6 +220,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "chipbite",
+      "name": "Marcus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/559199?v=4",
+      "profile": "https://github.com/chipbite",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
