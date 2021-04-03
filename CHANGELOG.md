@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] - 2021-04-03 - Join the Herd 🐾
+
 ### Fixed
 
 - Extract Type will now puts the cursor at the proper position to rename the extracted type when leading comments are present. Thanks @fabien0102 for catching this!
@@ -1237,7 +1239,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.0.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.1.0...HEAD
+[5.1.0]: https://github.com/nicoespeon/abracadabra/compare/5.0.1...5.1.0
 [5.0.1]: https://github.com/nicoespeon/abracadabra/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/nicoespeon/abracadabra/compare/4.13.1...5.0.0
 [4.13.1]: https://github.com/nicoespeon/abracadabra/compare/4.13.0...4.13.1
