@@ -16,8 +16,13 @@ async function convertTernaryToIfElse(editor: Editor) {
   await editor.write(updatedCode.code);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): t.Transformed & { otherVariablesDeclared: boolean } {
+  let otherVariablesDeclared = false;
+
+  const result = t.transformAST(
     ast,
     createVisitor(selection, (path: t.NodePath<t.ConditionalExpression>) => {
       const { parentPath, node } = path;
@@ -62,6 +67,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       }
     })
   );
+
+  return { ...result, otherVariablesDeclared };
 }
 
 function createVisitor(
