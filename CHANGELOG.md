@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Extract Type will now puts the cursor at the proper position to rename the extracted type when leading comments are present. Thanks @fabien0102 for catching this!
+- Extracting multiple variables on the same line will correctly position the cursor to trigger a rename. That was an annoying edge-case, not anymore!
 
 ### Changed
 
@@ -32,9 +33,7 @@ function test(obj) {
 }
 ```
 
-### Fixed
-
-- Extracting multiple variables on the same line will correctly position the cursor to trigger a rename. That was an annoying edge-case, not anymore!
+- @ZakMiller made "Convert for to forEach" works with for..of loops too. Nice!
 
 ## [5.0.1] - 2021-03-08
 
