@@ -71,11 +71,11 @@ function createVisitor(
   return {
     ConditionalExpression(path) {
       const { parentPath } = path;
-      if (!selection.isInsidePath(path)) return;
-
       const isAssignedToVariable =
         t.isVariableDeclarator(parentPath.node) &&
         t.isVariableDeclaration(parentPath.parent);
+
+      if (!selection.isInsidePath(path)) return;
 
       if (
         t.isReturnStatement(parentPath.node) ||
