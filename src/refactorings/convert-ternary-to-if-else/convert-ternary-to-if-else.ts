@@ -13,6 +13,11 @@ async function convertTernaryToIfElse(editor: Editor) {
     return;
   }
 
+  if (updatedCode.otherVariablesDeclared) {
+    editor.showError(ErrorReason.CantConvertTernaryWithOtherDeclarations);
+    return;
+  }
+
   await editor.write(updatedCode.code);
 }
 
@@ -51,6 +56,12 @@ function updateCode(
       if (isAssignedToVariable(path)) {
         const { parentPath } = path;
         const id = parentPath.node.id;
+
+        const otherDeclarations = [
+          ...parentPath.getAllNextSiblings(),
+          ...parentPath.getAllPrevSiblings()
+        ];
+        otherVariablesDeclared = otherDeclarations.length > 0;
 
         // VariableDeclarator is contained in a VariableDeclaration
         // => replace parentPath's parent path

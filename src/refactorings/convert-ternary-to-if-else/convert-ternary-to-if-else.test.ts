@@ -228,4 +228,16 @@ if (args.forcelink) {
       ErrorReason.DidNotFindTernaryToConvert
     );
   });
+
+  it("should not convert ternary in variable declaration if there are other declarations", async () => {
+    const code = `let links = args.forceLink[cursor] ? [] : null, isValid = args.forceLink ? true : false`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
+
+    await convertTernaryToIfElse(editor);
+
+    expect(editor.showError).toBeCalledWith(
+      ErrorReason.CantConvertTernaryWithOtherDeclarations
+    );
+  });
 });

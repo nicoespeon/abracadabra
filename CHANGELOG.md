@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Converting a ternary assigned to a variable would remove other eventual declarations. Instead, it won't proceed with the refactoring (not supported yet).
+
+```ts
+// These nested ternaries can't be converted anymore.
+// So at least, it won't break your code!
+const someValue = isValid ? "first" : "second",
+  prefix = isValid ? "f-" : "s-";
+```
+
 ### Changed
 
 - Ternaries assigned to variables can now be converted when you select the whole declaration.

@@ -31,6 +31,7 @@ enum ErrorReason {
   DidNotFindTernaryToSimplify,
   DidNotFindIfElseToConvert,
   DidNotFindTernaryToConvert,
+  CantConvertTernaryWithOtherDeclarations,
   DidNotFindArrowFunctionToAddBraces,
   DidNotFindBracesToRemoveFromArrowFunction,
   DidNotFindBracesToRemoveFromIfStatement,
@@ -146,6 +147,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindTernaryToConvert:
       return didNotFind("a ternary to convert into if statement");
+
+    case ErrorReason.CantConvertTernaryWithOtherDeclarations:
+      return cantDoIt("convert a ternary declared along other variables");
 
     case ErrorReason.DidNotFindArrowFunctionToAddBraces:
       return didNotFind("an arrow function to add braces");
