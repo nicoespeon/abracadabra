@@ -48,10 +48,8 @@ function updateCode(
         parentPath.parentPath.stop();
       }
 
-      if (
-        t.isVariableDeclarator(parentPath.node) &&
-        t.isVariableDeclaration(parentPath.parent)
-      ) {
+      if (isAssignedToVariable(path)) {
+        const { parentPath } = path;
         const id = parentPath.node.id;
 
         // VariableDeclarator is contained in a VariableDeclaration
@@ -97,7 +95,9 @@ function createVisitor(
   };
 }
 
-function isAssignedToVariable(path: t.NodePath<t.Node>) {
+function isAssignedToVariable(
+  path: t.NodePath<t.Node>
+): path is t.NodePath & { parentPath: t.NodePath<t.VariableDeclarator> } {
   return (
     t.isVariableDeclarator(path.parent) &&
     t.isVariableDeclaration(path.parentPath.parent)
