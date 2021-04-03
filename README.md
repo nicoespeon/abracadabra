@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -125,6 +125,9 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/iulspop"><img src="https://avatars.githubusercontent.com/u/53665722?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Iuliu Pop</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=iulspop" title="Documentation">📖</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=iulspop" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aiulspop" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/chrstnbrn"><img src="https://avatars.githubusercontent.com/u/11138584?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christina Braun</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=chrstnbrn" title="Code">💻</a></td>
     <td align="center"><a href="https://zakmiller.com"><img src="https://avatars.githubusercontent.com/u/18072671?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zak Miller</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3AZakMiller" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=ZakMiller" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/chipbite"><img src="https://avatars.githubusercontent.com/u/559199?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marcus</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Achipbite" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
