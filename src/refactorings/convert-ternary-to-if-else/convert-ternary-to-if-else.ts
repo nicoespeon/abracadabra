@@ -78,11 +78,8 @@ function createVisitor(
   return {
     ConditionalExpression(path) {
       const { parentPath } = path;
-      const isAssignedToVariable =
-        t.isVariableDeclarator(parentPath.node) &&
-        t.isVariableDeclaration(parentPath.parent);
 
-      if (isAssignedToVariable) {
+      if (isAssignedToVariable(path)) {
         // Enlarge selection to the whole variable declaration
         if (!selection.isInsidePath(path.parentPath.parentPath)) return;
       } else {
@@ -92,12 +89,19 @@ function createVisitor(
       if (
         t.isReturnStatement(parentPath.node) ||
         t.isAssignmentExpression(parentPath.node) ||
-        isAssignedToVariable
+        isAssignedToVariable(path)
       ) {
         onMatch(path);
       }
     }
   };
+}
+
+function isAssignedToVariable(path: t.NodePath<t.Node>) {
+  return (
+    t.isVariableDeclarator(path.parent) &&
+    t.isVariableDeclaration(path.parentPath.parent)
+  );
 }
 
 function createIfStatement(
