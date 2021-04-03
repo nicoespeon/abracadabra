@@ -75,7 +75,11 @@ function createVisitor(
         t.isVariableDeclarator(parentPath.node) &&
         t.isVariableDeclaration(parentPath.parent);
 
-      if (!selection.isInsidePath(path)) return;
+      if (isAssignedToVariable) {
+        if (!selection.isInsidePath(path)) return;
+      } else {
+        if (!selection.isInsidePath(path)) return;
+      }
 
       if (
         t.isReturnStatement(parentPath.node) ||
