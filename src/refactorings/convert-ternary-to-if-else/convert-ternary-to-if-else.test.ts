@@ -78,6 +78,17 @@ describe("Convert Ternary to If/Else", () => {
 }`
       },
       {
+        description: "whole ternary selected",
+        code: `[start]let publishesNeedingLink = args.forcelink ? page.directives : page.findPublishesLackingLinkInPage();[end]`,
+        expected: `let publishesNeedingLink;
+
+if (args.forcelink) {
+  publishesNeedingLink = page.directives;
+} else {
+  publishesNeedingLink = page.findPublishesLackingLinkInPage();
+}`
+      },
+      {
         description: "nested ternary, cursor on wrapping ternary",
         code: `function reservationMode(daysInAdvance) {
   return daysInA[cursor]dvance > 10 ? "early" : isVIP ? "vip" : "normal";

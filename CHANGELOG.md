@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Ternaries assigned to variables can now be converted when you select the whole declaration.
+
 ## [5.1.0] - 2021-04-03 - Join the Herd 🐾
 
 ### Fixed
