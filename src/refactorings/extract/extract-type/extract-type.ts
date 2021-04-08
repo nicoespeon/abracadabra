@@ -32,7 +32,7 @@ function updateCode(
 
   const result = t.transformAST(
     ast,
-    createVisitor(selection, (path) => {
+    createVisitor(selection, (path, typeAnnotation, getNewTypeAnnotation) => {
       const pathWhereToDeclareType = t.findAncestorThatCanHaveVariableDeclaration(
         path
       );
@@ -42,15 +42,15 @@ function updateCode(
       let typeDeclaration: t.Node = t.tsTypeAliasDeclaration(
         typeIdentifier,
         null,
-        path.node.typeAnnotation
+        typeAnnotation
       );
 
-      if (t.isTSTypeLiteral(path.node.typeAnnotation)) {
+      if (t.isTSTypeLiteral(typeAnnotation)) {
         typeDeclaration = t.tsInterfaceDeclaration(
           typeIdentifier,
           null,
           null,
-          t.tsInterfaceBody(path.node.typeAnnotation.members)
+          t.tsInterfaceBody(typeAnnotation.members)
         );
       }
 
@@ -59,8 +59,7 @@ function updateCode(
         leadingComments[0]?.loc.start || pathWhereToDeclareType.node.loc.start;
       newNodePosition = Position.fromAST(start);
       pathWhereToDeclareType.insertBefore(typeDeclaration);
-      // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
-      path.node.typeAnnotation = t.genericTypeAnnotation(typeIdentifier);
+      path.node.typeAnnotation = getNewTypeAnnotation(typeIdentifier);
     })
   );
 
@@ -69,13 +68,47 @@ function updateCode(
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.TSTypeAnnotation>) => void
+  onMatch: (
+    path: t.NodePath<t.TSTypeAnnotation>,
+    extractedTypeAnnotation: t.TSType,
+    getNewTypeAnnotation: (identifier: t.Identifier) => t.TSType
+  ) => void
 ): t.Visitor {
   return {
     TSTypeAnnotation(path) {
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path);
+      const { typeAnnotation } = path.node;
+
+      if (t.isTSUnionType(typeAnnotation)) {
+        const selectedType = typeAnnotation.types.find((type) =>
+          selection.isInsideNode(type)
+        );
+
+        if (selectedType) {
+          const selectedTypeAnnotation = {
+            ...typeAnnotation,
+            types: [selectedType]
+          };
+
+          return onMatch(path, selectedTypeAnnotation, (identifier) => ({
+            ...typeAnnotation,
+            // Replace selected type with a generic type annotation
+            // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
+            types: typeAnnotation.types.map((type) => {
+              if (type === selectedType) {
+                return t.genericTypeAnnotation(identifier);
+              }
+              return type;
+            })
+          }));
+        }
+      }
+
+      onMatch(path, typeAnnotation, (identifier) =>
+        // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
+        t.genericTypeAnnotation(identifier)
+      );
     }
   };
 }

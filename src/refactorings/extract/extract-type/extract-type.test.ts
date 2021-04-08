@@ -39,6 +39,12 @@ let something: number[cursor];`,
         expected: `type [cursor]Extracted = number;
 // Hello there!
 let something: Extracted;`
+      },
+      {
+        description: "closest scope from (A | B)",
+        code: `let something: boolean | number[cursor] | string;`,
+        expected: `type [cursor]Extracted = number;
+let something: boolean | Extracted | string;`
       }
     ],
     async ({ code, expected }) => {
