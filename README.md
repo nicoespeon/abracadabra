@@ -77,8 +77,6 @@ That means our releases use the following format:
 - Backward compatible changes bump `<minor>` (and reset `<patch>`)
 - Bug fixes bump `<patch>`
 
-[⬆️ Go to Table of Contents](#table-of-contents)
-
 ## Contributing
 
 ### [Contributing Guide][contributing]
@@ -88,8 +86,6 @@ Read our [contributing guide][contributing] to learn about our development proce
 ### [Good First Issues][good-first-issues]
 
 To help you get your feet wet and become familiar with our contribution process, we have a list of [good first issues][good-first-issues] that contains things with a relatively limited scope. This is a great place to get started!
-
-[⬆️ Go to Table of Contents](#table-of-contents)
 
 ## Contributors
 
@@ -139,8 +135,6 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
 This project follows the [all-contributors][all-contributors] specification.
 
 Contributions of any kind are welcome!
-
-[⬆️ Go to Table of Contents](#table-of-contents)
 
 ## Other extensions you may like
 
