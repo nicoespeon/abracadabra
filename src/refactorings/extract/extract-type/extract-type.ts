@@ -80,7 +80,10 @@ function createVisitor(
 
       const { typeAnnotation } = path.node;
 
-      if (t.isTSUnionType(typeAnnotation)) {
+      if (
+        t.isTSUnionType(typeAnnotation) ||
+        t.isTSIntersectionType(typeAnnotation)
+      ) {
         const selectedType = typeAnnotation.types.find((type) =>
           selection.isInsideNode(type)
         );

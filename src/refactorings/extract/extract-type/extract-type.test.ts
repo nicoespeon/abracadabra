@@ -45,6 +45,12 @@ let something: Extracted;`
         code: `let something: boolean | number[cursor] | string;`,
         expected: `type [cursor]Extracted = number;
 let something: boolean | Extracted | string;`
+      },
+      {
+        description: "closest scope from (A & B)",
+        code: `let something: Hello[cursor] & World;`,
+        expected: `type [cursor]Extracted = Hello;
+let something: Extracted & World;`
       }
     ],
     async ({ code, expected }) => {
