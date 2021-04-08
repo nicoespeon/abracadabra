@@ -21,6 +21,7 @@ const someValue = isValid ? "first" : "second",
 ### Changed
 
 - Ternaries assigned to variables can now be converted when you select the whole declaration.
+- Extract Type now works on union types (`A | B`) and intersection types (`A & B`). It will extract what's closest to your selection, so you can extract the whole type or a part of it.
 
 ## [5.1.0] - 2021-04-03 - Join the Herd 🐾
 
