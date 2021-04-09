@@ -3,6 +3,7 @@ import { singular } from "pluralize";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Position } from "../../editor/position";
 
 export { convertForToForeach, createVisitor as canConvertForLoop };
 
@@ -18,8 +19,13 @@ async function convertForToForeach(editor: Editor) {
   await editor.write(updatedCode.code);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): t.Transformed & { forLoopStart: Position } {
+  let forLoopStart = selection.start;
+
+  const result = t.transformAST(
     ast,
     createVisitor(selection, (path, getParams, list) => {
       const { body } = path.node;
@@ -31,6 +37,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.stop();
     })
   );
+
+  return { ...result, forLoopStart };
 }
 
 function createVisitor(
