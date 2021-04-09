@@ -23,6 +23,17 @@ describe("Convert For To Foreach", () => {
 });`
       },
       {
+        description: "without introducing a blank line",
+        code: `const items = ["Hello"];
+[cursor]for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}`,
+        expected: `const items = ["Hello"];
+items.forEach(item => {
+  console.log(item);
+});`
+      },
+      {
         description: "for-loop with member expressions we can't replace",
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);

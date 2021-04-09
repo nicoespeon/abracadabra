@@ -33,6 +33,8 @@ type Extracted = string;
 let response: { body: { data: Extracted } };
 ```
 
+- Convert to ForEach used to insert a blank line if there was a line directly above the for-loop. Now it won't!
+
 ## [5.1.0] - 2021-04-03 - Join the Herd 🐾
 
 ### Fixed

@@ -3,6 +3,7 @@ import { singular } from "pluralize";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Position } from "../../editor/position";
 
 export { convertForToForeach, createVisitor as canConvertForLoop };
@@ -16,7 +17,14 @@ async function convertForToForeach(editor: Editor) {
     return;
   }
 
-  await editor.write(updatedCode.code);
+  // Recast would add an empty line before the transformed node.
+  // If that's the case, get rid of it before we write the new code.
+  const inMemoryEditor = new InMemoryEditor(updatedCode.code);
+  if (inMemoryEditor.isLineBlank(updatedCode.forLoopStartLine)) {
+    inMemoryEditor.removeLine(updatedCode.forLoopStartLine);
+  }
+
+  await editor.write(inMemoryEditor.code);
 }
 
 function updateCode(
