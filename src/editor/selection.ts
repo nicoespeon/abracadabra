@@ -113,7 +113,9 @@ class Selection {
       : this;
   }
 
-  isInsidePath(path: t.NodePath): path is t.SelectablePath {
+  isInsidePath<T extends t.Node>(
+    path: t.NodePath<T>
+  ): path is t.SelectablePath<T> {
     return this.isInsideNode(path.node);
   }
 
