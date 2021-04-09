@@ -57,6 +57,21 @@ let something: Extracted & World;`
         code: `let something: Hello[start] & World[end] | boolean;`,
         expected: `type [cursor]Extracted = Hello & World;
 let something: Extracted | boolean;`
+      },
+      {
+        description: "nested type",
+        code: `let something: { response: { data: string[cursor]; } };`,
+        expected: `type [cursor]Extracted = string;
+let something: { response: { data: Extracted; } };`
+      },
+      {
+        description: "nested interface",
+        code: `let something: { response: [start]{ data: string[end]; } };`,
+        expected: `interface [cursor]Extracted {
+  data: string;
+}
+
+let something: { response: Extracted };`
       }
     ],
     async ({ code, expected }) => {

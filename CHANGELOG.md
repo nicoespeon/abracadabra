@@ -22,6 +22,16 @@ const someValue = isValid ? "first" : "second",
 
 - Ternaries assigned to variables can now be converted when you select the whole declaration.
 - Extract Type now works on union types (`A | B`) and intersection types (`A & B`). It will extract what's closest to your selection, so you can extract the whole type or a part of it.
+- Extract Type will also work with nested types like so:
+
+```ts
+let response: { body: { data: string } };
+
+// Cursor on `string`
+// Extract Type will produce the following result:
+type Extracted = string;
+let response: { body: { data: Extracted } };
+```
 
 ## [5.1.0] - 2021-04-03 - Join the Herd 🐾
 
