@@ -22,8 +22,8 @@ async function convertForToForeach(editor: Editor) {
 function updateCode(
   ast: t.AST,
   selection: Selection
-): t.Transformed & { forLoopStart: Position } {
-  let forLoopStart = selection.start;
+): t.Transformed & { forLoopStartLine: number } {
+  let forLoopStartLine = selection.start.line;
 
   const result = t.transformAST(
     ast,
@@ -33,12 +33,13 @@ function updateCode(
         ? body
         : t.blockStatement([body]);
 
+      forLoopStartLine = Position.fromAST(path.node.loc.start).line;
       path.replaceWith(t.forEach(list, getParams(forEachBody), forEachBody));
       path.stop();
     })
   );
 
-  return { ...result, forLoopStart };
+  return { ...result, forLoopStartLine };
 }
 
 function createVisitor(
