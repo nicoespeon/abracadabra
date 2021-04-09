@@ -45,7 +45,7 @@ function updateCode(
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.ForStatement | t.ForOfStatement>,
+    path: t.SelectablePath<t.ForStatement | t.ForOfStatement>,
     getParams: (
       body: t.BlockStatement
     ) => (t.Identifier | t.ObjectPattern | t.ArrayPattern)[],
