@@ -198,6 +198,10 @@ class InMemoryEditor implements Editor {
       .filter((line) => line !== DELETED_LINE)
       .join(LINE_SEPARATOR);
   }
+
+  isLineBlank(line: number): boolean {
+    return this.codeMatrix[line].join(CHARS_SEPARATOR).trim() === "";
+  }
 }
 
 type CodeMatrix = Line[];
