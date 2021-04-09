@@ -202,6 +202,10 @@ class InMemoryEditor implements Editor {
   isLineBlank(line: number): boolean {
     return this.codeMatrix[line].join(CHARS_SEPARATOR).trim() === "";
   }
+
+  removeLine(line: number): void {
+    this.codeMatrix.splice(line, 1);
+  }
 }
 
 type CodeMatrix = Line[];

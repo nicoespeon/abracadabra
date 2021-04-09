@@ -20,4 +20,15 @@ describe("InMemoryEditor", () => {
 
     expect(editor.isLineBlank(0)).toBe(true);
   });
+
+  it("should remove given line", () => {
+    const editor = new InMemoryEditor(`// Some comment
+
+const hello = "world";`);
+
+    editor.removeLine(1);
+
+    expect(editor.code).toBe(`// Some comment
+const hello = "world";`);
+  });
 });
