@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Converting a ternary assigned to a variable would remove other eventual declarations. Instead, it won't proceed with the refactoring (not supported yet).
+- Converting a ternary assigned to a variable used to remove other eventual declarations. Now, it won't proceed with the refactoring (not supported yet).
 
 ```ts
 // These nested ternaries can't be converted anymore.
