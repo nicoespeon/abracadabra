@@ -18,6 +18,8 @@ const someValue = isValid ? "first" : "second",
   prefix = isValid ? "f-" : "s-";
 ```
 
+- Extract Generic Type used to wrongly replace all type aliases in the signature instead of the identical ones. It's fixed so it's now more reliable to use.
+
 ### Changed
 
 - Ternaries assigned to variables can now be converted when you select the whole declaration.

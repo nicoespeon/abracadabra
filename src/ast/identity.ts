@@ -229,6 +229,16 @@ function areEquivalent(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
 
   // TS types
   if (t.isTSTypeAnnotation(nodeA) && t.isTSTypeAnnotation(nodeB)) {
+    if (
+      t.isTSTypeReference(nodeA.typeAnnotation) &&
+      t.isTSTypeReference(nodeB.typeAnnotation)
+    ) {
+      return areEquivalent(
+        nodeA.typeAnnotation.typeName,
+        nodeB.typeAnnotation.typeName
+      );
+    }
+
     return nodeA.typeAnnotation.type === nodeB.typeAnnotation.type;
   }
 

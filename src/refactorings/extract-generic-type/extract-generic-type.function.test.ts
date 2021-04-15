@@ -102,6 +102,21 @@ describe("Extract Generic Type - Function declaration", () => {
       expect(editor.code).toBe(expected);
     });
 
+    it("should only match identical type aliases", async () => {
+      const code = `function doSomething(message: [cursor]Message, reason: Reason): Message {}`;
+      const editor = new InMemoryEditor(code);
+      jest
+        .spyOn(editor, "askUserChoice")
+        .mockImplementation(([allOccurrences]) =>
+          Promise.resolve(allOccurrences)
+        );
+
+      await extractGenericType(editor);
+
+      const expected = `function doSomething<T = Message>(message: T, reason: Reason): T {}`;
+      expect(editor.code).toBe(expected);
+    });
+
     it("should only replace all occurrences of the same interface", async () => {
       const code = `function doSomething(message: string, reason: string) {}
 function doSomethingElse(message: [cursor]string, reason: string) {}`;
