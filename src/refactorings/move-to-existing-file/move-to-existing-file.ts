@@ -161,12 +161,16 @@ function createVisitor(
         path,
         path.node.id,
         path.parentPath,
-        new MovableFunctionDeclaration()
+        new MovableFunctionDeclaration(path.node)
       );
     }
   };
 }
 
-interface MovableNode {}
+interface MovableNode {
+  readonly value: t.Node;
+}
 
-class MovableFunctionDeclaration implements MovableNode {}
+class MovableFunctionDeclaration implements MovableNode {
+  constructor(public readonly value: t.FunctionDeclaration) {}
+}
