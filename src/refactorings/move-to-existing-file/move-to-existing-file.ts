@@ -74,10 +74,8 @@ function updateCode(
       (path, importIdentifier, programPath, movableNode) => {
         movedNode = movableNode.value;
 
-        hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
-          path,
-          programPath
-        );
+        hasReferencesThatCantBeImported =
+          movableNode.hasReferencesThatCantBeImported;
 
         declarationsToImport = t
           .getReferencedImportDeclarations(path, programPath)
