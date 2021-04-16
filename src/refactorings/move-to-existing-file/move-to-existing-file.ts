@@ -176,34 +176,48 @@ class MovableEmptyStatement implements MovableNode {
 }
 
 class MovableFunctionDeclaration implements MovableNode {
+  private _value: t.FunctionDeclaration;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
   constructor(
-    private path: t.NodePath<t.FunctionDeclaration>,
-    private programPath: t.NodePath<t.Program>
-  ) {}
+    path: t.NodePath<t.FunctionDeclaration>,
+    programPath: t.NodePath<t.Program>
+  ) {
+    // We need to compute these in constructor because the `path` reference
+    // will be removed and not accessible later.
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+      path,
+      programPath
+    );
+    this._referencedImportDeclarations = t.getReferencedImportDeclarations(
+      path,
+      programPath
+    );
+  }
 
   get value(): t.FunctionDeclaration {
-    return this.path.node;
+    return this._value;
   }
 
   get hasReferencesThatCantBeImported(): boolean {
-    return t.hasReferencesDefinedInSameScope(this.path, this.programPath);
+    return this._hasReferencesThatCantBeImported;
   }
 
   declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
-    return t
-      .getReferencedImportDeclarations(this.path, this.programPath)
-      .map((declaration) => {
-        const importRelativePath = new RelativePath(
-          declaration.source.value
-        ).relativeTo(relativePath);
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
 
-        return {
-          ...declaration,
-          source: {
-            ...declaration.source,
-            value: importRelativePath.value
-          }
-        };
-      });
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
   }
 }
