@@ -164,7 +164,7 @@ function createVisitor(
         path,
         path.node.id,
         path.parentPath,
-        new MovableFunctionDeclaration(path.node)
+        new MovableFunctionDeclaration(path)
       );
     }
   };
@@ -175,5 +175,9 @@ interface MovableNode {
 }
 
 class MovableFunctionDeclaration implements MovableNode {
-  constructor(public readonly value: t.FunctionDeclaration) {}
+  constructor(private path: t.NodePath<t.FunctionDeclaration>) {}
+
+  get value(): t.FunctionDeclaration {
+    return this.path.node;
+  }
 }
