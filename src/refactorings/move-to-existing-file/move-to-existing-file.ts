@@ -171,6 +171,7 @@ function createVisitor(
 interface MovableNode {
   readonly value: t.Node;
   readonly hasReferencesThatCantBeImported: boolean;
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[];
 }
 
 class MovableFunctionDeclaration implements MovableNode {
@@ -185,5 +186,23 @@ class MovableFunctionDeclaration implements MovableNode {
 
   get hasReferencesThatCantBeImported(): boolean {
     return t.hasReferencesDefinedInSameScope(this.path, this.programPath);
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return t
+      .getReferencedImportDeclarations(this.path, this.programPath)
+      .map((declaration) => {
+        const importRelativePath = new RelativePath(
+          declaration.source.value
+        ).relativeTo(relativePath);
+
+        return {
+          ...declaration,
+          source: {
+            ...declaration.source,
+            value: importRelativePath.value
+          }
+        };
+      });
   }
 }
