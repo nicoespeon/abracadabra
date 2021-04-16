@@ -27,6 +27,10 @@ describe("Extract Variable - Patterns we can't extract", () => {
       {
         description: "a type annotation",
         code: `const toto: s[cursor]tring = "";`
+      },
+      {
+        description: "a generic type parameter instantiation",
+        code: `useState<[start]"all" | "local"[end]>("all");`
       }
     ],
     async ({ code }) => {

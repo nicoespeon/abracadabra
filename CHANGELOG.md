@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Variable won't extract type parameter instantiations anymore, because it shouldn't!
+
 ## [5.2.0] - 2021-04-15 - Poor Unfortunate Types 🦑
 
 ### Fixed
