@@ -113,7 +113,7 @@ function updateOtherFileCode(
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.FunctionDeclaration>,
+    path: t.NodePath,
     importIdentifier: t.Identifier,
     program: t.NodePath<t.Program>,
     movableNode: MovableNode
