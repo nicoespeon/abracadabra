@@ -25,19 +25,18 @@ async function moveToExistingFile(editor: Editor) {
   if (!selectedFile) return;
 
   const relativePath = selectedFile.value;
-  const {
-    updatedCode,
-    hasReferencesThatCantBeImported,
-    movedNode,
-    declarationsToImport
-  } = updateCode(t.parse(code), selection, relativePath);
+  const { updatedCode, movableNode } = updateCode(
+    t.parse(code),
+    selection,
+    relativePath
+  );
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindCodeToMove);
     return;
   }
 
-  if (hasReferencesThatCantBeImported) {
+  if (movableNode.hasReferencesThatCantBeImported) {
     editor.showError(ErrorReason.CantImportReferences);
     return;
   }
@@ -45,8 +44,8 @@ async function moveToExistingFile(editor: Editor) {
   const otherFileCode = await editor.codeOf(relativePath);
   const otherFileUpdatedCode = updateOtherFileCode(
     t.parse(otherFileCode),
-    movedNode,
-    declarationsToImport
+    movableNode.value,
+    movableNode.declarationsToImportFrom(relativePath)
   );
 
   await editor.writeIn(relativePath, otherFileUpdatedCode.code);
