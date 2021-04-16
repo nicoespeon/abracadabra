@@ -141,7 +141,8 @@ function createVisitor(
   onMatch: (
     path: t.NodePath<t.FunctionDeclaration>,
     importIdentifier: t.Identifier,
-    program: t.NodePath<t.Program>
+    program: t.NodePath<t.Program>,
+    movableNode: MovableNode
   ) => void
 ): t.Visitor {
   return {
@@ -156,7 +157,16 @@ function createVisitor(
       const bodySelection = Selection.fromAST(body.node.loc);
       if (selection.end.isAfter(bodySelection.start)) return;
 
-      onMatch(path, path.node.id, path.parentPath);
+      onMatch(
+        path,
+        path.node.id,
+        path.parentPath,
+        new MovableFunctionDeclaration()
+      );
     }
   };
 }
+
+interface MovableNode {}
+
+class MovableFunctionDeclaration implements MovableNode {}
