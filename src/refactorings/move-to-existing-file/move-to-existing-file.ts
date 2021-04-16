@@ -67,19 +67,20 @@ function updateCode(
   let hasReferencesThatCantBeImported = false;
   let movedNode: t.Node = t.emptyStatement();
   let declarationsToImport: t.ImportDeclaration[] = [];
-  let movableNode = new MovableEmptyStatement();
+  let movableNode: MovableNode = new MovableEmptyStatement();
 
   const updatedCode = t.transformAST(
     ast,
     createVisitor(
       selection,
-      (path, importIdentifier, programPath, movableNode) => {
-        movedNode = movableNode.value;
+      (path, importIdentifier, programPath, movableNode2) => {
+        movableNode = movableNode2;
+        movedNode = movableNode2.value;
 
         hasReferencesThatCantBeImported =
-          movableNode.hasReferencesThatCantBeImported;
+          movableNode2.hasReferencesThatCantBeImported;
 
-        declarationsToImport = movableNode.declarationsToImportFrom(
+        declarationsToImport = movableNode2.declarationsToImportFrom(
           relativePath
         );
 
