@@ -77,21 +77,9 @@ function updateCode(
         hasReferencesThatCantBeImported =
           movableNode.hasReferencesThatCantBeImported;
 
-        declarationsToImport = t
-          .getReferencedImportDeclarations(path, programPath)
-          .map((declaration) => {
-            const importRelativePath = new RelativePath(
-              declaration.source.value
-            ).relativeTo(relativePath);
-
-            return {
-              ...declaration,
-              source: {
-                ...declaration.source,
-                value: importRelativePath.value
-              }
-            };
-          });
+        declarationsToImport = movableNode.declarationsToImportFrom(
+          relativePath
+        );
 
         t.addImportDeclaration(
           programPath,
