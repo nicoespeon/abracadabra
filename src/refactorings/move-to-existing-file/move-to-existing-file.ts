@@ -164,7 +164,7 @@ function createVisitor(
         path,
         path.node.id,
         path.parentPath,
-        new MovableFunctionDeclaration(path)
+        new MovableFunctionDeclaration(path, path.parentPath)
       );
     }
   };
@@ -172,12 +172,20 @@ function createVisitor(
 
 interface MovableNode {
   readonly value: t.Node;
+  readonly hasReferencesThatCantBeImported: boolean;
 }
 
 class MovableFunctionDeclaration implements MovableNode {
-  constructor(private path: t.NodePath<t.FunctionDeclaration>) {}
+  constructor(
+    private path: t.NodePath<t.FunctionDeclaration>,
+    private programPath: t.NodePath<t.Program>
+  ) {}
 
   get value(): t.FunctionDeclaration {
     return this.path.node;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return t.hasReferencesDefinedInSameScope(this.path, this.programPath);
   }
 }
