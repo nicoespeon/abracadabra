@@ -58,14 +58,8 @@ function updateCode(
   relativePath: RelativePath
 ): {
   updatedCode: t.Transformed;
-  hasReferencesThatCantBeImported: boolean;
-  movedNode: t.Node;
-  declarationsToImport: t.ImportDeclaration[];
   movableNode: MovableNode;
 } {
-  let hasReferencesThatCantBeImported = false;
-  let movedNode: t.Node = t.emptyStatement();
-  let declarationsToImport: t.ImportDeclaration[] = [];
   let movableNode: MovableNode = new MovableEmptyStatement();
 
   const updatedCode = t.transformAST(
@@ -74,21 +68,12 @@ function updateCode(
       selection,
       (path, importIdentifier, programPath, movableNode2) => {
         movableNode = movableNode2;
-        movedNode = movableNode2.value;
-
-        hasReferencesThatCantBeImported =
-          movableNode2.hasReferencesThatCantBeImported;
-
-        declarationsToImport = movableNode2.declarationsToImportFrom(
-          relativePath
-        );
 
         t.addImportDeclaration(
           programPath,
           importIdentifier,
           relativePath.withoutExtension
         );
-
         path.remove();
       }
     )
@@ -96,9 +81,6 @@ function updateCode(
 
   return {
     updatedCode,
-    hasReferencesThatCantBeImported,
-    movedNode,
-    declarationsToImport,
     movableNode
   };
 }
