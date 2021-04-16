@@ -62,10 +62,12 @@ function updateCode(
   hasReferencesThatCantBeImported: boolean;
   movedNode: t.Node;
   declarationsToImport: t.ImportDeclaration[];
+  movableNode: MovableNode;
 } {
   let hasReferencesThatCantBeImported = false;
   let movedNode: t.Node = t.emptyStatement();
   let declarationsToImport: t.ImportDeclaration[] = [];
+  let movableNode = new MovableEmptyStatement();
 
   const updatedCode = t.transformAST(
     ast,
@@ -96,7 +98,8 @@ function updateCode(
     updatedCode,
     hasReferencesThatCantBeImported,
     movedNode,
-    declarationsToImport
+    declarationsToImport,
+    movableNode
   };
 }
 
@@ -160,6 +163,15 @@ interface MovableNode {
   readonly value: t.Node;
   readonly hasReferencesThatCantBeImported: boolean;
   declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[];
+}
+
+class MovableEmptyStatement implements MovableNode {
+  readonly value = t.emptyStatement();
+  readonly hasReferencesThatCantBeImported = false;
+
+  declarationsToImportFrom(_relativePath: RelativePath): t.ImportDeclaration[] {
+    return [];
+  }
 }
 
 class MovableFunctionDeclaration implements MovableNode {
