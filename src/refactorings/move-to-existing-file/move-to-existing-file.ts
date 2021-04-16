@@ -69,38 +69,41 @@ function updateCode(
 
   const updatedCode = t.transformAST(
     ast,
-    createVisitor(selection, (path, importIdentifier, programPath) => {
-      movedNode = path.node;
+    createVisitor(
+      selection,
+      (path, importIdentifier, programPath, movableNode) => {
+        movedNode = movableNode.value;
 
-      hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
-        path,
-        programPath
-      );
+        hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+          path,
+          programPath
+        );
 
-      declarationsToImport = t
-        .getReferencedImportDeclarations(path, programPath)
-        .map((declaration) => {
-          const importRelativePath = new RelativePath(
-            declaration.source.value
-          ).relativeTo(relativePath);
+        declarationsToImport = t
+          .getReferencedImportDeclarations(path, programPath)
+          .map((declaration) => {
+            const importRelativePath = new RelativePath(
+              declaration.source.value
+            ).relativeTo(relativePath);
 
-          return {
-            ...declaration,
-            source: {
-              ...declaration.source,
-              value: importRelativePath.value
-            }
-          };
-        });
+            return {
+              ...declaration,
+              source: {
+                ...declaration.source,
+                value: importRelativePath.value
+              }
+            };
+          });
 
-      t.addImportDeclaration(
-        programPath,
-        importIdentifier,
-        relativePath.withoutExtension
-      );
+        t.addImportDeclaration(
+          programPath,
+          importIdentifier,
+          relativePath.withoutExtension
+        );
 
-      path.remove();
-    })
+        path.remove();
+      }
+    )
   );
 
   return {
