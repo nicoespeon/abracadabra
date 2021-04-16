@@ -66,8 +66,8 @@ function updateCode(
     ast,
     createVisitor(
       selection,
-      (path, importIdentifier, programPath, movableNode2) => {
-        movableNode = movableNode2;
+      (path, importIdentifier, programPath, matchingMovableNode) => {
+        movableNode = matchingMovableNode;
 
         t.addImportDeclaration(
           programPath,
