@@ -121,7 +121,7 @@ function createVisitor(
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
-      if (!path.parentPath.isProgram()) return;
+      if (!t.isRootNodePath(path)) return;
       if (!path.node.id) return;
       if (!selection.isInsidePath(path)) return;
 
@@ -139,7 +139,7 @@ function createVisitor(
       );
     },
     TSTypeAliasDeclaration(path) {
-      if (!path.parentPath.isProgram()) return;
+      if (!t.isRootNodePath(path)) return;
       if (!path.node.id) return;
       if (!selection.isInsidePath(path)) return;
 
@@ -151,7 +151,7 @@ function createVisitor(
       );
     },
     TSInterfaceDeclaration(path) {
-      if (!path.parentPath.isProgram()) return;
+      if (!t.isRootNodePath(path)) return;
       if (!path.node.id) return;
       if (!selection.isInsidePath(path)) return;
 

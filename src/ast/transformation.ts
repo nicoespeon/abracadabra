@@ -15,6 +15,7 @@ const traverseNode = t.traverse;
 const traversePath = traverse;
 
 export { NodePath, Visitor, Scope } from "@babel/traverse";
+export { RootNodePath, isRootNodePath };
 export {
   generate,
   traverseNode,
@@ -250,4 +251,14 @@ function mergeCommentsInto<T extends t.Node>(
       []
     )
   };
+}
+
+type RootNodePath<T = t.Node> = NodePath<T> & {
+  parentPath: NodePath<t.Program>;
+};
+
+function isRootNodePath<T = t.Node>(
+  path: NodePath<T>
+): path is RootNodePath<T> {
+  return path.parentPath.isProgram();
 }
