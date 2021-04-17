@@ -188,13 +188,13 @@ function getReferencedImportDeclarations(
 }
 
 function getTypeReferencedImportDeclarations(
-  typeAliasPath: NodePath<TypeDeclaration>,
+  typePath: NodePath<TypeDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
   let result: t.ImportDeclaration[] = [];
 
   const importDeclarations = getImportDeclarations(programPath);
-  typeAliasPath.traverse({
+  typePath.traverse({
     TSTypeReference(path) {
       if (!path.isReferenced()) return;
 
@@ -247,16 +247,16 @@ function hasReferencesDefinedInSameScope(
 }
 
 function hasTypeReferencesDefinedInSameScope(
-  typeAliasPath: NodePath<TypeDeclaration>
+  typePath: NodePath<TypeDeclaration>
 ): boolean {
   let result = false;
 
-  typeAliasPath.traverse({
+  typePath.traverse({
     TSTypeReference(path) {
       if (!path.isReferenced()) return;
       if (!t.isIdentifier(path.node.typeName)) return;
 
-      if (typeAliasPath.scope.hasGlobal(path.node.typeName.name)) {
+      if (typePath.scope.hasGlobal(path.node.typeName.name)) {
         result = true;
         path.stop();
       }
