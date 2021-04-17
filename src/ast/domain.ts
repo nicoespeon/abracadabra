@@ -13,6 +13,7 @@ export {
   isEmpty,
   replaceWithBodyOf,
   Primitive,
+  TypeDeclaration,
   forEach
 };
 
@@ -105,6 +106,8 @@ type Primitive =
   | t.NumberLiteral
   | t.BooleanLiteral
   | t.BigIntLiteral;
+
+type TypeDeclaration = t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration;
 
 function forEach(
   object: t.Expression,

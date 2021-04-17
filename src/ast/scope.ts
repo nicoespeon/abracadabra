@@ -1,7 +1,7 @@
 import { NodePath, Binding } from "@babel/traverse";
 import * as t from "@babel/types";
 import { first } from "../array";
-import { getImportDeclarations } from "./domain";
+import { getImportDeclarations, TypeDeclaration } from "./domain";
 
 import { areEquivalent } from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
@@ -188,7 +188,7 @@ function getReferencedImportDeclarations(
 }
 
 function getTypeReferencedImportDeclarations(
-  typeAliasPath: NodePath<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>,
+  typeAliasPath: NodePath<TypeDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
   let result: t.ImportDeclaration[] = [];
@@ -247,7 +247,7 @@ function hasReferencesDefinedInSameScope(
 }
 
 function hasTypeReferencesDefinedInSameScope(
-  typeAliasPath: NodePath<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>
+  typeAliasPath: NodePath<TypeDeclaration>
 ): boolean {
   let result = false;
 

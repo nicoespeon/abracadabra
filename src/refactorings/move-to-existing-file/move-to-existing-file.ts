@@ -228,12 +228,12 @@ class MovableFunctionDeclaration implements MovableNode {
 }
 
 class MovableTSTypeDeclaration implements MovableNode {
-  private _value: t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration;
+  private _value: t.TypeDeclaration;
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
 
   constructor(
-    path: t.NodePath<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>,
+    path: t.NodePath<t.TypeDeclaration>,
     programPath: t.NodePath<t.Program>
   ) {
     this._value = path.node;
@@ -246,7 +246,7 @@ class MovableTSTypeDeclaration implements MovableNode {
     );
   }
 
-  get value(): t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration {
+  get value(): t.TypeDeclaration {
     return this._value;
   }
 
