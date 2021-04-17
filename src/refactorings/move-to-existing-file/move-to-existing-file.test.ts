@@ -165,6 +165,26 @@ const someValue: SomeType = "irrelevant";`,
           otherFile: `import { OtherType } from "../some-file";
 export type SomeType = OtherType | string;`
         }
+      },
+      {
+        description: "an interface",
+        setup: {
+          currentFile: `interface [cursor]Data {
+  value: string;
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+
+let someData: Data;`,
+          otherFile: `export interface Data {
+  value: string;
+}`
+        }
       }
     ],
     async ({ setup, expected }) => {

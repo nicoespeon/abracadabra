@@ -188,7 +188,7 @@ function getReferencedImportDeclarations(
 }
 
 function getTypeReferencedImportDeclarations(
-  typeAliasPath: NodePath<t.TSTypeAliasDeclaration>,
+  typeAliasPath: NodePath<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
   let result: t.ImportDeclaration[] = [];
@@ -247,7 +247,7 @@ function hasReferencesDefinedInSameScope(
 }
 
 function hasTypeReferencesDefinedInSameScope(
-  typeAliasPath: NodePath<t.TSTypeAliasDeclaration>
+  typeAliasPath: NodePath<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>
 ): boolean {
   let result = false;
 
