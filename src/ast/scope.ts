@@ -18,7 +18,8 @@ export {
   referencesInScope,
   getReferencedImportDeclarations,
   getTypeReferencedImportDeclarations,
-  hasReferencesDefinedInSameScope
+  hasReferencesDefinedInSameScope,
+  hasTypeReferencesDefinedInSameScope
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -236,6 +237,26 @@ function hasReferencesDefinedInSameScope(
       if (!path.isReferenced()) return;
 
       if (referencesDefinedInSameScope.includes(path.node.name)) {
+        result = true;
+        path.stop();
+      }
+    }
+  });
+
+  return result;
+}
+
+function hasTypeReferencesDefinedInSameScope(
+  typeAliasPath: NodePath<t.TSTypeAliasDeclaration>
+): boolean {
+  let result = false;
+
+  typeAliasPath.traverse({
+    TSTypeReference(path) {
+      if (!path.isReferenced()) return;
+      if (!t.isIdentifier(path.node.typeName)) return;
+
+      if (typeAliasPath.scope.hasGlobal(path.node.typeName.name)) {
         result = true;
         path.stop();
       }

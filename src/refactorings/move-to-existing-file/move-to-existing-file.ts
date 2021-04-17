@@ -217,7 +217,7 @@ class MovableFunctionDeclaration implements MovableNode {
 
 class MovableTSTypeAlias implements MovableNode {
   private _value: t.TSTypeAliasDeclaration;
-  readonly hasReferencesThatCantBeImported = false;
+  private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
 
   constructor(
@@ -225,6 +225,9 @@ class MovableTSTypeAlias implements MovableNode {
     programPath: t.NodePath<t.Program>
   ) {
     this._value = path.node;
+    this._hasReferencesThatCantBeImported = t.hasTypeReferencesDefinedInSameScope(
+      path
+    );
     this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
       path,
       programPath
@@ -233,6 +236,10 @@ class MovableTSTypeAlias implements MovableNode {
 
   get value(): t.TSTypeAliasDeclaration {
     return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
   }
 
   declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {

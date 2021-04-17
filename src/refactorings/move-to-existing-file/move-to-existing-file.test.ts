@@ -221,6 +221,11 @@ function [cursor]doSomething() {
 }
 
 function referencedHere() {}`
+      },
+      {
+        description: "a type alias with references defined in the same file",
+        code: `type [cursor]SomeType = OtherType | string;
+type OtherType = string;`
       }
     ],
     async ({ code }) => {
