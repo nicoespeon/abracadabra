@@ -92,6 +92,18 @@ getLastName = () => {
   lastName = "Doe";
   return lastName;
 };`
+      },
+      {
+        description: "destructured assignment",
+        code: `const { firstName } = someObject;`,
+        expected: `let firstName;
+({ firstName } = someObject);`
+      },
+      {
+        description: "destructured assignment, multiple values",
+        code: `const { firstName, lastName, ...others } = someObject;`,
+        expected: `let firstName, lastName, others;
+({ firstName, lastName, ...others } = someObject);`
       }
     ],
     async ({ code, expected }) => {

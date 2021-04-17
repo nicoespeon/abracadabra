@@ -28,7 +28,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.replaceWithMultiple([
         t.variableDeclaration(
           kind,
-          declarations.map(({ id }) => t.variableDeclarator(id))
+          declarations.flatMap(({ id }) => createVariableDeclarators(id))
         ),
         ...declarations.filter(isDeclarationInitialized).map(({ id, init }) => {
           if (t.isIdentifier(id) && id.typeAnnotation) {
@@ -41,6 +41,20 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       ]);
     })
   );
+}
+
+function createVariableDeclarators(leftValue: t.LVal): t.VariableDeclarator[] {
+  const identifiers = t.isObjectPattern(leftValue)
+    ? objectPatternLVals(leftValue)
+    : [leftValue];
+
+  return identifiers.map((id) => t.variableDeclarator(id));
+}
+
+function objectPatternLVals(objectPattern: t.ObjectPattern): t.LVal[] {
+  return objectPattern.properties.map((property) => {
+    return t.isRestElement(property) ? property.argument : property.key;
+  });
 }
 
 function createVisitor(
