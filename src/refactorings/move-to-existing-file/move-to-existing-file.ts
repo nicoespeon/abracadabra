@@ -137,6 +137,18 @@ function createVisitor(
         path.parentPath,
         new MovableFunctionDeclaration(path, path.parentPath)
       );
+    },
+    TSTypeAliasDeclaration(path) {
+      if (!path.parentPath.isProgram()) return;
+      if (!path.node.id) return;
+      if (!selection.isInsidePath(path)) return;
+
+      onMatch(
+        path,
+        path.node.id,
+        path.parentPath,
+        new MovableTSTypeAlias(path)
+      );
     }
   };
 }
@@ -200,5 +212,22 @@ class MovableFunctionDeclaration implements MovableNode {
         }
       };
     });
+  }
+}
+
+class MovableTSTypeAlias implements MovableNode {
+  private _value: t.TSTypeAliasDeclaration;
+  readonly hasReferencesThatCantBeImported = false;
+
+  constructor(path: t.NodePath<t.TSTypeAliasDeclaration>) {
+    this._value = path.node;
+  }
+
+  get value(): t.TSTypeAliasDeclaration {
+    return this._value;
+  }
+
+  declarationsToImportFrom(_relativePath: RelativePath): t.ImportDeclaration[] {
+    return [];
   }
 }

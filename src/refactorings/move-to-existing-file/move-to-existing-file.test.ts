@@ -129,6 +129,22 @@ export function sayHello() {
   console.log(HELLO, WORLD);
 }`
         }
+      },
+      {
+        description: "a type alias",
+        setup: {
+          currentFile: `type [cursor]SomeType = string;
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { SomeType } from "./other-file";
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: `export type SomeType = string;`
+        }
       }
     ],
     async ({ setup, expected }) => {
