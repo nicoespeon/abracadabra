@@ -17,6 +17,7 @@ export {
   bindingNamesInScope,
   referencesInScope,
   getReferencedImportDeclarations,
+  getTypeReferencedImportDeclarations,
   hasReferencesDefinedInSameScope
 };
 
@@ -85,9 +86,9 @@ function isShadowIn(
 }
 
 function findFirstExistingDeclaration(expressionPath: NodePath<t.Expression>) {
-  const existingDeclarations: NodePath<
-    DestructuredVariableDeclarator
-  >[] = Object.values(expressionPath.scope.getAllBindings())
+  const existingDeclarations: NodePath<DestructuredVariableDeclarator>[] = Object.values(
+    expressionPath.scope.getAllBindings()
+  )
     .map(({ path }) => path)
     .filter(
       (path): path is NodePath<DestructuredVariableDeclarator> =>
@@ -170,6 +171,35 @@ function getReferencedImportDeclarations(
       importDeclarations.forEach((declaration) => {
         const matchingSpecifier = declaration.specifiers.find(({ local }) =>
           areEquivalent(local, path.node)
+        );
+
+        if (matchingSpecifier) {
+          result.push({
+            ...declaration,
+            specifiers: [matchingSpecifier]
+          });
+        }
+      });
+    }
+  });
+
+  return result;
+}
+
+function getTypeReferencedImportDeclarations(
+  typeAliasPath: NodePath<t.TSTypeAliasDeclaration>,
+  programPath: NodePath<t.Program>
+): t.ImportDeclaration[] {
+  let result: t.ImportDeclaration[] = [];
+
+  const importDeclarations = getImportDeclarations(programPath);
+  typeAliasPath.traverse({
+    TSTypeReference(path) {
+      if (!path.isReferenced()) return;
+
+      importDeclarations.forEach((declaration) => {
+        const matchingSpecifier = declaration.specifiers.find(({ local }) =>
+          areEquivalent(local, path.node.typeName)
         );
 
         if (matchingSpecifier) {

@@ -147,7 +147,7 @@ function createVisitor(
         path,
         path.node.id,
         path.parentPath,
-        new MovableTSTypeAlias(path)
+        new MovableTSTypeAlias(path, path.parentPath)
       );
     }
   };
@@ -218,16 +218,36 @@ class MovableFunctionDeclaration implements MovableNode {
 class MovableTSTypeAlias implements MovableNode {
   private _value: t.TSTypeAliasDeclaration;
   readonly hasReferencesThatCantBeImported = false;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
 
-  constructor(path: t.NodePath<t.TSTypeAliasDeclaration>) {
+  constructor(
+    path: t.NodePath<t.TSTypeAliasDeclaration>,
+    programPath: t.NodePath<t.Program>
+  ) {
     this._value = path.node;
+    this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
+      path,
+      programPath
+    );
   }
 
   get value(): t.TSTypeAliasDeclaration {
     return this._value;
   }
 
-  declarationsToImportFrom(_relativePath: RelativePath): t.ImportDeclaration[] {
-    return [];
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
   }
 }

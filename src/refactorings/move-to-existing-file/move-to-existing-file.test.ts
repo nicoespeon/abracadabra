@@ -145,6 +145,26 @@ const someValue: SomeType = "irrelevant";`,
 const someValue: SomeType = "irrelevant";`,
           otherFile: `export type SomeType = string;`
         }
+      },
+      {
+        description: "a type alias referring to others",
+        setup: {
+          currentFile: `import { OtherType } from "../some-file";
+
+type [cursor]SomeType = OtherType | string;
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { SomeType } from "./other-file";
+import { OtherType } from "../some-file";
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: `import { OtherType } from "../some-file";
+export type SomeType = OtherType | string;`
+        }
       }
     ],
     async ({ setup, expected }) => {
