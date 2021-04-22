@@ -64,19 +64,16 @@ function updateCode(
 
   const updatedCode = t.transformAST(
     ast,
-    createVisitor(
-      selection,
-      (path, importIdentifier, programPath, matchingMovableNode) => {
-        movableNode = matchingMovableNode;
+    createVisitor(selection, (path, importIdentifier, matchingMovableNode) => {
+      movableNode = matchingMovableNode;
 
-        t.addImportDeclaration(
-          programPath,
-          importIdentifier,
-          relativePath.withoutExtension
-        );
-        path.remove();
-      }
-    )
+      t.addImportDeclaration(
+        path.parentPath,
+        importIdentifier,
+        relativePath.withoutExtension
+      );
+      path.remove();
+    })
   );
 
   return {
@@ -113,15 +110,14 @@ function updateOtherFileCode(
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath,
+    path: t.RootNodePath,
     importIdentifier: t.Identifier,
-    program: t.NodePath<t.Program>,
     movableNode: MovableNode
   ) => void
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
-      if (!path.parentPath.isProgram()) return;
+      if (!t.isRootNodePath(path)) return;
       if (!path.node.id) return;
       if (!selection.isInsidePath(path)) return;
 
@@ -131,12 +127,21 @@ function createVisitor(
       const bodySelection = Selection.fromAST(body.node.loc);
       if (selection.end.isAfter(bodySelection.start)) return;
 
-      onMatch(
-        path,
-        path.node.id,
-        path.parentPath,
-        new MovableFunctionDeclaration(path, path.parentPath)
-      );
+      onMatch(path, path.node.id, new MovableFunctionDeclaration(path));
+    },
+    TSTypeAliasDeclaration(path) {
+      if (!t.isRootNodePath(path)) return;
+      if (!path.node.id) return;
+      if (!selection.isInsidePath(path)) return;
+
+      onMatch(path, path.node.id, new MovableTSTypeDeclaration(path));
+    },
+    TSInterfaceDeclaration(path) {
+      if (!t.isRootNodePath(path)) return;
+      if (!path.node.id) return;
+      if (!selection.isInsidePath(path)) return;
+
+      onMatch(path, path.node.id, new MovableTSTypeDeclaration(path));
     }
   };
 }
@@ -161,24 +166,62 @@ class MovableFunctionDeclaration implements MovableNode {
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
 
-  constructor(
-    path: t.NodePath<t.FunctionDeclaration>,
-    programPath: t.NodePath<t.Program>
-  ) {
+  constructor(path: t.RootNodePath<t.FunctionDeclaration>) {
     // We need to compute these in constructor because the `path` reference
     // will be removed and not accessible later.
     this._value = path.node;
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
       path,
-      programPath
+      path.parentPath
     );
     this._referencedImportDeclarations = t.getReferencedImportDeclarations(
       path,
-      programPath
+      path.parentPath
     );
   }
 
   get value(): t.FunctionDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+}
+
+class MovableTSTypeDeclaration implements MovableNode {
+  private _value: t.TypeDeclaration;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(path: t.RootNodePath<t.TypeDeclaration>) {
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported = t.hasTypeReferencesDefinedInSameScope(
+      path
+    );
+    this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
+      path,
+      path.parentPath
+    );
+  }
+
+  get value(): t.TypeDeclaration {
     return this._value;
   }
 

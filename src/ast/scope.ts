@@ -1,7 +1,7 @@
 import { NodePath, Binding } from "@babel/traverse";
 import * as t from "@babel/types";
 import { first } from "../array";
-import { getImportDeclarations } from "./domain";
+import { getImportDeclarations, TypeDeclaration } from "./domain";
 
 import { areEquivalent } from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
@@ -17,7 +17,9 @@ export {
   bindingNamesInScope,
   referencesInScope,
   getReferencedImportDeclarations,
-  hasReferencesDefinedInSameScope
+  getTypeReferencedImportDeclarations,
+  hasReferencesDefinedInSameScope,
+  hasTypeReferencesDefinedInSameScope
 };
 
 function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
@@ -85,9 +87,9 @@ function isShadowIn(
 }
 
 function findFirstExistingDeclaration(expressionPath: NodePath<t.Expression>) {
-  const existingDeclarations: NodePath<
-    DestructuredVariableDeclarator
-  >[] = Object.values(expressionPath.scope.getAllBindings())
+  const existingDeclarations: NodePath<DestructuredVariableDeclarator>[] = Object.values(
+    expressionPath.scope.getAllBindings()
+  )
     .map(({ path }) => path)
     .filter(
       (path): path is NodePath<DestructuredVariableDeclarator> =>
@@ -185,6 +187,35 @@ function getReferencedImportDeclarations(
   return result;
 }
 
+function getTypeReferencedImportDeclarations(
+  typePath: NodePath<TypeDeclaration>,
+  programPath: NodePath<t.Program>
+): t.ImportDeclaration[] {
+  let result: t.ImportDeclaration[] = [];
+
+  const importDeclarations = getImportDeclarations(programPath);
+  typePath.traverse({
+    TSTypeReference(path) {
+      if (!path.isReferenced()) return;
+
+      importDeclarations.forEach((declaration) => {
+        const matchingSpecifier = declaration.specifiers.find(({ local }) =>
+          areEquivalent(local, path.node.typeName)
+        );
+
+        if (matchingSpecifier) {
+          result.push({
+            ...declaration,
+            specifiers: [matchingSpecifier]
+          });
+        }
+      });
+    }
+  });
+
+  return result;
+}
+
 function hasReferencesDefinedInSameScope(
   functionPath: NodePath<t.FunctionDeclaration>,
   programPath: NodePath<t.Program>
@@ -206,6 +237,26 @@ function hasReferencesDefinedInSameScope(
       if (!path.isReferenced()) return;
 
       if (referencesDefinedInSameScope.includes(path.node.name)) {
+        result = true;
+        path.stop();
+      }
+    }
+  });
+
+  return result;
+}
+
+function hasTypeReferencesDefinedInSameScope(
+  typePath: NodePath<TypeDeclaration>
+): boolean {
+  let result = false;
+
+  typePath.traverse({
+    TSTypeReference(path) {
+      if (!path.isReferenced()) return;
+      if (!t.isIdentifier(path.node.typeName)) return;
+
+      if (typePath.scope.hasGlobal(path.node.typeName.name)) {
         result = true;
         path.stop();
       }

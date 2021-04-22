@@ -129,6 +129,91 @@ export function sayHello() {
   console.log(HELLO, WORLD);
 }`
         }
+      },
+      {
+        description: "a type alias",
+        setup: {
+          currentFile: `type [cursor]SomeType = string;
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { SomeType } from "./other-file";
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: `export type SomeType = string;`
+        }
+      },
+      {
+        description: "a type alias referring to others",
+        setup: {
+          currentFile: `import { OtherType } from "../some-file";
+
+type [cursor]SomeType = OtherType | string;
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { SomeType } from "./other-file";
+import { OtherType } from "../some-file";
+
+const someValue: SomeType = "irrelevant";`,
+          otherFile: `import { OtherType } from "../some-file";
+export type SomeType = OtherType | string;`
+        }
+      },
+      {
+        description: "an interface",
+        setup: {
+          currentFile: `interface [cursor]Data {
+  value: string;
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+
+let someData: Data;`,
+          otherFile: `export interface Data {
+  value: string;
+}`
+        }
+      },
+      {
+        description: "an interface referring to others",
+        setup: {
+          currentFile: `import { Value } from "../some-file";
+
+interface [cursor]Data {
+  response: {
+    value: Value;
+  };
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+import { Value } from "../some-file";
+
+let someData: Data;`,
+          otherFile: `import { Value } from "../some-file";
+
+export interface Data {
+  response: {
+    value: Value;
+  };
+}`
+        }
       }
     ],
     async ({ setup, expected }) => {
@@ -185,6 +270,19 @@ function [cursor]doSomething() {
 }
 
 function referencedHere() {}`
+      },
+      {
+        description: "a type alias with references defined in the same file",
+        code: `type [cursor]SomeType = OtherType | string;
+type OtherType = string;`
+      },
+      {
+        description: "an interface with references defined in the same file",
+        code: `interface [cursor]Data {
+  value: Value;
+}
+
+type Value = string;`
       }
     ],
     async ({ code }) => {
