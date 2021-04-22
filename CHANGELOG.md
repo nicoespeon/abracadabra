@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extract Variable won't extract type parameter instantiations anymore, because it shouldn't!
 - Split Declaration from Initialization now works fine with destructured assignments.
 
+### Added
+
+- Move to Existing File now works with types and interfaces! So you can move these to an existing source file.
+
 ## [5.2.0] - 2021-04-15 - Poor Unfortunate Types 🦑
 
 ### Fixed
