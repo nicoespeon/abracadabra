@@ -91,6 +91,7 @@
     "@babel/types": "7.9.0",
     "change-case": "4.1.2",
     "jscodeshift": "0.6.4",
+    "minimatch": "3.0.4",
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",
     "recast": "0.20.4",
@@ -363,11 +364,17 @@
         "abracadabra.ignoredFolders": {
           "type": "array",
           "default": [
-            "node_modules",
-            "dist",
-            "build"
+            "node_modules"
           ],
-          "description": "Folders where it won't propose Quick Fixes (defaults: node_modules, dist, build)."
+          "description": "Folders where it won't propose Quick Fixes (defaults: `node_modules`)."
+        },
+        "abracadabra.ignoredPatterns": {
+          "type": "array",
+          "default": [
+            "dist/*",
+            "build/*"
+          ],
+          "description": "Glob patterns where it won't propose Quick Fixes (defaults: `dist/*`, `build/*`)."
         },
         "abracadabra.addBracesToArrowFunction.showInQuickFix": {
           "type": "boolean",

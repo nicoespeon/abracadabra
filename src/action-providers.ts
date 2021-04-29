@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import minimatch from "minimatch";
 
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
@@ -6,6 +7,7 @@ import { Selection } from "./editor/selection";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import {
   getIgnoredFolders,
+  getIgnoredPatterns,
   shouldShowInQuickFix
 } from "./vscode-configuration";
 
@@ -42,9 +44,14 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
   }
 
   private isNavigatingAnIgnoredFile(filePath: string): boolean {
-    return getIgnoredFolders().some((ignored) =>
-      filePath.includes(`/${ignored}/`)
+    const relativeFilePath = vscode.workspace.asRelativePath(filePath);
+    const isFolderIgnored = getIgnoredFolders().some((ignored) =>
+      relativeFilePath.includes(`/${ignored}/`)
     );
+    const isPatternIgnored = getIgnoredPatterns().some((ignored) =>
+      minimatch(relativeFilePath, ignored)
+    );
+    return isFolderIgnored || isPatternIgnored;
   }
 
   private findApplicableRefactorings(

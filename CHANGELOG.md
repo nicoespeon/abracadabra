@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Move to Existing File now works with types and interfaces! So you can move these to an existing source file.
+- A new setting `abracadabra.ignoredPatterns` that you can use to disable the extension Quick Fixes in specified glob patterns. Default is `["build/*", "dist/*"]`. `abracadabra.ignoredFolders` still exist, although it's redundant. It will eventually be removed later in favor of `ignoredPatterns`.
 
 ## [5.2.0] - 2021-04-15 - Poor Unfortunate Types 🦑
 
