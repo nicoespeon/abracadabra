@@ -128,7 +128,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   Object.values(refactorings).forEach(
-    ({ withoutActionProvider, withActionProvider, languages }) => {
+    ({ withoutActionProvider, withActionProvider }) => {
       withoutActionProvider
         .concat(withActionProvider)
         .forEach(({ command }) =>
@@ -139,14 +139,30 @@ export function activate(context: vscode.ExtensionContext) {
             )
           )
         );
+    }
+  );
 
+  const withActionProviderPerLanguage = Object.values(refactorings).reduce(
+    (memo, { languages, withActionProvider }) => {
       languages.forEach((language) => {
-        vscode.languages.registerCodeActionsProvider(
-          language,
-          new RefactoringActionProvider(withActionProvider),
-          { providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite] }
-        );
+        if (!memo[language]) memo[language] = [];
+        memo[language].push(...withActionProvider);
       });
+
+      return memo;
+    },
+    {} as {
+      [language: string]: RefactoringWithActionProvider[];
+    }
+  );
+
+  Object.entries(withActionProviderPerLanguage).forEach(
+    ([language, refactorings]) => {
+      vscode.languages.registerCodeActionsProvider(
+        language,
+        new RefactoringActionProvider(refactorings),
+        { providedCodeActionKinds: [vscode.CodeActionKind.RefactorRewrite] }
+      );
     }
   );
 

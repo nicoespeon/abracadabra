@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move to Existing File now works with types and interfaces! So you can move these to an existing source file.
 - A new setting `abracadabra.ignoredPatterns` that you can use to disable the extension Quick Fixes in specified glob patterns. Default is `["build/*", "dist/*"]`. `abracadabra.ignoredFolders` still exist, although it's redundant. It will eventually be removed later in favor of `ignoredPatterns`.
 
+### Changed
+
+- Performances have been improved by running less often the refactorings in the background to determine if we can propose a quick fix. It should make VS Code faster when you're working on a large file.
+
 ## [5.2.0] - 2021-04-15 - Poor Unfortunate Types 🦑
 
 ### Fixed
