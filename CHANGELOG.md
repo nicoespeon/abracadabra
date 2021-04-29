@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.0] - 2021-04-29 - Code Is a Highway 🏎
+
 ### Fixed
 
 - Extract Variable won't extract type parameter instantiations anymore, because it shouldn't!
@@ -1285,7 +1287,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.2.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.3.0...HEAD
+[5.3.0]: https://github.com/nicoespeon/abracadabra/compare/5.2.0...5.3.0
 [5.2.0]: https://github.com/nicoespeon/abracadabra/compare/5.1.0...5.2.0
 [5.1.0]: https://github.com/nicoespeon/abracadabra/compare/5.0.1...5.1.0
 [5.0.1]: https://github.com/nicoespeon/abracadabra/compare/5.0.0...5.0.1
