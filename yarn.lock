@@ -3236,10 +3236,10 @@ flow-parser@0.*:
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.120.1.tgz#26781130575fee4a45ecae0240b9d037e2746b72"
   integrity sha512-t5y9QoOegJuY+LCIjh0p6SGF7ItsxG5ycQApTSqWloutUZQ2gC0f6wMu91dab0/SSj2vH41bu5pDTLuvtP49ng==
 
-follow-redirects@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
-  integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
+follow-redirects@^1.13.2:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.0.tgz#f5d260f95c5f8c105894491feee5dc8993b402fe"
+  integrity sha512-0vRwd7RKQBTt+mgu87mtYeofLFZpTas2S9zY+jIeuLJMNvudIgF52nr19q40HOwH5RrhWIPuj9puybzSJiRrVg==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -5282,14 +5282,16 @@ osenv@^0.1.3:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
-ovsx@0.1.0-next.72b2e9d:
-  version "0.1.0-next.72b2e9d"
-  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.1.0-next.72b2e9d.tgz#60fd21ba4b0837a8ccfc2effc09317a911a63225"
-  integrity sha512-bjuJt+LOZgPDNRzMsAn6CkS65HHsKxQM2t7CbssSdLNopVCHJR8enWljsvvt/6+DwRN1BrhTIbMrfhKNBY6+Rw==
+ovsx@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.1.0.tgz#d215cfbf51e4427aa3921e93bfc7023e7046f9a0"
+  integrity sha512-okSg6fZ1yEL0eakrC7dKrXkd4yYgblZTVAnc7eCY2NpKAgpIbD5QRLQRJYF40UUgn7IWHe+4qdHPI2aBFXulYw==
   dependencies:
     commander "^6.1.0"
-    follow-redirects "^1.13.0"
-    vsce "~1.81.1"
+    follow-redirects "^1.13.2"
+    is-ci "^2.0.0"
+    leven "^3.1.0"
+    vsce "~1.84.0"
 
 p-each-series@^2.1.0:
   version "2.1.0"
@@ -7000,10 +7002,10 @@ vsce@1.85.0:
     yauzl "^2.3.1"
     yazl "^2.2.2"
 
-vsce@~1.81.1:
-  version "1.81.1"
-  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.81.1.tgz#c741e9830cc750925e5f37b1e048341b98125262"
-  integrity sha512-1yWAYRxTx/PKSFZnuELe7GPyIo70H/XKJqf6wGikofUK3f3TCNGI6F9xkTQFvXKNe0AygUuxN7kITyPIQGMP+w==
+vsce@~1.84.0:
+  version "1.84.0"
+  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.84.0.tgz#1c489212bfde2f37e20dbeb17954e56903f38bee"
+  integrity sha512-mRJDTMC/1GO7byz6dleY28CZo97cM1p0nU3EEMT5bGMpi5Yga3dKdgTvmwgSQF5BYWozNSNSqN1zih5SYzMZjA==
   dependencies:
     azure-devops-node-api "^7.2.0"
     chalk "^2.4.2"
