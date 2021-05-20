@@ -333,4 +333,15 @@ console.log(baz);`);
 console.log(response.code, response.user.id, response.user.name);`);
     expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 35));
   });
+
+  it("should rename the correct identifier if it's also re-assigned", async () => {
+    const code = `query.lang = query.lang[cursor] ? "yes" : "nope";`;
+    const editor = new InMemoryEditor(code);
+
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const { lang } = query;
+query.lang = lang ? "yes" : "nope";`);
+    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 17));
+  });
 });

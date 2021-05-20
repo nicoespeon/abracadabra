@@ -104,11 +104,12 @@ function findOtherOccurrences(
 
   const visitor = {
     enter(path: t.NodePath) {
-      const { node } = path;
+      const { node, parentPath } = path;
 
       if (path.type !== occurrence.path.type) return;
       if (!t.isSelectableNode(node)) return;
       if (!t.isSelectableNode(occurrence.path.node)) return;
+      if (parentPath.isAssignmentExpression()) return;
 
       const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
