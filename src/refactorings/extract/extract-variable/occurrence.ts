@@ -83,12 +83,15 @@ class Occurrence<T extends t.Node = t.Node> {
     };
   }
 
-  cursorOnIdentifier(otherOccurrences: Occurrence[]): Position {
-    const offset = otherOccurrences
+  cursorOnIdentifier(extractedOccurrences: Occurrence[]): Position {
+    const offset = extractedOccurrences
       .map(({ modification }) => modification)
       .filter(({ selection }) => selection.isOneLine)
       .filter(({ selection }) =>
         selection.startsBefore(this.modification.selection)
+      )
+      .filter(
+        ({ selection }) => !selection.isEqualTo(this.modification.selection)
       )
       .map(({ code, selection }) => selection.width - code.length)
       .reduce((a, b) => a + b, 0);

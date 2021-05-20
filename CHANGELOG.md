@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+TL;DR Extract Variable now works "as expected" in more edge-cases!
+
 - Extract Variable now doesn't consider the left-side of assignment expressions as an occurrence. This means if you have code like `data.value = "(" + data.value + ")"` and you extract the second occurrence of `data.value`, it won't try to replace the `data.value` on the left (that could break your code).
+- Extract Variable now puts the cursor properly when you extract member expressions but there were other occurrences on the same line that you don't extract.
 
 ## [5.3.0] - 2021-04-29 - Code Is a Highway 🏎
 

@@ -334,6 +334,22 @@ console.log(response.code, response.user.id, response.user.name);`);
     expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 35));
   });
 
+  it("should rename the correct identifier for multiple occurrences on the same line (only one occurrence extracted)", async () => {
+    const code = `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`;
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUserChoice")
+      .mockImplementation(([, singleOccurrence]) =>
+        Promise.resolve(singleOccurrence)
+      );
+
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const response = data.response;
+console.log(data.response.code, response.user.id, data.response.user.name);`);
+    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 40));
+  });
+
   it("should rename the correct identifier if it's also re-assigned", async () => {
     const code = `query.lang = query.lang[cursor] ? "yes" : "nope";`;
     const editor = new InMemoryEditor(code);
