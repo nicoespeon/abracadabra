@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.1] - 2021-05-20
+
 ### Fixed
 
 TL;DR Extract Variable now works "as expected" in more edge-cases!
@@ -1294,7 +1296,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.3.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.3.1...HEAD
+[5.3.1]: https://github.com/nicoespeon/abracadabra/compare/5.3.0...5.3.1
 [5.3.0]: https://github.com/nicoespeon/abracadabra/compare/5.2.0...5.3.0
 [5.2.0]: https://github.com/nicoespeon/abracadabra/compare/5.1.0...5.2.0
 [5.1.0]: https://github.com/nicoespeon/abracadabra/compare/5.0.1...5.1.0
