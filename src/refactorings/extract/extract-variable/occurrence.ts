@@ -282,7 +282,6 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
 
       // If any of these throws, Occurrence is invalid
       occurrence.variableDeclarationParts();
-      occurrence.modification;
     } catch {
       return false;
     }
