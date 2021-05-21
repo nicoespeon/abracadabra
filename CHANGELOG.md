@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Convert let to const was wrongly suggested as a quick fix for every `const` declaration. Some `isLet()` logic was broken and we fixed that! Props to @jonboiser for spotting it.
+
 ## [5.3.1] - 2021-05-20
 
 ### Fixed

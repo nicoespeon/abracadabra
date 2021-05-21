@@ -11,6 +11,7 @@ export {
   getNodesBelow,
   getPathsBelow,
   isEmpty,
+  isLet,
   replaceWithBodyOf,
   Primitive,
   TypeDeclaration,
@@ -95,6 +96,10 @@ function isEmpty(statement: t.Statement): boolean {
   );
 
   return statements.length === 0;
+}
+
+function isLet(node: t.Node): node is t.VariableDeclaration {
+  return "kind" in node && node.kind === "let";
 }
 
 function replaceWithBodyOf(path: NodePath, node: t.Statement) {
