@@ -109,7 +109,12 @@ function findOtherOccurrences(
       if (path.type !== occurrence.path.type) return;
       if (!t.isSelectableNode(node)) return;
       if (!t.isSelectableNode(occurrence.path.node)) return;
-      if (parentPath.isAssignmentExpression()) return;
+      if (
+        parentPath.isAssignmentExpression() &&
+        parentPath.node.left === node
+      ) {
+        return;
+      }
 
       const loc = getOccurrenceLoc(node, selection);
       if (!loc) return;
