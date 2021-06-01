@@ -86,7 +86,7 @@
     "webpack-cli": "4.5.0"
   },
   "dependencies": {
-    "@babel/parser": "7.13.4",
+    "@babel/parser": "7.14.4",
     "@babel/traverse": "7.14.0",
     "@babel/types": "7.9.0",
     "change-case": "4.1.2",
