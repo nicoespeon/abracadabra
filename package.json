@@ -67,7 +67,7 @@
     "@types/vscode": "1.56.0",
     "all-contributors-cli": "6.20.0",
     "chai": "4.3.4",
-    "glob": "7.1.6",
+    "glob": "7.1.7",
     "husky": "6.0.0",
     "hygen": "6.1.0",
     "jest": "26.6.3",
