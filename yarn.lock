@@ -1237,14 +1237,15 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@ts-morph/common@~0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@ts-morph/common/-/common-0.9.0.tgz#a306355bad82cff22a1881f7f2f2c710bbb4d69d"
-  integrity sha512-yPcW6koNVK1hVKUu+KhPzhfgMb0uwzr2FewF+q8kxLerl0b+YZwmjvFMU2qbIawytIHT2VBI4bi+C09EFPB4aw==
+"@ts-morph/common@~0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@ts-morph/common/-/common-0.10.0.tgz#d032ea6f6d4115b72fa50ad56009baebcc1e71b8"
+  integrity sha512-6wC+CovwzxLP+bQZcqHJEbZ7ViaIfsid8VzsVjJRkdfCQ8C8K5mm1+9/wkgmn814BPATtgSgFuDmVJnIb8/leg==
   dependencies:
     fast-glob "^3.2.5"
     minimatch "^3.0.4"
     mkdirp "^1.0.4"
+    path-browserify "^1.0.1"
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.9"
@@ -5490,6 +5491,11 @@ pascalcase@^0.1.1:
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
 
+path-browserify@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
+  integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==
+
 path-case@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/path-case/-/path-case-2.1.1.tgz#94b8037c372d3fe2906e465bb45e25d226e8eea5"
@@ -6756,12 +6762,12 @@ ts-loader@9.2.2:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
-ts-morph@^10.0.2:
-  version "10.0.2"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-10.0.2.tgz#292418207db467326231b2be92828b5e295e7946"
-  integrity sha512-TVuIfEqtr9dW25K3Jajqpqx7t/zLRFxKu2rXQZSDjTm4MO4lfmuj1hn8WEryjeDDBFcNOCi+yOmYUYR4HucrAg==
+ts-morph@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-11.0.0.tgz#511b3caa194739fef0619367f8e65de9b475e1d4"
+  integrity sha512-u5y0jaft5c0sRFnU0K8cZhhsvPUtXjZK5L31JLIhP17qcqo9MDjwsSYLg3UryQDzlktv8wyf/UtoqpFLDYHijg==
   dependencies:
-    "@ts-morph/common" "~0.9.0"
+    "@ts-morph/common" "~0.10.0"
     code-block-writer "^10.1.1"
 
 tslib@^1.13.0, tslib@^1.8.1, tslib@^1.9.0:
