@@ -239,6 +239,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "gurdiga",
+      "name": "Vlad GURDIGA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53922?v=4",
+      "profile": "https://gurdiga.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

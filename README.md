@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -128,6 +128,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
   <tr>
     <td align="center"><a href="https://github.com/chipbite"><img src="https://avatars.githubusercontent.com/u/559199?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marcus</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Achipbite" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://jonboiser.com"><img src="https://avatars.githubusercontent.com/u/10248067?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jonathan Boiser</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ajonboiser" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://gurdiga.com"><img src="https://avatars.githubusercontent.com/u/53922?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vlad GURDIGA</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Agurdiga" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
