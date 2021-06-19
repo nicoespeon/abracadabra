@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Inline Variable was not respecting boundaries set by a lambda expression. It would replace all identifiers with the same name, despite them being redifined in the arrow function params. That created broken code. Not anymore! Thanks @gurdiga for reporting!
 - Convert let to const was wrongly suggested as a quick fix for every `const` declaration. Some `isLet()` logic was broken and we fixed that! Props to @jonboiser for spotting it.
 
 ## [5.3.1] - 2021-05-20

@@ -3,7 +3,10 @@ import * as t from "@babel/types";
 import { first } from "../array";
 import { getImportDeclarations, TypeDeclaration } from "./domain";
 
-import { areEquivalent } from "./identity";
+import {
+  areEquivalent,
+  isFunctionDeclarationOrArrowFunction
+} from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
 
 export {
@@ -63,7 +66,7 @@ function isShadowIn(
 
   function isDeclaredInFunction(node: t.Node): boolean {
     return (
-      t.isFunctionDeclaration(node) &&
+      isFunctionDeclarationOrArrowFunction(node) &&
       node.params.some((node) => areEquivalent(id, node))
     );
   }

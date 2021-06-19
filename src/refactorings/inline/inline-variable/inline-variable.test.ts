@@ -157,6 +157,16 @@ function sayHello(yo, hello) {
 }`
       },
       {
+        description: "shadowed variable in a lambda",
+        code: `const title[cursor] = document.title;
+const lambda = (title: string) => title.length > 0;
+
+return {title: title};`,
+        expected: `const lambda = (title: string) => title.length > 0;
+
+return {title: document.title};`
+      },
+      {
         description: "export outside of declaration scope",
         code: `function sayHello() {
   const hello = [cursor]"Hello!";
@@ -213,7 +223,6 @@ interface Something {
         code: `const foo[cursor] = "bar";
 console.log({ [foo]: "Hello" });`,
         expected: `console.log({ ["bar"]: "Hello" });`
-        // only: true
       }
     ],
     async ({ code, expected }) => {
