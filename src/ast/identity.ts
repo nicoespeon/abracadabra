@@ -6,6 +6,7 @@ import { last } from "../array";
 export {
   isClassPropertyIdentifier,
   isVariableDeclarationIdentifier,
+  isFunctionDeclarationOrArrowFunction,
   isFunctionCallIdentifier,
   isJSXPartialElement,
   isPropertyOfMemberExpression,
@@ -39,6 +40,12 @@ function isClassPropertyIdentifier(path: NodePath): boolean {
 
 function isVariableDeclarationIdentifier(path: NodePath): boolean {
   return t.isVariableDeclarator(path.parent) && t.isIdentifier(path);
+}
+
+function isFunctionDeclarationOrArrowFunction(
+  node: t.Node
+): node is t.FunctionDeclaration | t.ArrowFunctionExpression {
+  return t.isFunctionDeclaration(node) || t.isArrowFunctionExpression(node);
 }
 
 function isFunctionCallIdentifier(path: NodePath): boolean {
