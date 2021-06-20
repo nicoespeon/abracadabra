@@ -60,7 +60,10 @@ function updateCode(
         hasReferenceBefore = t.referencesInScope(path).some((reference) => {
           if (!t.isSelectablePath(reference)) return false;
           const referenceSelection = Selection.fromAST(reference.node.loc);
-          return referenceSelection.startsBefore(pathSelection);
+          return (
+            !referenceSelection.isEqualTo(pathSelection) &&
+            referenceSelection.startsBefore(pathSelection)
+          );
         });
       }
 
@@ -78,6 +81,15 @@ function createVisitor(
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
+      // It seems a function declaration inside a named export may have no loc.
+      // Use the named export loc in that situation.
+      if (
+        t.isExportNamedDeclaration(path.parent) &&
+        !t.isSelectableNode(path.node)
+      ) {
+        path.node.loc = path.parent.loc;
+      }
+
       if (!selection.isInsidePath(path)) return;
       if (selection.isInsidePath(path.get("body"))) return;
 

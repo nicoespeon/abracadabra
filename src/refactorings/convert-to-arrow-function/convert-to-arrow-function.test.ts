@@ -107,6 +107,15 @@ function [cursor]doNothing() {}`,
 function checkAnswer(input: Input) {}
 
 const doNothing = () => {};`
+      },
+      {
+        description: "an exported function expression",
+        code: `export function [cursor]sayHello(name: string) {
+  console.log(\`Well, hello here \${name} 👋\`);
+}`,
+        expected: `export const sayHello = (name: string) => {
+  console.log(\`Well, hello here \${name} 👋\`);
+};`
       }
     ],
     async ({ code, expected }) => {
