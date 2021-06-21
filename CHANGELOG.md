@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.4.1] - 2021-06-20
+
+No change for the extension. It's an internal fix to get Abracadabra deployed to VS Code again.
+
+### Fixed
+
+- Fix VS Code release due to [a breaking change](https://github.com/microsoft/vscode-vsce/issues/576) in the latest vsce version.
+
 ## [5.4.0] - 2021-06-20 - Into the Exported Air 🎯
 
 ### Fixed
@@ -1307,7 +1315,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.4.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.4.1...HEAD
+[5.4.1]: https://github.com/nicoespeon/abracadabra/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/nicoespeon/abracadabra/compare/5.3.1...5.4.0
 [5.3.1]: https://github.com/nicoespeon/abracadabra/compare/5.3.0...5.3.1
 [5.3.0]: https://github.com/nicoespeon/abracadabra/compare/5.2.0...5.3.0
