@@ -18,6 +18,7 @@ Architecture decisions for this project [are documented here][adrs], using the [
 - [Debug locally](#debug-locally)
 - [Create a package and use it](#create-a-package-and-use-it)
 - [Open a PR and add acknowledge your contribution](#open-a-pr-and-add-acknowledge-your-contribution)
+- [Deploy a new version](#deploy-a-new-version)
 
 ## Getting started
 
@@ -170,6 +171,20 @@ Finally, [use all-contributors bot command][all-contributors-bot-command] to add
 
 Whether it's code, design, typo or documentation, every contribution is welcomed! So again, thank you very, very much 🧙‍
 
+## Deploy a new version
+
+Usually, @nicoespeon will deploy new versions of Abracadabra. Here are the necessary steps documented, in case you need to do it (or he forgots how to).
+
+Hopefully, most of the steps are automated already!
+
+1. Check that tests are passing (`yarn test:ci`) and package can be built (`yarn build`). CI is automatically running against all Pull-Requests to ensure this is always true. Also, the new version won't be deployed if CI doesn't pass anyway.
+2. Bump the version in the `package.json` following [SemVer][semver].
+3. If it's a minor or major bump, choose a release name (no rule here, have fun). Update the Changelog accordingly.
+4. Commit all of these changes directly on the main branch, like this: [5.3.0](https://github.com/nicoespeon/abracadabra/commit/652611df41256fb1fd58704b121956154859a13d)
+5. [Create a new release](https://github.com/nicoespeon/abracadabra/releases/new) targetting the main branch. Use the release name as a title and changelog body as a description.
+
+That's it. [A GitHub Action](https://github.com/nicoespeon/abracadabra/actions) will kick in and publish the new release to all marketplaces. @nicoespeon should receive an email when everything is done.
+
 <!-- Links -->
 
 [jest]: https://jestjs.io/
@@ -187,6 +202,7 @@ Whether it's code, design, typo or documentation, every contribution is welcomed
 [babel-handbook-manipulation]: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#manipulation
 [all-contributors-bot-command]: https://allcontributors.org/docs/en/bot/usage#all-contributors-add
 [hygen-documentation]: https://www.hygen.io/docs/quick-start
+[semver]: http://semver.org/
 
 <!-- Repo links -->
 
