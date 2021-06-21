@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.4.0] - 2021-06-20 - Into the Exported Air 🎯
+
 ### Fixed
 
 - Inline Variable was not respecting boundaries set by a lambda expression. It would replace all identifiers with the same name, despite them being redifined in the arrow function params. That created broken code. Not anymore! Thanks @gurdiga for reporting!
@@ -1305,7 +1307,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.3.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.4.0...HEAD
+[5.4.0]: https://github.com/nicoespeon/abracadabra/compare/5.3.1...5.4.0
 [5.3.1]: https://github.com/nicoespeon/abracadabra/compare/5.3.0...5.3.1
 [5.3.0]: https://github.com/nicoespeon/abracadabra/compare/5.2.0...5.3.0
 [5.2.0]: https://github.com/nicoespeon/abracadabra/compare/5.1.0...5.2.0
