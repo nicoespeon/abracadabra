@@ -63,7 +63,7 @@
     "@types/mocha": "8.2.2",
     "@types/node": "15.6.1",
     "@types/pluralize": "0.0.29",
-    "@types/sinon": "10.0.1",
+    "@types/sinon": "10.0.2",
     "@types/vscode": "1.56.0",
     "all-contributors-cli": "6.20.0",
     "chai": "4.3.4",
