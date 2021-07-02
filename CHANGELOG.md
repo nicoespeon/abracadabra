@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Variable now works fine on member expressions that use optional chaining (e.g. `some?.data?.value`).
+
 ## [5.4.1] - 2021-06-20
 
 No change for the extension. It's an internal fix to get Abracadabra deployed to VS Code again.
@@ -340,7 +344,6 @@ Into this:
 
 ```js
 #!/usr/bin/env nodeconst test = () => {}
-
 ```
 
 Now it works as expected:

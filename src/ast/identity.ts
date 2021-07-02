@@ -58,7 +58,8 @@ function isJSXPartialElement(path: NodePath): boolean {
 
 function isPropertyOfMemberExpression(path: NodePath): boolean {
   return (
-    t.isMemberExpression(path.parent) &&
+    (t.isMemberExpression(path.parent) ||
+      t.isOptionalMemberExpression(path.parent)) &&
     t.isIdentifier(path) &&
     !areEquivalent(path.node, path.parent.object)
   );

@@ -247,6 +247,12 @@ function test() {
   const { y } = obj;
   return y[cursor];
 }`
+      },
+      {
+        description: "a property using optional chaining",
+        code: `if (currentUser?.startTime[cursor] > 0) {}`,
+        expected: `const startTime = currentUser?.startTime;
+if (startTime > 0) {}`
       }
     ],
     async ({ code, expected, shouldPreserve }) => {
@@ -259,10 +265,8 @@ function test() {
 
       await extractVariable(editor);
 
-      const {
-        code: expectedCode,
-        selection: expectedSelection
-      } = new InMemoryEditor(expected);
+      const { code: expectedCode, selection: expectedSelection } =
+        new InMemoryEditor(expected);
 
       expect(editor.code).toBe(expectedCode);
       if (!expectedSelection.isCursorAtTopOfDocument) {

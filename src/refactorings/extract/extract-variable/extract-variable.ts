@@ -13,10 +13,8 @@ export { extractVariable };
 
 async function extractVariable(editor: Editor) {
   const { code, selection } = editor;
-  const {
-    selected: selectedOccurrence,
-    others: otherOccurrences
-  } = findAllOccurrences(code, selection);
+  const { selected: selectedOccurrence, others: otherOccurrences } =
+    findAllOccurrences(code, selection);
 
   if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFindExtractableCode);

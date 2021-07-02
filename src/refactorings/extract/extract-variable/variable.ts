@@ -94,8 +94,12 @@ class StringLiteralVariable extends Variable<t.Node> {
   }
 }
 
-class MemberExpressionVariable extends Variable<t.MemberExpression> {
-  constructor(path: t.NodePath<t.MemberExpression>) {
+class MemberExpressionVariable extends Variable<
+  t.MemberExpression | t.OptionalMemberExpression
+> {
+  constructor(
+    path: t.NodePath<t.MemberExpression | t.OptionalMemberExpression>
+  ) {
     super(path);
     const { property, computed } = path.node;
 

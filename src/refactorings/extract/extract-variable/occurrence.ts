@@ -41,6 +41,16 @@ function createOccurrence(
     );
   }
 
+  if (t.isOptionalMemberExpression(path.node)) {
+    return new Occurrence(
+      path,
+      loc,
+      new MemberExpressionVariable(
+        path as t.NodePath<t.OptionalMemberExpression>
+      )
+    );
+  }
+
   if (path.isStringLiteral()) {
     if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
       path.replaceWith(t.convertStringToTemplateLiteral(path.node, loc));
