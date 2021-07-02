@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Extract Variable now works fine on member expressions that use optional chaining (e.g. `some?.data?.value`).
+- Fix a warning with `splitMultipleDeclarations` that wasn't properly declared to VS Code. Thanks @tjx666 for spotting it 👍
 
 ## [5.4.1] - 2021-06-20
 

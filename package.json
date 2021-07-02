@@ -322,6 +322,11 @@
         "command": "abracadabra.splitIfStatement",
         "title": "Split If Statement",
         "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.splitMultipleDeclarations",
+        "title": "Split Multiple Declarations",
+        "category": "Abracadabra"
       }
     ],
     "keybindings": [
