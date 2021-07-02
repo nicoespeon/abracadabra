@@ -189,7 +189,10 @@ function areEquivalent(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
   }
 
   // Member Expressions
-  if (t.isMemberExpression(nodeA) && t.isMemberExpression(nodeB)) {
+  if (
+    (t.isMemberExpression(nodeA) && t.isMemberExpression(nodeB)) ||
+    (t.isOptionalMemberExpression(nodeA) && t.isOptionalMemberExpression(nodeB))
+  ) {
     return (
       areEquivalent(nodeA.property, nodeB.property) &&
       areEquivalent(nodeA.object, nodeB.object)

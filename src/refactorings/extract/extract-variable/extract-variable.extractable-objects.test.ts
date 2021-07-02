@@ -253,6 +253,16 @@ function test() {
         code: `if (currentUser?.startTime[cursor] > 0) {}`,
         expected: `const startTime = currentUser?.startTime;
 if (startTime > 0) {}`
+      },
+      {
+        description: "a property using optional chaining, multiple occurrences",
+        code: `if (currentUser?.startTime[cursor] > 0) {
+  console.log(currentUser?.startTime);
+}`,
+        expected: `const startTime = currentUser?.startTime;
+if (startTime > 0) {
+  console.log(startTime);
+}`
       }
     ],
     async ({ code, expected, shouldPreserve }) => {
