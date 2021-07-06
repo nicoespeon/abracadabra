@@ -12,7 +12,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
-[![Build Status](https://travis-ci.org/nicoespeon/abracadabra.svg?branch=master)](https://travis-ci.org/nicoespeon/abracadabra)
+[![Build Status](https://travis-ci.com/nicoespeon/abracadabra.svg?branch=master)](https://travis-ci.com/nicoespeon/abracadabra)
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
 With Abracadabra, **you can quickly and safely refactor existing code in VS Code**.
