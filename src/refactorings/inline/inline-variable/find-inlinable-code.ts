@@ -203,8 +203,8 @@ class InlinableIdentifier implements InlinableCode {
 
   updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return this.identifiersToReplace.map(
-      ({ loc, isInUnaryExpression, shorthandKey }) => ({
-        code: isInUnaryExpression
+      ({ loc, shouldWrapInParenthesis, shorthandKey }) => ({
+        code: shouldWrapInParenthesis
           ? `(${inlinedCode})`
           : shorthandKey
           ? `${shorthandKey}: ${inlinedCode}`
@@ -246,7 +246,7 @@ class InlinableIdentifier implements InlinableCode {
 
         self.identifiersToReplace.push({
           loc: node.loc,
-          isInUnaryExpression: t.isUnaryExpression(parent.node),
+          shouldWrapInParenthesis: t.isUnaryExpression(parent.node),
           shorthandKey:
             t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&
@@ -313,7 +313,7 @@ class InlinableTSTypeAlias implements InlinableCode {
 
 interface IdentifierToReplace {
   loc: t.SourceLocation;
-  isInUnaryExpression: boolean;
+  shouldWrapInParenthesis: boolean;
   shorthandKey: string | null;
 }
 
