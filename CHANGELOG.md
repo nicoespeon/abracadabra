@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.4.2]
+
 ### Fixed
 
 - Extract Variable now works fine on member expressions that use optional chaining (e.g. `some?.data?.value`).
@@ -16,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ```ts
 // Inlining `saveButton` would produce broken code
 // Not anymore!
-const saveButton = document.getElementById('btnSave') as HTMLButtonElement;
+const saveButton = document.getElementById("btnSave") as HTMLButtonElement;
 saveButton.disabled = true;
 ```
 
@@ -1329,7 +1331,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.4.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.4.2...HEAD
+[5.4.2]: https://github.com/nicoespeon/abracadabra/compare/5.4.1...5.4.2
 [5.4.1]: https://github.com/nicoespeon/abracadabra/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/nicoespeon/abracadabra/compare/5.3.1...5.4.0
 [5.3.1]: https://github.com/nicoespeon/abracadabra/compare/5.3.0...5.3.1
