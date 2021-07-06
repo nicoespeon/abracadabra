@@ -257,6 +257,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "nicolasff",
+      "name": "Nicolas Favre-Felix",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7276?v=4",
+      "profile": "https://re.kv.io/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
