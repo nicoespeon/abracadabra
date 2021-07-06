@@ -152,20 +152,16 @@ interface InlinableCode {
 // 🍂 Leaves
 
 class InlinableIdentifier implements InlinableCode {
-  shouldExtendSelectionToDeclaration = true;
-  valueSelection: Selection;
+  public readonly shouldExtendSelectionToDeclaration = true;
+  public readonly valueSelection: Selection;
 
-  private id: t.SelectableIdentifier;
-  private scope: t.Node;
   private identifiersToReplace: IdentifierToReplace[] = [];
 
   constructor(
-    id: t.SelectableIdentifier,
+    private id: t.SelectableIdentifier,
     init: t.SelectableNode,
-    scope: t.Node,
+    private scope: t.Node,
   ) {
-    this.id = id;
-    this.scope = scope;
     this.valueSelection = Selection.fromAST(init.loc);
     this.computeIdentifiersToReplace();
   }
