@@ -153,17 +153,19 @@ interface InlinableCode {
 
 class InlinableIdentifier implements InlinableCode {
   public readonly shouldExtendSelectionToDeclaration = true;
-  public readonly valueSelection: Selection;
 
   private identifiersToReplace: IdentifierToReplace[] = [];
 
   constructor(
     private id: t.SelectableIdentifier,
-    init: t.SelectableNode,
+    private init: t.SelectableNode,
     private scope: t.Node,
   ) {
-    this.valueSelection = Selection.fromAST(init.loc);
     this.computeIdentifiersToReplace();
+  }
+
+  get valueSelection(): Selection {
+    return Selection.fromAST(this.init.loc);
   }
 
   get isRedeclared(): boolean {
