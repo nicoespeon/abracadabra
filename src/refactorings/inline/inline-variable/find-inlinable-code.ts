@@ -23,7 +23,7 @@ function findInlinableCode(
   if (!t.isSelectableNode(init)) return null;
 
   if (t.isSelectableIdentifier(id)) {
-    return new InlinableIdentifier(id, parent, init.loc);
+    return new InlinableIdentifier(id, init, parent);
   }
 
   if (t.isObjectPattern(id)) {
@@ -161,12 +161,12 @@ class InlinableIdentifier implements InlinableCode {
 
   constructor(
     id: t.SelectableIdentifier,
+    init: t.SelectableNode,
     scope: t.Node,
-    valueLoc: t.SourceLocation
   ) {
     this.id = id;
     this.scope = scope;
-    this.valueSelection = Selection.fromAST(valueLoc);
+    this.valueSelection = Selection.fromAST(init.loc);
     this.computeIdentifiersToReplace();
   }
 
