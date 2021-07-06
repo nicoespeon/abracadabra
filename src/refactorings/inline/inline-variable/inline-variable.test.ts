@@ -223,6 +223,18 @@ interface Something {
         code: `const foo[cursor] = "bar";
 console.log({ [foo]: "Hello" });`,
         expected: `console.log({ ["bar"]: "Hello" });`
+      },
+      {
+        description: "variable is type-casted",
+        code: `const saveButton[cursor] = document.getElementById('btnSave') as HTMLButtonElement;
+saveButton.disabled = true;
+if (saveButton) {
+  this.doSomethingElse(saveButton);
+}`,
+        expected: `(document.getElementById('btnSave') as HTMLButtonElement).disabled = true;
+if (document.getElementById('btnSave') as HTMLButtonElement) {
+  this.doSomethingElse(document.getElementById('btnSave') as HTMLButtonElement);
+}`,
       }
     ],
     async ({ code, expected }) => {

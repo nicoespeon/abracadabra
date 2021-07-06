@@ -242,9 +242,11 @@ class InlinableIdentifier implements InlinableCode {
           return;
         }
 
+        const parentHasParenthesis = t.isCallExpression(parent.node) || t.isIfStatement(parent.node);
+
         self.identifiersToReplace.push({
           loc: node.loc,
-          shouldWrapInParenthesis: t.isUnaryExpression(parent.node),
+          shouldWrapInParenthesis: t.isUnaryExpression(parent.node) || (t.isTSAsExpression(self.init) && !parentHasParenthesis),
           shorthandKey:
             t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&

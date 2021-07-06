@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Variable now works fine on member expressions that use optional chaining (e.g. `some?.data?.value`).
 - Fix a warning with `splitMultipleDeclarations` that wasn't properly declared to VS Code. Thanks @tjx666 for spotting it 👍
+- Inline Variable now works fine for TS declarations that are type casted with `as`.
+
+```ts
+// Inlining `saveButton` would produce broken code
+// Not anymore!
+const saveButton = document.getElementById('btnSave') as HTMLButtonElement;
+saveButton.disabled = true;
+```
+
+Thanks to @nicolasff for reporting this one!
 
 ## [5.4.1] - 2021-06-20
 
