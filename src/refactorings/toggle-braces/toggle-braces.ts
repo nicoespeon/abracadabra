@@ -85,7 +85,7 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       if (t.hasBraces(path, selection)) {
-        if (!hasSingleStatementBlock(path, selection)) return;
+        if (!t.hasSingleStatementBlock(path, selection)) return;
         removeBraces(path);
       } else {
         addBraces(path);
@@ -140,23 +140,4 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
-}
-
-function hasSingleStatementBlock(
-  path: t.NodePath<t.IfStatement>,
-  selection: Selection
-): boolean {
-  const { consequent, alternate } = path.node;
-  const selectedBranchNode =
-    t.isSelectableNode(consequent) && selection.isBefore(consequent)
-      ? consequent
-      : alternate;
-
-  if (!selectedBranchNode) return false;
-
-  if (t.isBlockStatement(selectedBranchNode)) {
-    return selectedBranchNode.body.length < 2;
-  } else {
-    return false;
-  }
 }

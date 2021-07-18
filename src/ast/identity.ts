@@ -20,6 +20,7 @@ export {
   isNonEmptyReturn,
   hasFinalReturn,
   hasBraces,
+  hasSingleStatementBlock,
   isTruthy,
   isFalsy,
   areSameAssignments,
@@ -132,6 +133,25 @@ function hasBraces(
     return t.isBlockStatement(consequent);
   } else {
     return alternate === null || t.isBlockStatement(alternate);
+  }
+}
+
+function hasSingleStatementBlock(
+  path: NodePath<t.IfStatement>,
+  selection: Selection
+): boolean {
+  const { consequent, alternate } = path.node;
+  const selectedBranchNode =
+    isSelectableNode(consequent) && selection.isBefore(consequent)
+      ? consequent
+      : alternate;
+
+  if (!selectedBranchNode) return false;
+
+  if (t.isBlockStatement(selectedBranchNode)) {
+    return selectedBranchNode.body.length < 2;
+  } else {
+    return false;
   }
 }
 
