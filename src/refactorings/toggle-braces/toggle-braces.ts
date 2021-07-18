@@ -57,12 +57,12 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       (path) => {
         if (!t.isSelectableNode(path.node.consequent)) return;
         if (isSelectionBefore(selection, path.node.consequent)) {
-          path.node.consequent = statementWithoutBraces(path.node.consequent);
+          path.node.consequent = t.statementWithoutBraces(path.node.consequent);
           return;
         }
 
         if (path.node.alternate) {
-          path.node.alternate = statementWithoutBraces(path.node.alternate);
+          path.node.alternate = t.statementWithoutBraces(path.node.alternate);
         }
 
         path.stop();
@@ -150,10 +150,6 @@ function isSelectionBefore(
 ): boolean {
   const endOfStatement = Position.fromAST(statement.loc.end);
   return selection.start.isBefore(endOfStatement);
-}
-
-function statementWithoutBraces(node: t.Statement): t.Statement {
-  return t.isBlockStatement(node) ? node.body[0] : node;
 }
 
 function hasSingleStatementBlock(
