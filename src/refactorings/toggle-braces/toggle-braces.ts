@@ -77,7 +77,9 @@ function createVisitor(
     JSXAttribute(path) {
       if (!selection.isInsidePath(path)) return;
 
-      // SMELL: could a child match here?
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       if (t.isStringLiteral(path.node.value)) {
         onMatch(path);
@@ -117,6 +119,9 @@ function hasChildWhichMatchesSelection(
 
       result = true;
       childPath.stop();
+    },
+    JSXAttribute(_childPath) {
+      // SMELL: could a child match here?
     },
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
