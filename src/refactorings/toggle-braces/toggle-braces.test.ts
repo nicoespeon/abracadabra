@@ -91,6 +91,48 @@ if (isValid) {
   doSomething();
 }
   doAnotherThing();`
+      },
+      {
+        description: "to a JSX attribute",
+        code: `<TestComponent testProp=[cursor]"test" />`,
+        expected: `<TestComponent testProp={"test"} />`
+      },
+      {
+        description: "cursor on the JSX identifier",
+        code: `<TestComponent te[cursor]stProp="test" />`,
+        expected: `<TestComponent testProp={"test"} />`
+      },
+      {
+        description: "with multiple jsx attributes selecting the first one",
+        code: `<TestComponent firstProp="firs[cursor]t" secondProp="second" />`,
+        expected: `<TestComponent firstProp={"first"} secondProp="second" />`
+      },
+      {
+        description: "with multiple jsx attributes selecting the second one",
+        code: `<TestComponent firstProp="first" secondProp="s[cursor]econd" />`,
+        expected: `<TestComponent firstProp="first" secondProp={"second"} />`
+      },
+      {
+        description: "to a JSX attribute in a function component",
+        code: `function TestComponent() {
+  return (
+    <section>
+      <TestComponent testProp="t[cursor]est" />
+    </section>
+  );
+}`,
+        expected: `function TestComponent() {
+  return (
+    <section>
+      <TestComponent testProp={"test"} />
+    </section>
+  );
+}`
+      },
+      {
+        description: "to a JSX attribute that's already a JSX expression",
+        code: `<TestComponent testProp=[cursor]{"test"} />`,
+        expected: `<TestComponent testProp={"test"} />`
       }
     ],
     async ({ code, expected }) => {
