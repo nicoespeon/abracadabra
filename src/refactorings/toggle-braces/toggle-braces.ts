@@ -56,12 +56,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       },
       (path) => {
         if (!t.isSelectableNode(path.node.consequent)) return;
-        if (isSelectionBefore(selection, path.node.consequent)) {
-          path.node.consequent = t.statementWithoutBraces(path.node.consequent);
-          return;
-        }
 
-        if (path.node.alternate) {
+        if (selection.isBefore(path.node.consequent)) {
+          path.node.consequent = t.statementWithoutBraces(path.node.consequent);
+        } else if (path.node.alternate) {
           path.node.alternate = t.statementWithoutBraces(path.node.alternate);
         }
 
@@ -144,21 +142,13 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function isSelectionBefore(
-  selection: Selection,
-  statement: t.Selectable<t.Statement>
-): boolean {
-  const endOfStatement = Position.fromAST(statement.loc.end);
-  return selection.start.isBefore(endOfStatement);
-}
-
 function hasSingleStatementBlock(
   path: t.NodePath<t.IfStatement>,
   selection: Selection
 ): boolean {
   const { consequent, alternate } = path.node;
   const selectedBranchNode =
-    t.isSelectableNode(consequent) && isSelectionBefore(selection, consequent)
+    t.isSelectableNode(consequent) && selection.isBefore(consequent)
       ? consequent
       : alternate;
 
