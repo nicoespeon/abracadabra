@@ -26,12 +26,12 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         const endOfConsequent = Position.fromAST(path.node.consequent.loc.end);
 
         if (selection.start.isBefore(endOfConsequent)) {
-          path.node.consequent = statementWithBraces(path.node.consequent);
+          path.node.consequent = t.statementWithBraces(path.node.consequent);
           return;
         }
 
         if (path.node.alternate) {
-          path.node.alternate = statementWithBraces(path.node.alternate);
+          path.node.alternate = t.statementWithBraces(path.node.alternate);
         }
       } else if (t.isJSXAttribute(path.node)) {
         // Wrap the string literal in a JSX Expression
@@ -51,10 +51,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.stop();
     })
   );
-}
-
-function statementWithBraces(node: t.Statement): t.Statement {
-  return t.isBlockStatement(node) ? node : t.blockStatement([node]);
 }
 
 function createVisitor(
