@@ -84,7 +84,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      if (hasBraces(path, selection)) {
+      if (t.hasBraces(path, selection)) {
         if (!hasSingleStatementBlock(path, selection)) return;
         removeBraces(path);
       } else {
@@ -158,24 +158,5 @@ function hasSingleStatementBlock(
     return selectedBranchNode.body.length < 2;
   } else {
     return false;
-  }
-}
-
-function hasBraces(
-  path: t.SelectablePath<t.IfStatement>,
-  selection: Selection
-): boolean {
-  const { consequent, alternate } = path.node;
-  const ifSelection = Selection.fromAST(path.node.loc);
-  const consequentSelection = t.isSelectableNode(consequent)
-    ? Selection.fromAST(consequent.loc)
-    : selection;
-  const ifAndConsequentSelection =
-    consequentSelection.extendStartToStartOf(ifSelection);
-
-  if (selection.isInside(ifAndConsequentSelection)) {
-    return t.isBlockStatement(consequent);
-  } else {
-    return alternate === null || t.isBlockStatement(alternate);
   }
 }

@@ -2,6 +2,8 @@ import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 import { last } from "../array";
+import { Selection } from "../editor/selection";
+import { isSelectableNode, SelectablePath } from "./selection";
 
 export {
   isClassPropertyIdentifier,
@@ -17,6 +19,7 @@ export {
   isGuardConsequentBlock,
   isNonEmptyReturn,
   hasFinalReturn,
+  hasBraces,
   isTruthy,
   isFalsy,
   areSameAssignments,
@@ -111,6 +114,25 @@ function isNonEmptyReturn(node: t.Node) {
 
 function hasFinalReturn(statements: t.Statement[]): boolean {
   return t.isReturnStatement(last(statements));
+}
+
+function hasBraces(
+  path: SelectablePath<t.IfStatement>,
+  selection: Selection
+): boolean {
+  const { consequent, alternate } = path.node;
+  const ifSelection = Selection.fromAST(path.node.loc);
+  const consequentSelection = isSelectableNode(consequent)
+    ? Selection.fromAST(consequent.loc)
+    : selection;
+  const ifAndConsequentSelection =
+    consequentSelection.extendStartToStartOf(ifSelection);
+
+  if (selection.isInside(ifAndConsequentSelection)) {
+    return t.isBlockStatement(consequent);
+  } else {
+    return alternate === null || t.isBlockStatement(alternate);
+  }
 }
 
 function areSameAssignments(
