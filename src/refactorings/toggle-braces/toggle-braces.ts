@@ -31,10 +31,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
           if (selection.start.isBefore(endOfConsequent)) {
             path.node.consequent = t.statementWithBraces(path.node.consequent);
-            return;
-          }
-
-          if (path.node.alternate) {
+          } else if (path.node.alternate) {
             path.node.alternate = t.statementWithBraces(path.node.alternate);
           }
         } else if (t.isJSXAttribute(path.node)) {
