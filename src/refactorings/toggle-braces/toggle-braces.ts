@@ -84,7 +84,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      if (hasBracesAlready(path, selection)) {
+      if (hasBraces(path, selection)) {
         if (!hasSingleStatementBlock(path, selection)) return;
         removeBraces(path);
       } else {
@@ -161,7 +161,7 @@ function hasSingleStatementBlock(
   }
 }
 
-function hasBracesAlready(
+function hasBraces(
   path: t.SelectablePath<t.IfStatement>,
   selection: Selection
 ): boolean {
