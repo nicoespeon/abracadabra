@@ -89,7 +89,7 @@ function createVisitor(
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection__arrowFunction(path, selection)) return;
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
     }
@@ -117,19 +117,7 @@ function hasChildWhichMatchesSelection(
 
       result = true;
       childPath.stop();
-    }
-  });
-
-  return result;
-}
-
-function hasChildWhichMatchesSelection__arrowFunction(
-  path: t.NodePath,
-  selection: Selection
-): boolean {
-  let result = false;
-
-  path.traverse({
+    },
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
       if (t.isBlockStatement(childPath.node.body)) return;
