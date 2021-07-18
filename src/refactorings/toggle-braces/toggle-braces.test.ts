@@ -133,6 +133,27 @@ if (isValid) {
         description: "to a JSX attribute that's already a JSX expression",
         code: `<TestComponent testProp=[cursor]{"test"} />`,
         expected: `<TestComponent testProp={"test"} />`
+      },
+      {
+        description: "to an arrow function",
+        code: `const sayHello = [cursor]() => "Hello!";`,
+        expected: `const sayHello = () => {
+  return "Hello!";
+};`
+      },
+      {
+        description: "nested arrow function, cursor on wrapper",
+        code: `const createSayHello = [cursor]() => () => "Hello!";`,
+        expected: `const createSayHello = () => {
+  return () => "Hello!";
+};`
+      },
+      {
+        description: "nested arrow function, cursor on nested",
+        code: `const createSayHello = () => [cursor]() => "Hello!";`,
+        expected: `const createSayHello = () => () => {
+  return "Hello!";
+};`
       }
     ],
     async ({ code, expected }) => {
