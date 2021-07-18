@@ -33,14 +33,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         if (path.node.alternate) {
           path.node.alternate = statementWithBraces(path.node.alternate);
         }
-
-        path.stop();
       } else if (t.isJSXAttribute(path.node)) {
         // Wrap the string literal in a JSX Expression
         if (path.node.value && !t.isJSXExpressionContainer(path.node.value)) {
           path.node.value = t.jsxExpressionContainer(path.node.value);
         }
-        path.stop();
       } else if (t.isArrowFunctionExpression(path.node)) {
         // Duplicate this type guard so TS can infer the type properly
         if (t.isBlockStatement(path.node.body)) return;
@@ -49,8 +46,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           t.returnStatement(path.node.body)
         ]);
         path.node.body = blockStatement;
-        path.stop();
       }
+
+      path.stop();
     })
   );
 }
