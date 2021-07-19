@@ -58,13 +58,16 @@ function createVisitor(
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
-      if (t.isBlockStatement(path.node.body)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onMatch(path, new AddBracesToArrowFunctionExpression(path));
+      if (t.isBlockStatement(path.node.body)) {
+        onMatch(path, new RemoveBracesFromArrowFunctionExpression(path));
+      } else {
+        onMatch(path, new AddBracesToArrowFunctionExpression(path));
+      }
     }
   };
 }
@@ -87,7 +90,15 @@ function hasChildWhichMatchesSelection(
     },
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
-      if (t.isBlockStatement(childPath.node.body)) return;
+
+      if (t.isBlockStatement(childPath.node.body)) {
+        const blockStatementStatements = childPath.node.body.body;
+        if (blockStatementStatements.length > 1) return;
+
+        const firstValue = blockStatementStatements[0];
+        if (!t.isReturnStatement(firstValue)) return;
+        if (firstValue.argument === null) return;
+      }
 
       result = true;
       childPath.stop();
@@ -167,5 +178,24 @@ class AddBracesToArrowFunctionExpression implements ToggleBraces {
       t.returnStatement(this.path.node.body)
     ]);
     this.path.node.body = blockStatement;
+  }
+}
+
+class RemoveBracesFromArrowFunctionExpression implements ToggleBraces {
+  constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
+
+  execute() {
+    // Duplicate this type guard so TS can infer the type properly
+    if (!t.isBlockStatement(this.path.node.body)) return;
+
+    const blockStatementStatements = this.path.node.body.body;
+    if (blockStatementStatements.length > 1) return;
+
+    const firstValue = blockStatementStatements[0];
+    if (!t.isReturnStatement(firstValue)) return;
+
+    if (firstValue.argument === null) return;
+
+    this.path.node.body = firstValue.argument;
   }
 }

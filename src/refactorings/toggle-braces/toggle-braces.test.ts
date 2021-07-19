@@ -253,6 +253,35 @@ doAnotherThing();`,
         expected: `if (isValid)
   doSomething();
 doAnotherThing();`
+      },
+      {
+        description: "an arrow function",
+        code: `const sayHello = () => {
+  [cursor]return "Hello!";
+};`,
+        expected: `const sayHello = () => "Hello!";`
+      },
+      {
+        description: "nested arrow function, cursor on wrapper",
+        code: `const createSayHello = () => {
+  [cursor]return () => {
+    return "Hello!";
+  }
+};`,
+        expected: `const createSayHello = () => () => {
+  return "Hello!";
+};`
+      },
+      {
+        description: "nested arrow function, cursor on nested",
+        code: `const createSayHello = () => {
+  return () => {
+    [cursor]return "Hello!";
+  }
+};`,
+        expected: `const createSayHello = () => {
+  return () => "Hello!";
+};`
       }
     ],
     async ({ code, expected }) => {
@@ -281,6 +310,33 @@ doAnotherThing();`
 } el[cursor]se {
   doSomethingElse();
   return;
+}`
+      },
+      {
+        description: "an arrow function that returns nothing",
+        code: `const sayHello = () => {
+  [cursor]return;
+}`
+      },
+      {
+        description: "an arrow function that has no return",
+        code: `const sayHello = () => {
+  [cursor]console.log("Hello!");
+}`
+      },
+      {
+        description: "an arrow function with multiple statements",
+        code: `const sayHello = () => {
+  [cursor]const hello = "Hello!";
+  return hello;
+}`
+      },
+      {
+        description:
+          "an arrow function with statements after return (dead code)",
+        code: `const sayHello = () => {
+  [cursor]return "Hello!";
+  console.log("Some dead code");
 }`
       }
     ],
