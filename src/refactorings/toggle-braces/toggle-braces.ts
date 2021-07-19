@@ -20,27 +20,16 @@ async function toggleBraces(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(
-      selection,
-      (path, toggleBraces) => {
-        toggleBraces.execute();
-        path.stop();
-      },
-      (path, toggleBraces) => {
-        toggleBraces.execute();
-        path.stop();
-      }
-    )
+    createVisitor(selection, (path, toggleBraces) => {
+      toggleBraces.execute();
+      path.stop();
+    })
   );
 }
 
 function createVisitor(
   selection: Selection,
-  onAddBracesMatch: (path: t.NodePath, toggleBraces: ToggleBraces) => void,
-  onRemoveBracesMatch: (
-    path: t.NodePath<t.IfStatement>,
-    toggleBraces: ToggleBraces
-  ) => void
+  onMatch: (path: t.NodePath, toggleBraces: ToggleBraces) => void
 ): t.Visitor {
   return {
     IfStatement(path) {
@@ -52,12 +41,9 @@ function createVisitor(
 
       if (t.hasBraces(path, selection)) {
         if (!t.hasSingleStatementBlock(path, selection)) return;
-        onRemoveBracesMatch(
-          path,
-          new RemoveBracesFromIfStatement(path, selection)
-        );
+        onMatch(path, new RemoveBracesFromIfStatement(path, selection));
       } else {
-        onAddBracesMatch(path, new AddBracesToIfStatement(path, selection));
+        onMatch(path, new AddBracesToIfStatement(path, selection));
       }
     },
     JSXAttribute(path) {
@@ -68,7 +54,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onAddBracesMatch(path, new AddBracesToJSXAttribute(path));
+      onMatch(path, new AddBracesToJSXAttribute(path));
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
@@ -78,7 +64,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onAddBracesMatch(path, new AddBracesToArrowFunctionExpression(path));
+      onMatch(path, new AddBracesToArrowFunctionExpression(path));
     }
   };
 }
