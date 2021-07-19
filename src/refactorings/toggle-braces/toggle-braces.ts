@@ -22,19 +22,12 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(
       selection,
-      (path, addBraces) => {
-        addBraces.execute();
+      (path, toggleBraces) => {
+        toggleBraces.execute();
         path.stop();
       },
-      (path) => {
-        if (!t.isSelectableNode(path.node.consequent)) return;
-
-        if (selection.isBefore(path.node.consequent)) {
-          path.node.consequent = t.statementWithoutBraces(path.node.consequent);
-        } else if (path.node.alternate) {
-          path.node.alternate = t.statementWithoutBraces(path.node.alternate);
-        }
-
+      (path, toggleBraces) => {
+        toggleBraces.execute();
         path.stop();
       }
     )
@@ -43,8 +36,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  onAddBracesMatch: (path: t.NodePath, addBraces: AddBraces) => void,
-  onRemoveBracesMatch: (path: t.NodePath<t.IfStatement>) => void
+  onAddBracesMatch: (path: t.NodePath, toggleBraces: ToggleBraces) => void,
+  onRemoveBracesMatch: (
+    path: t.NodePath<t.IfStatement>,
+    toggleBraces: ToggleBraces
+  ) => void
 ): t.Visitor {
   return {
     IfStatement(path) {
@@ -56,7 +52,10 @@ function createVisitor(
 
       if (t.hasBraces(path, selection)) {
         if (!t.hasSingleStatementBlock(path, selection)) return;
-        onRemoveBracesMatch(path);
+        onRemoveBracesMatch(
+          path,
+          new RemoveBracesFromIfStatement(path, selection)
+        );
       } else {
         onAddBracesMatch(path, new AddBracesToIfStatement(path, selection));
       }
@@ -112,11 +111,11 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-interface AddBraces {
+interface ToggleBraces {
   execute(): void;
 }
 
-class AddBracesToIfStatement implements AddBraces {
+class AddBracesToIfStatement implements ToggleBraces {
   constructor(
     private path: t.NodePath<t.IfStatement>,
     private selection: Selection
@@ -139,7 +138,28 @@ class AddBracesToIfStatement implements AddBraces {
   }
 }
 
-class AddBracesToJSXAttribute implements AddBraces {
+class RemoveBracesFromIfStatement implements ToggleBraces {
+  constructor(
+    private path: t.NodePath<t.IfStatement>,
+    private selection: Selection
+  ) {}
+
+  execute() {
+    if (!t.isSelectableNode(this.path.node.consequent)) return;
+
+    if (this.selection.isBefore(this.path.node.consequent)) {
+      this.path.node.consequent = t.statementWithoutBraces(
+        this.path.node.consequent
+      );
+    } else if (this.path.node.alternate) {
+      this.path.node.alternate = t.statementWithoutBraces(
+        this.path.node.alternate
+      );
+    }
+  }
+}
+
+class AddBracesToJSXAttribute implements ToggleBraces {
   constructor(private path: t.NodePath<t.JSXAttribute>) {}
 
   execute() {
@@ -150,7 +170,7 @@ class AddBracesToJSXAttribute implements AddBraces {
   }
 }
 
-class AddBracesToArrowFunctionExpression implements AddBraces {
+class AddBracesToArrowFunctionExpression implements ToggleBraces {
   constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
 
   execute() {
