@@ -64,9 +64,9 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       if (t.isBlockStatement(path.node.body)) {
-        onMatch(path, new RemoveBracesFromArrowFunctionExpression(path));
+        onMatch(path, new RemoveBracesFromArrowFunction(path));
       } else {
-        onMatch(path, new AddBracesToArrowFunctionExpression(path));
+        onMatch(path, new AddBracesToArrowFunction(path));
       }
     }
   };
@@ -167,7 +167,7 @@ class AddBracesToJSXAttribute implements ToggleBraces {
   }
 }
 
-class AddBracesToArrowFunctionExpression implements ToggleBraces {
+class AddBracesToArrowFunction implements ToggleBraces {
   constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
 
   execute() {
@@ -181,7 +181,7 @@ class AddBracesToArrowFunctionExpression implements ToggleBraces {
   }
 }
 
-class RemoveBracesFromArrowFunctionExpression implements ToggleBraces {
+class RemoveBracesFromArrowFunction implements ToggleBraces {
   constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
 
   execute() {
