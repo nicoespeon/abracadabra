@@ -130,11 +130,6 @@ if (isValid) {
 }`
       },
       {
-        description: "JSX attribute that's already a JSX expression",
-        code: `<TestComponent testProp=[cursor]{"test"} />`,
-        expected: `<TestComponent testProp={"test"} />`
-      },
-      {
         description: "arrow function",
         code: `const sayHello = [cursor]() => "Hello!";`,
         expected: `const sayHello = () => {
@@ -282,6 +277,43 @@ doAnotherThing();`
         expected: `const createSayHello = () => {
   return () => "Hello!";
 };`
+      },
+      {
+        description: "a JSX attribute",
+        code: `<TestComponent testProp=[cursor]{"test"} />`,
+        expected: `<TestComponent testProp="test" />`
+      },
+      {
+        description: "a JSX attribute with single quote",
+        code: `<TestComponent testProp=[cursor]{'test'} />`,
+        expected: `<TestComponent testProp="test" />`
+      },
+      {
+        description: "multiple JSX attributes, cursor on first attribute",
+        code: `<TestComponent firstProp={'[cursor]test'} secondProp={'test'} />`,
+        expected: `<TestComponent firstProp="test" secondProp={'test'} />`
+      },
+      {
+        description: "multiple JSX attributes, cursor on second attribute",
+        code: `<TestComponent firstProp={'test'} secondProp={'t[cursor]est'} />`,
+        expected: `<TestComponent firstProp={'test'} secondProp="test" />`
+      },
+      {
+        description: "a JSX attribute in a function component",
+        code: `function TestComponent() {
+  return (
+    <section>
+      <TestComponent testProp={'[cursor]test'} />
+    </section>
+  );
+}`,
+        expected: `function TestComponent() {
+  return (
+    <section>
+      <TestComponent testProp="test" />
+    </section>
+  );
+}`
       }
     ],
     async ({ code, expected }) => {
@@ -337,6 +369,30 @@ doAnotherThing();`
         code: `const sayHello = () => {
   [cursor]return "Hello!";
   console.log("Some dead code");
+}`
+      },
+      {
+        description: "JSX expression that is a function",
+        code: `<TestComponent testProp=[cursor]{function() { /* should not be replaced */ }} />`
+      },
+      {
+        description: "JSX epxression that is an arrow function",
+        code: `<TestComponent testProp=[cursor]{() => { /* should not be replaced */ }} />`
+      },
+      {
+        description: "JSX expression that is an object",
+        code: `<TestComponent testProp=[cursor]{{ should: 'not', be: 'replaced' }} />`
+      },
+      {
+        description:
+          "string expression not in JSX attribute should not be replaced",
+        code: `function TestComponent() {
+  return (
+    [cursor]<section>
+      {'test'}
+      <TestComponent />
+    </section>
+  );
 }`
       }
     ],

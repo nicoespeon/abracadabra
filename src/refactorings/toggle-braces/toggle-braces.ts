@@ -40,7 +40,6 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       if (t.hasBraces(path, selection)) {
-        if (!t.hasSingleStatementBlock(path, selection)) return;
         onMatch(path, new RemoveBracesFromIfStatement(path, selection));
       } else {
         onMatch(path, new AddBracesToIfStatement(path, selection));
@@ -48,13 +47,16 @@ function createVisitor(
     },
     JSXAttribute(path) {
       if (!selection.isInsidePath(path)) return;
-      if (!t.isStringLiteral(path.node.value)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onMatch(path, new AddBracesToJSXAttribute(path));
+      if (!t.isStringLiteral(path.node.value)) {
+        onMatch(path, new RemoveBracesFromJSXAttribute(path));
+      } else {
+        onMatch(path, new AddBracesToJSXAttribute(path));
+      }
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
@@ -144,6 +146,8 @@ class RemoveBracesFromIfStatement implements ToggleBraces {
   execute() {
     if (!t.isSelectableNode(this.path.node.consequent)) return;
 
+    if (!t.hasSingleStatementBlock(this.path, this.selection)) return;
+
     if (this.selection.isBefore(this.path.node.consequent)) {
       this.path.node.consequent = t.statementWithoutBraces(
         this.path.node.consequent
@@ -164,6 +168,19 @@ class AddBracesToJSXAttribute implements ToggleBraces {
     if (t.isJSXExpressionContainer(this.path.node.value)) return;
 
     this.path.node.value = t.jsxExpressionContainer(this.path.node.value);
+  }
+}
+
+class RemoveBracesFromJSXAttribute implements ToggleBraces {
+  constructor(private path: t.NodePath<t.JSXAttribute>) {}
+
+  execute() {
+    if (!t.isJSXExpressionContainer(this.path.node.value)) return;
+    if (!t.isStringLiteral(this.path.node.value.expression)) return;
+
+    this.path.node.value = t.stringLiteral(
+      this.path.node.value.expression.value
+    );
   }
 }
 
