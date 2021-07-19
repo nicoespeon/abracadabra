@@ -22,33 +22,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(
       selection,
-      (path) => {
-        if (t.isIfStatement(path.node)) {
-          if (!t.isSelectableNode(path.node.consequent)) return;
-          const endOfConsequent = Position.fromAST(
-            path.node.consequent.loc.end
-          );
-
-          if (selection.start.isBefore(endOfConsequent)) {
-            path.node.consequent = t.statementWithBraces(path.node.consequent);
-          } else if (path.node.alternate) {
-            path.node.alternate = t.statementWithBraces(path.node.alternate);
-          }
-        } else if (t.isJSXAttribute(path.node)) {
-          // Wrap the string literal in a JSX Expression
-          if (path.node.value && !t.isJSXExpressionContainer(path.node.value)) {
-            path.node.value = t.jsxExpressionContainer(path.node.value);
-          }
-        } else if (t.isArrowFunctionExpression(path.node)) {
-          // Duplicate this type guard so TS can infer the type properly
-          if (t.isBlockStatement(path.node.body)) return;
-
-          const blockStatement = t.blockStatement([
-            t.returnStatement(path.node.body)
-          ]);
-          path.node.body = blockStatement;
-        }
-
+      (path, addBraces) => {
+        addBraces.execute();
         path.stop();
       },
       (path) => {
@@ -68,10 +43,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  addBraces: (
-    path: t.NodePath<t.IfStatement | t.JSXAttribute | t.ArrowFunctionExpression>
-  ) => void,
-  removeBraces: (path: t.NodePath<t.IfStatement>) => void
+  onAddBracesMatch: (path: t.NodePath, addBraces: AddBraces) => void,
+  onRemoveBracesMatch: (path: t.NodePath<t.IfStatement>) => void
 ): t.Visitor {
   return {
     IfStatement(path) {
@@ -83,9 +56,9 @@ function createVisitor(
 
       if (t.hasBraces(path, selection)) {
         if (!t.hasSingleStatementBlock(path, selection)) return;
-        removeBraces(path);
+        onRemoveBracesMatch(path);
       } else {
-        addBraces(path);
+        onAddBracesMatch(path, new AddBracesToIfStatement(path, selection));
       }
     },
     JSXAttribute(path) {
@@ -96,7 +69,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      addBraces(path);
+      onAddBracesMatch(path, new AddBracesToJSXAttribute(path));
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
@@ -106,7 +79,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      addBraces(path);
+      onAddBracesMatch(path, new AddBracesToArrowFunctionExpression(path));
     }
   };
 }
@@ -137,4 +110,56 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
+}
+
+interface AddBraces {
+  execute(): void;
+}
+
+class AddBracesToIfStatement implements AddBraces {
+  constructor(
+    private path: t.NodePath<t.IfStatement>,
+    private selection: Selection
+  ) {}
+
+  execute() {
+    if (!t.isSelectableNode(this.path.node.consequent)) return;
+
+    const endOfConsequent = Position.fromAST(this.path.node.consequent.loc.end);
+
+    if (this.selection.start.isBefore(endOfConsequent)) {
+      this.path.node.consequent = t.statementWithBraces(
+        this.path.node.consequent
+      );
+    } else if (this.path.node.alternate) {
+      this.path.node.alternate = t.statementWithBraces(
+        this.path.node.alternate
+      );
+    }
+  }
+}
+
+class AddBracesToJSXAttribute implements AddBraces {
+  constructor(private path: t.NodePath<t.JSXAttribute>) {}
+
+  execute() {
+    if (!this.path.node.value) return;
+    if (t.isJSXExpressionContainer(this.path.node.value)) return;
+
+    this.path.node.value = t.jsxExpressionContainer(this.path.node.value);
+  }
+}
+
+class AddBracesToArrowFunctionExpression implements AddBraces {
+  constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
+
+  execute() {
+    // Duplicate this type guard so TS can infer the type properly
+    if (t.isBlockStatement(this.path.node.body)) return;
+
+    const blockStatement = t.blockStatement([
+      t.returnStatement(this.path.node.body)
+    ]);
+    this.path.node.body = blockStatement;
+  }
 }
