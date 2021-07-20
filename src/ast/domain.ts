@@ -15,7 +15,9 @@ export {
   replaceWithBodyOf,
   Primitive,
   TypeDeclaration,
-  forEach
+  forEach,
+  statementWithBraces,
+  statementWithoutBraces
 };
 
 function addImportDeclaration(
@@ -124,4 +126,12 @@ function forEach(
       t.arrowFunctionExpression(params, body)
     ])
   );
+}
+
+function statementWithBraces(node: t.Statement): t.Statement {
+  return t.isBlockStatement(node) ? node : t.blockStatement([node]);
+}
+
+function statementWithoutBraces(node: t.Statement): t.Statement {
+  return t.isBlockStatement(node) ? node.body[0] : node;
 }

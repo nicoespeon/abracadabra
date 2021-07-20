@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Toggle Braces now combines all previous add/remove braces refactorings we used to have. It reduces the noise and makes it easier to switch between curly braces or not.
+
+### Removed
+
+- All add/remove braces refactorings that have been merged into "Toggle Braces":
+
+  1. Add Braces to If Statement
+  2. Add Braces to Arrow Function Expression
+  3. Add Braces to JSX Attribute
+  4. Remove Braces from If Statement
+  5. Remove Braces from Arrow Function Expression
+  6. Remove Braces from JSX Attribute
+
 ## [5.4.2]
 
 ### Fixed

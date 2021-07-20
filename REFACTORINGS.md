@@ -47,10 +47,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Convert let to const](#convert-let-to-const)
 - Working around the syntax:
   1. [Convert to Arrow Function](#convert-to-arrow-function)
-  1. [Add Braces to Arrow Function](#add-braces-to-arrow-function)
-  1. [Remove Braces from Arrow Function](#remove-braces-from-arrow-function)
-  1. [Add Braces to If Statement](#add-braces-to-if-statement)
-  1. [Remove Braces from If Statement](#remove-braces-from-if-statement)
+  1. [Toggle Braces](#toggle-braces)
   1. [Convert to Template Literal](#convert-to-template-literal)
   1. [Replace Binary with Assignment](#replace-binary-with-assignment)
   1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
@@ -59,8 +56,6 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Extract Interface](#extract-interface)
 - Specific to React:
   1. [Convert to Pure Component](#convert-to-pure-component)
-  1. [Add Braces to JSX Attribute](#add-braces-to-jsx-attribute)
-  1. [Remove Braces from JSX Attribute](#remove-braces-from-jsx-attribute)
 
 ## The Essentials
 
@@ -476,59 +471,23 @@ Converts a function declaration into an arrow function, which is convenient when
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Add Braces to Arrow Function
+### Toggle Braces
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-Useful when you need to add code in the body of an arrow function.
+Sometimes you need to add braces before you add more code. Other times you don't need them and prefer to get rid of them.
 
-VS Code provides this refactoring, but it only works if you have the correct selection. This one works wherever your cursor is!
+This refactoring allows you to toggle the braces on the closest statement of your cursor!
 
-<details><summary>See it in action</summary>
+It works on:
 
-![][demo-add-braces-to-arrow-function]
-
-</details><br />
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
-### Remove Braces from Arrow Function
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-Does the contrary of _Add Braces to Arrow Function_. Same advantages over VS Code: it works wherever your cursor is.
+- If Statements (both `if` and `else` independently)
+- Arrow Function Expressions (e.g. `const someFunction = () => {}`)
+- JSX Attributes (e.g. `<SomeComponent anAttribute={"a value"} />`)
 
 <details><summary>See it in action</summary>
 
-![][demo-remove-braces-from-arrow-function]
-
-</details><br />
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
-### Add Braces to If Statement
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-Useful when you need to add code in the body of an `if` or `else` statement.
-
-<details><summary>See it in action</summary>
-
-![][demo-add-braces-to-if-statement]
-
-</details><br />
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
-### Remove Braces from If Statement
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-Does the contrary of _Add Braces to If Statement_: Removes braces from single-statement blocks in an `if` or `else` statement.
-
-<details><summary>See it in action</summary>
-
-![][demo-remove-braces-from-if-statement]
+![][demo-toggle-braces]
 
 </details><br />
 
@@ -632,38 +591,6 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Add Braces to JSX Attribute
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-This refactoring is specific to React.
-
-It adds curly braces to a JSX string literal, converting it into a JSX expression.
-
-<details><summary>See it in action</summary>
-
-![][demo-add-braces-to-jsx-attribute]
-
-</details><br />
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
-### Remove Braces from JSX Attribute
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-This refactoring is specific to React.
-
-If a JSX attribute is a JSX expression containing only a string literal, it refactors the JSX expression into a string literal by removing the curly braces.
-
-<details><summary>See it in action</summary>
-
-![][demo-remove-braces-from-jsx-attribute]
-
-</details><br />
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
 <!-- Links -->
 
 [command-palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
@@ -698,8 +625,6 @@ If a JSX attribute is a JSX expression containing only a string literal, it refa
 [demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-switch-to-if-else.gif?raw=true
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-down.gif?raw=true
-[demo-add-braces-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-arrow-function.gif?raw=true
-[demo-remove-braces-from-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-arrow-function.gif?raw=true
 [demo-move-statement-object-property]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/move-statement-object-property.gif?raw=true
 [demo-split-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/split-if-statement.gif?raw=true
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements.gif?raw=true
@@ -716,12 +641,9 @@ If a JSX attribute is a JSX expression containing only a string literal, it refa
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-dead-code.gif?raw=true
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-to-pure-component.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/simplify-ternary.gif?raw=true
-[demo-add-braces-to-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-if-statement.gif?raw=true
-[demo-remove-braces-from-if-statement]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-if-statement.gif?raw=true
-[demo-add-braces-to-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/add-braces-to-jsx-attribute.gif?raw=true
-[demo-remove-braces-from-jsx-attribute]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/remove-braces-from-jsx-attribute.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-interface.gif?raw=true
 [demo-extract-class]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-class.gif?raw=true
+[demo-toggle-braces]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/toggle-braces.gif?raw=true
 
 <!-- Logo -->
 

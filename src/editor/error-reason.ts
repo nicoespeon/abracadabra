@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindStatementToToggleBraces,
   DidNotFindTypeToExtract,
   DidNotFindMultipleDeclarationsToSplit,
   CantImportReferences,
@@ -54,6 +55,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindStatementToToggleBraces:
+      return didNotFind("a statement that could toggle braces");
+
     case ErrorReason.DidNotFindTypeToExtract:
       return didNotFind("a type to extract");
 

@@ -150,6 +150,11 @@ class Selection {
     );
   }
 
+  isBefore(statement: t.Selectable<t.Statement>): boolean {
+    const endOfStatement = Position.fromAST(statement.loc.end);
+    return this.start.isBefore(endOfStatement);
+  }
+
   startsBefore(selection: Selection): boolean {
     return this.start.isBefore(selection.start);
   }
