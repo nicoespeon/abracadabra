@@ -128,13 +128,21 @@ someVariable = 'newValue';`
   it("should not match a 'const' declaration", async () => {
     const editor = new InMemoryEditor(`const aVariable[cursor] = "value";`);
 
-    const is_matching = await isMatchingVisitor(editor.code, (onMatch) =>
-      createVisitor(editor.selection, () => onMatch())
-    );
-
-    expect(is_matching).toBe(false);
+    await expectVisitorWontMatch(editor);
   });
 });
+
+async function expectVisitorWontMatch(editor: InMemoryEditor) {
+  const isMatching = await isMatchingVisitor(editor.code, (onMatch) =>
+    createVisitor(editor.selection, () => onMatch())
+  );
+
+  try {
+    expect(isMatching).toBe(false);
+  } catch (error) {
+    throw new Error("Visitor matches given code but shouldn't");
+  }
+}
 
 function isMatchingVisitor(
   code: Code,
