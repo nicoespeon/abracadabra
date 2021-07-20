@@ -21,7 +21,7 @@ const config: RefactoringWithActionProvider = {
       }
 
       if (path.isJSXAttribute()) {
-        return "Toggle braces (JSX attributes)";
+        return "Toggle braces (JSX attribute)";
       }
 
       return "Toggle braces";
