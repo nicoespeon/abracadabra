@@ -39,11 +39,13 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      if (t.hasBraces(path, selection)) {
-        onMatch(path, new RemoveBracesFromIfStatement(path, selection));
-      } else {
-        onMatch(path, new AddBracesToIfStatement(path, selection));
-      }
+      const operation = t.hasBraces(path, selection)
+        ? new RemoveBracesFromIfStatement(path, selection)
+        : new AddBracesToIfStatement(path, selection);
+
+      if (!operation.canExecute) return;
+
+      onMatch(path, operation);
     },
     JSXAttribute(path) {
       if (!selection.isInsidePath(path)) return;
@@ -52,11 +54,13 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      if (!t.isStringLiteral(path.node.value)) {
-        onMatch(path, new RemoveBracesFromJSXAttribute(path));
-      } else {
-        onMatch(path, new AddBracesToJSXAttribute(path));
-      }
+      const operation = t.isStringLiteral(path.node.value)
+        ? new AddBracesToJSXAttribute(path)
+        : new RemoveBracesFromJSXAttribute(path);
+
+      if (!operation.canExecute) return;
+
+      onMatch(path, operation);
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
@@ -65,11 +69,13 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      if (t.isBlockStatement(path.node.body)) {
-        onMatch(path, new RemoveBracesFromArrowFunction(path));
-      } else {
-        onMatch(path, new AddBracesToArrowFunction(path));
-      }
+      const operation = t.isBlockStatement(path.node.body)
+        ? new RemoveBracesFromArrowFunction(path)
+        : new AddBracesToArrowFunction(path);
+
+      if (!operation.canExecute) return;
+
+      onMatch(path, operation);
     }
   };
 }
@@ -80,6 +86,7 @@ function hasChildWhichMatchesSelection(
 ): boolean {
   let result = false;
 
+  // TODO: handle nested but that won't match
   path.traverse({
     IfStatement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
@@ -96,15 +103,6 @@ function hasChildWhichMatchesSelection(
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
 
-      if (t.isBlockStatement(childPath.node.body)) {
-        const blockStatementStatements = childPath.node.body.body;
-        if (blockStatementStatements.length > 1) return;
-
-        const firstValue = blockStatementStatements[0];
-        if (!t.isReturnStatement(firstValue)) return;
-        if (firstValue.argument === null) return;
-      }
-
       result = true;
       childPath.stop();
     }
@@ -114,6 +112,7 @@ function hasChildWhichMatchesSelection(
 }
 
 interface ToggleBraces {
+  readonly canExecute: boolean;
   execute(): void;
 }
 
@@ -123,7 +122,10 @@ class AddBracesToIfStatement implements ToggleBraces {
     private selection: Selection
   ) {}
 
+  readonly canExecute = true;
+
   execute() {
+    if (!this.canExecute) return;
     if (!t.isSelectableNode(this.path.node.consequent)) return;
 
     const endOfConsequent = Position.fromAST(this.path.node.consequent.loc.end);
@@ -146,10 +148,13 @@ class RemoveBracesFromIfStatement implements ToggleBraces {
     private selection: Selection
   ) {}
 
-  execute() {
-    if (!t.isSelectableNode(this.path.node.consequent)) return;
+  get canExecute(): boolean {
+    return t.hasSingleStatementBlock(this.path, this.selection);
+  }
 
-    if (!t.hasSingleStatementBlock(this.path, this.selection)) return;
+  execute() {
+    if (!this.canExecute) return;
+    if (!t.isSelectableNode(this.path.node.consequent)) return;
 
     if (this.selection.isBefore(this.path.node.consequent)) {
       this.path.node.consequent = t.statementWithoutBraces(
@@ -166,7 +171,12 @@ class RemoveBracesFromIfStatement implements ToggleBraces {
 class AddBracesToJSXAttribute implements ToggleBraces {
   constructor(private path: t.NodePath<t.JSXAttribute>) {}
 
+  get canExecute(): boolean {
+    return !t.isJSXExpressionContainer(this.path.node.value);
+  }
+
   execute() {
+    if (!this.canExecute) return;
     if (!this.path.node.value) return;
     if (t.isJSXExpressionContainer(this.path.node.value)) return;
 
@@ -177,7 +187,15 @@ class AddBracesToJSXAttribute implements ToggleBraces {
 class RemoveBracesFromJSXAttribute implements ToggleBraces {
   constructor(private path: t.NodePath<t.JSXAttribute>) {}
 
+  get canExecute(): boolean {
+    return (
+      t.isJSXExpressionContainer(this.path.node.value) &&
+      t.isStringLiteral(this.path.node.value.expression)
+    );
+  }
+
   execute() {
+    if (!this.canExecute) return;
     if (!t.isJSXExpressionContainer(this.path.node.value)) return;
     if (!t.isStringLiteral(this.path.node.value.expression)) return;
 
@@ -190,8 +208,12 @@ class RemoveBracesFromJSXAttribute implements ToggleBraces {
 class AddBracesToArrowFunction implements ToggleBraces {
   constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
 
+  get canExecute(): boolean {
+    return !t.isBlockStatement(this.path.node.body);
+  }
+
   execute() {
-    // Duplicate this type guard so TS can infer the type properly
+    if (!this.canExecute) return;
     if (t.isBlockStatement(this.path.node.body)) return;
 
     const blockStatement = t.blockStatement([
@@ -204,16 +226,28 @@ class AddBracesToArrowFunction implements ToggleBraces {
 class RemoveBracesFromArrowFunction implements ToggleBraces {
   constructor(private path: t.NodePath<t.ArrowFunctionExpression>) {}
 
+  get canExecute(): boolean {
+    if (!t.isBlockStatement(this.path.node.body)) return false;
+
+    const blockStatementStatements = this.path.node.body.body;
+    if (blockStatementStatements.length > 1) return false;
+
+    const firstValue = blockStatementStatements[0];
+    if (!t.isReturnStatement(firstValue)) return false;
+
+    if (firstValue.argument === null) return false;
+
+    return true;
+  }
+
   execute() {
-    // Duplicate this type guard so TS can infer the type properly
+    if (!this.canExecute) return;
     if (!t.isBlockStatement(this.path.node.body)) return;
 
     const blockStatementStatements = this.path.node.body.body;
-    if (blockStatementStatements.length > 1) return;
-
     const firstValue = blockStatementStatements[0];
-    if (!t.isReturnStatement(firstValue)) return;
 
+    if (!t.isReturnStatement(firstValue)) return;
     if (firstValue.argument === null) return;
 
     this.path.node.body = firstValue.argument;

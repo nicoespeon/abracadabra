@@ -2,7 +2,7 @@ import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { toggleBraces } from "./toggle-braces";
+import { createVisitor, toggleBraces } from "./toggle-braces";
 
 describe("Toggle Braces", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -419,6 +419,7 @@ doAnotherThing();`
       await toggleBraces(editor);
 
       expect(editor.code).toBe(originalCode);
+      await expect(createVisitor).not.toMatchEditor(editor);
     }
   );
 
