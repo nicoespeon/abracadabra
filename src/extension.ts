@@ -4,8 +4,6 @@ import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
-import addBracesToArrowFunction from "./refactorings/add-braces-to-arrow-function";
-import addBracesToIfStatement from "./refactorings/add-braces-to-if-statement";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
@@ -28,10 +26,6 @@ import moveStatementUp from "./refactorings/move-statement-up";
 import moveToExistingFile from "./refactorings/move-to-existing-file";
 import negateExpression from "./refactorings/negate-expression";
 import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
-import reactAddBracesToJsxAttribute from "./refactorings/react/add-braces-to-jsx-attribute";
-import reactRemoveBracesFromJsxAttribute from "./refactorings/react/remove-braces-from-jsx-attribute";
-import removeBracesFromArrowFunction from "./refactorings/remove-braces-from-arrow-function";
-import removeBracesFromIfStatement from "./refactorings/remove-braces-from-if-statement";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
 import renameSymbol from "./refactorings/rename-symbol";
@@ -40,6 +34,7 @@ import simplifyTernary from "./refactorings/simplify-ternary";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
+import toggleBraces from "./refactorings/toggle-braces";
 // REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
 import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
 import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
@@ -54,10 +49,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [reactConvertToPureComponent],
-    withActionProvider: [
-      reactAddBracesToJsxAttribute,
-      reactRemoveBracesFromJsxAttribute
-    ]
+    withActionProvider: []
   },
   allButVue: {
     languages: [
@@ -85,8 +77,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       renameSymbol
     ],
     withActionProvider: [
-      addBracesToArrowFunction,
-      addBracesToIfStatement,
       convertForToForeach,
       convertIfElseToSwitch,
       convertIfElseToTernary,
@@ -101,15 +91,14 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       mergeIfStatements,
       mergeWithPreviousIfStatement,
       negateExpression,
-      removeBracesFromArrowFunction,
-      removeBracesFromIfStatement,
       removeDeadCode,
       removeRedundantElse,
       replaceBinaryWithAssignment,
       simplifyTernary,
       splitDeclarationAndInitialization,
       splitIfStatement,
-      splitMultipleDeclarations
+      splitMultipleDeclarations,
+      toggleBraces
     ]
   }
 };
