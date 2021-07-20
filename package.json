@@ -98,8 +98,6 @@
     "ts-morph": "^11.0.0"
   },
   "activationEvents": [
-    "onCommand:abracadabra.addBracesToArrowFunction",
-    "onCommand:abracadabra.addBracesToIfStatement",
     "onCommand:abracadabra.convertForToForeach",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
     "onCommand:abracadabra.convertIfElseToTernary",
@@ -122,11 +120,7 @@
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.moveToExistingFile",
     "onCommand:abracadabra.negateExpression",
-    "onCommand:abracadabra.react.addBracesToJsxAttribute",
     "onCommand:abracadabra.react.convertToPureComponent",
-    "onCommand:abracadabra.react.removeBracesFromJsxAttribute",
-    "onCommand:abracadabra.removeBracesFromArrowFunction",
-    "onCommand:abracadabra.removeBracesFromIfStatement",
     "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
     "onCommand:abracadabra.renameSymbol",
@@ -144,16 +138,6 @@
   ],
   "contributes": {
     "commands": [
-      {
-        "command": "abracadabra.addBracesToArrowFunction",
-        "title": "Add Braces to Arrow Function",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.addBracesToIfStatement",
-        "title": "Add Braces to If Statement",
-        "category": "Abracadabra"
-      },
       {
         "command": "abracadabra.convertForToForeach",
         "title": "Convert For-Loop to ForEach",
@@ -265,28 +249,8 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.react.addBracesToJsxAttribute",
-        "title": "(React) Add Braces to JSX Attribute",
-        "category": "Abracadabra"
-      },
-      {
         "command": "abracadabra.react.convertToPureComponent",
         "title": "(React) Convert to Pure Component",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.react.removeBracesFromJsxAttribute",
-        "title": "(React) Remove Braces from JSX Attribute",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.removeBracesFromArrowFunction",
-        "title": "Remove Braces from Arrow Function",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.removeBracesFromIfStatement",
-        "title": "Remove Braces from If Statement",
         "category": "Abracadabra"
       },
       {
@@ -387,16 +351,6 @@
           ],
           "description": "Glob patterns where it won't propose Quick Fixes (defaults: `dist/*`, `build/*`)."
         },
-        "abracadabra.addBracesToArrowFunction.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.addBracesToIfStatement.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
         "abracadabra.convertForToForeach.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -487,26 +441,6 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
-        "abracadabra.react.addBracesToJsxAttribute.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.react.removeBracesFromJsxAttribute.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.removeBracesFromArrowFunction.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.removeBracesFromIfStatement.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
         "abracadabra.removeDeadCode.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -552,46 +486,6 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "abracadabra.addBracesToArrowFunction",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.addBracesToArrowFunction",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.addBracesToArrowFunction",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.addBracesToArrowFunction",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.addBracesToArrowFunction",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.addBracesToIfStatement",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.addBracesToIfStatement",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.addBracesToIfStatement",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.addBracesToIfStatement",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.addBracesToIfStatement",
-          "when": "editorLangId == vue"
-        },
-        {
           "command": "abracadabra.convertForToForeach",
           "when": "editorLangId == javascript"
         },
@@ -1012,18 +906,6 @@
           "when": "editorLangId == vue"
         },
         {
-          "command": "abracadabra.react.addBracesToJsxAttribute",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.react.addBracesToJsxAttribute",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.react.addBracesToJsxAttribute",
-          "when": "editorLangId == vue"
-        },
-        {
           "command": "abracadabra.react.convertToPureComponent",
           "when": "editorLangId == javascriptreact"
         },
@@ -1033,58 +915,6 @@
         },
         {
           "command": "abracadabra.react.convertToPureComponent",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.react.removeBracesFromJsxAttribute",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.react.removeBracesFromJsxAttribute",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.react.removeBracesFromJsxAttribute",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.removeBracesFromArrowFunction",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.removeBracesFromArrowFunction",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.removeBracesFromArrowFunction",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.removeBracesFromArrowFunction",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.removeBracesFromArrowFunction",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.removeBracesFromIfStatement",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.removeBracesFromIfStatement",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.removeBracesFromIfStatement",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.removeBracesFromIfStatement",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.removeBracesFromIfStatement",
           "when": "editorLangId == vue"
         },
         {
