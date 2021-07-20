@@ -149,6 +149,22 @@ if (isValid) {
         expected: `const createSayHello = () => () => {
   return "Hello!";
 };`
+      },
+      {
+        description:
+          "JSX attribute nested in an if-statement, nested in an arrow function",
+        code: `const render = (isValid) => {
+  if (isValid)
+    return <SayHello name="[cursor]John" />;
+
+  return <SayBye />;
+}`,
+        expected: `const render = (isValid) => {
+  if (isValid)
+    return <SayHello name={"John"} />;
+
+  return <SayBye />;
+}`
       }
     ],
     async ({ code, expected }) => {

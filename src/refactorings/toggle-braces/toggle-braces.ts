@@ -87,8 +87,11 @@ function hasChildWhichMatchesSelection(
       result = true;
       childPath.stop();
     },
-    JSXAttribute(_childPath) {
-      // SMELL: could a child match here?
+    JSXAttribute(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
     },
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
