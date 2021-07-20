@@ -135,6 +135,7 @@
     "onCommand:abracadabra.splitDeclarationAndInitialization",
     "onCommand:abracadabra.splitIfStatement",
     "onCommand:abracadabra.splitMultipleDeclarations",
+    "onCommand:abracadabra.toggleBraces",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -326,6 +327,11 @@
       {
         "command": "abracadabra.splitMultipleDeclarations",
         "title": "Split Multiple Declarations",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.toggleBraces",
+        "title": "Toggle Braces",
         "category": "Abracadabra"
       }
     ],
@@ -532,6 +538,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.splitMultipleDeclarations.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.toggleBraces.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1234,6 +1245,26 @@
         },
         {
           "command": "abracadabra.splitMultipleDeclarations",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.toggleBraces",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.toggleBraces",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.toggleBraces",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.toggleBraces",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.toggleBraces",
           "when": "editorLangId == vue"
         }
       ]
