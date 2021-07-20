@@ -128,43 +128,6 @@ someVariable = 'newValue';`
   it("should not match a 'const' declaration", async () => {
     const editor = new InMemoryEditor(`const aVariable[cursor] = "value";`);
 
-    await expectVisitorWontMatch(editor);
+    await expect(createVisitor).not.toMatchEditor(editor);
   });
 });
-
-async function expectVisitorWontMatch(editor: InMemoryEditor) {
-  const isMatching = await isMatchingVisitor(editor.code, (onMatch) =>
-    createVisitor(editor.selection, () => onMatch())
-  );
-
-  try {
-    expect(isMatching).toBe(false);
-  } catch (error) {
-    throw new Error("Visitor matches given code but shouldn't");
-  }
-}
-
-function isMatchingVisitor(
-  code: Code,
-  createVisitor: (onMatch: Function) => t.Visitor
-): Promise<boolean> {
-  const STOP_IDENTIFIER_NAME = "STOP_HERE";
-  const codeWithStopIdentifier = `${code}
-let ${STOP_IDENTIFIER_NAME};`;
-
-  return new Promise<boolean>((resolve) => {
-    const visitor = createVisitor(() => resolve(true));
-
-    t.traverseAST(t.parse(codeWithStopIdentifier), {
-      ...visitor,
-      Identifier(path) {
-        // Ensures that we will return if we have found nothing.
-        // Assumes we traverse the AST from top to bottom.
-        if (path.node.name === STOP_IDENTIFIER_NAME) {
-          path.stop();
-          resolve(false);
-        }
-      }
-    });
-  });
-}
