@@ -86,10 +86,15 @@ function hasChildWhichMatchesSelection(
 ): boolean {
   let result = false;
 
-  // TODO: handle nested but that won't match
   path.traverse({
     IfStatement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
+
+      const operation = t.hasBraces(childPath, selection)
+        ? new RemoveBracesFromIfStatement(childPath, selection)
+        : new AddBracesToIfStatement(childPath, selection);
+
+      if (!operation.canExecute) return;
 
       result = true;
       childPath.stop();
@@ -97,11 +102,23 @@ function hasChildWhichMatchesSelection(
     JSXAttribute(childPath) {
       if (!selection.isInsidePath(childPath)) return;
 
+      const operation = t.isStringLiteral(childPath.node.value)
+        ? new AddBracesToJSXAttribute(childPath)
+        : new RemoveBracesFromJSXAttribute(childPath);
+
+      if (!operation.canExecute) return;
+
       result = true;
       childPath.stop();
     },
     ArrowFunctionExpression(childPath) {
       if (!selection.isInsidePath(childPath)) return;
+
+      const operation = t.isBlockStatement(childPath.node.body)
+        ? new RemoveBracesFromArrowFunction(childPath)
+        : new AddBracesToArrowFunction(childPath);
+
+      if (!operation.canExecute) return;
 
       result = true;
       childPath.stop();

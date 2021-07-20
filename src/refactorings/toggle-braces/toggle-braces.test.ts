@@ -266,6 +266,19 @@ doAnotherThing();`,
 doAnotherThing();`
       },
       {
+        description: "nested if statements, only wrapper can be refactored",
+        code: `if (isValid) {
+  if (isMorning) {
+    [cursor]doSomething();
+    return doSomethingElse();
+  }
+}`,
+        expected: `if (isValid) if (isMorning) {
+  doSomething();
+  return doSomethingElse();
+}`
+      },
+      {
         description: "an arrow function",
         code: `const sayHello = () => {
   [cursor]return "Hello!";
