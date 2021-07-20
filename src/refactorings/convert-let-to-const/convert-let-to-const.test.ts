@@ -1,7 +1,6 @@
 import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
-import * as t from "../../ast";
 
 import { convertLetToConst, createVisitor } from "./convert-let-to-const";
 
