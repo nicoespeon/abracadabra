@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-27-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-28-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -132,6 +132,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/SamHasler"><img src="https://avatars.githubusercontent.com/u/54277?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sam Hasler</b></sub></a><br /><a href="#ideas-SamHasler" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://re.kv.io/"><img src="https://avatars.githubusercontent.com/u/7276?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicolas Favre-Felix</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Anicolasff" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/wmertens"><img src="https://avatars.githubusercontent.com/u/54934?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Wout Mertens</b></sub></a><br /><a href="#ideas-wmertens" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://lukemiles.org"><img src="https://avatars.githubusercontent.com/u/10591373?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Luke Harold Miles</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aqpwo" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
