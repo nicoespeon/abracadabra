@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2021-07-21 - Shiny 🦀
+
 ### Removed (= Breaking)
 
 - All add/remove braces refactorings that have been merged into "Toggle Braces":
@@ -1350,7 +1352,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/5.4.2...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.0.0...HEAD
+[6.0.0]: https://github.com/nicoespeon/abracadabra/compare/5.4.2...6.0.0
 [5.4.2]: https://github.com/nicoespeon/abracadabra/compare/5.4.1...5.4.2
 [5.4.1]: https://github.com/nicoespeon/abracadabra/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/nicoespeon/abracadabra/compare/5.3.1...5.4.0
