@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** Toggle Braces now combines all previous add/remove braces refactorings we used to have. It reduces the noise and makes it easier to switch between curly braces or not.
 
+### Fixed
+
+- Inline Function was breaking code in some scenarios, which has been fixed. Props to @qpwo for raising it up 🙏
+
 ## [5.4.2]
 
 ### Fixed

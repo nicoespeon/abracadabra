@@ -432,6 +432,12 @@ if (isCorrect) {
  * Log some data
  */
 logData(); // => logged`
+      },
+      {
+        description: "call expression is returned by another function",
+        code: `function [cursor]foo(x) { return (x * 2) + x + 3; }
+function bar(x) { return foo(x) + 10; }`,
+        expected: `function bar(x) { return (x * 2) + x + 3 + 10; }`
       }
     ],
     async ({ code, expected }) => {

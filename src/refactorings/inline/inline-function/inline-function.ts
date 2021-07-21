@@ -300,15 +300,24 @@ function applyArgumentsToFunction(
       ReturnStatement(returnPath) {
         if (t.isInBranchedLogic(returnPath)) return;
 
-        const scopeWithReturnValueApplied = t.transformCopy(path, path.node, {
-          CallExpression(childPath) {
-            const identifier = childPath.node.callee;
-            if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
-            if (!returnPath.node.argument) return;
+        const nodeToReplace = path.isCallExpression()
+          ? t.expressionStatement(path.node)
+          : path.node;
+        const scopeWithReturnValueApplied = t.transformCopy(
+          path,
+          nodeToReplace,
+          {
+            CallExpression(childPath) {
+              const identifier = childPath.node.callee;
+              if (!isMatchingIdentifier(identifier, functionDeclaration)) {
+                return;
+              }
+              if (!returnPath.node.argument) return;
 
-            childPath.replaceWith(returnPath.node.argument);
+              childPath.replaceWith(returnPath.node.argument);
+            }
           }
-        });
+        );
 
         returnPath.replaceWith(scopeWithReturnValueApplied);
       }
