@@ -171,15 +171,11 @@ _Move Statement Up_ and _Move Statement Down_ also work on object properties. Th
 
 Negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
 
-<details><summary>See it in action</summary>
-
 ![][demo-negate-expression]
 
 It will negate the closest expression from your cursor or partial selection.
 
 ![][demo-negate-expression-partial]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -189,11 +185,7 @@ It will negate the closest expression from your cursor or partial selection.
 
 Removes the `else` keyword when it's not necessary, resulting in less nested code. This refactoring helps you [replace nested conditional with guard clauses][replace-nested-conditional-with-guard-clauses] to make your code easier to read.
 
-<details><summary>See it in action</summary>
-
 ![][demo-remove-redundant-else]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -203,11 +195,7 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 
 Simplify ternary expressions that you might end up with after executing other refactorings.
 
-<details><summary>See it in action</summary>
-
 ![][demo-simplify-ternary]
-
-</details><br />
 
 ### Flip If/Else
 
@@ -215,11 +203,7 @@ Simplify ternary expressions that you might end up with after executing other re
 
 Flips the `if` and `else` statements. It's a useful refactoring to have in your toolbelt to simplify logical expressions.
 
-<details><summary>See it in action</summary>
-
 ![][demo-flip-if-else]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -229,11 +213,7 @@ Flips the `if` and `else` statements. It's a useful refactoring to have in your 
 
 Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
-<details><summary>See it in action</summary>
-
 ![][demo-flip-ternary]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -243,11 +223,7 @@ Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 Converts an if/else statement into a (shorter) ternary expression. This is very handy to improve code readability.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-if-else-to-ternary]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -257,11 +233,7 @@ Converts an if/else statement into a (shorter) ternary expression. This is very 
 
 Converts a ternary expression into an if/else statement. It reverses _Convert If/Else to Ternary_ refactoring.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-ternary-to-if-else]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -271,11 +243,7 @@ Converts a ternary expression into an if/else statement. It reverses _Convert If
 
 Converts an if/else statement into a switch statement. This is typically what you do before introducing polymorphism to clean object-oriented code.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-if-else-to-switch]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -285,11 +253,7 @@ Converts an if/else statement into a switch statement. This is typically what yo
 
 Converts a switch statement into an if/else statement. It reverses _Convert If/Else to Switch_ refactoring.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-switch-to-if-else]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -299,11 +263,7 @@ Converts a switch statement into an if/else statement. It reverses _Convert If/E
 
 Splits the logical expression of the closest if statement. This is an helpful tool to help you refactor complex branching logic, safely.
 
-<details><summary>See it in action</summary>
-
 ![][demo-split-if-statement]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -313,15 +273,11 @@ Splits the logical expression of the closest if statement. This is an helpful to
 
 This is the opposite of _Split If Statement_. It consolidates **nested** ifs to clean up the code.
 
-<details><summary>See it in action</summary>
-
 ![][demo-merge-if-statements]
 
 It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -331,15 +287,11 @@ It also works with `else-if`.
 
 Merges selected statement with the if statement that is above. This is handy when you want to [decompose a conditional][decompose-conditional] to clean the code.
 
-<details><summary>See it in action</summary>
-
 ![][demo-merge-with-previous-if-statement]
 
 If you want to merge 2 consecutive if statements, it will resolve the dead code for you:
 
 ![][demo-merge-if-with-previous-if-statement]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -351,11 +303,7 @@ Useful when you need to have the similar conditionals at the top level. If you g
 
 Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting code will have the same behaviour.
 
-<details><summary>See it in action</summary>
-
 ![][demo-lift-up-conditional]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -369,11 +317,7 @@ Often, classes grow too big and do too many things. You want to split them by ex
 
 This is where Abracadabra comes in and automate most of the grunt work for you. It can extract the properties and function you want in a keystrokes! It will take care of creating the new class while preserving existing behavior—it's a refactoring after all.
 
-<details><summary>See it in action</summary>
-
 ![][demo-extract-class]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -389,11 +333,7 @@ Well, now you can with Abracadabra ✨
 
 Trigger the refactoring on a function you want to move, select the destination file, let it take care of the rest. It works for top-level function declarations, resolves required imports, and prevents you from creating circular dependencies.
 
-<details><summary>See it in action</summary>
-
 ![][demo-move-to-existing-file]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -403,11 +343,7 @@ Trigger the refactoring on a function you want to move, select the destination f
 
 Sometimes, Abracadabra can determine that some code can't be reached. If so, it can also get rid of the dead code for you.
 
-<details><summary>See it in action</summary>
-
 ![][demo-remove-dead-code]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -419,11 +355,7 @@ Sometimes, Abracadabra can determine that some code can't be reached. If so, it 
 
 Splits the declaration of the variable and its initialization. If it's a `const`, it will convert it to `let`.
 
-<details><summary>See it in action</summary>
-
 ![][demo-split-declaration-and-initialization]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -433,11 +365,7 @@ Splits the declaration of the variable and its initialization. If it's a `const`
 
 Splits multiple variables declarated together onto a single line each.
 
-<details><summary>See it in action</summary>
-
 ![][demo-split-multiple-declarations]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -447,11 +375,7 @@ Splits multiple variables declarated together onto a single line each.
 
 Converts the declaration of a variable that is a `let` to a `const` if it's not mutated within the scope.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-let-to-const]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -463,11 +387,7 @@ Converts the declaration of a variable that is a `let` to a `const` if it's not 
 
 Converts a function declaration into an arrow function, which is convenient when you want to switch the syntax.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-to-arrow-function]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -485,11 +405,7 @@ It works on:
 - Arrow Function Expressions (e.g. `const someFunction = () => {}`)
 - JSX Attributes (e.g. `<SomeComponent anAttribute={"a value"} />`)
 
-<details><summary>See it in action</summary>
-
 ![][demo-toggle-braces]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -505,11 +421,7 @@ This is too bad because it's convenient to turn an existing string into a templa
 
 Hence, Abracadabra is proposing the refactoring for such scenario!
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-to-template-literal]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -519,11 +431,7 @@ Hence, Abracadabra is proposing the refactoring for such scenario!
 
 This one might seem obscure, but it's really replacing `+` with `+=`. Whenever it's possible, Abracadabra will propose you to refactor the code for a shorter (assignment) syntax.
 
-<details><summary>See it in action</summary>
-
 ![][demo-replace-binary-with-assignment]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -533,11 +441,7 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 
 When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-for-to-foreach]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -549,11 +453,7 @@ When it's possible, it converts an old-school for-loop into a `forEach()` call.
 
 This refactoring will turn an existing type into a generic. Very handy when you need to make an interface more generic.
 
-<details><summary>See it in action</summary>
-
 ![][demo-extract-generic-type]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -565,11 +465,7 @@ Extract the interface from a class.
 
 This is very useful when you need to invert a dependency: create an interface from an existing class, so you can provide a different implementation of this interface.
 
-<details><summary>See it in action</summary>
-
 ![][demo-extract-interface]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -583,11 +479,7 @@ This one is specific to React and comes from [react codemod][react-codemod].
 
 It converts ES6 classes that only have a `render()` method, only have safe properties (statics and props), and do not have refs to Functional Components.
 
-<details><summary>See it in action</summary>
-
 ![][demo-convert-to-pure-component]
-
-</details><br />
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
