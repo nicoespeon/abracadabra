@@ -181,7 +181,7 @@ Hopefully, most of the steps are automated already!
 2. Bump the version in the `package.json` following [SemVer][semver].
 3. If it's a minor or major bump, choose a release name (no rule here, have fun). Update the Changelog accordingly.
 4. Commit all of these changes directly on the main branch, like this: [5.3.0](https://github.com/nicoespeon/abracadabra/commit/652611df41256fb1fd58704b121956154859a13d)
-5. [Create a new release](https://github.com/nicoespeon/abracadabra/releases/new) targetting the main branch. Use the release name as a title and changelog body as a description.
+5. [Create a new release](https://github.com/nicoespeon/abracadabra/releases/new) targeting the main branch. Use the release name as a title and changelog body as a description.
 
 That's it. [A GitHub Action](https://github.com/nicoespeon/abracadabra/actions) will kick in and publish the new release to all marketplaces. @nicoespeon should receive an email when everything is done.
 
