@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindMethodToConvert,
   DidNotFindStatementToToggleBraces,
   DidNotFindTypeToExtract,
   DidNotFindMultipleDeclarationsToSplit,
@@ -55,6 +56,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindMethodToConvert:
+      return didNotFind("a method to convert");
+
     case ErrorReason.DidNotFindStatementToToggleBraces:
       return didNotFind("a statement that could toggle braces");
 
