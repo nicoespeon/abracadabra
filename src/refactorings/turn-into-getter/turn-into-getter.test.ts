@@ -8,7 +8,27 @@ describe("Turn Into Getter", () => {
   testEach<{ code: Code; expected: Code }>(
     "should turn into getter",
     [
-      // TODO: write successful test cases here
+      {
+        description: "a getter-like method",
+        code: `class Person {
+  myName[cursor]() {
+    return "Alice";
+  }
+
+  sayHelloTo(other) {
+    console.log("Hey " + other.name + ", my name is " + this.myName() + this.lastName())
+  }
+}`,
+        expected: `class Person {
+  get myName() {
+    return "Alice";
+  }
+
+  sayHelloTo(other) {
+    console.log("Hey " + other.name + ", my name is " + this.myName + this.lastName())
+  }
+}`
+      }
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
