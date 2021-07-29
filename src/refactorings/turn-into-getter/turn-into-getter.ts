@@ -52,6 +52,12 @@ function createVisitor(
   return {
     ClassMethod(path) {
       if (!selection.isInsidePath(path)) return;
+      if (path.node.params.length > 0) return;
+      if (path.node.async) return;
+      if (path.node.static) return;
+      if (path.node.computed) return;
+      if (path.node.kind !== "method") return;
+      if (!t.hasFinalReturn(path.node.body.body)) return;
 
       onMatch(path);
     }
