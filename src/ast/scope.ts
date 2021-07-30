@@ -150,7 +150,9 @@ function bindingNamesInScope<T>(path: NodePath<T>): string[] {
   return Object.keys(path.scope.getAllBindings());
 }
 
-function referencesInScope(path: NodePath<t.FunctionDeclaration>): NodePath[] {
+function referencesInScope(
+  path: NodePath<t.FunctionDeclaration | t.FunctionExpression>
+): NodePath[] {
   const allBindings = Object.values(path.scope.getAllBindings()) as Binding[];
 
   return (
