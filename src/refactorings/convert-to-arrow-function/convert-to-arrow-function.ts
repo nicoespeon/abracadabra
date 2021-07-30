@@ -34,40 +34,17 @@ function updateCode(
   const updatedCode = t.transformAST(
     ast,
     createVisitor(selection, (path) => {
-      const { node } = path;
-      const name = node.id ? node.id.name : "converted";
-      const identifier = t.identifier(name);
-
-      const arrowFunctionExpression = t.arrowFunctionExpression(
-        node.params,
-        node.body,
-        node.async
-      );
-      arrowFunctionExpression.returnType = node.returnType;
-      arrowFunctionExpression.typeParameters = node.typeParameters;
-
-      const declarator = t.variableDeclarator(
-        identifier,
-        arrowFunctionExpression
-      );
-
-      const variableDeclaration = t.variableDeclaration("const", [declarator]);
-      // @ts-expect-error Recast does use a `comments` attribute.
-      variableDeclaration.comments = node.comments;
-
-      if (t.isSelectablePath(path)) {
-        const pathSelection = Selection.fromAST(path.node.loc);
-        hasReferenceBefore = t.referencesInScope(path).some((reference) => {
-          if (!t.isSelectablePath(reference)) return false;
-          const referenceSelection = Selection.fromAST(reference.node.loc);
-          return (
-            !referenceSelection.isEqualTo(pathSelection) &&
-            referenceSelection.startsBefore(pathSelection)
-          );
-        });
+      let converter: Converter;
+      if (path.isFunctionDeclaration()) {
+        converter = new FunctionDeclarationConverter(path);
+      } else {
+        converter = new FunctionExpressionConverter(
+          path as t.NodePath<t.FunctionExpression>
+        );
       }
 
-      path.replaceWith(variableDeclaration);
+      hasReferenceBefore = converter.hasReferenceBefore;
+      path.replaceWith(converter.replacementNode);
       path.stop();
     })
   );
@@ -75,30 +52,88 @@ function updateCode(
   return { updatedCode, hasReferenceBefore };
 }
 
+interface Converter {
+  hasReferenceBefore: boolean;
+  replacementNode: t.Node;
+}
+
+class FunctionDeclarationConverter implements Converter {
+  constructor(private path: t.NodePath<t.FunctionDeclaration>) {}
+
+  get replacementNode() {
+    const { node } = this.path;
+
+    const name = node.id ? node.id.name : "converted";
+    const identifier = t.identifier(name);
+    const declarator = t.variableDeclarator(
+      identifier,
+      t.toArrowFunctionExpression(this.path)
+    );
+
+    const variableDeclaration = t.variableDeclaration("const", [declarator]);
+    // @ts-expect-error Recast does use a `comments` attribute.
+    variableDeclaration.comments = node.comments;
+
+    return variableDeclaration;
+  }
+
+  get hasReferenceBefore() {
+    if (!t.isSelectablePath(this.path)) return false;
+
+    const pathSelection = Selection.fromAST(this.path.node.loc);
+    return t.referencesInScope(this.path).some((reference) => {
+      if (!t.isSelectablePath(reference)) return false;
+
+      const referenceSelection = Selection.fromAST(reference.node.loc);
+      return (
+        !referenceSelection.isEqualTo(pathSelection) &&
+        referenceSelection.startsBefore(pathSelection)
+      );
+    });
+  }
+}
+
+class FunctionExpressionConverter implements Converter {
+  constructor(private path: t.NodePath<t.FunctionExpression>) {}
+
+  readonly hasReferenceBefore = false;
+
+  get replacementNode() {
+    return t.toArrowFunctionExpression(this.path);
+  }
+}
+
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.FunctionDeclaration>) => void
+  onMatch: (
+    path: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
+  ) => void
 ): t.Visitor {
-  return {
-    FunctionDeclaration(path) {
-      // It seems a function declaration inside a named export may have no loc.
-      // Use the named export loc in that situation.
-      if (
-        t.isExportNamedDeclaration(path.parent) &&
-        !t.isSelectableNode(path.node)
-      ) {
-        path.node.loc = path.parent.loc;
-      }
-
-      if (!selection.isInsidePath(path)) return;
-      if (selection.isInsidePath(path.get("body"))) return;
-
-      // Since we visit nodes from parent to children, first check
-      // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
-
-      onMatch(path);
+  const onEnterFunctionPath = (
+    path: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
+  ) => {
+    // It seems a function declaration inside a named export may have no loc.
+    // Use the named export loc in that situation.
+    if (
+      t.isExportNamedDeclaration(path.parent) &&
+      !t.isSelectableNode(path.node)
+    ) {
+      path.node.loc = path.parent.loc;
     }
+
+    if (!selection.isInsidePath(path)) return;
+    if (selection.isInsidePath(path.get("body"))) return;
+
+    // Since we visit nodes from parent to children, first check
+    // if a child would match the selection closer.
+    if (hasChildWhichMatchesSelection(path, selection)) return;
+
+    onMatch(path);
+  };
+
+  return {
+    FunctionDeclaration: onEnterFunctionPath,
+    FunctionExpression: onEnterFunctionPath
   };
 }
 
@@ -108,13 +143,18 @@ function hasChildWhichMatchesSelection(
 ): boolean {
   let result = false;
 
-  path.traverse({
-    FunctionDeclaration(childPath) {
-      if (!selection.isInsidePath(childPath)) return;
+  const onEnterFunctionPath = (
+    childPath: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
+  ) => {
+    if (!selection.isInsidePath(childPath)) return;
 
-      result = true;
-      childPath.stop();
-    }
+    result = true;
+    childPath.stop();
+  };
+
+  path.traverse({
+    FunctionDeclaration: onEnterFunctionPath,
+    FunctionExpression: onEnterFunctionPath
   });
 
   return result;

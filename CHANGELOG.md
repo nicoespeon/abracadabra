@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Convert to Arrow Function now handles Function Expressions too. That means more patterns can be converted, which is more intuitive.
+
 ## [6.0.0] - 2021-07-21 - Shiny 🦀
 
 ### Removed (= Breaking)

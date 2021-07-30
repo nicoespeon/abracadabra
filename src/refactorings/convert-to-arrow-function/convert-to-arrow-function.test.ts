@@ -116,6 +116,12 @@ const doNothing = () => {};`
         expected: `export const sayHello = (name: string) => {
   console.log(\`Well, hello here \${name} 👋\`);
 };`
+      },
+      {
+        description:
+          "a function expression that's an argument to a call expression",
+        code: `doThis(function[cursor] () {});`,
+        expected: `doThis(() => {});`
       }
     ],
     async ({ code, expected }) => {

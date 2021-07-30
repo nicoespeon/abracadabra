@@ -17,7 +17,8 @@ export {
   TypeDeclaration,
   forEach,
   statementWithBraces,
-  statementWithoutBraces
+  statementWithoutBraces,
+  toArrowFunctionExpression
 };
 
 function addImportDeclaration(
@@ -134,4 +135,18 @@ function statementWithBraces(node: t.Statement): t.Statement {
 
 function statementWithoutBraces(node: t.Statement): t.Statement {
   return t.isBlockStatement(node) ? node.body[0] : node;
+}
+
+function toArrowFunctionExpression({
+  node
+}: NodePath<t.FunctionDeclaration | t.FunctionExpression>) {
+  const arrowFunctionExpression = t.arrowFunctionExpression(
+    node.params,
+    node.body,
+    node.async
+  );
+  arrowFunctionExpression.returnType = node.returnType;
+  arrowFunctionExpression.typeParameters = node.typeParameters;
+
+  return arrowFunctionExpression;
 }
