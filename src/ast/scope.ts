@@ -90,17 +90,16 @@ function isShadowIn(
 }
 
 function findFirstExistingDeclaration(expressionPath: NodePath<t.Expression>) {
-  const existingDeclarations: NodePath<DestructuredVariableDeclarator>[] = Object.values(
-    expressionPath.scope.getAllBindings()
-  )
-    .map(({ path }) => path)
-    .filter(
-      (path): path is NodePath<DestructuredVariableDeclarator> =>
-        path.isVariableDeclarator() &&
-        path.get("id").isObjectPattern() &&
-        path.get("init").isIdentifier()
-    )
-    .filter((path) => areEquivalent(expressionPath.node, path.node.init));
+  const existingDeclarations: NodePath<DestructuredVariableDeclarator>[] =
+    Object.values(expressionPath.scope.getAllBindings())
+      .map(({ path }) => path)
+      .filter(
+        (path): path is NodePath<DestructuredVariableDeclarator> =>
+          path.isVariableDeclarator() &&
+          path.get("id").isObjectPattern() &&
+          path.get("init").isIdentifier()
+      )
+      .filter((path) => areEquivalent(expressionPath.node, path.node.init));
 
   return first(existingDeclarations);
 }
@@ -118,9 +117,9 @@ function findCommonAncestorToDeclareVariable(
 
   try {
     // Original type is incorrect, it will return a NodePath or throw
-    ancestor = (path.getEarliestCommonAncestorFrom(
+    ancestor = path.getEarliestCommonAncestorFrom(
       otherPaths
-    ) as any) as NodePath;
+    ) as any as NodePath;
   } catch {
     // If it fails, it means it couldn't find the earliest ancestor.
     ancestor = getProgramPath(path);
