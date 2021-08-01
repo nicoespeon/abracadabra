@@ -95,7 +95,7 @@
     "pluralize": "8.0.0",
     "react-codemod": "5.1.1",
     "recast": "0.20.4",
-    "ts-morph": "^11.0.0"
+    "ts-morph": "^11.0.3"
   },
   "activationEvents": [
     "onCommand:abracadabra.convertForToForeach",
