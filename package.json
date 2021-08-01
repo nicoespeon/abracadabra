@@ -61,7 +61,7 @@
     "@types/jest": "26.0.23",
     "@types/jscodeshift": "0.6.3",
     "@types/mocha": "8.2.2",
-    "@types/node": "15.6.1",
+    "@types/node": "16.4.9",
     "@types/pluralize": "0.0.29",
     "@types/sinon": "10.0.2",
     "@types/vscode": "1.56.0",
