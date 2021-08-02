@@ -28,6 +28,27 @@ describe("Turn Into Getter", () => {
     console.log("Hey " + other.name + ", my name is " + this.myName + this.lastName())
   }
 }`
+      },
+      {
+        description: "a method that starts with `get`",
+        code: `class Person {
+  getMyName[cursor]() {
+    return "Alice";
+  }
+
+  sayHelloTo(other) {
+    console.log("Hey " + other.name + ", my name is " + this.getMyName() + this.lastName())
+  }
+}`,
+        expected: `class Person {
+  get myName() {
+    return "Alice";
+  }
+
+  sayHelloTo(other) {
+    console.log("Hey " + other.name + ", my name is " + this.myName + this.lastName())
+  }
+}`
       }
     ],
     async ({ code, expected }) => {

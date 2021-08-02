@@ -22,7 +22,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     createVisitor(selection, (path) => {
       if (!t.isIdentifier(path.node.key)) return;
 
-      const references: t.NodePath<t.CallExpression>[] = [];
+      const newName = getterName(path.node.key.name);
+
       path.parentPath.traverse({
         CallExpression(childPath) {
           const { callee } = childPath.node;
@@ -31,18 +32,27 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           if (!t.isThisExpression(callee.object)) return;
           if (!t.areEquivalent(callee.property, path.node.key)) return;
 
-          references.push(childPath);
+          callee.property.name = newName;
+          childPath.replaceWith(callee);
         }
       });
 
       path.node.kind = "get";
-      references.forEach((reference) => {
-        reference.replaceWith(reference.get("callee"));
-      });
+      path.node.key.name = newName;
 
       path.stop();
     })
   );
+}
+
+function getterName(methodName: string): string {
+  if (!methodName.startsWith("get")) {
+    return methodName;
+  }
+
+  const nameWithoutGet = methodName.slice(3);
+  const [firstLetter, ...rest] = nameWithoutGet;
+  return `${firstLetter.toLowerCase()}${rest.join("")}`;
 }
 
 function createVisitor(
