@@ -22,7 +22,20 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     createVisitor(selection, (path) => {
       if (!t.isIdentifier(path.node.key)) return;
 
-      const newName = getterName(path.node.key.name);
+      const existingNames = new Set<string>();
+      path.parentPath.traverse({
+        ClassMethod(childPath) {
+          if (t.isIdentifier(childPath.node.key)) {
+            existingNames.add(childPath.node.key.name);
+          }
+        },
+        ClassProperty(childPath) {
+          if (t.isIdentifier(childPath.node.key)) {
+            existingNames.add(childPath.node.key.name);
+          }
+        }
+      });
+      const newName = getterName(path.node.key.name, existingNames);
 
       path.parentPath.traverse({
         CallExpression(childPath) {
@@ -45,14 +58,19 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function getterName(methodName: string): string {
+function getterName(methodName: string, existingNames: Set<string>): string {
   if (!methodName.startsWith("get")) {
     return methodName;
   }
 
   const nameWithoutGet = methodName.slice(3);
   const [firstLetter, ...rest] = nameWithoutGet;
-  return `${firstLetter.toLowerCase()}${rest.join("")}`;
+  const result = `${firstLetter.toLowerCase()}${rest.join("")}`;
+  if (existingNames.has(result)) {
+    return methodName;
+  }
+
+  return result;
 }
 
 function createVisitor(
