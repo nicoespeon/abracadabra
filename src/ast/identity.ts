@@ -124,10 +124,9 @@ function allPathsReturn(blockStatement: t.BlockStatement): boolean {
 
   return blockStatement.body.every((statement) => {
     if (t.isIfStatement(statement)) {
-      const branches = statement.alternate
-        ? [statement.consequent, statement.alternate]
-        : [statement.consequent];
-      return branches.every((branch) =>
+      if (!statement.alternate) return false;
+
+      return [statement.consequent, statement.alternate].every((branch) =>
         allPathsReturn(statementWithBraces(branch))
       );
     }
