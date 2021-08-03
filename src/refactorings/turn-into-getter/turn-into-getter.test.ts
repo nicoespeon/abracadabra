@@ -75,7 +75,38 @@ describe("Turn Into Getter", () => {
     console.log("Hey " + other.name + ", my name is " + this.getMyName + this.lastName())
   }
 }`
+      },
+      {
+        description: "a method that have all paths returning a value",
+        code: `class Person {
+  myName[cursor]() {
+    if (this.isHappy) {
+      return "Al'";
+    } else {
+      return "Alice";
+    }
+  }
+
+  sayHelloTo(other) {
+    console.log("Hey " + other.name + ", my name is " + this.myName() + this.lastName())
+  }
+}`,
+        expected: `class Person {
+  get myName() {
+    if (this.isHappy) {
+      return "Al'";
+    } else {
+      return "Alice";
+    }
+  }
+
+  sayHelloTo(other) {
+    console.log("Hey " + other.name + ", my name is " + this.myName + this.lastName())
+  }
+}`
       }
+      // TODO: usage outside of class (client code)
+      // TODO: usage in different file (exported class) -- ouch…
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);

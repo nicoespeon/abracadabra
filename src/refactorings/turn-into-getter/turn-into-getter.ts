@@ -85,7 +85,7 @@ function createVisitor(
       if (path.node.static) return;
       if (path.node.computed) return;
       if (path.node.kind !== "method") return;
-      if (!t.hasFinalReturn(path.node.body.body)) return;
+      if (!t.allPathsReturn(path.node.body)) return;
 
       onMatch(path);
     }
