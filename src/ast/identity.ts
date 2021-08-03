@@ -3,6 +3,7 @@ import * as t from "@babel/types";
 
 import { last } from "../array";
 import { Selection } from "../editor/selection";
+import { statementWithBraces } from "./domain";
 import { isSelectableNode, SelectablePath } from "./selection";
 
 export {
@@ -119,7 +120,20 @@ function hasFinalReturn(statements: t.Statement[]): boolean {
 }
 
 function allPathsReturn(blockStatement: t.BlockStatement): boolean {
-  return hasFinalReturn(blockStatement.body);
+  if (hasFinalReturn(blockStatement.body)) return true;
+
+  return blockStatement.body.every((statement) => {
+    if (t.isIfStatement(statement)) {
+      const branches = statement.alternate
+        ? [statement.consequent, statement.alternate]
+        : [statement.consequent];
+      return branches.every((branch) =>
+        allPathsReturn(statementWithBraces(branch))
+      );
+    }
+
+    return false;
+  });
 }
 
 function hasBraces(

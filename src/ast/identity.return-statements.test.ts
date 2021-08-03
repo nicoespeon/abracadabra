@@ -20,6 +20,15 @@ describe("allPathsReturn", () => {
 
     expect(result).toBe(false);
   });
+
+  it("should return true if all branches have a return statement", () => {
+    const blockStatement = wrapInBlockStatement(`if (isValid) return "valid";
+else return "invalid";`);
+
+    const result = allPathsReturn(blockStatement);
+
+    expect(result).toBe(true);
+  });
 });
 
 function wrapInBlockStatement(code: string): t.BlockStatement {
