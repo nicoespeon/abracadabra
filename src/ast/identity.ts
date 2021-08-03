@@ -19,6 +19,7 @@ export {
   isGuardConsequentBlock,
   isNonEmptyReturn,
   hasFinalReturn,
+  allPathsReturn,
   hasBraces,
   hasSingleStatementBlock,
   isTruthy,
@@ -115,6 +116,10 @@ function isNonEmptyReturn(node: t.Node) {
 
 function hasFinalReturn(statements: t.Statement[]): boolean {
   return t.isReturnStatement(last(statements));
+}
+
+function allPathsReturn(blockStatement: t.BlockStatement): boolean {
+  return hasFinalReturn(blockStatement.body);
 }
 
 function hasBraces(
