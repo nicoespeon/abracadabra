@@ -128,7 +128,7 @@ function forEach(
   );
 }
 
-function statementWithBraces(node: t.Statement): t.Statement {
+function statementWithBraces(node: t.Statement): t.BlockStatement {
   return t.isBlockStatement(node) ? node : t.blockStatement([node]);
 }
 
