@@ -29,6 +29,24 @@ else return "invalid";`);
 
     expect(result).toBe(true);
   });
+
+  it("should return true if all switch branches have a return statement", () => {
+    const blockStatement = wrapInBlockStatement(`switch (type) {
+  case 1:
+    return "one";
+
+  case 2:
+    console.log("second");
+    return "two";
+
+  default:
+    return "default"
+}`);
+
+    const result = allPathsReturn(blockStatement);
+
+    expect(result).toBe(true);
+  });
 });
 
 function wrapInBlockStatement(code: string): t.BlockStatement {

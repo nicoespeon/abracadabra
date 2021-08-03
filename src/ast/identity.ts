@@ -132,6 +132,12 @@ function allPathsReturn(blockStatement: t.BlockStatement): boolean {
       );
     }
 
+    if (t.isSwitchStatement(statement)) {
+      return statement.cases.every((switchCase) => {
+        return allPathsReturn(t.blockStatement(switchCase.consequent));
+      });
+    }
+
     return false;
   });
 }
