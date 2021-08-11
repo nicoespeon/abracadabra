@@ -32,7 +32,7 @@
   },
   "engines": {
     "vscode": "^1.58.1",
-    "node": ">=13.5.0"
+    "node": ">=16.4.0"
   },
   "main": "./out/extension.js",
   "scripts": {
