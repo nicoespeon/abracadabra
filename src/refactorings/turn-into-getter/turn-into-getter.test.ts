@@ -104,6 +104,26 @@ describe("Turn Into Getter", () => {
     console.log("Hey " + other.name + ", my name is " + this.myName + this.lastName())
   }
 }`
+      },
+      {
+        description: "a method that is called on instances",
+        only: true,
+        code: `class Person {
+  myName[cursor]() {
+    return "Alice";
+  }
+}
+
+const aPerson = new Person();
+console.log(aPerson.myName());`,
+        expected: `class Person {
+  get myName() {
+    return "Alice";
+  }
+}
+
+const aPerson = new Person();
+console.log(aPerson.myName);`
       }
       // TODO: usage outside of class (client code)
       // TODO: usage in different file (exported class) -- ouch…

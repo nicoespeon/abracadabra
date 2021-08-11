@@ -37,6 +37,46 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       });
       const newName = getterName(path.node.key.name, existingNames);
 
+      // TODO: find instances of class
+      if (path.parentPath.parentPath.isClassDeclaration()) {
+        const allBindings = Object.values(
+          path.parentPath.parentPath.scope.getAllBindings()
+        );
+
+        // Find all new instances Identifiers
+        let allIds: t.NodePath<t.Identifier>[] = [];
+        if (
+          allBindings[0].referencePaths[0].parentPath.isNewExpression() &&
+          allBindings[0].referencePaths[0].parentPath.parentPath.isVariableDeclarator()
+        ) {
+          allIds.push(
+            allBindings[0].referencePaths[0].parentPath.parentPath.get("id")
+          );
+        }
+
+        // Find all references to these Identifiers that uses the method
+        if (
+          allBindings[1].referencePaths[0].parentPath.isMemberExpression() &&
+          t.areEquivalent(
+            allBindings[1].referencePaths[0].parentPath.node.object,
+            allIds[0].node
+          )
+        ) {
+          if (
+            t.areEquivalent(
+              allBindings[1].referencePaths[0].parentPath.node.property,
+              path.node.key
+            )
+          ) {
+            allBindings[1].referencePaths[0].parentPath.node.property.name =
+              newName;
+            allBindings[1].referencePaths[0].parentPath.parentPath.replaceWith(
+              allBindings[1].referencePaths[0].parentPath.node
+            );
+          }
+        }
+      }
+
       path.parentPath.traverse({
         CallExpression(childPath) {
           const { callee } = childPath.node;
