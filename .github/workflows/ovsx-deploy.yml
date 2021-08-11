@@ -15,7 +15,7 @@ jobs:
       - name: Build & deploy to Open VSX
         uses: actions/setup-node@v1
         with:
-          node-version: 14.5.0
+          node-version: 16.4.0
           registry-url: https://registry.npmjs.org/
       - run: yarn
       - run: yarn deploy:ovsx -p ${{ secrets.OVSX_ACCESS_TOKEN }}
