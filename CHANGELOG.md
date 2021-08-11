@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.1]
+
+Fixed an issue with CI so we can deploy. No user-facing change.
+
 ## [6.1.0] - 2021-08-11 - Remember Me 🎸
 
 ### Fixed
@@ -1362,7 +1366,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.1.1...HEAD
+[6.1.1]: https://github.com/nicoespeon/abracadabra/compare/6.1.0...6.1.1
 [6.1.0]: https://github.com/nicoespeon/abracadabra/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/nicoespeon/abracadabra/compare/5.4.2...6.0.0
 [5.4.2]: https://github.com/nicoespeon/abracadabra/compare/5.4.1...5.4.2
