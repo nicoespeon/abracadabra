@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Abracabra couldn't parse the AST of `.vue` files that were using attributes in the `<script>` tag (e.g. `<script lang="ts">`). Now it can!
+
 ### Added
 
 - Convert to Arrow Function now handles Function Expressions too. That means more patterns can be converted, which is more intuitive.
