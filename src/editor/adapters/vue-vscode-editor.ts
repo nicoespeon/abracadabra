@@ -95,7 +95,10 @@ class VueVSCodeEditor extends VSCodeEditor {
   }
 
   private get openingTag(): string {
-    return "<script>";
+    const matches = super.code.match(/<script(\s|\w|=|"|')*>/m);
+    if (!matches) return "<script>";
+
+    return matches[0];
   }
 
   private get closingTagOffset(): Offset {
