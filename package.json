@@ -56,7 +56,7 @@
     "deploy:ovsx": "ovsx publish"
   },
   "devDependencies": {
-    "@types/babel__traverse": "7.0.9",
+    "@types/babel__traverse": "7.14.2",
     "@types/chai": "4.2.18",
     "@types/jest": "26.0.24",
     "@types/jscodeshift": "0.6.3",
