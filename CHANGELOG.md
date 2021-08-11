@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.0] - 2021-08-11 - Remember Me 🎸
+
 ### Fixed
 
 - Abracabra couldn't parse the AST of `.vue` files that were using attributes in the `<script>` tag (e.g. `<script lang="ts">`). Now it can!
@@ -1360,7 +1362,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.0.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.1.0...HEAD
+[6.1.0]: https://github.com/nicoespeon/abracadabra/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/nicoespeon/abracadabra/compare/5.4.2...6.0.0
 [5.4.2]: https://github.com/nicoespeon/abracadabra/compare/5.4.1...5.4.2
 [5.4.1]: https://github.com/nicoespeon/abracadabra/compare/5.4.0...5.4.1
