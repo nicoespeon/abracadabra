@@ -39,7 +39,8 @@ function findInlinableCode(
 
       const child = findInlinableCode(selection, parent, {
         id: property.value,
-        init: property
+        init: property,
+        loc: parent.loc
       });
       if (!child) return;
 
@@ -74,7 +75,8 @@ function findInlinableCode(
 
       const child = findInlinableCode(selection, parent, {
         id: element,
-        init
+        init,
+        loc: parent.loc
       });
       if (!child) return;
 
@@ -137,10 +139,15 @@ function wrapInTopLevelPattern(
     : child;
 }
 
-type Declaration = { id: t.Node; init: t.Node | null };
+type Declaration = {
+  id: t.Node;
+  init: t.Node | null;
+  loc: t.SourceLocation | null;
+};
 type SelectableIdentifierDeclaration = {
   id: t.SelectableIdentifier;
   init: t.SelectableNode;
+  loc: t.SourceLocation;
 };
 
 function isSelectableIdentifierDeclaration(
@@ -148,7 +155,8 @@ function isSelectableIdentifierDeclaration(
 ): declaration is SelectableIdentifierDeclaration {
   return (
     t.isSelectableIdentifier(declaration.id) &&
-    t.isSelectableNode(declaration.init)
+    t.isSelectableNode(declaration.init) &&
+    !!declaration.loc
   );
 }
 
@@ -216,9 +224,7 @@ class InlinableIdentifier implements InlinableCode {
   }
 
   get codeToRemoveSelection(): Selection {
-    return this.valueSelection.extendStartToStartOf(
-      Selection.fromAST(this.id.loc)
-    );
+    return Selection.fromAST(this.declaration.loc);
   }
 
   updateIdentifiersWith(inlinedCode: Code): Modification[] {

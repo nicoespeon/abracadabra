@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inline Variable used to break code when executed on multi-lines JSX. That's because it would have missed the closing parenthesis. Not anymore! We're catching the whole declaration node properly 🧹
+
 ### Changed
 
 - Inline Variable now produces cleaner code when inlining JSX Elements. No more unnecessary `{}` wrapping the inlined variable.
