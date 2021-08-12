@@ -22,10 +22,10 @@ function findInlinableCode(
   const { id, init } = declaration;
   if (!t.isSelectableNode(init)) return null;
 
-  if (t.isSelectableIdentifier(id)) {
+  if (isSelectableIdentifierDeclaration(declaration)) {
     return t.isJSXElement(init)
-      ? new InlinableJSXElementIdentifier(id, init, parent)
-      : new InlinableIdentifier(id, init, parent);
+      ? new InlinableJSXElementIdentifier(declaration, parent)
+      : new InlinableIdentifier(declaration, parent);
   }
 
   if (t.isObjectPattern(id)) {
@@ -138,6 +138,19 @@ function wrapInTopLevelPattern(
 }
 
 type Declaration = { id: t.Node; init: t.Node | null };
+type SelectableIdentifierDeclaration = {
+  id: t.SelectableIdentifier;
+  init: t.SelectableNode;
+};
+
+function isSelectableIdentifierDeclaration(
+  declaration: Declaration
+): declaration is SelectableIdentifierDeclaration {
+  return (
+    t.isSelectableIdentifier(declaration.id) &&
+    t.isSelectableNode(declaration.init)
+  );
+}
 
 // 🎭 Component interface
 
@@ -159,11 +172,18 @@ class InlinableIdentifier implements InlinableCode {
   protected identifiersToReplace: IdentifierToReplace[] = [];
 
   constructor(
-    private id: t.SelectableIdentifier,
-    private init: t.SelectableNode,
+    protected declaration: SelectableIdentifierDeclaration,
     private scope: t.Node
   ) {
     this.computeIdentifiersToReplace();
+  }
+
+  get id(): t.SelectableIdentifier {
+    return this.declaration.id;
+  }
+
+  get init(): t.SelectableNode {
+    return this.declaration.init;
   }
 
   get valueSelection(): Selection {
