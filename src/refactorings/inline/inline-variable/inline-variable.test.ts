@@ -234,7 +234,13 @@ if (saveButton) {
         expected: `(document.getElementById('btnSave') as HTMLButtonElement).disabled = true;
 if (document.getElementById('btnSave') as HTMLButtonElement) {
   this.doSomethingElse(document.getElementById('btnSave') as HTMLButtonElement);
-}`,
+}`
+      },
+      {
+        description: "a JSX element into another",
+        code: `const header[cursor] = <h1>Hello</h1>;
+const page = <div>{header}</div>;`,
+        expected: `const page = <div><h1>Hello</h1></div>;`
       }
     ],
     async ({ code, expected }) => {

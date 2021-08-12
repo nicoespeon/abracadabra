@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Inline Variable now produces cleaner code when inlining JSX Elements. No more unnecessary `{}` wrapping the inlined variable.
+
 ## [6.1.1]
 
 Fixed an issue with CI so we can deploy. No user-facing change.

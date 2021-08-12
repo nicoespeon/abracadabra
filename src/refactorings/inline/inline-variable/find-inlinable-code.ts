@@ -23,7 +23,9 @@ function findInlinableCode(
   if (!t.isSelectableNode(init)) return null;
 
   if (t.isSelectableIdentifier(id)) {
-    return new InlinableIdentifier(id, init, parent);
+    return t.isJSXElement(init)
+      ? new InlinableJSXElementIdentifier(id, init, parent)
+      : new InlinableIdentifier(id, init, parent);
   }
 
   if (t.isObjectPattern(id)) {
@@ -154,12 +156,12 @@ interface InlinableCode {
 class InlinableIdentifier implements InlinableCode {
   public readonly shouldExtendSelectionToDeclaration = true;
 
-  private identifiersToReplace: IdentifierToReplace[] = [];
+  protected identifiersToReplace: IdentifierToReplace[] = [];
 
   constructor(
     private id: t.SelectableIdentifier,
     private init: t.SelectableNode,
-    private scope: t.Node,
+    private scope: t.Node
   ) {
     this.computeIdentifiersToReplace();
   }
@@ -242,11 +244,15 @@ class InlinableIdentifier implements InlinableCode {
           return;
         }
 
-        const parentHasParenthesis = t.isCallExpression(parent.node) || t.isIfStatement(parent.node);
+        const parentHasParenthesis =
+          t.isCallExpression(parent.node) || t.isIfStatement(parent.node);
 
         self.identifiersToReplace.push({
           loc: node.loc,
-          shouldWrapInParenthesis: t.isUnaryExpression(parent.node) || (t.isTSAsExpression(self.init) && !parentHasParenthesis),
+          parent: parent.node,
+          shouldWrapInParenthesis:
+            t.isUnaryExpression(parent.node) ||
+            (t.isTSAsExpression(self.init) && !parentHasParenthesis),
           shorthandKey:
             t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&
@@ -256,6 +262,24 @@ class InlinableIdentifier implements InlinableCode {
         });
       }
     });
+  }
+}
+
+class InlinableJSXElementIdentifier extends InlinableIdentifier {
+  updateIdentifiersWith(inlinedCode: Code): Modification[] {
+    return this.identifiersToReplace.map(
+      ({ parent, loc, shouldWrapInParenthesis, shorthandKey }) => ({
+        code: shouldWrapInParenthesis
+          ? `(${inlinedCode})`
+          : shorthandKey
+          ? `${shorthandKey}: ${inlinedCode}`
+          : inlinedCode,
+        selection:
+          t.isJSXExpressionContainer(parent) && t.isSelectableNode(parent)
+            ? Selection.fromAST(parent.loc)
+            : Selection.fromAST(loc)
+      })
+    );
   }
 }
 
@@ -315,6 +339,7 @@ interface IdentifierToReplace {
   loc: t.SourceLocation;
   shouldWrapInParenthesis: boolean;
   shorthandKey: string | null;
+  parent: t.Node;
 }
 
 // 📦 Composites
