@@ -37,5 +37,5 @@ With Recast, this is how the refactoring now performs:
 <!-- Links -->
 
 [recast]: https://github.com/benjamn/recast
-[refactoring-before-recast]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/assets/0004-refactoring-before-recast.gif?raw=true
-[refactoring-after-recast]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/assets/0004-refactoring-after-recast.gif?raw=true
+[refactoring-before-recast]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/assets/0004-refactoring-before-recast.gif?raw=true
+[refactoring-after-recast]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/assets/0004-refactoring-after-recast.gif?raw=true

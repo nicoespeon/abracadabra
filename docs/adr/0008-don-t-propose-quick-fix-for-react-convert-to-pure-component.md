@@ -29,4 +29,4 @@ It will still be possible to run the refactoring using the Command Palette.
 <!-- Links -->
 
 [comment]: https://github.com/nicoespeon/abracadabra/pull/82#issuecomment-605381510
-[flame-chart]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/assets/0008-flame-chart.png?raw=true
+[flame-chart]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/assets/0008-flame-chart.png?raw=true

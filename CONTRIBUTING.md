@@ -206,15 +206,15 @@ That's it. [A GitHub Action](https://github.com/nicoespeon/abracadabra/actions) 
 
 <!-- Repo links -->
 
-[adrs]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr
-[adr-create-generator]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0006-create-generator-to-bootstrap-new-refactorings.md
+[adrs]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr
+[adr-create-generator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/0006-create-generator-to-bootstrap-new-refactorings.md
 
 <!-- Images -->
 
-[debugger-build]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/debugger-build.png?raw=true
-[extension-development-host]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/extension-development-host.png?raw=true
-[debugger-rebuild]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/debugger-rebuild.png?raw=true
-[how-tests-work]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/how-tests-work.png?raw=true
-[how-tests-work-svg]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/how-tests-work.svg?raw=true
-[contract-tests-debugger]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/contract-tests-debugger.png?raw=true
-[contract-tests-report]: https://github.com/nicoespeon/abracadabra/blob/master/docs/contributing/contract-tests-report.png?raw=true
+[debugger-build]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/debugger-build.png?raw=true
+[extension-development-host]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/extension-development-host.png?raw=true
+[debugger-rebuild]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/debugger-rebuild.png?raw=true
+[how-tests-work]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/how-tests-work.png?raw=true
+[how-tests-work-svg]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/how-tests-work.svg?raw=true
+[contract-tests-debugger]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/contract-tests-debugger.png?raw=true
+[contract-tests-report]: https://github.com/nicoespeon/abracadabra/blob/main/docs/contributing/contract-tests-report.png?raw=true

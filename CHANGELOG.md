@@ -1434,13 +1434,13 @@ function doSomething(someData) {
 
 <!-- Demo images -->
 
-[demo-extract-substring]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-substring.gif?raw=true
-[demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
-[demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/merge-if-statements-else-if.gif?raw=true
-[demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-generic-type.gif?raw=true
-[demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/convert-switch-to-if-else.gif?raw=true
+[demo-extract-substring]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-substring.gif?raw=true
+[demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
+[demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements-else-if.gif?raw=true
+[demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-generic-type.gif?raw=true
+[demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-switch-to-if-else.gif?raw=true
 
 <!-- Links -->
 
 [guard-clause]: https://deviq.com/guard-clause/
-[adr-0008]: https://github.com/nicoespeon/abracadabra/blob/master/docs/adr/0008-don-t-propose-quick-fix-for-react-convert-to-pure-component.md
+[adr-0008]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/0008-don-t-propose-quick-fix-for-react-convert-to-pure-component.md

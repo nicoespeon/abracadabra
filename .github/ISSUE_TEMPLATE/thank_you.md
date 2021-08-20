@@ -26,6 +26,6 @@ If you do, let us know. We'd love to hear from you!
 
 Thank you! 💐✨
 
-[contributing]: https://github.com/nicoespeon/abracadabra/blob/master/CONTRIBUTING.md
+[contributing]: https://github.com/nicoespeon/abracadabra/blob/main/CONTRIBUTING.md
 [rate-abracadabra]: https://marketplace.visualstudio.com/items?itemName=nicoespeon.abracadabra&ssr=false#review-details
 [good-first-issues]: https://github.com/nicoespeon/abracadabra/issues?q=is%3Aissue+is%3Aopen+label%3A%22%3Awave%3A+Good+first+issue%22

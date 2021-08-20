@@ -12,7 +12,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
-[![Build Status](https://travis-ci.com/nicoespeon/abracadabra.svg?branch=master)](https://travis-ci.com/nicoespeon/abracadabra)
+[![Build Status](https://travis-ci.com/nicoespeon/abracadabra.svg?branch=main)](https://travis-ci.com/nicoespeon/abracadabra)
 ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
 With Abracadabra, **you can quickly and safely refactor existing code in VS Code**.
@@ -155,7 +155,7 @@ Contributions of any kind are welcome!
 
 ---
 
-![](https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/magic.gif?raw=true)
+![](https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/magic.gif?raw=true)
 
 ## License
 
@@ -171,10 +171,10 @@ Contributions of any kind are welcome!
 [vscode-settings]: https://code.visualstudio.com/docs/getstarted/settings
 [js-refactor]: https://marketplace.visualstudio.com/items?itemName=cmstead.jsrefactor
 [js-booster]: https://marketplace.visualstudio.com/items?itemName=sburg.vscode-javascript-booster
-[changelog]: https://github.com/nicoespeon/abracadabra/blob/master/CHANGELOG.md
-[all-refactorings]: https://github.com/nicoespeon/abracadabra/blob/master/REFACTORINGS.md
-[contributing]: https://github.com/nicoespeon/abracadabra/blob/master/CONTRIBUTING.md
-[license]: https://github.com/nicoespeon/abracadabra/blob/master/LICENSE.md
+[changelog]: https://github.com/nicoespeon/abracadabra/blob/main/CHANGELOG.md
+[all-refactorings]: https://github.com/nicoespeon/abracadabra/blob/main/REFACTORINGS.md
+[contributing]: https://github.com/nicoespeon/abracadabra/blob/main/CONTRIBUTING.md
+[license]: https://github.com/nicoespeon/abracadabra/blob/main/LICENSE.md
 [good-first-issues]: https://github.com/nicoespeon/abracadabra/issues?q=is%3Aissue+is%3Aopen+label%3A%22%3Awave%3A+Good+first+issue%22
 [semver]: http://semver.org/
 [all-contributors]: https://allcontributors.org
@@ -182,9 +182,9 @@ Contributions of any kind are welcome!
 
 <!-- Demo images -->
 
-[demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/command-palette.png?raw=true
-[demo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/master/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
+[demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/command-palette.png?raw=true
+[demo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 
 <!-- Logo -->
 
-[logo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/master/docs/logo/abracadabra-logo.png?raw=true
+[logo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/main/docs/logo/abracadabra-logo.png?raw=true
