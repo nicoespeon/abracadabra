@@ -106,20 +106,6 @@ interface MergeIfStatements {
   execute(): void;
 }
 
-function mergeAlternateWithNestedIf(
-  path: t.NodePath<t.IfStatement>,
-  alternate: t.IfStatement["alternate"]
-) {
-  new MergeAlternateWithNestedIf(path, alternate).execute();
-}
-
-function mergeConsequentWithNestedIf(
-  path: t.NodePath<t.IfStatement>,
-  consequent: t.IfStatement["consequent"]
-) {
-  new MergeConsequentWithNestedIf(path, consequent).execute();
-}
-
 function hasChildWhichMatchesSelection(
   path: t.NodePath,
   selection: Selection
