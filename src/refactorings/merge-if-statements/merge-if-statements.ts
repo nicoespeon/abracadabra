@@ -42,11 +42,10 @@ function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
 
-      if (t.hasAlternate(path)) {
-        onMatch(path, new MergeAlternateWithNestedIf(path));
-      } else {
-        onMatch(path, new MergeConsequentWithNestedIf(path));
-      }
+      const mergeIfStatements = t.hasAlternate(path)
+        ? new MergeAlternateWithNestedIf(path)
+        : new MergeConsequentWithNestedIf(path);
+      onMatch(path, mergeIfStatements);
     }
   };
 }
