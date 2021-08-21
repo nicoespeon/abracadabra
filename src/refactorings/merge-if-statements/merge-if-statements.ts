@@ -55,20 +55,17 @@ function createVisitor(
         if (!nestedIfStatement) return;
         if (nestedIfStatement.alternate) return;
 
-        onMatch(path, new MergeConsequentWithNestedIf(path, consequent));
+        onMatch(path, new MergeConsequentWithNestedIf(path));
       }
     }
   };
 }
 
 class MergeConsequentWithNestedIf implements MergeIfStatements {
-  constructor(
-    private path: t.NodePath<t.IfStatement>,
-    private consequent: t.IfStatement["consequent"]
-  ) {}
+  constructor(private path: t.NodePath<t.IfStatement>) {}
 
   execute(): void {
-    const nestedIfStatement = getNestedIfStatementIn(this.consequent);
+    const nestedIfStatement = getNestedIfStatementIn(this.path.node.consequent);
     if (!nestedIfStatement) return;
     if (nestedIfStatement.alternate) return;
 
