@@ -41,15 +41,17 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const { alternate } = path.node;
 
-      if (alternate) {
-        if (!t.isBlockStatement(alternate)) return;
+      if (t.hasAlternate(path)) {
+        if (!t.isBlockStatement(path.node.alternate)) return;
 
-        const nestedIfStatement = getNestedIfStatementIn(alternate);
+        const nestedIfStatement = getNestedIfStatementIn(path.node.alternate);
         if (!nestedIfStatement) return;
 
-        onMatch(path, new MergeAlternateWithNestedIf(path, alternate));
+        onMatch(
+          path,
+          new MergeAlternateWithNestedIf(path, path.node.alternate)
+        );
       } else {
         const nestedIfStatement = getNestedIfStatementIn(path.node.consequent);
         if (!nestedIfStatement) return;
@@ -82,7 +84,7 @@ class MergeConsequentWithNestedIf implements MergeIfStatements {
 
 class MergeAlternateWithNestedIf implements MergeIfStatements {
   constructor(
-    private path: t.NodePath<t.IfStatement>,
+    private path: t.NodePath<t.IfStatementWithAlternate>,
     private alternate: t.IfStatement["alternate"]
   ) {}
 
