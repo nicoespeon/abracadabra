@@ -35,7 +35,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.IfStatement>) => void
+  onMatch: (
+    path: t.NodePath<t.IfStatement>,
+    mergeIfStatements: MergeIfStatements
+  ) => void
 ): t.Visitor {
   return {
     IfStatement(path) {
@@ -53,13 +56,13 @@ function createVisitor(
         const nestedIfStatement = getNestedIfStatementIn(alternate);
         if (!nestedIfStatement) return;
 
-        onMatch(path);
+        onMatch(path, new MergeAlternateWithNestedIf(path, alternate));
       } else {
         const nestedIfStatement = getNestedIfStatementIn(consequent);
         if (!nestedIfStatement) return;
         if (nestedIfStatement.alternate) return;
 
-        onMatch(path);
+        onMatch(path, new MergeConsequentWithNestedIf(path, consequent));
       }
     }
   };
