@@ -48,10 +48,7 @@ function createVisitor(
         const nestedIfStatement = getNestedIfStatementIn(path.node.alternate);
         if (!nestedIfStatement) return;
 
-        onMatch(
-          path,
-          new MergeAlternateWithNestedIf(path, path.node.alternate)
-        );
+        onMatch(path, new MergeAlternateWithNestedIf(path));
       } else {
         const nestedIfStatement = getNestedIfStatementIn(path.node.consequent);
         if (!nestedIfStatement) return;
@@ -83,15 +80,12 @@ class MergeConsequentWithNestedIf implements MergeIfStatements {
 }
 
 class MergeAlternateWithNestedIf implements MergeIfStatements {
-  constructor(
-    private path: t.NodePath<t.IfStatementWithAlternate>,
-    private alternate: t.IfStatement["alternate"]
-  ) {}
+  constructor(private path: t.NodePath<t.IfStatementWithAlternate>) {}
 
   execute(): void {
-    if (!t.isBlockStatement(this.alternate)) return;
+    if (!t.isBlockStatement(this.path.node.alternate)) return;
 
-    const nestedStatement = getNestedIfStatementIn(this.alternate);
+    const nestedStatement = getNestedIfStatementIn(this.path.node.alternate);
     if (!nestedStatement) return;
 
     this.path.node.alternate = nestedStatement;
