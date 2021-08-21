@@ -63,7 +63,7 @@ function createVisitor(
   };
 }
 
-class MergeConsequentWithNestedIf {
+class MergeConsequentWithNestedIf implements MergeIfStatements {
   constructor(
     private path: t.NodePath<t.IfStatement>,
     private consequent: t.IfStatement["consequent"]
@@ -85,7 +85,7 @@ class MergeConsequentWithNestedIf {
   }
 }
 
-class MergeAlternateWithNestedIf {
+class MergeAlternateWithNestedIf implements MergeIfStatements {
   constructor(
     private path: t.NodePath<t.IfStatement>,
     private alternate: t.IfStatement["alternate"]
@@ -99,6 +99,10 @@ class MergeAlternateWithNestedIf {
 
     this.path.node.alternate = nestedStatement;
   }
+}
+
+interface MergeIfStatements {
+  execute(): void;
 }
 
 function mergeAlternateWithNestedIf(
