@@ -51,7 +51,51 @@ function createMergeIfStatements(path: t.SelectablePath<t.IfStatement>) {
     return new MergeAlternateWithNestedIf(path);
   }
 
+  if (MergeConsequentWithPreviousSibling.canExecuteOn(path)) {
+    return new MergeConsequentWithPreviousSibling(path);
+  }
+
   return new MergeConsequentWithNestedIf(path);
+}
+
+class MergeConsequentWithPreviousSibling implements MergeIfStatements {
+  constructor(private path: t.NodePath<t.IfStatement>) {}
+
+  static canExecuteOn(ifStatement: t.NodePath<t.IfStatement>): boolean {
+    const previousSibling = t.getPreviousSibling(ifStatement);
+    if (!previousSibling) return false;
+    if (!previousSibling.isIfStatement()) return false;
+
+    const bothCanBeMerged = [ifStatement, previousSibling].every((path) => {
+      if (t.hasAlternate(path)) return false;
+
+      const body = t.getStatements(path.node.consequent);
+      if (body.length !== 1) return false;
+      if (!t.isReturnStatement(body[0])) return false;
+
+      return true;
+    });
+
+    const bothAreEquivalent = t.areEquivalent(
+      t.getStatements(ifStatement.node.consequent)[0],
+      t.getStatements(previousSibling.node.consequent)[0]
+    );
+
+    return bothCanBeMerged && bothAreEquivalent;
+  }
+
+  execute(): void {
+    const previousSibling = t.getPreviousSibling(this.path);
+    if (!previousSibling) return;
+    if (!previousSibling.isIfStatement()) return;
+
+    previousSibling.node.test = t.logicalExpression(
+      "||",
+      previousSibling.node.test,
+      this.path.node.test
+    );
+    this.path.remove();
+  }
 }
 
 class MergeConsequentWithNestedIf implements MergeIfStatements {

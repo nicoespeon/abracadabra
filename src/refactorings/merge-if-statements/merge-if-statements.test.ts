@@ -334,6 +334,22 @@ describe("Split If Statement", () => {
     doAnotherThing();
   }
 }`
+      },
+      {
+        description: "consecutive ones with same return",
+        code: `function disabilityAmount(anEmployee) {
+  if (anEmployee.seniority < 2) return 0;
+  [cursor]if (anEmployee.monthsDisabled > 12) {
+    return 0;
+  }
+
+  return 100;
+}`,
+        expected: `function disabilityAmount(anEmployee) {
+  if (anEmployee.seniority < 2 || anEmployee.monthsDisabled > 12) return 0;
+
+  return 100;
+}`
       }
     ],
     async ({ code, expected }) => {
