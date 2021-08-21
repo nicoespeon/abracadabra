@@ -336,7 +336,7 @@ describe("Split If Statement", () => {
 }`
       },
       {
-        description: "consecutive ones with same return",
+        description: "consecutive ones with same return (merge with previous)",
         code: `function disabilityAmount(anEmployee) {
   if (anEmployee.seniority < 2) return 0;
   [cursor]if (anEmployee.monthsDisabled > 12) {
@@ -347,6 +347,24 @@ describe("Split If Statement", () => {
 }`,
         expected: `function disabilityAmount(anEmployee) {
   if (anEmployee.seniority < 2 || anEmployee.monthsDisabled > 12) return 0;
+
+  return 100;
+}`
+      },
+      {
+        description: "consecutive ones with same return (merge with next)",
+        code: `function disabilityAmount(anEmployee) {
+  [cursor]if (anEmployee.seniority < 2) return 0;
+  if (anEmployee.monthsDisabled > 12) {
+    return 0;
+  }
+
+  return 100;
+}`,
+        expected: `function disabilityAmount(anEmployee) {
+  if (anEmployee.seniority < 2 || anEmployee.monthsDisabled > 12) {
+    return 0;
+  }
 
   return 100;
 }`

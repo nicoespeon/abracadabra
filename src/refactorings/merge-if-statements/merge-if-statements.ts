@@ -55,6 +55,10 @@ function createMergeIfStatements(path: t.SelectablePath<t.IfStatement>) {
     return new MergeConsequentWithPreviousSibling(path);
   }
 
+  if (MergeConsequentWithNextSibling.canExecuteOn(path)) {
+    return new MergeConsequentWithNextSibling(path);
+  }
+
   return new MergeConsequentWithNestedIf(path);
 }
 
@@ -64,24 +68,8 @@ class MergeConsequentWithPreviousSibling implements MergeIfStatements {
   static canExecuteOn(ifStatement: t.NodePath<t.IfStatement>): boolean {
     const previousSibling = t.getPreviousSibling(ifStatement);
     if (!previousSibling) return false;
-    if (!previousSibling.isIfStatement()) return false;
 
-    const bothCanBeMerged = [ifStatement, previousSibling].every((path) => {
-      if (t.hasAlternate(path)) return false;
-
-      const body = t.getStatements(path.node.consequent);
-      if (body.length !== 1) return false;
-      if (!t.isReturnStatement(body[0])) return false;
-
-      return true;
-    });
-
-    const bothAreEquivalent = t.areEquivalent(
-      t.getStatements(ifStatement.node.consequent)[0],
-      t.getStatements(previousSibling.node.consequent)[0]
-    );
-
-    return bothCanBeMerged && bothAreEquivalent;
+    return canMergeIfStatementWithSibling(ifStatement, previousSibling);
   }
 
   execute(): void {
@@ -96,6 +84,54 @@ class MergeConsequentWithPreviousSibling implements MergeIfStatements {
     );
     this.path.remove();
   }
+}
+
+class MergeConsequentWithNextSibling implements MergeIfStatements {
+  constructor(private path: t.NodePath<t.IfStatement>) {}
+
+  static canExecuteOn(ifStatement: t.NodePath<t.IfStatement>): boolean {
+    const nextSibling = t.getNextSibling(ifStatement);
+    if (!nextSibling) return false;
+
+    return canMergeIfStatementWithSibling(ifStatement, nextSibling);
+  }
+
+  execute(): void {
+    const nextSibling = t.getNextSibling(this.path);
+    if (!nextSibling) return;
+    if (!nextSibling.isIfStatement()) return;
+
+    nextSibling.node.test = t.logicalExpression(
+      "||",
+      this.path.node.test,
+      nextSibling.node.test
+    );
+    this.path.remove();
+  }
+}
+
+function canMergeIfStatementWithSibling(
+  ifStatement: t.NodePath<t.IfStatement>,
+  sibling: t.NodePath<t.Node>
+): boolean {
+  if (!sibling.isIfStatement()) return false;
+
+  const bothCanBeMerged = [ifStatement, sibling].every((path) => {
+    if (t.hasAlternate(path)) return false;
+
+    const body = t.getStatements(path.node.consequent);
+    if (body.length !== 1) return false;
+    if (!t.isReturnStatement(body[0])) return false;
+
+    return true;
+  });
+
+  const bothAreEquivalent = t.areEquivalent(
+    t.getStatements(ifStatement.node.consequent)[0],
+    t.getStatements(sibling.node.consequent)[0]
+  );
+
+  return bothCanBeMerged && bothAreEquivalent;
 }
 
 class MergeConsequentWithNestedIf implements MergeIfStatements {
