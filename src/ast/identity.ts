@@ -20,6 +20,8 @@ export {
   isNonEmptyReturn,
   hasFinalReturn,
   hasBraces,
+  IfStatementWithAlternate,
+  hasAlternate,
   hasSingleStatementBlock,
   isTruthy,
   isFalsy,
@@ -134,6 +136,14 @@ function hasBraces(
   } else {
     return alternate === null || t.isBlockStatement(alternate);
   }
+}
+
+type IfStatementWithAlternate = t.IfStatement & { alternate: t.Statement };
+
+function hasAlternate(
+  path: NodePath<t.IfStatement>
+): path is NodePath<IfStatementWithAlternate> {
+  return Boolean(path.node.alternate);
 }
 
 function hasSingleStatementBlock(
