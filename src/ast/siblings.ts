@@ -3,6 +3,7 @@ import * as t from "@babel/types";
 
 export {
   getPreviousSibling,
+  getNextSibling,
   hasSiblingStatement,
   getPreviousSiblingStatements,
   getNextSiblingStatements
@@ -10,6 +11,10 @@ export {
 
 function getPreviousSibling(path: NodePath): NodePath | undefined {
   return path.getAllPrevSiblings()[0];
+}
+
+function getNextSibling(path: NodePath): NodePath | undefined {
+  return path.getAllNextSiblings()[0];
 }
 
 function hasSiblingStatement(path: NodePath): boolean {
