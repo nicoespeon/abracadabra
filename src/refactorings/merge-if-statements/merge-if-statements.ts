@@ -41,13 +41,15 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-
-      const mergeIfStatements = t.hasAlternate(path)
-        ? new MergeAlternateWithNestedIf(path)
-        : new MergeConsequentWithNestedIf(path);
-      onMatch(path, mergeIfStatements);
+      onMatch(path, createMergeIfStatements(path));
     }
   };
+}
+
+function createMergeIfStatements(path: t.SelectablePath<t.IfStatement>) {
+  return t.hasAlternate(path)
+    ? new MergeAlternateWithNestedIf(path)
+    : new MergeConsequentWithNestedIf(path);
 }
 
 class MergeConsequentWithNestedIf implements MergeIfStatements {
