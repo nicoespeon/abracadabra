@@ -305,6 +305,11 @@ function areEquivalent(nodeA: t.Node | null, nodeB: t.Node | null): boolean {
     return nodeA.typeAnnotation.type === nodeB.typeAnnotation.type;
   }
 
+  // Return statements
+  if (t.isReturnStatement(nodeA) && t.isReturnStatement(nodeB)) {
+    return areEquivalent(nodeA.argument, nodeB.argument);
+  }
+
   // Primitive values
   return "value" in nodeA && "value" in nodeB && nodeA.value === nodeB.value;
 }
