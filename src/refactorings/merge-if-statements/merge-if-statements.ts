@@ -19,13 +19,10 @@ async function mergeIfStatements(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(
-      selection,
-      (path: t.NodePath<t.IfStatement>, mergeIfStatements) => {
-        mergeIfStatements.execute();
-        path.stop();
-      }
-    )
+    createVisitor(selection, (path, mergeIfStatements) => {
+      mergeIfStatements.execute();
+      path.stop();
+    })
   );
 }
 
