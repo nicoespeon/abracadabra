@@ -43,17 +43,8 @@ function createVisitor(
 
 
       if (t.hasAlternate(path)) {
-        if (!t.isBlockStatement(path.node.alternate)) return;
-
-        const nestedIfStatement = getNestedIfStatementIn(path.node.alternate);
-        if (!nestedIfStatement) return;
-
         onMatch(path, new MergeAlternateWithNestedIf(path));
       } else {
-        const nestedIfStatement = getNestedIfStatementIn(path.node.consequent);
-        if (!nestedIfStatement) return;
-        if (nestedIfStatement.alternate) return;
-
         onMatch(path, new MergeConsequentWithNestedIf(path));
       }
     }
