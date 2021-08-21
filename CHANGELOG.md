@@ -14,6 +14,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Inline Variable now produces cleaner code when inlining JSX Elements. No more unnecessary `{}` wrapping the inlined variable.
+- Merge if-statements now works for consecutive ifs that have the same return value.
+
+```js
+// Now, this code can quickly be refactored…
+function disabilityAmount(anEmployee) {
+  if (anEmployee.seniority < 2) return 0;
+  if (anEmployee.monthsDisabled > 12) return 0;
+  if (anEmployee.isPartTime) return 0;
+
+  return 100;
+}
+
+// Into this code 👇
+function disabilityAmount(anEmployee) {
+  if (
+    anEmployee.seniority < 2 ||
+    anEmployee.monthsDisabled > 12 ||
+    anEmployee.isPartTime
+  ) {
+    return 0;
+  }
+
+  return 100;
+}
+```
 
 ## [6.1.1]
 
