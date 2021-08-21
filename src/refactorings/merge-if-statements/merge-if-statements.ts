@@ -47,9 +47,11 @@ function createVisitor(
 }
 
 function createMergeIfStatements(path: t.SelectablePath<t.IfStatement>) {
-  return t.hasAlternate(path)
-    ? new MergeAlternateWithNestedIf(path)
-    : new MergeConsequentWithNestedIf(path);
+  if (t.hasAlternate(path)) {
+    return new MergeAlternateWithNestedIf(path);
+  }
+
+  return new MergeConsequentWithNestedIf(path);
 }
 
 class MergeConsequentWithNestedIf implements MergeIfStatements {
