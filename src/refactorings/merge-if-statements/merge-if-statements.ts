@@ -41,7 +41,7 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const { alternate, consequent } = path.node;
+      const { alternate } = path.node;
 
       if (alternate) {
         if (!t.isBlockStatement(alternate)) return;
@@ -51,7 +51,7 @@ function createVisitor(
 
         onMatch(path, new MergeAlternateWithNestedIf(path, alternate));
       } else {
-        const nestedIfStatement = getNestedIfStatementIn(consequent);
+        const nestedIfStatement = getNestedIfStatementIn(path.node.consequent);
         if (!nestedIfStatement) return;
         if (nestedIfStatement.alternate) return;
 
