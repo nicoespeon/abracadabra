@@ -52,13 +52,15 @@ function createVisitor(
 
         const nestedIfStatement = getNestedIfStatementIn(alternate);
         if (!nestedIfStatement) return;
+
+        onMatch(path);
       } else {
         const nestedIfStatement = getNestedIfStatementIn(consequent);
         if (!nestedIfStatement) return;
         if (nestedIfStatement.alternate) return;
-      }
 
-      onMatch(path);
+        onMatch(path);
+      }
     }
   };
 }
