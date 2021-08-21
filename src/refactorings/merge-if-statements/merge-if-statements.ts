@@ -63,34 +63,56 @@ function createVisitor(
   };
 }
 
+class MergeConsequentWithNestedIf {
+  constructor(
+    private path: t.NodePath<t.IfStatement>,
+    private consequent: t.IfStatement["consequent"]
+  ) {}
+
+  execute(): void {
+    const nestedIfStatement = getNestedIfStatementIn(this.consequent);
+    if (!nestedIfStatement) return;
+    if (nestedIfStatement.alternate) return;
+
+    this.path.node.test = t.logicalExpression(
+      "&&",
+      this.path.node.test,
+      nestedIfStatement.test
+    );
+    this.path.node.consequent = t.blockStatement(
+      t.getStatements(nestedIfStatement.consequent)
+    );
+  }
+}
+
+class MergeAlternateWithNestedIf {
+  constructor(
+    private path: t.NodePath<t.IfStatement>,
+    private alternate: t.IfStatement["alternate"]
+  ) {}
+
+  execute(): void {
+    if (!t.isBlockStatement(this.alternate)) return;
+
+    const nestedStatement = getNestedIfStatementIn(this.alternate);
+    if (!nestedStatement) return;
+
+    this.path.node.alternate = nestedStatement;
+  }
+}
+
 function mergeAlternateWithNestedIf(
   path: t.NodePath<t.IfStatement>,
   alternate: t.IfStatement["alternate"]
 ) {
-  if (!t.isBlockStatement(alternate)) return;
-
-  const nestedStatement = getNestedIfStatementIn(alternate);
-  if (!nestedStatement) return;
-
-  path.node.alternate = nestedStatement;
+  new MergeAlternateWithNestedIf(path, alternate).execute();
 }
 
 function mergeConsequentWithNestedIf(
   path: t.NodePath<t.IfStatement>,
   consequent: t.IfStatement["consequent"]
 ) {
-  const nestedIfStatement = getNestedIfStatementIn(consequent);
-  if (!nestedIfStatement) return;
-  if (nestedIfStatement.alternate) return;
-
-  path.node.test = t.logicalExpression(
-    "&&",
-    path.node.test,
-    nestedIfStatement.test
-  );
-  path.node.consequent = t.blockStatement(
-    t.getStatements(nestedIfStatement.consequent)
-  );
+  new MergeConsequentWithNestedIf(path, consequent).execute();
 }
 
 function hasChildWhichMatchesSelection(
