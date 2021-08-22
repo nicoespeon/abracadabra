@@ -271,13 +271,17 @@ Splits the logical expression of the closest if statement. This is an helpful to
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-This is the opposite of _Split If Statement_. It consolidates **nested** ifs to clean up the code.
+This is the opposite of _Split If Statement_. It consolidates conditional expressions to clean up the code.
 
 ![][demo-merge-if-statements]
 
 It also works with `else-if`.
 
 ![][demo-merge-if-statements-else-if]
+
+It also handles consecutive if statements that can be merged.
+
+![][demo-merge-if-statements-with-sibling]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -521,6 +525,7 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 [demo-split-if-statement]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/split-if-statement.gif?raw=true
 [demo-merge-if-statements]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements-else-if.gif?raw=true
+[demo-merge-if-statements-with-sibling]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements-with-sibling.gif?raw=true
 [demo-split-declaration-and-initialization]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/split-declaration-and-initialization.gif?raw=true
 [demo-split-multiple-declarations]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/split-multiple-declarations.gif?raw=true
 [demo-convert-to-template-literal]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-template-literal.gif?raw=true
