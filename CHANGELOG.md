@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.2] - 2021-08-24 - A Spoonful of Inline 🥄
+
 ### Fixed
 
 - Inline Variable used to break code when executed on multi-lines JSX. That's because it would have missed the closing parenthesis. Not anymore! We're catching the whole declaration node properly 🧹
@@ -1399,7 +1401,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.1.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.2.0...HEAD
+[6.2.0]: https://github.com/nicoespeon/abracadabra/compare/6.1.1...6.2.0
 [6.1.1]: https://github.com/nicoespeon/abracadabra/compare/6.1.0...6.1.1
 [6.1.0]: https://github.com/nicoespeon/abracadabra/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/nicoespeon/abracadabra/compare/5.4.2...6.0.0
