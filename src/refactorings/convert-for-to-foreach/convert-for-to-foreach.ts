@@ -222,7 +222,14 @@ function getIdentifier(
 }
 
 function getListName(list: List): string {
-  return t.isIdentifier(list) ? list.name : getListName(list.property);
+  if (t.isIdentifier(list)) {
+    return list.name;
+  }
+  if (t.isMemberExpression(list.property)) {
+    return getListName(list.property);
+  }
+
+  return "list";
 }
 
 function replaceListWithItemIn(

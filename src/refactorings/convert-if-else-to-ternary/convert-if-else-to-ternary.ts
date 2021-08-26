@@ -94,7 +94,7 @@ class ReturnedTernaryMatcher extends NoopMatcher {
     return createReturnStatement(
       this.path.node.test,
       t.getReturnedStatement(this.path.node.consequent),
-      t.getReturnedStatement(this.path.node.alternate)
+      t.getReturnedStatement(this.path.node.alternate ?? null)
     );
   }
 }
@@ -181,7 +181,9 @@ class AssignedTernaryMatcher extends NoopMatcher {
     const ifAssignedStatement = t.getAssignedStatement(node.consequent);
     if (!ifAssignedStatement) return;
 
-    const elseAssignedStatement = t.getAssignedStatement(node.alternate);
+    const elseAssignedStatement = t.getAssignedStatement(
+      node.alternate ?? null
+    );
     if (!elseAssignedStatement) return;
 
     const ifAssignment = ifAssignedStatement.expression;

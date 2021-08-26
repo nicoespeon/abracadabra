@@ -55,7 +55,8 @@ const lambda = (title: string) => title.length > 0;`;
       }
     });
     assert(identifier, "Could not find Identifier from AST");
-    const programScope = identifier.parentPath.parentPath.parent;
+    const programScope = identifier.parentPath?.parentPath?.parent;
+    assert(programScope, "Could not find Program scope from AST");
     const ancestors = await findAncestorAtPosition(
       programScope,
       new Position(1, 16)

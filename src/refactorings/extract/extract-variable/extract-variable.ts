@@ -104,6 +104,7 @@ function findOtherOccurrences(
     enter(path: t.NodePath) {
       const { node, parentPath } = path;
 
+      if (!parentPath) return;
       if (path.type !== occurrence.path.type) return;
       if (!t.isSelectableNode(node)) return;
       if (!t.isSelectableNode(occurrence.path.node)) return;

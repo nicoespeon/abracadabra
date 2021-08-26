@@ -52,9 +52,11 @@ function createVariableDeclarators(leftValue: t.LVal): t.VariableDeclarator[] {
 }
 
 function objectPatternLVals(objectPattern: t.ObjectPattern): t.LVal[] {
-  return objectPattern.properties.map((property) => {
-    return t.isRestElement(property) ? property.argument : property.key;
-  });
+  return objectPattern.properties
+    .map((property) => {
+      return t.isRestElement(property) ? property.argument : property.key;
+    })
+    .filter((lval): lval is t.LVal => t.isLVal(lval));
 }
 
 function createVisitor(

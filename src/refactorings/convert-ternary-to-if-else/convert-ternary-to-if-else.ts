@@ -44,13 +44,16 @@ function updateCode(
 
         // AssignmentExpression is contained in an ExpressionStatement
         // => replace parentPath's parent path
-        parentPath.parentPath.replaceWith(
+        const expressionParentPath = parentPath.parentPath;
+        if (!expressionParentPath) return;
+
+        expressionParentPath.replaceWith(
           createIfStatement(selection, node, (expression) =>
             createAssignment(operator, left, expression)
           )
         );
 
-        parentPath.parentPath.stop();
+        expressionParentPath.stop();
       }
 
       if (isAssignedToVariable(path)) {
@@ -111,7 +114,7 @@ function isAssignedToVariable(
 ): path is t.NodePath & { parentPath: t.NodePath<t.VariableDeclarator> } {
   return (
     t.isVariableDeclarator(path.parent) &&
-    t.isVariableDeclaration(path.parentPath.parent)
+    t.isVariableDeclaration(path.parentPath?.parent)
   );
 }
 

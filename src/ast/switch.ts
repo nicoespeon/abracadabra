@@ -9,6 +9,7 @@ function toSwitch(expression: t.Expression): Switch | null {
   if (!VALID_OPERATORS.includes(expression.operator)) return null;
 
   const { left, right } = expression;
+  if (t.isPrivateName(left)) return null;
 
   return t.isIdentifier(left) || t.isMemberExpression(left)
     ? { discriminant: left, test: right }

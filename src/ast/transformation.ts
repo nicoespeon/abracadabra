@@ -260,5 +260,5 @@ type RootNodePath<T = t.Node> = NodePath<T> & {
 function isRootNodePath<T = t.Node>(
   path: NodePath<T>
 ): path is RootNodePath<T> {
-  return path.parentPath.isProgram();
+  return path.parentPath?.isProgram() ?? false;
 }

@@ -50,7 +50,7 @@ function findNegatableExpression(
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.SelectableNode>) => void
+  onMatch: (path: t.SelectablePath) => void
 ): t.Visitor {
   return {
     enter(path) {

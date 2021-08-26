@@ -162,6 +162,10 @@ class Occurrence<T extends t.Node = t.Node> {
 
 class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
   private get keySelection(): Selection {
+    if (!t.isSelectableNode(this.path.node.key)) {
+      return this.selection;
+    }
+
     return Selection.fromAST(this.path.node.key.loc);
   }
 

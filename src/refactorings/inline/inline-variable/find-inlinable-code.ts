@@ -4,6 +4,7 @@ import * as t from "../../../ast";
 import { last } from "../../../array";
 
 import { findExportedIdNames } from "../find-exported-id-names";
+import { VariableDeclarator } from "../../../ast";
 
 export {
   findInlinableCode,
@@ -17,9 +18,10 @@ export {
 function findInlinableCode(
   selection: Selection,
   parent: t.Node,
-  declaration: Declaration
+  declaration: Declaration | VariableDeclarator
 ): InlinableCode | null {
   const { id, init } = declaration;
+  if (!init) return null;
   if (!t.isSelectableNode(init)) return null;
 
   if (isSelectableIdentifierDeclaration(declaration)) {
@@ -106,6 +108,8 @@ function getInitName(init: t.Node): string | null {
       ? `[${property.name}]`
       : `.${getInitName(property)}`;
 
+    if (!("value" in property)) return null;
+
     if (property.value === null && getInitName(property) === null) {
       // We can't resolve property name. Stop here.
       return null;
@@ -127,7 +131,7 @@ function getInitName(init: t.Node): string | null {
 
 function wrapInTopLevelPattern(
   child: InlinableCode | null,
-  declaration: Declaration,
+  declaration: Declaration | VariableDeclarator,
   loc: t.SourceLocation
 ): InlinableCode | null {
   if (!child) return child;
@@ -151,10 +155,11 @@ type SelectableIdentifierDeclaration = {
 };
 
 function isSelectableIdentifierDeclaration(
-  declaration: Declaration
+  declaration: Declaration | VariableDeclarator
 ): declaration is SelectableIdentifierDeclaration {
   return (
     t.isSelectableIdentifier(declaration.id) &&
+    !!declaration.init &&
     t.isSelectableNode(declaration.init) &&
     !!declaration.loc
   );
