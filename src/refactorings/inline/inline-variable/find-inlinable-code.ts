@@ -98,28 +98,16 @@ function getInitName(init: t.Node): string | null {
   if (t.isIdentifier(init)) return init.name;
 
   if (t.isMemberExpression(init)) {
-    const { property, computed } = init;
-
-    const propertyName = t.isNumericLiteral(property)
-      ? `[${property.value}]`
-      : t.isStringLiteral(property)
-      ? `["${property.value}"]`
-      : t.isIdentifier(property)
-      ? computed
-        ? `[${property.name}]`
-        : `.${property.name}`
-      : `.${getInitName(property)}`;
-
     if (
-      "value" in property &&
-      property.value === null &&
-      getInitName(property) === null
+      "value" in init.property &&
+      init.property.value === null &&
+      getInitName(init.property) === null
     ) {
       // We can't resolve property name. Stop here.
       return null;
     }
 
-    return `${getInitName(init.object)}${propertyName}`;
+    return `${getInitName(init.object)}${propertyName(init)}`;
   }
 
   if (t.isObjectProperty(init)) {
@@ -131,6 +119,20 @@ function getInitName(init: t.Node): string | null {
   }
 
   return null;
+}
+
+function propertyName(init: t.MemberExpression) {
+  const { property, computed } = init;
+
+  return t.isNumericLiteral(property)
+    ? `[${property.value}]`
+    : t.isStringLiteral(property)
+    ? `["${property.value}"]`
+    : t.isIdentifier(property)
+    ? computed
+      ? `[${property.name}]`
+      : `.${property.name}`
+    : `.${getInitName(property)}`;
 }
 
 function wrapInTopLevelPattern(
