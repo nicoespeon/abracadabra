@@ -121,18 +121,22 @@ function getInitName(init: t.Node): string | null {
   return null;
 }
 
-function propertyName(init: t.MemberExpression) {
+function propertyName(init: t.MemberExpression): string | null {
   const { property, computed } = init;
 
-  return t.isNumericLiteral(property)
-    ? `[${property.value}]`
-    : t.isStringLiteral(property)
-    ? `["${property.value}"]`
-    : t.isIdentifier(property)
-    ? computed
-      ? `[${property.name}]`
-      : `.${property.name}`
-    : `.${getInitName(property)}`;
+  if (t.isNumericLiteral(property)) {
+    return `[${property.value}]`;
+  }
+
+  if (t.isStringLiteral(property)) {
+    return `["${property.value}"]`;
+  }
+
+  if (t.isIdentifier(property)) {
+    return computed ? `[${property.name}]` : `.${property.name}`;
+  }
+
+  return `.${getInitName(property)}`;
 }
 
 function wrapInTopLevelPattern(
