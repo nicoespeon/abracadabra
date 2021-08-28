@@ -98,16 +98,10 @@ function getInitName(init: t.Node): string | null {
   if (t.isIdentifier(init)) return init.name;
 
   if (t.isMemberExpression(init)) {
-    if (
-      "value" in init.property &&
-      init.property.value === null &&
-      getInitName(init.property) === null
-    ) {
-      // We can't resolve property name. Stop here.
-      return null;
-    }
+    const propertyName = getPropertyName(init);
+    if (!propertyName) return null;
 
-    return `${getInitName(init.object)}${propertyName(init)}`;
+    return `${getInitName(init.object)}${propertyName}`;
   }
 
   if (t.isObjectProperty(init)) {
@@ -121,7 +115,7 @@ function getInitName(init: t.Node): string | null {
   return null;
 }
 
-function propertyName(init: t.MemberExpression): string | null {
+function getPropertyName(init: t.MemberExpression): string | null {
   const { property, computed } = init;
 
   if (t.isNumericLiteral(property)) {
