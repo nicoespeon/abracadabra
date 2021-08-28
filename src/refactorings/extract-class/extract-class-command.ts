@@ -33,7 +33,9 @@ export class ExtractClassCommand {
     try {
       await this.tryExecute();
     } catch (error) {
-      vscode.debug.activeDebugConsole.appendLine(error);
+      if (error instanceof Error) {
+        vscode.debug.activeDebugConsole.appendLine(error.message);
+      }
       vscode.window.showErrorMessage("Class extraction failed");
     }
   }

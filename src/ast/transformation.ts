@@ -162,9 +162,10 @@ function parse(code: Code): AST {
       // VS Code considers tabs to be of size 1
       tabWidth: 1
     });
-  } catch (e) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : error;
     throw new Error(
-      `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${e.message}`
+      `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${message}`
     );
   }
 }
