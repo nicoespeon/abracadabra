@@ -27,7 +27,7 @@ interface ASTPosition {
   column: number;
 }
 
-type SelectablePath<T = t.Node> = NodePath<Selectable<T>>;
+type SelectablePath<T = t.Node> = NodePath<T> & { node: Selectable<T> };
 type SelectableNode = Selectable<t.Node>;
 type SelectableIdentifier = Selectable<t.Identifier>;
 type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;

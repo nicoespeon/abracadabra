@@ -50,6 +50,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         ? binaryExpression.left
         : binaryExpression.right;
 
+      if (t.isPrivateName(newRight)) return;
+
       path.replaceWith(
         t.assignmentExpression(`${operator}=`, identifier, newRight)
       );

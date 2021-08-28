@@ -15,10 +15,8 @@ async function extractGenericType(editor: Editor) {
   const { code, selection } = editor;
   const ast = t.parse(code);
 
-  const {
-    selected: selectedOccurrence,
-    others: otherOccurrences
-  } = findAllOccurrences(ast, selection);
+  const { selected: selectedOccurrence, others: otherOccurrences } =
+    findAllOccurrences(ast, selection);
 
   if (!selectedOccurrence) {
     editor.showError(ErrorReason.DidNotFindExtractableCode);
@@ -104,18 +102,18 @@ function createVisitor(
 function findParentInterfaceDeclaration(
   path: t.SelectablePath<t.TSTypeAnnotation>
 ): InterfaceDeclaration | null {
-  const declaration = path.findParent(t.isTSInterfaceDeclaration) as t.NodePath<
-    t.TSInterfaceDeclaration
-  >;
+  const declaration = path.findParent(
+    t.isTSInterfaceDeclaration
+  ) as t.NodePath<t.TSInterfaceDeclaration>;
   return declaration ? new InterfaceDeclaration(declaration) : null;
 }
 
 function findParentFunctionDeclaration(
   path: t.SelectablePath<t.TSTypeAnnotation>
 ): FunctionDeclaration | null {
-  const declaration = path.findParent(t.isFunctionDeclaration) as t.NodePath<
-    t.FunctionDeclaration
-  >;
+  const declaration = path.findParent(
+    t.isFunctionDeclaration
+  ) as t.NodePath<t.FunctionDeclaration>;
   return declaration ? new FunctionDeclaration(declaration) : null;
 }
 
@@ -254,7 +252,7 @@ class FunctionDeclaration implements Declaration {
   }
 
   get id(): t.Identifier | null {
-    return this.declaration.node.id;
+    return this.declaration.node.id ?? null;
   }
 
   contains(selection: Selection): boolean {

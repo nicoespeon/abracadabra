@@ -31,6 +31,11 @@ async function moveToExistingFile(editor: Editor) {
     relativePath
   );
 
+  if (!movableNode.value) {
+    editor.showError(ErrorReason.DidNotFindCodeToMove);
+    return;
+  }
+
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindCodeToMove);
     return;
@@ -84,7 +89,7 @@ function updateCode(
 
 function updateOtherFileCode(
   ast: t.AST,
-  movedNode: t.Node,
+  movedNode: t.Declaration,
   declarationsToImport: t.ImportDeclaration[]
 ): t.Transformed {
   return t.transformAST(ast, {
@@ -102,7 +107,9 @@ function updateOtherFileCode(
       const exportedStatement = t.toStatement(
         t.exportNamedDeclaration(movedNode)
       );
-      path.node.body.push(exportedStatement);
+      if (exportedStatement) {
+        path.node.body.push(exportedStatement);
+      }
     }
   });
 }
@@ -147,13 +154,13 @@ function createVisitor(
 }
 
 interface MovableNode {
-  readonly value: t.Node;
+  readonly value: t.Declaration | null;
   readonly hasReferencesThatCantBeImported: boolean;
   declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[];
 }
 
 class MovableEmptyStatement implements MovableNode {
-  readonly value = t.emptyStatement();
+  readonly value = null;
   readonly hasReferencesThatCantBeImported = false;
 
   declarationsToImportFrom(_relativePath: RelativePath): t.ImportDeclaration[] {
@@ -212,9 +219,8 @@ class MovableTSTypeDeclaration implements MovableNode {
 
   constructor(path: t.RootNodePath<t.TypeDeclaration>) {
     this._value = path.node;
-    this._hasReferencesThatCantBeImported = t.hasTypeReferencesDefinedInSameScope(
-      path
-    );
+    this._hasReferencesThatCantBeImported =
+      t.hasTypeReferencesDefinedInSameScope(path);
     this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
       path,
       path.parentPath

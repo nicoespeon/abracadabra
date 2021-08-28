@@ -216,20 +216,38 @@ function transformCopy<T extends t.Node>(
 // We need to copy {leading,trailing}Comments to preserve them.
 // See: https://github.com/benjamn/recast/issues/572
 function preserveCommentsForRecast(path: NodePath) {
-  // @ts-expect-error Recast does use a `comment` attribute.
-  path.node.comments = path.node.leadingComments;
+  const leadingComments = path.node.leadingComments?.map((comment) => ({
+    ...comment,
+    value: unindent(comment.value)
+  }));
+
+  // @ts-expect-error Recast does use a `comments` attribute.
+  path.node.comments = leadingComments;
 
   if (!path.isBlockStatement() && isLastNode()) {
+    const trailingComments = path.node.trailingComments?.map((comment) => ({
+      ...comment,
+      leading: false,
+      trailing: true,
+      value: unindent(comment.value)
+    }));
+
     // @ts-expect-error Recast does use a `comments` attribute.
     path.node.comments = [
-      ...(path.node.leadingComments || []),
-      ...(path.node.trailingComments || [])
+      ...(leadingComments || []),
+      ...(trailingComments || [])
     ];
   }
 
   function isLastNode(): boolean {
     return path.getAllNextSiblings().length === 0;
   }
+}
+
+function unindent(value: Code): Code {
+  return value
+    .replace(new RegExp("\n  ", "g"), "\n")
+    .replace(new RegExp("\n\t\t", "g"), "\n");
 }
 
 interface Transformed {
@@ -260,5 +278,5 @@ type RootNodePath<T = t.Node> = NodePath<T> & {
 function isRootNodePath<T = t.Node>(
   path: NodePath<T>
 ): path is RootNodePath<T> {
-  return path.parentPath.isProgram();
+  return path.parentPath?.isProgram() ?? false;
 }

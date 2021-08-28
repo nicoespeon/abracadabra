@@ -265,7 +265,7 @@ class RemoveBracesFromArrowFunction implements ToggleBraces {
     const firstValue = blockStatementStatements[0];
 
     if (!t.isReturnStatement(firstValue)) return;
-    if (firstValue.argument === null) return;
+    if (!firstValue.argument) return;
 
     this.path.node.body = firstValue.argument;
   }

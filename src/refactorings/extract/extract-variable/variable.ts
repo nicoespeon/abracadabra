@@ -40,8 +40,8 @@ class Variable<T = t.Node> {
 
   get id(): Code {
     const shouldWrapInBraces =
-      this.path.parentPath.isJSXAttribute() ||
-      (this.path.parentPath.isJSX() &&
+      this.path.parentPath?.isJSXAttribute() ||
+      (this.path.parentPath?.isJSX() &&
         (this.path.isJSXElement() || this.path.isJSXText()));
 
     return shouldWrapInBraces ? `{${this.name}}` : this.name;
@@ -112,10 +112,13 @@ class MemberExpressionVariable extends Variable<
 class ShorthandVariable extends Variable<t.ObjectProperty> {
   constructor(path: t.NodePath<t.ObjectProperty>) {
     super(path);
-    this.tryToSetNameWith(path.node.key.name);
+    if ("name" in path.node.key) {
+      this.tryToSetNameWith(path.node.key.name);
+    }
   }
 
   get isValid(): boolean {
+    if (!("name" in this.path.node.key)) return true;
     return this.isValidName(this.path.node.key.name);
   }
 }

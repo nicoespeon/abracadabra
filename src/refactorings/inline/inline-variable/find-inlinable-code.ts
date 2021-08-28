@@ -4,6 +4,7 @@ import * as t from "../../../ast";
 import { last } from "../../../array";
 
 import { findExportedIdNames } from "../find-exported-id-names";
+import { VariableDeclarator } from "../../../ast";
 
 export {
   findInlinableCode,
@@ -17,9 +18,10 @@ export {
 function findInlinableCode(
   selection: Selection,
   parent: t.Node,
-  declaration: Declaration
+  declaration: Declaration | VariableDeclarator
 ): InlinableCode | null {
   const { id, init } = declaration;
+  if (!init) return null;
   if (!t.isSelectableNode(init)) return null;
 
   if (isSelectableIdentifierDeclaration(declaration)) {
@@ -96,20 +98,8 @@ function getInitName(init: t.Node): string | null {
   if (t.isIdentifier(init)) return init.name;
 
   if (t.isMemberExpression(init)) {
-    const { property, computed } = init;
-
-    const propertyName = t.isNumericLiteral(property)
-      ? `[${property.value}]`
-      : t.isStringLiteral(property)
-      ? `["${property.value}"]`
-      : t.isIdentifier(property) && computed
-      ? `[${property.name}]`
-      : `.${getInitName(property)}`;
-
-    if (property.value === null && getInitName(property) === null) {
-      // We can't resolve property name. Stop here.
-      return null;
-    }
+    const propertyName = getPropertyName(init);
+    if (!propertyName) return null;
 
     return `${getInitName(init.object)}${propertyName}`;
   }
@@ -125,9 +115,27 @@ function getInitName(init: t.Node): string | null {
   return null;
 }
 
+function getPropertyName(init: t.MemberExpression): string | null {
+  const { property, computed } = init;
+
+  if (t.isNumericLiteral(property)) {
+    return `[${property.value}]`;
+  }
+
+  if (t.isStringLiteral(property)) {
+    return `["${property.value}"]`;
+  }
+
+  if (t.isIdentifier(property)) {
+    return computed ? `[${property.name}]` : `.${property.name}`;
+  }
+
+  return `.${getInitName(property)}`;
+}
+
 function wrapInTopLevelPattern(
   child: InlinableCode | null,
-  declaration: Declaration,
+  declaration: Declaration | VariableDeclarator,
   loc: t.SourceLocation
 ): InlinableCode | null {
   if (!child) return child;
@@ -151,10 +159,11 @@ type SelectableIdentifierDeclaration = {
 };
 
 function isSelectableIdentifierDeclaration(
-  declaration: Declaration
+  declaration: Declaration | VariableDeclarator
 ): declaration is SelectableIdentifierDeclaration {
   return (
     t.isSelectableIdentifier(declaration.id) &&
+    !!declaration.init &&
     t.isSelectableNode(declaration.init) &&
     !!declaration.loc
   );

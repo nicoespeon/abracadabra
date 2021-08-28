@@ -194,6 +194,9 @@ function replaceAllIdentifiersWithFunction(
   if (functionBinding) {
     functionBinding.referencePaths
       .map((referencePath) => referencePath.parentPath)
+      .filter(
+        (scopePath): scopePath is t.NodePath<t.Node> => scopePath !== null
+      )
       .forEach((scopePath) => replaceAllIdentifiersInPath(scopePath, node));
   } else {
     // If we don't get the bindings, traverse all the parent nodes.
@@ -233,7 +236,7 @@ function replaceAllIdentifiersInPath(
   }
 
   if (t.isVariableDeclarator(node)) {
-    const identifier = node.init;
+    const identifier = node.init ?? null;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
     node.init = t.functionExpression(
@@ -244,7 +247,7 @@ function replaceAllIdentifiersInPath(
   }
 
   if (t.isReturnStatement(node)) {
-    const identifier = node.argument;
+    const identifier = node.argument ?? null;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
     node.argument = t.functionExpression(

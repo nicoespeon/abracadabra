@@ -25,7 +25,7 @@ export {
   hasTypeReferencesDefinedInSameScope
 };
 
-function findScopePath(path: NodePath<t.Node | null>): NodePath | undefined {
+function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
   return path.findParent(
     (parentPath) =>
       t.isExpressionStatement(parentPath) ||
@@ -133,15 +133,16 @@ function getProgramPath(path: NodePath): NodePath {
   return allAncestors[allAncestors.length - 1];
 }
 
-function findAncestorThatCanHaveVariableDeclaration(
-  path: NodePath | null
-): SelectablePath | null {
+function findAncestorThatCanHaveVariableDeclaration<T extends t.Node>(
+  path: NodePath<T> | null
+): SelectablePath<T> | null {
   if (path === null) return null;
   if (isSelectablePath(path)) {
     if (path.isProgram()) return path;
     if (path.isStatement() && !path.isBlockStatement()) return path;
   }
 
+  // @ts-expect-error Not sure how to solve, looks like a typedef issue
   return findAncestorThatCanHaveVariableDeclaration(path.parentPath);
 }
 
