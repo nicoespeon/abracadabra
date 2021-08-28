@@ -225,11 +225,11 @@ function getListName(list: List): string {
   if (t.isIdentifier(list)) {
     return list.name;
   }
-  if (t.isMemberExpression(list.property)) {
+  if (t.isMemberExpression(list.property) || t.isIdentifier(list.property)) {
     return getListName(list.property);
   }
 
-  return "list";
+  return "item";
 }
 
 function replaceListWithItemIn(

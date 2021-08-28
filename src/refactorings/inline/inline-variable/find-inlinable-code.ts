@@ -104,13 +104,17 @@ function getInitName(init: t.Node): string | null {
       ? `[${property.value}]`
       : t.isStringLiteral(property)
       ? `["${property.value}"]`
-      : t.isIdentifier(property) && computed
-      ? `[${property.name}]`
+      : t.isIdentifier(property)
+      ? computed
+        ? `[${property.name}]`
+        : `.${property.name}`
       : `.${getInitName(property)}`;
 
-    if (!("value" in property)) return null;
-
-    if (property.value === null && getInitName(property) === null) {
+    if (
+      "value" in property &&
+      property.value === null &&
+      getInitName(property) === null
+    ) {
       // We can't resolve property name. Stop here.
       return null;
     }

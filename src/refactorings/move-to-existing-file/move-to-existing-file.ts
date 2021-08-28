@@ -31,7 +31,10 @@ async function moveToExistingFile(editor: Editor) {
     relativePath
   );
 
-  if (!movableNode.value) return;
+  if (!movableNode.value) {
+    editor.showError(ErrorReason.DidNotFindCodeToMove);
+    return;
+  }
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindCodeToMove);
