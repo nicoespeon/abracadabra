@@ -94,7 +94,7 @@
     "minimatch": "3.0.4",
     "pluralize": "8.0.0",
     "react-codemod": "5.4.3",
-    "recast": "0.20.4",
+    "recast": "0.20.5",
     "ts-morph": "^11.0.3"
   },
   "resolutions": {
