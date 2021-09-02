@@ -72,6 +72,21 @@ let something: { response: { data: Extracted; } };`
 }
 
 let something: { response: Extracted };`
+      },
+      {
+        description: "as expression",
+        code: `console.log(person as [cursor]{ name: string });`,
+        expected: `interface [cursor]Extracted {
+  name: string;
+}
+
+console.log(person as Extracted);`
+      },
+      {
+        description: "as expression, cursor on nested type",
+        code: `console.log(person as { name: [cursor]string });`,
+        expected: `type [cursor]Extracted = string;
+console.log(person as { name: Extracted });`
       }
     ],
     async ({ code, expected }) => {
@@ -79,10 +94,8 @@ let something: { response: Extracted };`
 
       await extractType(editor);
 
-      const {
-        code: expectedCode,
-        selection: expectedSelection
-      } = new InMemoryEditor(expected);
+      const { code: expectedCode, selection: expectedSelection } =
+        new InMemoryEditor(expected);
 
       expect(editor.code).toBe(expectedCode);
       if (!expectedSelection.isCursorAtTopOfDocument) {

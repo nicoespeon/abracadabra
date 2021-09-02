@@ -33,9 +33,8 @@ function updateCode(
   const result = t.transformAST(
     ast,
     createVisitor(selection, (path, typeAnnotation, getNewTypeAnnotation) => {
-      const pathWhereToDeclareType = t.findAncestorThatCanHaveVariableDeclaration(
-        path
-      );
+      const pathWhereToDeclareType =
+        t.findAncestorThatCanHaveVariableDeclaration(path);
       if (!pathWhereToDeclareType) return;
 
       const typeIdentifier = t.identifier("Extracted");
@@ -69,12 +68,25 @@ function updateCode(
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.TSTypeAnnotation>,
+    path: t.NodePath<t.TSTypeAnnotation | t.TSAsExpression>,
     extractedTypeAnnotation: t.TSType,
     getNewTypeAnnotation: (identifier: t.Identifier) => t.TSType
   ) => void
 ): t.Visitor {
   return {
+    TSAsExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path, path.node.typeAnnotation, (identifier) =>
+        // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
+        t.genericTypeAnnotation(identifier)
+      );
+    },
+
     TSTypeAnnotation(path) {
       if (!selection.isInsidePath(path)) return;
 

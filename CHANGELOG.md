@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Make "Move to existing file" works on Windows OS.
 
+### Changed
+
+- Extract Type now works on TS `as` expressions too!
+
 ## [6.2.2] - 2021-08-24 - A Spoonful of Inline 🥄
 
 ### Fixed
