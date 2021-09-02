@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Make "Move to existing file" works on Windows OS.
+
 ## [6.2.2] - 2021-08-24 - A Spoonful of Inline 🥄
 
 ### Fixed

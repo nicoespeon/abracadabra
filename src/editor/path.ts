@@ -6,7 +6,7 @@ class Path {
   // In theory, we should use `path.sep` to adapt to the OS.
   // But it seems that VS Code normalizes the paths to use `/`, even on Windows.
   // See https://github.com/nicoespeon/abracadabra/issues/376
-  static separator = path.sep;
+  static separator = "/";
 
   constructor(protected _value: string) {}
 
