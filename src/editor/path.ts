@@ -3,6 +3,11 @@ import * as path from "path";
 export { Path, AbsolutePath, RelativePath };
 
 class Path {
+  // In theory, we should use `path.sep` to adapt to the OS.
+  // But it seems that VS Code normalizes the paths to use `/`, even on Windows.
+  // See https://github.com/nicoespeon/abracadabra/issues/376
+  static separator = path.sep;
+
   constructor(protected _value: string) {}
 
   get value(): string {
@@ -22,11 +27,11 @@ class Path {
   }
 
   get withoutFileName(): string {
-    return path.dirname(this.value) + path.sep;
+    return path.dirname(this.value) + Path.separator;
   }
 
   protected get isValueAbsolute(): boolean {
-    return this.value.startsWith(path.sep);
+    return this.value.startsWith(Path.separator);
   }
 
   relativeTo(otherPath: Path): RelativePath;
@@ -59,7 +64,7 @@ class RelativePath extends Path {
     }
 
     if (!this._value.startsWith(".")) {
-      this._value = `.${path.sep}${this._value}`;
+      this._value = `.${Path.separator}${this._value}`;
     }
   }
 
