@@ -368,6 +368,23 @@ describe("Split If Statement", () => {
 
   return 100;
 }`
+      },
+      {
+        description: "consecutive ones with same return, but no braces",
+        code: `function disabilityAmount(anEmployee) {
+  if (!isValid)[cursor]
+    return 0;
+  else if (isMorning)
+    return 0;
+
+  return 100;
+}`,
+        expected: `function disabilityAmount(anEmployee) {
+  if (!isValid || isMorning)
+    return 0;
+
+  return 100;
+}`
       }
     ],
     async ({ code, expected }) => {
@@ -422,6 +439,17 @@ describe("Split If Statement", () => {
   }
 
   doAnotherThing();
+}`
+      },
+      {
+        description: "consecutive ones with different return, but no braces",
+        code: `function disabilityAmount(anEmployee) {
+  if (!isValid)[cursor]
+    return 0;
+  else if (isMorning)
+    return 50;
+
+  return 100;
 }`
       }
     ],

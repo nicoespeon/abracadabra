@@ -48,7 +48,9 @@ function createVisitor(
 
 function createMergeIfStatements(path: t.SelectablePath<t.IfStatement>) {
   if (t.hasAlternate(path)) {
-    return new MergeAlternateWithNestedIf(path);
+    return MergeAlternateWithNestedIf.canExecuteOn(path.node)
+      ? new MergeAlternateWithNestedIf(path)
+      : new MergeAlternateAndConsequent(path);
   }
 
   if (MergeConsequentWithPreviousSibling.canExecuteOn(path)) {
@@ -69,7 +71,7 @@ class MergeConsequentWithPreviousSibling implements MergeIfStatements {
     const previousSibling = t.getPreviousSibling(ifStatement);
     if (!previousSibling) return false;
 
-    return canMergeIfStatementWithSibling(ifStatement, previousSibling);
+    return canMergeIfStatementWithPath(ifStatement, previousSibling);
   }
 
   execute(): void {
@@ -93,7 +95,7 @@ class MergeConsequentWithNextSibling implements MergeIfStatements {
     const nextSibling = t.getNextSibling(ifStatement);
     if (!nextSibling) return false;
 
-    return canMergeIfStatementWithSibling(ifStatement, nextSibling);
+    return canMergeIfStatementWithPath(ifStatement, nextSibling);
   }
 
   execute(): void {
@@ -110,13 +112,13 @@ class MergeConsequentWithNextSibling implements MergeIfStatements {
   }
 }
 
-function canMergeIfStatementWithSibling(
+function canMergeIfStatementWithPath(
   ifStatement: t.NodePath<t.IfStatement>,
-  sibling: t.NodePath<t.Node>
+  otherPath: t.NodePath
 ): boolean {
-  if (!sibling.isIfStatement()) return false;
+  if (!otherPath.isIfStatement()) return false;
 
-  const bothCanBeMerged = [ifStatement, sibling].every((path) => {
+  const bothCanBeMerged = [ifStatement, otherPath].every((path) => {
     if (t.hasAlternate(path)) return false;
 
     const body = t.getStatements(path.node.consequent);
@@ -128,7 +130,7 @@ function canMergeIfStatementWithSibling(
 
   const bothAreEquivalent = t.areEquivalent(
     t.getStatements(ifStatement.node.consequent)[0],
-    t.getStatements(sibling.node.consequent)[0]
+    t.getStatements(otherPath.node.consequent)[0]
   );
 
   return bothCanBeMerged && bothAreEquivalent;
@@ -156,6 +158,13 @@ class MergeConsequentWithNestedIf implements MergeIfStatements {
 class MergeAlternateWithNestedIf implements MergeIfStatements {
   constructor(private path: t.NodePath<t.IfStatementWithAlternate>) {}
 
+  static canExecuteOn(ifStatement: t.IfStatementWithAlternate): boolean {
+    return (
+      t.isBlockStatement(ifStatement.alternate) &&
+      Boolean(getNestedIfStatementIn(ifStatement.alternate))
+    );
+  }
+
   execute(): void {
     if (!t.isBlockStatement(this.path.node.alternate)) return;
 
@@ -163,6 +172,31 @@ class MergeAlternateWithNestedIf implements MergeIfStatements {
     if (!nestedStatement) return;
 
     this.path.node.alternate = nestedStatement;
+  }
+}
+
+class MergeAlternateAndConsequent implements MergeIfStatements {
+  constructor(private path: t.NodePath<t.IfStatementWithAlternate>) {}
+
+  execute(): void {
+    const nestedStatement = getNestedIfStatementIn(this.path.node.alternate);
+    if (!t.isIfStatement(nestedStatement)) return;
+
+    // @ts-expect-error Technically, we're not copying the methods properly
+    const ifWithoutAlternate: t.NodePath<t.IfStatement> = {
+      ...this.path,
+      node: { ...this.path.node, alternate: null }
+    };
+    // @ts-expect-error Don't know why it complains?!
+    const alternatePath: t.NodePath = this.path.get("alternate");
+    if (!canMergeIfStatementWithPath(ifWithoutAlternate, alternatePath)) return;
+
+    const test = t.logicalExpression(
+      "||",
+      this.path.node.test,
+      nestedStatement.test
+    );
+    this.path.replaceWith(t.ifStatement(test, this.path.node.consequent));
   }
 }
 

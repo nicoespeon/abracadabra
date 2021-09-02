@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Type now works on TS `as` expressions too!
 - Remove Redundant Else now supports if statements that have no braces. That scenario can typically result from another refactoring. Being able to chain refactorings is nice, isn't it?
+- Merge if-statements can now consolidate `if/else-if` that have the same body.
 
 ## [6.2.2] - 2021-08-24 - A Spoonful of Inline 🥄
 
