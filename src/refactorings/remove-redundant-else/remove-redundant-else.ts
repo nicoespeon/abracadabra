@@ -42,9 +42,7 @@ function createVisitor(
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      const ifBranch = node.consequent;
-      if (!t.isBlockStatement(ifBranch)) return;
-      if (!hasExitStatement(ifBranch)) return;
+      if (!hasExitStatement(node.consequent)) return;
 
       const elseBranch = node.alternate;
       if (!elseBranch) return;
@@ -84,8 +82,8 @@ function hasChildWhichMatchesSelection(
   return result;
 }
 
-function hasExitStatement(node: t.BlockStatement): boolean {
-  const lastStatement = last(node.body);
+function hasExitStatement(node: t.IfStatement["consequent"]): boolean {
+  const lastStatement = last(t.getStatements(node));
 
   return (
     t.isReturnStatement(lastStatement) || t.isThrowStatement(lastStatement)

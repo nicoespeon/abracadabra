@@ -228,6 +228,21 @@ describe("Remove Redundant Else", () => {
   }
   doSomething();
 }`
+      },
+      {
+        description: "if has no braces",
+        code: `function doSomethingIfValid() {
+  if (!isValid)[cursor]
+    return;
+  else if (isMorning)
+    return;
+}`,
+        expected: `function doSomethingIfValid() {
+  if (!isValid)
+    return;
+  if (isMorning)
+    return;
+}`
       }
     ],
     async ({ code, expected }) => {
