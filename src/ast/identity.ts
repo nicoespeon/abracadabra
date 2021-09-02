@@ -179,7 +179,7 @@ function areEquivalent(
   nodeA: t.Node | null | undefined,
   nodeB: t.Node | null | undefined
 ): boolean {
-  if (nodeA === null || nodeA === undefined) return false;
+  if (nodeA === null || nodeA === undefined) return nodeA === nodeB;
   if (nodeB === null || nodeB === undefined) return false;
 
   if (t.isNullLiteral(nodeA) && t.isNullLiteral(nodeB)) return true;

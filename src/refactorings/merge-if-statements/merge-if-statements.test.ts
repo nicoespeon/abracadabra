@@ -385,6 +385,23 @@ describe("Split If Statement", () => {
 
   return 100;
 }`
+      },
+      {
+        description: "consecutive ones without returned value (guard clauses)",
+        code: `function disabilityAmount(anEmployee) {
+  if (!isValid)[cursor]
+    return;
+  else if (isMorning)
+    return;
+
+  return 100;
+}`,
+        expected: `function disabilityAmount(anEmployee) {
+  if (!isValid || isMorning)
+    return;
+
+  return 100;
+}`
       }
     ],
     async ({ code, expected }) => {
