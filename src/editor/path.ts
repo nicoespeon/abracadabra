@@ -6,7 +6,7 @@ class Path {
   constructor(protected _value: string) {}
 
   get value(): string {
-    return this._value;
+    return this._value.trim();
   }
 
   equals(otherValue: string): boolean {

@@ -50,8 +50,12 @@ describe("AbsolutePath", () => {
     expect(path).toStrictEqual(new AbsolutePath(filePath));
   });
 
-  it("throw if given path is relative", () => {
+  it("throws if given path is relative", () => {
     expect(() => new AbsolutePath("../some/file.ts")).toThrow();
+  });
+
+  it("trims given paths", () => {
+    expect(() => new AbsolutePath(" /d:/WEB/blom/main2.js")).not.toThrow();
   });
 });
 
