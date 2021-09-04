@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Abracabra now preserves tabs when you use "Rename Symbol" in a `.vue` file. No more converting the indentation to spaces 😁
+
 ## [6.3.0] - 2021-09-02 - Ev'rybody Wants to Be a File 😺
 
 ### Fixed

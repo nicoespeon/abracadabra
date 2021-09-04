@@ -44,20 +44,30 @@ class Identifier implements Symbol {
     if (!newName) return;
 
     const oldName = this.path.node.name;
-    this.path.scope.rename(this.value, newName);
+    const pathToRename = this.path;
+    const value = this.value;
 
-    const { parentPath } = this.path;
-    if (parentPath.isObjectProperty()) {
-      if (parentPath.node.shorthand) {
-        parentPath.replaceWith(
-          t.objectProperty(t.identifier(oldName), t.identifier(newName))
-        );
-      } else if (parentPath.node.key === this.path.node) {
-        return;
+    const { code, hasCodeChanged } = t.transformAST(this.ast, {
+      Identifier(path) {
+        if (path !== pathToRename) return;
+
+        const { parentPath } = pathToRename;
+        if (parentPath.isObjectProperty()) {
+          if (parentPath.node.shorthand) {
+            parentPath.replaceWith(
+              t.objectProperty(t.identifier(oldName), t.identifier(newName))
+            );
+          } else if (parentPath.node.key === pathToRename.node) {
+            return;
+          }
+        }
+
+        pathToRename.scope.rename(value, newName);
       }
-    }
+    });
 
-    await this.editor.write(t.print(this.ast));
+    if (!hasCodeChanged) return;
+    await this.editor.write(code);
   }
 
   private get value(): string {

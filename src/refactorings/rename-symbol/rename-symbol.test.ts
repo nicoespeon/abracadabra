@@ -169,5 +169,19 @@ function sayHello() {
   console.log(hello);
 }`);
     });
+
+    it("preserves tabs", async () => {
+      const editor = new InMemoryEditor(`const hello = 'world';
+\t\tconsole.log([cursor]hello);
+\t\tconst goodMorning = \`Good morning \${hello}!\``);
+      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
+
+      await renameSymbol(editor);
+
+      expect(editor.code).toBe(`const aBrandNewName = 'world';
+\t\tconsole.log(aBrandNewName);
+\t\tconst goodMorning = \`Good morning \${aBrandNewName}!\``);
+    });
   });
 });
