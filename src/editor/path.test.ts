@@ -57,6 +57,10 @@ describe("AbsolutePath", () => {
   it("trims given paths", () => {
     expect(() => new AbsolutePath(" /d:/WEB/blom/main2.js")).not.toThrow();
   });
+
+  it("supports Windows paths", () => {
+    expect(() => new AbsolutePath("\\d:\\WEB\\blom\\main2.js")).not.toThrow();
+  });
 });
 
 describe("RelativePath", () => {
