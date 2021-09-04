@@ -9,7 +9,7 @@ describe("AttemptingEditor", () => {
   describe("reason is expected", () => {
     it("should not ask editor to show error", async () => {
       const editor = new InMemoryEditor("// irrelevant");
-      spyOn(editor, "showError");
+      jest.spyOn(editor, "showError");
       const attemptingEditor = new AttemptingEditor(editor, EXPECTED_REASON);
 
       attemptingEditor.showError(EXPECTED_REASON);
@@ -31,7 +31,7 @@ describe("AttemptingEditor", () => {
   describe("reason is not expected", () => {
     it("should ask editor to show error", async () => {
       const editor = new InMemoryEditor("// irrelevant");
-      spyOn(editor, "showError");
+      jest.spyOn(editor, "showError");
       const attemptingEditor = new AttemptingEditor(editor, EXPECTED_REASON);
 
       attemptingEditor.showError(ANY_OTHER_REASON);
