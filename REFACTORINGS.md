@@ -73,6 +73,8 @@ This refactoring allows you to rename things and make sure all references in you
 
 Note that **it handles `.vue` files with a similar UX** while VS Code doesn't handle it natively yet.
 
+For Vue files, the support is limited: it can only rename **within the `<script>` tag**. It won't rename your identifier in the `<template>` tag for instance.
+
 [⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Extract Variable

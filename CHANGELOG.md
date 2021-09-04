@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Abracabra now preserves tabs when you use "Rename Symbol" in a `.vue` file. No more converting the indentation to spaces 😁
+- Following up with "Rename Symbol" in Vue files, Abracabra will now explicitly tell you when it can't rename the identifiers that are used in templates, for instance.
+
+That is a great opportunity for a reminder!
+
+While refactorings can be executed in `.vue` files, please keep in mind that the scope is limited to the `<script>` tag. This is more like a workaround for Vue developers until an extension like Vetur implements these 🙂
 
 ## [6.3.0] - 2021-09-02 - Ev'rybody Wants to Be a File 😺
 

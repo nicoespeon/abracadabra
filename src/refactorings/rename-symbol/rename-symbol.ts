@@ -1,4 +1,4 @@
-import { Editor, Command, Result } from "../../editor/editor";
+import { Editor, Command, Result, ErrorReason } from "../../editor/editor";
 import * as t from "../../ast";
 
 export { renameSymbol };
@@ -66,7 +66,11 @@ class Identifier implements Symbol {
       }
     });
 
-    if (!hasCodeChanged) return;
+    if (!hasCodeChanged) {
+      this.editor.showError(ErrorReason.DidNotFindIdentifiersToRename);
+      return;
+    }
+
     await this.editor.write(code);
   }
 

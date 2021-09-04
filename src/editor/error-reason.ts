@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindIdentifiersToRename,
   DidNotFindStatementToToggleBraces,
   DidNotFindTypeToExtract,
   DidNotFindMultipleDeclarationsToSplit,
@@ -55,6 +56,11 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindIdentifiersToRename:
+      return didNotFind(
+        "the identifiers to rename. Note that I can only rename *within* the <script> tag of a view file."
+      );
+
     case ErrorReason.DidNotFindStatementToToggleBraces:
       return didNotFind("a statement that could toggle braces");
 
