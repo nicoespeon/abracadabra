@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Another attempt at making "Move to existing file" work on Windows OS.
-- Abracabra now preserves tabs when you use "Rename Symbol" in a `.vue` file. No more converting the indentation to spaces 😁
-- Following up with "Rename Symbol" in Vue files, Abracabra will now explicitly tell you when it can't rename the identifiers that are used in templates, for instance.
+- Abracadabra now preserves tabs when you use "Rename Symbol" in a `.vue` file. No more converting the indentation to spaces 😁
+- Following up with "Rename Symbol" in Vue files, Abracadabra will now explicitly tell you when it can't rename the identifiers that are used in templates, for instance.
 
 That is a great opportunity for a reminder!
 
@@ -74,7 +74,7 @@ Fixed an issue with CI so we can deploy. No user-facing change.
 
 ### Fixed
 
-- Abracabra couldn't parse the AST of `.vue` files that were using attributes in the `<script>` tag (e.g. `<script lang="ts">`). Now it can!
+- Abracadabra couldn't parse the AST of `.vue` files that were using attributes in the `<script>` tag (e.g. `<script lang="ts">`). Now it can!
 
 ### Added
 
@@ -929,7 +929,7 @@ We believe this will make extracting object properties even more fluid.
 
 #### Improve Quick Fixes performances
 
-We've optimized the way we determine which refactorings can be executed **at your current cursor position**. This is an Abracabra key feature.
+We've optimized the way we determine which refactorings can be executed **at your current cursor position**. This is an Abracadabra key feature.
 
 Every time you move your cursor on the code, we propose you the relevant refactorings through the VS Code Quick Fixes (aka, the lightbulb 💡). This process was taking quite some time, which was causing 2 issues:
 
