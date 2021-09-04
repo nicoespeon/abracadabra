@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.3.1] - 2021-09-04
+
 ### Fixed
 
 - Another attempt at making "Move to existing file" work on Windows OS.
@@ -1423,7 +1425,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.3.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.3.1...HEAD
+[6.3.1]: https://github.com/nicoespeon/abracadabra/compare/6.3.0...6.3.1
 [6.3.0]: https://github.com/nicoespeon/abracadabra/compare/6.2.0...6.3.0
 [6.2.0]: https://github.com/nicoespeon/abracadabra/compare/6.1.1...6.2.0
 [6.1.1]: https://github.com/nicoespeon/abracadabra/compare/6.1.0...6.1.1
