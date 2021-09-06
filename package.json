@@ -101,6 +101,7 @@
     "@babel/types": "7.15.0"
   },
   "activationEvents": [
+    "onCommand:abracadabra.addNumericSeparator",
     "onCommand:abracadabra.convertForToForeach",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
     "onCommand:abracadabra.convertIfElseToTernary",
@@ -141,6 +142,11 @@
   ],
   "contributes": {
     "commands": [
+      {
+        "command": "abracadabra.addNumericSeparator",
+        "title": "Add Numeric Separator",
+        "category": "Abracadabra"
+      },
       {
         "command": "abracadabra.convertForToForeach",
         "title": "Convert For-Loop to ForEach",
@@ -354,6 +360,11 @@
           ],
           "description": "Glob patterns where it won't propose Quick Fixes (defaults: `dist/*`, `build/*`)."
         },
+        "abracadabra.addNumericSeparator.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.convertForToForeach.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -488,6 +499,26 @@
     },
     "menus": {
       "commandPalette": [
+        {
+          "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == vue"
+        },
         {
           "command": "abracadabra.convertForToForeach",
           "when": "editorLangId == javascript"

@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindNumericLiteral,
   DidNotFindIdentifiersToRename,
   DidNotFindStatementToToggleBraces,
   DidNotFindTypeToExtract,
@@ -56,6 +57,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindNumericLiteral:
+      return didNotFind("a numeric literal to add separators to");
+
     case ErrorReason.DidNotFindIdentifiersToRename:
       return "I didn't find the identifiers to rename. Note that I can only rename *within* the <script> tag of a view file. 🙂";
 

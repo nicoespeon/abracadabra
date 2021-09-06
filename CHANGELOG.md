@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Add separators to numeric literals. It's a not well known syntax that makes magic numbers easier to read. You can now turn `100000` into `10_000` in a snap 👌
+
 ## [6.3.1] - 2021-09-04
 
 ### Fixed
