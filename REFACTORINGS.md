@@ -46,6 +46,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Split Multiple Declarations](#split-multiple-declarations)
   1. [Convert let to const](#convert-let-to-const)
 - Working around the syntax:
+  1. [Add Numeric Separator](#add-numeric-separator)
   1. [Convert to Arrow Function](#convert-to-arrow-function)
   1. [Toggle Braces](#toggle-braces)
   1. [Convert to Template Literal](#convert-to-template-literal)
@@ -387,6 +388,16 @@ Converts the declaration of a variable that is a `let` to a `const` if it's not 
 
 ## Working around the syntax
 
+### Add Numeric Separator
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Did you know you could write `10_000` instead of `10000`? Well, now you know. And you can make code easier to read with 2 keystrokes!
+
+![][demo-add-numeric-separator]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Convert to Arrow Function
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -515,6 +526,7 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-redundant-else.gif?raw=true
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-if-else.gif?raw=true
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-ternary.gif?raw=true
+[demo-add-numeric-separator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/add-numeric-separator.gif?raw=true
 [demo-convert-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-arrow-function.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-ternary-to-if-else.gif?raw=true

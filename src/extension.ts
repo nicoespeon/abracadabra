@@ -4,6 +4,7 @@ import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
+import addNumericSeparator from "./refactorings/add-numeric-separator";
 import convertForToForeach from "./refactorings/convert-for-to-foreach";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
@@ -77,6 +78,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       renameSymbol
     ],
     withActionProvider: [
+      addNumericSeparator,
       convertForToForeach,
       convertIfElseToSwitch,
       convertIfElseToTernary,
