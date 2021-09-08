@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Finally got "Move to existing file" work on Windows OS, thanks to @sumbatx15
+
 ### Added
 
 - **[New Refactoring]** Add separators to numeric literals. It's a not well known syntax that makes magic numbers easier to read. You can now turn `100000` into `10_000` in a snap 👌
