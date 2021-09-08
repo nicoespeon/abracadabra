@@ -1,4 +1,5 @@
-import * as path from "path";
+import * as _path from "path";
+const path = _path.posix;
 
 export { Path, AbsolutePath, RelativePath };
 
