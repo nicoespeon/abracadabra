@@ -137,7 +137,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
   <tr>
     <td align="center"><a href="https://bandism.net/"><img src="https://avatars.githubusercontent.com/u/22633385?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ikko Ashimine</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=eltociear" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/vfonic"><img src="https://avatars.githubusercontent.com/u/67437?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Viktor</b></sub></a><br /><a href="#ideas-vfonic" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/sumbatx15"><img src="https://avatars.githubusercontent.com/u/28981577?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sumbatx15</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Asumbatx15" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/sumbatx15"><img src="https://avatars.githubusercontent.com/u/28981577?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sumbatx15</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Asumbatx15" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=sumbatx15" title="Code">💻</a></td>
   </tr>
 </table>
 
