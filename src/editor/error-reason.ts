@@ -1,6 +1,7 @@
 export { ErrorReason, toString };
 
 enum ErrorReason {
+  DidNotFindObjectToDestructure,
   DidNotFindNumericLiteral,
   DidNotFindIdentifiersToRename,
   DidNotFindStatementToToggleBraces,
@@ -57,6 +58,9 @@ enum ErrorReason {
 
 function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindObjectToDestructure:
+      return didNotFind("an object to destructure");
+
     case ErrorReason.DidNotFindNumericLiteral:
       return didNotFind("a numeric literal to add separators to");
 
