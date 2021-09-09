@@ -20,15 +20,31 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path) => {
-      // TODO: implement the transformation here 🧙‍
+      const node = t.objectPattern([
+        t.objectProperty(
+          t.identifier("name"),
+          t.identifier("name"),
+          false,
+          true
+        ),
+        t.objectProperty(t.identifier("age"), t.identifier("age"), false, true)
+      ]);
+      node.typeAnnotation = path.node.typeAnnotation;
+      path.replaceWith(node);
+      path.stop();
     })
   );
 }
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath) => void
+  onMatch: (path: t.NodePath<t.Identifier>) => void
 ): t.Visitor {
-  // TODO: implement the check here 🧙‍
-  return {};
+  return {
+    Identifier(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      onMatch(path);
+    }
+  };
 }

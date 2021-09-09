@@ -8,7 +8,32 @@ describe("Destructure Object", () => {
   testEach<{ code: Code; expected: Code }>(
     "should destructure object",
     [
-      // TODO: write successful test cases here
+      {
+        description: "basic scenario",
+        code: `interface MyComponentProps {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (props[cursor]: MyComponentProps) => {};`,
+        expected: `interface MyComponentProps {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (
+  {
+    name,
+    age
+  }: MyComponentProps
+) => {};`
+      }
+      // TODO: actually compute it (need type checker like hocus-pocus)
+      // TODO: test if type is inlined
+      // TODO: should not refactor if type isn't object-like
+      // TODO: infer type from TS usage
+      // TODO: propagate usage inside body
+      // TODO: not all identifiers (e.g. call expression)
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
