@@ -64,9 +64,13 @@ function createMergeIfStatements(path: t.SelectablePath<t.IfStatement>) {
   return new MergeConsequentWithNestedIf(path);
 }
 
-class MergeConsequentWithPreviousSibling implements MergeIfStatements {
-  constructor(private path: t.NodePath<t.IfStatement>) {}
+abstract class MergeIfStatements<T = t.IfStatement> {
+  constructor(protected path: t.NodePath<T>) {}
 
+  execute(): void {}
+}
+
+class MergeConsequentWithPreviousSibling extends MergeIfStatements {
   static canExecuteOn(ifStatement: t.NodePath<t.IfStatement>): boolean {
     const previousSibling = t.getPreviousSibling(ifStatement);
     if (!previousSibling) return false;
@@ -88,9 +92,7 @@ class MergeConsequentWithPreviousSibling implements MergeIfStatements {
   }
 }
 
-class MergeConsequentWithNextSibling implements MergeIfStatements {
-  constructor(private path: t.NodePath<t.IfStatement>) {}
-
+class MergeConsequentWithNextSibling extends MergeIfStatements {
   static canExecuteOn(ifStatement: t.NodePath<t.IfStatement>): boolean {
     const nextSibling = t.getNextSibling(ifStatement);
     if (!nextSibling) return false;
@@ -136,8 +138,11 @@ function canMergeIfStatementWithPath(
   return bothCanBeMerged && bothAreEquivalent;
 }
 
-class MergeConsequentWithNestedIf implements MergeIfStatements {
-  constructor(private path: t.NodePath<t.IfStatement>) {}
+class MergeConsequentWithNestedIf extends MergeIfStatements {
+  static canExecuteOn(ifStatement: t.IfStatement): boolean {
+    const nestedIfStatement = getNestedIfStatementIn(ifStatement.consequent);
+    return nestedIfStatement !== null && !nestedIfStatement.alternate;
+  }
 
   execute(): void {
     const nestedIfStatement = getNestedIfStatementIn(this.path.node.consequent);
@@ -155,9 +160,7 @@ class MergeConsequentWithNestedIf implements MergeIfStatements {
   }
 }
 
-class MergeAlternateWithNestedIf implements MergeIfStatements {
-  constructor(private path: t.NodePath<t.IfStatementWithAlternate>) {}
-
+class MergeAlternateWithNestedIf extends MergeIfStatements<t.IfStatementWithAlternate> {
   static canExecuteOn(ifStatement: t.IfStatementWithAlternate): boolean {
     return (
       t.isBlockStatement(ifStatement.alternate) &&
@@ -175,9 +178,7 @@ class MergeAlternateWithNestedIf implements MergeIfStatements {
   }
 }
 
-class MergeAlternateAndConsequent implements MergeIfStatements {
-  constructor(private path: t.NodePath<t.IfStatementWithAlternate>) {}
-
+class MergeAlternateAndConsequent extends MergeIfStatements<t.IfStatementWithAlternate> {
   execute(): void {
     const nestedStatement = getNestedIfStatementIn(this.path.node.alternate);
     if (!t.isIfStatement(nestedStatement)) return;
@@ -198,10 +199,6 @@ class MergeAlternateAndConsequent implements MergeIfStatements {
     );
     this.path.replaceWith(t.ifStatement(test, this.path.node.consequent));
   }
-}
-
-interface MergeIfStatements {
-  execute(): void;
 }
 
 function hasChildWhichMatchesSelection(
