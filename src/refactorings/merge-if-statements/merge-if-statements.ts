@@ -80,7 +80,7 @@ abstract class MergeIfStatements<T = t.IfStatement> {
   }
 
   get canExecute(): boolean {
-    return this.canMerge ?? Boolean(this.next?.canExecute);
+    return this.canMerge || Boolean(this.next?.canExecute);
   }
 
   execute(): void {
