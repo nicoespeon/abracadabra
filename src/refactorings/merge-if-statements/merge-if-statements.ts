@@ -92,6 +92,16 @@ abstract class MergeIfStatements<T = t.IfStatement> {
   protected abstract merge(): void;
 }
 
+class NoMerge extends MergeIfStatements {
+  get canMerge(): boolean {
+    return false;
+  }
+
+  merge() {
+    /** Do nothing */
+  }
+}
+
 class MergeConsequentWithPreviousSibling extends MergeIfStatements {
   static canExecuteOn(ifStatement: t.NodePath<t.IfStatement>): boolean {
     const previousSibling = t.getPreviousSibling(ifStatement);
