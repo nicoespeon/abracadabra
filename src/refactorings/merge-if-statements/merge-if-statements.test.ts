@@ -2,9 +2,9 @@ import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { mergeIfStatements } from "./merge-if-statements";
+import { canMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
 
-describe("Split If Statement", () => {
+describe("Merge If Statements", () => {
   testEach<{ code: Code; expected: Code }>(
     "should merge if statements",
     [
@@ -490,5 +490,26 @@ describe("Split If Statement", () => {
     expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindIfStatementsToMerge
     );
+  });
+
+  it("should not match a guard clause", async () => {
+    const code = `function toto() {
+  if (isValid || isMorning)[cursor] return
+}`;
+    const editor = new InMemoryEditor(code);
+
+    await expect(canMergeIfStatements).not.toMatchEditor(editor);
+  });
+
+  it("should not match else-if with different returned values", async () => {
+    const code = `function toto() {
+  if (isValid)
+    return 50;
+  else if (isMorning)[cursor]
+    return 100;
+}`;
+    const editor = new InMemoryEditor(code);
+
+    await expect(canMergeIfStatements).not.toMatchEditor(editor);
   });
 });

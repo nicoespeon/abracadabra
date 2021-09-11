@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Finally got "Move to existing file" work on Windows OS, thanks to @sumbatx15
+- Merge If Statements used to appear on patterns it couldn't execute on. Not anymore!
 
 ### Added
 
