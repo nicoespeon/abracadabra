@@ -4,7 +4,7 @@ import { testEach } from "../../tests-helpers";
 
 import { mergeIfStatements } from "./merge-if-statements";
 
-describe("Split If Statement", () => {
+describe("Merge If Statements", () => {
   testEach<{ code: Code; expected: Code }>(
     "should merge if statements",
     [
