@@ -185,7 +185,6 @@ class MergeConsequentWithNestedIf extends MergeIfStatements {
   merge(): void {
     const nestedIfStatement = getNestedIfStatementIn(this.path.node.consequent);
     if (!nestedIfStatement) return;
-    if (nestedIfStatement.alternate) return;
 
     this.path.node.test = t.logicalExpression(
       "&&",
@@ -207,8 +206,6 @@ class MergeAlternateWithNestedIf extends MergeIfStatements<t.IfStatementWithAlte
   }
 
   merge(): void {
-    if (!t.isBlockStatement(this.path.node.alternate)) return;
-
     const nestedStatement = getNestedIfStatementIn(this.path.node.alternate);
     if (!nestedStatement) return;
 
@@ -237,15 +234,6 @@ class MergeAlternateAndConsequent extends MergeIfStatements<t.IfStatementWithAlt
   merge(): void {
     const nestedStatement = getNestedIfStatementIn(this.path.node.alternate);
     if (!t.isIfStatement(nestedStatement)) return;
-
-    // @ts-expect-error Technically, we're not copying the methods properly
-    const ifWithoutAlternate: t.NodePath<t.IfStatement> = {
-      ...this.path,
-      node: { ...this.path.node, alternate: null }
-    };
-    // @ts-expect-error Don't know why it complains?!
-    const alternatePath: t.NodePath = this.path.get("alternate");
-    if (!canMergeIfStatementWithPath(ifWithoutAlternate, alternatePath)) return;
 
     const test = t.logicalExpression(
       "||",
