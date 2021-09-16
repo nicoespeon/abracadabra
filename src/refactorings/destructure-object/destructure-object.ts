@@ -1,12 +1,13 @@
-import { Editor, ErrorReason } from "../../editor/editor";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { TypeChecker } from "./type-checker";
 
 export { destructureObject, createVisitor };
 
 async function destructureObject(editor: Editor) {
   const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+  const updatedCode = updateCode(code, selection);
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindObjectToDestructure);
@@ -16,19 +17,18 @@ async function destructureObject(editor: Editor) {
   await editor.write(updatedCode.code);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+function updateCode(code: Code, selection: Selection): t.Transformed {
+  const typeChecker = new TypeChecker(code);
+  const keys = typeChecker.getKeys(selection.start);
+
   return t.transformAST(
-    ast,
+    t.parse(code),
     createVisitor(selection, (path) => {
-      const node = t.objectPattern([
-        t.objectProperty(
-          t.identifier("name"),
-          t.identifier("name"),
-          false,
-          true
-        ),
-        t.objectProperty(t.identifier("age"), t.identifier("age"), false, true)
-      ]);
+      const node = t.objectPattern(
+        keys.map((key) =>
+          t.objectProperty(t.identifier(key), t.identifier(key), false, true)
+        )
+      );
       node.typeAnnotation = path.node.typeAnnotation;
       path.replaceWith(node);
       path.stop();

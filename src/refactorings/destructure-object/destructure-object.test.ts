@@ -28,7 +28,6 @@ const MyComponent = (
   }: MyComponentProps
 ) => {};`
       }
-      // TODO: actually compute it (need type checker like hocus-pocus)
       // TODO: test if type is inlined
       // TODO: should not refactor if type isn't object-like
       // TODO: infer type from TS usage
