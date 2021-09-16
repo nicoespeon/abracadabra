@@ -83,10 +83,24 @@ let something: { response: Extracted };`
 console.log(person as Extracted);`
       },
       {
-        description: "as expression, cursor on nested type",
-        code: `console.log(person as { name: [cursor]string });`,
+        description: "as type parameter of a call expression",
+        code: `doSomething<[cursor]string, number>(someVariable);`,
         expected: `type [cursor]Extracted = string;
-console.log(person as { name: Extracted });`
+doSomething<Extracted, number>(someVariable);`
+      },
+      {
+        description:
+          "as a nested type parameter of a call expression (cursor on nested)",
+        code: `doSomething<Array<[cursor]string>>(someVariable);`,
+        expected: `type [cursor]Extracted = string;
+doSomething<Array<Extracted>>(someVariable);`
+      },
+      {
+        description:
+          "as a nested type parameter of a call expression (cursor on parent)",
+        code: `doSomething<[cursor]Array<string>>(someVariable);`,
+        expected: `type [cursor]Extracted = Array<string>;
+doSomething<Extracted>(someVariable);`
       }
     ],
     async ({ code, expected }) => {

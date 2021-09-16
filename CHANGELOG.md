@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Finally got "Move to existing file" work on Windows OS, thanks to @sumbatx15
 - Merge If Statements used to appear on patterns it couldn't execute on. Not anymore!
 
+### Changed
+
+- Extract Type now works on Type Parameters too (e.g. `number` in `doSomething<number>()` can now be extracted).
+
 ### Added
 
 - **[New Refactoring]** Add separators to numeric literals. It's a not well known syntax that makes magic numbers easier to read. You can now turn `100000` into `10_000` in a snap 👌

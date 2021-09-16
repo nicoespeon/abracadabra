@@ -32,7 +32,7 @@ function updateCode(
 
   const result = t.transformAST(
     ast,
-    createVisitor(selection, (path, typeAnnotation, getNewTypeAnnotation) => {
+    createVisitor(selection, (path, typeAnnotation, replaceTypeWith) => {
       const pathWhereToDeclareType =
         t.findAncestorThatCanHaveVariableDeclaration(path);
       if (!pathWhereToDeclareType) return;
@@ -58,7 +58,7 @@ function updateCode(
         leadingComments[0]?.loc.start || pathWhereToDeclareType.node.loc.start;
       newNodePosition = Position.fromAST(start);
       pathWhereToDeclareType.insertBefore(typeDeclaration);
-      path.node.typeAnnotation = getNewTypeAnnotation(typeIdentifier);
+      replaceTypeWith(typeIdentifier);
     })
   );
 
@@ -68,12 +68,40 @@ function updateCode(
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.TSTypeAnnotation | t.TSAsExpression>,
+    path: t.NodePath<
+      t.TSTypeAnnotation | t.TSAsExpression | t.TSBaseType | t.TSTypeReference
+    >,
     extractedTypeAnnotation: t.TSType,
-    getNewTypeAnnotation: (identifier: t.Identifier) => t.TSType
+    replaceType: (identifier: t.Identifier) => void
   ) => void
 ): t.Visitor {
   return {
+    TSBaseType(path) {
+      if (!selection.isInsidePath(path)) return;
+      if (!t.isTSTypeParameterInstantiation(path.parent)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path, path.node, (identifier) => {
+        path.replaceWith(t.genericTypeAnnotation(identifier));
+      });
+    },
+
+    TSTypeReference(path) {
+      if (!selection.isInsidePath(path)) return;
+      if (!t.isTSTypeParameterInstantiation(path.parent)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path, path.node, (identifier) => {
+        path.replaceWith(t.genericTypeAnnotation(identifier));
+      });
+    },
+
     TSAsExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
@@ -81,10 +109,10 @@ function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onMatch(path, path.node.typeAnnotation, (identifier) =>
+      onMatch(path, path.node.typeAnnotation, (identifier) => {
         // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
-        t.genericTypeAnnotation(identifier)
-      );
+        path.node.typeAnnotation = t.genericTypeAnnotation(identifier);
+      });
     },
 
     TSTypeAnnotation(path) {
@@ -110,24 +138,26 @@ function createVisitor(
             types: [selectedType]
           };
 
-          return onMatch(path, selectedTypeAnnotation, (identifier) => ({
-            ...typeAnnotation,
-            // Replace selected type with a generic type annotation
-            // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
-            types: typeAnnotation.types.map((type) => {
-              if (type === selectedType) {
-                return t.genericTypeAnnotation(identifier);
-              }
-              return type;
-            })
-          }));
+          return onMatch(path, selectedTypeAnnotation, (identifier) => {
+            path.node.typeAnnotation = {
+              ...typeAnnotation,
+              // Replace selected type with a generic type annotation
+              // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
+              types: typeAnnotation.types.map((type) => {
+                if (type === selectedType) {
+                  return t.genericTypeAnnotation(identifier);
+                }
+                return type;
+              })
+            };
+          });
         }
       }
 
-      onMatch(path, typeAnnotation, (identifier) =>
+      onMatch(path, typeAnnotation, (identifier) => {
         // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
-        t.genericTypeAnnotation(identifier)
-      );
+        path.node.typeAnnotation = t.genericTypeAnnotation(identifier);
+      });
     }
   };
 }
@@ -141,6 +171,13 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     TSTypeAnnotation(childPath) {
       if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    },
+    TSBaseType(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+      if (!t.isTSTypeParameterInstantiation(childPath.parent)) return;
 
       result = true;
       childPath.stop();
