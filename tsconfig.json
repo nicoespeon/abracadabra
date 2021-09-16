@@ -19,5 +19,5 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "out", ".vscode-test"]
+  "exclude": ["node_modules", "out", ".vscode-test", "gitignore"]
 }
