@@ -33,10 +33,9 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     try {
       const ast = t.parse(editor.code);
 
-      return this.findApplicableRefactorings(
-        ast,
-        editor.selection
-      ).map((refactoring) => this.buildCodeActionFor(refactoring));
+      return this.findApplicableRefactorings(ast, editor.selection).map(
+        (refactoring) => this.buildCodeActionFor(refactoring)
+      );
     } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
       return NO_ACTION;
@@ -83,9 +82,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
             selection,
             (visitedPath) => {
               if (actionProvider.updateMessage) {
-                actionProvider.message = actionProvider.updateMessage(
-                  visitedPath
-                );
+                actionProvider.message =
+                  actionProvider.updateMessage(visitedPath);
               }
 
               applicableRefactorings.set(key, refactoring);
@@ -105,11 +103,23 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
       visitor.enter(path, path.state);
     }
 
-    const visitorNode = visitor[path.node.type];
+    const visitorNode = this.getVisitorNode(visitor, path);
     if (typeof visitorNode === "function") {
       // @ts-expect-error visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.
       visitorNode.bind(visitor)(path, path.state);
     }
+  }
+
+  private getVisitorNode(visitor: t.Visitor, path: t.NodePath) {
+    const nodeType = path.node.type;
+
+    if (visitor[nodeType]) {
+      return visitor[nodeType];
+    }
+
+    const visitorTypes = Object.keys(visitor) as (keyof t.Visitor)[];
+    const matchingType = visitorTypes.find((type) => t.isType(nodeType, type));
+    return matchingType ? visitor[matchingType] : null;
   }
 
   private buildCodeActionFor(refactoring: Refactoring) {

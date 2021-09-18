@@ -16,6 +16,10 @@ const config: RefactoringWithActionProvider = {
         return "Toggle braces (if statement)";
       }
 
+      if (path.isLoop()) {
+        return "Toggle braces (loop)";
+      }
+
       if (path.isArrowFunctionExpression()) {
         return "Toggle braces (arrow function)";
       }
