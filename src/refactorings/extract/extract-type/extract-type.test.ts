@@ -83,21 +83,21 @@ let something: { response: Extracted };`
 console.log(person as Extracted);`
       },
       {
-        description: "as type parameter of a call expression",
+        description: "type parameter of a call expression",
         code: `doSomething<[cursor]string, number>(someVariable);`,
         expected: `type [cursor]Extracted = string;
 doSomething<Extracted, number>(someVariable);`
       },
       {
         description:
-          "as a nested type parameter of a call expression (cursor on nested)",
+          "nested type parameter of a call expression (cursor on nested)",
         code: `doSomething<Array<[cursor]string>>(someVariable);`,
         expected: `type [cursor]Extracted = string;
 doSomething<Array<Extracted>>(someVariable);`
       },
       {
         description:
-          "as a nested type parameter of a call expression (cursor on parent)",
+          "nested type parameter of a call expression (cursor on parent)",
         code: `doSomething<[cursor]Array<string>>(someVariable);`,
         expected: `type [cursor]Extracted = Array<string>;
 doSomething<Extracted>(someVariable);`
