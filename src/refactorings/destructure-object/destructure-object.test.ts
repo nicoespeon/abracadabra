@@ -9,7 +9,7 @@ describe("Destructure Object", () => {
     "should destructure object",
     [
       {
-        description: "basic scenario",
+        description: "from interface",
         code: `interface MyComponentProps {
   name: string;
   age: number;
@@ -27,8 +27,36 @@ const MyComponent = (
     age
   }: MyComponentProps
 ) => {};`
+      },
+      {
+        description: "from type",
+        code: `type MyComponentProps = {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (props[cursor]: MyComponentProps) => {};`,
+        expected: `type MyComponentProps = {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (
+  {
+    name,
+    age
+  }: MyComponentProps
+) => {};`
+      },
+      {
+        description: "from inline type",
+        code: `const MyComponent = (props[cursor]: { firstName: string }) => {};`,
+        expected: `const MyComponent = (
+  {
+    firstName
+  }: { firstName: string }
+) => {};`
       }
-      // TODO: test if type is inlined
       // TODO: should not refactor if type isn't object-like
       // TODO: infer type from TS usage
       // TODO: propagate usage inside body
