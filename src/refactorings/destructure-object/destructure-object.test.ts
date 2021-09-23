@@ -71,6 +71,26 @@ const MyComponent = (
     }
   );
 
+  testEach<{ code: Code }>(
+    "should NOT destructure object",
+    [
+      {
+        description: "from interface",
+        code: `type MyComponentProps = string;
+
+const MyComponent = (props[cursor]: MyComponentProps) => {};`
+      }
+    ],
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
+
+      await destructureObject(editor);
+
+      expect(editor.code).toBe(originalCode);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);

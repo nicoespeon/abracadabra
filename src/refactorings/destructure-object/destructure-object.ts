@@ -21,6 +21,13 @@ function updateCode(code: Code, selection: Selection): t.Transformed {
   const typeChecker = new TypeChecker(code);
   const keys = typeChecker.getKeys(selection.start);
 
+  if (keys.length === 0) {
+    return {
+      code,
+      hasCodeChanged: false
+    };
+  }
+
   return t.transformAST(
     t.parse(code),
     createVisitor(selection, (path) => {
