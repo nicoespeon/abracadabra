@@ -59,6 +59,7 @@ function updateCode(
       newNodePosition = Position.fromAST(start);
       pathWhereToDeclareType.insertBefore(typeDeclaration);
       replaceTypeWith(typeIdentifier);
+      pathWhereToDeclareType.stop();
     })
   );
 
@@ -69,7 +70,11 @@ function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<
-      t.TSTypeAnnotation | t.TSAsExpression | t.TSBaseType | t.TSTypeReference
+      | t.TSTypeAnnotation
+      | t.TSAsExpression
+      | t.TSBaseType
+      | t.TSTypeReference
+      | t.TSTypeQuery
     >,
     extractedTypeAnnotation: t.TSType,
     replaceType: (identifier: t.Identifier) => void
@@ -83,6 +88,14 @@ function createVisitor(
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path, path.node, (identifier) => {
+        path.replaceWith(t.genericTypeAnnotation(identifier));
+      });
+    },
+
+    TSTypeQuery(path) {
+      if (!selection.isInsidePath(path)) return;
 
       onMatch(path, path.node, (identifier) => {
         path.replaceWith(t.genericTypeAnnotation(identifier));

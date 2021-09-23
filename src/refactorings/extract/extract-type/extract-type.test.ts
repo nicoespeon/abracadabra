@@ -101,6 +101,12 @@ doSomething<Array<Extracted>>(someVariable);`
         code: `doSomething<[cursor]Array<string>>(someVariable);`,
         expected: `type [cursor]Extracted = Array<string>;
 doSomething<Extracted>(someVariable);`
+      },
+      {
+        description: "TS type query",
+        code: `type Context = ContextFrom<typeof [cursor]someMachineModel>;`,
+        expected: `type [cursor]Extracted = typeof someMachineModel;
+type Context = ContextFrom<Extracted>;`
       }
     ],
     async ({ code, expected }) => {
