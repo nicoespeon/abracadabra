@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Extract Type can now extract TS type queries. That means you can extract some `typeof myVariable` into a type alias.
+- Extract Type can also extract union and intersection types from anywhere now!
 
 ## [6.4.0] - 2021-09-16 - Friends on the Other Side 🐸
 

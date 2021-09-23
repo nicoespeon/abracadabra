@@ -75,6 +75,8 @@ function createVisitor(
       | t.TSBaseType
       | t.TSTypeReference
       | t.TSTypeQuery
+      | t.TSUnionType
+      | t.TSIntersectionType
     >,
     extractedTypeAnnotation: t.TSType,
     replaceType: (identifier: t.Identifier) => void
@@ -96,6 +98,34 @@ function createVisitor(
 
     TSTypeQuery(path) {
       if (!selection.isInsidePath(path)) return;
+
+      onMatch(path, path.node, (identifier) => {
+        path.replaceWith(t.genericTypeAnnotation(identifier));
+      });
+    },
+
+    TSUnionType(path) {
+      if (!selection.isInsidePath(path)) return;
+      // This case is already handled in TSTypeAnnotation
+      if (path.parentPath.isTSTypeAnnotation()) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path, path.node, (identifier) => {
+        path.replaceWith(t.genericTypeAnnotation(identifier));
+      });
+    },
+
+    TSIntersectionType(path) {
+      if (!selection.isInsidePath(path)) return;
+      // This case is already handled in TSTypeAnnotation
+      if (path.parentPath.isTSTypeAnnotation()) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path, path.node, (identifier) => {
         path.replaceWith(t.genericTypeAnnotation(identifier));

@@ -107,6 +107,24 @@ doSomething<Extracted>(someVariable);`
         code: `type Context = ContextFrom<typeof [cursor]someMachineModel>;`,
         expected: `type [cursor]Extracted = typeof someMachineModel;
 type Context = ContextFrom<Extracted>;`
+      },
+      {
+        description: "TS union type",
+        code: `const someMachine = createMachine<
+  C<typeof someModel>,
+  M<typeof commonModel> [cursor]| M<typeof someModel>
+>()`,
+        expected: `type [cursor]Extracted = M<typeof commonModel> | M<typeof someModel>;
+const someMachine = createMachine<C<typeof someModel>, Extracted>()`
+      },
+      {
+        description: "TS intersection type",
+        code: `const someMachine = createMachine<
+  C<typeof someModel>,
+  M<typeof commonModel> [cursor]& M<typeof someModel>
+>()`,
+        expected: `type [cursor]Extracted = M<typeof commonModel> & M<typeof someModel>;
+const someMachine = createMachine<C<typeof someModel>, Extracted>()`
       }
     ],
     async ({ code, expected }) => {
