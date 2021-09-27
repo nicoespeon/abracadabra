@@ -165,6 +165,48 @@ if (isValid) {
 
   return <SayBye />;
 }`
+      },
+      {
+        description: "for statement",
+        code: "for (let i = 0; i < 5; i++) cons[cursor]ole.log(i);",
+        expected: `for (let i = 0; i < 5; i++) {
+  console.log(i);
+}`
+      },
+      {
+        description: "for statement, cursor on for",
+        code: "[cursor]for (let i = 0; i < 5; i++) console.log(i);",
+        expected: `for (let i = 0; i < 5; i++) {
+  console.log(i);
+}`
+      },
+      {
+        description: "while statement",
+        code: `while (true) cons[cursor]ole.log("Hello");`,
+        expected: `while (true) {
+  console.log("Hello");
+}`
+      },
+      {
+        description: "while statement, cursor on while",
+        code: `[cursor]while (true) console.log("Hello");`,
+        expected: `while (true) {
+  console.log("Hello");
+}`
+      },
+      {
+        description: "do while statement",
+        code: `do cons[cursor]ole.log("Hello"); while (true);`,
+        expected: `do {
+  console.log("Hello");
+} while (true);`
+      },
+      {
+        description: "do while statement, cursor on do",
+        code: `[cursor]do console.log("Hello"); while (true);`,
+        expected: `do {
+  console.log("Hello");
+} while (true);`
       }
     ],
     async ({ code, expected }) => {
@@ -343,6 +385,44 @@ doAnotherThing();`
     </section>
   );
 }`
+      },
+      {
+        description: "a for statement",
+        code: `for (let i = 0; i < 5; i++) { cons[cursor]ole.log(i); }`,
+        expected: `for (let i = 0; i < 5; i++)
+  console.log(i);`
+      },
+      {
+        description: "a for statement, cursor on for",
+        code: `[cursor]for (let i = 0; i < 5; i++) { console.log(i); }`,
+        expected: `for (let i = 0; i < 5; i++)
+  console.log(i);`
+      },
+      {
+        description: "a while statement",
+        code: `while (true) { cons[cursor]ole.log("Hello"); }`,
+        expected: `while (true)
+  console.log("Hello");`
+      },
+      {
+        description: "a while statement, cursor on while",
+        code: `[cursor]while (true) { console.log("Hello"); }`,
+        expected: `while (true)
+  console.log("Hello");`
+      },
+      {
+        description: "a do while statement",
+        code: `do { cons[cursor]ole.log("Hello"); } while (true);`,
+        expected: `do
+  console.log("Hello");
+while (true);`
+      },
+      {
+        description: "a do while statement, cursor on do",
+        code: `[cursor]do { console.log("Hello"); } while (true);`,
+        expected: `do
+  console.log("Hello");
+while (true);`
       }
     ],
     async ({ code, expected }) => {
@@ -423,6 +503,30 @@ doAnotherThing();`
     </section>
   );
 }`
+      },
+      {
+        description: "an empty for statement",
+        code: `for (let i = 0; i < 5; i++) { }`
+      },
+      {
+        description: "a for statement with multiple statements",
+        code: `for (let i = 0; i < 5; i++) { console.log("Hello"); console.log("World"); }`
+      },
+      {
+        description: "an empty while statement",
+        code: `while (true) { }`
+      },
+      {
+        description: "a while statement with multiple statements",
+        code: `while (true) { console.log("Hello"); console.log("World"); }`
+      },
+      {
+        description: "an empty do while statement",
+        code: `do { } while (true);`
+      },
+      {
+        description: "a do while statement with multiple statements",
+        code: `do { console.log("Hello"); console.log("World"); } while (true);`
       }
     ],
     async ({ code }) => {

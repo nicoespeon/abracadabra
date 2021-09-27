@@ -76,6 +76,21 @@ function createVisitor(
       if (!operation.canExecute) return;
 
       onMatch(path, operation);
+    },
+    Loop(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const operation = t.isBlockStatement(path.node.body)
+        ? new RemoveBracesFromLoop(path)
+        : new AddBracesToLoop(path);
+
+      if (!operation.canExecute) return;
+
+      onMatch(path, operation);
     }
   };
 }
@@ -268,5 +283,41 @@ class RemoveBracesFromArrowFunction implements ToggleBraces {
     if (!firstValue.argument) return;
 
     this.path.node.body = firstValue.argument;
+  }
+}
+
+class AddBracesToLoop implements ToggleBraces {
+  constructor(private path: t.SelectablePath<t.Loop>) {}
+
+  get canExecute(): boolean {
+    return !t.isBlockStatement(this.path.node.body);
+  }
+
+  execute() {
+    if (!this.canExecute) return;
+
+    const blockStatement = t.statementWithBraces(this.path.node.body);
+    this.path.node.body = blockStatement;
+  }
+}
+
+class RemoveBracesFromLoop implements ToggleBraces {
+  constructor(private path: t.SelectablePath<t.Loop>) {}
+
+  get canExecute(): boolean {
+    if (!t.isBlockStatement(this.path.node.body)) return false;
+
+    const blockStatementStatements = this.path.node.body.body;
+    return blockStatementStatements.length === 1;
+  }
+
+  execute() {
+    if (!this.canExecute) return;
+    if (!t.isBlockStatement(this.path.node.body)) return;
+
+    const blockStatementStatements = this.path.node.body.body;
+    const firstValue = blockStatementStatements[0];
+
+    this.path.node.body = firstValue;
   }
 }
