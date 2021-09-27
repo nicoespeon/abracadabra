@@ -421,6 +421,7 @@ It works on:
 - If Statements (both `if` and `else` independently)
 - Arrow Function Expressions (e.g. `const someFunction = () => {}`)
 - JSX Attributes (e.g. `<SomeComponent anAttribute={"a value"} />`)
+- Loops (for and while blocks)
 
 ![][demo-toggle-braces]
 
