@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Type can now extract TS type queries. That means you can extract some `typeof myVariable` into a type alias.
 - Extract Type can also extract union and intersection types from anywhere now!
+- Toggle Braces now works on all kind of loops (for, for-in, for-of, while, do-while). Thanks to @chrstnbrn for implementing these 👏
 
 ## [6.4.0] - 2021-09-16 - Friends on the Other Side 🐸
 
