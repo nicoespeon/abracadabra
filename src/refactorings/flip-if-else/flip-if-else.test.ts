@@ -220,6 +220,18 @@ doSomethingElse();`,
 }`
       },
       {
+        description: "guard clause in a loop",
+        code: `for (let index = 0; index < 5; index++) {
+  if (index > 2) [cursor]console.log(index);
+}`,
+        expected: `for (let index = 0; index < 5; index++) {
+  if (index <= 2) {
+    continue;
+  }
+  console.log(index);
+}`
+      },
+      {
         description: "if-else with return statements",
         code: `if (!isValid) {
   return doSomething();

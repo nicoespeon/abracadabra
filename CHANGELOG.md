@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Flip If/Else now uses `continue` instead of `return` in loops, so your code doesn't break. Thanks @j4k0xb for spotting this one!
+
 ### Changed
 
 - Extract Type can now extract TS type queries. That means you can extract some `typeof myVariable` into a type alias.

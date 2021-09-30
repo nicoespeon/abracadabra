@@ -65,7 +65,9 @@ function createVisitor(
 function flipIfStatement(path: t.NodePath<t.IfStatement>) {
   if (canBeTurnedIntoGuardClause(path)) {
     const body = t.getStatements(path.node.consequent);
-    path.node.consequent = t.returnStatement();
+    path.node.consequent = isInLoop(path)
+      ? t.blockStatement([t.continueStatement()])
+      : t.returnStatement();
     path.insertAfter(body);
   } else {
     const ifBranch = path.node.consequent;
@@ -76,6 +78,10 @@ function flipIfStatement(path: t.NodePath<t.IfStatement>) {
       : elseBranch;
     path.node.alternate = ifBranch;
   }
+}
+
+function isInLoop(path: t.NodePath): boolean {
+  return Boolean(path.findParent((parentPath) => parentPath.isLoop()));
 }
 
 function canBeTurnedIntoGuardClause(path: t.NodePath<t.IfStatement>): boolean {
