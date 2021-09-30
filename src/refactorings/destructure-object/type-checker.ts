@@ -26,9 +26,15 @@ export class TypeChecker {
     if (!node) return [];
 
     const typeChecker = program.getTypeChecker();
+    const type = typeChecker.getTypeAtLocation(node);
 
-    return typeChecker
-      .getPropertiesOfType(typeChecker.getTypeAtLocation(node))
+    return type
+      .getProperties()
+      .filter(
+        (property) =>
+          type.isClassOrInterface() ||
+          property.flags === ts.SymbolFlags.Property
+      )
       .map((property) => property.name);
   }
 

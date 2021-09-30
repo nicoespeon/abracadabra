@@ -57,10 +57,8 @@ const MyComponent = (
   }: { firstName: string }
 ) => {};`
       }
-      // TODO: should not refactor if type isn't object-like
       // TODO: infer type from TS usage
       // TODO: propagate usage inside body
-      // TODO: not all identifiers (e.g. call expression)
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
@@ -75,11 +73,18 @@ const MyComponent = (
     "should NOT destructure object",
     [
       {
-        description: "from interface",
+        description: "from type that's not an object pattern",
         code: `type MyComponentProps = string;
 
 const MyComponent = (props[cursor]: MyComponentProps) => {};`
+      },
+      {
+        description: "from tuple",
+        code: `type MyComponentProps = [string, number];
+
+const MyComponent = (props[cursor]: MyComponentProps) => {};`
       }
+      // TODO: not all identifiers (e.g. call expression)
     ],
     async ({ code }) => {
       const editor = new InMemoryEditor(code);

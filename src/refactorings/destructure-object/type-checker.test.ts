@@ -158,9 +158,9 @@ it("should return any if position is not on an identifier", () => {
 
 it("should work with inferred types", () => {
   const { code, position } = new InMemoryEditor(`interface MyComponentProps {
-    name: string;
-    age: number;
-  }
+  name: string;
+  age: number;
+}
 
   const MyComponent = (props[cursor]: MyComponentProps) => {};`);
   const typeChecker = new TypeChecker(code);
@@ -168,4 +168,30 @@ it("should work with inferred types", () => {
   const type = typeChecker.getKeys(position);
 
   expect(type).toEqual(["name", "age"]);
+});
+
+it("should work with object-like type aliases", () => {
+  const { code, position } = new InMemoryEditor(`type MyComponentProps = {
+  name: string;
+  age: number;
+}
+
+  const MyComponent = (props[cursor]: MyComponentProps) => {};`);
+  const typeChecker = new TypeChecker(code);
+
+  const type = typeChecker.getKeys(position);
+
+  expect(type).toEqual(["name", "age"]);
+});
+
+it("should not return tuple keys", () => {
+  const { code, position } =
+    new InMemoryEditor(`type MyComponentProps = [string, number];
+
+  const MyComponent = (props[cursor]: MyComponentProps) => {};`);
+  const typeChecker = new TypeChecker(code);
+
+  const type = typeChecker.getKeys(position);
+
+  expect(type).toEqual([]);
 });
