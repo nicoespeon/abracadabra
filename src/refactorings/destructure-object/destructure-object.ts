@@ -18,52 +18,50 @@ async function destructureObject(editor: Editor) {
 }
 
 function updateCode(code: Code, selection: Selection): t.Transformed {
-  const typeChecker = new TypeChecker(code, new ConsoleLogger());
-  const keys = typeChecker.getKeys(selection.start);
-
-  if (keys.length === 0) {
-    return {
-      code,
-      hasCodeChanged: false
-    };
-  }
-
   return t.transformAST(
     t.parse(code),
-    createVisitor(selection, (path) => {
-      // Replace references of the Identifier
-      const referencePaths =
-        path.scope.getBinding(path.node.name)?.referencePaths ?? [];
-      referencePaths.forEach((reference) => {
-        const { parentPath } = reference;
-        if (parentPath?.isMemberExpression()) {
-          parentPath.replaceWith(parentPath.node.property);
-        }
-      });
+    createVisitor(
+      selection,
+      (path, keys) => {
+        // Replace references of the Identifier
+        const referencePaths =
+          path.scope.getBinding(path.node.name)?.referencePaths ?? [];
+        referencePaths.forEach((reference) => {
+          const { parentPath } = reference;
+          if (parentPath?.isMemberExpression()) {
+            parentPath.replaceWith(parentPath.node.property);
+          }
+        });
 
-      // Replace Identifier with destructured object
-      const node = t.objectPattern(
-        keys.map((key) =>
-          t.objectProperty(t.identifier(key), t.identifier(key), false, true)
-        )
-      );
-      node.typeAnnotation = path.node.typeAnnotation;
-      path.replaceWith(node);
+        // Replace Identifier with destructured object
+        const node = t.objectPattern(
+          keys.map((key) =>
+            t.objectProperty(t.identifier(key), t.identifier(key), false, true)
+          )
+        );
+        node.typeAnnotation = path.node.typeAnnotation;
+        path.replaceWith(node);
 
-      path.stop();
-    })
+        path.stop();
+      },
+      new TypeChecker(code, new ConsoleLogger())
+    )
   );
 }
 
 function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.Identifier>) => void
+  onMatch: (path: t.NodePath<t.Identifier>, keys: string[]) => void,
+  typeChecker: TypeChecker
 ): t.Visitor {
+  const keys = typeChecker.getKeys(selection.start);
+
   return {
     Identifier(path) {
       if (!selection.isInsidePath(path)) return;
+      if (keys.length === 0) return;
 
-      onMatch(path);
+      onMatch(path, keys);
     }
   };
 }
