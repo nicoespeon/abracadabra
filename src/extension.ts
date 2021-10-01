@@ -13,6 +13,7 @@ import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import convertLetToConst from "./refactorings/convert-let-to-const";
+import destructureObject from "./refactorings/destructure-object";
 import extract from "./refactorings/extract";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
@@ -87,6 +88,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertTernaryToIfElse,
       convertToArrowFunction,
       convertToTemplateLiteral,
+      destructureObject,
       flipIfElse,
       flipTernary,
       liftUpConditional,

@@ -111,6 +111,7 @@
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.convertLetToConst",
+    "onCommand:abracadabra.destructureObject",
     "onCommand:abracadabra.extract",
     "onCommand:abracadabra.extractClass",
     "onCommand:abracadabra.extractGenericType",
@@ -186,6 +187,11 @@
       {
         "command": "abracadabra.convertLetToConst",
         "title": "Convert let to const",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.destructureObject",
+        "title": "Destructure Object",
         "category": "Abracadabra"
       },
       {
@@ -402,6 +408,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.convertLetToConst.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.destructureObject.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -678,6 +689,26 @@
         },
         {
           "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.destructureObject",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.destructureObject",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.destructureObject",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.destructureObject",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.destructureObject",
           "when": "editorLangId == vue"
         },
         {
