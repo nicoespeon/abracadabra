@@ -80,6 +80,28 @@ const MyComponent = (
 ) => {
   return <div>{name} ({age})</div>;
 };`
+      },
+      {
+        description: "a regular identifier",
+        code: `interface Props {
+  name: string;
+  age: number;
+}
+
+const props[cursor]: Props = { name: "John", age: 20 };
+
+console.log(props.name, props.age);`,
+        expected: `interface Props {
+  name: string;
+  age: number;
+}
+
+const {
+  name,
+  age
+}: Props = { name: "John", age: 20 };
+
+console.log(name, age);`
       }
     ],
     async ({ code, expected }) => {
@@ -106,7 +128,6 @@ const MyComponent = (props[cursor]: MyComponentProps) => {};`
 
 const MyComponent = (props[cursor]: MyComponentProps) => {};`
       }
-      // TODO: not all identifiers (e.g. call expression)
     ],
     async ({ code }) => {
       const editor = new InMemoryEditor(code);
