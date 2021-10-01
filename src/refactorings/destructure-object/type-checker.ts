@@ -8,12 +8,17 @@ import {
 import { Code } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { TSPosition } from "./ts-position";
+import { NoopLogger } from "./adapters/noop-logger";
+import { Logger } from "./logger";
 
 export class TypeChecker {
   private fileName = "irrelevant.ts";
   private UNRESOLVED_TYPE = "{}";
 
-  constructor(private readonly code: Code) {}
+  constructor(
+    private readonly code: Code,
+    private logger: Logger = new NoopLogger()
+  ) {}
 
   getKeys(position: Position): string[] {
     const program = this.createTSProgram();
@@ -109,9 +114,8 @@ export class TypeChecker {
         position.value
       );
     } catch (error) {
-      // TODO: do use a logger so we don't console.log in tests
       // Since we're using internal methods, we can't rely on type checking.
-      console.error("Failed to get TS node", {
+      this.logger.error("Failed to get TS node", {
         error,
         code: this.code,
         position: position.value

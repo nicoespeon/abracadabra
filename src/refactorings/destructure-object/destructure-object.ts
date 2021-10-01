@@ -2,6 +2,7 @@ import { Code, Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { TypeChecker } from "./type-checker";
+import { ConsoleLogger } from "./adapters/console-logger";
 
 export { destructureObject, createVisitor };
 
@@ -18,7 +19,7 @@ async function destructureObject(editor: Editor) {
 }
 
 function updateCode(code: Code, selection: Selection): t.Transformed {
-  const typeChecker = new TypeChecker(code);
+  const typeChecker = new TypeChecker(code, new ConsoleLogger());
   const keys = typeChecker.getKeys(selection.start);
 
   if (keys.length === 0) {
