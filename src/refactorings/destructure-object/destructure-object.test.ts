@@ -56,9 +56,31 @@ const MyComponent = (
     firstName
   }: { firstName: string }
 ) => {};`
+      },
+      {
+        description: "and replace usages",
+        code: `interface Props {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (props[cursor]: Props) => {
+  return <div>{props.name} ({props.age})</div>;
+};`,
+        expected: `interface Props {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (
+  {
+    name,
+    age
+  }: Props
+) => {
+  return <div>{name} ({age})</div>;
+};`
       }
-      // TODO: infer type from TS usage
-      // TODO: propagate usage inside body
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
