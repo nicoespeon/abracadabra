@@ -61,7 +61,16 @@ function createVisitor(
       if (!selection.isInsidePath(path)) return;
       if (keys.length === 0) return;
 
-      onMatch(path, keys);
+      const sourcePath = path.scope.getBinding(path.node.name)?.path;
+
+      const sourcePathId = sourcePath?.get("id");
+      if (!Array.isArray(sourcePathId) && sourcePathId?.isIdentifier()) {
+        onMatch(sourcePathId, keys);
+      } else if (sourcePath?.isIdentifier()) {
+        onMatch(sourcePath, keys);
+      } else {
+        onMatch(path, keys);
+      }
     }
   };
 }

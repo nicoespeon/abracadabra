@@ -9,7 +9,7 @@ describe("Destructure Object", () => {
     "should destructure object",
     [
       {
-        description: "from interface",
+        description: "from interface (function param)",
         code: `interface MyComponentProps {
   name: string;
   age: number;
@@ -82,7 +82,7 @@ const MyComponent = (
 };`
       },
       {
-        description: "a regular identifier",
+        description: "from interface (variable declaration)",
         code: `interface Props {
   name: string;
   age: number;
@@ -102,6 +102,52 @@ const {
 }: Props = { name: "John", age: 20 };
 
 console.log(name, age);`
+      },
+      {
+        description: "cursor on reference (variable declaration)",
+        code: `interface Props {
+  name: string;
+  age: number;
+}
+
+const props: Props = { name: "John", age: 20 };
+
+console.log(props[cursor].name, props.age);`,
+        expected: `interface Props {
+  name: string;
+  age: number;
+}
+
+const {
+  name,
+  age
+}: Props = { name: "John", age: 20 };
+
+console.log(name, age);`
+      },
+      {
+        description: "cursor on reference (function param)",
+        code: `interface Props {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (props: Props) => {
+  return <div>{props[cursor].name} ({props.age})</div>;
+};`,
+        expected: `interface Props {
+  name: string;
+  age: number;
+}
+
+const MyComponent = (
+  {
+    name,
+    age
+  }: Props
+) => {
+  return <div>{name} ({age})</div>;
+};`
       }
     ],
     async ({ code, expected }) => {
