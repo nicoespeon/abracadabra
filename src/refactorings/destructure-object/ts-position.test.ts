@@ -21,9 +21,10 @@ it("should add 1 per new line", () => {
   expect(tsPosition.value).toBe(23);
 });
 
-// TODO: fix these tests
-it.skip("should handle empty lines", () => {
+it("should handle empty lines", () => {
   const code = `const hello = "world";
+
+
 // End of code snippet`;
   const position = new Position(3, 0);
 
@@ -32,9 +33,10 @@ it.skip("should handle empty lines", () => {
   expect(tsPosition.value).toBe(25);
 });
 
-it.skip("should count trailing spaces", () => {
+it("should count trailing spaces", () => {
   // Use non-breakable spaces to prevent editors from trimming them
-  const code = `const hello = "world";
+  const nbsp = " ";
+  const code = `const hello = "world";${nbsp}${nbsp}
 // End of code snippet`;
   const position = new Position(1, 0);
 
