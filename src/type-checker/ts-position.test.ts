@@ -1,4 +1,4 @@
-import { Position } from "../../editor/position";
+import { Position } from "../editor/position";
 import { TSPosition } from "./ts-position";
 
 const code = `const hello = "world";

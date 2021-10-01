@@ -1,6 +1,6 @@
 import { TypeChecker } from "./type-checker";
-import { Position } from "../../editor/position";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Position } from "../editor/position";
+import { InMemoryEditor } from "../editor/adapters/in-memory-editor";
 
 it("should return the type of a typed variable", () => {
   const code = `let count: number`;

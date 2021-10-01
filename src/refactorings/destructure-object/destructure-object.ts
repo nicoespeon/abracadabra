@@ -1,8 +1,7 @@
 import { Code, Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { TypeChecker, ConsoleLogger } from "../../type-checker";
 import * as t from "../../ast";
-import { TypeChecker } from "./type-checker";
-import { ConsoleLogger } from "./adapters/console-logger";
 
 export { destructureObject, createVisitor };
 

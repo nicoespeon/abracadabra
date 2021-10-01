@@ -1,5 +1,5 @@
-import { Code } from "../../editor/editor";
-import { Position } from "../../editor/position";
+import { Code } from "../editor/editor";
+import { Position } from "../editor/position";
 
 export class TSPosition {
   constructor(

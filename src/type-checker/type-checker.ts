@@ -5,8 +5,8 @@ import {
   createVirtualLanguageServiceHost
 } from "@typescript/vfs";
 
-import { Code } from "../../editor/editor";
-import { Position } from "../../editor/position";
+import { Code } from "../editor/editor";
+import { Position } from "../editor/position";
 import { TSPosition } from "./ts-position";
 import { NoopLogger } from "./adapters/noop-logger";
 import { Logger } from "./logger";
