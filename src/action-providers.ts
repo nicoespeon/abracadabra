@@ -10,6 +10,7 @@ import {
   getIgnoredPatterns,
   shouldShowInQuickFix
 } from "./vscode-configuration";
+import { TypeChecker, ConsoleLogger } from "./type-checker";
 
 export { RefactoringActionProvider };
 
@@ -85,7 +86,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
               }
 
               applicableRefactorings.set(key, refactoring);
-            }
+            },
+            new TypeChecker(code, new ConsoleLogger())
           );
 
           this.visit(visitor, path);
