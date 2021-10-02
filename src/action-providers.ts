@@ -3,13 +3,14 @@ import minimatch from "minimatch";
 
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
-import { Selection } from "./editor/selection";
+import { Editor } from "./editor/editor";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import {
   getIgnoredFolders,
   getIgnoredPatterns,
   shouldShowInQuickFix
 } from "./vscode-configuration";
+import { TypeChecker, ConsoleLogger } from "./type-checker";
 
 export { RefactoringActionProvider };
 
@@ -31,10 +32,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     if (!editor) return NO_ACTION;
 
     try {
-      const ast = t.parse(editor.code);
-
-      return this.findApplicableRefactorings(ast, editor.selection).map(
-        (refactoring) => this.buildCodeActionFor(refactoring)
+      return this.findApplicableRefactorings(editor).map((refactoring) =>
+        this.buildCodeActionFor(refactoring)
       );
     } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
@@ -53,17 +52,17 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
     return isFolderIgnored || isPatternIgnored;
   }
 
-  private findApplicableRefactorings(
-    ast: t.File,
-    selection: Selection
-  ): Refactoring[] {
+  private findApplicableRefactorings({
+    code,
+    selection
+  }: Editor): Refactoring[] {
     const applicableRefactorings = new Map<string, Refactoring>();
 
     const refactoringsToCheck = this.refactorings.filter(
       ({ command: { key } }) => shouldShowInQuickFix(key)
     );
 
-    t.traverseAST(ast, {
+    t.traverseAST(t.parse(code), {
       enter: (path) => {
         /**
          * Hint for perf improvement
@@ -87,7 +86,8 @@ class RefactoringActionProvider implements vscode.CodeActionProvider {
               }
 
               applicableRefactorings.set(key, refactoring);
-            }
+            },
+            new TypeChecker(code, new ConsoleLogger())
           );
 
           this.visit(visitor, path);
