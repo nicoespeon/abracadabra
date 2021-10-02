@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extract Type can also extract union and intersection types from anywhere now!
 - Toggle Braces now works on all kind of loops (for, for-in, for-of, while, do-while). Thanks to @chrstnbrn for implementing these 👏
 
+### Added
+
+- **[New Refactoring]** You can now destructure an object automatically! Put your cursor on any occurrence of the identifier to trigger the refactoring. It works if the shape of the object can be inferred, so that works best with TypeScript code (e.g. `interface` and object-like types).
+
+![][demo-destructure-object]
+
 ## [6.4.0] - 2021-09-16 - Friends on the Other Side 🐸
 
 ### Fixed
@@ -1519,6 +1525,7 @@ function doSomething(someData) {
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements-else-if.gif?raw=true
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-generic-type.gif?raw=true
 [demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-switch-to-if-else.gif?raw=true
+[demo-destructure-object]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/destructure-object.gif?raw=true
 
 <!-- Links -->
 
