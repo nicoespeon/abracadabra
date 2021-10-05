@@ -21,6 +21,7 @@ enum ErrorReason {
   DidNotFindReactComponent,
   DidNotFindIfStatementToAddBraces,
   DidNotFindDeadCode,
+  DidNotFindForEachToConvertToForOf,
   DidNotFindForLoopToConvert,
   DidNotFindStatementToMerge,
   DidNotFindNestedIf,
@@ -121,6 +122,9 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindDeadCode:
       return didNotFind("dead code to delete");
+    
+    case ErrorReason.DidNotFindForEachToConvertToForOf:
+      return didNotFind("a for each to convert");
 
     case ErrorReason.DidNotFindForLoopToConvert:
       return didNotFind("a valid for loop to convert");
