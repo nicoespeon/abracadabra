@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Destructure Object is not performant. That's an issue on large projects as it's exposed as a Quick Fix (lightbulb). To prevent blocking your editor, we have disabled the Quick Fix for this refactoring.
+
+You can still execute this refactoring using [VS Code's Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+
+We'll put it back as a quick fix once the performance issue is solved. See [#415](https://github.com/nicoespeon/abracadabra/issues/415) for details.
+
 ## [6.5.1] - 2021-10-04
 
 A little fix to get the release deployed to the marketplaces.

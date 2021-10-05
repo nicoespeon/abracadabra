@@ -73,6 +73,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withoutActionProvider: [
       extract,
+      destructureObject,
       inline,
       moveStatementDown,
       moveStatementUp,
@@ -88,7 +89,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertTernaryToIfElse,
       convertToArrowFunction,
       convertToTemplateLiteral,
-      destructureObject,
       flipIfElse,
       flipTernary,
       liftUpConditional,
