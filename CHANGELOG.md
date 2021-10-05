@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.1] - 2021-10-05
+
 ### Fixed
 
 - Destructure Object is not performant. That's an issue on large projects as it's exposed as a Quick Fix (lightbulb). To prevent blocking your editor, we have disabled the Quick Fix for this refactoring.
@@ -1470,8 +1472,9 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...HEAD
-[6.5.1]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...6.5.1
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.5.2...HEAD
+[6.5.2]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...6.5.2
+[6.5.1]: https://github.com/nicoespeon/abracadabra/compare/6.5.0...6.5.1
 [6.5.0]: https://github.com/nicoespeon/abracadabra/compare/6.4.0...6.5.0
 [6.4.0]: https://github.com/nicoespeon/abracadabra/compare/6.3.1...6.4.0
 [6.3.1]: https://github.com/nicoespeon/abracadabra/compare/6.3.0...6.3.1
