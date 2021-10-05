@@ -401,7 +401,7 @@ Did you know you could write `10_000` instead of `10000`? Well, now you know. An
 
 ### Destructure Object
 
-> 💡 Available as Quick Fix (`Alt ↵`)
+> **Not** available as a Quick Fix, use the [Command Palette][command-palette] to run this one. Temporary until we get [#416](https://github.com/nicoespeon/abracadabra/issues/416) resolved.
 
 Sometimes it's more convenient to destructure variables out of an object. It reduces the noise in the code.
 
