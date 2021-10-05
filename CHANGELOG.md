@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.1] - 2021-10-04
+
+A little fix to get the release deployed to the marketplaces.
+
 ## [6.5.0] - 2021-10-04 - A Dream Is a Wish Your Heart Makes 🐭
 
 ### Fixed
@@ -1458,7 +1462,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.5.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...HEAD
+[6.5.1]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...6.5.1
 [6.5.0]: https://github.com/nicoespeon/abracadabra/compare/6.4.0...6.5.0
 [6.4.0]: https://github.com/nicoespeon/abracadabra/compare/6.3.1...6.4.0
 [6.3.1]: https://github.com/nicoespeon/abracadabra/compare/6.3.0...6.3.1
