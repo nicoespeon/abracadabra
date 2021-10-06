@@ -81,6 +81,7 @@ function createVisitor(
     }
   ) => void
 ): t.Visitor {
+  // Traverse children first using `exit` and stop matching if we've already found a match.
   let found = false;
   return {
     CallExpression: {
