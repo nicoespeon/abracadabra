@@ -19,7 +19,7 @@ async function convertForEachToForOf(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, ({ path, item, items, fn, fnPath }) => {
+    createVisitor(selection, (path, { item, items, fn, fnPath }) => {
       fnPath.traverse({
         ReturnStatement(returnPath) {
           const parentFunction = returnPath.findParent(
@@ -49,13 +49,15 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 function createVisitor(
   selection: Selection,
-  onMatch: (args: {
-    path: t.SelectablePath<t.CallExpression>;
-    item: t.Identifier | t.Pattern;
-    items: t.Expression;
-    fnPath: t.NodePath<t.FunctionExpression | t.ArrowFunctionExpression>;
-    fn: t.FunctionExpression | t.ArrowFunctionExpression;
-  }) => void
+  onMatch: (
+    path: t.SelectablePath<t.CallExpression>,
+    args: {
+      item: t.Identifier | t.Pattern;
+      items: t.Expression;
+      fnPath: t.NodePath<t.FunctionExpression | t.ArrowFunctionExpression>;
+      fn: t.FunctionExpression | t.ArrowFunctionExpression;
+    }
+  ) => void
 ): t.Visitor {
   return {
     CallExpression(path) {
@@ -80,7 +82,7 @@ function createVisitor(
 
       const items = path.node.callee.object;
 
-      onMatch({ path, item, items, fn, fnPath });
+      onMatch(path, { item, items, fn, fnPath });
     }
   };
 }
