@@ -1,23 +1,39 @@
 import * as t from "../../ast";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Editor, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 
 export { convertForEachToForOf, createVisitor };
 
 async function convertForEachToForOf(editor: Editor) {
   const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+  const { transformed: updatedCode, forEachStartLine } = updateCode(
+    t.parse(code),
+    selection
+  );
 
   if (!updatedCode.hasCodeChanged) {
     editor.showError(ErrorReason.DidNotFindForEachToConvertToForOf);
     return;
   }
 
-  await editor.write(updatedCode.code);
+  // Recast would add an empty line before the transformed node.
+  // If that's the case, get rid of it before we write the new code.
+  const inMemoryEditor = new InMemoryEditor(updatedCode.code);
+  if (inMemoryEditor.isLineBlank(forEachStartLine)) {
+    inMemoryEditor.removeLine(forEachStartLine);
+  }
+
+  await editor.write(inMemoryEditor.code);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): { transformed: t.Transformed; forEachStartLine: number } {
+  let forEachStartLine = selection.start.line;
+  const transformed = t.transformAST(
     ast,
     createVisitor(selection, (path, { item, items, fn, fnPath }) => {
       fnPath.traverse({
@@ -34,6 +50,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         }
       });
 
+      if (path.parentPath.node.loc) {
+        forEachStartLine = Position.fromAST(
+          path.parentPath.node.loc.start
+        ).line;
+      }
       path.parentPath.replaceWith(
         t.forOfStatement(
           t.variableDeclaration("const", [t.variableDeclarator(item)]),
@@ -45,6 +66,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       );
     })
   );
+  return { transformed, forEachStartLine };
 }
 
 function createVisitor(
@@ -59,30 +81,40 @@ function createVisitor(
     }
   ) => void
 ): t.Visitor {
+  let found = false;
   return {
-    CallExpression(path) {
-      if (!selection.isInsidePath(path)) return;
+    CallExpression: {
+      exit(path) {
+        if (found) return;
 
-      if (!t.isExpressionStatement(path.parent)) return;
-      if (!t.isMemberExpression(path.node.callee)) return;
-      if (!t.isIdentifier(path.node.callee.property, { name: "forEach" }))
-        return;
+        if (!selection.isInsidePath(path)) return;
 
-      // forEach should only have one argument, an arrow function (or a regular function)
-      if (path.node.arguments.length !== 1) return;
-      const fnPath = path.get("arguments")[0];
-      if (!fnPath.isArrowFunctionExpression() && !fnPath.isFunctionExpression())
-        return;
-      const fn = fnPath.node;
+        if (!t.isExpressionStatement(path.parent)) return;
+        if (!t.isMemberExpression(path.node.callee)) return;
+        if (!t.isIdentifier(path.node.callee.property, { name: "forEach" }))
+          return;
 
-      // for-of cannot give you the index, so ignore callbacks with more than one param
-      if (fn.params.length !== 1) return;
-      const item = fn.params[0];
-      if (!t.isIdentifier(item) && !t.isPattern(item)) return;
+        // forEach should only have one argument, an arrow function (or a regular function)
+        if (path.node.arguments.length !== 1) return;
+        const fnPath = path.get("arguments")[0];
+        if (
+          !fnPath.isArrowFunctionExpression() &&
+          !fnPath.isFunctionExpression()
+        )
+          return;
+        const fn = fnPath.node;
 
-      const items = path.node.callee.object;
+        // for-of cannot give you the index, so ignore callbacks with more than one param
+        if (fn.params.length !== 1) return;
+        const item = fn.params[0];
+        if (!t.isIdentifier(item) && !t.isPattern(item)) return;
 
-      onMatch(path, { item, items, fn, fnPath });
+        const items = path.node.callee.object;
+
+        onMatch(path, { item, items, fn, fnPath });
+
+        found = true;
+      }
     }
   };
 }

@@ -19,6 +19,19 @@ for (const item of items) {
 }`
       },
       {
+        description: "without introducing a blank line",
+        code: `
+const items = [];
+[cursor]items.forEach((item) => {
+  console.log(item);
+});`,
+        expected: `
+const items = [];
+for (const item of items) {
+  console.log(item);
+}`
+      },
+      {
         description: "forEach with arrow without braces",
         code: `
 items.forEach((item) => console.log(item));`,
@@ -141,6 +154,21 @@ items.forEach((item) => {
 items.forEach((item) => {
   console.log(item);
 }, anotherParam);`
+      },
+      {
+        description: "selected forEach only",
+        code: `
+items.forEach((item) => {
+  items.values.for[cursor]Each((value) => {
+    console.log(value);
+  });
+});`,
+        expected: `
+items.forEach((item) => {
+  for (const value of items.values) {
+    console.log(value);
+  }
+});`
       }
     ].map(({ description, code, expected }) => ({
       description,
