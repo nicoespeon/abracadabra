@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -139,6 +139,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/vfonic"><img src="https://avatars.githubusercontent.com/u/67437?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Viktor</b></sub></a><br /><a href="#ideas-vfonic" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/sumbatx15"><img src="https://avatars.githubusercontent.com/u/28981577?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sumbatx15</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Asumbatx15" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=sumbatx15" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/j4k0xb"><img src="https://avatars.githubusercontent.com/u/55899582?v=4?s=100" width="100px;" alt=""/><br /><sub><b>j4k0xb</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aj4k0xb" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://ianobermiller.com"><img src="https://avatars.githubusercontent.com/u/897931?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ian Obermiller</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=ianobermiller" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=ianobermiller" title="Documentation">📖</a></td>
   </tr>
 </table>
 
