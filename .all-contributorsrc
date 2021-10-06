@@ -322,6 +322,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "ianobermiller",
+      "name": "Ian Obermiller",
+      "avatar_url": "https://avatars.githubusercontent.com/u/897931?v=4",
+      "profile": "http://ianobermiller.com",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
