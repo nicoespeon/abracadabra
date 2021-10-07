@@ -104,6 +104,7 @@
   "activationEvents": [
     "onCommand:abracadabra.addNumericSeparator",
     "onCommand:abracadabra.convertForToForEach",
+    "onCommand:abracadabra.convertForEachToForOf",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
@@ -152,6 +153,11 @@
       {
         "command": "abracadabra.convertForToForEach",
         "title": "Convert For-Loop to ForEach",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.convertForEachToForOf",
+        "title": "Convert ForEach to For-Of",
         "category": "Abracadabra"
       },
       {
@@ -377,6 +383,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.convertForEachToForOf.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.convertFunctionDeclarationToArrowFunction.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -549,6 +560,26 @@
         },
         {
           "command": "abracadabra.convertForToForEach",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertForEachToForOf",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertForEachToForOf",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertForEachToForOf",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertForEachToForOf",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertForEachToForOf",
           "when": "editorLangId == vue"
         },
         {
