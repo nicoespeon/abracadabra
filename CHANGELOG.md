@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** Convert ForEach to For-Of, thanks to @ianobermiller for this one 🎉
+
 ## [6.5.1] - 2021-10-05
 
 ### Fixed
