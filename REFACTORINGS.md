@@ -52,7 +52,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Toggle Braces](#toggle-braces)
   1. [Convert to Template Literal](#convert-to-template-literal)
   1. [Replace Binary with Assignment](#replace-binary-with-assignment)
-  1. [Convert For-Loop to ForEach](#convert-for-loop-to-for-each)
+  1. [Convert For-Loop to ForEach](#convert-for-loop-to-foreach)
 - Specific to TypeScript:
   1. [Extract Generic Type](#extract-generic-type)
   1. [Extract Interface](#extract-interface)
