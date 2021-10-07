@@ -1,14 +1,14 @@
 import {
   canConvertForLoop,
-  convertForToForeach
-} from "./convert-for-to-foreach";
+  convertForToForEach
+} from "./convert-for-to-for-each";
 
 import { RefactoringWithActionProvider } from "../../types";
 
 const config: RefactoringWithActionProvider = {
   command: {
-    key: "convertForToForeach",
-    operation: convertForToForeach,
+    key: "convertForToForEach",
+    operation: convertForToForEach,
     title: "Convert For-Loop to ForEach"
   },
   actionProvider: {

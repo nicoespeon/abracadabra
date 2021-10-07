@@ -8,7 +8,7 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "convertForEachToForOf",
     operation: convertForEachToForOf,
-    title: "Convert forEach to for-of"
+    title: "Convert ForEach to For-Of"
   },
   actionProvider: {
     message: "Convert forEach to for-of",

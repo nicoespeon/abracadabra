@@ -103,7 +103,7 @@
   },
   "activationEvents": [
     "onCommand:abracadabra.addNumericSeparator",
-    "onCommand:abracadabra.convertForToForeach",
+    "onCommand:abracadabra.convertForToForEach",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
     "onCommand:abracadabra.convertIfElseToTernary",
     "onCommand:abracadabra.convertIfElseToSwitch",
@@ -150,7 +150,7 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.convertForToForeach",
+        "command": "abracadabra.convertForToForEach",
         "title": "Convert For-Loop to ForEach",
         "category": "Abracadabra"
       },
@@ -372,7 +372,7 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
-        "abracadabra.convertForToForeach.showInQuickFix": {
+        "abracadabra.convertForToForEach.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -532,23 +532,23 @@
           "when": "editorLangId == vue"
         },
         {
-          "command": "abracadabra.convertForToForeach",
+          "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "abracadabra.convertForToForeach",
+          "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "abracadabra.convertForToForeach",
+          "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "abracadabra.convertForToForeach",
+          "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.convertForToForeach",
+          "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == vue"
         },
         {

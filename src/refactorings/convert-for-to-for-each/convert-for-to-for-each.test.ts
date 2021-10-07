@@ -5,13 +5,13 @@ import * as t from "../../ast";
 
 import {
   canConvertForLoop,
-  convertForToForeach
-} from "./convert-for-to-foreach";
+  convertForToForEach
+} from "./convert-for-to-for-each";
 import { Selection } from "../../editor/selection";
 
 describe("Convert For To Foreach", () => {
   testEach<{ code: Code; expected: Code }>(
-    "should convert for to foreach",
+    "should convert for to forEach",
     [
       {
         description: "basic for-loop",
@@ -251,7 +251,7 @@ items.forEach(item => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
-      await convertForToForeach(editor);
+      await convertForToForEach(editor);
 
       expect(editor.code).toBe(expected);
     }
@@ -321,7 +321,7 @@ for (let entry of typedArray) {
       const editor = new InMemoryEditor(code);
       const originalCode = editor.code;
 
-      await convertForToForeach(editor);
+      await convertForToForEach(editor);
 
       expect(editor.code).toBe(originalCode);
     }
@@ -352,7 +352,7 @@ for (let entry of typedArray) {
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
-    await convertForToForeach(editor);
+    await convertForToForEach(editor);
 
     expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindForLoopToConvert

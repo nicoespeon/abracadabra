@@ -5,7 +5,7 @@ import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 import addNumericSeparator from "./refactorings/add-numeric-separator";
-import convertForToForeach from "./refactorings/convert-for-to-foreach";
+import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
@@ -83,7 +83,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withActionProvider: [
       addNumericSeparator,
       convertForEachToForOf,
-      convertForToForeach,
+      convertForToForEach,
       convertIfElseToSwitch,
       convertIfElseToTernary,
       convertLetToConst,

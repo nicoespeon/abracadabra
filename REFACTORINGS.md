@@ -52,7 +52,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Toggle Braces](#toggle-braces)
   1. [Convert to Template Literal](#convert-to-template-literal)
   1. [Replace Binary with Assignment](#replace-binary-with-assignment)
-  1. [Convert For-Loop to Foreach](#convert-for-loop-to-foreach)
+  1. [Convert For-Loop to ForEach](#convert-for-loop-to-for-each)
 - Specific to TypeScript:
   1. [Extract Generic Type](#extract-generic-type)
   1. [Extract Interface](#extract-interface)
@@ -468,13 +468,13 @@ This one might seem obscure, but it's really replacing `+` with `+=`. Whenever i
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Convert For-Loop to Foreach
+### Convert For-Loop to ForEach
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-When it's possible, it converts an old-school for-loop into a `forEach()` call.
+When it's possible, it converts an old-school for-loop into a `for-Each()` call.
 
-![][demo-convert-for-to-foreach]
+![][demo-convert-for-to-for-each]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -564,7 +564,7 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 [demo-lift-up-conditional]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/lift-up-conditional.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-with-previous-if-statement.gif?raw=true
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
-[demo-convert-for-to-foreach]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-to-foreach.gif?raw=true
+[demo-convert-for-to-for-each]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-to-for-each.gif?raw=true
 [demo-move-to-existing-file]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-to-existing-file.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-dead-code.gif?raw=true
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-pure-component.gif?raw=true

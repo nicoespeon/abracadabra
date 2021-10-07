@@ -6,9 +6,9 @@ import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Position } from "../../editor/position";
 
-export { convertForToForeach, createVisitor as canConvertForLoop };
+export { convertForToForEach, createVisitor as canConvertForLoop };
 
-async function convertForToForeach(editor: Editor) {
+async function convertForToForEach(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
