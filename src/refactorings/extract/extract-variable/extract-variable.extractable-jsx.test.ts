@@ -1,15 +1,14 @@
 import { Code } from "../../../editor/editor";
-import { Position } from "../../../editor/position";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
 import { extractVariable } from "./extract-variable";
+import { Selection } from "../../../editor/selection";
 
 describe("Extract Variable - JSX we can extract", () => {
   testEach<{
     code: Code;
-    expected: Code;
-    expectedPosition?: Position;
+    expectedCode: Code;
   }>(
     "should extract",
     [
@@ -20,21 +19,21 @@ describe("Extract Variable - JSX we can extract", () => {
     {this.props.location.na[cursor]me}
   </div>;
 }`,
-        expected: `function render() {
+        expectedCode: `function render() {
   const { name } = this.props.location;
   return <div className="text-lg font-weight-bold">
-    {name}
+    {[cursor]name}
   </div>;
 }`
       },
       {
         description: "a JSXAttribute",
         code: `function render() {
-  return <Header title="H[cursor]ome" />;
+  return <Header title="Hom[cursor]e" />;
 }`,
-        expected: `function render() {
+        expectedCode: `function render() {
   const home = "Home";
-  return <Header title={home} />;
+  return <Header title={[cursor]home} />;
 }`
       },
       {
@@ -44,11 +43,11 @@ describe("Extract Variable - JSX we can extract", () => {
     {this.props.location.name}
   </div>;
 }`,
-        expected: `function render() {
+        expectedCode: `function render() {
   const extracted = <div className="text-lg font-weight-bold">
     {this.props.location.name}
   </div>;
-  return extracted;
+  return [cursor]extracted;
 }`
       },
       {
@@ -58,11 +57,11 @@ describe("Extract Variable - JSX we can extract", () => {
     {this.props.location.name}
   <[cursor]/div>;
 }`,
-        expected: `function render() {
+        expectedCode: `function render() {
   const extracted = <div className="text-lg font-weight-bold">
     {this.props.location.name}
   </div>;
-  return extracted;
+  return [cursor]extracted;
 }`
       },
       {
@@ -72,37 +71,34 @@ describe("Extract Variable - JSX we can extract", () => {
     <p[cursor]>{this.props.location.name}</p>
   </div>;
 }`,
-        expected: `function render() {
+        expectedCode: `function render() {
   const extracted = <p>{this.props.location.name}</p>;
   return <div className="text-lg font-weight-bold">
-    {extracted}
+    {[cursor]extracted}
   </div>;
-}`,
-        // We're 1 character off because of the initial `{`,
-        // but rename will still work so it's fine.
-        expectedPosition: new Position(3, 13)
+}`
       },
       {
         description: "a JSXText",
         code: `const body = <div className="text-lg font-weight-bold">
-  <p>H[cursor]ello there!</p>
+  <p>Hell[cursor]o there!</p>
 </div>;`,
-        expected: `const extracted = "Hello there!";
+        expectedCode: `const extracted = "Hello there!";
 const body = <div className="text-lg font-weight-bold">
-  <p>{extracted}</p>
+  <p>{[cursor]extracted}</p>
 </div>;`
       },
       {
         description: "a value in a JSXExpressionContainer",
         code: `<Component
   text={getTextForPerson({
-    name: "P[cursor]edro"
+    name: "Pedro[cursor]"
   })}
 />`,
-        expected: `const name = "Pedro";
+        expectedCode: `const name = "Pedro";
 <Component
   text={getTextForPerson({
-    name
+    name[cursor]
   })}
 />`
       },
@@ -111,20 +107,21 @@ const body = <div className="text-lg font-weight-bold">
         code: `function render() {
   return <Button onClick={this.onC[cursor]lick()} />;
 }`,
-        expected: `function render() {
+        expectedCode: `function render() {
   const extracted = this.onClick();
-  return <Button onClick={extracted} />;
+  return <Button onClick={[cursor]extracted} />;
 }`
       }
     ],
-    async ({ code, expected, expectedPosition }) => {
+    async ({ code, expectedCode }) => {
       const editor = new InMemoryEditor(code);
 
       await extractVariable(editor);
 
-      expect(editor.code).toBe(expected);
-      if (expectedPosition) {
-        expect(editor.position).toStrictEqual(expectedPosition);
+      const expected = new InMemoryEditor(expectedCode);
+      expect(editor.code).toBe(expected.code);
+      if (!expected.selection.isEqualTo(Selection.cursorAt(0, 0))) {
+        expect(editor.selection).toStrictEqual(expected.selection);
       }
     }
   );

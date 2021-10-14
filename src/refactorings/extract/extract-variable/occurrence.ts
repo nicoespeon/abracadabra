@@ -57,6 +57,14 @@ function createOccurrence(
       return createOccurrence(path, loc, selection);
     }
 
+    if (path.parentPath.isJSX()) {
+      return new JSXOccurrence(
+        path,
+        loc,
+        new StringLiteralVariable(path, path.node.value)
+      );
+    }
+
     return new Occurrence(
       path,
       loc,
@@ -70,6 +78,10 @@ function createOccurrence(
     PartialTemplateLiteralOccurrence.isValid(path, loc, selection)
   ) {
     return new PartialTemplateLiteralOccurrence(path, loc, selection);
+  }
+
+  if (path.isJSX()) {
+    return new JSXOccurrence(path, loc, new Variable<t.JSX>(path));
   }
 
   return new Occurrence(path, loc, new Variable(path));
@@ -94,7 +106,13 @@ class Occurrence<T extends t.Node = t.Node> {
   }
 
   cursorOnIdentifier(extractedOccurrences: Occurrence[]): Position {
-    const offset = extractedOccurrences
+    return this.positionOnExtractedId
+      .putAtSameCharacter(this.modification.selection.start)
+      .removeCharacters(this.offsetFor(extractedOccurrences));
+  }
+
+  protected offsetFor(extractedOccurrences: Occurrence<t.Node>[]) {
+    return extractedOccurrences
       .map(({ modification }) => modification)
       .filter(({ selection }) => selection.isOneLine)
       .filter(({ selection }) =>
@@ -108,10 +126,6 @@ class Occurrence<T extends t.Node = t.Node> {
       )
       .map(({ code, selection }) => selection.width - code.length)
       .reduce((a, b) => a + b, 0);
-
-    return this.positionOnExtractedId
-      .putAtSameCharacter(this.modification.selection.start)
-      .removeCharacters(offset);
   }
 
   protected get positionOnExtractedId(): Position {
@@ -162,6 +176,16 @@ class Occurrence<T extends t.Node = t.Node> {
 
   askModificationDetails(_editor: Editor): Promise<void> {
     return Promise.resolve();
+  }
+}
+
+class JSXOccurrence extends Occurrence {
+  cursorOnIdentifier(extractedOccurrences: Occurrence[]): Position {
+    // Add 1 character to account for the extra `{`
+    const extraChars = this.path.parentPath?.isJSX() ? 1 : 0;
+    return super
+      .cursorOnIdentifier(extractedOccurrences)
+      .addCharacters(extraChars);
   }
 }
 
@@ -370,6 +394,12 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     return new Position(
       this.selection.start.line + this.selection.height + 1,
       this.userSelection.start.character + openingInterpolationLength
+    );
+  }
+
+  cursorOnIdentifier(extractedOccurrences: Occurrence[]): Position {
+    return this.positionOnExtractedId.removeCharacters(
+      this.offsetFor(extractedOccurrences)
     );
   }
 }

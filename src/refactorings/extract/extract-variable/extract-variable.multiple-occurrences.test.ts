@@ -249,7 +249,7 @@ if (isMorning) {
   }
 }`);
     expect(editor.code).toBe(expected.code);
-    expect(editor.selection).toEqual(expected.selection);
+    expect(editor.selection).toStrictEqual(expected.selection);
   });
 
   testEach<{ code: Code; expected: Code }>(
