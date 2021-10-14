@@ -222,6 +222,36 @@ if (isMorning) {
     expect(editor.code).toBe(expectedCode);
   });
 
+  it("should rename the second occurrence", async () => {
+    const code = `function repro(a: { b: { c: string } }, condition: boolean) {
+  if (condition) {
+    const myVar = a.b().c;
+  } else {
+    const myVar = [start]a.b()[end].c;
+  }
+}`;
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUserChoice")
+      .mockImplementation(([allOccurrences]) =>
+        Promise.resolve(allOccurrences)
+      );
+
+    await extractVariable(editor);
+
+    const expected =
+      new InMemoryEditor(`function repro(a: { b: { c: string } }, condition: boolean) {
+  const extracted = a.b();
+  if (condition) {
+    const myVar = extracted.c;
+  } else {
+    const myVar = [cursor]extracted.c;
+  }
+}`);
+    expect(editor.code).toBe(expected.code);
+    expect(editor.selection).toStrictEqual(expected.selection);
+  });
+
   testEach<{ code: Code; expected: Code }>(
     "should extract variables of type",
     [

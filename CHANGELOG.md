@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix a scenario where Extract Type would produce invalid code if there were commas in the extracted type.
+- Fix some scenarios where Extract Variable would put the cursor in a wrong place which prevented the automatic rename.
 
 ### Added
 

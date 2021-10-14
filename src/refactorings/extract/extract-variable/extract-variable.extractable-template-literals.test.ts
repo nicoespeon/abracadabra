@@ -29,8 +29,7 @@ console.log(\`Hello \${world}! How are you doing?\`);`,
       },
       {
         description: "a selected part of a template literal with expressions",
-        code:
-          "console.log(`${hello} [start]world[end]! How are ${you} doing?`);",
+        code: "console.log(`${hello} [start]world[end]! How are ${you} doing?`);",
         expected: {
           code: `const world = "world";
 console.log(\`\${hello} \${world}! How are \${you} doing?\`);`,
@@ -39,32 +38,28 @@ console.log(\`\${hello} \${world}! How are \${you} doing?\`);`,
       },
       {
         description: "a selected expression of a template literal",
-        code:
-          "console.log(`${[start]he[end]llo} world! How are ${you} doing?`);",
+        code: "console.log(`${[start]he[end]llo} world! How are ${you} doing?`);",
         expected: `const extracted = hello;
 console.log(\`\${extracted} world! How are \${you} doing?\`);`
       },
       {
         description:
           "a selected template literal (selection across quasi and expression)",
-        code:
-          "console.log(`${hell[start]o} wor[end]ld! How are ${you} doing?`);",
+        code: "console.log(`${hell[start]o} wor[end]ld! How are ${you} doing?`);",
         expected: `const extracted = \`\${hello} world! How are \${you} doing?\`;
 console.log(extracted);`
       },
       {
         description:
           "a selected template literal (selection over expression braces)",
-        code:
-          "console.log(`$[start]{he[end]llo} world! How are ${you} doing?`);",
+        code: "console.log(`$[start]{he[end]llo} world! How are ${you} doing?`);",
         expected: `const extracted = \`\${hello} world! How are \${you} doing?\`;
 console.log(extracted);`
       },
       {
         description:
           "a selected template literal (selection over template bounds)",
-        code:
-          "console.log({ text:[start] `${hel[end]lo} world! How are ${you} doing?` });",
+        code: "console.log({ text:[start] `${hel[end]lo} world! How are ${you} doing?` });",
         expected: `const extracted = { text: \`\${hello} world! How are \${you} doing?\` };
 console.log(extracted);`
       }

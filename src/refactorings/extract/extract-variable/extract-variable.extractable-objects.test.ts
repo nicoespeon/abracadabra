@@ -1,5 +1,4 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
 
@@ -211,7 +210,7 @@ function someScope() {
         expected: `const { x, y } = obj;
 function someScope() {
   function test() {
-    return x + y[cursor] * x;
+    return x + [cursor]y * x;
   }
 }`
       },
@@ -226,7 +225,7 @@ function someScope() {
         expected: `function test() {
   const { x } = obj;
   const y = obj.y;
-  return x + y[cursor] * x;
+  return x + [cursor]y * x;
 }`
       },
       {
@@ -245,7 +244,7 @@ function test() {
 }
 function test() {
   const { y } = obj;
-  return y[cursor];
+  return [cursor]y;
 }`
       },
       {
@@ -343,9 +342,10 @@ console.log(baz);`);
 
     await extractVariable(editor);
 
-    expect(editor.code).toBe(`const { response } = data;
-console.log(response.code, response.user.id, response.user.name);`);
-    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 35));
+    const expected = new InMemoryEditor(`const { response } = data;
+console.log(response.code, [cursor]response.user.id, response.user.name);`);
+    expect(editor.code).toBe(expected.code);
+    expect(editor.selection).toStrictEqual(expected.selection);
   });
 
   it("should rename the correct identifier for multiple occurrences on the same line (only one occurrence extracted)", async () => {
@@ -359,9 +359,10 @@ console.log(response.code, response.user.id, response.user.name);`);
 
     await extractVariable(editor);
 
-    expect(editor.code).toBe(`const response = data.response;
-console.log(data.response.code, response.user.id, data.response.user.name);`);
-    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 40));
+    const expected = new InMemoryEditor(`const response = data.response;
+console.log(data.response.code, [cursor]response.user.id, data.response.user.name);`);
+    expect(editor.code).toBe(expected.code);
+    expect(editor.selection).toStrictEqual(expected.selection);
   });
 
   it("should rename the correct identifier if it's also re-assigned", async () => {
@@ -370,8 +371,9 @@ console.log(data.response.code, response.user.id, data.response.user.name);`);
 
     await extractVariable(editor);
 
-    expect(editor.code).toBe(`const { lang } = query;
-query.lang = lang ? "yes" : "nope";`);
-    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 17));
+    const expected = new InMemoryEditor(`const { lang } = query;
+query.lang = [cursor]lang ? "yes" : "nope";`);
+    expect(editor.code).toBe(expected.code);
+    expect(editor.selection).toStrictEqual(expected.selection);
   });
 });
