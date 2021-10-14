@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix a scenario where Extract Type would produce invalid code if there were commas in the extracted type.
+
 ### Added
 
 - **[New Refactoring]** Convert ForEach to For-Of, thanks to @ianobermiller for this one 🎉

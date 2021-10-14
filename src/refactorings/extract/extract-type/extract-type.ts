@@ -63,6 +63,13 @@ function updateCode(
     })
   );
 
+  // There may be commas in inlined object types.
+  // They got preserved because of tokens, but that produces invalid code.
+  // Get rid of the eventual errors: `foo: number,;` => `foo: number;`
+  if (result.hasCodeChanged) {
+    result.code = result.code.replace(/,;/g, ";");
+  }
+
   return { ...result, newNodePosition };
 }
 

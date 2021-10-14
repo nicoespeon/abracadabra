@@ -125,6 +125,17 @@ const someMachine = createMachine<C<typeof someModel>, Extracted>()`
 >()`,
         expected: `type [cursor]Extracted = M<typeof commonModel> & M<typeof someModel>;
 const someMachine = createMachine<C<typeof someModel>, Extracted>()`
+      },
+      {
+        description: "object type using commas",
+        code: `function doSomething(options: { first: number, second: boolean, third: string }[cursor]) {}`,
+        expected: `interface Extracted {
+  first: number;
+  second: boolean;
+  third: string;
+}
+
+function doSomething(options: Extracted) {}`
       }
     ],
     async ({ code, expected }) => {
