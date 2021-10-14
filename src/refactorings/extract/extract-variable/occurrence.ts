@@ -93,10 +93,25 @@ class Occurrence<T extends t.Node = t.Node> {
     };
   }
 
-  cursorOnIdentifier(_extractedOccurrences: Occurrence[]): Position {
-    return this.positionOnExtractedId.putAtSameCharacter(
-      this.modification.selection.start
-    );
+  cursorOnIdentifier(extractedOccurrences: Occurrence[]): Position {
+    const offset = extractedOccurrences
+      .map(({ modification }) => modification)
+      .filter(({ selection }) => selection.isOneLine)
+      .filter(({ selection }) =>
+        selection.startsBefore(this.modification.selection)
+      )
+      .filter(({ selection }) =>
+        selection.start.isSameLineThan(this.modification.selection.start)
+      )
+      .filter(
+        ({ selection }) => !selection.isEqualTo(this.modification.selection)
+      )
+      .map(({ code, selection }) => selection.width - code.length)
+      .reduce((a, b) => a + b, 0);
+
+    return this.positionOnExtractedId
+      .putAtSameCharacter(this.modification.selection.start)
+      .removeCharacters(offset);
   }
 
   protected get positionOnExtractedId(): Position {

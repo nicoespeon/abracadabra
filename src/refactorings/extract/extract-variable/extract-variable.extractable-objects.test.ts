@@ -342,9 +342,10 @@ console.log(baz);`);
 
     await extractVariable(editor);
 
-    expect(editor.code).toBe(`const { response } = data;
-console.log(response.code, response.user.id, response.user.name);`);
-    expect(editor.selection).toStrictEqual(Selection.cursorAt(1, 35));
+    const expected = new InMemoryEditor(`const { response } = data;
+console.log(response.code, [cursor]response.user.id, response.user.name);`);
+    expect(editor.code).toBe(expected.code);
+    expect(editor.selection).toStrictEqual(expected.selection);
   });
 
   it("should rename the correct identifier for multiple occurrences on the same line (only one occurrence extracted)", async () => {
