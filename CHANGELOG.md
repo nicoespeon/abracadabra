@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.6.0] - 2021-10-14 − What's This? 🎃
+
 ### Fixed
 
 - Fix a scenario where Extract Type would produce invalid code if there were commas in the extracted type.
@@ -16,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** Convert ForEach to For-Of, thanks to @ianobermiller for this one 🎉
 
-## [6.5.1] - 2021-10-05
+## [6.5.2] - 2021-10-05
 
 ### Fixed
 
@@ -1481,7 +1483,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.5.2...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.6.0...HEAD
+[6.6.0]: https://github.com/nicoespeon/abracadabra/compare/6.5.2...6.6.0
 [6.5.2]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...6.5.2
 [6.5.1]: https://github.com/nicoespeon/abracadabra/compare/6.5.0...6.5.1
 [6.5.0]: https://github.com/nicoespeon/abracadabra/compare/6.4.0...6.5.0
