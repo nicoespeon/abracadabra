@@ -154,6 +154,7 @@ function createVisitor(
 
     TSAsExpression(path) {
       if (!selection.isInsidePath(path)) return;
+      if (selection.isInsideNode(path.node.expression)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.

@@ -153,6 +153,24 @@ function doSomething(options: Extracted) {}`
     }
   );
 
+  testEach<{ code: Code }>(
+    "should not extract",
+    [
+      {
+        description: "left side of an as expression",
+        code: `console.log(person[cursor] as { name: string });`
+      }
+    ],
+    async ({ code }) => {
+      const editor = new InMemoryEditor(code);
+      const originalCode = editor.code;
+
+      await extractType(editor);
+
+      expect(editor.code).toBe(originalCode);
+    }
+  );
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);

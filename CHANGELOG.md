@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract on the left-side of an `as` expression will now extract the variable, not the type.
+
 ## [6.6.0] - 2021-10-14 − What's This? 🎃
 
 ### Fixed
