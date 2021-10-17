@@ -37,6 +37,7 @@ function updateCode(
         );
 
         parentPath.stop();
+        return;
       }
 
       if (t.isAssignmentExpression(parentPath.node)) {
@@ -54,6 +55,7 @@ function updateCode(
         );
 
         expressionParentPath.stop();
+        return;
       }
 
       if (isAssignedToVariable(path)) {
@@ -76,7 +78,13 @@ function updateCode(
         ]);
 
         parentPath.parentPath.stop();
+        return;
       }
+
+      parentPath.replaceWith(
+        createIfStatement(selection, node, t.expressionStatement)
+      );
+      parentPath.stop();
     })
   );
 
@@ -89,8 +97,6 @@ function createVisitor(
 ): t.Visitor {
   return {
     ConditionalExpression(path) {
-      const { parentPath } = path;
-
       if (isAssignedToVariable(path)) {
         // Enlarge selection to the whole variable declaration
         if (!selection.isInsidePath(path.parentPath.parentPath)) return;
@@ -98,13 +104,7 @@ function createVisitor(
         if (!selection.isInsidePath(path)) return;
       }
 
-      if (
-        t.isReturnStatement(parentPath.node) ||
-        t.isAssignmentExpression(parentPath.node) ||
-        isAssignedToVariable(path)
-      ) {
-        onMatch(path);
-      }
+      onMatch(path);
     }
   };
 }

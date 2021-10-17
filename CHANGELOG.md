@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract on the left-side of an `as` expression will now extract the variable, not the type.
 
+### Changed
+
+- Convert Ternary to If/Else now works on any ternary, not just the ones that have a `return` or variable assignment inside.
+
 ## [6.6.0] - 2021-10-14 − What's This? 🎃
 
 ### Fixed

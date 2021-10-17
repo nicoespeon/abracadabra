@@ -206,6 +206,19 @@ if (args.forcelink) {
 
   return mode;
 }`
+      },
+      {
+        description: "a ternary that is not returned",
+        code: `function doSomething(isValid) {
+  [cursor]isValid ? doThis() : doThat();
+}`,
+        expected: `function doSomething(isValid) {
+  if (isValid) {
+    doThis();
+  } else {
+    doThat();
+  }
+}`
       }
     ],
     async ({ code, expected }) => {
