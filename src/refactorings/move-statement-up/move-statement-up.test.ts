@@ -1,5 +1,4 @@
 import { Code, ErrorReason } from "../../editor/editor";
-import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -9,7 +8,6 @@ describe("Move Statement Up", () => {
   testEach<{
     code: Code;
     expected: Code;
-    expectedPosition: Position;
   }>(
     "should move statement up",
     [
@@ -17,9 +15,8 @@ describe("Move Statement Up", () => {
         description: "single-line statement",
         code: `console.log("I'm up");
 [cursor]console.log("I'm down");`,
-        expected: `console.log("I'm down");
-console.log("I'm up");`,
-        expectedPosition: new Position(0, 0)
+        expected: `[cursor]console.log("I'm down");
+console.log("I'm up");`
       },
       {
         description: "multi-lines statement",
@@ -28,12 +25,11 @@ console.log("I'm up");`,
 [cursor]if (isValid) {
   console.log("I'm down");
 }`,
-        expected: `if (isValid) {
+        expected: `[cursor]if (isValid) {
   console.log("I'm down");
 }
 
-console.log("I'm up");`,
-        expectedPosition: new Position(0, 0)
+console.log("I'm up");`
       },
       {
         description: "single-line statement moved above multi-lines statement",
@@ -42,12 +38,11 @@ console.log("I'm up");`,
 }
 
 [cursor]console.log("I'm down");`,
-        expected: `console.log("I'm down");
+        expected: `[cursor]console.log("I'm down");
 
 if (isValid) {
   console.log("I'm up");
-}`,
-        expectedPosition: new Position(0, 0)
+}`
       },
       {
         description: "multi-lines statement moved above multi-lines statement",
@@ -58,14 +53,13 @@ if (isValid) {
 [cursor]function saySomething() {
   console.log("I'm down");
 }`,
-        expected: `function saySomething() {
+        expected: `[cursor]function saySomething() {
   console.log("I'm down");
 }
 
 if (isValid) {
   console.log("I'm up");
-}`,
-        expectedPosition: new Position(0, 0)
+}`
       },
       {
         description: "statement inside a container",
@@ -83,15 +77,14 @@ function doSomethingElse() {
         expected: `const hello = "world";
 
 function doSomethingElse() {
-  const b = 2;
+  [cursor]const b = 2;
   const a = 1;
 
   if (isValid) {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
-}`,
-        expectedPosition: new Position(3, 2)
+}`
       },
       {
         description: "statement inside a container, cursor on object property",
@@ -109,15 +102,14 @@ function doSomethingElse() {
         expected: `const hello = "world";
 
 function doSomethingElse() {
-  const b = { foo: "bar" };
+  const b = { f[cursor]oo: "bar" };
   const a = 1;
 
   if (isValid) {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
-}`,
-        expectedPosition: new Position(3, 15)
+}`
       },
       {
         description: "statement inside a container, cursor at start of line",
@@ -135,15 +127,14 @@ function doSomethingElse() {
         expected: `const hello = "world";
 
 function doSomethingElse() {
-  const b = 2;
+[cursor]  const b = 2;
   const a = 1;
 
   if (isValid) {
     console.log("I shouldn't move");
     console.log("Me neither");
   }
-}`,
-        expectedPosition: new Position(3, 0)
+}`
       },
       {
         description: "array elements",
@@ -155,11 +146,10 @@ const data = [
 ];`,
         expected: `console.log("Should not move");
 const data = [
-  "bar",
+  [cursor]"bar",
   "foo",
   "baz"
-];`,
-        expectedPosition: new Position(2, 2)
+];`
       },
       {
         description: "object properties",
@@ -171,35 +161,31 @@ const data = {
 };`,
         expected: `console.log("Should not move");
 const data = {
-  bar: "bar",
+  [cursor]bar: "bar",
   foo: "foo",
   baz: "baz"
-};`,
-        expectedPosition: new Position(2, 2)
+};`
       },
       {
         description: "array elements, one-liner",
         code: `console.log("Should move in this scenario");
 const data = ["foo", [cursor]"bar", "baz"];`,
-        expected: `const data = ["foo", "bar", "baz"];
-console.log("Should move in this scenario");`,
-        expectedPosition: new Position(0, 21)
+        expected: `const data = ["foo", [cursor]"bar", "baz"];
+console.log("Should move in this scenario");`
       },
       {
         description: "object properties, one-liner",
         code: `console.log("Should move in this scenario");
 const data = { f[cursor]oo: "foo", bar: "bar" };`,
-        expected: `const data = { foo: "foo", bar: "bar" };
-console.log("Should move in this scenario");`,
-        expectedPosition: new Position(0, 16)
+        expected: `const data = { f[cursor]oo: "foo", bar: "bar" };
+console.log("Should move in this scenario");`
       },
       {
         description: "object properties, one-liner, cursor on second",
         code: `console.log("Should move in this scenario");
 const data = { foo: "foo", b[cursor]ar: "bar" };`,
-        expected: `const data = { foo: "foo", bar: "bar" };
-console.log("Should move in this scenario");`,
-        expectedPosition: new Position(0, 28)
+        expected: `const data = { foo: "foo", b[cursor]ar: "bar" };
+console.log("Should move in this scenario");`
       },
       {
         description: "object properties, cursor after comma",
@@ -211,11 +197,10 @@ const data = {
 };`,
         expected: `console.log("Should not move");
 const data = {
-  bar: "bar",
+  bar: "bar",[cursor]
   foo: "foo",
   baz: "baz"
-};`,
-        expectedPosition: new Position(2, 13)
+};`
       },
       {
         description: "object property, respecting trailing commas",
@@ -226,10 +211,9 @@ const data = {
 };`,
         expected: `const data = {
   foo: "foo",
-  baz: "baz",
+  [cursor]baz: "baz",
   bar: "bar"
-};`,
-        expectedPosition: new Position(2, 2)
+};`
       },
       {
         description: "object method",
@@ -243,13 +227,12 @@ const data = {
         expected: `const data = {
   foo: "foo",
 
-  bar() {
+  [cursor]bar() {
     return "bar";
   },
 
   baz: "baz"
-};`,
-        expectedPosition: new Position(3, 2)
+};`
       },
       {
         description: "class method",
@@ -263,15 +246,14 @@ const data = {
   }
 }`,
         expected: `class Node {
-  getSize() {
+  [cursor]getSize() {
     return 1;
   }
 
   getName() {
     return "foo";
   }
-}`,
-        expectedPosition: new Position(1, 2)
+}`
       },
       {
         description: "class property",
@@ -283,13 +265,12 @@ const data = {
   }
 }`,
         expected: `class Node {
-  getSize() {
+  [cursor]getSize() {
     return 1;
   }
 
   name = "foo";
-}`,
-        expectedPosition: new Position(1, 2)
+}`
       },
       {
         description: "class method without space between methods",
@@ -302,14 +283,13 @@ const data = {
   }
 }`,
         expected: `class Node {
-  getSize() {
+  [cursor]getSize() {
     return 1;
   }
   getName() {
     return "foo";
   }
-}`,
-        expectedPosition: new Position(1, 2)
+}`
       },
       {
         description: "object method without space between methods",
@@ -322,14 +302,13 @@ const data = {
   }
 }`,
         expected: `const node = {
-  getSize() {
+  [cursor]getSize() {
     return 1;
   },
   getName() {
     return "foo";
   }
-}`,
-        expectedPosition: new Position(1, 2)
+}`
       },
       {
         description: "three functions, cursor on the middle one",
@@ -344,7 +323,7 @@ const data = {
 function sayByeBye() {
   console.log("ByeBye")
 }`,
-        expected: `function sayBye() {
+        expected: `[cursor]function sayBye() {
   console.log("Bye")
 }
 
@@ -354,8 +333,7 @@ function sayHello() {
 
 function sayByeBye() {
   console.log("ByeBye")
-}`,
-        expectedPosition: new Position(0, 0)
+}`
       },
       {
         description: "three functions with comments",
@@ -379,7 +357,7 @@ function sayByeBye() {
  * Say bye to people
  */
 // Farewell, friends
-function sayBye() {
+[cursor]function sayBye() {
   console.log("Bye")
 }
 
@@ -390,16 +368,17 @@ function sayHello() {
 
 function sayByeBye() {
   console.log("ByeBye")
-}`,
-        expectedPosition: new Position(4, 0)
+}`
       }
     ],
-    async ({ code, expected, expectedPosition }) => {
+    async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
       await moveStatementUp(editor);
 
-      expect(editor.code).toBe(expected);
+      const { code: expectedCode, position: expectedPosition } =
+        new InMemoryEditor(expected);
+      expect(editor.code).toBe(expectedCode);
       expect(editor.position).toStrictEqual(expectedPosition);
     }
   );
