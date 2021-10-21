@@ -440,8 +440,6 @@ class Path {
     await moveStatementUp(editor);
 
     expect(editor.code).toBe(originalCode);
-
-    expect(editor.code).toBe(originalCode);
   });
 
   it("should show an error message for multi-lines selections", async () => {
