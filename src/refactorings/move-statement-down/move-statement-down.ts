@@ -44,7 +44,8 @@ function updateCode(
     ClassMethod: visitPath,
     ClassProperty: visitPath,
     ArrayExpression: visitPath,
-    Literal: visitPath
+    Literal: visitPath,
+    JSXElement: visitPath
   });
 
   return { ...result, isLastStatement, newStatementPosition };
@@ -56,17 +57,23 @@ function updateCode(
     if (hasChildWhichMatchesSelection(path, selection)) return;
     if (typeof path.key !== "number") return;
 
-    const pathBelowKey = path.key + 1;
     const container = new Array().concat(path.container);
-    const hasPathBelow = pathBelowKey < container.length;
-    if (!hasPathBelow) {
+    if (path.key >= container.length - 1) {
       isLastStatement = true;
       return;
     }
 
-    const pathBelow = path.getSibling(pathBelowKey);
-    if (!t.isSelectableNode(pathBelow.node)) return;
     if (!t.isSelectableNode(path.node)) return;
+
+    let pathBelow = getSelectablePathBelow(path);
+
+    if (pathBelow?.isJSXText()) {
+      if (pathBelow.node.value.trim() === "") {
+        pathBelow = getSelectablePathBelow(path, path.key + 1);
+      }
+    }
+
+    if (!pathBelow) return;
 
     const nodeSelection = Selection.fromAST(path.node.loc);
     const nodeBelowSelection = Selection.fromAST(pathBelow.node.loc);
@@ -91,6 +98,7 @@ function updateCode(
       if (
         !path.isClassMethod() &&
         !path.isObjectMethod() &&
+        // @ts-expect-error Not sure why it complains about types, probably inferrence issue
         !Position.hasSpaceBetweenPaths(path, pathBelow)
       ) {
         newStatementPosition = newStatementPosition.putAtNextLine();
@@ -119,6 +127,24 @@ function updateCode(
   }
 }
 
+function getSelectablePathBelow(
+  path: t.NodePath,
+  key: number | string = path.key
+): t.SelectablePath | undefined {
+  // Not implemented yet
+  if (typeof key === "string") return;
+
+  const pathBelowKey = key + 1;
+  const container = new Array().concat(path.container);
+  const hasPathBelow = pathBelowKey < container.length;
+  if (!hasPathBelow) {
+    return;
+  }
+
+  const pathBelow = path.getSibling(pathBelowKey);
+  return t.isSelectablePath(pathBelow) ? pathBelow : undefined;
+}
+
 function hasChildWhichMatchesSelection(
   path: t.NodePath,
   selection: Selection
@@ -132,7 +158,8 @@ function hasChildWhichMatchesSelection(
     ClassMethod: visitPath,
     ClassProperty: visitPath,
     ArrayExpression: visitPath,
-    Literal: visitPath
+    Literal: visitPath,
+    JSXElement: visitPath
   });
 
   return result;

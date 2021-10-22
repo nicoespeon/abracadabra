@@ -374,6 +374,21 @@ function sayBye() {
 function sayByeBye() {
   console.log("ByeBye")
 }`
+      },
+      {
+        description: "JSX statements",
+        code: `function App() {
+  return <>
+    [cursor]<p>How are you?</p>
+    <h1>Hello!</h1>
+  </>;
+}`,
+        expected: `function App() {
+  return <>
+    <h1>Hello!</h1>
+    [cursor]<p>How are you?</p>
+  </>;
+}`
       }
     ],
     async ({ code, expected }) => {
