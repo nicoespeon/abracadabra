@@ -436,6 +436,20 @@ class Path {
     expect(editor.code).toBe(originalCode);
   });
 
+  it("should not move the JSX element if it's the only one", async () => {
+    const code = `function App() {
+  return <>
+    [cursor]<h1>Hello!</h1>
+  </>;
+}`;
+    const editor = new InMemoryEditor(code);
+    const originalCode = editor.code;
+
+    await moveStatementUp(editor);
+
+    expect(editor.code).toBe(originalCode);
+  });
+
   it("should show an error message for multi-lines selections", async () => {
     const code = `console.log("First");
 [start]console.log("Second");
