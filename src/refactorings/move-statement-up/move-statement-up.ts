@@ -44,7 +44,8 @@ function updateCode(
     ClassMethod: visitPath,
     ClassProperty: visitPath,
     ArrayExpression: visitPath,
-    Literal: visitPath
+    Literal: visitPath,
+    JSXElement: visitPath
   });
 
   return { ...result, isFirstStatement, newStatementPosition };
@@ -56,14 +57,20 @@ function updateCode(
     if (hasChildWhichMatchesSelection(path, selection)) return;
     if (typeof path.key !== "number") return;
 
-    const pathAboveKey = path.key - 1;
-    if (pathAboveKey < 0) {
+    if (path.key === 0) {
       isFirstStatement = true;
       return;
     }
 
-    const pathAbove = path.getSibling(pathAboveKey);
-    if (!t.isSelectableNode(pathAbove.node)) return;
+    let pathAbove = getSelectablePathAbove(path);
+
+    if (pathAbove?.isJSXText()) {
+      if (pathAbove.node.value.trim() === "") {
+        pathAbove = getSelectablePathAbove(path, path.key - 1);
+      }
+    }
+
+    if (!pathAbove) return;
 
     newStatementPosition = Position.fromAST(
       pathAbove.node.loc.start
@@ -106,6 +113,20 @@ function updateCode(
   }
 }
 
+function getSelectablePathAbove(
+  path: t.NodePath,
+  key: number | string = path.key
+): t.SelectablePath | undefined {
+  // Not implemented yet
+  if (typeof key === "string") return;
+
+  const pathAboveKey = key - 1;
+  if (pathAboveKey < 0) return;
+
+  const pathAbove = path.getSibling(pathAboveKey);
+  return t.isSelectablePath(pathAbove) ? pathAbove : undefined;
+}
+
 function hasComments<T extends t.NodePath>(
   path: T
 ): path is T & { node: { leadingComments: t.Comment[] } } {
@@ -125,7 +146,8 @@ function hasChildWhichMatchesSelection(
     ClassMethod: visitPath,
     ClassProperty: visitPath,
     ArrayExpression: visitPath,
-    Literal: visitPath
+    Literal: visitPath,
+    JSXElement: visitPath
   });
 
   return result;
