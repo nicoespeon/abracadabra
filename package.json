@@ -126,7 +126,7 @@
     "onCommand:abracadabra.moveStatementDown",
     "onCommand:abracadabra.moveStatementUp",
     "onCommand:abracadabra.moveToExistingFile",
-    "onCommand:abracadabra.negateExpression",
+    "onCommand:abracadabra.invertBooleanLogic",
     "onCommand:abracadabra.react.convertToPureComponent",
     "onCommand:abracadabra.removeDeadCode",
     "onCommand:abracadabra.removeRedundantElse",
@@ -266,8 +266,8 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.negateExpression",
-        "title": "Negate Expression",
+        "command": "abracadabra.invertBooleanLogic",
+        "title": "Invert Boolean Logic",
         "category": "Abracadabra"
       },
       {
@@ -473,7 +473,7 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
-        "abracadabra.negateExpression.showInQuickFix": {
+        "abracadabra.invertBooleanLogic.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -983,23 +983,23 @@
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.negateExpression",
+          "command": "abracadabra.invertBooleanLogic",
           "when": "editorLangId == javascript"
         },
         {
-          "command": "abracadabra.negateExpression",
+          "command": "abracadabra.invertBooleanLogic",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "abracadabra.negateExpression",
+          "command": "abracadabra.invertBooleanLogic",
           "when": "editorLangId == typescript"
         },
         {
-          "command": "abracadabra.negateExpression",
+          "command": "abracadabra.invertBooleanLogic",
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.negateExpression",
+          "command": "abracadabra.invertBooleanLogic",
           "when": "editorLangId == vue"
         },
         {

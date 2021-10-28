@@ -27,7 +27,7 @@ import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
 import moveToExistingFile from "./refactorings/move-to-existing-file";
-import negateExpression from "./refactorings/negate-expression";
+import invertBooleanLogic from "./refactorings/invert-boolean-logic";
 import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
@@ -96,7 +96,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       liftUpConditional,
       mergeIfStatements,
       mergeWithPreviousIfStatement,
-      negateExpression,
+      invertBooleanLogic,
       removeDeadCode,
       removeRedundantElse,
       replaceBinaryWithAssignment,

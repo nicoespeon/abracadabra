@@ -4,17 +4,17 @@ import * as t from "../../ast";
 
 export {
   createVisitor as canNegateExpression,
-  negateExpression,
+  invertBooleanLogic,
   getNegatedOperator
 };
 export { getNegatedBinaryOperator };
 
-async function negateExpression(editor: Editor) {
+async function invertBooleanLogic(editor: Editor) {
   const { code, selection } = editor;
   const expression = findNegatableExpression(t.parse(code), selection);
 
   if (!expression) {
-    editor.showError(ErrorReason.DidNotFindNegatableExpression);
+    editor.showError(ErrorReason.DidNotFindInvertableBooleanLogic);
     return;
   }
 
@@ -63,7 +63,7 @@ function createVisitor(
       // If parent is unary expression we don't go further to double-negate it.
       if (t.isUnaryExpression(parent)) return;
 
-      // E.g. `const foo = bar || "default"` => expression is not negatable
+      // E.g. `const foo = bar || "default"` => expression is not invertable
       if (t.isVariableDeclarator(parent)) return;
 
       // E.g. `if (!this.isValid && isCorrect)` => don't match `!this.isValid`
@@ -97,7 +97,7 @@ function hasChildWhichMatchesSelection(
       // If parent is unary expression we don't go further to double-negate it.
       if (t.isUnaryExpression(parent)) return;
 
-      // E.g. `const foo = bar || "default"` => expression is not negatable
+      // E.g. `const foo = bar || "default"` => expression is not invertable
       if (t.isVariableDeclarator(parent)) return;
 
       // E.g. `if (!this.isValid && isCorrect)` => don't match `!this.isValid`

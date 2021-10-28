@@ -4,9 +4,12 @@ import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
-import { negateExpression, canNegateExpression } from "./negate-expression";
+import {
+  invertBooleanLogic,
+  canNegateExpression
+} from "./invert-boolean-logic";
 
-describe("Negate Expression", () => {
+describe("Invert Boolean Logic", () => {
   testEach<{ code: Code }>(
     "should select expression if",
     [
@@ -30,7 +33,7 @@ describe("Negate Expression", () => {
     async ({ code }) => {
       const editor = new InMemoryEditor(code);
 
-      await negateExpression(editor);
+      await invertBooleanLogic(editor);
 
       expect(editor.code).toBe(`if (!(a != b)) {}`);
     }
@@ -40,7 +43,7 @@ describe("Negate Expression", () => {
     code: Code;
     expected: Code;
   }>(
-    "should negate expression",
+    "should invert expression",
     [
       {
         description: "loose equality",
@@ -93,12 +96,12 @@ describe("Negate Expression", () => {
         expected: "if (!(a != b && b != c)) {}"
       },
       {
-        description: "already negated expression",
+        description: "already inverted expression",
         code: "if ([cursor]!(a != b && b != c)) {}",
         expected: "if (a == b || b == c) {}"
       },
       {
-        description: "already negated expression, multi-line",
+        description: "already inverted expression, multi-line",
         code: `if ([cursor]!(
   a != b &&
   b != c
@@ -111,17 +114,17 @@ describe("Negate Expression", () => {
         expected: "if (!(!isValid && !isCorrect)) {}"
       },
       {
-        description: "negated identifiers (boolean values)",
+        description: "inverted identifiers (boolean values)",
         code: "if ([cursor]!isValid || isCorrect) {}",
         expected: "if (!(isValid && !isCorrect)) {}"
       },
       {
-        description: "3+ negated identifiers, cursor on last identifier",
+        description: "3+ inverted identifiers, cursor on last identifier",
         code: "if (!isValid && !isSelected && !isVI[cursor]P) {}",
         expected: "if (!(isValid || isSelected || isVIP)) {}"
       },
       {
-        description: "non-negatable operators",
+        description: "non-invertable operators",
         code: "if ([cursor]a + b > 0) {}",
         expected: "if (!(a + b <= 0)) {}"
       },
@@ -132,7 +135,7 @@ describe("Negate Expression", () => {
       },
       {
         description:
-          "logical expression with cursor on negated member expression",
+          "logical expression with cursor on inverted member expression",
         code: "if (!this.curren[cursor]tContext && isBackward) {}",
         expected: "if (!(this.currentContext || !isBackward)) {}"
       },
@@ -153,7 +156,7 @@ describe("Negate Expression", () => {
       },
       {
         description:
-          "whole logical expression if cursor is on negated identifier",
+          "whole logical expression if cursor is on inverted identifier",
         code: "if (!isVal[cursor]id || b == c) {}",
         expected: "if (!(isValid && b != c)) {}"
       }
@@ -161,38 +164,38 @@ describe("Negate Expression", () => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
-      await negateExpression(editor);
+      await invertBooleanLogic(editor);
 
       expect(editor.code).toBe(expected);
     }
   );
 
-  it("should show an error message if selection can't be negated", async () => {
-    const code = `console.log("Nothing to negate here!")`;
+  it("should show an error message if selection can't be inverted", async () => {
+    const code = `console.log("Nothing to invert here!")`;
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
-    await negateExpression(editor);
+    await invertBooleanLogic(editor);
 
     expect(editor.showError).toBeCalledWith(
-      ErrorReason.DidNotFindNegatableExpression
+      ErrorReason.DidNotFindInvertableBooleanLogic
     );
   });
 
-  it("should not negate a logical `||` used to fallback a variable declaration", async () => {
+  it("should not invert a logical `||` used to fallback a variable declaration", async () => {
     const code = `const foo = bar |[cursor]| "default";`;
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 
-    await negateExpression(editor);
+    await invertBooleanLogic(editor);
 
     expect(editor.showError).toBeCalledWith(
-      ErrorReason.DidNotFindNegatableExpression
+      ErrorReason.DidNotFindInvertableBooleanLogic
     );
   });
 });
 
-describe("Finding negatable expression (quick fix)", () => {
+describe("Finding invertable expression (quick fix)", () => {
   testEach(
     "should match against",
     [

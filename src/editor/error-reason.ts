@@ -29,7 +29,7 @@ enum ErrorReason {
   DidNotFindExtractableCode,
   DidNotFindInlinableCode,
   DidNotFindInlinableCodeIdentifiers,
-  DidNotFindNegatableExpression,
+  DidNotFindInvertableBooleanLogic,
   DidNotFindRedundantElse,
   DidNotFindIfElseToFlip,
   DidNotFindTernaryToFlip,
@@ -122,7 +122,7 @@ function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindDeadCode:
       return didNotFind("dead code to delete");
-    
+
     case ErrorReason.DidNotFindForEachToConvertToForOf:
       return didNotFind("a for each to convert");
 
@@ -147,8 +147,8 @@ function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFindInlinableCodeIdentifiers:
       return "I didn't find references of this variable in the code 🤔";
 
-    case ErrorReason.DidNotFindNegatableExpression:
-      return didNotFind("a valid expression to negate");
+    case ErrorReason.DidNotFindInvertableBooleanLogic:
+      return didNotFind("a boolean logic to invert");
 
     case ErrorReason.DidNotFindRedundantElse:
       return didNotFind("a redundant else to remove");

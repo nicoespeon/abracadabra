@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Convert Ternary to If/Else now works on any ternary, not just the ones that have a `return` or variable assignment inside.
 - Move Statements now work on JSX Elements too! There will probably be edge-cases to iron out over time, but it's good to know that you can swap 2 JSX statements with a single shortcut ⚡
+- _Negate Expression_ name was misleading. It was renamed into _Invert Boolean Logic_ as per [@florivall recommendation](https://github.com/nicoespeon/abracadabra/issues/422) 🙏
 
 ## [6.6.0] - 2021-10-14 − What's This? 🎃
 

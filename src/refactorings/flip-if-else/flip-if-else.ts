@@ -3,7 +3,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { last, allButLast } from "../../array";
 
-import { getNegatedBinaryOperator } from "../negate-expression/negate-expression";
+import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
 export { flipIfElse, createVisitor as hasIfElseToFlip };
 

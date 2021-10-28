@@ -23,7 +23,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Move Statement Up](#move-statement-up)
   1. [Move Statement Down](#move-statement-down)
 - Simplifying Conditional Logic:
-  1. [Negate Expression](#negate-expression)
+  1. [Invert Boolean Logic](#invert-boolean-logic)
   1. [Remove Redundant Else](#remove-redundant-else)
   1. [Simplify Ternary](#simplify-ternary)
   1. [Flip If/Else](#flip-ifelse)
@@ -170,17 +170,19 @@ _Move Statement Up_ and _Move Statement Down_ also work on object properties. Th
 
 ## Simplifying Conditional Logic
 
-### Negate Expression
+### Invert Boolean Logic
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-Negates the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
+Inverts the logical expression while preserving behaviour. It can be useful to tweak a logical expression before extracting meaningful chunks out of it.
 
-![][demo-negate-expression]
+This refactoring follows [De Morgan's laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws).
 
-It will negate the closest expression from your cursor or partial selection.
+![][demo-invert-boolean-logic]
 
-![][demo-negate-expression-partial]
+It will invert the closest expression from your cursor or partial selection.
+
+![][demo-invert-boolean-logic-partial]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -548,8 +550,8 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-generic-type.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/inline-variable.gif?raw=true
 [demo-inline-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/inline-function.gif?raw=true
-[demo-negate-expression]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/negate-expression.gif?raw=true
-[demo-negate-expression-partial]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/negate-expression-partial.gif?raw=true
+[demo-invert-boolean-logic]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/invert-boolean-logic.gif?raw=true
+[demo-invert-boolean-logic-partial]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/invert-boolean-logic-partial.gif?raw=true
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-redundant-else.gif?raw=true
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-if-else.gif?raw=true
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-ternary.gif?raw=true
