@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@types/babel__traverse": "7.14.2",
-    "@types/chai": "4.2.21",
+    "@types/chai": "4.2.22",
     "@types/jest": "27.0.2",
     "@types/jscodeshift": "0.11.2",
     "@types/mocha": "9.0.0",
