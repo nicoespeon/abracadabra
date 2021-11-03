@@ -32,7 +32,7 @@ function updateCode(
     ast,
     createVisitor(selection, (path, id, declaration) => {
       if (t.isSelectableNode(path.node)) {
-        // "interface X" => 10 characters before "X"
+        // "interface X" => 10 characters before "X"
         const interfaceIdentifierOffset = 10;
 
         interfaceIdentifierPosition = Position.fromAST(path.node.loc.end)
@@ -61,6 +61,15 @@ function createVisitor(
 ): t.Visitor {
   return {
     ClassDeclaration(path) {
+      // It seems a class declaration inside a named export may have no loc.
+      // Use the named export loc in that situation.
+      if (
+        t.isExportNamedDeclaration(path.parent) &&
+        !t.isSelectableNode(path.node)
+      ) {
+        path.node.loc = path.parent.loc;
+      }
+
       if (!selection.isInsidePath(path)) return;
 
       const methods: t.ClassMethod[] = path.node.body.body.filter(

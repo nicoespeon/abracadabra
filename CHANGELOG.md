@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Extract on the left-side of an `as` expression will now extract the variable, not the type.
+- Extract Interface now works on exported class declarations too! Thanks @automatensalat for raising it 🙏
 
 ### Changed
 

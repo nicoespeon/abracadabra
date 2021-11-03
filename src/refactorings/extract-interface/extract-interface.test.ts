@@ -188,6 +188,28 @@ class AnotherPosition implements Extracted {
 interface Extracted {
   isEqualTo(position: Position): boolean;
 }`
+      },
+      {
+        description: "an exported class",
+        code: `export class Foo[cursor] {
+  constructor(readonly numbers: number[]) {}
+
+  bar(): number {
+    return this.numbers.length;
+  }
+}`,
+        expected: `export class Foo implements Extracted {
+  constructor(readonly numbers: number[]) {}
+
+  bar(): number {
+    return this.numbers.length;
+  }
+}
+
+interface Extracted {
+  readonly numbers: number[];
+  bar(): number;
+}`
       }
     ],
     async ({ code, expected }) => {
