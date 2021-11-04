@@ -140,7 +140,10 @@ class Occurrence<T extends t.Node = t.Node> {
     const parent = parentPath ? parentPath.node : this.path.node;
     if (!parent.loc) return this.selection.start;
 
-    return Position.fromAST(parent.loc.start);
+    const firstLeadingComment = parent.leadingComments?.[0];
+    return firstLeadingComment
+      ? Position.fromAST(firstLeadingComment.loc.start)
+      : Position.fromAST(parent.loc.start);
   }
 
   toVariableDeclaration(

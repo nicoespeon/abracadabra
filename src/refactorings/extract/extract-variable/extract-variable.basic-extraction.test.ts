@@ -46,6 +46,24 @@ console.log(hello);`);
     }`);
   });
 
+  it("should extract above the leading comments", async () => {
+    const code = `// This is a comment
+/**
+ * Extracted variable should be above the leading comments.
+ */
+console.log([cursor]"Hello!");`;
+    const editor = new InMemoryEditor(code);
+
+    await extractVariable(editor);
+
+    expect(editor.code).toBe(`const hello = "Hello!";
+// This is a comment
+/**
+ * Extracted variable should be above the leading comments.
+ */
+console.log(hello);`);
+  });
+
   describe("invalid selection", () => {
     it("should not extract anything", async () => {
       const editor = new InMemoryEditor(`console.lo[cursor]g("Hello!");`);
