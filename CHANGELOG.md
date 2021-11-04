@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.7.0] - 2021-11-04 − Extract Like Me 🧞‍♂️
+
 ### Fixed
 
 - Extract on the left-side of an `as` expression will now extract the variable, not the type.
@@ -1495,7 +1497,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.6.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.7.0...HEAD
+[6.7.0]: https://github.com/nicoespeon/abracadabra/compare/6.6.0...6.7.0
 [6.6.0]: https://github.com/nicoespeon/abracadabra/compare/6.5.2...6.6.0
 [6.5.2]: https://github.com/nicoespeon/abracadabra/compare/6.5.1...6.5.2
 [6.5.1]: https://github.com/nicoespeon/abracadabra/compare/6.5.0...6.5.1
