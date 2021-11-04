@@ -16,14 +16,17 @@
         "--extensionTestsPath=${workspaceFolder}/out/test/mocha-test-runner"
       ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "npm: pretest:contract",
+      "preLaunchTask": "npm: pretest:contract"
     },
     {
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "${workspaceFolder}/src/playground"
+      ],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "npm: build"
     }

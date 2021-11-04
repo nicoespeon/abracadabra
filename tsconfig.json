@@ -19,5 +19,11 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "out", ".vscode-test", "gitignore"]
+  "exclude": [
+    "node_modules",
+    "out",
+    ".vscode-test",
+    "gitignore",
+    "src/playground"
+  ]
 }
