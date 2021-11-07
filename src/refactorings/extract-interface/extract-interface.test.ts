@@ -210,6 +210,19 @@ interface Extracted {
   readonly numbers: number[];
   bar(): number;
 }`
+      },
+      {
+        description: "a generic class",
+        code: `class Foo<T extends string>[cursor] {
+  constructor(readonly items: T[]) {}
+}`,
+        expected: `class Foo<T extends string> implements Extracted<T> {
+  constructor(readonly items: T[]) {}
+}
+
+interface Extracted<T extends string> {
+  readonly items: T[];
+}`
       }
     ],
     async ({ code, expected }) => {

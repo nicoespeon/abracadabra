@@ -43,7 +43,19 @@ function updateCode(
           .addCharacters(interfaceIdentifierOffset);
       }
 
-      path.node.implements = [t.classImplements(id)];
+      if (declaration.typeParameters) {
+        const typeParameters = t.tsTypeParameterInstantiation(
+          declaration.typeParameters.params.map((p) =>
+            t.tsTypeReference(t.identifier(p.name))
+          )
+        );
+
+        path.node.implements = [
+          t.tsExpressionWithTypeArguments(id, typeParameters)
+        ];
+      } else {
+        path.node.implements = [t.classImplements(id)];
+      }
       path.insertAfter(declaration);
     })
   );
@@ -142,10 +154,16 @@ function createVisitor(
           return result;
         });
 
+      const typeParameters = t.isTSTypeParameterDeclaration(
+        path.node.typeParameters
+      )
+        ? path.node.typeParameters
+        : undefined;
+
       const interfaceIdentifier = t.identifier("Extracted");
       const interfaceDeclaration = t.tsInterfaceDeclaration(
         interfaceIdentifier,
-        undefined,
+        typeParameters,
         undefined,
         t.tsInterfaceBody([
           ...classProperties,
