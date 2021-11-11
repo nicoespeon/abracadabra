@@ -31,6 +31,12 @@ describe("Extract Variable - Patterns we can't extract", () => {
       {
         description: "a generic type parameter instantiation",
         code: `useState<[start]"all" | "local"[end]>("all");`
+      },
+      {
+        description: "a return statement with no argument",
+        code: `function addNumbers(arr: number[]): number {
+  return[cursor];
+}`
       }
     ],
     async ({ code }) => {

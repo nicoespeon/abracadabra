@@ -66,6 +66,16 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
 
       if (!selection.isInsidePath(path)) return;
 
+      if (path.isReturnStatement()) {
+        const argumentPath = path.get("argument");
+        if (Array.isArray(argumentPath)) return;
+        if (argumentPath.node === null) return;
+
+        // Expand selection to `return`, but extract the returned value.
+        path = argumentPath;
+      }
+
+      if (!t.isSelectablePath(path)) return;
       if (!isExtractableContext(path.parent)) return;
       if (!isExtractable(path)) return;
       if (isClassIdentifier(path)) return;

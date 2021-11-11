@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Interface now preserves generic parameter declaration, thanks to @automatensalat who reported and fixed the bug!
 
+### Changed
+
+- Extract Variable can be executed from the `return` keyword. It will extract the returned value just as if the cursor was on the value already. It also makes it more flexible, so extraction will work even if you have the return statement semicolon in your selection. Thanks @automatensalat for suggesting this one!
+
 ## [6.7.1]
 
 No change but fixed the declared VS Code engine version so we can deploy again.

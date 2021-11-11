@@ -218,15 +218,13 @@ class Logger {
       },
       {
         description: "an if statement (whole statement)",
-        code:
-          "if ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
+        code: "if ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
         expected: `const extracted = parents.length > 0 && type === 'refactor';
 if (extracted) doSomething();`
       },
       {
         description: "an if statement (part of it)",
-        code:
-          "if ([start]parents.length > 0[end] && type === 'refactor') doSomething();",
+        code: "if ([start]parents.length > 0[end] && type === 'refactor') doSomething();",
         expected: `const extracted = parents.length > 0;
 if (extracted && type === 'refactor') doSomething();`
       },
@@ -270,8 +268,7 @@ if (isMorning) {
       },
       {
         description: "a while statement",
-        code:
-          "while ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
+        code: "while ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
         expected: `const extracted = parents.length > 0 && type === 'refactor';
 while (extracted) doSomething();`
       },
@@ -506,6 +503,26 @@ for (var i = 0; i < items.length; i++) {}`
 	};
 	const { someArray } = myVar;
 	console.log(someArray[0].somethingNested);
+}`
+      },
+      {
+        description: "cursor on return keyword",
+        code: `function addNumbers(arr: number[]): number {
+  ret[cursor]urn arr.reduce((sum, current) => sum + current, 0);
+}`,
+        expected: `function addNumbers(arr: number[]): number {
+  const extracted = arr.reduce((sum, current) => sum + current, 0);
+  return extracted;
+}`
+      },
+      {
+        description: "whole return statement selected, including semicolon",
+        code: `function addNumbers(arr: number[]): number {
+  [start]return arr.reduce((sum, current) => sum + current, 0);[end]
+}`,
+        expected: `function addNumbers(arr: number[]): number {
+  const extracted = arr.reduce((sum, current) => sum + current, 0);
+  return extracted;
 }`
       }
     ],
