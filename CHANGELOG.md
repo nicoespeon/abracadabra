@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extract Interface now preserves generic parameter declaration, thanks to @automatensalat who reported and fixed the bug!
+
 ## [6.7.1]
 
 No change but fixed the declared VS Code engine version so we can deploy again.
