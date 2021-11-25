@@ -9,7 +9,7 @@ const config: RefactoringWithActionProvider = {
   command: {
     key: "createFactoryForConstructor",
     operation: createFactoryForConstructor,
-    title: "Create Factory For Constructor"
+    title: "Create Factory for Constructor"
   },
   actionProvider: {
     message: "Create factory for constructor",
