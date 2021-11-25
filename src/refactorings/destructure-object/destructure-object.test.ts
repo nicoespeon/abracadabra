@@ -148,6 +148,32 @@ const MyComponent = (
 ) => {
   return <div>{name} ({age})</div>;
 };`
+      {
+        description: "param is spread in a React component",
+        code: `type Props = {
+  a: string;
+  b: number;
+  c: number;
+}
+
+const MyComp = (props[cursor]: Props) => {
+  return <div {...props} />;
+}`,
+        expected: `type Props = {
+  a: string;
+  b: number;
+  c: number;
+}
+
+const MyComp = (
+  {
+    a,
+    b,
+    c
+  }: Props
+) => {
+  return <div a={a} b={b} c={c} />;
+}`
       }
     ],
     async ({ code, expected }) => {

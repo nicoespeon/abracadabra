@@ -28,8 +28,20 @@ function updateCode(code: Code, selection: Selection): t.Transformed {
           path.scope.getBinding(path.node.name)?.referencePaths ?? [];
         referencePaths.forEach((reference) => {
           const { parentPath } = reference;
+
           if (parentPath?.isMemberExpression()) {
             parentPath.replaceWith(parentPath.node.property);
+          }
+
+          // Replace JSX spread attribute with individual attributes
+          if (parentPath?.isJSXSpreadAttribute()) {
+            const attributes: t.JSXAttribute[] = keys.map((key) => {
+              return t.jsxAttribute(
+                t.jsxIdentifier(key),
+                t.jsxExpressionContainer(t.identifier(key))
+              );
+            });
+            parentPath.replaceWithMultiple(attributes);
           }
         });
 
