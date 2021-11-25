@@ -54,6 +54,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Replace Binary with Assignment](#replace-binary-with-assignment)
   1. [Convert For-Loop to ForEach](#convert-for-loop-to-foreach)
   1. [Convert ForEach to For-Of](#convert-foreach-to-for-of)
+  1. [Create Factory for Constructor](#create-factory-for-constructor)
 - Specific to TypeScript:
   1. [Extract Generic Type](#extract-generic-type)
   1. [Extract Interface](#extract-interface)
@@ -491,6 +492,18 @@ When it's possible, it converts a `forEach()` into a `for-of` loop.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Create Factory for Constructor
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Create a factory function to instantiate the selected class. This can be useful when you want to expose a regular function while using a class behind the hood.
+
+Regular functions don't need `new` to be invoked, which makes them easier to compose around.
+
+![][demo-create-factory-for-constructor]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ## Specific to TypeScript
 
 ### Extract Generic Type
@@ -579,6 +592,7 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
 [demo-convert-for-to-for-each]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-to-for-each.gif?raw=true
 [demo-convert-for-each-to-for-of]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-each-to-for-of.gif?raw=true
+[demo-create-factory-for-constructor]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/create-factory-for-constructor.gif?raw=true
 [demo-move-to-existing-file]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-to-existing-file.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-dead-code.gif?raw=true
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-pure-component.gif?raw=true
