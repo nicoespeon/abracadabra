@@ -54,6 +54,11 @@ function createOccurrence(
   if (path.isStringLiteral()) {
     if (path.parentPath.isJSX()) {
       if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+        if (path.parentPath.isJSXExpressionContainer()) {
+          path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
+          return createOccurrence(path, loc, selection);
+        }
+
         path.replaceWith(
           t.jsxExpressionContainer(t.convertStringToTemplateLiteral(path, loc))
         );
@@ -373,8 +378,13 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
       ]
     );
 
+    // If we had to wrap the expression in a container, there's no loc
+    // In this case, we need to add the braces in the returned code.
+    const isWrappedInJSXContainerWeCreated =
+      this.path.parentPath.isJSXExpressionContainer() && !this.path.parent.loc;
+
     return {
-      code: this.path.parentPath.isJSX()
+      code: isWrappedInJSXContainerWeCreated
         ? t.print(t.jsxExpressionContainer(newTemplateLiteral))
         : t.print(newTemplateLiteral),
       selection: this.selection
@@ -408,10 +418,13 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
   get positionOnExtractedId(): Position {
     // ${ is inserted before the Identifier
     const openingInterpolationLength = 2;
+    const jsxOffset = this.path.parentPath.isJSXExpressionContainer() ? 1 : 0;
 
     return new Position(
       this.selection.start.line + this.selection.height + 1,
-      this.userSelection.start.character + openingInterpolationLength
+      this.userSelection.start.character +
+        openingInterpolationLength +
+        jsxOffset
     );
   }
 

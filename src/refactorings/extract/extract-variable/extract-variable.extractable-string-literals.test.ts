@@ -68,6 +68,17 @@ console.log(\`Hello \${world}! How are you doing?\`);`,
 }`
       },
       {
+        description:
+          "a selected part of a string literal in a JSX Expression Container",
+        code: `function Hello() {
+  return <World name={"[start]John[end] Doe"} />
+}`,
+        expected: `function Hello() {
+  const john = "John";
+  return <World name={\`$\{john} Doe\`} />
+}`
+      },
+      {
         description: "a selected string literal (selection over string bounds)",
         code: "console.log([start]'Hello world! [end]How are you doing?');",
         expected: `const extracted = 'Hello world! How are you doing?';
