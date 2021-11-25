@@ -112,6 +112,7 @@
     "onCommand:abracadabra.convertTernaryToIfElse",
     "onCommand:abracadabra.convertToTemplateLiteral",
     "onCommand:abracadabra.convertLetToConst",
+    "onCommand:abracadabra.createFactoryForConstructor",
     "onCommand:abracadabra.destructureObject",
     "onCommand:abracadabra.extract",
     "onCommand:abracadabra.extractClass",
@@ -193,6 +194,11 @@
       {
         "command": "abracadabra.convertLetToConst",
         "title": "Convert let to const",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.createFactoryForConstructor",
+        "title": "Create Factory for Constructor",
         "category": "Abracadabra"
       },
       {
@@ -419,6 +425,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.convertLetToConst.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.createFactoryForConstructor.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -720,6 +731,26 @@
         },
         {
           "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.createFactoryForConstructor",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.createFactoryForConstructor",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.createFactoryForConstructor",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.createFactoryForConstructor",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.createFactoryForConstructor",
           "when": "editorLangId == vue"
         },
         {
