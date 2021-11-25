@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.8.0] - 2021-11-25 - Extract De Vil 🐶
+
 ### Fixed
 
 - Extract Interface now preserves generic parameter declaration, thanks to @automatensalat who reported and fixed the bug!
@@ -1515,7 +1517,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.7.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.8.0...HEAD
+[6.8.0]: https://github.com/nicoespeon/abracadabra/compare/6.7.1...6.8.0
 [6.7.1]: https://github.com/nicoespeon/abracadabra/compare/6.7.0...6.7.1
 [6.7.0]: https://github.com/nicoespeon/abracadabra/compare/6.6.0...6.7.0
 [6.6.0]: https://github.com/nicoespeon/abracadabra/compare/6.5.2...6.6.0
