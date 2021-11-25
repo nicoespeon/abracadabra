@@ -26,6 +26,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const params = constructor.params.filter((param): param is t.Identifier =>
         t.isIdentifier(param)
       );
+
       const functionDeclaration = t.functionDeclaration(
         t.identifier(`create${path.node.id.name}`),
         params,
@@ -33,7 +34,15 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           t.returnStatement(t.newExpression(path.node.id, params))
         ])
       );
-      path.insertAfter(functionDeclaration);
+
+      const isExported = t.isExportDeclaration(path.parent);
+      if (isExported) {
+        path.insertAfter(t.exportNamedDeclaration(functionDeclaration));
+      } else {
+        path.insertAfter(functionDeclaration);
+      }
+
+      path.stop();
     })
   );
 }
@@ -53,6 +62,9 @@ function createVisitor(
 ): t.Visitor {
   return {
     ClassDeclaration(path) {
+      if (!path.node.loc) {
+        path.node.loc = path.parent.loc;
+      }
       if (!selection.isInsidePath(path)) return;
 
       onMatch(path);

@@ -39,9 +39,34 @@ function createEmployee() {
 function createEmployee(name, typeCode) {
   return new Employee(name, typeCode);
 }`
+      },
+      {
+        description: "exported class",
+        code: `export class Employee {[cursor]
+  constructor () {}
+}`,
+        expected: `export class Employee {
+  constructor () {}
+}
+
+export function createEmployee() {
+  return new Employee();
+}`
+      },
+      {
+        description: "exported class, cursor on export",
+        code: `ex[cursor]port class Employee {
+  constructor () {}
+}`,
+        expected: `export class Employee {
+  constructor () {}
+}
+
+export function createEmployee() {
+  return new Employee();
+}`
       }
       // TODO: other types of params
-      // TODO: exported class => export factory
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
