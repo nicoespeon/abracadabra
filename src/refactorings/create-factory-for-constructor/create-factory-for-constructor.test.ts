@@ -41,6 +41,42 @@ function createEmployee(name, typeCode) {
 }`
       },
       {
+        description: "constructor with complicated parameters",
+        code: `class Employee {
+  constructor (private name, readonly typeCode, { age }, [one], ...others) {
+    this.age = age;
+  }
+}`,
+        expected: `class Employee {
+  constructor (private name, readonly typeCode, { age }, [one], ...others) {
+    this.age = age;
+  }
+}
+
+function createEmployee(name, typeCode, { age }, [one], ...others) {
+  return new Employee(name, typeCode, {
+    age
+  }, [one], ...others);
+}`
+      },
+      {
+        description: "constructor with typed parameters",
+        code: `class Employee {
+  constructor (name: string, private typeCode: string) {
+    this.name = name;
+  }
+}`,
+        expected: `class Employee {
+  constructor (name: string, private typeCode: string) {
+    this.name = name;
+  }
+}
+
+function createEmployee(name: string, typeCode: string) {
+  return new Employee(name, typeCode);
+}`
+      },
+      {
         description: "exported class",
         code: `export class Employee {[cursor]
   constructor () {}
@@ -66,7 +102,6 @@ export function createEmployee() {
   return new Employee();
 }`
       }
-      // TODO: other types of params
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
