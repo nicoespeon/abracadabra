@@ -19,7 +19,13 @@ async function createFactoryForConstructor(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection,(path) => {
+    createVisitor(selection, (path) => {
+      const functionDeclaration = t.functionDeclaration(
+        t.identifier(`create${path.node.id.name}`),
+        [],
+        t.blockStatement([t.returnStatement(t.newExpression(path.node.id, []))])
+      );
+      path.insertAfter(functionDeclaration);
     })
   );
 }

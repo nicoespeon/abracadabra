@@ -8,6 +8,21 @@ describe("Create Factory For Constructor", () => {
   testEach<{ code: Code; expected: Code }>(
     "should create factory for constructor",
     [
+      {
+        description: "simple constructor, no parameter",
+        code: `class Employee {
+  constructor () {}
+}`,
+        expected: `class Employee {
+  constructor () {}
+}
+
+function createEmployee() {
+  return new Employee();
+}`
+      }
+      // TODO: class with parameters => factory with parameters
+      // TODO: exported class => export factory
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
