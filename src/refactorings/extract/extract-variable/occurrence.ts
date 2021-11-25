@@ -52,17 +52,30 @@ function createOccurrence(
   }
 
   if (path.isStringLiteral()) {
-    if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
-      path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
-      return createOccurrence(path, loc, selection);
-    }
-
     if (path.parentPath.isJSX()) {
+      if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+        path.replaceWith(
+          t.jsxExpressionContainer(t.convertStringToTemplateLiteral(path, loc))
+        );
+
+        return createOccurrence(
+          // @ts-expect-error
+          path.get("expression"),
+          loc,
+          selection
+        );
+      }
+
       return new JSXOccurrence(
         path,
         loc,
         new StringLiteralVariable(path, path.node.value)
       );
+    }
+
+    if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+      path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
+      return createOccurrence(path, loc, selection);
     }
 
     return new Occurrence(
@@ -361,7 +374,9 @@ class PartialTemplateLiteralOccurrence extends Occurrence<t.TemplateLiteral> {
     );
 
     return {
-      code: t.print(newTemplateLiteral),
+      code: this.path.parentPath.isJSX()
+        ? t.print(t.jsxExpressionContainer(newTemplateLiteral))
+        : t.print(newTemplateLiteral),
       selection: this.selection
     };
   }

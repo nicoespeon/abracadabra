@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Extract Variable can be executed from the `return` keyword. It will extract the returned value just as if the cursor was on the value already. It also makes it more flexible, so extraction will work even if you have the return statement semicolon in your selection. Thanks @automatensalat for suggesting this one!
+- Extract Variable can also be executed on JSX Attributes that are string literals. A partial selection will convert the string into a template literal and extract the selected text only.
 
 ### Added
 
