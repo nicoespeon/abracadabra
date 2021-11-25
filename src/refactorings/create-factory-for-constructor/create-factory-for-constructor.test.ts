@@ -20,8 +20,27 @@ describe("Create Factory For Constructor", () => {
 function createEmployee() {
   return new Employee();
 }`
+      },
+      {
+        description: "constructor with simple parameters",
+        code: `class Employee {
+  constructor (name, typeCode) {
+    this.name = name;
+    this.typeCode = typeCode;
+  }
+}`,
+        expected: `class Employee {
+  constructor (name, typeCode) {
+    this.name = name;
+    this.typeCode = typeCode;
+  }
+}
+
+function createEmployee(name, typeCode) {
+  return new Employee(name, typeCode);
+}`
       }
-      // TODO: class with parameters => factory with parameters
+      // TODO: other types of params
       // TODO: exported class => export factory
     ],
     async ({ code, expected }) => {

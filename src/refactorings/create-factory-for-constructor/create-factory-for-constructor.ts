@@ -20,13 +20,30 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path) => {
+      const constructor = getConstructor(path);
+      if (!constructor) return;
+
+      const params = constructor.params.filter((param): param is t.Identifier =>
+        t.isIdentifier(param)
+      );
       const functionDeclaration = t.functionDeclaration(
         t.identifier(`create${path.node.id.name}`),
-        [],
-        t.blockStatement([t.returnStatement(t.newExpression(path.node.id, []))])
+        params,
+        t.blockStatement([
+          t.returnStatement(t.newExpression(path.node.id, params))
+        ])
       );
       path.insertAfter(functionDeclaration);
     })
+  );
+}
+
+function getConstructor(
+  path: t.NodePath<t.ClassDeclaration>
+): t.ClassMethod | undefined {
+  return path.node.body.body.find(
+    (method): method is t.ClassMethod =>
+      t.isClassMethod(method) && method.kind === "constructor"
   );
 }
 
