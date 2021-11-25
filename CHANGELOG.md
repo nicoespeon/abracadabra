@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Extract Variable can be executed from the `return` keyword. It will extract the returned value just as if the cursor was on the value already. It also makes it more flexible, so extraction will work even if you have the return statement semicolon in your selection. Thanks @automatensalat for suggesting this one!
 
+### Added
+
+- **[New Refactoring]** Create Factory for Constructor, which creates a regular function to instantiate the selected class.
+
 ## [6.7.1]
 
 No change but fixed the declared VS Code engine version so we can deploy again.
