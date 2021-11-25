@@ -148,6 +148,38 @@ const MyComponent = (
 ) => {
   return <div>{name} ({age})</div>;
 };`
+      },
+      {
+        description: "param is spread",
+        code: `type Args = {
+  a: string;
+  b: number;
+  c: number;
+}
+
+function log(args[cursor]: Args) {
+  console.log({...args});
+}`,
+        expected: `type Args = {
+  a: string;
+  b: number;
+  c: number;
+}
+
+function log(
+  {
+    a,
+    b,
+    c
+  }: Args
+) {
+  console.log({
+    a,
+    b,
+    c
+  });
+}`
+      },
       {
         description: "param is spread in a React component",
         code: `type Props = {

@@ -26,6 +26,10 @@ function updateCode(code: Code, selection: Selection): t.Transformed {
         // Replace references of the Identifier
         const referencePaths =
           path.scope.getBinding(path.node.name)?.referencePaths ?? [];
+        const properties: t.ObjectProperty[] = keys.map((key) =>
+          t.objectProperty(t.identifier(key), t.identifier(key), false, true)
+        );
+
         referencePaths.forEach((reference) => {
           const { parentPath } = reference;
 
@@ -43,14 +47,15 @@ function updateCode(code: Code, selection: Selection): t.Transformed {
             });
             parentPath.replaceWithMultiple(attributes);
           }
+
+          // Replace spread element with destructured object
+          if (parentPath?.isSpreadElement()) {
+            parentPath.replaceWithMultiple(properties);
+          }
         });
 
         // Replace Identifier with destructured object
-        const node = t.objectPattern(
-          keys.map((key) =>
-            t.objectProperty(t.identifier(key), t.identifier(key), false, true)
-          )
-        );
+        const node = t.objectPattern(properties);
         node.typeAnnotation = path.node.typeAnnotation;
         path.replaceWith(node);
 
