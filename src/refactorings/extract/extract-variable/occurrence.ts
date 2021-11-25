@@ -53,7 +53,7 @@ function createOccurrence(
 
   if (path.isStringLiteral()) {
     if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
-      path.replaceWith(t.convertStringToTemplateLiteral(path.node, loc));
+      path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
       return createOccurrence(path, loc, selection);
     }
 

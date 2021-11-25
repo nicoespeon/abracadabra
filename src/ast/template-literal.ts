@@ -1,3 +1,4 @@
+import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 export { templateElement, convertStringToTemplateLiteral };
@@ -14,10 +15,10 @@ function templateElement(value: string): t.TemplateElement {
 }
 
 function convertStringToTemplateLiteral(
-  node: t.StringLiteral,
+  path: NodePath<t.StringLiteral>,
   loc: t.SourceLocation
 ): t.TemplateLiteral {
-  const quasi = templateElement(node.value);
+  const quasi = templateElement(path.node.value);
 
   // Set proper location to created quasi.
   // quasi is offset by 1 because the ` worth 0 for template literals
