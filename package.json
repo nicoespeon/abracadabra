@@ -76,7 +76,7 @@
     "ovsx": "0.2.1",
     "prettier": "2.4.1",
     "pretty-quick": "3.1.1",
-    "sinon": "11.1.2",
+    "sinon": "12.0.1",
     "ts-jest": "27.0.5",
     "ts-loader": "9.2.6",
     "tslint": "6.1.3",
