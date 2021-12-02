@@ -181,6 +181,12 @@ console.log(somethingVeryVeryVeryLongThatWontFit.name);`
 console.log(extracted.name);`
       },
       {
+        description: "member expression in a for..of statement",
+        code: `for (const el of foo.bar.[cursor]list) {}`,
+        expected: `const { list } = foo.bar;
+for (const el of list) {}`
+      },
+      {
         description: "a return value of a function",
         code: `function getMessage() {
   return [cursor]"Hello!";

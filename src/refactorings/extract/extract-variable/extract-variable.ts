@@ -181,7 +181,8 @@ function isExtractableContext(node: t.Node): boolean {
     t.isJSXAttribute(node) ||
     t.isSpreadElement(node) ||
     t.isThrowStatement(node) ||
-    t.isExportDeclaration(node)
+    t.isExportDeclaration(node) ||
+    t.isForOfStatement(node)
   );
 }
 

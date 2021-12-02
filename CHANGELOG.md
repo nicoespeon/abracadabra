@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
 
 - Inline Variable inside a template literal will remove the extraneous `${}` so you don't end up with `${"some string"}` in the middle of your template string.
+- Extract Variable now works in for..of statements.
 
 ## [6.8.0] - 2021-11-25 - Extract De Vil 🐶
 

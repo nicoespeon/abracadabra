@@ -39,6 +39,7 @@ function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
       t.isSwitchStatement(parentPath) ||
       t.isExportDeclaration(parentPath) ||
       t.isForStatement(parentPath) ||
+      t.isForOfStatement(parentPath) ||
       t.isThrowStatement(parentPath)
   );
 }
