@@ -5,6 +5,7 @@ import { last } from "../../../array";
 
 import { findExportedIdNames } from "../find-exported-id-names";
 import { VariableDeclarator } from "../../../ast";
+import { Position } from "../../../editor/position";
 
 export {
   findInlinableCode,
@@ -238,14 +239,29 @@ class InlinableIdentifier implements InlinableCode {
 
   updateIdentifiersWith(inlinedCode: Code): Modification[] {
     return this.identifiersToReplace.map(
-      ({ loc, shouldWrapInParenthesis, shorthandKey }) => ({
-        code: shouldWrapInParenthesis
+      ({ loc, shouldWrapInParenthesis, shorthandKey, parent }) => {
+        let code = shouldWrapInParenthesis
           ? `(${inlinedCode})`
           : shorthandKey
           ? `${shorthandKey}: ${inlinedCode}`
-          : inlinedCode,
-        selection: Selection.fromAST(loc)
-      })
+          : inlinedCode;
+        let selection = Selection.fromAST(loc);
+
+        if (t.isTemplateLiteral(parent)) {
+          code = code.replace(/^("|'|\`)/, "").replace(/("|'|\`)$/, "");
+          selection = Selection.fromPositions(
+            // Remove the leading `${`
+            Position.fromAST(loc.start).removeCharacters(2),
+            // Remove the trailing `}`
+            Position.fromAST(loc.end).addCharacters(1)
+          );
+        }
+
+        return {
+          code,
+          selection
+        };
+      }
     );
   }
 

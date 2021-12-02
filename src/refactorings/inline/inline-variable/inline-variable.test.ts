@@ -249,6 +249,28 @@ const page = <div>{header}</div>;`,
 );
 const page = <div>{header}</div>;`,
         expected: `const page = <div><h1>Hello</h1></div>;`
+      },
+      {
+        description: "a string literal inside a template literal",
+        code: `const name[cursor] = "world!";
+console.log(\`Hello \${name}\`);`,
+        expected: `console.log(\`Hello world!\`);`
+      },
+      {
+        description: "a number literal inside a template literal",
+        code: `const age[cursor] = 23;
+console.log(\`I am \${age}\`);`,
+        expected: `console.log(\`I am 23\`);`
+      },
+      {
+        description: "a multi-lines string inside a template literal",
+        code: `const name[cursor] = \`world!
+
+How are you doing?\`;
+console.log(\`Hello \${name}\`);`,
+        expected: `console.log(\`Hello world!
+
+How are you doing?\`);`
       }
     ],
     async ({ code, expected }) => {
