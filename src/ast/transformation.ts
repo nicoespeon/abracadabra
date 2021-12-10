@@ -90,7 +90,9 @@ function indentWithTabs(code: Code): Code {
 }
 
 function print(ast: AST | t.Node): Code {
-  return recast.print(ast).code;
+  return recast.print(ast, {
+    lineTerminator: "\n"
+  }).code;
 }
 
 function standardizeEOL(code: Code): Code {
