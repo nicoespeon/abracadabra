@@ -4,6 +4,7 @@ import * as reactCodemod from "react-codemod/transforms/pure-component";
 const pureComponent = reactCodemod.default;
 
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
+import * as t from "../../../ast";
 
 export { convertToPureComponent };
 
@@ -33,7 +34,7 @@ async function convertToPureComponent(editor: Editor) {
     return;
   }
 
-  await editor.write(updatedCode);
+  await editor.write(t.print(t.parse(updatedCode)));
 }
 
 type Options = {

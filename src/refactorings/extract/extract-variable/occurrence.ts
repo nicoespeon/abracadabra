@@ -298,7 +298,7 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   }
 
   private get parentObject(): Code {
-    return t.generate(this.path.node.object);
+    return t.print(this.path.node.object);
   }
 
   get positionOnExtractedId(): Position {
