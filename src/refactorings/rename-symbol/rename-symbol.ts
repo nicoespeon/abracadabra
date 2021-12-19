@@ -13,7 +13,7 @@ async function renameSymbol(editor: Editor) {
   }
 }
 
-function findSelectedSymbol(editor: Editor): Symbol {
+function findSelectedSymbol(editor: Editor): Nothing {
   let result = new Nothing();
 
   const { code, selection } = editor;

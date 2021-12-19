@@ -4,6 +4,7 @@ import { Selection } from "../editor/selection";
 import * as t from "../ast";
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toMatchEditor(editor: InMemoryEditor): Promise<R>;

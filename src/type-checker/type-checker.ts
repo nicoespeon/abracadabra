@@ -108,8 +108,7 @@ export class TypeChecker {
     program: ts.Program
   ): ts.Node | undefined {
     try {
-      // @ts-ignore Internal method
-      return ts.getTouchingPropertyName(
+      return (ts as any).getTouchingPropertyName(
         program.getSourceFile(this.fileName),
         position.value
       );

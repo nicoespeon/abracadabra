@@ -56,8 +56,7 @@ function variableCanBeConst(
   bindings: { [name: string]: t.Binding },
   variableDeclarator: t.VariableDeclarator
 ): boolean {
-  for (let name in bindings) {
-    let binding = bindings[name];
+  for (const binding of Object.values(bindings)) {
     if (binding.identifier === variableDeclarator.id && !binding.constant) {
       return false;
     }

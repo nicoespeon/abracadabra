@@ -92,6 +92,7 @@ function isUndefinedLiteral(
 
 function isGuardClause(path: NodePath<t.IfStatement>) {
   const { consequent, alternate } = path.node;
+  // eslint-disable-next-line no-extra-boolean-cast
   if (Boolean(alternate)) return false;
 
   return t.isReturnStatement(consequent) || isGuardConsequentBlock(consequent);

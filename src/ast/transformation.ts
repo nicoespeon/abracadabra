@@ -50,6 +50,7 @@ function transformAST(ast: AST, options: TraverseOptions): Transformed {
 // Recast doesn't handle shebangs well: https://github.com/benjamn/recast/issues/376
 // Babel parses it, but Recast messes up the printed code by omitting spaces
 function fixShebang(newCode: Code): Code {
+  // eslint-disable-next-line no-useless-escape
   const [, shebang] = newCode.match(/(#![\/\w+]+ node)\w/) || [];
   return shebang ? newCode.replace(shebang, `${shebang}\n\n`) : newCode;
 }
@@ -59,7 +60,7 @@ function isUsingTabs(ast: AST | t.Node): boolean {
 
   try {
     // @ts-expect-error Recast does add these information
-    for (let info of ast.loc.lines.infos) {
+    for (const info of ast.loc.lines.infos) {
       const firstChar = info.line[0];
 
       if (firstChar === "\t") {
@@ -244,7 +245,7 @@ function preserveCommentsForRecast(path: NodePath) {
 
 function unindent(value: Code): Code {
   return value
-    .replace(new RegExp("\n  ", "g"), "\n")
+    .replace(new RegExp("\n {2}", "g"), "\n")
     .replace(new RegExp("\n\t\t", "g"), "\n");
 }
 

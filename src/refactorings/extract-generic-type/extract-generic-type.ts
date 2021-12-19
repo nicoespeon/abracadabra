@@ -40,7 +40,7 @@ async function extractGenericType(editor: Editor) {
 
 function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
   let selectedOccurrence: Occurrence | null = null;
-  let otherOccurrences: Occurrence[] = [];
+  const otherOccurrences: Occurrence[] = [];
 
   t.traverseAST(
     ast,

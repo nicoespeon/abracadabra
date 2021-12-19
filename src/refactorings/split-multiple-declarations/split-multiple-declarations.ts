@@ -41,8 +41,6 @@ function createVisitor(
 ): t.Visitor {
   return {
     VariableDeclaration(path) {
-      selection;
-
       const declarations = path.node.declarations;
       if (!hasInitializedMultipleDeclarations(declarations)) return;
 

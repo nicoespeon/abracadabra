@@ -128,7 +128,7 @@ class Position {
     wordsToMatch: number
   ): ParsedSymbol | undefined {
     let matchCount = 0;
-    for (let symbol of symbols) {
+    for (const symbol of symbols) {
       if (!symbol.isWord) continue;
 
       matchCount++;

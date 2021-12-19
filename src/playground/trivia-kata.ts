@@ -3,8 +3,8 @@ export class Game {
   private places: Array<number> = [];
   private purses: Array<number> = [];
   private inPenaltyBox: Array<boolean> = [];
-  private currentPlayer: number = 0;
-  private isGettingOutOfPenaltyBox: boolean = false;
+  private currentPlayer = 0;
+  private isGettingOutOfPenaltyBox = false;
 
   private popQuestions: Array<string> = [];
   private scienceQuestions: Array<string> = [];
@@ -45,7 +45,7 @@ export class Game {
     console.log("They have rolled a " + roll);
 
     if (this.inPenaltyBox[this.currentPlayer]) {
-      if (roll % 2 != 0) {
+      if (roll % 2 !== 0) {
         this.isGettingOutOfPenaltyBox = true;
 
         console.log(
@@ -90,30 +90,31 @@ export class Game {
   }
 
   private askQuestion(): void {
-    if (this.currentCategory() == "Pop") console.log(this.popQuestions.shift());
-    if (this.currentCategory() == "Science")
+    if (this.currentCategory() === "Pop")
+      console.log(this.popQuestions.shift());
+    if (this.currentCategory() === "Science")
       console.log(this.scienceQuestions.shift());
-    if (this.currentCategory() == "Sports")
+    if (this.currentCategory() === "Sports")
       console.log(this.sportsQuestions.shift());
-    if (this.currentCategory() == "Rock")
+    if (this.currentCategory() === "Rock")
       console.log(this.rockQuestions.shift());
   }
 
   private currentCategory(): string {
-    if (this.places[this.currentPlayer] == 0) return "Pop";
-    if (this.places[this.currentPlayer] == 4) return "Pop";
-    if (this.places[this.currentPlayer] == 8) return "Pop";
-    if (this.places[this.currentPlayer] == 1) return "Science";
-    if (this.places[this.currentPlayer] == 5) return "Science";
-    if (this.places[this.currentPlayer] == 9) return "Science";
-    if (this.places[this.currentPlayer] == 2) return "Sports";
-    if (this.places[this.currentPlayer] == 6) return "Sports";
-    if (this.places[this.currentPlayer] == 10) return "Sports";
+    if (this.places[this.currentPlayer] === 0) return "Pop";
+    if (this.places[this.currentPlayer] === 4) return "Pop";
+    if (this.places[this.currentPlayer] === 8) return "Pop";
+    if (this.places[this.currentPlayer] === 1) return "Science";
+    if (this.places[this.currentPlayer] === 5) return "Science";
+    if (this.places[this.currentPlayer] === 9) return "Science";
+    if (this.places[this.currentPlayer] === 2) return "Sports";
+    if (this.places[this.currentPlayer] === 6) return "Sports";
+    if (this.places[this.currentPlayer] === 10) return "Sports";
     return "Rock";
   }
 
   private didPlayerWin(): boolean {
-    return !(this.purses[this.currentPlayer] == 6);
+    return !(this.purses[this.currentPlayer] === 6);
   }
 
   public wrongAnswer(): boolean {
@@ -124,7 +125,7 @@ export class Game {
     this.inPenaltyBox[this.currentPlayer] = true;
 
     this.currentPlayer += 1;
-    if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+    if (this.currentPlayer === this.players.length) this.currentPlayer = 0;
     return true;
   }
 
@@ -140,14 +141,14 @@ export class Game {
             " Gold Coins."
         );
 
-        var winner = this.didPlayerWin();
+        const winner = this.didPlayerWin();
         this.currentPlayer += 1;
-        if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+        if (this.currentPlayer === this.players.length) this.currentPlayer = 0;
 
         return winner;
       } else {
         this.currentPlayer += 1;
-        if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+        if (this.currentPlayer === this.players.length) this.currentPlayer = 0;
         return true;
       }
     } else {
@@ -161,10 +162,10 @@ export class Game {
           " Gold Coins."
       );
 
-      var winner = this.didPlayerWin();
+      const winner = this.didPlayerWin();
 
       this.currentPlayer += 1;
-      if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+      if (this.currentPlayer === this.players.length) this.currentPlayer = 0;
 
       return winner;
     }

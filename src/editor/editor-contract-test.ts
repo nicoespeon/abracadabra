@@ -400,7 +400,7 @@ console.log("hello");
       new RelativePath("./src/some-file.ts"),
       new RelativePath("./src/some-file.test.ts")
     ];
-    for (let file of files) {
+    for (const file of files) {
       await editor.writeIn(file, "");
     }
 
