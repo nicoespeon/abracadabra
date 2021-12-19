@@ -10,7 +10,6 @@ src/**
 .adr-dir
 .gitignore
 **/tsconfig.json
-**/tslint.json
 **/*.map
 **/*.ts
 wallaby.js
