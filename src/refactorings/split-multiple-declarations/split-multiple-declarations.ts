@@ -36,7 +36,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 }
 
 function createVisitor(
-  selection: Selection,
+  _selection: Selection,
   onMatch: (path: t.NodePath<t.VariableDeclaration>) => void
 ): t.Visitor {
   return {
