@@ -3,6 +3,7 @@
 "use strict";
 
 const path = require("path");
+const webpack = require("webpack");
 
 /** @type {import('webpack').Configuration} */
 const config = {
@@ -40,6 +41,17 @@ const config = {
     // => https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"]
   },
+
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: "process/browser"
+    }),
+    new webpack.DefinePlugin({
+      "process.env": JSON.stringify({})
+      // 'process.env.BROWSER_ENV': JSON.stringify('true')
+    })
+  ],
+
   module: {
     rules: [
       {
