@@ -6,6 +6,10 @@ const path = require("path");
 
 /** @type {import('webpack').Configuration} */
 const config = {
+  // Leaves the source code as close as possible to the original
+  // (when packaging we set this to 'production')
+  mode: "none",
+
   // vscode extensions run in a Node.js-context
   // => https://webpack.js.org/configuration/node/
   target: "node",
