@@ -63,7 +63,7 @@
     "@types/mocha": "9.0.0",
     "@types/node": "16.11.11",
     "@types/pluralize": "0.0.29",
-    "@types/sinon": "10.0.4",
+    "@types/sinon": "10.0.6",
     "@types/vscode": "1.62.0",
     "@vscode/test-electron": "1.6.2",
     "all-contributors-cli": "6.20.0",
