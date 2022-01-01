@@ -75,7 +75,7 @@
     "mocha": "9.1.3",
     "ovsx": "0.2.1",
     "prettier": "2.5.1",
-    "pretty-quick": "3.1.2",
+    "pretty-quick": "3.1.3",
     "sinon": "12.0.1",
     "ts-jest": "27.1.2",
     "ts-loader": "9.2.6",
