@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- @j4k0xb fixed the action provider for the "Convert For to Foreach" refactoring. Great catch!
+
 ### Added
 
 - Inline Variable inside a template literal will remove the extraneous `${}` so you don't end up with `${"some string"}` in the middle of your template string.
