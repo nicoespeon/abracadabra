@@ -22,7 +22,7 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
     // Bundle is stored in the 'out' folder (check package.json)
     // => https://webpack.js.org/configuration/output/
     path: path.resolve(__dirname, "out"),
-    filename: "extension.js",
+    filename: env.browser ? "extension-browser.js" : "extension.js",
     libraryTarget: "commonjs2",
     devtoolModuleFilenameTemplate: "../[resource-path]"
   },

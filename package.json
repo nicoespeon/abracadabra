@@ -35,7 +35,7 @@
     "node": ">=14.0.0"
   },
   "main": "./out/extension.js",
-  "browser": "./out/extension.js",
+  "browser": "./out/extension-browser.js",
   "scripts": {
     "contrib": "all-contributors",
     "prepare": "husky install",
