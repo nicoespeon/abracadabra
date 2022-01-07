@@ -5,7 +5,10 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "build"
+      "script": "build",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": ["$ts-webpack-watch"]
     }
   ]
 }
