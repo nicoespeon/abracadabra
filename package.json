@@ -45,7 +45,7 @@
     "pretest:contract": "tsc -p ./",
     "test:contract": "node ./out/test/run-contract-tests.js",
     "test:ci": "yarn test && yarn test:contract",
-    "build": "run-p build:*",
+    "build": "run-p -l build:*",
     "build:node": "webpack",
     "build:browser": "webpack --env browser",
     "watch": "webpack --watch",
