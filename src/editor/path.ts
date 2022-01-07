@@ -1,4 +1,4 @@
-import * as _path from "path";
+import * as _path from "path-browserify";
 const path = _path.posix;
 
 export { Path, AbsolutePath, RelativePath };
