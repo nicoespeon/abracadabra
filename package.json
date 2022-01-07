@@ -48,7 +48,6 @@
     "build": "run-p -l build:*",
     "build:node": "webpack",
     "build:browser": "webpack --env browser",
-    "watch": "webpack --watch",
     "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
     "vscode:prepublish": "webpack --mode production",
     "package": "vsce package",
