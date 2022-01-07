@@ -5,15 +5,15 @@
 const path = require("path");
 const webpack = require("webpack");
 
-/** @type {import('webpack').Configuration} */
-const config = {
+/** @returns {import('webpack').Configuration} */
+const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
   // Leaves the source code as close as possible to the original
   // (when packaging we set this to 'production')
   mode: "none",
 
   // vscode extensions run in a Node.js-context
   // => https://webpack.js.org/configuration/node/
-  target: "node",
+  target: env.browser ? "webworker" : "node",
 
   // => https://webpack.js.org/configuration/entry-context/
   entry: "./src/extension.ts",
@@ -41,37 +41,41 @@ const config = {
     // Support reading TypeScript and JavaScript files
     // => https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],
-    fallback: {
-      assert: require.resolve("assert"),
-      buffer: require.resolve("buffer"),
-      child_process: false,
-      constants: false,
-      console: false,
-      crypto: false,
-      fs: false,
-      glob: false,
-      http: false,
-      https: false,
-      os: false,
-      path: require.resolve("path-browserify"),
-      stream: false,
-      unxhr: false,
-      url: false,
-      util: require.resolve("util"),
-      zlib: false
-    }
+    fallback: env.browser
+      ? {
+          assert: require.resolve("assert"),
+          buffer: require.resolve("buffer"),
+          child_process: false,
+          constants: false,
+          console: false,
+          crypto: false,
+          fs: false,
+          glob: false,
+          http: false,
+          https: false,
+          os: false,
+          path: require.resolve("path-browserify"),
+          stream: false,
+          unxhr: false,
+          url: false,
+          util: require.resolve("util"),
+          zlib: false
+        }
+      : {}
   },
 
-  plugins: [
-    new webpack.ProvidePlugin({
-      process: "process/browser"
-    }),
-    // Work around for Buffer is undefined:
-    // https://github.com/webpack/changelog-v5/issues/10
-    new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"]
-    })
-  ],
+  plugins: env.browser
+    ? [
+        new webpack.ProvidePlugin({
+          process: "process/browser"
+        }),
+        // Work around for Buffer is undefined:
+        // https://github.com/webpack/changelog-v5/issues/10
+        new webpack.ProvidePlugin({
+          Buffer: ["buffer", "Buffer"]
+        })
+      ]
+    : [],
 
   module: {
     rules: [
@@ -86,6 +90,6 @@ const config = {
       }
     ]
   }
-};
+});
 
-module.exports = config;
+module.exports = createConfig;

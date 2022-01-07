@@ -28,7 +28,7 @@
         "${workspaceFolder}/src/playground"
       ],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "preLaunchTask": "npm: build"
+      "preLaunchTask": "npm: build:node"
     },
     {
       "name": "Run Web Extension in VS Code",
@@ -41,7 +41,7 @@
         "${workspaceFolder}/src/playground"
       ],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "preLaunchTask": "npm: build"
+      "preLaunchTask": "npm: build:browser"
     }
   ]
 }
