@@ -39,16 +39,36 @@ const config = {
   resolve: {
     // Support reading TypeScript and JavaScript files
     // => https://github.com/TypeStrong/ts-loader
-    extensions: [".ts", ".js"]
+    extensions: [".ts", ".js"],
+    fallback: {
+      assert: require.resolve("assert"),
+      buffer: require.resolve("buffer"),
+      child_process: false,
+      constants: false,
+      console: false,
+      crypto: false,
+      fs: false,
+      glob: false,
+      http: false,
+      https: false,
+      os: false,
+      path: require.resolve("path-browserify"),
+      stream: false,
+      unxhr: false,
+      url: false,
+      util: require.resolve("util"),
+      zlib: false
+    }
   },
 
   plugins: [
     new webpack.ProvidePlugin({
       process: "process/browser"
     }),
-    new webpack.DefinePlugin({
-      "process.env": JSON.stringify({})
-      // 'process.env.BROWSER_ENV': JSON.stringify('true')
+    // Work around for Buffer is undefined:
+    // https://github.com/webpack/changelog-v5/issues/10
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"]
     })
   ],
 
