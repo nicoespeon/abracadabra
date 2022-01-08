@@ -23,7 +23,7 @@ class Path {
   }
 
   get withoutFileName(): string {
-    return path.dirname(this.value) + path.sep;
+    return this.value.replace(/[^/]*$/, "");
   }
 
   protected get isValueAbsolute(): boolean {

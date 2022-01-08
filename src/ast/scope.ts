@@ -93,7 +93,7 @@ function isShadowIn(
 function findFirstExistingDeclaration(expressionPath: NodePath<t.Expression>) {
   const existingDeclarations: NodePath<DestructuredVariableDeclarator>[] =
     Object.values(expressionPath.scope.getAllBindings())
-      .map(({ path }) => path)
+      .map(({ path }) => path as NodePath)
       .filter(
         (path): path is NodePath<DestructuredVariableDeclarator> =>
           path.isVariableDeclarator() &&

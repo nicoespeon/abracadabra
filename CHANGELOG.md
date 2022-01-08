@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.9.0] - 2022-01-07 - He's a Tramp 🐶
+
+### Fixed
+
+- @j4k0xb fixed the action provider for the "Convert For to Foreach" refactoring. Great catch!
+
 ### Added
 
 - Inline Variable inside a template literal will remove the extraneous `${}` so you don't end up with `${"some string"}` in the middle of your template string.
 - Extract Variable now works in for..of statements.
+- Abracadabra is now available on VS Code web! That means you can install (and use) the extension when working on https://vscode.dev or https://github.dev for instance.
 
 ## [6.8.0] - 2021-11-25 - Extract De Vil 🐶
 
@@ -1522,7 +1529,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.8.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.9.0...HEAD
+[6.9.0]: https://github.com/nicoespeon/abracadabra/compare/6.8.0...6.9.0
 [6.8.0]: https://github.com/nicoespeon/abracadabra/compare/6.7.1...6.8.0
 [6.7.1]: https://github.com/nicoespeon/abracadabra/compare/6.7.0...6.7.1
 [6.7.0]: https://github.com/nicoespeon/abracadabra/compare/6.6.0...6.7.0

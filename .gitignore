@@ -1,6 +1,7 @@
 out
 node_modules
 .vscode-test/
+.vscode-test-web/
 *.vsix
 
 # Created by https://www.gitignore.io/api/node,visualstudiocode
