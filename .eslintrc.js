@@ -18,14 +18,16 @@ module.exports = {
     sourceType: "module"
   },
   plugins: ["@typescript-eslint"],
+  ignorePatterns: ["node_modules", "out", "_templates", "src/playground"],
   rules: {
     eqeqeq: [ERROR, "smart"],
     radix: ERROR,
 
-    "@typescript-eslint/no-unused-vars": OFF,
-    "@typescript-eslint/no-explicit-any": OFF,
-    "@typescript-eslint/no-empty-function": OFF,
+    "@typescript-eslint/ban-ts-comment": OFF,
     "@typescript-eslint/ban-types": OFF,
+    "@typescript-eslint/no-empty-function": OFF,
+    "@typescript-eslint/no-explicit-any": OFF,
+    "@typescript-eslint/no-unused-vars": OFF,
 
     "block-scoped-var": ERROR,
     "default-case-last": ERROR,
