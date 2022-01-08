@@ -249,7 +249,7 @@ class InlinableIdentifier implements InlinableCode {
         let selection = Selection.fromAST(loc);
 
         if (t.isTemplateLiteral(parent)) {
-          code = code.replace(/^("|'|')/, "").replace(/("|'|')$/, "");
+          code = code.replace(/^("|'|`)/, "").replace(/("|'|`)$/, "");
           selection = Selection.fromPositions(
             // Remove the leading `${`
             Position.fromAST(loc.start).removeCharacters(2),
