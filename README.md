@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -141,6 +141,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/j4k0xb"><img src="https://avatars.githubusercontent.com/u/55899582?v=4?s=100" width="100px;" alt=""/><br /><sub><b>j4k0xb</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aj4k0xb" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://ianobermiller.com"><img src="https://avatars.githubusercontent.com/u/897931?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ian Obermiller</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=ianobermiller" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=ianobermiller" title="Documentation">📖</a></td>
     <td align="center"><a href="http://forivall.com"><img src="https://avatars.githubusercontent.com/u/760204?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Emily Marigold Klassen</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=forivall" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://zardoy.com"><img src="https://avatars.githubusercontent.com/u/46503702?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vitaly</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=zardoy" title="Code">💻</a> <a href="#infra-zardoy" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
