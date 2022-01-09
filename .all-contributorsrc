@@ -341,6 +341,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "zardoy",
+      "name": "Vitaly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46503702?v=4",
+      "profile": "http://zardoy.com",
+      "contributions": [
+        "code",
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
