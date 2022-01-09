@@ -3,7 +3,7 @@ import * as t from "../../ast";
 export { findExportedIdNames };
 
 function findExportedIdNames(scope: t.Node): t.Identifier["name"][] {
-  let result: t.Identifier["name"][] = [];
+  const result: t.Identifier["name"][] = [];
 
   t.traverseNode(scope, {
     enter(node) {

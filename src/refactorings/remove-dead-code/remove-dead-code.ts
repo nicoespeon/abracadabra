@@ -44,6 +44,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         case DeadCodeScenario.NestedTestOpposite:
           replaceWithAlternate(path);
           break;
+
+        default:
+          break;
       }
     })
   );
@@ -199,7 +202,8 @@ function isEmptyIfStatement(node: t.IfStatement): boolean {
 
 function replaceWithAlternate(path: t.NodePath<t.IfStatement>) {
   const { alternate } = path.node;
-  alternate ? t.replaceWithBodyOf(path, alternate) : path.remove();
+  if (alternate) t.replaceWithBodyOf(path, alternate);
+  else path.remove();
 }
 
 function replaceWithConsequent(path: t.NodePath<t.IfStatement>) {

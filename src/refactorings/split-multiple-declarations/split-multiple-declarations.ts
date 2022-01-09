@@ -36,13 +36,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 }
 
 function createVisitor(
-  selection: Selection,
+  _selection: Selection,
   onMatch: (path: t.NodePath<t.VariableDeclaration>) => void
 ): t.Visitor {
   return {
     VariableDeclaration(path) {
-      selection;
-
       const declarations = path.node.declarations;
       if (!hasInitializedMultipleDeclarations(declarations)) return;
 

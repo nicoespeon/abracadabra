@@ -168,7 +168,7 @@ function getReferencedImportDeclarations(
   functionPath: NodePath<t.FunctionDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
-  let result: t.ImportDeclaration[] = [];
+  const result: t.ImportDeclaration[] = [];
 
   const importDeclarations = getImportDeclarations(programPath);
   functionPath.get("body").traverse({
@@ -197,7 +197,7 @@ function getTypeReferencedImportDeclarations(
   typePath: NodePath<TypeDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
-  let result: t.ImportDeclaration[] = [];
+  const result: t.ImportDeclaration[] = [];
 
   const importDeclarations = getImportDeclarations(programPath);
   typePath.traverse({

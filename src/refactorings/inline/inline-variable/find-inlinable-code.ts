@@ -212,6 +212,7 @@ class InlinableIdentifier implements InlinableCode {
     let result = false;
 
     // We have to alias `this` because traversal rebinds the context of the options.
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     t.traverseNode(this.scope, {
       enter(node) {
@@ -248,7 +249,7 @@ class InlinableIdentifier implements InlinableCode {
         let selection = Selection.fromAST(loc);
 
         if (t.isTemplateLiteral(parent)) {
-          code = code.replace(/^("|'|\`)/, "").replace(/("|'|\`)$/, "");
+          code = code.replace(/^("|'|`)/, "").replace(/("|'|`)$/, "");
           selection = Selection.fromPositions(
             // Remove the leading `${`
             Position.fromAST(loc.start).removeCharacters(2),
@@ -267,6 +268,7 @@ class InlinableIdentifier implements InlinableCode {
 
   private computeIdentifiersToReplace() {
     // We have to alias `this` because traversal rebinds the context of the options.
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     t.traverseNode(this.scope, {
       enter(node, ancestors) {
@@ -374,6 +376,7 @@ class InlinableTSTypeAlias implements InlinableCode {
 
   private computeIdentifiersToReplace() {
     // Alias `this` because traversal rebinds the context of the options.
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     this.path.parentPath.traverse({
       TSTypeReference(path) {

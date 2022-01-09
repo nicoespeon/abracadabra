@@ -52,7 +52,7 @@ async function extractVariable(editor: Editor) {
 }
 
 function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
-  let result: AllOccurrences = {
+  const result: AllOccurrences = {
     selected: null,
     others: []
   };
@@ -108,7 +108,7 @@ function findOtherOccurrences(
   code: string,
   selection: Selection
 ): Occurrence[] {
-  let result: Occurrence[] = [];
+  const result: Occurrence[] = [];
 
   const visitor = {
     enter(path: t.NodePath) {
@@ -138,9 +138,8 @@ function findOtherOccurrences(
   };
 
   const scopePath = occurrence.path.getFunctionParent();
-  scopePath
-    ? scopePath.traverse(visitor)
-    : t.parseAndTraverseCode(code, visitor);
+  if (scopePath) scopePath.traverse(visitor);
+  else t.parseAndTraverseCode(code, visitor);
 
   return result;
 }

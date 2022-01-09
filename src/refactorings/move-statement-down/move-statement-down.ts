@@ -57,7 +57,7 @@ function updateCode(
     if (hasChildWhichMatchesSelection(path, selection)) return;
     if (typeof path.key !== "number") return;
 
-    const container = new Array().concat(path.container);
+    const container = ([] as object[]).concat(path.container);
     if (path.key >= container.length - 1) {
       isLastStatement = true;
       return;
@@ -135,7 +135,7 @@ function getSelectablePathBelow(
   if (typeof key === "string") return;
 
   const pathBelowKey = key + 1;
-  const container = new Array().concat(path.container);
+  const container = ([] as object[]).concat(path.container);
   const hasPathBelow = pathBelowKey < container.length;
   if (!hasPathBelow) {
     return;

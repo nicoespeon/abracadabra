@@ -14,7 +14,7 @@ async function renameSymbol(editor: Editor) {
 }
 
 function findSelectedSymbol(editor: Editor): Symbol {
-  let result = new Nothing();
+  let result: Symbol = new Nothing();
 
   const { code, selection } = editor;
   const ast = t.parse(code);
