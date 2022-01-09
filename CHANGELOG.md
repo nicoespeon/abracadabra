@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Thanks to @zardoy, installing the extension is much faster! In short, we don't bundle demo gifs in the extension anymore (🤦‍♂️), saving dozens of MBs.
+- Shoutout to @tjx666 who upgraded how the project is linted. No impact on you, but a useful improvement for maintainers ❤️
+
 ## [6.9.0] - 2022-01-07 - He's a Tramp 🐶
 
 ### Fixed
