@@ -1,7 +1,7 @@
 .github/**
 .vscode/**
 dist/**
-docs/*
+docs/**
 !docs/logo
 /docs/logo/*
 !docs/logo/abracadabra-vignette.png
