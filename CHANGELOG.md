@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.9.1]
+
 ### Changed
 
 - Thanks to @zardoy, installing the extension is much faster! In short, we don't bundle demo gifs in the extension anymore (🤦‍♂️), saving dozens of MBs.
@@ -1534,7 +1536,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.9.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.9.1...HEAD
+[6.9.1]: https://github.com/nicoespeon/abracadabra/compare/6.9.0...6.9.1
 [6.9.0]: https://github.com/nicoespeon/abracadabra/compare/6.8.0...6.9.0
 [6.8.0]: https://github.com/nicoespeon/abracadabra/compare/6.7.1...6.8.0
 [6.7.1]: https://github.com/nicoespeon/abracadabra/compare/6.7.0...6.7.1
