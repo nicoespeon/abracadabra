@@ -154,9 +154,19 @@ This project follows the [all-contributors][all-contributors] specification.
 
 Contributions of any kind are welcome!
 
-## Other extensions you may like
+## Alternatives
 
-- [Hocus Pocus][hocus-pocus], a VS Code extension that creates missing code for you, in JavaScript and TypeScript.
+Building automated refactoring for JavaScript is not easy, and it takes time. Since this is a side-project, it doesn't get as much time as it should to cover everything you need.
+
+If Abracadabra doesn't fit your need for something, here are the other extensions I recommend you check:
+
+- [JS CodeFormer](https://marketplace.visualstudio.com/items?itemName=cmstead.js-codeformer) which is built by [Chris Stead](https://twitter.com/cm_stead). Chris built the first JS refactorings extension in VS Code back in the days, so he knows his stuff 👍
+- [P42 JavaScript assistant](https://marketplace.visualstudio.com/items?itemName=p42ai.refactor) is a recent and impressive tool built by [Lars Grammel](https://twitter.com/lgrammel). I had the opportunity to chat with Lars and we really think alike. The main difference is that Lars is dedicated full-time into building this. It's not open-source, but it may solve the problem you have 😉
+- [JavaScript Booster](https://marketplace.visualstudio.com/items?itemName=sburg.vscode-javascript-booster) is a popular extension that mimics Webstorm's UX for refactoring—which was a source of inspiration for Abracadabra. Worth having a look.
+
+There are some things I think Abracadabra does better. Other things Abracadabra does worse. The goal with this extension is to provide automated refactorings that are easy to use and VS Code misses. If others are implementing them, I'm more than happy to recommend (and use) their tool!
+
+Have a look, give them a try, use a combination of tools that work best for you.
 
 ---
 
