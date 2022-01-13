@@ -352,6 +352,15 @@
         "code",
         "infra"
       ]
+    },
+    {
+      "login": "alanhussey",
+      "name": "Alan Hussey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/383725?v=4",
+      "profile": "https://stalefri.es",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
