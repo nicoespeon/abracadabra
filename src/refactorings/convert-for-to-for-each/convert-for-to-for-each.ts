@@ -250,6 +250,7 @@ function replaceListWithItemIn(
       MemberExpression(path) {
         if (!t.areEquivalent(path.node.object, list)) return;
         if (!t.areEquivalent(path.node.property, accessor)) return;
+        if (path.parentPath.isAssignmentExpression()) return;
         path.replaceWith(item);
       }
     },

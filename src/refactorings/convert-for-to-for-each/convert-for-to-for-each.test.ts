@@ -130,6 +130,19 @@ items.forEach(item => {
 });`
       },
       {
+        description: "for-loop with array re-assignment",
+        code: `const myArray = [1, 2, 3];
+
+[cursor]for (let i = 0; i < myArray.length; i++) {
+  myArray[i] = myArray[i].toString();
+}`,
+        expected: `const myArray = [1, 2, 3];
+
+myArray.forEach((myArrayItem, i) => {
+  myArray[i] = myArrayItem.toString();
+});`
+      },
+      {
         description: "accessor referenced inside the body",
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);

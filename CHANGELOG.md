@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Convert For to ForEach used to singularize the array name for naming each individual item. That's naive, not all array variables are plural! It will now fallback on `<arrayName>Item` if it can't find a singular name for the array.
+- "Convert For to ForEach" used to singularize the array name for naming each individual item. That's naive, not all array variables are plural! It will now fallback on `<arrayName>Item` if it can't find a singular name for the array.
+- Likewise, "Convert For to ForEach" was breaking re-assignment by replacing `myArray[i] = xyz` with `myArrayItem = xyz`, which doesn't work. Not anymore! Thanks to @alanhussey for reporting these bugs 🙏
 
 ## [6.9.1]
 
