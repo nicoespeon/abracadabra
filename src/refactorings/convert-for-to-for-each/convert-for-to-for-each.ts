@@ -82,7 +82,12 @@ function createVisitor(
       onMatch(
         path,
         (body) => {
-          const item = t.identifier(singular(getListName(list)));
+          const listName = getListName(list);
+          const newName =
+            singular(listName) === listName
+              ? `${listName}Item`
+              : singular(listName);
+          const item = t.identifier(newName);
           replaceListWithItemIn(body, list, left, item, path.scope);
 
           // After we replaced, we check if there are remaining accessors.

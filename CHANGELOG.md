@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Convert For to ForEach used to singularize the array name for naming each individual item. That's naive, not all array variables are plural! It will now fallback on `<arrayName>Item` if it can't find a singular name for the array.
+
 ## [6.9.1]
 
 ### Changed

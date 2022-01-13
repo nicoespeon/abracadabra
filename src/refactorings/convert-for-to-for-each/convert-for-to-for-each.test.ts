@@ -121,6 +121,15 @@ items.forEach(item => {
 });`
       },
       {
+        description: "for-loop with array identifier that is singular",
+        code: `for (let i = 0; i < myArray.length; i++) {
+  console.log(myArray[i]);
+}`,
+        expected: `myArray.forEach(myArrayItem => {
+  console.log(myArrayItem);
+});`
+      },
+      {
         description: "accessor referenced inside the body",
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
