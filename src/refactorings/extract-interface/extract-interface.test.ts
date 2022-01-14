@@ -212,6 +212,28 @@ interface Extracted {
 }`
       },
       {
+        description: "an exported class (default export)",
+        code: `export default class Foo[cursor] {
+  constructor(readonly numbers: number[]) {}
+
+  bar(): number {
+    return this.numbers.length;
+  }
+}`,
+        expected: `export default class Foo implements Extracted {
+  constructor(readonly numbers: number[]) {}
+
+  bar(): number {
+    return this.numbers.length;
+  }
+}
+
+interface Extracted {
+  readonly numbers: number[];
+  bar(): number;
+}`
+      },
+      {
         description: "a generic class",
         code: `class Foo<T extends string>[cursor] {
   constructor(readonly items: T[]) {}

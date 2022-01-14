@@ -76,7 +76,7 @@ function createVisitor(
       // It seems a class declaration inside a named export may have no loc.
       // Use the named export loc in that situation.
       if (
-        t.isExportNamedDeclaration(path.parent) &&
+        t.isExportDeclaration(path.parent) &&
         !t.isSelectableNode(path.node)
       ) {
         path.node.loc = path.parent.loc;
