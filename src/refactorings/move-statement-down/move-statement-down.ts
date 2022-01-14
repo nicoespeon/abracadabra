@@ -45,7 +45,8 @@ function updateCode(
     ClassProperty: visitPath,
     ArrayExpression: visitPath,
     Literal: visitPath,
-    JSXElement: visitPath
+    JSXElement: visitPath,
+    JSXExpressionContainer: visitPath
   });
 
   return { ...result, isLastStatement, newStatementPosition };
@@ -159,7 +160,8 @@ function hasChildWhichMatchesSelection(
     ClassProperty: visitPath,
     ArrayExpression: visitPath,
     Literal: visitPath,
-    JSXElement: visitPath
+    JSXElement: visitPath,
+    JSXExpressionContainer: visitPath
   });
 
   return result;

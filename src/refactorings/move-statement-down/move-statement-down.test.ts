@@ -389,6 +389,21 @@ function sayByeBye() {
     [cursor]<p>How are you?</p>
   </>;
 }`
+      },
+      {
+        description: "JSX expressions",
+        code: `function App() {
+  return <>
+    [cursor]{howAreYou}
+    <h1>Hello!</h1>
+  </>;
+}`,
+        expected: `function App() {
+  return <>
+    <h1>Hello!</h1>
+    [cursor]{howAreYou}
+  </>;
+}`
       }
     ],
     async ({ code, expected }) => {
