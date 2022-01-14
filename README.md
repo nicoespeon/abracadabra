@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -145,6 +145,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
   </tr>
   <tr>
     <td align="center"><a href="https://stalefri.es"><img src="https://avatars.githubusercontent.com/u/383725?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alan Hussey</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aalanhussey" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/kevintechie"><img src="https://avatars.githubusercontent.com/u/10410717?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kevin Coleman</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Akevintechie" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
