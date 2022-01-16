@@ -39,6 +39,7 @@ function updateCode(
 
   const result = t.transform(code, {
     Statement: visitPath,
+    ObjectExpression: visitPath,
     ObjectProperty: visitPath,
     ObjectMethod: visitPath,
     ClassMethod: visitPath,
@@ -154,6 +155,7 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     Statement: visitPath,
+    ObjectExpression: visitPath,
     ObjectProperty: visitPath,
     ObjectMethod: visitPath,
     ClassMethod: visitPath,
@@ -185,7 +187,12 @@ function hasChildWhichMatchesSelection(
     if (childPath.isObjectProperty() && parentSelection.isOneLine) return;
 
     const childSelection = Selection.fromAST(node.loc);
-    if (childPath.isArrayExpression() && childSelection.isOneLine) return;
+    if (
+      (childPath.isArrayExpression() || childPath.isObjectExpression()) &&
+      childSelection.isOneLine
+    ) {
+      return;
+    }
 
     if (childPath.isLiteral() && !path.isArrayExpression()) return;
 

@@ -14,6 +14,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Extract Interface" now works on default exports too. Thanks @kevintechie for spotting this one.
 - Make "Move Statements" work with JSX expressions too, so you can swap some `{variable}` in your JSX code!
 
+### Added
+
+- Move Statements Up/Down now work on object expressions that are nested inside arrays. For instance:
+
+```js
+const d = [
+  {
+    a: 5
+  },
+  {
+    b: 5
+  }
+];
+```
+
+You can swap these multi-lines objects with a single shortcut (defaults are `Alt + Shift + U` for moving up, `Alt + Shift + D` for moving down):
+
+```js
+const d = [
+  {
+    b: 5
+  },
+  {
+    a: 5
+  }
+];
+```
+
 ## [6.9.1]
 
 ### Changed

@@ -168,6 +168,33 @@ console.log("Should not move");`,
 console.log("Should not move");`
       },
       {
+        description: "objects in an array",
+        code: `console.log("Should not move");
+const data = [
+  [cursor]{
+    foo: "foo"
+  },
+  {
+    bar: "bar"
+  },
+  {
+    baz: "baz"
+  }
+];`,
+        expected: `console.log("Should not move");
+const data = [
+  {
+    bar: "bar"
+  },
+  [cursor]{
+    foo: "foo"
+  },
+  {
+    baz: "baz"
+  }
+];`
+      },
+      {
         description: "array elements, one-liner",
         code: `const data = [[cursor]"foo", "bar", "baz"];
 console.log("Should move in this scenario");`,

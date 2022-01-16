@@ -152,6 +152,33 @@ const data = [
 ];`
       },
       {
+        description: "objects in an array",
+        code: `console.log("Should not move");
+const data = [
+  {
+    foo: "foo"
+  },
+  [cursor]{
+    bar: "bar"
+  },
+  {
+    baz: "baz"
+  }
+];`,
+        expected: `console.log("Should not move");
+const data = [
+  [cursor]{
+    bar: "bar"
+  },
+  {
+    foo: "foo"
+  },
+  {
+    baz: "baz"
+  }
+];`
+      },
+      {
         description: "object properties",
         code: `console.log("Should not move");
 const data = {
