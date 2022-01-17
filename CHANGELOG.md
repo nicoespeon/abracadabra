@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.10.0] - 2022-01-17 - When You Wish Upon a Star ⭐
+
 ### Fixed
 
 - "Convert For to ForEach" used to singularize the array name for naming each individual item. That's naive, not all array variables are plural! It will now fallback on `<arrayName>Item` if it can't find a singular name for the array.
@@ -1571,7 +1573,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.9.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.10.0...HEAD
+[6.10.0]: https://github.com/nicoespeon/abracadabra/compare/6.9.1...6.10.0
 [6.9.1]: https://github.com/nicoespeon/abracadabra/compare/6.9.0...6.9.1
 [6.9.0]: https://github.com/nicoespeon/abracadabra/compare/6.8.0...6.9.0
 [6.8.0]: https://github.com/nicoespeon/abracadabra/compare/6.7.1...6.8.0
