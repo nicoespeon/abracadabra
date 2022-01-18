@@ -183,6 +183,10 @@ function hasChildWhichMatchesSelection(
     if (!t.isSelectableNode(parent)) return;
     if (!t.isSelectableNode(node)) return;
 
+    if (childPath.isObjectExpression() && typeof childPath.key !== "number") {
+      return;
+    }
+
     const parentSelection = Selection.fromAST(parent.loc);
     if (childPath.isObjectProperty() && parentSelection.isOneLine) return;
 
