@@ -14,8 +14,8 @@ import { findScopePath } from "./scope";
 const traverseNode = t.traverse;
 const traversePath = traverse;
 
-export { NodePath, Visitor, Scope } from "@babel/traverse";
-export { RootNodePath, isRootNodePath };
+export { NodePath, Scope } from "@babel/traverse";
+export { isRootNodePath };
 export {
   traverseNode,
   traversePath,
@@ -25,13 +25,12 @@ export {
   transform,
   transformAST,
   transformCopy,
-  Transformed,
   print,
-  AST,
   isUsingTabs,
   Binding
 };
 export { mergeCommentsInto };
+export type { Visitor, RootNodePath, Transformed, AST };
 
 function transform(code: Code, options: TraverseOptions): Transformed {
   return transformAST(parse(code), options);

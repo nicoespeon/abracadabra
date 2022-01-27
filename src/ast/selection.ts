@@ -2,6 +2,13 @@ import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 export {
+  isSelectablePath,
+  isSelectableNode,
+  isSelectableVariableDeclarator,
+  isSelectableIdentifier,
+  isSelectableObjectProperty
+};
+export type {
   ASTSelection,
   ASTPosition,
   SelectablePath,
@@ -9,12 +16,7 @@ export {
   SelectableObjectProperty,
   SelectableIdentifier,
   SelectableVariableDeclarator,
-  Selectable,
-  isSelectablePath,
-  isSelectableNode,
-  isSelectableVariableDeclarator,
-  isSelectableIdentifier,
-  isSelectableObjectProperty
+  Selectable
 };
 
 interface ASTSelection {

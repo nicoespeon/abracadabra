@@ -3,7 +3,7 @@ import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
 import { TypeChecker } from "./type-checker";
 
-export { Refactoring, RefactoringWithActionProvider, Operation };
+export type { Refactoring, RefactoringWithActionProvider, Operation };
 
 interface Refactoring {
   command: {

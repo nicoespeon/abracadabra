@@ -20,7 +20,6 @@ export {
   isNonEmptyReturn,
   hasFinalReturn,
   hasBraces,
-  IfStatementWithAlternate,
   hasAlternate,
   hasSingleStatementBlock,
   isTruthy,
@@ -35,6 +34,7 @@ export {
   getOppositeOperator,
   canBeShorthand
 };
+export type { IfStatementWithAlternate };
 
 function isClassPropertyIdentifier(path: NodePath): boolean {
   return (

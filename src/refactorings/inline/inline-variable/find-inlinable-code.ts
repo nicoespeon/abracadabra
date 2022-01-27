@@ -9,12 +9,12 @@ import { Position } from "../../../editor/position";
 
 export {
   findInlinableCode,
-  InlinableCode,
   InlinableTSTypeAlias,
   InlinableObjectPattern,
   SingleDeclaration,
   MultipleDeclarations
 };
+export type { InlinableCode };
 
 function findInlinableCode(
   selection: Selection,

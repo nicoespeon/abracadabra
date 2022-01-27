@@ -13,13 +13,12 @@ export {
   isEmpty,
   isLet,
   replaceWithBodyOf,
-  Primitive,
-  TypeDeclaration,
   forEach,
   statementWithBraces,
   statementWithoutBraces,
   toArrowFunctionExpression
 };
+export type { Primitive, TypeDeclaration };
 
 function addImportDeclaration(
   programPath: NodePath<t.Program>,
