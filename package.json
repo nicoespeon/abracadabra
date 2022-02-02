@@ -44,7 +44,7 @@
     "test": "jest",
     "pretest:contract": "tsc -p ./",
     "test:contract": "node ./out/test/run-contract-tests.js",
-    "test:ci": "yarn test && yarn test:contract",
+    "test:ci": "yarn typecheck && yarn test && yarn test:contract",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint -c .eslintrc.js --ext .ts src",
     "build": "run-p -l build:*",
