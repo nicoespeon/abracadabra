@@ -14,7 +14,6 @@ export {
   SingleDeclaration,
   MultipleDeclarations
 };
-export type { InlinableCode };
 
 function findInlinableCode(
   selection: Selection,
@@ -172,7 +171,7 @@ function isSelectableIdentifierDeclaration(
 
 // 🎭 Component interface
 
-interface InlinableCode {
+export interface InlinableCode {
   isRedeclared: boolean;
   isExported: boolean;
   hasIdentifiersToUpdate: boolean;

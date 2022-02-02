@@ -2,17 +2,14 @@ import { Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
 import { TypeChecker } from "./type-checker";
-
-export type { Refactoring, RefactoringWithActionProvider, Operation };
-
-interface Refactoring {
+export interface Refactoring {
   command: {
     key: string;
     operation: Operation;
   };
 }
 
-interface RefactoringWithActionProvider {
+export interface RefactoringWithActionProvider {
   command: {
     key: string;
     title: string;
@@ -30,4 +27,4 @@ interface RefactoringWithActionProvider {
   };
 }
 
-type Operation = (editor: Editor) => Promise<void>;
+export type Operation = (editor: Editor) => Promise<void>;

@@ -30,7 +30,7 @@ export {
   Binding
 };
 export { mergeCommentsInto };
-export type { Visitor, RootNodePath, Transformed, AST };
+export type { Visitor };
 
 function transform(code: Code, options: TraverseOptions): Transformed {
   return transformAST(parse(code), options);
@@ -248,12 +248,12 @@ function unindent(value: Code): Code {
     .replace(new RegExp("\n\t\t", "g"), "\n");
 }
 
-interface Transformed {
+export interface Transformed {
   code: Code;
   hasCodeChanged: boolean;
 }
 
-type AST = t.File;
+export type AST = t.File;
 
 function mergeCommentsInto<T extends t.Node>(
   node: T,
@@ -269,7 +269,7 @@ function mergeCommentsInto<T extends t.Node>(
   };
 }
 
-type RootNodePath<T = t.Node> = NodePath<T> & {
+export type RootNodePath<T = t.Node> = NodePath<T> & {
   parentPath: NodePath<t.Program>;
 };
 

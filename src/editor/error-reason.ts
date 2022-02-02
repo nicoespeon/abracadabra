@@ -1,6 +1,4 @@
-export { ErrorReason, toString };
-
-enum ErrorReason {
+export enum ErrorReason {
   DidNotFindClass,
   DidNotFindObjectToDestructure,
   DidNotFindNumericLiteral,
@@ -58,7 +56,7 @@ enum ErrorReason {
   CantInlineAssignedFunctionWithManyStatements
 }
 
-function toString(reason: ErrorReason): string {
+export function toString(reason: ErrorReason): string {
   switch (reason) {
     case ErrorReason.DidNotFindClass:
       return didNotFind("a class to create a factory for");

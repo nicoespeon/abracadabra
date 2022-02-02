@@ -6,14 +6,11 @@ import { ErrorReason, toString } from "./error-reason";
 export {
   AbsolutePath,
   RelativePath,
-  Command,
-  Result,
   ErrorReason,
   toString as errorReasonToString
 };
-export type { Editor, Modification, Code, Choice };
 
-interface Editor {
+export interface Editor {
   workspaceFiles(): Promise<RelativePath[]>;
   readonly selection: Selection;
   readonly code: Code;
@@ -35,23 +32,23 @@ interface Editor {
   moveCursorTo(position: Position): Promise<void>;
 }
 
-type Modification = {
+export type Modification = {
   code: Code;
   selection: Selection;
 };
 
-type Code = string;
+export type Code = string;
 
-enum Command {
+export enum Command {
   RenameSymbol
 }
 
-enum Result {
+export enum Result {
   OK,
   NotSupported
 }
 
-type Choice<T> = {
+export type Choice<T> = {
   value: T;
   label: string;
   description?: string;

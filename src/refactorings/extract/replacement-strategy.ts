@@ -1,6 +1,6 @@
 import { Editor } from "../../editor/editor";
 
-export { askReplacementStrategy, ReplacementStrategy };
+export { askReplacementStrategy };
 
 async function askReplacementStrategy(
   otherOccurrences: any[],
@@ -23,7 +23,7 @@ async function askReplacementStrategy(
   return choice ? choice.value : ReplacementStrategy.None;
 }
 
-enum ReplacementStrategy {
+export enum ReplacementStrategy {
   AllOccurrences,
   SelectedOccurrence,
   None

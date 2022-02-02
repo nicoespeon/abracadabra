@@ -1,6 +1,4 @@
-export { DestructureStrategy };
-
-enum DestructureStrategy {
+export enum DestructureStrategy {
   Destructure,
   Preserve
 }

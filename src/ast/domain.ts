@@ -18,7 +18,6 @@ export {
   statementWithoutBraces,
   toArrowFunctionExpression
 };
-export type { Primitive, TypeDeclaration };
 
 function addImportDeclaration(
   programPath: NodePath<t.Program>,
@@ -108,13 +107,15 @@ function replaceWithBodyOf(path: NodePath, node: t.Statement) {
   path.replaceWithMultiple(getStatements(node));
 }
 
-type Primitive =
+export type Primitive =
   | t.StringLiteral
   | t.NumberLiteral
   | t.BooleanLiteral
   | t.BigIntLiteral;
 
-type TypeDeclaration = t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration;
+export type TypeDeclaration =
+  | t.TSTypeAliasDeclaration
+  | t.TSInterfaceDeclaration;
 
 function forEach(
   object: t.Expression,

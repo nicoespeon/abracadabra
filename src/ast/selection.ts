@@ -8,34 +8,24 @@ export {
   isSelectableIdentifier,
   isSelectableObjectProperty
 };
-export type {
-  ASTSelection,
-  ASTPosition,
-  SelectablePath,
-  SelectableNode,
-  SelectableObjectProperty,
-  SelectableIdentifier,
-  SelectableVariableDeclarator,
-  Selectable
-};
 
-interface ASTSelection {
+export interface ASTSelection {
   start: ASTPosition;
   end: ASTPosition;
 }
 
-interface ASTPosition {
+export interface ASTPosition {
   line: number;
   column: number;
 }
 
-type SelectablePath<T = t.Node> = NodePath<T> & { node: Selectable<T> };
-type SelectableNode = Selectable<t.Node>;
-type SelectableIdentifier = Selectable<t.Identifier>;
-type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
-type Selectable<T> = T & { loc: t.SourceLocation };
+export type SelectablePath<T = t.Node> = NodePath<T> & { node: Selectable<T> };
+export type SelectableNode = Selectable<t.Node>;
+export type SelectableIdentifier = Selectable<t.Identifier>;
+export type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
+export type Selectable<T> = T & { loc: t.SourceLocation };
 
-interface SelectableObjectProperty extends t.ObjectProperty {
+export interface SelectableObjectProperty extends t.ObjectProperty {
   loc: t.SourceLocation;
   key: Selectable<t.ObjectProperty["key"]>;
   value: Selectable<t.ObjectProperty["value"]>;

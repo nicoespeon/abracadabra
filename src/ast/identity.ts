@@ -34,7 +34,6 @@ export {
   getOppositeOperator,
   canBeShorthand
 };
-export type { IfStatementWithAlternate };
 
 function isClassPropertyIdentifier(path: NodePath): boolean {
   return (
@@ -139,7 +138,7 @@ function hasBraces(
   }
 }
 
-type IfStatementWithAlternate = t.IfStatement & { alternate: t.Statement };
+export type IfStatementWithAlternate = t.IfStatement & { alternate: t.Statement };
 
 function hasAlternate(
   path: NodePath<t.IfStatement>
