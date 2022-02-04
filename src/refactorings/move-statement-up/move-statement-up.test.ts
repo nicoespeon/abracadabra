@@ -426,6 +426,27 @@ function sayByeBye() {
     <p>How are you?</p>
   </>;
 }`
+      },
+      {
+        description: "JSX attributes",
+        code: `const Component = (...inputProps) => (
+  <input
+    css={{
+      color: darkred,
+      background: white
+    }}
+    [cursor]tw="w-full py-1 text-lg border border-none rounded"
+  />
+)`,
+        expected: `const Component = (...inputProps) => (
+  <input
+    [cursor]tw="w-full py-1 text-lg border border-none rounded"
+    css={{
+      color: darkred,
+      background: white
+    }}
+  />
+)`
       }
     ],
     async ({ code, expected }) => {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Move Statements now support JSX attributes, so you can swap them with a single keystroke 🏇
+
 ## [6.10.0] - 2022-01-17 - When You Wish Upon a Star ⭐
 
 ### Fixed

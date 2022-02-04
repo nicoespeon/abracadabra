@@ -47,6 +47,7 @@ function updateCode(
     ArrayExpression: visitPath,
     Literal: visitPath,
     JSXElement: visitPath,
+    JSXAttribute: visitPath,
     JSXExpressionContainer: visitPath
   });
 
@@ -163,6 +164,7 @@ function hasChildWhichMatchesSelection(
     ArrayExpression: visitPath,
     Literal: visitPath,
     JSXElement: visitPath,
+    JSXAttribute: visitPath,
     JSXExpressionContainer: visitPath
   });
 
