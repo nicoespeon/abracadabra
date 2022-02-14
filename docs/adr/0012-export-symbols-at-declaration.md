@@ -12,13 +12,13 @@ We used to put the exported symbols at the top of each file. The idea was that i
 
 However, that doesn't work well with types since [we started using babel for running tests](./0011-use-babel-jest-instead-of-ts-jest.md). That created inconsistencies with some symbols being exported at the top of the file, and types being exported where they are declared.
 
-That got me reflect on exporting symbols at the top of the file. While the idea was to clarify what's the public API of each file, it's _not_ the most frequent question I have when working with the code. TypeScript is already providing auto-completion and auto-imports the symbols we need to use. However, having the exports far from the declaration made it harder to answer the question: "is this symbol exported?".
+That got me to reflect on exporting symbols at the top of the file. While the idea was to clarify what's the public API of each file, it's _not_ the most frequent question I have when working with the code. TypeScript is already providing auto-completion and auto-imports the symbols we need to use. However, having the exports far from the declaration made it harder to answer the question: "is this symbol exported?".
 
-Consistency and being able to tell if the symbol we are looking at is exported outweight the simplicity of seing what a given file exports.
+Consistency and being able to tell if the symbol we are looking at is exported outweigh the simplicity of seeing what a given file exports.
 
 ## Decision
 
-The `export` keyword are used on the declaration of the symbol, as much as possible
+The `export` keyword is used on the declaration of the symbol, as much as possible
 
 ## Consequences
 
