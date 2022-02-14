@@ -1,6 +1,6 @@
 import {
-  createVisitor,
-  canSplitMultipleDeclarations
+  splitMultipleDeclarations,
+  createVisitor
 } from "./split-multiple-declarations";
 
 import { RefactoringWithActionProvider } from "../../types";

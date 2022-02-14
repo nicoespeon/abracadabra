@@ -1,7 +1,7 @@
 import { Selection } from "./selection";
-import { AbsolutePath, RelativePath } from "./path";
+import { RelativePath } from "./path";
 import { Position } from "./position";
-import { ErrorReason, toString } from "./error-reason";
+import { ErrorReason } from "./error-reason";
 
 export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
