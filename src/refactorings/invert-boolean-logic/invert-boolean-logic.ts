@@ -2,14 +2,7 @@ import { Editor, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export {
-  createVisitor as canNegateExpression,
-  invertBooleanLogic,
-  getNegatedOperator
-};
-export { getNegatedBinaryOperator };
-
-async function invertBooleanLogic(editor: Editor) {
+export async function invertBooleanLogic(editor: Editor) {
   const { code, selection } = editor;
   const expression = findNegatableExpression(t.parse(code), selection);
 
@@ -48,7 +41,7 @@ function findNegatableExpression(
   return result;
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.SelectablePath) => void
 ): t.Visitor {
@@ -122,7 +115,7 @@ interface NegatableExpression {
   negatedOperator: NegatedOperator | null;
 }
 
-function getNegatedOperator(node: t.Node): NegatedOperator | null {
+export function getNegatedOperator(node: t.Node): NegatedOperator | null {
   return t.isLogicalExpression(node)
     ? getNegatedLogicalOperator(node.operator)
     : t.isBinaryExpression(node)
@@ -230,7 +223,7 @@ function getNegatedLogicalOperator(
   }
 }
 
-function getNegatedBinaryOperator(
+export function getNegatedBinaryOperator(
   operator: t.BinaryExpression["operator"]
 ): t.BinaryExpression["operator"] {
   switch (operator) {

@@ -5,9 +5,7 @@ import { last, allButLast } from "../../array";
 
 import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
-export { flipIfElse, createVisitor as hasIfElseToFlip };
-
-async function flipIfElse(editor: Editor) {
+export async function flipIfElse(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -44,7 +42,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.IfStatement>) => void
 ): t.Visitor {

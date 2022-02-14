@@ -2,9 +2,7 @@ import { last } from "../array";
 import { ASTPosition, NodePath, isSelectableNode } from "../ast";
 import { Code } from "./editor";
 
-export { Position };
-
-class Position {
+export class Position {
   private _line: number;
   private _character: number;
 

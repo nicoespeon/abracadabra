@@ -3,9 +3,7 @@ import { Selection } from "../../editor/selection";
 import { last } from "../../array";
 import * as t from "../../ast";
 
-export { removeRedundantElse, createVisitor as hasRedundantElse };
-
-async function removeRedundantElse(editor: Editor) {
+export async function removeRedundantElse(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -33,7 +31,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.IfStatement>) => void
 ): t.Visitor {

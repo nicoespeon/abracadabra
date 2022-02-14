@@ -1,9 +1,7 @@
 import { Editor, Command, Result, ErrorReason } from "../../editor/editor";
 import * as t from "../../ast";
 
-export { renameSymbol };
-
-async function renameSymbol(editor: Editor) {
+export async function renameSymbol(editor: Editor) {
   // Editor built-in rename works fine => ok to delegate the work for now.
   const result = await editor.delegate(Command.RenameSymbol);
 

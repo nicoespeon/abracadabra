@@ -6,13 +6,7 @@ import { assert } from "../../../assert";
 
 import { Occurrence } from "./occurrence";
 
-export {
-  VariableDeclarationModification,
-  DeclarationOnCommonAncestor,
-  MergeDestructuredDeclaration
-};
-
-class VariableDeclarationModification implements Modification {
+export class VariableDeclarationModification implements Modification {
   constructor(
     private name: string,
     private value: string,
@@ -33,7 +27,7 @@ class VariableDeclarationModification implements Modification {
   }
 }
 
-class DeclarationOnCommonAncestor extends VariableDeclarationModification {
+export class DeclarationOnCommonAncestor extends VariableDeclarationModification {
   constructor(
     name: string,
     value: string,
@@ -73,7 +67,7 @@ function topToBottom(a: Occurrence, b: Occurrence): number {
   return a.selection.startsBefore(b.selection) ? -1 : 1;
 }
 
-class MergeDestructuredDeclaration implements Modification {
+export class MergeDestructuredDeclaration implements Modification {
   constructor(
     private name: string,
     private lastDestructuredProperty: t.SelectableNode

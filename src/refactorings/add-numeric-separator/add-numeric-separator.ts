@@ -2,9 +2,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { addNumericSeparator, createVisitor };
-
-async function addNumericSeparator(editor: Editor) {
+export async function addNumericSeparator(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -41,7 +39,7 @@ function addSeparators(value: number): string {
   return floatingPart ? `${result}.${floatingPart}` : result;
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.NumericLiteral>) => void
 ): t.Visitor {

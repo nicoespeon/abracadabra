@@ -1,6 +1,4 @@
-export { testEach };
-
-function testEach<T>(
+export function testEach<T>(
   label: string,
   assertions: (Assertion & T)[],
   fn: (...args: (Assertion & T)[]) => any

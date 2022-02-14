@@ -1,5 +1,5 @@
 import {
-  canConvertToTemplateLiteral,
+  createVisitor,
   convertToTemplateLiteral
 } from "./convert-to-template-literal";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert to template literal",
-    createVisitor: canConvertToTemplateLiteral,
+    createVisitor,
     isPreferred: true
   }
 };

@@ -1,4 +1,4 @@
-import { canliftUpConditional, liftUpConditional } from "./lift-up-conditional";
+import { createVisitor, liftUpConditional } from "./lift-up-conditional";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Lift up conditional",
-    createVisitor: canliftUpConditional,
+    createVisitor,
     isPreferred: true
   }
 };

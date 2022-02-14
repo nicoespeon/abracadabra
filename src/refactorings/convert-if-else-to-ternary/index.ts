@@ -1,5 +1,5 @@
 import {
-  hasIfElseToConvert,
+  createVisitor,
   convertIfElseToTernary
 } from "./convert-if-else-to-ternary";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert if/else to ternary",
-    createVisitor: hasIfElseToConvert
+    createVisitor
   }
 };
 

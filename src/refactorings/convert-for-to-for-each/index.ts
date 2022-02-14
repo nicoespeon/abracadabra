@@ -1,7 +1,4 @@
-import {
-  canConvertForLoop,
-  convertForToForEach
-} from "./convert-for-to-for-each";
+import { createVisitor, convertForToForEach } from "./convert-for-to-for-each";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -13,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert to forEach",
-    createVisitor: canConvertForLoop,
+    createVisitor,
     isPreferred: true
   }
 };

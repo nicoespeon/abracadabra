@@ -5,9 +5,7 @@ import * as t from "../../../ast";
 import { findParamMatchingId } from "./find-param-matching-id";
 import { findExportedIdNames } from "../find-exported-id-names";
 
-export { inlineFunction };
-
-async function inlineFunction(editor: Editor) {
+export async function inlineFunction(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(code, selection);
 

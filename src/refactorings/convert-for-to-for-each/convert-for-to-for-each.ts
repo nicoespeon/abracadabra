@@ -6,9 +6,7 @@ import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Position } from "../../editor/position";
 
-export { convertForToForEach, createVisitor as canConvertForLoop };
-
-async function convertForToForEach(editor: Editor) {
+export async function convertForToForEach(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -50,7 +48,7 @@ function updateCode(
   return { ...result, forLoopStartLine };
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.SelectablePath<t.ForStatement | t.ForOfStatement>,

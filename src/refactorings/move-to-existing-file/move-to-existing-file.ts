@@ -2,9 +2,7 @@ import { Editor, ErrorReason, RelativePath } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { moveToExistingFile, createVisitor };
-
-async function moveToExistingFile(editor: Editor) {
+export async function moveToExistingFile(editor: Editor) {
   const { code, selection } = editor;
 
   const files = await editor.workspaceFiles();
@@ -114,7 +112,7 @@ function updateOtherFileCode(
   });
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.RootNodePath,

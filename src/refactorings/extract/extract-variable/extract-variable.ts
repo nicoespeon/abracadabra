@@ -9,9 +9,7 @@ import {
   askReplacementStrategy
 } from "../replacement-strategy";
 
-export { extractVariable };
-
-async function extractVariable(editor: Editor) {
+export async function extractVariable(editor: Editor) {
   const { code, selection } = editor;
   const { selected: selectedOccurrence, others: otherOccurrences } =
     findAllOccurrences(code, selection);

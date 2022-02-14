@@ -1,9 +1,7 @@
 import * as _path from "path";
 const path = _path.posix;
 
-export { Path, AbsolutePath, RelativePath };
-
-class Path {
+export class Path {
   constructor(protected _value: string) {}
 
   get value(): string {
@@ -42,7 +40,7 @@ class Path {
   }
 }
 
-class AbsolutePath extends Path {
+export class AbsolutePath extends Path {
   constructor(value: string) {
     super(value);
 
@@ -52,7 +50,7 @@ class AbsolutePath extends Path {
   }
 }
 
-class RelativePath extends Path {
+export class RelativePath extends Path {
   constructor(value: string) {
     super(value);
 

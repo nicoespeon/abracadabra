@@ -11,8 +11,6 @@ import {
 import { Selection } from "../selection";
 import { Position } from "../position";
 
-export { InMemoryEditor };
-
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
 const DELETED_LINE = "___DELETED_LINE___";
@@ -20,7 +18,7 @@ const CURSOR = "[cursor]";
 const SELECTION_START = "[start]";
 const SELECTION_END = "[end]";
 
-class InMemoryEditor implements Editor {
+export class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
   private otherFiles = new Map<RelativePath, Editor>();

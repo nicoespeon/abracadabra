@@ -1,42 +1,22 @@
 import { parse as babelParse } from "@babel/parser";
-import traverse, {
-  TraverseOptions,
-  NodePath,
-  Visitor,
-  Binding
-} from "@babel/traverse";
+import traverse, { TraverseOptions, NodePath, Visitor } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
 
 import { Code } from "../editor/editor";
 import { findScopePath } from "./scope";
 
-const traverseNode = t.traverse;
-const traversePath = traverse;
+export const traverseNode = t.traverse;
+export const traversePath = traverse;
 
-export { NodePath, Scope } from "@babel/traverse";
-export { isRootNodePath };
-export {
-  traverseNode,
-  traversePath,
-  traverseAST,
-  parseAndTraverseCode,
-  parse,
-  transform,
-  transformAST,
-  transformCopy,
-  print,
-  isUsingTabs,
-  Binding
-};
-export { mergeCommentsInto };
+export { NodePath, Scope, Binding } from "@babel/traverse";
 export type { Visitor };
 
-function transform(code: Code, options: TraverseOptions): Transformed {
+export function transform(code: Code, options: TraverseOptions): Transformed {
   return transformAST(parse(code), options);
 }
 
-function transformAST(ast: AST, options: TraverseOptions): Transformed {
+export function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const code = print(ast);
   const newCode = fixShebang(print(traverseAST(ast, options)));
 
@@ -54,7 +34,7 @@ function fixShebang(newCode: Code): Code {
   return shebang ? newCode.replace(shebang, `${shebang}\n\n`) : newCode;
 }
 
-function isUsingTabs(ast: AST | t.Node): boolean {
+export function isUsingTabs(ast: AST | t.Node): boolean {
   let useTabs = false;
 
   try {
@@ -89,7 +69,7 @@ function indentWithTabs(code: Code): Code {
     .join("\n");
 }
 
-function print(ast: AST | t.Node): Code {
+export function print(ast: AST | t.Node): Code {
   return recast.print(ast, {
     lineTerminator: "\n"
   }).code;
@@ -99,11 +79,11 @@ function standardizeEOL(code: Code): Code {
   return code.replace(/\r/g, "");
 }
 
-function parseAndTraverseCode(code: Code, opts: TraverseOptions): AST {
+export function parseAndTraverseCode(code: Code, opts: TraverseOptions): AST {
   return traverseAST(parse(code), opts);
 }
 
-function parse(code: Code): AST {
+export function parse(code: Code): AST {
   try {
     return recast.parse(code, {
       parser: {
@@ -167,7 +147,7 @@ function parse(code: Code): AST {
   }
 }
 
-function traverseAST(ast: AST, opts: TraverseOptions): AST {
+export function traverseAST(ast: AST, opts: TraverseOptions): AST {
   traverse(ast, opts);
   return ast;
 }
@@ -182,7 +162,7 @@ function traverseAST(ast: AST, opts: TraverseOptions): AST {
  * It's temporary though.
  * After we're done, we remove the inserted path. #magicTrick ✨
  */
-function transformCopy<T extends t.Node>(
+export function transformCopy<T extends t.Node>(
   path: NodePath,
   node: T,
   traverseOptions: Visitor
@@ -255,7 +235,7 @@ export interface Transformed {
 
 export type AST = t.File;
 
-function mergeCommentsInto<T extends t.Node>(
+export function mergeCommentsInto<T extends t.Node>(
   node: T,
   commentedNodes: t.Node[]
 ): T {
@@ -273,7 +253,7 @@ export type RootNodePath<T = t.Node> = NodePath<T> & {
   parentPath: NodePath<t.Program>;
 };
 
-function isRootNodePath<T = t.Node>(
+export function isRootNodePath<T = t.Node>(
   path: NodePath<T>
 ): path is RootNodePath<T> {
   return path.parentPath?.isProgram() ?? false;

@@ -1,4 +1,4 @@
-import { hasDeadCode, removeDeadCode } from "./remove-dead-code";
+import { createVisitor, removeDeadCode } from "./remove-dead-code";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove dead code",
-    createVisitor: hasDeadCode,
+    createVisitor,
     isPreferred: true
   }
 };

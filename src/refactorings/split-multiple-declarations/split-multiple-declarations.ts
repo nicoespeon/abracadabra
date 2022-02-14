@@ -2,12 +2,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export {
-  splitMultipleDeclarations,
-  createVisitor as canSplitMultipleDeclarations
-};
-
-async function splitMultipleDeclarations(editor: Editor) {
+export async function splitMultipleDeclarations(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -35,7 +30,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   _selection: Selection,
   onMatch: (path: t.NodePath<t.VariableDeclaration>) => void
 ): t.Visitor {

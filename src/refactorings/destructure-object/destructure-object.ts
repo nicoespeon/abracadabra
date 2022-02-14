@@ -3,9 +3,7 @@ import { Selection } from "../../editor/selection";
 import { TypeChecker, ConsoleLogger } from "../../type-checker";
 import * as t from "../../ast";
 
-export { destructureObject, createVisitor };
-
-async function destructureObject(editor: Editor) {
+export async function destructureObject(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(code, selection);
 
@@ -66,7 +64,7 @@ function updateCode(code: Code, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.Identifier>, keys: string[]) => void,
   typeChecker: TypeChecker

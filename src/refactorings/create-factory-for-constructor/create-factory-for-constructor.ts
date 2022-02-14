@@ -2,9 +2,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { createFactoryForConstructor, createVisitor };
-
-async function createFactoryForConstructor(editor: Editor) {
+export async function createFactoryForConstructor(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -139,7 +137,7 @@ function toSpreadElement(rest: t.RestElement): t.SpreadElement {
   return t.spreadElement(argument);
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.ClassDeclaration>) => void
 ): t.Visitor {

@@ -3,14 +3,7 @@ import { camelCase } from "change-case";
 import { Code } from "../../../editor/editor";
 import * as t from "../../../ast";
 
-export {
-  Variable,
-  StringLiteralVariable,
-  MemberExpressionVariable,
-  ShorthandVariable
-};
-
-class Variable<T = t.Node> {
+export class Variable<T = t.Node> {
   protected _name: string;
 
   constructor(protected path: t.NodePath<T>) {
@@ -83,7 +76,7 @@ class Variable<T = t.Node> {
   }
 }
 
-class StringLiteralVariable extends Variable<t.Node> {
+export class StringLiteralVariable extends Variable<t.Node> {
   constructor(path: t.NodePath<t.Node>, proposedName: string) {
     super(path);
     this.tryToSetNameWith(camelCase(proposedName));
@@ -94,7 +87,7 @@ class StringLiteralVariable extends Variable<t.Node> {
   }
 }
 
-class MemberExpressionVariable extends Variable<
+export class MemberExpressionVariable extends Variable<
   t.MemberExpression | t.OptionalMemberExpression
 > {
   constructor(
@@ -109,7 +102,7 @@ class MemberExpressionVariable extends Variable<
   }
 }
 
-class ShorthandVariable extends Variable<t.ObjectProperty> {
+export class ShorthandVariable extends Variable<t.ObjectProperty> {
   constructor(path: t.NodePath<t.ObjectProperty>) {
     super(path);
     if ("name" in path.node.key) {

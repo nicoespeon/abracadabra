@@ -3,10 +3,7 @@ import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 import * as t from "../../ast";
 
-import {
-  canConvertForLoop,
-  convertForToForEach
-} from "./convert-for-to-for-each";
+import { createVisitor, convertForToForEach } from "./convert-for-to-for-each";
 import { Selection } from "../../editor/selection";
 
 describe("Convert For To Foreach", () => {
@@ -357,7 +354,7 @@ for (let entry of typedArray) {
 
     t.traverseAST(t.parse(code), {
       enter(path) {
-        const visitor = canConvertForLoop(Selection.cursorAt(0, 0), onMatch);
+        const visitor = createVisitor(Selection.cursorAt(0, 0), onMatch);
         const visitorNode = visitor[path.node.type];
         if (typeof visitorNode === "function") {
           // @ts-expect-error visitor can expect `NodePath<File>` but `path` is typed as `NodePath<Node>`. It should be OK at runtime.

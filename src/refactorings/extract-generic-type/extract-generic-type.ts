@@ -9,9 +9,7 @@ import {
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 import { last } from "../../array";
 
-export { extractGenericType, createVisitor, Occurrence };
-
-async function extractGenericType(editor: Editor) {
+export async function extractGenericType(editor: Editor) {
   const { code, selection } = editor;
   const ast = t.parse(code);
 
@@ -68,7 +66,7 @@ interface AllOccurrences {
   others: Occurrence[];
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (occurrence: Occurrence) => void,
   onVisit: (occurrence: Occurrence) => void = () => {}
@@ -117,7 +115,7 @@ function findParentFunctionDeclaration(
   return declaration ? new FunctionDeclaration(declaration) : null;
 }
 
-class Occurrence {
+export class Occurrence {
   readonly symbolPosition?: Position;
   protected readonly typeName: string;
 

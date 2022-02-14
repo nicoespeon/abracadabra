@@ -1,4 +1,4 @@
-import { canSplitIfStatement, splitIfStatement } from "./split-if-statement";
+import { createVisitor, splitIfStatement } from "./split-if-statement";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Split if statement",
-    createVisitor: canSplitIfStatement
+    createVisitor
   }
 };
 

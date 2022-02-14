@@ -1,4 +1,4 @@
-import { hasTernaryToFlip, flipTernary } from "./flip-ternary";
+import { createVisitor, flipTernary } from "./flip-ternary";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Flip ternary",
-    createVisitor: hasTernaryToFlip,
+    createVisitor,
     isPreferred: true
   }
 };

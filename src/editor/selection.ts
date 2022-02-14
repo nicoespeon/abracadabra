@@ -2,9 +2,7 @@ import { Position } from "./position";
 import * as t from "../ast";
 import { ASTSelection } from "../ast";
 
-export { Selection };
-
-class Selection {
+export class Selection {
   private _start: Position;
   private _end: Position;
 

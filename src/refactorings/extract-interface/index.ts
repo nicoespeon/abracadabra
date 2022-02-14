@@ -1,4 +1,4 @@
-import { extractInterface, canExtractInterface } from "./extract-interface";
+import { extractInterface, createVisitor } from "./extract-interface";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Extract interface",
-    createVisitor: canExtractInterface
+    createVisitor
   }
 };
 

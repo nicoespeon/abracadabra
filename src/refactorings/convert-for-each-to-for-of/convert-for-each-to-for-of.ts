@@ -4,9 +4,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 
-export { convertForEachToForOf, createVisitor };
-
-async function convertForEachToForOf(editor: Editor) {
+export async function convertForEachToForOf(editor: Editor) {
   const { code, selection } = editor;
   const { transformed: updatedCode, forEachStartLine } = updateCode(
     t.parse(code),
@@ -69,7 +67,7 @@ function updateCode(
   return { transformed, forEachStartLine };
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.SelectablePath<t.CallExpression>,

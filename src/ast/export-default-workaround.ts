@@ -4,8 +4,6 @@ import { NodePath } from "@babel/traverse";
 import { isSelectablePath } from "./selection";
 import { Selection } from "../editor/selection";
 
-export { getExportDefaultDeclarationLoc };
-
 /**
  * For some reason, default export declarations have no LOC.
  * That's likely a bug in the parser that would be solved at some point.
@@ -13,7 +11,7 @@ export { getExportDefaultDeclarationLoc };
  * Until then, we use `getExportDefaultDeclarationLoc` to work around this.
  */
 
-function getExportDefaultDeclarationLoc(
+export function getExportDefaultDeclarationLoc(
   path: NodePath<t.ExportDefaultDeclaration>
 ): t.SourceLocation | null {
   if (!isSelectablePath(path)) return null;

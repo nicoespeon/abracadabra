@@ -5,7 +5,7 @@ import { testEach } from "../../tests-helpers";
 import * as t from "../../ast";
 import {
   convertToTemplateLiteral,
-  canConvertToTemplateLiteral
+  createVisitor
 } from "./convert-to-template-literal";
 
 describe("Convert To Template Literal", () => {
@@ -33,7 +33,7 @@ describe("Convert To Template Literal", () => {
       let canConvert = false;
       t.traverseAST(
         ast,
-        canConvertToTemplateLiteral(selection, () => (canConvert = true))
+        createVisitor(selection, () => (canConvert = true))
       );
 
       expect(canConvert).toBeFalsy();
