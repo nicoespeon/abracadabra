@@ -3,9 +3,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { last, allButLast } from "../../array";
 
-export { convertSwitchToIfElse, createVisitor as hasSwitchToConvert };
-
-async function convertSwitchToIfElse(editor: Editor) {
+export async function convertSwitchToIfElse(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -31,7 +29,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.SwitchStatement>,

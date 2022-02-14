@@ -2,9 +2,7 @@ import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 
-export { Parts };
-
-class Parts {
+export class Parts {
   constructor(
     private readonly code: Code,
     private readonly selection: Selection,

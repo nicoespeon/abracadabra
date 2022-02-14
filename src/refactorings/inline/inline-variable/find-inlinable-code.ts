@@ -7,15 +7,7 @@ import { findExportedIdNames } from "../find-exported-id-names";
 import { VariableDeclarator } from "../../../ast";
 import { Position } from "../../../editor/position";
 
-export {
-  findInlinableCode,
-  InlinableTSTypeAlias,
-  InlinableObjectPattern,
-  SingleDeclaration,
-  MultipleDeclarations
-};
-
-function findInlinableCode(
+export function findInlinableCode(
   selection: Selection,
   parent: t.Node,
   declaration: Declaration | VariableDeclarator
@@ -335,7 +327,7 @@ class InlinableJSXElementIdentifier extends InlinableIdentifier {
   }
 }
 
-class InlinableTSTypeAlias implements InlinableCode {
+export class InlinableTSTypeAlias implements InlinableCode {
   shouldExtendSelectionToDeclaration = true;
   codeToRemoveSelection: Selection;
   valueSelection: Selection;
@@ -432,7 +424,7 @@ class CompositeInlinable implements InlinableCode {
     return this.child.updateIdentifiersWith(inlinedCode);
   }
 }
-class SingleDeclaration extends CompositeInlinable {
+export class SingleDeclaration extends CompositeInlinable {
   get codeToRemoveSelection(): Selection {
     const selection = super.codeToRemoveSelection;
 
@@ -444,7 +436,7 @@ class SingleDeclaration extends CompositeInlinable {
   }
 }
 
-class MultipleDeclarations extends CompositeInlinable {
+export class MultipleDeclarations extends CompositeInlinable {
   private previous: t.SelectableNode;
   private next: t.SelectableNode | undefined;
 
@@ -471,7 +463,7 @@ class MultipleDeclarations extends CompositeInlinable {
   }
 }
 
-class InlinableObjectPattern extends CompositeInlinable {
+export class InlinableObjectPattern extends CompositeInlinable {
   private initName: string;
   private property: t.SelectableObjectProperty;
   private previous: t.SelectableObjectProperty | undefined;

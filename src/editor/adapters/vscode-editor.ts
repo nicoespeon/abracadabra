@@ -15,9 +15,7 @@ import { Selection } from "../selection";
 import { Position } from "../position";
 import { AbsolutePath, RelativePath } from "../path";
 
-export { VSCodeEditor };
-
-class VSCodeEditor implements Editor {
+export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
   private document: vscode.TextDocument;
 

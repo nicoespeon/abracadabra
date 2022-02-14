@@ -121,17 +121,16 @@ import { parse } from "@babel/parser";
 import { Selection } from "./selection";
 import { Position } from "./position";
 
-// 3. Exports
-export { isStringLiteral, isClassDeclaration };
-export { StringLiteral };
-
-// 4. Rest of the code
-function isStringLiteral() {
-  // …
+// 3. Rest of the code, starting with high-level concepts
+export function statementWithBraces(node: t.Statement): t.Statement {
+  return isBlockStatement(node) ? node : blockStatement([node]);
 }
+
+function isBlockStatement() {}
+function blockStatement() {}
 ```
 
-As a general rule, we prefer to have **what is exposed appear before what is private**. That's why we list the exports at the top of the file. We find it simpler to see what is exposed from a file, so it's easier to decide if that's too much and we should split.
+As a general rule, we prefer to have **what is exposed appear before what is private**. We like to read the high-level concepts before the implementation details.
 
 ## Debug locally
 

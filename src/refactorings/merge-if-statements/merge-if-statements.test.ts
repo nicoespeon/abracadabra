@@ -2,7 +2,7 @@ import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
-import { canMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
+import { createVisitor, mergeIfStatements } from "./merge-if-statements";
 
 describe("Merge If Statements", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -498,7 +498,7 @@ describe("Merge If Statements", () => {
 }`;
     const editor = new InMemoryEditor(code);
 
-    await expect(canMergeIfStatements).not.toMatchEditor(editor);
+    await expect(createVisitor).not.toMatchEditor(editor);
   });
 
   it("should not match else-if with different returned values", async () => {
@@ -510,6 +510,6 @@ describe("Merge If Statements", () => {
 }`;
     const editor = new InMemoryEditor(code);
 
-    await expect(canMergeIfStatements).not.toMatchEditor(editor);
+    await expect(createVisitor).not.toMatchEditor(editor);
   });
 });

@@ -1,14 +1,6 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-export {
-  isSelectablePath,
-  isSelectableNode,
-  isSelectableVariableDeclarator,
-  isSelectableIdentifier,
-  isSelectableObjectProperty
-};
-
 export interface ASTSelection {
   start: ASTPosition;
   end: ASTPosition;
@@ -31,29 +23,29 @@ export interface SelectableObjectProperty extends t.ObjectProperty {
   value: Selectable<t.ObjectProperty["value"]>;
 }
 
-function isSelectablePath<T extends t.Node>(
+export function isSelectablePath<T extends t.Node>(
   path: NodePath<T>
 ): path is SelectablePath<T> {
   return !!path.node.loc;
 }
 
-function isSelectableNode(node: t.Node | null): node is SelectableNode {
+export function isSelectableNode(node: t.Node | null): node is SelectableNode {
   return !!node && !!node.loc;
 }
 
-function isSelectableIdentifier(
+export function isSelectableIdentifier(
   node: t.Node | null
 ): node is SelectableIdentifier {
   return t.isIdentifier(node) && isSelectableNode(node);
 }
 
-function isSelectableVariableDeclarator(
+export function isSelectableVariableDeclarator(
   declaration: t.VariableDeclarator
 ): declaration is SelectableVariableDeclarator {
   return !!declaration.loc;
 }
 
-function isSelectableObjectProperty(
+export function isSelectableObjectProperty(
   property: t.Node | null
 ): property is SelectableObjectProperty {
   return (

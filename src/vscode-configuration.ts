@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
 
-export { getIgnoredFolders, getIgnoredPatterns, shouldShowInQuickFix };
-
-function getIgnoredFolders(): string[] {
+export function getIgnoredFolders(): string[] {
   const result = vscode.workspace
     .getConfiguration("abracadabra")
     .get("ignoredFolders");
@@ -17,7 +15,7 @@ function getIgnoredFolders(): string[] {
   return result;
 }
 
-function getIgnoredPatterns(): string[] {
+export function getIgnoredPatterns(): string[] {
   const result = vscode.workspace
     .getConfiguration("abracadabra")
     .get("ignoredPatterns");
@@ -32,7 +30,7 @@ function getIgnoredPatterns(): string[] {
   return result;
 }
 
-function shouldShowInQuickFix(refactoringKey: string): boolean {
+export function shouldShowInQuickFix(refactoringKey: string): boolean {
   const result = vscode.workspace
     .getConfiguration("abracadabra")
     .get(`${refactoringKey}.showInQuickFix`);

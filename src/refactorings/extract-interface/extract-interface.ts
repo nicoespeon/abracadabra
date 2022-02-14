@@ -4,9 +4,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
-export { extractInterface, createVisitor as canExtractInterface };
-
-async function extractInterface(editor: Editor) {
+export async function extractInterface(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -63,7 +61,7 @@ function updateCode(
   return { ...result, interfaceIdentifierPosition };
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.ClassDeclaration>,

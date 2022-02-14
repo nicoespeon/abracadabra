@@ -1,4 +1,4 @@
-import { hasRedundantElse, removeRedundantElse } from "./remove-redundant-else";
+import { createVisitor, removeRedundantElse } from "./remove-redundant-else";
 
 import { RefactoringWithActionProvider } from "../../types";
 
@@ -10,7 +10,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Remove redundant else",
-    createVisitor: hasRedundantElse,
+    createVisitor,
     isPreferred: true
   }
 };

@@ -1,5 +1,5 @@
 import {
-  canMergeWithPreviousIf,
+  createVisitor,
   mergeWithPreviousIfStatement
 } from "./merge-with-previous-if-statement";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Merge with previous if",
-    createVisitor: canMergeWithPreviousIf,
+    createVisitor,
     isPreferred: true
   }
 };

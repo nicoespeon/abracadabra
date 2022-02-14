@@ -10,9 +10,7 @@ import {
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-export { AttemptingEditor };
-
-class AttemptingEditor implements Editor {
+export class AttemptingEditor implements Editor {
   attemptSucceeded = true;
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}

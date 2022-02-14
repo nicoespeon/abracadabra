@@ -4,10 +4,7 @@ import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
 
-import {
-  invertBooleanLogic,
-  canNegateExpression
-} from "./invert-boolean-logic";
+import { invertBooleanLogic, createVisitor } from "./invert-boolean-logic";
 
 describe("Invert Boolean Logic", () => {
   testEach<{ code: Code }>(
@@ -216,7 +213,7 @@ describe("Finding invertable expression (quick fix)", () => {
       let canNegate = false;
       t.traverseAST(
         t.parse(code),
-        canNegateExpression(selection, () => (canNegate = true))
+        createVisitor(selection, () => (canNegate = true))
       );
 
       expect(canNegate).toBe(true);
@@ -248,7 +245,7 @@ describe("Finding invertable expression (quick fix)", () => {
       let canNegate = false;
       t.traverseAST(
         t.parse(code),
-        canNegateExpression(selection, () => (canNegate = true))
+        createVisitor(selection, () => (canNegate = true))
       );
 
       expect(canNegate).toBe(false);

@@ -1,20 +1,18 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-export { templateElement, convertStringToTemplateLiteral };
-
 /**
  * Override babel `templateElement()` because it exposes
  * unnecessary implementation details and it's not type-safe.
  */
-function templateElement(value: string): t.TemplateElement {
+export function templateElement(value: string): t.TemplateElement {
   return t.templateElement({
     raw: value,
     cooked: value
   });
 }
 
-function convertStringToTemplateLiteral(
+export function convertStringToTemplateLiteral(
   path: NodePath<t.StringLiteral>,
   loc: t.SourceLocation
 ): t.TemplateLiteral {

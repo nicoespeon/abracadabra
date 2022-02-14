@@ -3,9 +3,7 @@ import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
 
-export { extractType };
-
-async function extractType(editor: Editor) {
+export async function extractType(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 

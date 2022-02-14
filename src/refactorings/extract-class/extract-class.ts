@@ -2,11 +2,9 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { extractClass, createVisitor };
-
 // REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
 
-async function extractClass(editor: Editor) {
+export async function extractClass(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -27,7 +25,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   _selection: Selection,
   _onMatch: (path: t.NodePath) => void
 ): t.Visitor {

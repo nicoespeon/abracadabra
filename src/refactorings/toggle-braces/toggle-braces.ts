@@ -3,9 +3,7 @@ import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { Position } from "../../editor/position";
 
-export { toggleBraces, createVisitor };
-
-async function toggleBraces(editor: Editor) {
+export async function toggleBraces(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -27,7 +25,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath, toggleBraces: ToggleBraces) => void
 ): t.Visitor {

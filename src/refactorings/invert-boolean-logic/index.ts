@@ -1,5 +1,5 @@
 import {
-  canNegateExpression,
+  createVisitor,
   invertBooleanLogic,
   getNegatedOperator
 } from "./invert-boolean-logic";
@@ -14,7 +14,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Invert boolean logic (De Morgan's law)",
-    createVisitor: canNegateExpression,
+    createVisitor,
     updateMessage(path) {
       const operator = getNegatedOperator(path.node);
       return operator

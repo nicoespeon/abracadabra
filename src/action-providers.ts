@@ -12,11 +12,9 @@ import {
 } from "./vscode-configuration";
 import { TypeChecker, ConsoleLogger } from "./type-checker";
 
-export { RefactoringActionProvider };
-
 type Refactoring = RefactoringWithActionProvider;
 
-class RefactoringActionProvider implements vscode.CodeActionProvider {
+export class RefactoringActionProvider implements vscode.CodeActionProvider {
   constructor(private refactorings: Refactoring[]) {}
 
   provideCodeActions(

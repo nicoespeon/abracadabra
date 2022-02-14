@@ -1,6 +1,6 @@
 import {
   replaceBinaryWithAssignment,
-  canReplaceBinaryWithAssignment
+  createVisitor
 } from "./replace-binary-with-assignment";
 
 import * as t from "../../ast";
@@ -15,7 +15,7 @@ const config: RefactoringWithActionProvider = {
   actionProvider: {
     message: "Replace binary with assignment",
     isPreferred: true,
-    createVisitor: canReplaceBinaryWithAssignment,
+    createVisitor,
     updateMessage(path: t.NodePath) {
       const { node } = path as t.NodePath<t.AssignmentExpression>;
 

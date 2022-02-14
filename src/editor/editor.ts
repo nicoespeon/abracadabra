@@ -3,12 +3,8 @@ import { AbsolutePath, RelativePath } from "./path";
 import { Position } from "./position";
 import { ErrorReason, toString } from "./error-reason";
 
-export {
-  AbsolutePath,
-  RelativePath,
-  ErrorReason,
-  toString as errorReasonToString
-};
+export { AbsolutePath, RelativePath } from "./path";
+export { ErrorReason, toString as errorReasonToString } from "./error-reason";
 
 export interface Editor {
   workspaceFiles(): Promise<RelativePath[]>;

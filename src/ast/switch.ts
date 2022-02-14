@@ -1,10 +1,8 @@
 import * as t from "@babel/types";
 
-export { toSwitch, VALID_OPERATORS };
+export const VALID_OPERATORS: t.BinaryExpression["operator"][] = ["==", "==="];
 
-const VALID_OPERATORS: t.BinaryExpression["operator"][] = ["==", "==="];
-
-function toSwitch(expression: t.Expression): Switch | null {
+export function toSwitch(expression: t.Expression): Switch | null {
   if (!t.isBinaryExpression(expression)) return null;
   if (!VALID_OPERATORS.includes(expression.operator)) return null;
 

@@ -6,8 +6,6 @@ import { Editor, Code, RelativePath } from "./editor";
 import { Position } from "./position";
 import { Selection } from "./selection";
 
-export { createEditorContractTests };
-
 /**
  * This is a contract tests factory.
  *
@@ -22,7 +20,7 @@ export { createEditorContractTests };
  * - It tells you if everything still work when you upgrade the adapter
  */
 
-function createEditorContractTests(
+export function createEditorContractTests(
   createEditorOn: (code: Code, position?: Position) => Promise<Editor>,
   cleanUp: () => Promise<void> = async () => {}
 ) {

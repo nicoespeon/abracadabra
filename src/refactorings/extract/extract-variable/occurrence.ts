@@ -18,9 +18,7 @@ import {
 } from "./variable-declaration-modification";
 import { last } from "../../../array";
 
-export { createOccurrence, Occurrence };
-
-function createOccurrence(
+export function createOccurrence(
   path: t.NodePath,
   loc: t.SourceLocation,
   selection: Selection
@@ -106,7 +104,7 @@ function createOccurrence(
   return new Occurrence(path, loc, new Variable(path));
 }
 
-class Occurrence<T extends t.Node = t.Node> {
+export class Occurrence<T extends t.Node = t.Node> {
   constructor(
     public path: t.NodePath<T>,
     public loc: t.SourceLocation,

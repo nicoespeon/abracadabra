@@ -3,9 +3,7 @@ import { Selection } from "../../editor/selection";
 import { Position } from "../../editor/position";
 import * as t from "../../ast";
 
-export { moveStatementUp };
-
-async function moveStatementUp(editor: Editor) {
+export async function moveStatementUp(editor: Editor) {
   const { code, selection } = editor;
   if (selection.isMultiLines) {
     // This should be implemented.

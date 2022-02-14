@@ -5,37 +5,7 @@ import { last } from "../array";
 import { Selection } from "../editor/selection";
 import { isSelectableNode, SelectablePath } from "./selection";
 
-export {
-  isClassPropertyIdentifier,
-  isVariableDeclarationIdentifier,
-  isFunctionDeclarationOrArrowFunction,
-  isFunctionCallIdentifier,
-  isJSXPartialElement,
-  isPropertyOfMemberExpression,
-  isArrayExpressionElement,
-  areAllObjectProperties,
-  isUndefinedLiteral,
-  isGuardClause,
-  isGuardConsequentBlock,
-  isNonEmptyReturn,
-  hasFinalReturn,
-  hasBraces,
-  hasAlternate,
-  hasSingleStatementBlock,
-  isTruthy,
-  isFalsy,
-  areSameAssignments,
-  areEquivalent,
-  isTemplateExpression,
-  isInBranchedLogic,
-  isInAlternate,
-  areOpposite,
-  areOppositeOperators,
-  getOppositeOperator,
-  canBeShorthand
-};
-
-function isClassPropertyIdentifier(path: NodePath): boolean {
+export function isClassPropertyIdentifier(path: NodePath): boolean {
   return (
     t.isClassProperty(path.parent) &&
     !path.parent.computed &&
@@ -43,25 +13,25 @@ function isClassPropertyIdentifier(path: NodePath): boolean {
   );
 }
 
-function isVariableDeclarationIdentifier(path: NodePath): boolean {
+export function isVariableDeclarationIdentifier(path: NodePath): boolean {
   return t.isVariableDeclarator(path.parent) && t.isIdentifier(path);
 }
 
-function isFunctionDeclarationOrArrowFunction(
+export function isFunctionDeclarationOrArrowFunction(
   node: t.Node
 ): node is t.FunctionDeclaration | t.ArrowFunctionExpression {
   return t.isFunctionDeclaration(node) || t.isArrowFunctionExpression(node);
 }
 
-function isFunctionCallIdentifier(path: NodePath): boolean {
+export function isFunctionCallIdentifier(path: NodePath): boolean {
   return t.isCallExpression(path.parent) && path.parent.callee === path.node;
 }
 
-function isJSXPartialElement(path: NodePath): boolean {
+export function isJSXPartialElement(path: NodePath): boolean {
   return t.isJSXOpeningElement(path) || t.isJSXClosingElement(path);
 }
 
-function isPropertyOfMemberExpression(path: NodePath): boolean {
+export function isPropertyOfMemberExpression(path: NodePath): boolean {
   return (
     (t.isMemberExpression(path.parent) ||
       t.isOptionalMemberExpression(path.parent)) &&
@@ -70,26 +40,26 @@ function isPropertyOfMemberExpression(path: NodePath): boolean {
   );
 }
 
-function isArrayExpressionElement(
+export function isArrayExpressionElement(
   node: t.Node | null
 ): node is null | t.Expression | t.SpreadElement {
   return node === null || t.isExpression(node) || t.isSpreadElement(node);
 }
 
-function areAllObjectProperties(
+export function areAllObjectProperties(
   nodes: (t.Node | null)[]
 ): nodes is t.ObjectProperty[] {
   return nodes.every((node) => t.isObjectProperty(node));
 }
 
-function isUndefinedLiteral(
+export function isUndefinedLiteral(
   node: object | null | undefined,
   opts?: object | null
 ): node is t.Identifier {
   return t.isIdentifier(node, opts) && node.name === "undefined";
 }
 
-function isGuardClause(path: NodePath<t.IfStatement>) {
+export function isGuardClause(path: NodePath<t.IfStatement>) {
   const { consequent, alternate } = path.node;
   // eslint-disable-next-line no-extra-boolean-cast
   if (Boolean(alternate)) return false;
@@ -97,29 +67,29 @@ function isGuardClause(path: NodePath<t.IfStatement>) {
   return t.isReturnStatement(consequent) || isGuardConsequentBlock(consequent);
 }
 
-function isTruthy(test: t.Expression): boolean {
+export function isTruthy(test: t.Expression): boolean {
   return areEquivalent(test, t.booleanLiteral(true));
 }
 
-function isFalsy(test: t.Expression): boolean {
+export function isFalsy(test: t.Expression): boolean {
   return areEquivalent(test, t.booleanLiteral(false));
 }
 
-function isGuardConsequentBlock(
+export function isGuardConsequentBlock(
   consequent: t.IfStatement["consequent"]
 ): consequent is t.BlockStatement {
   return t.isBlockStatement(consequent) && hasFinalReturn(consequent.body);
 }
 
-function isNonEmptyReturn(node: t.Node) {
+export function isNonEmptyReturn(node: t.Node) {
   return t.isReturnStatement(node) && node.argument !== null;
 }
 
-function hasFinalReturn(statements: t.Statement[]): boolean {
+export function hasFinalReturn(statements: t.Statement[]): boolean {
   return t.isReturnStatement(last(statements));
 }
 
-function hasBraces(
+export function hasBraces(
   path: SelectablePath<t.IfStatement>,
   selection: Selection
 ): boolean {
@@ -138,15 +108,17 @@ function hasBraces(
   }
 }
 
-export type IfStatementWithAlternate = t.IfStatement & { alternate: t.Statement };
+export type IfStatementWithAlternate = t.IfStatement & {
+  alternate: t.Statement;
+};
 
-function hasAlternate(
+export function hasAlternate(
   path: NodePath<t.IfStatement>
 ): path is NodePath<IfStatementWithAlternate> {
   return Boolean(path.node.alternate);
 }
 
-function hasSingleStatementBlock(
+export function hasSingleStatementBlock(
   path: NodePath<t.IfStatement>,
   selection: Selection
 ): boolean {
@@ -165,7 +137,7 @@ function hasSingleStatementBlock(
   }
 }
 
-function areSameAssignments(
+export function areSameAssignments(
   expressionA: t.AssignmentExpression,
   expressionB: t.AssignmentExpression
 ): boolean {
@@ -175,7 +147,7 @@ function areSameAssignments(
   );
 }
 
-function areEquivalent(
+export function areEquivalent(
   nodeA: t.Node | null | undefined,
   nodeB: t.Node | null | undefined
 ): boolean {
@@ -327,7 +299,7 @@ function areAllEqual(
   );
 }
 
-function isTemplateExpression(node: t.Node): node is TemplateExpression {
+export function isTemplateExpression(node: t.Node): node is TemplateExpression {
   return (
     t.isIdentifier(node) ||
     t.isCallExpression(node) ||
@@ -337,11 +309,11 @@ function isTemplateExpression(node: t.Node): node is TemplateExpression {
 
 type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
 
-function isInBranchedLogic(path: NodePath<t.ReturnStatement>) {
+export function isInBranchedLogic(path: NodePath<t.ReturnStatement>) {
   return path.getAncestry().some((path) => t.isIfStatement(path));
 }
 
-function isInAlternate(path: NodePath<t.IfStatement>): boolean {
+export function isInAlternate(path: NodePath<t.IfStatement>): boolean {
   const { parentPath } = path;
 
   return t.isBlockStatement(parentPath)
@@ -351,7 +323,7 @@ function isInAlternate(path: NodePath<t.IfStatement>): boolean {
         parentPath.node.alternate === path.node;
 }
 
-function areOpposite(testA: t.Expression, testB: t.Expression): boolean {
+export function areOpposite(testA: t.Expression, testB: t.Expression): boolean {
   if (!t.isBinaryExpression(testA)) return false;
   if (!t.isBinaryExpression(testB)) return false;
 
@@ -385,7 +357,7 @@ const OPPOSITE_OPERATORS: t.BinaryExpression["operator"][][] = [
   [">=", "<"]
 ];
 
-function areOppositeOperators(
+export function areOppositeOperators(
   operatorA: t.BinaryExpression["operator"],
   operatorB: t.BinaryExpression["operator"]
 ): boolean {
@@ -396,7 +368,7 @@ function areOppositeOperators(
   );
 }
 
-function getOppositeOperator(
+export function getOppositeOperator(
   operator: t.BinaryExpression["operator"]
 ): t.BinaryExpression["operator"] {
   let result: t.BinaryExpression["operator"] | undefined;
@@ -409,7 +381,9 @@ function getOppositeOperator(
   return result || operator;
 }
 
-function canBeShorthand(path: NodePath): path is NodePath<t.ObjectProperty> {
+export function canBeShorthand(
+  path: NodePath
+): path is NodePath<t.ObjectProperty> {
   return (
     t.isObjectProperty(path.node) &&
     !path.node.computed &&

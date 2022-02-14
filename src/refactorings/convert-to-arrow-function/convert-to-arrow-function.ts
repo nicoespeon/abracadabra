@@ -2,9 +2,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export { convertToArrowFunction, createVisitor };
-
-async function convertToArrowFunction(editor: Editor) {
+export async function convertToArrowFunction(editor: Editor) {
   const { code, selection } = editor;
   const { updatedCode, hasReferenceBefore } = updateCode(
     t.parse(code),
@@ -103,7 +101,7 @@ class FunctionExpressionConverter implements Converter {
   }
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>

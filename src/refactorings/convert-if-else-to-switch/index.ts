@@ -1,5 +1,5 @@
 import {
-  hasIfElseToConvert,
+  createVisitor,
   convertIfElseToSwitch
 } from "./convert-if-else-to-switch";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Convert if/else to switch",
-    createVisitor: hasIfElseToConvert,
+    createVisitor,
     isPreferred: true
   }
 };

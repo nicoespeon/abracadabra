@@ -1,4 +1,4 @@
-import { canMergeIfStatements, mergeIfStatements } from "./merge-if-statements";
+import { createVisitor, mergeIfStatements } from "./merge-if-statements";
 
 import { RefactoringWithActionProvider } from "../../types";
 import * as t from "../../ast";
@@ -11,7 +11,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Merge if statements",
-    createVisitor: canMergeIfStatements,
+    createVisitor,
     updateMessage(path: t.NodePath) {
       const { alternate } = path.node as t.IfStatement;
       return alternate ? "Merge else-if" : "Merge if statements";

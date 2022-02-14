@@ -2,12 +2,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export {
-  splitDeclarationAndInitialization,
-  createVisitor as canSplitDeclarationAndInitialization
-};
-
-async function splitDeclarationAndInitialization(editor: Editor) {
+export async function splitDeclarationAndInitialization(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -59,7 +54,7 @@ function objectPatternLVals(objectPattern: t.ObjectPattern): t.LVal[] {
     .filter((lval): lval is t.LVal => t.isLVal(lval));
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.VariableDeclaration>) => void
 ): t.Visitor {

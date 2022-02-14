@@ -10,9 +10,7 @@ import {
   InlinableTSTypeAlias
 } from "./find-inlinable-code";
 
-export { inlineVariable };
-
-async function inlineVariable(editor: Editor) {
+export async function inlineVariable(editor: Editor) {
   const { code, selection } = editor;
   const inlinableCode = findInlinableCodeInAST(code, selection);
 

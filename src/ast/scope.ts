@@ -9,23 +9,7 @@ import {
 } from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
 
-export {
-  findScopePath,
-  findParentIfPath,
-  getFunctionScopePath,
-  isShadowIn,
-  findFirstExistingDeclaration,
-  findCommonAncestorToDeclareVariable,
-  findAncestorThatCanHaveVariableDeclaration,
-  bindingNamesInScope,
-  referencesInScope,
-  getReferencedImportDeclarations,
-  getTypeReferencedImportDeclarations,
-  hasReferencesDefinedInSameScope,
-  hasTypeReferencesDefinedInSameScope
-};
-
-function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
+export function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
   return path.findParent(
     (parentPath) =>
       t.isExpressionStatement(parentPath) ||
@@ -44,7 +28,7 @@ function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
   );
 }
 
-function findParentIfPath(
+export function findParentIfPath(
   path: NodePath<t.Node | null>
 ): NodePath<t.IfStatement> | undefined {
   return path.findParent((parentPath) => t.isIfStatement(parentPath)) as
@@ -52,11 +36,13 @@ function findParentIfPath(
     | undefined;
 }
 
-function getFunctionScopePath(path: NodePath<t.FunctionDeclaration>): NodePath {
+export function getFunctionScopePath(
+  path: NodePath<t.FunctionDeclaration>
+): NodePath {
   return path.getFunctionParent() || path.parentPath;
 }
 
-function isShadowIn(
+export function isShadowIn(
   id: t.Identifier,
   ancestors: t.TraversalAncestors
 ): boolean {
@@ -90,7 +76,9 @@ function isShadowIn(
   }
 }
 
-function findFirstExistingDeclaration(expressionPath: NodePath<t.Expression>) {
+export function findFirstExistingDeclaration(
+  expressionPath: NodePath<t.Expression>
+) {
   const existingDeclarations: NodePath<DestructuredVariableDeclarator>[] =
     Object.values(expressionPath.scope.getAllBindings())
       .map(({ path }) => path as NodePath)
@@ -110,7 +98,7 @@ type DestructuredVariableDeclarator = t.VariableDeclarator & {
   init: t.Identifier;
 };
 
-function findCommonAncestorToDeclareVariable(
+export function findCommonAncestorToDeclareVariable(
   path: NodePath,
   otherPaths: NodePath[]
 ): SelectablePath | null {
@@ -134,7 +122,7 @@ function getProgramPath(path: NodePath): NodePath {
   return allAncestors[allAncestors.length - 1];
 }
 
-function findAncestorThatCanHaveVariableDeclaration<T extends t.Node>(
+export function findAncestorThatCanHaveVariableDeclaration<T extends t.Node>(
   path: NodePath<T> | null
 ): SelectablePath<T> | null {
   if (path === null) return null;
@@ -147,11 +135,11 @@ function findAncestorThatCanHaveVariableDeclaration<T extends t.Node>(
   return findAncestorThatCanHaveVariableDeclaration(path.parentPath);
 }
 
-function bindingNamesInScope<T>(path: NodePath<T>): string[] {
+export function bindingNamesInScope<T>(path: NodePath<T>): string[] {
   return Object.keys(path.scope.getAllBindings());
 }
 
-function referencesInScope(
+export function referencesInScope(
   path: NodePath<t.FunctionDeclaration | t.FunctionExpression>
 ): NodePath[] {
   const allBindings = Object.values(path.scope.getAllBindings()) as Binding[];
@@ -164,7 +152,7 @@ function referencesInScope(
   );
 }
 
-function getReferencedImportDeclarations(
+export function getReferencedImportDeclarations(
   functionPath: NodePath<t.FunctionDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
@@ -193,7 +181,7 @@ function getReferencedImportDeclarations(
   return result;
 }
 
-function getTypeReferencedImportDeclarations(
+export function getTypeReferencedImportDeclarations(
   typePath: NodePath<TypeDeclaration>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
@@ -222,7 +210,7 @@ function getTypeReferencedImportDeclarations(
   return result;
 }
 
-function hasReferencesDefinedInSameScope(
+export function hasReferencesDefinedInSameScope(
   functionPath: NodePath<t.FunctionDeclaration>,
   programPath: NodePath<t.Program>
 ): boolean {
@@ -252,7 +240,7 @@ function hasReferencesDefinedInSameScope(
   return result;
 }
 
-function hasTypeReferencesDefinedInSameScope(
+export function hasTypeReferencesDefinedInSameScope(
   typePath: NodePath<TypeDeclaration>
 ): boolean {
   let result = false;

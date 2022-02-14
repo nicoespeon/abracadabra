@@ -6,9 +6,7 @@ const pureComponent = reactCodemod.default;
 import { Editor, Code, ErrorReason } from "../../../editor/editor";
 import * as t from "../../../ast";
 
-export { convertToPureComponent };
-
-async function convertToPureComponent(editor: Editor) {
+export async function convertToPureComponent(editor: Editor) {
   const { code } = editor;
   const useArrowsChoice = await editor.askUserChoice([
     { value: true, label: "Use an arrow function" },

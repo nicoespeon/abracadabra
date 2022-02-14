@@ -4,9 +4,7 @@ import * as t from "../../ast";
 
 import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
-export { flipTernary, createVisitor as hasTernaryToFlip };
-
-async function flipTernary(editor: Editor) {
+export async function flipTernary(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -32,7 +30,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.ConditionalExpression>) => void
 ): t.Visitor {

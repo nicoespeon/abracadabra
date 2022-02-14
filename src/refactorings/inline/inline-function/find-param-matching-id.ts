@@ -1,7 +1,5 @@
 import * as t from "../../../ast";
 
-export { findParamMatchingId };
-
 /**
  * We use a Composite pattern to find the matching param.
  *
@@ -32,7 +30,7 @@ export { findParamMatchingId };
  *     // Resolving its value with the CallExpression args will return `1`.
  */
 
-function findParamMatchingId(
+export function findParamMatchingId(
   id: t.Identifier,
   params: (t.Node | null)[]
 ): MatchingParam {

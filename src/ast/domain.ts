@@ -2,24 +2,8 @@ import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
 export * from "@babel/types";
-export {
-  addImportDeclaration,
-  getImportDeclarations,
-  getReturnedStatement,
-  getAssignedStatement,
-  getStatements,
-  getNodesBelow,
-  getPathsBelow,
-  isEmpty,
-  isLet,
-  replaceWithBodyOf,
-  forEach,
-  statementWithBraces,
-  statementWithoutBraces,
-  toArrowFunctionExpression
-};
 
-function addImportDeclaration(
+export function addImportDeclaration(
   programPath: NodePath<t.Program>,
   identifier: t.Identifier,
   sourcePath: string
@@ -42,7 +26,7 @@ function addImportDeclaration(
   programPath.node.body.unshift(importStatement);
 }
 
-function getImportDeclarations(
+export function getImportDeclarations(
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
   return programPath.node.body.filter(
@@ -51,7 +35,7 @@ function getImportDeclarations(
   );
 }
 
-function getReturnedStatement(
+export function getReturnedStatement(
   node: t.Statement | null
 ): t.ReturnStatement | null {
   if (!t.isBlockStatement(node)) return null;
@@ -62,7 +46,7 @@ function getReturnedStatement(
   return firstChild;
 }
 
-function getAssignedStatement(
+export function getAssignedStatement(
   node: t.Statement | null
 ): (t.ExpressionStatement & { expression: t.AssignmentExpression }) | null {
   if (!t.isBlockStatement(node)) return null;
@@ -77,21 +61,23 @@ function getAssignedStatement(
   return { ...firstChild, expression };
 }
 
-function getStatements(statement: t.Statement): t.Statement[] {
+export function getStatements(statement: t.Statement): t.Statement[] {
   return t.isBlockStatement(statement) ? statement.body : [statement];
 }
 
-function getNodesBelow(path: NodePath<t.IfStatement>): t.Statement[] {
+export function getNodesBelow(path: NodePath<t.IfStatement>): t.Statement[] {
   return getPathsBelow(path).map((path) => path.node);
 }
 
-function getPathsBelow(path: NodePath<t.IfStatement>): NodePath<t.Statement>[] {
+export function getPathsBelow(
+  path: NodePath<t.IfStatement>
+): NodePath<t.Statement>[] {
   return path
     .getAllNextSiblings()
     .filter((path): path is NodePath<t.Statement> => t.isStatement(path));
 }
 
-function isEmpty(statement: t.Statement): boolean {
+export function isEmpty(statement: t.Statement): boolean {
   const statements = getStatements(statement).filter(
     (child) => child !== statement
   );
@@ -99,11 +85,11 @@ function isEmpty(statement: t.Statement): boolean {
   return statements.length === 0;
 }
 
-function isLet(node: t.Node): node is t.VariableDeclaration {
+export function isLet(node: t.Node): node is t.VariableDeclaration {
   return "kind" in node && node.kind === "let";
 }
 
-function replaceWithBodyOf(path: NodePath, node: t.Statement) {
+export function replaceWithBodyOf(path: NodePath, node: t.Statement) {
   path.replaceWithMultiple(getStatements(node));
 }
 
@@ -117,7 +103,7 @@ export type TypeDeclaration =
   | t.TSTypeAliasDeclaration
   | t.TSInterfaceDeclaration;
 
-function forEach(
+export function forEach(
   object: t.Expression,
   params: t.ArrowFunctionExpression["params"],
   body: t.BlockStatement
@@ -129,15 +115,15 @@ function forEach(
   );
 }
 
-function statementWithBraces(node: t.Statement): t.Statement {
+export function statementWithBraces(node: t.Statement): t.Statement {
   return t.isBlockStatement(node) ? node : t.blockStatement([node]);
 }
 
-function statementWithoutBraces(node: t.Statement): t.Statement {
+export function statementWithoutBraces(node: t.Statement): t.Statement {
   return t.isBlockStatement(node) ? node.body[0] : node;
 }
 
-function toArrowFunctionExpression({
+export function toArrowFunctionExpression({
   node
 }: NodePath<t.FunctionDeclaration | t.FunctionExpression>) {
   const arrowFunctionExpression = t.arrowFunctionExpression(

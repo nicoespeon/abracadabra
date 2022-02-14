@@ -1,5 +1,5 @@
 import {
-  canSplitDeclarationAndInitialization,
+  createVisitor,
   splitDeclarationAndInitialization
 } from "./split-declaration-and-initialization";
 
@@ -13,7 +13,7 @@ const config: RefactoringWithActionProvider = {
   },
   actionProvider: {
     message: "Split declaration and initialization",
-    createVisitor: canSplitDeclarationAndInitialization
+    createVisitor
   }
 };
 

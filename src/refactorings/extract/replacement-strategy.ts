@@ -1,8 +1,6 @@
 import { Editor } from "../../editor/editor";
 
-export { askReplacementStrategy };
-
-async function askReplacementStrategy(
+export async function askReplacementStrategy(
   otherOccurrences: any[],
   editor: Editor
 ): Promise<ReplacementStrategy> {

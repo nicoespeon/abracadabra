@@ -3,9 +3,7 @@ import * as vscode from "vscode";
 import { Operation } from "./types";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 
-export { createCommand, executeSafely };
-
-function createCommand(execute: Operation) {
+export function createCommand(execute: Operation) {
   return async () => {
     const editor = createVSCodeEditor();
     if (!editor) return;
@@ -14,7 +12,9 @@ function createCommand(execute: Operation) {
   };
 }
 
-async function executeSafely(command: () => Promise<any>): Promise<void> {
+export async function executeSafely(
+  command: () => Promise<any>
+): Promise<void> {
   try {
     await command();
   } catch (error) {

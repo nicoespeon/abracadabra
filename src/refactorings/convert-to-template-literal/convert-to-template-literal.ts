@@ -2,12 +2,7 @@ import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
-export {
-  convertToTemplateLiteral,
-  createVisitor as canConvertToTemplateLiteral
-};
-
-async function convertToTemplateLiteral(editor: Editor) {
+export async function convertToTemplateLiteral(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
@@ -40,7 +35,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   );
 }
 
-function createVisitor(
+export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath<t.StringLiteral>) => void
 ): t.Visitor {
