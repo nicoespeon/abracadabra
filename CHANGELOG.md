@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.11.0] - 2022-02-19 - Dos Oruguitas 🦋
+
 ### Fixed
 
 - Inline Variable won't remove the extraneous `${}` if it can't, so you don't end up with broken code. Thanks @rsxdalv for reporting this one 👍
@@ -1582,7 +1584,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.10.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.11.0...HEAD
+[6.11.0]: https://github.com/nicoespeon/abracadabra/compare/6.10.0...6.11.0
 [6.10.0]: https://github.com/nicoespeon/abracadabra/compare/6.9.1...6.10.0
 [6.9.1]: https://github.com/nicoespeon/abracadabra/compare/6.9.0...6.9.1
 [6.9.0]: https://github.com/nicoespeon/abracadabra/compare/6.8.0...6.9.0
