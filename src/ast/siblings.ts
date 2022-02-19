@@ -5,17 +5,22 @@ export function getPreviousSibling(path: NodePath): NodePath | undefined {
   return path.getAllPrevSiblings()[0];
 }
 
+export function hasPreviousSibling(path: NodePath): boolean {
+  const siblings = getPreviousSiblingStatements(path);
+  return siblings && siblings.length > 0;
+}
+
 export function getNextSibling(path: NodePath): NodePath | undefined {
   return path.getAllNextSiblings()[0];
 }
 
-export function hasSiblingStatement(path: NodePath): boolean {
-  const allSiblingStatements = [
-    ...getPreviousSiblingStatements(path),
-    ...getNextSiblingStatements(path)
-  ];
+export function hasNextSibling(path: NodePath): boolean {
+  const siblings = getNextSiblingStatements(path);
+  return siblings && siblings.length > 0;
+}
 
-  return allSiblingStatements.length > 0;
+export function hasSiblingStatement(path: NodePath): boolean {
+  return hasPreviousSibling(path) || hasNextSibling(path);
 }
 
 export function getPreviousSiblingStatements(path: NodePath): t.Statement[] {

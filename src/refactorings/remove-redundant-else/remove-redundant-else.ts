@@ -18,14 +18,13 @@ export async function removeRedundantElse(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path: t.NodePath<t.IfStatement>) => {
+    createVisitor(selection, (path, removeRedundantElse) => {
       const { node } = path;
 
       const elseBranch = node.alternate;
       if (!elseBranch) return;
 
-      node.alternate = null;
-      path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
+      removeRedundantElse();
       path.stop();
     })
   );
@@ -33,14 +32,17 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.IfStatement>) => void
+  onMatch: (
+    path: t.NodePath<t.IfStatement>,
+    removeRedundantElse: Function
+  ) => void
 ): t.Visitor {
   return {
     IfStatement(path) {
       const { node } = path;
       if (!selection.isInsideNode(node)) return;
 
-      if (!hasExitStatement(node.consequent)) return;
+      if (!hasExitStatement(node.consequent) && t.hasNextSibling(path)) return;
 
       const elseBranch = node.alternate;
       if (!elseBranch) return;
@@ -49,7 +51,14 @@ export function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onMatch(path);
+      onMatch(path, () => {
+        if (!t.hasNextSibling(path) && !hasExitStatement(node.consequent)) {
+          t.pushToBody(node.consequent, t.returnStatement());
+        }
+
+        node.alternate = null;
+        path.replaceWithMultiple([node, ...t.getStatements(elseBranch)]);
+      });
     }
   };
 }
@@ -67,7 +76,7 @@ function hasChildWhichMatchesSelection(
 
       const ifBranch = node.consequent;
       if (!t.isBlockStatement(ifBranch)) return;
-      if (!hasExitStatement(ifBranch)) return;
+      if (!hasExitStatement(ifBranch) && t.hasNextSibling(path)) return;
 
       const elseBranch = node.alternate;
       if (!elseBranch) return;

@@ -123,6 +123,14 @@ export function statementWithoutBraces(node: t.Statement): t.Statement {
   return t.isBlockStatement(node) ? node.body[0] : node;
 }
 
+export function pushToBody(node: t.Statement, statement: t.Statement) {
+  if (t.isBlockStatement(node)) {
+    node.body.push(statement);
+  } else {
+    node = t.blockStatement([node, statement]);
+  }
+}
+
 export function toArrowFunctionExpression({
   node
 }: NodePath<t.FunctionDeclaration | t.FunctionExpression>) {

@@ -243,6 +243,29 @@ describe("Remove Redundant Else", () => {
   if (isMorning)
     return;
 }`
+      },
+      {
+        description: "if has no sibling next (guard clause)",
+        code: `function doSomethingIfValid() {
+  if (age < 6) {[cursor]
+    sendResponse(FREE_LIFT);
+  } else if (age > 64) {
+    sendResponse({ cost: Math.ceil(basePrice.cost * 0.4) });
+  } else {
+    sendResponse(basePrice);
+  }
+}`,
+        expected: `function doSomethingIfValid() {
+  if (age < 6) {
+    sendResponse(FREE_LIFT);
+    return;
+  }
+  if (age > 64) {
+    sendResponse({ cost: Math.ceil(basePrice.cost * 0.4) });
+  } else {
+    sendResponse(basePrice);
+  }
+}`
       }
     ],
     async ({ code, expected }) => {
@@ -260,7 +283,9 @@ describe("Remove Redundant Else", () => {
 } else {
   doSomething();
   doAnotherThing();
-}[end]`;
+}[end]
+
+console.log("some text");`;
     const editor = new InMemoryEditor(code);
     jest.spyOn(editor, "showError");
 

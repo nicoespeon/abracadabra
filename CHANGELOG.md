@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Move Statements now support JSX attributes, so you can swap them with a single keystroke 🏇
+- Remove Redundant Else will now work if the If statement has no sibling next. It will insert the necessary `return` statement to create a guard clause for you.
 
 ## [6.10.0] - 2022-01-17 - When You Wish Upon a Star ⭐
 
