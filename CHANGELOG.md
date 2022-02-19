@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inline Variable won't remove the extraneous `${}` if it can't, so you don't end up with broken code. Thanks @rsxdalv for reporting this one 👍
+
 ### Added
 
 - Move Statements now support JSX attributes, so you can swap them with a single keystroke 🏇

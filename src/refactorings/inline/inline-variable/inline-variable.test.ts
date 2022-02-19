@@ -263,6 +263,12 @@ console.log(\`I am \${age}\`);`,
         expected: `console.log(\`I am 23\`);`
       },
       {
+        description: "an expression inside a template literal",
+        code: `const authToken = AuthStore.get("authToken");
+log(\`Bearer \${authToken}\`)`,
+        expected: `log(\`Bearer \${AuthStore.get("authToken")}\`)`
+      },
+      {
         description: "a multi-lines string inside a template literal",
         code: `const name[cursor] = \`world!
 
