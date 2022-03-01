@@ -72,7 +72,7 @@
     "@types/path-browserify": "1.0.0",
     "@types/pluralize": "0.0.29",
     "@types/sinon": "10.0.6",
-    "@types/vscode": "1.63.1",
+    "@types/vscode": "1.64.0",
     "@typescript-eslint/eslint-plugin": "5.13.0",
     "@typescript-eslint/parser": "5.13.0",
     "@vscode/test-electron": "2.1.2",
