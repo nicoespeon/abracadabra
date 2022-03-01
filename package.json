@@ -78,7 +78,7 @@
     "@vscode/test-electron": "2.0.1",
     "all-contributors-cli": "6.20.0",
     "assert": "2.0.0",
-    "babel-jest": "27.4.6",
+    "babel-jest": "27.5.1",
     "buffer": "6.0.3",
     "chai": "4.3.6",
     "eslint-config-prettier": "8.3.0",
