@@ -128,16 +128,13 @@ export function createVisitor(
       }
 
       const { parentPath } = path;
-      if (
-        parentPath.isExportNamedDeclaration() &&
-        t.isRootNodePath(parentPath)
-      ) {
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
         onMatch(
           path,
-          new ExportedMovableFunctionDeclaration(
-            path,
-            new NamedExportDeclaration(parentPath)
-          )
+          new ExportedMovableFunctionDeclaration(path, exportDeclaration)
         );
         return;
       }
@@ -152,16 +149,13 @@ export function createVisitor(
       }
 
       const { parentPath } = path;
-      if (
-        parentPath.isExportNamedDeclaration() &&
-        t.isRootNodePath(parentPath)
-      ) {
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
         onMatch(
           path,
-          new ExportedMovableTSTypeDeclaration(
-            path,
-            new NamedExportDeclaration(parentPath)
-          )
+          new ExportedMovableTSTypeDeclaration(path, exportDeclaration)
         );
         return;
       }
@@ -176,16 +170,13 @@ export function createVisitor(
       }
 
       const { parentPath } = path;
-      if (
-        parentPath.isExportNamedDeclaration() &&
-        t.isRootNodePath(parentPath)
-      ) {
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
         onMatch(
           path,
-          new ExportedMovableTSTypeDeclaration(
-            path,
-            new NamedExportDeclaration(parentPath)
-          )
+          new ExportedMovableTSTypeDeclaration(path, exportDeclaration)
         );
         return;
       }
@@ -423,6 +414,14 @@ class ExportedMovableTSTypeDeclaration implements MovableNode {
   }
 }
 
+function getExportDeclaration(path: t.RootNodePath): ExportDeclaration | null {
+  return path.isExportNamedDeclaration()
+    ? new NamedExportDeclaration(path)
+    : path.isExportDefaultDeclaration()
+    ? new DefaultExportDeclaration(path)
+    : null;
+}
+
 interface ExportDeclaration {
   readonly parentPath: t.NodePath<t.Program>;
   replaceWith(id: t.Identifier): void;
@@ -438,5 +437,17 @@ class NamedExportDeclaration implements ExportDeclaration {
   replaceWith(id: t.Identifier) {
     this.path.node.specifiers.push(t.exportSpecifier(id, id));
     this.path.node.declaration = null;
+  }
+}
+
+class DefaultExportDeclaration implements ExportDeclaration {
+  constructor(private path: t.RootNodePath<t.ExportDefaultDeclaration>) {}
+
+  get parentPath(): t.NodePath<t.Program> {
+    return this.path.parentPath;
+  }
+
+  replaceWith(id: t.Identifier) {
+    this.path.node.declaration = id;
   }
 }

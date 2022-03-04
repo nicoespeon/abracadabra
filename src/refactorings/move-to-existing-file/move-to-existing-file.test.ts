@@ -277,6 +277,48 @@ let someData: Data;`,
   value: string;
 };`
         }
+      },
+      {
+        description: "an exported function (default export)",
+        setup: {
+          currentFile: `export default function [cursor]sayHello() {
+  console.log("hello");
+}
+
+sayHello();`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { sayHello } from "./other-file";
+export default sayHello;
+
+sayHello();`,
+          otherFile: `export function sayHello() {
+  console.log("hello");
+}`
+        }
+      },
+      {
+        description: "an exported interface (default export)",
+        setup: {
+          currentFile: `export default interface [cursor]Data {
+  value: string;
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+export default Data;
+
+let someData: Data;`,
+          otherFile: `export interface Data {
+  value: string;
+}`
+        }
       }
     ],
     async ({ setup, expected }) => {
