@@ -109,11 +109,10 @@ function updateOtherFileCode(
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.RootNodePath, movableNode: MovableNode) => void
+  onMatch: (path: t.NodePath, movableNode: MovableNode) => void
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
-      if (!t.isRootNodePath(path)) return;
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
@@ -123,21 +122,64 @@ export function createVisitor(
       const bodySelection = Selection.fromAST(body.node.loc);
       if (selection.end.isAfter(bodySelection.start)) return;
 
-      onMatch(path, new MovableFunctionDeclaration(path));
+      if (t.isRootNodePath(path)) {
+        onMatch(path, new MovableFunctionDeclaration(path));
+        return;
+      }
+
+      const { parentPath } = path;
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
+        onMatch(
+          path,
+          new ExportedMovableFunctionDeclaration(path, exportDeclaration)
+        );
+        return;
+      }
     },
     TSTypeAliasDeclaration(path) {
-      if (!t.isRootNodePath(path)) return;
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, new MovableTSTypeDeclaration(path));
+      if (t.isRootNodePath(path)) {
+        onMatch(path, new MovableTSTypeDeclaration(path));
+        return;
+      }
+
+      const { parentPath } = path;
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
+        onMatch(
+          path,
+          new ExportedMovableTSTypeDeclaration(path, exportDeclaration)
+        );
+        return;
+      }
     },
     TSInterfaceDeclaration(path) {
-      if (!t.isRootNodePath(path)) return;
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, new MovableTSTypeDeclaration(path));
+      if (t.isRootNodePath(path)) {
+        onMatch(path, new MovableTSTypeDeclaration(path));
+        return;
+      }
+
+      const { parentPath } = path;
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
+        onMatch(
+          path,
+          new ExportedMovableTSTypeDeclaration(path, exportDeclaration)
+        );
+        return;
+      }
     }
   };
 }
@@ -215,6 +257,62 @@ class MovableFunctionDeclaration implements MovableNode {
   }
 }
 
+class ExportedMovableFunctionDeclaration implements MovableNode {
+  private _value: t.WithId<t.FunctionDeclaration>;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(
+    path: t.PathWithId<t.NodePath<t.FunctionDeclaration>>,
+    private exportDeclaration: ExportDeclaration
+  ) {
+    // We need to compute these in constructor because the `path` reference
+    // will be removed and not accessible later.
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+      path,
+      exportDeclaration.parentPath
+    );
+    this._referencedImportDeclarations = t.getReferencedImportDeclarations(
+      path,
+      exportDeclaration.parentPath
+    );
+  }
+
+  get value(): t.FunctionDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.exportDeclaration.parentPath,
+      this._value.id,
+      relativePath.withoutExtension
+    );
+    this.exportDeclaration.replaceWith(this._value.id);
+  }
+}
+
 class MovableTSTypeDeclaration implements MovableNode {
   private _value: t.WithId<t.TypeDeclaration>;
   private _hasReferencesThatCantBeImported: boolean;
@@ -261,5 +359,95 @@ class MovableTSTypeDeclaration implements MovableNode {
       relativePath.withoutExtension
     );
     this.path.remove();
+  }
+}
+
+class ExportedMovableTSTypeDeclaration implements MovableNode {
+  private _value: t.WithId<t.TypeDeclaration>;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(
+    path: t.PathWithId<t.NodePath<t.TypeDeclaration>>,
+    private exportedDeclaration: ExportDeclaration
+  ) {
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported =
+      t.hasTypeReferencesDefinedInSameScope(path);
+    this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
+      path,
+      exportedDeclaration.parentPath
+    );
+  }
+
+  get value(): t.TypeDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.exportedDeclaration.parentPath,
+      this._value.id,
+      relativePath.withoutExtension
+    );
+    this.exportedDeclaration.replaceWith(this._value.id);
+  }
+}
+
+function getExportDeclaration(path: t.RootNodePath): ExportDeclaration | null {
+  return path.isExportNamedDeclaration()
+    ? new NamedExportDeclaration(path)
+    : path.isExportDefaultDeclaration()
+    ? new DefaultExportDeclaration(path)
+    : null;
+}
+
+interface ExportDeclaration {
+  readonly parentPath: t.NodePath<t.Program>;
+  replaceWith(id: t.Identifier): void;
+}
+
+class NamedExportDeclaration implements ExportDeclaration {
+  constructor(private path: t.RootNodePath<t.ExportNamedDeclaration>) {}
+
+  get parentPath(): t.NodePath<t.Program> {
+    return this.path.parentPath;
+  }
+
+  replaceWith(id: t.Identifier) {
+    this.path.node.specifiers.push(t.exportSpecifier(id, id));
+    this.path.node.declaration = null;
+  }
+}
+
+class DefaultExportDeclaration implements ExportDeclaration {
+  constructor(private path: t.RootNodePath<t.ExportDefaultDeclaration>) {}
+
+  get parentPath(): t.NodePath<t.Program> {
+    return this.path.parentPath;
+  }
+
+  replaceWith(id: t.Identifier) {
+    this.path.node.declaration = id;
   }
 }

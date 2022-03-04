@@ -214,6 +214,111 @@ export interface Data {
   };
 }`
         }
+      },
+      {
+        description: "an exported function (preserve the export)",
+        setup: {
+          currentFile: `export function [cursor]sayHello() {
+  console.log("hello");
+}
+
+sayHello();`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { sayHello } from "./other-file";
+export { sayHello };
+
+sayHello();`,
+          otherFile: `export function sayHello() {
+  console.log("hello");
+}`
+        }
+      },
+      {
+        description: "an exported interface",
+        setup: {
+          currentFile: `export interface [cursor]Data {
+  value: string;
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+export type { Data };
+
+let someData: Data;`,
+          otherFile: `export interface Data {
+  value: string;
+}`
+        }
+      },
+      {
+        description: "an exported type",
+        setup: {
+          currentFile: `export type [cursor]Data = {
+  value: string;
+};
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+export type { Data };
+
+let someData: Data;`,
+          otherFile: `export type Data = {
+  value: string;
+};`
+        }
+      },
+      {
+        description: "an exported function (default export)",
+        setup: {
+          currentFile: `export default function [cursor]sayHello() {
+  console.log("hello");
+}
+
+sayHello();`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { sayHello } from "./other-file";
+export default sayHello;
+
+sayHello();`,
+          otherFile: `export function sayHello() {
+  console.log("hello");
+}`
+        }
+      },
+      {
+        description: "an exported interface (default export)",
+        setup: {
+          currentFile: `export default interface [cursor]Data {
+  value: string;
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+export default Data;
+
+let someData: Data;`,
+          otherFile: `export interface Data {
+  value: string;
+}`
+        }
       }
     ],
     async ({ setup, expected }) => {
@@ -234,14 +339,6 @@ export interface Data {
       {
         description: "if cursor is inside function body",
         code: `function sayHello() {[cursor]
-  console.log("hello");
-}
-
-sayHello();`
-      },
-      {
-        description: "if function is directly exported",
-        code: `export function [cursor]sayHello() {
   console.log("hello");
 }
 
