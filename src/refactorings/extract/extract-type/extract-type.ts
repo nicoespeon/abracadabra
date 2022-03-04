@@ -34,6 +34,7 @@ function updateCode(
       const pathWhereToDeclareType =
         t.findAncestorThatCanHaveVariableDeclaration(path);
       if (!pathWhereToDeclareType) return;
+      if (!pathWhereToDeclareType.parentPath) return;
 
       const typeIdentifier = t.identifier("Extracted");
       let typeDeclaration: t.Node = t.tsTypeAliasDeclaration(
