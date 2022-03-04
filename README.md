@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-38-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-39-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -147,6 +147,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://stalefri.es"><img src="https://avatars.githubusercontent.com/u/383725?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alan Hussey</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aalanhussey" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/kevintechie"><img src="https://avatars.githubusercontent.com/u/10410717?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kevin Coleman</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Akevintechie" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/rsxdalv"><img src="https://avatars.githubusercontent.com/u/6757283?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roberts Slisans</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Arsxdalv" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/joshjm"><img src="https://avatars.githubusercontent.com/u/21700579?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Josh</b></sub></a><br /><a href="#ideas-joshjm" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
