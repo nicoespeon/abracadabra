@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Move to existing file now supports moving exported elements. It will preserve the export, so your module API won't break.
+
 ## [6.11.0] - 2022-02-19 - Dos Oruguitas 🦋
 
 ### Fixed
