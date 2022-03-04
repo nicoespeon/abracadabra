@@ -3,6 +3,18 @@ import * as t from "@babel/types";
 
 export * from "@babel/types";
 
+export type PathWithId<T extends NodePath> = T & { node: { id: t.Identifier } };
+
+export function hasNodeId<T extends NodePath>(path: T): path is PathWithId<T> {
+  return hasId(path.node);
+}
+
+export type WithId<T extends t.Node> = T & { id: t.Identifier };
+
+export function hasId<T extends t.Node>(node: T): node is WithId<T> {
+  return "id" in node && node.id !== undefined;
+}
+
 export function addImportDeclaration(
   programPath: NodePath<t.Program>,
   identifier: t.Identifier,

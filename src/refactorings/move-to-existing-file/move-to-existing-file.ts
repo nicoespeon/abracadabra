@@ -67,15 +67,10 @@ function updateCode(
 
   const updatedCode = t.transformAST(
     ast,
-    createVisitor(selection, (path, importIdentifier, matchingMovableNode) => {
-      movableNode = matchingMovableNode;
-
-      t.addImportDeclaration(
-        path.parentPath,
-        importIdentifier,
-        relativePath.withoutExtension
-      );
-      path.remove();
+    createVisitor(selection, (path, node) => {
+      movableNode = node;
+      node.removeFrom(relativePath);
+      path.stop();
     })
   );
 
@@ -114,16 +109,12 @@ function updateOtherFileCode(
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (
-    path: t.RootNodePath,
-    importIdentifier: t.Identifier,
-    movableNode: MovableNode
-  ) => void
+  onMatch: (path: t.RootNodePath, movableNode: MovableNode) => void
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
       if (!t.isRootNodePath(path)) return;
-      if (!path.node.id) return;
+      if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
       const body = path.get("body");
@@ -132,21 +123,21 @@ export function createVisitor(
       const bodySelection = Selection.fromAST(body.node.loc);
       if (selection.end.isAfter(bodySelection.start)) return;
 
-      onMatch(path, path.node.id, new MovableFunctionDeclaration(path));
+      onMatch(path, new MovableFunctionDeclaration(path));
     },
     TSTypeAliasDeclaration(path) {
       if (!t.isRootNodePath(path)) return;
-      if (!path.node.id) return;
+      if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, path.node.id, new MovableTSTypeDeclaration(path));
+      onMatch(path, new MovableTSTypeDeclaration(path));
     },
     TSInterfaceDeclaration(path) {
       if (!t.isRootNodePath(path)) return;
-      if (!path.node.id) return;
+      if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, path.node.id, new MovableTSTypeDeclaration(path));
+      onMatch(path, new MovableTSTypeDeclaration(path));
     }
   };
 }
@@ -155,6 +146,7 @@ interface MovableNode {
   readonly value: t.Declaration | null;
   readonly hasReferencesThatCantBeImported: boolean;
   declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[];
+  removeFrom(filePath: RelativePath): void;
 }
 
 class MovableEmptyStatement implements MovableNode {
@@ -164,14 +156,18 @@ class MovableEmptyStatement implements MovableNode {
   declarationsToImportFrom(_relativePath: RelativePath): t.ImportDeclaration[] {
     return [];
   }
+
+  removeFrom() {}
 }
 
 class MovableFunctionDeclaration implements MovableNode {
-  private _value: t.FunctionDeclaration;
+  private _value: t.WithId<t.FunctionDeclaration>;
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
 
-  constructor(path: t.RootNodePath<t.FunctionDeclaration>) {
+  constructor(
+    private path: t.PathWithId<t.RootNodePath<t.FunctionDeclaration>>
+  ) {
     // We need to compute these in constructor because the `path` reference
     // will be removed and not accessible later.
     this._value = path.node;
@@ -208,14 +204,23 @@ class MovableFunctionDeclaration implements MovableNode {
       };
     });
   }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.path.parentPath,
+      this._value.id,
+      relativePath.withoutExtension
+    );
+    this.path.remove();
+  }
 }
 
 class MovableTSTypeDeclaration implements MovableNode {
-  private _value: t.TypeDeclaration;
+  private _value: t.WithId<t.TypeDeclaration>;
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
 
-  constructor(path: t.RootNodePath<t.TypeDeclaration>) {
+  constructor(private path: t.PathWithId<t.RootNodePath<t.TypeDeclaration>>) {
     this._value = path.node;
     this._hasReferencesThatCantBeImported =
       t.hasTypeReferencesDefinedInSameScope(path);
@@ -247,5 +252,14 @@ class MovableTSTypeDeclaration implements MovableNode {
         }
       };
     });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.path.parentPath,
+      this._value.id,
+      relativePath.withoutExtension
+    );
+    this.path.remove();
   }
 }
