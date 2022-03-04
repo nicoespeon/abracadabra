@@ -132,7 +132,13 @@ export function createVisitor(
         parentPath.isExportNamedDeclaration() &&
         t.isRootNodePath(parentPath)
       ) {
-        onMatch(path, new ExportedMovableFunctionDeclaration(path, parentPath));
+        onMatch(
+          path,
+          new ExportedMovableFunctionDeclaration(
+            path,
+            new NamedExportDeclaration(parentPath)
+          )
+        );
         return;
       }
     },
@@ -150,7 +156,13 @@ export function createVisitor(
         parentPath.isExportNamedDeclaration() &&
         t.isRootNodePath(parentPath)
       ) {
-        onMatch(path, new ExportedMovableTSTypeDeclaration(path, parentPath));
+        onMatch(
+          path,
+          new ExportedMovableTSTypeDeclaration(
+            path,
+            new NamedExportDeclaration(parentPath)
+          )
+        );
         return;
       }
     },
@@ -168,7 +180,13 @@ export function createVisitor(
         parentPath.isExportNamedDeclaration() &&
         t.isRootNodePath(parentPath)
       ) {
-        onMatch(path, new ExportedMovableTSTypeDeclaration(path, parentPath));
+        onMatch(
+          path,
+          new ExportedMovableTSTypeDeclaration(
+            path,
+            new NamedExportDeclaration(parentPath)
+          )
+        );
         return;
       }
     }
@@ -255,18 +273,18 @@ class ExportedMovableFunctionDeclaration implements MovableNode {
 
   constructor(
     path: t.PathWithId<t.NodePath<t.FunctionDeclaration>>,
-    private exportedPath: t.RootNodePath<t.ExportNamedDeclaration>
+    private exportDeclaration: ExportDeclaration
   ) {
     // We need to compute these in constructor because the `path` reference
     // will be removed and not accessible later.
     this._value = path.node;
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
       path,
-      exportedPath.parentPath
+      exportDeclaration.parentPath
     );
     this._referencedImportDeclarations = t.getReferencedImportDeclarations(
       path,
-      exportedPath.parentPath
+      exportDeclaration.parentPath
     );
   }
 
@@ -296,14 +314,11 @@ class ExportedMovableFunctionDeclaration implements MovableNode {
 
   removeFrom(relativePath: RelativePath) {
     t.addImportDeclaration(
-      this.exportedPath.parentPath,
+      this.exportDeclaration.parentPath,
       this._value.id,
       relativePath.withoutExtension
     );
-    this.exportedPath.node.specifiers.push(
-      t.exportSpecifier(this._value.id, this._value.id)
-    );
-    this.exportedPath.node.declaration = null;
+    this.exportDeclaration.replaceWith(this._value.id);
   }
 }
 
@@ -363,14 +378,14 @@ class ExportedMovableTSTypeDeclaration implements MovableNode {
 
   constructor(
     path: t.PathWithId<t.NodePath<t.TypeDeclaration>>,
-    private exportedPath: t.RootNodePath<t.ExportNamedDeclaration>
+    private exportedDeclaration: ExportDeclaration
   ) {
     this._value = path.node;
     this._hasReferencesThatCantBeImported =
       t.hasTypeReferencesDefinedInSameScope(path);
     this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
       path,
-      exportedPath.parentPath
+      exportedDeclaration.parentPath
     );
   }
 
@@ -400,13 +415,28 @@ class ExportedMovableTSTypeDeclaration implements MovableNode {
 
   removeFrom(relativePath: RelativePath) {
     t.addImportDeclaration(
-      this.exportedPath.parentPath,
+      this.exportedDeclaration.parentPath,
       this._value.id,
       relativePath.withoutExtension
     );
-    this.exportedPath.node.specifiers.push(
-      t.exportSpecifier(this._value.id, this._value.id)
-    );
-    this.exportedPath.node.declaration = null;
+    this.exportedDeclaration.replaceWith(this._value.id);
+  }
+}
+
+interface ExportDeclaration {
+  readonly parentPath: t.NodePath<t.Program>;
+  replaceWith(id: t.Identifier): void;
+}
+
+class NamedExportDeclaration implements ExportDeclaration {
+  constructor(private path: t.RootNodePath<t.ExportNamedDeclaration>) {}
+
+  get parentPath(): t.NodePath<t.Program> {
+    return this.path.parentPath;
+  }
+
+  replaceWith(id: t.Identifier) {
+    this.path.node.specifiers.push(t.exportSpecifier(id, id));
+    this.path.node.declaration = null;
   }
 }
