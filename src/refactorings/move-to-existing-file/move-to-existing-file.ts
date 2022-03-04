@@ -109,11 +109,10 @@ function updateOtherFileCode(
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.RootNodePath, movableNode: MovableNode) => void
+  onMatch: (path: t.NodePath, movableNode: MovableNode) => void
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
-      if (!t.isRootNodePath(path)) return;
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
@@ -123,7 +122,19 @@ export function createVisitor(
       const bodySelection = Selection.fromAST(body.node.loc);
       if (selection.end.isAfter(bodySelection.start)) return;
 
-      onMatch(path, new MovableFunctionDeclaration(path));
+      if (t.isRootNodePath(path)) {
+        onMatch(path, new MovableFunctionDeclaration(path));
+        return;
+      }
+
+      const { parentPath } = path;
+      if (
+        parentPath.isExportNamedDeclaration() &&
+        t.isRootNodePath(parentPath)
+      ) {
+        onMatch(path, new ExportedMovableFunctionDeclaration(path, parentPath));
+        return;
+      }
     },
     TSTypeAliasDeclaration(path) {
       if (!t.isRootNodePath(path)) return;
@@ -212,6 +223,65 @@ class MovableFunctionDeclaration implements MovableNode {
       relativePath.withoutExtension
     );
     this.path.remove();
+  }
+}
+
+class ExportedMovableFunctionDeclaration implements MovableNode {
+  private _value: t.WithId<t.FunctionDeclaration>;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(
+    path: t.PathWithId<t.NodePath<t.FunctionDeclaration>>,
+    private exportedPath: t.RootNodePath<t.ExportNamedDeclaration>
+  ) {
+    // We need to compute these in constructor because the `path` reference
+    // will be removed and not accessible later.
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+      path,
+      exportedPath.parentPath
+    );
+    this._referencedImportDeclarations = t.getReferencedImportDeclarations(
+      path,
+      exportedPath.parentPath
+    );
+  }
+
+  get value(): t.FunctionDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.exportedPath.parentPath,
+      this._value.id,
+      relativePath.withoutExtension
+    );
+    this.exportedPath.node.specifiers.push(
+      t.exportSpecifier(this._value.id, this._value.id)
+    );
+    this.exportedPath.node.declaration = null;
   }
 }
 
