@@ -137,18 +137,40 @@ export function createVisitor(
       }
     },
     TSTypeAliasDeclaration(path) {
-      if (!t.isRootNodePath(path)) return;
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, new MovableTSTypeDeclaration(path));
+      if (t.isRootNodePath(path)) {
+        onMatch(path, new MovableTSTypeDeclaration(path));
+        return;
+      }
+
+      const { parentPath } = path;
+      if (
+        parentPath.isExportNamedDeclaration() &&
+        t.isRootNodePath(parentPath)
+      ) {
+        onMatch(path, new ExportedMovableTSTypeDeclaration(path, parentPath));
+        return;
+      }
     },
     TSInterfaceDeclaration(path) {
-      if (!t.isRootNodePath(path)) return;
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path, new MovableTSTypeDeclaration(path));
+      if (t.isRootNodePath(path)) {
+        onMatch(path, new MovableTSTypeDeclaration(path));
+        return;
+      }
+
+      const { parentPath } = path;
+      if (
+        parentPath.isExportNamedDeclaration() &&
+        t.isRootNodePath(parentPath)
+      ) {
+        onMatch(path, new ExportedMovableTSTypeDeclaration(path, parentPath));
+        return;
+      }
     }
   };
 }
@@ -331,5 +353,60 @@ class MovableTSTypeDeclaration implements MovableNode {
       relativePath.withoutExtension
     );
     this.path.remove();
+  }
+}
+
+class ExportedMovableTSTypeDeclaration implements MovableNode {
+  private _value: t.WithId<t.TypeDeclaration>;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(
+    path: t.PathWithId<t.NodePath<t.TypeDeclaration>>,
+    private exportedPath: t.RootNodePath<t.ExportNamedDeclaration>
+  ) {
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported =
+      t.hasTypeReferencesDefinedInSameScope(path);
+    this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
+      path,
+      exportedPath.parentPath
+    );
+  }
+
+  get value(): t.TypeDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.exportedPath.parentPath,
+      this._value.id,
+      relativePath.withoutExtension
+    );
+    this.exportedPath.node.specifiers.push(
+      t.exportSpecifier(this._value.id, this._value.id)
+    );
+    this.exportedPath.node.declaration = null;
   }
 }

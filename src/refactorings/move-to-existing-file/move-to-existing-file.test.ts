@@ -235,6 +235,48 @@ sayHello();`,
   console.log("hello");
 }`
         }
+      },
+      {
+        description: "an exported interface",
+        setup: {
+          currentFile: `export interface [cursor]Data {
+  value: string;
+}
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+export type { Data };
+
+let someData: Data;`,
+          otherFile: `export interface Data {
+  value: string;
+}`
+        }
+      },
+      {
+        description: "an exported type",
+        setup: {
+          currentFile: `export type [cursor]Data = {
+  value: string;
+};
+
+let someData: Data;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+export type { Data };
+
+let someData: Data;`,
+          otherFile: `export type Data = {
+  value: string;
+};`
+        }
       }
     ],
     async ({ setup, expected }) => {
