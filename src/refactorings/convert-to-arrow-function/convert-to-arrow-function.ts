@@ -110,15 +110,6 @@ export function createVisitor(
   const onEnterFunctionPath = (
     path: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
   ) => {
-    // It seems a function declaration inside a named export may have no loc.
-    // Use the named export loc in that situation.
-    if (
-      t.isExportNamedDeclaration(path.parent) &&
-      !t.isSelectableNode(path.node)
-    ) {
-      path.node.loc = path.parent.loc;
-    }
-
     if (!selection.isInsidePath(path)) return;
     if (selection.isInsidePath(path.get("body"))) return;
 

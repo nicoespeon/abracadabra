@@ -143,11 +143,7 @@ export function createVisitor(
 ): t.Visitor {
   return {
     ClassDeclaration(path) {
-      if (!path.node.loc) {
-        path.node.loc = path.parent.loc;
-      }
       if (!selection.isInsidePath(path)) return;
-
       onMatch(path);
     }
   };

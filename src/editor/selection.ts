@@ -114,6 +114,12 @@ export class Selection {
   isInsidePath<T extends t.Node>(
     path: t.NodePath<T>
   ): path is t.SelectablePath<T> {
+    // It seems a function declaration inside a named export may have no loc.
+    // Use the named export loc in that situation.
+    if (t.isExportDeclaration(path.parent) && !t.isSelectableNode(path.node)) {
+      path.node.loc = path.parent.loc;
+    }
+
     return this.isInsideNode(path.node);
   }
 
