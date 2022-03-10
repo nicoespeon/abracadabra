@@ -7,7 +7,8 @@ import {
   MovableFunctionDeclaration,
   MovableTSTypeDeclaration,
   ExportedMovableFunctionDeclaration,
-  ExportedMovableTSTypeDeclaration
+  ExportedMovableTSTypeDeclaration,
+  MovableVariableDeclaration
 } from "./movable-node";
 import { getExportDeclaration } from "./export-declaration";
 
@@ -121,6 +122,24 @@ export function createVisitor(
   onMatch: (path: t.NodePath, movableNode: MovableNode) => void
 ): t.Visitor {
   return {
+    VariableDeclaration(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const declarations = path.get("declarations");
+      if (declarations.length !== 1) return;
+
+      const declaration = declarations[0];
+      if (!t.isSelectablePath(declaration)) return;
+      if (!t.isIdentifier(declaration.node.id)) return;
+
+      if (t.isRootNodePath(path)) {
+        onMatch(
+          path,
+          new MovableVariableDeclaration(path, declaration.node.id)
+        );
+        return;
+      }
+    },
     FunctionDeclaration(path) {
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;

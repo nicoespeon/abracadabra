@@ -319,6 +319,60 @@ let someData: Data;`,
   value: string;
 }`
         }
+      },
+      {
+        description: "a root-level variable declaration",
+        setup: {
+          currentFile: `import { someValue } from "lib";
+
+const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+import { someValue } from "lib";
+
+console.log(level.LOW);`,
+          otherFile: `export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
+      },
+      {
+        description: "a root-level variable declaration (let)",
+        setup: {
+          currentFile: `import { someValue } from "lib";
+
+let [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+import { someValue } from "lib";
+
+console.log(level.LOW);`,
+          otherFile: `export let level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
       }
     ],
     async ({ setup, expected }) => {

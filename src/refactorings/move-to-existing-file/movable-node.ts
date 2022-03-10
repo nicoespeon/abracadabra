@@ -19,6 +19,55 @@ export class MovableEmptyStatement implements MovableNode {
 
   removeFrom() {}
 }
+export class MovableVariableDeclaration implements MovableNode {
+  private _value: t.VariableDeclaration;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(
+    private path: t.RootNodePath<t.VariableDeclaration>,
+    private id: t.Identifier
+  ) {
+    // We need to compute these in constructor because the `path` reference
+    // will be removed and not accessible later.
+    this._value = path.node;
+    this._hasReferencesThatCantBeImported = false;
+    this._referencedImportDeclarations = [];
+  }
+
+  get value(): t.VariableDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.path.parentPath,
+      this.id,
+      relativePath.withoutExtension
+    );
+    this.path.remove();
+  }
+}
 
 export class MovableFunctionDeclaration implements MovableNode {
   private _value: t.WithId<t.FunctionDeclaration>;
