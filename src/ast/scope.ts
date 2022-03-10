@@ -153,19 +153,19 @@ export function referencesInScope(
 }
 
 export function getReferencedImportDeclarations(
-  functionPath: NodePath<t.FunctionDeclaration>,
+  path: NodePath<t.BlockStatement | t.Expression | null | undefined>,
   programPath: NodePath<t.Program>
 ): t.ImportDeclaration[] {
   const result: t.ImportDeclaration[] = [];
 
   const importDeclarations = getImportDeclarations(programPath);
-  functionPath.get("body").traverse({
-    Identifier(path) {
-      if (!path.isReferenced()) return;
+  path.traverse({
+    Identifier(identifierPath) {
+      if (!identifierPath.isReferenced()) return;
 
       importDeclarations.forEach((declaration) => {
         const matchingSpecifier = declaration.specifiers.find(({ local }) =>
-          areEquivalent(local, path.node)
+          areEquivalent(local, identifierPath.node)
         );
 
         if (matchingSpecifier) {
@@ -211,28 +211,30 @@ export function getTypeReferencedImportDeclarations(
 }
 
 export function hasReferencesDefinedInSameScope(
-  functionPath: NodePath<t.FunctionDeclaration>,
+  path: NodePath,
+  bodyPath: NodePath<t.BlockStatement | t.Expression | null | undefined>,
+  nodesToExclude: (t.Node | null)[],
   programPath: NodePath<t.Program>
 ): boolean {
   let result = false;
 
-  const scopeReferencesNames = bindingNamesInScope(functionPath);
+  const scopeReferencesNames = bindingNamesInScope(path);
   const importDeclarations = getImportDeclarations(programPath);
   const importReferencesNames = importDeclarations
     .flatMap(({ specifiers }) => specifiers)
     .map(({ local }) => local.name);
-  const functionParamsNames = functionPath.node.params.flatMap(getNames);
+  const excludedNames = nodesToExclude.flatMap(getNames);
   const referencesDefinedInSameScope = scopeReferencesNames
     .filter((name) => !importReferencesNames.includes(name))
-    .filter((name) => !functionParamsNames.includes(name));
+    .filter((name) => !excludedNames.includes(name));
 
-  functionPath.get("body").traverse({
-    Identifier(path) {
-      if (!path.isReferenced()) return;
+  bodyPath.traverse({
+    Identifier(identifierPath) {
+      if (!identifierPath.isReferenced()) return;
 
-      if (referencesDefinedInSameScope.includes(path.node.name)) {
+      if (referencesDefinedInSameScope.includes(identifierPath.node.name)) {
         result = true;
-        path.stop();
+        identifierPath.stop();
       }
     }
   });

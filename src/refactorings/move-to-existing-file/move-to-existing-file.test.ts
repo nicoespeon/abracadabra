@@ -373,6 +373,37 @@ console.log(level.LOW);`,
   HIGH: "high"
 };`
         }
+      },
+      {
+        description: "a root-level variable declaration with bindings",
+        setup: {
+          currentFile: `import { otherLevels } from "../lib";
+
+const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  ...otherLevels
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+import { otherLevels } from "../lib";
+
+console.log(level.LOW);`,
+          otherFile: `import { otherLevels } from "../lib";
+
+export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  ...otherLevels
+};`
+        }
       }
     ],
     async ({ setup, expected }) => {

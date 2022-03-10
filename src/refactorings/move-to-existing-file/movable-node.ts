@@ -31,8 +31,17 @@ export class MovableVariableDeclaration implements MovableNode {
     // We need to compute these in constructor because the `path` reference
     // will be removed and not accessible later.
     this._value = path.node;
-    this._hasReferencesThatCantBeImported = false;
-    this._referencedImportDeclarations = [];
+    const declarationPath = path.get("declarations")[0];
+    this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+      declarationPath,
+      declarationPath.get("init"),
+      [],
+      path.parentPath
+    );
+    this._referencedImportDeclarations = t.getReferencedImportDeclarations(
+      declarationPath.get("init"),
+      path.parentPath
+    );
   }
 
   get value(): t.VariableDeclaration {
@@ -82,10 +91,12 @@ export class MovableFunctionDeclaration implements MovableNode {
     this._value = path.node;
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
       path,
+      path.get("body"),
+      path.node.params,
       path.parentPath
     );
     this._referencedImportDeclarations = t.getReferencedImportDeclarations(
-      path,
+      path.get("body"),
       path.parentPath
     );
   }
@@ -138,10 +149,12 @@ export class ExportedMovableFunctionDeclaration implements MovableNode {
     this._value = path.node;
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
       path,
+      path.get("body"),
+      path.node.params,
       exportDeclaration.parentPath
     );
     this._referencedImportDeclarations = t.getReferencedImportDeclarations(
-      path,
+      path.get("body"),
       exportDeclaration.parentPath
     );
   }
