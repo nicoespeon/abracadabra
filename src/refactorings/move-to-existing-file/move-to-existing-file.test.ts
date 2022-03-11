@@ -490,6 +490,44 @@ type OtherType = string;`
 }
 
 type Value = string;`
+      },
+      {
+        description:
+          "if there are other variable declarators on the same declaration",
+        code: `let [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+}, message;
+
+console.log(level.LOW);`
+      },
+      {
+        description: "a variable declaration that's not at root-level",
+        code: `function printLevel(target) {
+  const [cursor]level = {
+    LOW: "low",
+    MEDIUM: "medium",
+    HIGH: "high"
+  };
+
+  console.log(level[target]);
+}
+
+printLevel("LOW");`
+      },
+      {
+        description: "a variable declaration with bindings in the same file",
+        code: `const otherLevels = { TEMPERATE: "temperate" };
+
+const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  ...otherLevels
+};
+
+console.log(level.LOW);`
       }
     ],
     async ({ code }) => {
