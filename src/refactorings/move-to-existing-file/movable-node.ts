@@ -77,6 +77,65 @@ export class MovableVariableDeclaration implements MovableNode {
     this.path.remove();
   }
 }
+export class ExportedMovableVariableDeclaration implements MovableNode {
+  private _value: t.VariableDeclaration;
+  private _hasReferencesThatCantBeImported: boolean;
+  private _referencedImportDeclarations: t.ImportDeclaration[];
+
+  constructor(
+    path: t.NodePath<t.VariableDeclaration>,
+    private id: t.Identifier,
+    private exportDeclaration: ExportDeclaration
+  ) {
+    // We need to compute these in constructor because the `path` reference
+    // will be removed and not accessible later.
+    this._value = path.node;
+    const declarationPath = path.get("declarations")[0];
+    this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
+      declarationPath,
+      declarationPath.get("init"),
+      [],
+      exportDeclaration.parentPath
+    );
+    this._referencedImportDeclarations = t.getReferencedImportDeclarations(
+      declarationPath.get("init"),
+      exportDeclaration.parentPath
+    );
+  }
+
+  get value(): t.VariableDeclaration {
+    return this._value;
+  }
+
+  get hasReferencesThatCantBeImported(): boolean {
+    return this._hasReferencesThatCantBeImported;
+  }
+
+  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
+    return this._referencedImportDeclarations.map((declaration) => {
+      const importRelativePath = new RelativePath(
+        declaration.source.value
+      ).relativeTo(relativePath);
+
+      return {
+        ...declaration,
+        source: {
+          ...declaration.source,
+          value: importRelativePath.value
+        }
+      };
+    });
+  }
+
+  removeFrom(relativePath: RelativePath) {
+    t.addImportDeclaration(
+      this.exportDeclaration.parentPath,
+      this.id,
+      relativePath.withoutExtension
+    );
+    this.exportDeclaration.replaceWith(this.id);
+  }
+}
 
 export class MovableFunctionDeclaration implements MovableNode {
   private _value: t.WithId<t.FunctionDeclaration>;

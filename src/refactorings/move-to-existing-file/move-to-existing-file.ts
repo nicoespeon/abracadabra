@@ -8,7 +8,8 @@ import {
   MovableTSTypeDeclaration,
   ExportedMovableFunctionDeclaration,
   ExportedMovableTSTypeDeclaration,
-  MovableVariableDeclaration
+  MovableVariableDeclaration,
+  ExportedMovableVariableDeclaration
 } from "./movable-node";
 import { getExportDeclaration } from "./export-declaration";
 
@@ -136,6 +137,22 @@ export function createVisitor(
         onMatch(
           path,
           new MovableVariableDeclaration(path, declaration.node.id)
+        );
+        return;
+      }
+
+      const { parentPath } = path;
+      if (!t.isRootNodePath(parentPath)) return;
+
+      const exportDeclaration = getExportDeclaration(parentPath);
+      if (exportDeclaration) {
+        onMatch(
+          path,
+          new ExportedMovableVariableDeclaration(
+            path,
+            declaration.node.id,
+            exportDeclaration
+          )
         );
         return;
       }

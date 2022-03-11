@@ -404,6 +404,31 @@ export const level = {
   ...otherLevels
 };`
         }
+      },
+      {
+        description: "an exported variable declaration",
+        setup: {
+          currentFile: `export const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+export { level };
+
+console.log(level.LOW);`,
+          otherFile: `export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
       }
     ],
     async ({ setup, expected }) => {
