@@ -345,6 +345,8 @@ Well, now you can with Abracadabra ✨
 
 Trigger the refactoring on a function you want to move, select the destination file, let it take care of the rest. It works for top-level function declarations, resolves required imports, and prevents you from creating circular dependencies.
 
+It works on function, type, interface, and variable declarations.
+
 ![][demo-move-to-existing-file]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
