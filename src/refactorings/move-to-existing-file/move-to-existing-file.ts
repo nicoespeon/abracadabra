@@ -6,8 +6,7 @@ import {
   MovableEmptyStatement,
   MovableFunctionDeclaration,
   MovableTSTypeDeclaration,
-  ExportedMovableFunctionDeclaration,
-  ExportedMovableTSTypeDeclaration
+  MovableVariableDeclaration
 } from "./movable-node";
 import { getExportDeclaration } from "./export-declaration";
 
@@ -121,6 +120,28 @@ export function createVisitor(
   onMatch: (path: t.NodePath, movableNode: MovableNode) => void
 ): t.Visitor {
   return {
+    VariableDeclaration(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      const declarations = path.get("declarations");
+      if (declarations.length !== 1) return;
+
+      const declaration = declarations[0];
+      if (!t.isSelectablePath(declaration)) return;
+      if (!t.isIdentifier(declaration.node.id)) return;
+
+      const exportDeclaration = getExportDeclaration(path);
+      if (!exportDeclaration) return;
+
+      onMatch(
+        path,
+        new MovableVariableDeclaration(
+          path,
+          declaration.node.id,
+          exportDeclaration
+        )
+      );
+    },
     FunctionDeclaration(path) {
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
@@ -131,64 +152,28 @@ export function createVisitor(
       const bodySelection = Selection.fromAST(body.node.loc);
       if (selection.end.isAfter(bodySelection.start)) return;
 
-      if (t.isRootNodePath(path)) {
-        onMatch(path, new MovableFunctionDeclaration(path));
-        return;
-      }
+      const exportDeclaration = getExportDeclaration(path);
+      if (!exportDeclaration) return;
 
-      const { parentPath } = path;
-      if (!t.isRootNodePath(parentPath)) return;
-
-      const exportDeclaration = getExportDeclaration(parentPath);
-      if (exportDeclaration) {
-        onMatch(
-          path,
-          new ExportedMovableFunctionDeclaration(path, exportDeclaration)
-        );
-        return;
-      }
+      onMatch(path, new MovableFunctionDeclaration(path, exportDeclaration));
     },
     TSTypeAliasDeclaration(path) {
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      if (t.isRootNodePath(path)) {
-        onMatch(path, new MovableTSTypeDeclaration(path));
-        return;
-      }
+      const exportDeclaration = getExportDeclaration(path);
+      if (!exportDeclaration) return;
 
-      const { parentPath } = path;
-      if (!t.isRootNodePath(parentPath)) return;
-
-      const exportDeclaration = getExportDeclaration(parentPath);
-      if (exportDeclaration) {
-        onMatch(
-          path,
-          new ExportedMovableTSTypeDeclaration(path, exportDeclaration)
-        );
-        return;
-      }
+      onMatch(path, new MovableTSTypeDeclaration(path, exportDeclaration));
     },
     TSInterfaceDeclaration(path) {
       if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
 
-      if (t.isRootNodePath(path)) {
-        onMatch(path, new MovableTSTypeDeclaration(path));
-        return;
-      }
+      const exportDeclaration = getExportDeclaration(path);
+      if (!exportDeclaration) return;
 
-      const { parentPath } = path;
-      if (!t.isRootNodePath(parentPath)) return;
-
-      const exportDeclaration = getExportDeclaration(parentPath);
-      if (exportDeclaration) {
-        onMatch(
-          path,
-          new ExportedMovableTSTypeDeclaration(path, exportDeclaration)
-        );
-        return;
-      }
+      onMatch(path, new MovableTSTypeDeclaration(path, exportDeclaration));
     }
   };
 }

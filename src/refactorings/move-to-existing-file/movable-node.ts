@@ -20,28 +20,33 @@ export class MovableEmptyStatement implements MovableNode {
   removeFrom() {}
 }
 
-export class MovableFunctionDeclaration implements MovableNode {
-  private _value: t.WithId<t.FunctionDeclaration>;
+export class MovableVariableDeclaration implements MovableNode {
+  private _value: t.VariableDeclaration;
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
 
   constructor(
-    private path: t.PathWithId<t.RootNodePath<t.FunctionDeclaration>>
+    path: t.NodePath<t.VariableDeclaration>,
+    private id: t.Identifier,
+    private exportDeclaration: ExportDeclaration
   ) {
     // We need to compute these in constructor because the `path` reference
     // will be removed and not accessible later.
     this._value = path.node;
+    const declarationPath = path.get("declarations")[0];
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
-      path,
-      path.parentPath
+      declarationPath,
+      declarationPath.get("init"),
+      [],
+      exportDeclaration.parentPath
     );
     this._referencedImportDeclarations = t.getReferencedImportDeclarations(
-      path,
-      path.parentPath
+      declarationPath.get("init"),
+      exportDeclaration.parentPath
     );
   }
 
-  get value(): t.FunctionDeclaration {
+  get value(): t.VariableDeclaration {
     return this._value;
   }
 
@@ -67,15 +72,15 @@ export class MovableFunctionDeclaration implements MovableNode {
 
   removeFrom(relativePath: RelativePath) {
     t.addImportDeclaration(
-      this.path.parentPath,
-      this._value.id,
+      this.exportDeclaration.parentPath,
+      this.id,
       relativePath.withoutExtension
     );
-    this.path.remove();
+    this.exportDeclaration.replaceWith(this.id);
   }
 }
 
-export class ExportedMovableFunctionDeclaration implements MovableNode {
+export class MovableFunctionDeclaration implements MovableNode {
   private _value: t.WithId<t.FunctionDeclaration>;
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];
@@ -89,10 +94,12 @@ export class ExportedMovableFunctionDeclaration implements MovableNode {
     this._value = path.node;
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
       path,
+      path.get("body"),
+      path.node.params,
       exportDeclaration.parentPath
     );
     this._referencedImportDeclarations = t.getReferencedImportDeclarations(
-      path,
+      path.get("body"),
       exportDeclaration.parentPath
     );
   }
@@ -132,55 +139,6 @@ export class ExportedMovableFunctionDeclaration implements MovableNode {
 }
 
 export class MovableTSTypeDeclaration implements MovableNode {
-  private _value: t.WithId<t.TypeDeclaration>;
-  private _hasReferencesThatCantBeImported: boolean;
-  private _referencedImportDeclarations: t.ImportDeclaration[];
-
-  constructor(private path: t.PathWithId<t.RootNodePath<t.TypeDeclaration>>) {
-    this._value = path.node;
-    this._hasReferencesThatCantBeImported =
-      t.hasTypeReferencesDefinedInSameScope(path);
-    this._referencedImportDeclarations = t.getTypeReferencedImportDeclarations(
-      path,
-      path.parentPath
-    );
-  }
-
-  get value(): t.TypeDeclaration {
-    return this._value;
-  }
-
-  get hasReferencesThatCantBeImported(): boolean {
-    return this._hasReferencesThatCantBeImported;
-  }
-
-  declarationsToImportFrom(relativePath: RelativePath): t.ImportDeclaration[] {
-    return this._referencedImportDeclarations.map((declaration) => {
-      const importRelativePath = new RelativePath(
-        declaration.source.value
-      ).relativeTo(relativePath);
-
-      return {
-        ...declaration,
-        source: {
-          ...declaration.source,
-          value: importRelativePath.value
-        }
-      };
-    });
-  }
-
-  removeFrom(relativePath: RelativePath) {
-    t.addImportDeclaration(
-      this.path.parentPath,
-      this._value.id,
-      relativePath.withoutExtension
-    );
-    this.path.remove();
-  }
-}
-
-export class ExportedMovableTSTypeDeclaration implements MovableNode {
   private _value: t.WithId<t.TypeDeclaration>;
   private _hasReferencesThatCantBeImported: boolean;
   private _referencedImportDeclarations: t.ImportDeclaration[];

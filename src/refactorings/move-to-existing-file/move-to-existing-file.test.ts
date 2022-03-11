@@ -319,6 +319,116 @@ let someData: Data;`,
   value: string;
 }`
         }
+      },
+      {
+        description: "a root-level variable declaration",
+        setup: {
+          currentFile: `import { someValue } from "lib";
+
+const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+import { someValue } from "lib";
+
+console.log(level.LOW);`,
+          otherFile: `export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
+      },
+      {
+        description: "a root-level variable declaration (let)",
+        setup: {
+          currentFile: `import { someValue } from "lib";
+
+let [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+import { someValue } from "lib";
+
+console.log(level.LOW);`,
+          otherFile: `export let level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
+      },
+      {
+        description: "a root-level variable declaration with bindings",
+        setup: {
+          currentFile: `import { otherLevels } from "../lib";
+
+const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  ...otherLevels
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+import { otherLevels } from "../lib";
+
+console.log(level.LOW);`,
+          otherFile: `import { otherLevels } from "../lib";
+
+export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  ...otherLevels
+};`
+        }
+      },
+      {
+        description: "an exported variable declaration",
+        setup: {
+          currentFile: `export const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+export { level };
+
+console.log(level.LOW);`,
+          otherFile: `export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
       }
     ],
     async ({ setup, expected }) => {
@@ -380,6 +490,44 @@ type OtherType = string;`
 }
 
 type Value = string;`
+      },
+      {
+        description:
+          "if there are other variable declarators on the same declaration",
+        code: `let [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+}, message;
+
+console.log(level.LOW);`
+      },
+      {
+        description: "a variable declaration that's not at root-level",
+        code: `function printLevel(target) {
+  const [cursor]level = {
+    LOW: "low",
+    MEDIUM: "medium",
+    HIGH: "high"
+  };
+
+  console.log(level[target]);
+}
+
+printLevel("LOW");`
+      },
+      {
+        description: "a variable declaration with bindings in the same file",
+        code: `const otherLevels = { TEMPERATE: "temperate" };
+
+const [cursor]level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  ...otherLevels
+};
+
+console.log(level.LOW);`
       }
     ],
     async ({ code }) => {
