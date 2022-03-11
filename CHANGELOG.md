@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.12.0] - 2022-03-11 - Some Things Never Change 🍁
+
 ### Added
 
 - Move to existing file now supports moving exported elements. It will preserve the export, so your module API won't break.
@@ -1589,7 +1591,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.11.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.12.0...HEAD
+[6.12.0]: https://github.com/nicoespeon/abracadabra/compare/6.11.0...6.12.0
 [6.11.0]: https://github.com/nicoespeon/abracadabra/compare/6.10.0...6.11.0
 [6.10.0]: https://github.com/nicoespeon/abracadabra/compare/6.9.1...6.10.0
 [6.9.1]: https://github.com/nicoespeon/abracadabra/compare/6.9.0...6.9.1
