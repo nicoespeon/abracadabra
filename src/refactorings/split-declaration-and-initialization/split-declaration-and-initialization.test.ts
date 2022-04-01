@@ -56,7 +56,7 @@ lastName = "Doe";`
       },
       {
         description: "some declarations without initialization",
-        code: `const firstName = "Jane", lastName = "Doe", age;`,
+        code: `let firstName = "Jane", lastName = "Doe", age;`,
         expected: `let firstName, lastName, age;
 firstName = "Jane";
 lastName = "Doe";`
