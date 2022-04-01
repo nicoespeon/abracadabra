@@ -114,7 +114,7 @@
     "pluralize": "8.0.0",
     "react-codemod": "5.4.3",
     "recast": "0.20.5",
-    "ts-morph": "12.1.0"
+    "ts-morph": "14.0.0"
   },
   "resolutions": {
     "@babel/types": "7.17.0"
