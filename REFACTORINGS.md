@@ -115,6 +115,8 @@ This does exactly the same as Extract Variable, but for types!
 
 ### Inline Variable
 
+> 💡 Available as Quick Fix (`Alt ↵`)
+
 | Keybinding       | On Mac  |
 | :--------------- | :------ |
 | `Ctrl + Alt + N` | `⌥ ⌘ N` |

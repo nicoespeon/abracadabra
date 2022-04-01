@@ -53,7 +53,21 @@ function findInlinableCodeInAST(
 ): InlinableCode | null {
   let result: InlinableCode | null = null;
 
-  t.parseAndTraverseCode(code, {
+  t.parseAndTraverseCode(
+    code,
+    createVisitor(selection, (_path, declaration) => {
+      result = declaration;
+    })
+  );
+
+  return result;
+}
+
+export function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.NodePath, declaration: InlinableCode) => void
+): t.Visitor {
+  return {
     VariableDeclaration(path) {
       const { node, parent } = path;
 
@@ -73,7 +87,7 @@ function findInlinableCodeInAST(
         const child = findInlinableCode(selection, parent, declarations[0]);
         if (!child) return;
 
-        result = new SingleDeclaration(child);
+        onMatch(path, new SingleDeclaration(child));
       } else {
         declarations.forEach((declaration, index) => {
           if (!selection.isInsideNode(declaration)) return;
@@ -85,7 +99,7 @@ function findInlinableCodeInAST(
           const child = findInlinableCode(selection, parent, declaration);
           if (!child) return;
 
-          result = new MultipleDeclarations(child, previous, next);
+          onMatch(path, new MultipleDeclarations(child, previous, next));
         });
       }
     },
@@ -110,11 +124,12 @@ function findInlinableCodeInAST(
       // Since we just want to get the `SourceLocation`, a simple check will do.
       if (!typeAnnotation.loc) return;
 
-      result = new SingleDeclaration(
-        new InlinableTSTypeAlias(path, typeAnnotation.loc)
+      onMatch(
+        path,
+        new SingleDeclaration(
+          new InlinableTSTypeAlias(path, typeAnnotation.loc)
+        )
       );
     }
-  });
-
-  return result;
+  };
 }

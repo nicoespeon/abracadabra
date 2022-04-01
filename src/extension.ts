@@ -76,7 +76,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withoutActionProvider: [
       extract,
       destructureObject,
-      inline,
       moveStatementDown,
       moveStatementUp,
       renameSymbol
@@ -95,6 +94,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       createFactoryForConstructor,
       flipIfElse,
       flipTernary,
+      inline,
       liftUpConditional,
       mergeIfStatements,
       mergeWithPreviousIfStatement,

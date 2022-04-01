@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Expose "Inline Variable" as a quick fix, as suggested by @brunnerh
+
 ## [6.12.0] - 2022-03-11 - Some Things Never Change 🍁
 
 ### Added

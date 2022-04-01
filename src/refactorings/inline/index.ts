@@ -1,16 +1,24 @@
 import { inlineFunction } from "./inline-function/inline-function";
-import { inlineVariable } from "./inline-variable/inline-variable";
-
+import {
+  createVisitor as canInlineVariable,
+  inlineVariable
+} from "./inline-variable/inline-variable";
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
-import { Refactoring } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
-const config: Refactoring = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "inline",
+    title: "Inline Variable/Function",
     operation: inline
+  },
+  actionProvider: {
+    // Only support Inline Variable as a quick fix for now.
+    message: "Inline variable",
+    createVisitor: canInlineVariable
   }
 };
 
