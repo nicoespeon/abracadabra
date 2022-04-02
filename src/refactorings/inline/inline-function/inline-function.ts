@@ -216,15 +216,22 @@ function replaceAllIdentifiersInPath(
     const identifier = node.callee;
     if (!isMatchingIdentifier(identifier, functionDeclaration)) return;
 
-    const scopePath = path.findParent(
+    let scopePath = path.findParent(
       (parentPath) =>
         t.isVariableDeclarator(parentPath) ||
         t.isAssignmentExpression(parentPath) ||
-        t.isCallExpression(parentPath)
+        t.isAwaitExpression(parentPath) ||
+        (t.isCallExpression(parentPath) &&
+          !t.isAwaitExpression(parentPath.parentPath))
     );
 
     // Set the global variable, as we know if it's assigned.
     isFunctionAssigned = Boolean(scopePath);
+
+    if (t.isAwaitExpression(scopePath)) {
+      isFunctionAssigned = false;
+      scopePath = scopePath.parentPath;
+    }
 
     replaceWithFunctionBody(
       scopePath || path,

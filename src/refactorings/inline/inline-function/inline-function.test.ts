@@ -438,6 +438,19 @@ logData(); // => logged`
         code: `function [cursor]foo(x) { return (x * 2) + x + 3; }
 function bar(x) { return foo(x) + 10; }`,
         expected: `function bar(x) { return (x * 2) + x + 3 + 10; }`
+      },
+      {
+        description: "async function",
+        code: `async function callerAsync() {
+  await smallFunctionAsync();
+}
+
+async function [cursor]smallFunctionAsync() {
+  await someOtherDelegate();
+}`,
+        expected: `async function callerAsync() {
+  await someOtherDelegate();
+}`
       }
     ],
     async ({ code, expected }) => {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Inline Function" now works on async function without creating a double `await`. Thanks @automatensalat for catching this!
+
 ### Changed
 
 - Expose "Inline Variable" as a quick fix, as suggested by @brunnerh
