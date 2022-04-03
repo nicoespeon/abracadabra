@@ -150,8 +150,8 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve(defaultValue);
   }
 
-  moveCursorTo(_position: Position) {
-    return Promise.resolve();
+  async moveCursorTo(position: Position) {
+    this._selection = Selection.cursorAtPosition(position);
   }
 
   private setCodeMatrix(code: Code) {
