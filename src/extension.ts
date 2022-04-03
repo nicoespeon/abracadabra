@@ -4,6 +4,7 @@ import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
+import highlight from "./highlight";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
@@ -125,20 +126,19 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  Object.values(refactorings).forEach(
-    ({ withoutActionProvider, withActionProvider }) => {
-      withoutActionProvider
-        .concat(withActionProvider)
-        .forEach(({ command }) =>
-          context.subscriptions.push(
-            vscode.commands.registerCommand(
-              `abracadabra.${command.key}`,
-              createCommand(command.operation)
-            )
-          )
-        );
-    }
+  const commands = Object.values(refactorings).flatMap(
+    ({ withoutActionProvider, withActionProvider }) =>
+      withoutActionProvider.concat(withActionProvider)
   );
+
+  commands.concat(highlight).forEach(({ command }) => {
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        `abracadabra.${command.key}`,
+        createCommand(command.operation)
+      )
+    );
+  });
 
   const withActionProviderPerLanguage = Object.values(refactorings).reduce(
     (memo, { languages, withActionProvider }) => {

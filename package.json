@@ -161,6 +161,7 @@
     "onCommand:abracadabra.splitIfStatement",
     "onCommand:abracadabra.splitMultipleDeclarations",
     "onCommand:abracadabra.toggleBraces",
+    "onCommand:abracadabra.toggleHighlight",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -348,6 +349,11 @@
         "command": "abracadabra.toggleBraces",
         "title": "Toggle Braces",
         "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.toggleHighlight",
+        "title": "Toggle Highlight",
+        "category": "Abracadabra"
       }
     ],
     "keybindings": [
@@ -359,6 +365,11 @@
       {
         "command": "abracadabra.renameSymbol",
         "key": "f2",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "abracadabra.toggleHighlight",
+        "key": "f5",
         "when": "editorTextFocus"
       },
       {
