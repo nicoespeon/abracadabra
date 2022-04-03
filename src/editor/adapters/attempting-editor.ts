@@ -1,4 +1,3 @@
-import { Color } from "../colors";
 import {
   Choice,
   Code,

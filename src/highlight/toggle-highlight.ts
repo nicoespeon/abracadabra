@@ -1,7 +1,6 @@
 import { Editor } from "../editor/editor";
 import { Selection } from "../editor/selection";
 import * as t from "../ast";
-import { Color, COLORS } from "../editor";
 
 export async function toggleHighlight(editor: Editor): Promise<void> {
   const { code, selection } = editor;

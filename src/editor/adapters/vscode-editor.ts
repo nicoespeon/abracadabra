@@ -14,7 +14,7 @@ import {
 import { Selection } from "../selection";
 import { Position } from "../position";
 import { AbsolutePath, RelativePath } from "../path";
-import { Color, COLORS } from "../colors";
+import { COLORS } from "../colors";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;

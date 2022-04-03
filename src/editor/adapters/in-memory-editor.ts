@@ -11,7 +11,6 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
-import { Color, COLORS } from "../colors";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";

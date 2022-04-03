@@ -32,5 +32,3 @@ export const COLORS = [
     dark: "red"
   }
 ] as const;
-
-export type Color = typeof COLORS[number];
