@@ -261,6 +261,12 @@ export class InMemoryEditor implements Editor {
     this.highlightSelections.delete(selections);
   }
 
+  removeAllHighlights(): void {
+    this.highlightSelections.forEach((selections) =>
+      this.removeHighlight(selections)
+    );
+  }
+
   findHighlight(selection: Selection): Selection[] {
     return (
       Array.from(this.highlightSelections).find((selections) =>

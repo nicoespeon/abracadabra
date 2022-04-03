@@ -28,6 +28,7 @@ export interface Editor {
   moveCursorTo(position: Position): Promise<void>;
   highlight(selections: Selection[]): void;
   removeHighlight(selections: Selection[]): void;
+  removeAllHighlights(): void;
   findHighlight(selection: Selection): Selection[];
   nextHighlightColorIndex: number;
 }

@@ -221,6 +221,12 @@ export class VSCodeEditor implements Editor {
     }
   }
 
+  removeAllHighlights(): void {
+    Array.from(highlights.keys()).forEach((selections) =>
+      this.removeHighlight(selections)
+    );
+  }
+
   findHighlight(selection: Selection): Selection[] {
     return (
       Array.from(highlights.keys()).find((selections) =>

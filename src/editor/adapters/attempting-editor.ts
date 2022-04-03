@@ -90,6 +90,10 @@ export class AttemptingEditor implements Editor {
     return this.editor.removeHighlight(selections);
   }
 
+  removeAllHighlights(): void {
+    return this.editor.removeAllHighlights();
+  }
+
   findHighlight(selection: Selection): Selection[] {
     return this.editor.findHighlight(selection);
   }

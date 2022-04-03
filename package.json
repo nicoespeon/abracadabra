@@ -162,6 +162,7 @@
     "onCommand:abracadabra.splitMultipleDeclarations",
     "onCommand:abracadabra.toggleBraces",
     "onCommand:abracadabra.toggleHighlight",
+    "onCommand:abracadabra.removeAllHighlights",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -354,6 +355,11 @@
         "command": "abracadabra.toggleHighlight",
         "title": "Toggle Highlight",
         "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.removeAllHighlights",
+        "title": "Remove All Highlight",
+        "category": "Abracadabra"
       }
     ],
     "keybindings": [
@@ -370,6 +376,11 @@
       {
         "command": "abracadabra.toggleHighlight",
         "key": "f5",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "abracadabra.removeAllHighlights",
+        "key": "shift+f5",
         "when": "editorTextFocus"
       },
       {

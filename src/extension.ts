@@ -5,6 +5,7 @@ import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 import toggleHighlight from "./highlights/toggle-highlight";
+import removeAllHighlights from "./highlights/remove-all-highlights";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
@@ -131,14 +132,16 @@ export function activate(context: vscode.ExtensionContext) {
       withoutActionProvider.concat(withActionProvider)
   );
 
-  commands.concat(toggleHighlight).forEach(({ command }) => {
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        `abracadabra.${command.key}`,
-        createCommand(command.operation)
-      )
-    );
-  });
+  commands
+    .concat([toggleHighlight, removeAllHighlights])
+    .forEach(({ command }) => {
+      context.subscriptions.push(
+        vscode.commands.registerCommand(
+          `abracadabra.${command.key}`,
+          createCommand(command.operation)
+        )
+      );
+    });
 
   const withActionProviderPerLanguage = Object.values(refactorings).reduce(
     (memo, { languages, withActionProvider }) => {
