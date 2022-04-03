@@ -16,6 +16,10 @@ import { Position } from "../position";
 import { AbsolutePath, RelativePath } from "../path";
 import { COLORS } from "../colors";
 
+// These should persist across any editor instances.
+const highlights = new Map<Selection[], vscode.TextEditorDecorationType>();
+let nextHighlightColorIndex = 0;
+
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
   private document: vscode.TextDocument;
@@ -184,8 +188,12 @@ export class VSCodeEditor implements Editor {
     return Promise.resolve();
   }
 
-  private highlights = new Map<Selection[], vscode.TextEditorDecorationType>();
-  nextHighlightColorIndex = 0;
+  get nextHighlightColorIndex() {
+    return nextHighlightColorIndex;
+  }
+  set nextHighlightColorIndex(value: number) {
+    nextHighlightColorIndex = value;
+  }
 
   highlight(selections: Selection[]): void {
     const color = COLORS[this.nextHighlightColorIndex % COLORS.length];
@@ -202,19 +210,20 @@ export class VSCodeEditor implements Editor {
     });
 
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
-    this.highlights.set(selections, decoration);
+    highlights.set(selections, decoration);
   }
 
   removeHighlight(selections: Selection[]): void {
-    const decoration = this.highlights.get(selections);
+    const decoration = highlights.get(selections);
     if (decoration) {
       decoration.dispose();
+      highlights.delete(selections);
     }
   }
 
   findHighlight(selection: Selection): Selection[] {
     return (
-      Array.from(this.highlights.keys()).find((selections) =>
+      Array.from(highlights.keys()).find((selections) =>
         selections.some((s) => selection.isInside(s))
       ) ?? []
     );
