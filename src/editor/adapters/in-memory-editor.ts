@@ -1,3 +1,4 @@
+import assert from "assert";
 import {
   Editor,
   Code,
@@ -10,6 +11,7 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
+import { Color, COLORS } from "../colors";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -34,6 +36,10 @@ export class InMemoryEditor implements Editor {
 
   get code(): Code {
     return this.read(this.codeMatrix);
+  }
+
+  get highlightedCode(): Code {
+    return this.read(this.highlightCodeMatrix(this.codeMatrix));
   }
 
   async codeOf(path: RelativePath): Promise<Code> {
@@ -197,12 +203,61 @@ export class InMemoryEditor implements Editor {
       .join(LINE_SEPARATOR);
   }
 
+  private highlightCodeMatrix(codeMatrix: CodeMatrix): CodeMatrix {
+    const selections = Array.from(this.highlights.keys());
+
+    return codeMatrix.map((line, lineIndex) => {
+      const startSelections = selections.filter(
+        ({ start }) => start.line === lineIndex
+      );
+      const endSelections = selections.filter(
+        ({ end }) => end.line === lineIndex
+      );
+
+      return line.flatMap((char, charIndex) => {
+        const start = startSelections.find(
+          ({ start }) => start.character === charIndex
+        );
+        if (start) {
+          const index = this.highlights.get(start);
+          assert(typeof index == "number");
+          return [`[h${index}]`, char];
+        }
+
+        const end = endSelections.find(
+          ({ end }) => end.character === charIndex
+        );
+        if (end) {
+          const index = this.highlights.get(end);
+          assert(typeof index == "number");
+          return [`[/h${index}]`, char];
+        }
+
+        return char;
+      });
+    });
+  }
+
   isLineBlank(line: number): boolean {
     return this.codeMatrix[line].join(CHARS_SEPARATOR).trim() === "";
   }
 
   removeLine(line: number): void {
     this.codeMatrix.splice(line, 1);
+  }
+
+  static readonly colors = Object.values(COLORS).map((color) => color.light);
+  private highlights = new Map<Selection, number>();
+
+  nextHighlightColorIndex = 0;
+
+  highlight(color: Color, selections: Selection[]): void {
+    const index = InMemoryEditor.colors.indexOf(color.light);
+    assert(index > -1, `Unknown color ${color.light}`);
+
+    selections.forEach((selection) => {
+      this.highlights.set(selection, index + 1);
+    });
   }
 }
 

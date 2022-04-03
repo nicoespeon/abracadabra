@@ -14,6 +14,7 @@ import {
 import { Selection } from "../selection";
 import { Position } from "../position";
 import { AbsolutePath, RelativePath } from "../path";
+import { Color } from "../colors";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -182,6 +183,24 @@ export class VSCodeEditor implements Editor {
     this.editor.selection = toVSCodeCursor(position);
     return Promise.resolve();
   }
+
+  nextHighlightColorIndex = 0;
+
+  highlight(color: Color, selections: Selection[]): void {
+    const decoration = vscode.window.createTextEditorDecorationType({
+      light: {
+        border: `1px solid ${color.light}`,
+        overviewRulerColor: color.light
+      },
+      dark: {
+        border: `1px solid ${color.dark}`,
+        overviewRulerColor: color.dark
+      },
+      overviewRulerLane: vscode.OverviewRulerLane.Right
+    });
+
+    this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
+  }
 }
 
 function createSelectionFromVSCode(
@@ -190,6 +209,13 @@ function createSelectionFromVSCode(
   return new Selection(
     [selection.start.line, selection.start.character],
     [selection.end.line, selection.end.character]
+  );
+}
+
+function toVSCodeRange(selection: Selection): vscode.Range {
+  return new vscode.Range(
+    toVSCodePosition(selection.start),
+    toVSCodePosition(selection.end)
   );
 }
 

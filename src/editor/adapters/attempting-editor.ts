@@ -1,3 +1,4 @@
+import { Color } from "../colors";
 import {
   Choice,
   Code,
@@ -12,8 +13,11 @@ import { Selection } from "../selection";
 
 export class AttemptingEditor implements Editor {
   attemptSucceeded = true;
+  nextHighlightColorIndex: number;
 
-  constructor(private editor: Editor, private expectedReason: ErrorReason) {}
+  constructor(private editor: Editor, private expectedReason: ErrorReason) {
+    this.nextHighlightColorIndex = editor.nextHighlightColorIndex;
+  }
 
   workspaceFiles(): Promise<RelativePath[]> {
     return this.editor.workspaceFiles();
@@ -77,5 +81,9 @@ export class AttemptingEditor implements Editor {
 
   moveCursorTo(position: Position): Promise<void> {
     return this.editor.moveCursorTo(position);
+  }
+
+  highlight(color: Color, selections: Selection[]) {
+    return this.editor.highlight(color, selections);
   }
 }
