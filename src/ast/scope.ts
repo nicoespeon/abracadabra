@@ -138,6 +138,15 @@ export function bindingNamesInScope<T>(path: NodePath<T>): string[] {
   return Object.keys(path.scope.getAllBindings());
 }
 
+export function selectableReferencesInScope(
+  path: NodePath<t.Identifier>
+): SelectablePath[] {
+  const bindings = path.scope.getAllBindings() as Record<string, Binding>;
+  const pathBindings = bindings[path.node.name] as Binding | undefined;
+
+  return pathBindings?.referencePaths.filter(isSelectablePath) ?? [];
+}
+
 export function referencesInScope(
   path: NodePath<t.FunctionDeclaration | t.FunctionExpression>
 ): NodePath[] {
