@@ -246,7 +246,7 @@ export class InMemoryEditor implements Editor {
     this.codeMatrix.splice(line, 1);
   }
 
-  static readonly colors = Object.values(COLORS).map((color) => color.light);
+  private static readonly colors = COLORS.map((color) => color.light);
   private highlights = new Map<Selection, number>();
 
   nextHighlightColorIndex = 0;
