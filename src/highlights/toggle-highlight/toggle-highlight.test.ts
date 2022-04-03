@@ -1,5 +1,5 @@
-import { Position } from "../editor";
-import { InMemoryEditor } from "../editor/adapters/in-memory-editor";
+import { Position } from "../../editor";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { toggleHighlight } from "./toggle-highlight";
 
 describe("Toggle Highlight", () => {
@@ -77,4 +77,3 @@ const [h2]otherVariable[/h2] = 456`);
 
 // TODO: add a command to remove all highlights
 // TODO: on code update, recompute the impacted highlights
-// See https://github.com/BrandonBlaschke/vscode-easy-highlight/blob/master/src/extension.ts for an example (he recomputes the decorations from a Recorder)

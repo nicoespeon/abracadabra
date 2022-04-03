@@ -4,7 +4,7 @@ import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
-import highlight from "./highlight";
+import toggleHighlight from "./highlights/toggle-highlight";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
@@ -131,7 +131,7 @@ export function activate(context: vscode.ExtensionContext) {
       withoutActionProvider.concat(withActionProvider)
   );
 
-  commands.concat(highlight).forEach(({ command }) => {
+  commands.concat(toggleHighlight).forEach(({ command }) => {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
