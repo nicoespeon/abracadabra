@@ -21,7 +21,6 @@ export async function toggleHighlight(editor: Editor): Promise<void> {
     }
   });
 
-  const color = COLORS[editor.nextHighlightColorIndex % COLORS.length];
-  editor.highlight(color, references);
+  editor.highlight(references);
   editor.nextHighlightColorIndex += 1;
 }

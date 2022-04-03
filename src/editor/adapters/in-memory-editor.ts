@@ -246,17 +246,13 @@ export class InMemoryEditor implements Editor {
     this.codeMatrix.splice(line, 1);
   }
 
-  private static readonly colors = COLORS.map((color) => color.light);
   private highlights = new Map<Selection, number>();
 
   nextHighlightColorIndex = 0;
 
-  highlight(color: Color, selections: Selection[]): void {
-    const index = InMemoryEditor.colors.indexOf(color.light);
-    assert(index > -1, `Unknown color ${color.light}`);
-
+  highlight(selections: Selection[]): void {
     selections.forEach((selection) => {
-      this.highlights.set(selection, index + 1);
+      this.highlights.set(selection, this.nextHighlightColorIndex + 1);
     });
   }
 }

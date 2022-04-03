@@ -27,7 +27,7 @@ export interface Editor {
     placeHolder?: string
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
-  highlight(color: Color, selections: Selection[]): void;
+  highlight(selections: Selection[]): void;
   nextHighlightColorIndex: number;
 }
 

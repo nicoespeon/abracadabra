@@ -83,7 +83,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.moveCursorTo(position);
   }
 
-  highlight(color: Color, selections: Selection[]) {
-    return this.editor.highlight(color, selections);
+  highlight(selections: Selection[]) {
+    return this.editor.highlight(selections);
   }
 }
