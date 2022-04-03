@@ -184,6 +184,7 @@ export class VSCodeEditor implements Editor {
     return Promise.resolve();
   }
 
+  private highlights = new Map<Selection[], vscode.TextEditorDecorationType>();
   nextHighlightColorIndex = 0;
 
   highlight(selections: Selection[]): void {
@@ -201,6 +202,22 @@ export class VSCodeEditor implements Editor {
     });
 
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
+    this.highlights.set(selections, decoration);
+  }
+
+  removeHighlight(selections: Selection[]): void {
+    const decoration = this.highlights.get(selections);
+    if (decoration) {
+      decoration.dispose();
+    }
+  }
+
+  findHighlight(selection: Selection): Selection[] {
+    return (
+      Array.from(this.highlights.keys()).find((selections) =>
+        selections.some((s) => selection.isInside(s))
+      ) ?? []
+    );
   }
 }
 

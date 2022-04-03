@@ -21,6 +21,11 @@ export async function toggleHighlight(editor: Editor): Promise<void> {
     }
   });
 
-  editor.highlight(references);
-  editor.nextHighlightColorIndex += 1;
+  const existingHighlights = editor.findHighlight(selection);
+  if (existingHighlights.length > 0) {
+    editor.removeHighlight(existingHighlights);
+  } else {
+    editor.highlight(references);
+    editor.nextHighlightColorIndex += 1;
+  }
 }

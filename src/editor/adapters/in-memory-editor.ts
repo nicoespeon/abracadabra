@@ -247,13 +247,27 @@ export class InMemoryEditor implements Editor {
   }
 
   private highlights = new Map<Selection, number>();
-
+  private highlightSelections = new Set<Selection[]>();
   nextHighlightColorIndex = 0;
 
   highlight(selections: Selection[]): void {
     selections.forEach((selection) => {
       this.highlights.set(selection, this.nextHighlightColorIndex + 1);
     });
+    this.highlightSelections.add(selections);
+  }
+
+  removeHighlight(selections: Selection[]): void {
+    selections.forEach((selection) => this.highlights.delete(selection));
+    this.highlightSelections.delete(selections);
+  }
+
+  findHighlight(selection: Selection): Selection[] {
+    return (
+      Array.from(this.highlightSelections).find((selections) =>
+        selections.some((s) => selection.isInside(s))
+      ) ?? []
+    );
   }
 }
 

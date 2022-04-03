@@ -28,6 +28,8 @@ export interface Editor {
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
   highlight(selections: Selection[]): void;
+  removeHighlight(selections: Selection[]): void;
+  findHighlight(selection: Selection): Selection[];
   nextHighlightColorIndex: number;
 }
 
