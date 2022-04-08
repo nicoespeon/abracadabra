@@ -1,20 +1,19 @@
 import * as vscode from "vscode";
-
 import { getIgnoredFolders } from "../../vscode-configuration";
+import { COLORS } from "../colors";
 import {
-  Editor,
+  Choice,
   Code,
-  Modification,
   Command,
+  Editor,
   ErrorReason,
   errorReasonToString,
-  Choice,
+  Modification,
   Result
 } from "../editor";
-import { Selection } from "../selection";
-import { Position } from "../position";
 import { AbsolutePath, RelativePath } from "../path";
-import { COLORS } from "../colors";
+import { Position } from "../position";
+import { Selection } from "../selection";
 
 // These should persist across any editor instances.
 const highlights = new Map<Selection[], vscode.TextEditorDecorationType>();
