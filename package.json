@@ -375,12 +375,12 @@
       },
       {
         "command": "abracadabra.toggleHighlight",
-        "key": "f5",
+        "key": "ctrl+h",
         "when": "editorTextFocus"
       },
       {
         "command": "abracadabra.removeAllHighlights",
-        "key": "shift+f5",
+        "key": "shift+ctrl+h",
         "when": "editorTextFocus"
       },
       {
