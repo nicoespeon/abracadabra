@@ -199,10 +199,12 @@ export class VSCodeEditor implements Editor {
     const decoration = vscode.window.createTextEditorDecorationType({
       light: {
         border: `1px solid ${color.light}`,
+        backgroundColor: color.light,
         overviewRulerColor: color.light
       },
       dark: {
         border: `1px solid ${color.dark}`,
+        backgroundColor: color.dark,
         overviewRulerColor: color.dark
       },
       overviewRulerLane: vscode.OverviewRulerLane.Right
