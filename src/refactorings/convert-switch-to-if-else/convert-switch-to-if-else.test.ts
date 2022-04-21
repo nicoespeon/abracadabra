@@ -194,10 +194,9 @@ return sayHello();`
     item.quality += 1;
     break;
 }`,
-        expected: `if(true) {
+        expected: `if (true) {
   item.quality += 1;
-}`,
-        only: true
+}`
       }
     ],
     async ({ code, expected }) => {

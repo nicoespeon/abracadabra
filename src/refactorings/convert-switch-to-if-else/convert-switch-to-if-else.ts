@@ -93,7 +93,16 @@ function convertNode(node: t.SwitchStatement): t.Statement {
         throw new Error("default case can only be the last case");
       }
 
-      statements.push(caseWithoutBreak(caseNode, isLast));
+      if (statements.length !== 0) {
+        statements.push(caseWithoutBreak(caseNode, isLast));
+      } else {
+        statements.push(
+          t.ifStatement(
+            t.booleanLiteral(true),
+            caseWithoutBreak(caseNode, isLast)
+          )
+        );
+      }
       return;
     }
 
