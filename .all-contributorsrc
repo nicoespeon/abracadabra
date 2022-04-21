@@ -408,6 +408,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "BuZZ-dEE",
+      "name": "Sebastian Schlatow",
+      "avatar_url": "https://avatars.githubusercontent.com/u/125954?v=4",
+      "profile": "https://app.element.io/#/user/@BuZZ-dEE:matrix.org",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
