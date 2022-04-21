@@ -186,6 +186,18 @@ if (name === "John" || name === "Johnny") {
 }
 
 return sayHello();`
+      },
+      {
+        description: "switch default",
+        code: `switch(name) {
+  default:
+    item.quality += 1;
+    break;
+}`,
+        expected: `if(true) {
+  item.quality += 1;
+}`,
+        only: true
       }
     ],
     async ({ code, expected }) => {
