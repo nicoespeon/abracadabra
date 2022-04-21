@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - "Inline Function" now works on async function without creating a double `await`. Thanks @automatensalat for catching this!
+- Fixed an issue with "Convert to Template Literal" and backticks. Thanks @fabien0102!
 
 ### Changed
 

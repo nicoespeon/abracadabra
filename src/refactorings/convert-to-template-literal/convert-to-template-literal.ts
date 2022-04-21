@@ -19,7 +19,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path) => {
       const templateLiteral = t.templateLiteral(
-        [t.templateElement(path.node.value)],
+        [t.templateElement(path.node.value.replace(/`/g, "\\`"))],
         []
       );
 

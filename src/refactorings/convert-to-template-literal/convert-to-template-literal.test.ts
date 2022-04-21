@@ -59,6 +59,11 @@ const lastName = "Doe";`
         description: "JSX attribute without braces",
         code: `<TestComponent testProp="t[cursor]est" />`,
         expected: `<TestComponent testProp={\`test\`} />`
+      },
+      {
+        description: "string literal with backticks",
+        code: "const a = 'Hello[cursor] `you`'",
+        expected: "const a = `Hello \\`you\\``"
       }
     ],
     async ({ code, expected }) => {
