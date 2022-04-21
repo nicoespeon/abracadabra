@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-40-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-41-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -149,6 +149,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <td align="center"><a href="https://github.com/rsxdalv"><img src="https://avatars.githubusercontent.com/u/6757283?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roberts Slisans</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Arsxdalv" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/joshjm"><img src="https://avatars.githubusercontent.com/u/21700579?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Josh</b></sub></a><br /><a href="#ideas-joshjm" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/brunnerh"><img src="https://avatars.githubusercontent.com/u/834235?v=4?s=100" width="100px;" alt=""/><br /><sub><b>brunnerh</b></sub></a><br /><a href="#ideas-brunnerh" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://app.element.io/#/user/@BuZZ-dEE:matrix.org"><img src="https://avatars.githubusercontent.com/u/125954?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sebastian Schlatow</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3ABuZZ-dEE" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
