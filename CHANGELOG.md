@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.13.0] - 2022-04-21 - Oo-De-Lally 🏹
+
 ### Fixed
 
 - "Inline Function" now works on async function without creating a double `await`. Thanks @automatensalat for catching this!
@@ -1605,7 +1607,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.12.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.13.0...HEAD
+[6.13.0]: https://github.com/nicoespeon/abracadabra/compare/6.12.0...6.13.0
 [6.12.0]: https://github.com/nicoespeon/abracadabra/compare/6.11.0...6.12.0
 [6.11.0]: https://github.com/nicoespeon/abracadabra/compare/6.10.0...6.11.0
 [6.10.0]: https://github.com/nicoespeon/abracadabra/compare/6.9.1...6.10.0
