@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Expose "Inline Variable" as a quick fix, as suggested by @brunnerh
 
+### Added
+
+- Make Convert Switch to If-Statement handle switches with only a `default` statement. Thanks @11joselu for the suggestion!
+
 ## [6.12.0] - 2022-03-11 - Some Things Never Change 🍁
 
 ### Added

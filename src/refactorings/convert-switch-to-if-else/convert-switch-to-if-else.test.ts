@@ -186,6 +186,26 @@ if (name === "John" || name === "Johnny") {
 }
 
 return sayHello();`
+      },
+      {
+        description: "with only a default statement",
+        code: `switch (tempScore) {
+  default:
+    score += scores[tempScore];
+    break;
+}`,
+        expected: `score += scores[tempScore];`
+      },
+      {
+        description: "with only a case statement",
+        code: `switch (tempScore) {
+  case 12:
+    score += scores[tempScore];
+    break;
+}`,
+        expected: `if (tempScore === 12) {
+  score += scores[tempScore];
+}`
       }
     ],
     async ({ code, expected }) => {

@@ -1,7 +1,7 @@
+import { allButLast, last } from "../../array";
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
-import { last, allButLast } from "../../array";
 
 export async function convertSwitchToIfElse(editor: Editor) {
   const { code, selection } = editor;
@@ -127,15 +127,8 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
     return t.ifStatement(node.discriminant, t.blockStatement([]));
   }
 
-  const firstStatement = statements[0];
-  if (!t.isIfStatement(firstStatement)) {
-    throw new Error(
-      "Cannot convert switch statement with just a single default case."
-    );
-  }
-
   if (statements.length === 1) {
-    return firstStatement;
+    return statements[0];
   }
 
   const allEndWithReturn = node.cases.every(
@@ -164,7 +157,7 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
     }
   }
 
-  return firstStatement;
+  return statements[0];
 }
 
 function caseWithoutBreak(caseNode: t.SwitchCase, isLastCase: boolean) {
