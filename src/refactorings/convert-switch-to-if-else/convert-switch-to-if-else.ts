@@ -132,11 +132,6 @@ function linkIfStatements(node: t.SwitchStatement, statements: t.Statement[]) {
   }
 
   const firstStatement = statements[0];
-  if (!t.isIfStatement(firstStatement)) {
-    throw new Error(
-      "Cannot convert switch statement with just a single default case."
-    );
-  }
 
   if (statements.length === 1) {
     return firstStatement;
