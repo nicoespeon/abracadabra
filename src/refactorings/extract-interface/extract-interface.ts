@@ -1,7 +1,7 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export async function extractInterface(editor: Editor) {
@@ -49,10 +49,14 @@ function updateCode(
         );
 
         path.node.implements = [
+          ...(path.node.implements || []),
           t.tsExpressionWithTypeArguments(id, typeParameters)
         ];
       } else {
-        path.node.implements = [t.classImplements(id)];
+        path.node.implements = [
+          ...(path.node.implements || []),
+          t.classImplements(id)
+        ];
       }
       path.insertAfter(declaration);
     })

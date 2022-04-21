@@ -245,6 +245,31 @@ interface Extracted {
 interface Extracted<T extends string> {
   readonly items: T[];
 }`
+      },
+      {
+        description: "class that already implements interfaces",
+        code: `class Position implements Serializable, Configuration {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}`,
+        expected: `class Position implements Serializable, Configuration, Extracted {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}
+
+interface Extracted {
+  isEqualTo(position: Position): boolean;
+}`
       }
     ],
     async ({ code, expected }) => {
