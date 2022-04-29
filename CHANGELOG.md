@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - "Extract Interface" will let you know when it couldn't determine the return type of a method.
+- "Move to existing file" can now move interfaces with generics. Kudos @jtwigg for raising that up!
 
 ## [6.13.0] - 2022-04-21 - Oo-De-Lally 🏹
 

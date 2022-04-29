@@ -1,8 +1,7 @@
-import { NodePath, Binding } from "@babel/traverse";
+import { Binding, NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { first } from "../array";
 import { getImportDeclarations, TypeDeclaration } from "./domain";
-
 import {
   areEquivalent,
   isFunctionDeclarationOrArrowFunction
@@ -247,10 +246,14 @@ export function hasTypeReferencesDefinedInSameScope(
 ): boolean {
   let result = false;
 
+  const generics =
+    typePath.node.typeParameters?.params.map((p) => p.name) ?? [];
+
   typePath.traverse({
     TSTypeReference(path) {
       if (!path.isReferenced()) return;
       if (!t.isIdentifier(path.node.typeName)) return;
+      if (generics.includes(path.node.typeName.name)) return;
 
       if (typePath.scope.hasGlobal(path.node.typeName.name)) {
         result = true;

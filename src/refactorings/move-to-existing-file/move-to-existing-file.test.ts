@@ -1,7 +1,6 @@
-import { ErrorReason, Code, RelativePath } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason, RelativePath } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { moveToExistingFile } from "./move-to-existing-file";
 
 describe("Move To Existing File", () => {
@@ -212,6 +211,26 @@ export interface Data {
   response: {
     value: Value;
   };
+}`
+        }
+      },
+      {
+        description: "an interface with generics",
+        setup: {
+          currentFile: `interface [cursor]Data<T> {
+  value: T;
+}
+
+let someData: Data<string>;`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { Data } from "./other-file";
+
+let someData: Data<string>;`,
+          otherFile: `export interface Data<T> {
+  value: T;
 }`
         }
       },
