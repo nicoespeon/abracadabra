@@ -16,7 +16,11 @@ import { Position } from "../position";
 import { Selection } from "../selection";
 
 // These should persist across any editor instances.
-const highlights = new Map<Selection[], vscode.TextEditorDecorationType>();
+const highlightsPerFile = new Map<
+  FilePath,
+  Map<Selection[], vscode.TextEditorDecorationType>
+>();
+type FilePath = string;
 let nextHighlightColorIndex = 0;
 
 export class VSCodeEditor implements Editor {
@@ -26,6 +30,29 @@ export class VSCodeEditor implements Editor {
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
     this.document = editor.document;
+  }
+
+  static onDidChangeActiveTextEditor(editor: vscode.TextEditor) {
+    const existingHighlights = highlightsPerFile.get(
+      editor.document.uri.toString()
+    );
+    if (!existingHighlights) return;
+
+    Array.from(existingHighlights.entries()).forEach(
+      ([selections, decoration]) => {
+        editor.setDecorations(decoration, selections.map(toVSCodeRange));
+      }
+    );
+  }
+
+  static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
+    event.files.forEach((file) => {
+      const existingHighlights = highlightsPerFile.get(file.oldUri.toString());
+      if (!existingHighlights) return;
+
+      highlightsPerFile.set(file.newUri.toString(), existingHighlights);
+      highlightsPerFile.delete(file.oldUri.toString());
+    });
   }
 
   async workspaceFiles(): Promise<RelativePath[]> {
@@ -211,26 +238,43 @@ export class VSCodeEditor implements Editor {
     });
 
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
-    highlights.set(selections, decoration);
+
+    const existingHighlights =
+      highlightsPerFile.get(this.document.uri.toString()) ?? new Map();
+    existingHighlights.set(selections, decoration);
+    highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
   }
 
   removeHighlight(selections: Selection[]): void {
-    const decoration = highlights.get(selections);
+    const existingHighlights = highlightsPerFile.get(
+      this.document.uri.toString()
+    );
+    if (!existingHighlights) return;
+
+    const decoration = existingHighlights.get(selections);
     if (decoration) {
       decoration.dispose();
-      highlights.delete(selections);
+      existingHighlights.delete(selections);
+      highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
     }
   }
 
   removeAllHighlights(): void {
-    Array.from(highlights.keys()).forEach((selections) =>
-      this.removeHighlight(selections)
+    Array.from(highlightsPerFile.values()).forEach((highlights) =>
+      Array.from(highlights.keys()).forEach((selections) =>
+        this.removeHighlight(selections)
+      )
     );
   }
 
   findHighlight(selection: Selection): Selection[] {
+    const existingHighlights = highlightsPerFile.get(
+      this.document.uri.toString()
+    );
+    if (!existingHighlights) return [];
+
     return (
-      Array.from(highlights.keys()).find((selections) =>
+      Array.from(existingHighlights.keys()).find((selections) =>
         selections.some((s) => selection.isInside(s))
       ) ?? []
     );

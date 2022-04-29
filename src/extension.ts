@@ -5,6 +5,7 @@ import { RefactoringActionProvider } from "./action-providers";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 import toggleHighlight from "./highlights/toggle-highlight";
+import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
@@ -180,6 +181,15 @@ export function activate(context: vscode.ExtensionContext) {
       new ExtractClassActionProvider(),
       { providedCodeActionKinds: [vscode.CodeActionKind.RefactorExtract] }
     );
+  });
+
+  vscode.window.onDidChangeActiveTextEditor((editor) => {
+    if (!editor) return;
+    VSCodeEditor.onDidChangeActiveTextEditor(editor);
+  });
+
+  vscode.workspace.onWillRenameFiles((event) => {
+    VSCodeEditor.onWillRenameFiles(event);
   });
 }
 
