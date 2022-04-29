@@ -1,8 +1,7 @@
-import { ErrorReason, Code } from "../../editor/editor";
-import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
 import { testEach } from "../../tests-helpers";
-
 import { extractInterface } from "./extract-interface";
 
 describe("Extract Interface", () => {
@@ -269,6 +268,34 @@ interface Extracted<T extends string> {
 
 interface Extracted {
   isEqualTo(position: Position): boolean;
+}`
+      },
+      {
+        description: "class that lacks return types",
+        code: `class Position {
+  isEqualTo(position: Position) {
+    return true;
+  }
+
+  async fetch() {
+    return repository.fetch(this.id);
+  }
+}`,
+        expected: `class Position implements Extracted {
+  isEqualTo(position: Position) {
+    return true;
+  }
+
+  async fetch() {
+    return repository.fetch(this.id);
+  }
+}
+
+interface Extracted {
+  /* TODO: add the missing return type */
+  isEqualTo(position: Position): any;
+  /* TODO: add the missing return type */
+  fetch(): Promise<any>;
 }`
       }
     ],

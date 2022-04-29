@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- "Extract Interface" will let you know when it couldn't determine the return type of a method.
+
 ## [6.13.0] - 2022-04-21 - Oo-De-Lally 🏹
 
 ### Fixed

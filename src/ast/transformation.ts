@@ -1,15 +1,14 @@
 import { parse as babelParse } from "@babel/parser";
-import traverse, { TraverseOptions, NodePath, Visitor } from "@babel/traverse";
+import traverse, { NodePath, TraverseOptions, Visitor } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
-
 import { Code } from "../editor/editor";
 import { findScopePath } from "./scope";
 
 export const traverseNode = t.traverse;
 export const traversePath = traverse;
 
-export { NodePath, Scope, Binding } from "@babel/traverse";
+export { Binding, NodePath, Scope } from "@babel/traverse";
 export type { Visitor };
 
 export function transform(code: Code, options: TraverseOptions): Transformed {
@@ -220,6 +219,18 @@ function preserveCommentsForRecast(path: NodePath) {
   function isLastNode(): boolean {
     return path.getAllNextSiblings().length === 0;
   }
+}
+
+export function addLeadingComment<T extends t.Node>(
+  node: T,
+  comment: string
+): T {
+  const commentedNode = t.addComment(node, "leading", ` ${comment} `);
+
+  // @ts-expect-error Recast does use a `comments` attribute.
+  commentedNode.comments = commentedNode.leadingComments;
+
+  return commentedNode;
 }
 
 function unindent(value: Code): Code {

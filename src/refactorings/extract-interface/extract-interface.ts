@@ -85,13 +85,35 @@ export function createVisitor(
         .filter(isPublic)
         .filter((method) => !isConstructor(method))
         .map((method) => {
+          if (!t.isTSTypeAnnotation(method.returnType)) {
+            const signature = t.tsMethodSignature(
+              method.key,
+              null,
+              method.params.filter((param): param is t.Identifier =>
+                t.isIdentifier(param)
+              ),
+              t.tsTypeAnnotation(
+                method.async
+                  ? t.tsTypeReference(
+                      t.identifier("Promise"),
+                      t.tsTypeParameterInstantiation([t.tsAnyKeyword()])
+                    )
+                  : t.tsAnyKeyword()
+              )
+            );
+            return t.addLeadingComment(
+              signature,
+              "TODO: add the missing return type"
+            );
+          }
+
           return t.tsMethodSignature(
             method.key,
             null,
             method.params.filter((param): param is t.Identifier =>
               t.isIdentifier(param)
             ),
-            t.isTSTypeAnnotation(method.returnType) ? method.returnType : null
+            method.returnType
           );
         });
 
