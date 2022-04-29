@@ -1,9 +1,8 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
-
-import { findParamMatchingId } from "./find-param-matching-id";
+import { Code, Editor, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
 import { findExportedIdNames } from "../find-exported-id-names";
+import { findParamMatchingId } from "./find-param-matching-id";
 
 export async function inlineFunction(editor: Editor) {
   const { code, selection } = editor;
@@ -300,6 +299,17 @@ function applyArgumentsToFunction(
           functionDeclaration.params
         );
         if (!param.isMatch) return;
+
+        if (
+          t.isObjectProperty(idPath.parent) &&
+          idPath.parent.key === idPath.node &&
+          !idPath.parent.computed
+        ) {
+          // Don't replace object keys!
+          return;
+        }
+
+        if (t.isMemberExpression(idPath.parent)) return;
 
         const value = param.resolveValue(values) || t.identifier("undefined");
         idPath.replaceWith(value);

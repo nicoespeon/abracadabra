@@ -1,7 +1,6 @@
-import { Code, ErrorReason } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
-
 import { inlineFunction } from "./inline-function";
 
 describe("Inline Function", () => {
@@ -450,6 +449,47 @@ async function [cursor]smallFunctionAsync() {
 }`,
         expected: `async function callerAsync() {
   await someOtherDelegate();
+}`
+      },
+      {
+        description:
+          "function with param set to an object attribute with the same name",
+        code: `async function [cursor]someFunction(foo) {
+  console.log({ foo: foo })
+}
+
+function anotherFunction() {
+  someFunction({
+    data: 123
+  })
+}`,
+        expected: `function anotherFunction() {
+  console.log({
+    foo: {
+      data: 123
+    }
+  });
+}`
+      },
+      {
+        description: "function with param being a member expression",
+        code: `export function callingFunction() {
+  const args = { foo: "bar" };
+  myFunction(args.foo);
+}
+
+function [cursor]myFunction(foo: string) {
+  const logger = createLogger();
+  logger.log("a", "b", {
+    foo: foo
+  });
+}`,
+        expected: `export function callingFunction() {
+  const args = { foo: "bar" };
+  const logger = createLogger();
+  logger.log("a", "b", {
+    foo: args.foo
+  });
 }`
       }
     ],
