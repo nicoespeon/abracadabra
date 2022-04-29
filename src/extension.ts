@@ -1,37 +1,38 @@
 import * as vscode from "vscode";
-
-import { createCommand } from "./commands";
 import { RefactoringActionProvider } from "./action-providers";
-import { Refactoring, RefactoringWithActionProvider } from "./types";
-
-import toggleHighlight from "./highlights/toggle-highlight";
+import { createCommand } from "./commands";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import removeAllHighlights from "./highlights/remove-all-highlights";
+import toggleHighlight from "./highlights/toggle-highlight";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
-import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
+import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
-import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
+import convertLetToConst from "./refactorings/convert-let-to-const";
+import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
-import convertLetToConst from "./refactorings/convert-let-to-const";
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
 import destructureObject from "./refactorings/destructure-object";
 import extract from "./refactorings/extract";
+// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
+import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
+import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
+import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
 import inline from "./refactorings/inline";
+import invertBooleanLogic from "./refactorings/invert-boolean-logic";
 import liftUpConditional from "./refactorings/lift-up-conditional";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
 import moveToExistingFile from "./refactorings/move-to-existing-file";
-import invertBooleanLogic from "./refactorings/invert-boolean-logic";
 import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
 import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
@@ -43,10 +44,7 @@ import splitDeclarationAndInitialization from "./refactorings/split-declaration-
 import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 import toggleBraces from "./refactorings/toggle-braces";
-// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
-import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
-import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
-import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
+import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
