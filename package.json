@@ -358,7 +358,7 @@
       },
       {
         "command": "abracadabra.removeAllHighlights",
-        "title": "Remove All Highlight",
+        "title": "Remove All Highlights",
         "category": "Abracadabra"
       }
     ],
