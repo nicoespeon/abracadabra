@@ -234,7 +234,9 @@ export class VSCodeEditor implements Editor {
         backgroundColor: color.dark,
         overviewRulerColor: color.dark
       },
-      overviewRulerLane: vscode.OverviewRulerLane.Right
+      overviewRulerLane: vscode.OverviewRulerLane.Right,
+      // We will recompute the proper highlights on update
+      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
     });
 
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
