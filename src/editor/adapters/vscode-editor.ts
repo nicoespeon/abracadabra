@@ -11,15 +11,13 @@ import {
   Modification,
   Result
 } from "../editor";
+import { Highlights } from "../highlights";
 import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
 // These should persist across any editor instances.
-const highlightsPerFile = new Map<
-  FilePath,
-  Map<Selection[], vscode.TextEditorDecorationType>
->();
+const highlightsPerFile = new Map<FilePath, Highlights>();
 type FilePath = string;
 let nextHighlightColorIndex = 0;
 
@@ -38,11 +36,9 @@ export class VSCodeEditor implements Editor {
     );
     if (!existingHighlights) return;
 
-    Array.from(existingHighlights.entries()).forEach(
-      ([selections, decoration]) => {
-        editor.setDecorations(decoration, selections.map(toVSCodeRange));
-      }
-    );
+    existingHighlights.entries().forEach(([selections, decoration]) => {
+      editor.setDecorations(decoration, selections.map(toVSCodeRange));
+    });
   }
 
   static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
@@ -242,7 +238,7 @@ export class VSCodeEditor implements Editor {
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
 
     const existingHighlights =
-      highlightsPerFile.get(this.document.uri.toString()) ?? new Map();
+      highlightsPerFile.get(this.document.uri.toString()) ?? new Highlights();
     existingHighlights.set(selections, decoration);
     highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
   }
@@ -263,9 +259,9 @@ export class VSCodeEditor implements Editor {
 
   removeAllHighlights(): void {
     Array.from(highlightsPerFile.values()).forEach((highlights) =>
-      Array.from(highlights.keys()).forEach((selections) =>
-        this.removeHighlight(selections)
-      )
+      highlights
+        .keys()
+        .forEach((selections) => this.removeHighlight(selections))
     );
   }
 
@@ -276,9 +272,10 @@ export class VSCodeEditor implements Editor {
     if (!existingHighlights) return [];
 
     return (
-      Array.from(existingHighlights.keys()).find((selections) =>
-        selections.some((s) => selection.isInside(s))
-      ) ?? []
+      existingHighlights
+        .keys()
+        .find((selections) => selections.some((s) => selection.isInside(s))) ??
+      []
     );
   }
 }
