@@ -7,6 +7,7 @@ import {
   Modification,
   RelativePath
 } from "../editor";
+import { Source } from "../highlights";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
@@ -82,19 +83,19 @@ export class AttemptingEditor implements Editor {
     return this.editor.moveCursorTo(position);
   }
 
-  highlight(selections: Selection[]) {
-    return this.editor.highlight(selections);
+  highlight(source: Source, bindings: Selection[]) {
+    return this.editor.highlight(source, bindings);
   }
 
-  removeHighlight(selections: Selection[]) {
-    return this.editor.removeHighlight(selections);
+  removeHighlight(source: Source) {
+    return this.editor.removeHighlight(source);
   }
 
   removeAllHighlights(): void {
     return this.editor.removeAllHighlights();
   }
 
-  findHighlight(selection: Selection): Selection[] {
+  findHighlight(selection: Selection): Source | undefined {
     return this.editor.findHighlight(selection);
   }
 }

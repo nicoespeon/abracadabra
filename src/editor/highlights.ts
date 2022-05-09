@@ -1,29 +1,38 @@
 import * as vscode from "vscode";
 import { Selection } from "./selection";
 
+export type Source = Selection;
+
 export class Highlights {
-  private highlights = new Map<Selection[], vscode.TextEditorDecorationType>();
+  private highlights = new Map<
+    Source,
+    { bindings: Selection[]; decoration: vscode.TextEditorDecorationType }
+  >();
 
   set(
-    selections: Selection[],
+    source: Source,
+    bindings: Selection[],
     decoration: vscode.TextEditorDecorationType
   ): void {
-    this.highlights.set(selections, decoration);
+    this.highlights.set(source, { bindings, decoration });
   }
 
-  get(selections: Selection[]): vscode.TextEditorDecorationType | undefined {
-    return this.highlights.get(selections);
+  decorationOf(source: Source): vscode.TextEditorDecorationType | undefined {
+    return this.highlights.get(source)?.decoration;
   }
 
-  keys(): Selection[][] {
+  sources(): Source[] {
     return Array.from(this.highlights.keys());
   }
 
-  entries(): [Selection[], vscode.TextEditorDecorationType][] {
+  entries(): [
+    Source,
+    { bindings: Selection[]; decoration: vscode.TextEditorDecorationType }
+  ][] {
     return Array.from(this.highlights.entries());
   }
 
-  delete(selections: Selection[]): void {
-    this.highlights.delete(selections);
+  delete(source: Source): void {
+    this.highlights.delete(source);
   }
 }

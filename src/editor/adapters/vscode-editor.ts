@@ -11,7 +11,7 @@ import {
   Modification,
   Result
 } from "../editor";
-import { Highlights } from "../highlights";
+import { Highlights, Source } from "../highlights";
 import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
@@ -36,9 +36,12 @@ export class VSCodeEditor implements Editor {
     );
     if (!existingHighlights) return;
 
-    existingHighlights.entries().forEach(([selections, decoration]) => {
-      editor.setDecorations(decoration, selections.map(toVSCodeRange));
-    });
+    existingHighlights
+      .entries()
+      .forEach(([source, { bindings, decoration }]) => {
+        const selections = [source, ...bindings];
+        editor.setDecorations(decoration, selections.map(toVSCodeRange));
+      });
   }
 
   static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
@@ -217,7 +220,7 @@ export class VSCodeEditor implements Editor {
     nextHighlightColorIndex = value;
   }
 
-  highlight(selections: Selection[]): void {
+  highlight(source: Source, bindings: Selection[]): void {
     const color = COLORS[this.nextHighlightColorIndex % COLORS.length];
     const decoration = vscode.window.createTextEditorDecorationType({
       light: {
@@ -235,48 +238,49 @@ export class VSCodeEditor implements Editor {
       rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
     });
 
+    const selections = [source, ...bindings];
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
 
     const existingHighlights =
       highlightsPerFile.get(this.document.uri.toString()) ?? new Highlights();
-    existingHighlights.set(selections, decoration);
+    existingHighlights.set(source, bindings, decoration);
     highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
   }
 
-  removeHighlight(selections: Selection[]): void {
+  removeHighlight(source: Source): void {
+    this.removeHighlightOfFile(source, this.document.uri.toString());
+  }
+
+  removeAllHighlights(): void {
+    Array.from(highlightsPerFile.entries()).forEach(([filePath, highlights]) =>
+      highlights
+        .sources()
+        .forEach((source) => this.removeHighlightOfFile(source, filePath))
+    );
+  }
+
+  private removeHighlightOfFile(source: Source, filePath: FilePath) {
+    const existingHighlights = highlightsPerFile.get(filePath);
+    if (!existingHighlights) return;
+
+    const decoration = existingHighlights.decorationOf(source);
+    if (decoration) {
+      decoration.dispose();
+      existingHighlights.delete(source);
+      highlightsPerFile.set(filePath, existingHighlights);
+    }
+  }
+
+  findHighlight(selection: Selection): Source | undefined {
     const existingHighlights = highlightsPerFile.get(
       this.document.uri.toString()
     );
     if (!existingHighlights) return;
 
-    const decoration = existingHighlights.get(selections);
-    if (decoration) {
-      decoration.dispose();
-      existingHighlights.delete(selections);
-      highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
-    }
-  }
-
-  removeAllHighlights(): void {
-    Array.from(highlightsPerFile.values()).forEach((highlights) =>
-      highlights
-        .keys()
-        .forEach((selections) => this.removeHighlight(selections))
-    );
-  }
-
-  findHighlight(selection: Selection): Selection[] {
-    const existingHighlights = highlightsPerFile.get(
-      this.document.uri.toString()
-    );
-    if (!existingHighlights) return [];
-
-    return (
-      existingHighlights
-        .keys()
-        .find((selections) => selections.some((s) => selection.isInside(s))) ??
-      []
-    );
+    return existingHighlights.entries().find(([source, { bindings }]) => {
+      const selections = [source, ...bindings];
+      return selections.some((s) => selection.isInside(s));
+    })?.[0];
   }
 }
 

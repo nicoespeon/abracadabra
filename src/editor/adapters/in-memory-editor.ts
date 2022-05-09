@@ -1,16 +1,17 @@
 import assert from "assert";
 import {
-  Editor,
-  Code,
-  Modification,
-  Command,
-  ErrorReason,
   Choice,
-  Result,
-  RelativePath
+  Code,
+  Command,
+  Editor,
+  ErrorReason,
+  Modification,
+  RelativePath,
+  Result
 } from "../editor";
-import { Selection } from "../selection";
+import { Source } from "../highlights";
 import { Position } from "../position";
+import { Selection } from "../selection";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -246,33 +247,37 @@ export class InMemoryEditor implements Editor {
   }
 
   private highlights = new Map<Selection, number>();
-  private highlightSelections = new Set<Selection[]>();
+  private highlightSelections = new Map<Source, Selection[]>();
   nextHighlightColorIndex = 0;
 
-  highlight(selections: Selection[]): void {
+  highlight(source: Source, bindings: Selection[]): void {
+    const selections = [source, ...bindings];
     selections.forEach((selection) => {
       this.highlights.set(selection, this.nextHighlightColorIndex + 1);
     });
-    this.highlightSelections.add(selections);
+    this.highlightSelections.set(source, bindings);
   }
 
-  removeHighlight(selections: Selection[]): void {
+  removeHighlight(source: Source): void {
+    const bindings = this.highlightSelections.get(source) ?? [];
+    const selections = [source, ...bindings];
     selections.forEach((selection) => this.highlights.delete(selection));
-    this.highlightSelections.delete(selections);
+    this.highlightSelections.delete(source);
   }
 
   removeAllHighlights(): void {
-    this.highlightSelections.forEach((selections) =>
-      this.removeHighlight(selections)
+    Array.from(this.highlightSelections.keys()).forEach((source) =>
+      this.removeHighlight(source)
     );
   }
 
-  findHighlight(selection: Selection): Selection[] {
-    return (
-      Array.from(this.highlightSelections).find((selections) =>
-        selections.some((s) => selection.isInside(s))
-      ) ?? []
-    );
+  findHighlight(selection: Selection): Source | undefined {
+    return Array.from(this.highlightSelections.entries()).find(
+      ([source, bindings]) => {
+        const selections = [source, ...bindings];
+        return selections.some((s) => selection.isInside(s));
+      }
+    )?.[0];
   }
 }
 

@@ -1,29 +1,31 @@
-import { Editor, Selection } from "../../editor";
 import * as t from "../../ast";
+import { Editor, Selection } from "../../editor";
 
 export async function toggleHighlight(editor: Editor): Promise<void> {
   const { code, selection } = editor;
 
-  const references: Selection[] = [];
+  let result: { source: Selection; bindings: Selection[] } | undefined;
   t.parseAndTraverseCode(code, {
     Identifier(path) {
       if (!selection.isInsidePath(path)) return;
       if (!t.isSelectablePath(path)) return;
 
-      references.push(Selection.fromAST(path.node.loc));
-      references.push(
-        ...t
+      result = {
+        source: Selection.fromAST(path.node.loc),
+        bindings: t
           .selectableReferencesInScope(path)
           .map(({ node }) => Selection.fromAST(node.loc))
-      );
+      };
     }
   });
 
-  const existingHighlights = editor.findHighlight(selection);
-  if (existingHighlights.length > 0) {
-    editor.removeHighlight(existingHighlights);
+  if (!result) return;
+
+  const existingHighlight = editor.findHighlight(result.source);
+  if (existingHighlight) {
+    editor.removeHighlight(existingHighlight);
   } else {
-    editor.highlight(references);
+    editor.highlight(result.source, result.bindings);
     editor.nextHighlightColorIndex += 1;
   }
 }

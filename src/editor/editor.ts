@@ -2,6 +2,7 @@ import { Selection } from "./selection";
 import { RelativePath } from "./path";
 import { Position } from "./position";
 import { ErrorReason } from "./error-reason";
+import { Source } from "./highlights";
 
 export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
@@ -26,10 +27,10 @@ export interface Editor {
     placeHolder?: string
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
-  highlight(selections: Selection[]): void;
-  removeHighlight(selections: Selection[]): void;
+  highlight(source: Source, bindings: Selection[]): void;
+  removeHighlight(source: Source): void;
   removeAllHighlights(): void;
-  findHighlight(selection: Selection): Selection[];
+  findHighlight(selection: Selection): Source | undefined;
   nextHighlightColorIndex: number;
 }
 
