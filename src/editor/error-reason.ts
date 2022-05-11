@@ -21,6 +21,7 @@ export enum ErrorReason {
   DidNotFindIfStatementToAddBraces,
   DidNotFindDeadCode,
   DidNotFindForEachToConvertToForOf,
+  DidNotFindExtractUseCallback,
   DidNotFindForLoopToConvert,
   DidNotFindStatementToMerge,
   DidNotFindNestedIf,
@@ -127,6 +128,9 @@ export function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindForEachToConvertToForOf:
       return didNotFind("a for each to convert");
+
+    case ErrorReason.DidNotFindExtractUseCallback:
+      return didNotFind("an inline JSX function to extract");
 
     case ErrorReason.DidNotFindForLoopToConvert:
       return didNotFind("a valid for loop to convert");
