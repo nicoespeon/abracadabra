@@ -1,7 +1,26 @@
 import { template } from "@babel/core";
+import { ESLint } from "eslint";
 import * as t from "../../../ast";
 import { Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+
+const eslint = new ESLint({
+  fix: true,
+  useEslintrc: false,
+  overrideConfig: {
+    plugins: ["react-hooks"],
+    rules: {
+      "react-hooks/exhaustive-deps": "error"
+    },
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true
+      },
+      ecmaVersion: 6,
+      sourceType: "module"
+    }
+  }
+});
 
 export async function extractUseCallback(editor: Editor) {
   const { code, selection } = editor;
@@ -12,7 +31,17 @@ export async function extractUseCallback(editor: Editor) {
     return;
   }
 
-  await editor.write(updatedCode.code);
+  const fixed = await fixReactHooksExhaustiveDeps(updatedCode.code);
+
+  await editor.write(fixed);
+}
+
+async function fixReactHooksExhaustiveDeps(code: string): Promise<string> {
+  const results = await eslint.lintText(code);
+  const fix = results[0]?.messages[0]?.suggestions?.[0]?.fix;
+  return fix
+    ? code.slice(0, fix.range[0]) + fix.text + code.slice(fix.range[1])
+    : code;
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

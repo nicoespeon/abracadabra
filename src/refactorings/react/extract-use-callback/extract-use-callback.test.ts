@@ -46,8 +46,20 @@ function Bar({onFoo}) {
 }`,
         expected: `
 function Bar({onFoo}) {
-  const onFoo2 = useCallback(e => {console.log(e); onFoo(e); }, []);
+  const onFoo2 = useCallback(e => {console.log(e); onFoo(e); }, [onFoo]);
   return <Foo onFoo={onFoo2} />;
+}`
+      },
+      {
+        description: "adds dependencies using react-hooks/exhaustive-deps",
+        code: `
+function Bar({a, b, c}) {
+  return <Foo onFoo={[cursor]() => a(b, c)} />;
+}`,
+        expected: `
+function Bar({a, b, c}) {
+  const onFoo = useCallback(() => a(b, c), [a, b, c]);
+  return <Foo onFoo={onFoo} />;
 }`
       },
       {
