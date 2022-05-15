@@ -1,4 +1,4 @@
-import { parse as babelParse } from "@babel/parser";
+import { parse as babelParse, ParserOptions } from "@babel/parser";
 import traverse, { NodePath, TraverseOptions, Visitor } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
@@ -10,6 +10,52 @@ export const traversePath = traverse;
 
 export { Binding, NodePath, Scope } from "@babel/traverse";
 export type { Visitor };
+
+export const BABEL_PARSER_OPTIONS: ParserOptions = {
+  sourceType: "module",
+  allowImportExportEverywhere: true,
+  allowReturnOutsideFunction: true,
+  startLine: 1,
+
+  // Tokens are necessary for Recast to do its magic ✨
+  tokens: true,
+
+  plugins: [
+    "asyncGenerators",
+    "bigInt",
+    "classPrivateMethods",
+    "classPrivateProperties",
+    "classProperties",
+    // Not compatible with "decorators-legacy"
+    // "decorators",
+    "decorators-legacy",
+    "doExpressions",
+    "dynamicImport",
+    // Make tests fail, not sure why
+    // "estree",
+    "exportDefaultFrom",
+    "exportNamespaceFrom",
+    // Not compatible with "typescript"
+    // "flow",
+    // "flowComments",
+    "functionBind",
+    "functionSent",
+    "importMeta",
+    "jsx",
+    "logicalAssignment",
+    "nullishCoalescingOperator",
+    "numericSeparator",
+    "objectRestSpread",
+    "optionalCatchBinding",
+    "optionalChaining",
+    "partialApplication",
+    ["pipelineOperator", { proposal: "minimal" }],
+    "placeholders",
+    "throwExpressions",
+    "topLevelAwait",
+    "typescript"
+  ]
+};
 
 export function transform(code: Code, options: TraverseOptions): Transformed {
   return transformAST(parse(code), options);
@@ -86,54 +132,7 @@ export function parse(code: Code): AST {
   try {
     return recast.parse(code, {
       parser: {
-        parse: (source: Code) =>
-          babelParse(source, {
-            sourceType: "module",
-            allowImportExportEverywhere: true,
-            allowReturnOutsideFunction: true,
-            startLine: 1,
-
-            // Tokens are necessary for Recast to do its magic ✨
-            tokens: true,
-
-            plugins: [
-              "asyncGenerators",
-              "bigInt",
-              "classPrivateMethods",
-              "classPrivateProperties",
-              "classProperties",
-              // Not compatible with "decorators-legacy"
-              // "decorators",
-              "decorators-legacy",
-              "doExpressions",
-              "dynamicImport",
-              // Make tests fail, not sure why
-              // "estree",
-              "exportDefaultFrom",
-              "exportNamespaceFrom",
-              // Not compatible with "typescript"
-              // "flow",
-              // "flowComments",
-              "functionBind",
-              "functionSent",
-              "importMeta",
-              "jsx",
-              "logicalAssignment",
-              "nullishCoalescingOperator",
-              "numericSeparator",
-              "objectRestSpread",
-              "optionalCatchBinding",
-              "optionalChaining",
-              "partialApplication",
-              ["pipelineOperator", { proposal: "minimal" }],
-              "placeholders",
-              "throwExpressions",
-              "topLevelAwait",
-              "typescript"
-              // Not compatible with "placeholders"
-              // "v8intrinsic"
-            ]
-          })
+        parse: (source: Code) => babelParse(source, BABEL_PARSER_OPTIONS)
       },
       // VS Code considers tabs to be of size 1
       tabWidth: 1

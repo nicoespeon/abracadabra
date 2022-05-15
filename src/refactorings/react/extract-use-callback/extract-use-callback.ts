@@ -1,6 +1,7 @@
 import { template } from "@babel/core";
 import { ESLint } from "eslint";
 import * as t from "../../../ast";
+import { BABEL_PARSER_OPTIONS } from "../../../ast";
 import { Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 
@@ -8,16 +9,14 @@ const eslint = new ESLint({
   fix: true,
   useEslintrc: false,
   overrideConfig: {
+    parser: "@babel/eslint-parser",
     plugins: ["react-hooks"],
-    rules: {
-      "react-hooks/exhaustive-deps": "error"
-    },
+    rules: { "react-hooks/exhaustive-deps": "error" },
     parserOptions: {
-      ecmaFeatures: {
-        jsx: true
-      },
+      ecmaFeatures: { jsx: true },
       ecmaVersion: 6,
-      sourceType: "module"
+      sourceType: "module",
+      babelOptions: { parserOpts: BABEL_PARSER_OPTIONS }
     }
   }
 });
@@ -38,6 +37,7 @@ export async function extractUseCallback(editor: Editor) {
 
 async function fixReactHooksExhaustiveDeps(code: string): Promise<string> {
   const results = await eslint.lintText(code);
+  console.log(results[0]?.messages);
   const fix = results[0]?.messages[0]?.suggestions?.[0]?.fix;
   return fix
     ? code.slice(0, fix.range[0]) + fix.text + code.slice(fix.range[1])
