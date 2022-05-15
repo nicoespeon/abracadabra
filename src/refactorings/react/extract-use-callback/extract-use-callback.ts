@@ -37,7 +37,6 @@ export async function extractUseCallback(editor: Editor) {
 
 async function fixReactHooksExhaustiveDeps(code: string): Promise<string> {
   const results = await eslint.lintText(code);
-  console.log(results[0]?.messages);
   const fix = results[0]?.messages[0]?.suggestions?.[0]?.fix;
   return fix
     ? code.slice(0, fix.range[0]) + fix.text + code.slice(fix.range[1])
