@@ -30,6 +30,7 @@ import moveStatementUp from "./refactorings/move-statement-up";
 import moveToExistingFile from "./refactorings/move-to-existing-file";
 import invertBooleanLogic from "./refactorings/invert-boolean-logic";
 import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
+import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
 import renameSymbol from "./refactorings/rename-symbol";
@@ -53,7 +54,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [reactConvertToPureComponent],
-    withActionProvider: []
+    withActionProvider: [reactExtractUseCallback]
   },
   allButVue: {
     languages: [
