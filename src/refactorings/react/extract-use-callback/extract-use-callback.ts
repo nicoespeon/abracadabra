@@ -9,7 +9,7 @@ const eslint = new ESLint({
   fix: true,
   useEslintrc: false,
   overrideConfig: {
-    parser: "@babel/eslint-parser",
+    parser: "@typescript-eslint/parser",
     plugins: ["react-hooks"],
     rules: { "react-hooks/exhaustive-deps": "error" },
     parserOptions: {

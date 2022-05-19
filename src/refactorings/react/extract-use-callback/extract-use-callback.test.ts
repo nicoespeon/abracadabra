@@ -71,6 +71,30 @@ const Bar = () => {
   const onFoo = useCallback(e => {console.log(e); onFoo(e); }, []);
   return <Foo onFoo={onFoo} />;
 };`
+      },
+      {
+        description: "supports TS code",
+        code: `
+function Bar({a, b, c}: {a: Function, b: string, c: number}) {
+  return <Foo onFoo={[cursor]() => a(b, c)} />;
+}`,
+        expected: `
+function Bar({a, b, c}: {a: Function, b: string, c: number}) {
+  const onFoo = useCallback(() => a(b, c), [a, b, c]);
+  return <Foo onFoo={onFoo} />;
+}`
+      },
+      {
+        description: "async functions",
+        code: `
+function Bar({a, b, c}) {
+  return <Foo onFoo={[cursor]async () => await a(b, c)} />;
+}`,
+        expected: `
+function Bar({a, b, c}) {
+  const onFoo = useCallback(async () => await a(b, c), [a, b, c]);
+  return <Foo onFoo={onFoo} />;
+}`
       }
     ].map(({ description, code, expected }) => ({
       description,
