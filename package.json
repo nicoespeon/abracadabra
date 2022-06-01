@@ -112,7 +112,7 @@
     "eslint": "8.14.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "jscodeshift": "0.13.0",
-    "minimatch": "5.0.1",
+    "minimatch": "5.1.0",
     "pluralize": "8.0.0",
     "react-codemod": "5.4.3",
     "recast": "0.20.5",
