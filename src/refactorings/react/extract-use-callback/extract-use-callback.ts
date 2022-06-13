@@ -9,7 +9,11 @@ import * as t from "../../../ast";
 import { Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 
-const eslint = createESLint();
+let eslint: ESLint | undefined;
+try {
+  // We are doing shaddy things to make it work. So it may fail.
+  eslint = createESLint();
+} catch {}
 
 export async function extractUseCallback(editor: Editor) {
   const { code, selection } = editor;
@@ -94,6 +98,9 @@ function createESLint() {
 }
 
 async function fixReactHooksExhaustiveDeps(code: string): Promise<string> {
+  // If we couldn't instantiate ESLint, don't fix and return the code
+  if (!eslint) return code;
+
   const results = await eslint.lintText(code);
   const fix = results[0]?.messages[0]?.suggestions?.[0]?.fix;
   return fix
