@@ -37,7 +37,7 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
   },
 
   resolve: {
-    mainFields: ["browser", "module", "main"],
+    mainFields: ["browser", "main", "module"],
     // Support reading TypeScript and JavaScript files
     // => https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],

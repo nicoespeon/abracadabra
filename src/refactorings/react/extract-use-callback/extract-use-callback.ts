@@ -1,25 +1,15 @@
 import { template } from "@babel/core";
+// @ts-expect-error This package is not typed
+import { Legacy } from "@eslint/eslintrc";
+import * as tsEslintParser from "@typescript-eslint/parser";
 import { ESLint } from "eslint";
+// @ts-expect-error This package is not typed
+import * as reactHookEslintPlugin from "eslint-plugin-react-hooks";
 import * as t from "../../../ast";
-import { BABEL_PARSER_OPTIONS } from "../../../ast";
 import { Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 
-const eslint = new ESLint({
-  fix: true,
-  useEslintrc: false,
-  overrideConfig: {
-    parser: "@typescript-eslint/parser",
-    plugins: ["react-hooks"],
-    rules: { "react-hooks/exhaustive-deps": "error" },
-    parserOptions: {
-      ecmaFeatures: { jsx: true },
-      ecmaVersion: 6,
-      sourceType: "module",
-      babelOptions: { parserOpts: BABEL_PARSER_OPTIONS }
-    }
-  }
-});
+const eslint = createESLint();
 
 export async function extractUseCallback(editor: Editor) {
   const { code, selection } = editor;
@@ -33,6 +23,74 @@ export async function extractUseCallback(editor: Editor) {
   const fixed = await fixReactHooksExhaustiveDeps(updatedCode.code);
 
   await editor.write(fixed);
+}
+
+function createESLint() {
+  // We need to temporarily override the parser/plugins loaders because
+  // ESLint fails to load them once bundled with Webpack.
+  const originalLoadParser = Legacy.ConfigArrayFactory.prototype._loadParser;
+  Legacy.ConfigArrayFactory.prototype._loadParser = (
+    nameOrPath: string,
+    ctx: { name: string; filePath: string }
+  ) => {
+    return nameOrPath === "@typescript-eslint/parser"
+      ? new Legacy.ConfigDependency({
+          definition: tsEslintParser,
+          filePath: "@typescript-eslint/parser",
+          id: "@typescript-eslint/parser",
+          importerName: ctx.name,
+          importerPath: ctx.filePath
+        })
+      : originalLoadParser(nameOrPath, ctx);
+  };
+
+  const originalLoadPlugin = Legacy.ConfigArrayFactory.prototype._loadPlugin;
+  Legacy.ConfigArrayFactory.prototype._loadPlugin = (
+    name: string,
+    ctx: { name: string; filePath: string }
+  ) => {
+    return name === "react-hooks"
+      ? new Legacy.ConfigDependency({
+          definition: normalizePlugin(reactHookEslintPlugin),
+          filePath: "eslint-plugin-react-hooks",
+          id: "react-hooks",
+          importerName: ctx.name,
+          importerPath: ctx.filePath
+        })
+      : originalLoadPlugin(name, ctx);
+  };
+  // Taken from ESLint codebase, to ensure plugin format is consistent
+  function normalizePlugin(plugin: any) {
+    return {
+      configs: plugin.configs || {},
+      environments: plugin.environments || {},
+      processors: plugin.processors || {},
+      rules: plugin.rules || {}
+    };
+  }
+
+  // Init ESLint with overridden methods, so we can hotfix code
+  const eslint = new ESLint({
+    fix: true,
+    useEslintrc: false,
+    overrideConfig: {
+      parser: "@typescript-eslint/parser",
+      plugins: ["react-hooks"],
+      rules: { "react-hooks/exhaustive-deps": "error" },
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+        ecmaVersion: 6,
+        sourceType: "module",
+        babelOptions: { parserOpts: t.BABEL_PARSER_OPTIONS }
+      }
+    }
+  });
+
+  // Restore methods so there is no impact after this function executes
+  Legacy.ConfigArrayFactory.prototype._loadParser = originalLoadParser;
+  Legacy.ConfigArrayFactory.prototype._loadPlugin = originalLoadPlugin;
+
+  return eslint;
 }
 
 async function fixReactHooksExhaustiveDeps(code: string): Promise<string> {
