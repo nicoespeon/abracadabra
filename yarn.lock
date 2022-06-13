@@ -4435,10 +4435,10 @@ husky@7.0.4:
   resolved "https://registry.yarnpkg.com/husky/-/husky-7.0.4.tgz#242048245dc49c8fb1bf0cc7cfb98dd722531535"
   integrity sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==
 
-hygen@6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/hygen/-/hygen-6.2.0.tgz#9f71af9218a1cb24f2c9f017a2594a6d61e6874f"
-  integrity sha512-5kma/nx7K+gJu8Q8kirkamUDb2TLvDJEiG/hfAL2Jt93SGrWEd0vWVEwaJW7qQylbIoT7gBVefrXZS2sYS8aag==
+hygen@6.2.3:
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/hygen/-/hygen-6.2.3.tgz#ce82dce79151159fb36cb8b1911ddab0060a9335"
+  integrity sha512-ZpOCKv5VAQmwC7pq6S/7fsC5mBGkD0alUnWZ8nMmj+91jkl5+xZFyB8uRSLQIEQWoj4Pnw/lcbYFhTsT52MOZw==
   dependencies:
     "@types/node" "^17.0.19"
     chalk "^4.1.2"

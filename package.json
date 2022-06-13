@@ -83,7 +83,7 @@
     "eslint-config-prettier": "8.4.0",
     "glob": "7.2.0",
     "husky": "7.0.4",
-    "hygen": "6.2.0",
+    "hygen": "6.2.3",
     "jest": "27.5.1",
     "lint-staged": "12.3.7",
     "mocha": "10.0.0",
