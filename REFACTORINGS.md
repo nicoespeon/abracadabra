@@ -60,6 +60,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Extract Interface](#extract-interface)
 - Specific to React:
   1. [Convert to Pure Component](#convert-to-pure-component)
+  1. [Extract useCallback()](#extract-use-callback)
 
 ## The Essentials
 
@@ -546,6 +547,16 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Extract useCallback()
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+A useful refactoring to extract a function props into a `useCallback()` declaration. It will resolve the required dependencies for you.
+
+![][demo-extract-use-callback]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 <!-- Links -->
 
 [command-palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
@@ -603,6 +614,7 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-ternary.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-interface.gif?raw=true
 [demo-extract-class]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-class.gif?raw=true
+[demo-extract-use-callback]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-use-callback.gif?raw=true
 [demo-toggle-braces]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-braces.gif?raw=true
 
 <!-- Logo -->

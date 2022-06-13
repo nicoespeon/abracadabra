@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Extract Interface" will let you know when it couldn't determine the return type of a method.
 - "Move to existing file" can now move interfaces with generics. Kudos @jtwigg for raising that up!
 - Make "Inline Function" work if an object key matches one of the parameter name in the function body. Props to @automatensalat for spotting this one!
+- **[New Refactoring]** "Extract useCallback()" for React, kudos to @ianobermiller for this one!
 
 ## [6.13.0] - 2022-04-21 - Oo-De-Lally 🏹
 
