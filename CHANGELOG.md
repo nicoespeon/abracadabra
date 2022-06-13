@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.14.0] - 2022-06-13 - A Cover Is Not the Book 📕
+
 ### Added
 
 - "Extract Interface" will let you know when it couldn't determine the return type of a method.
@@ -1614,7 +1616,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.13.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.14.0...HEAD
+[6.14.0]: https://github.com/nicoespeon/abracadabra/compare/6.13.0...6.14.0
 [6.13.0]: https://github.com/nicoespeon/abracadabra/compare/6.12.0...6.13.0
 [6.12.0]: https://github.com/nicoespeon/abracadabra/compare/6.11.0...6.12.0
 [6.11.0]: https://github.com/nicoespeon/abracadabra/compare/6.10.0...6.11.0
