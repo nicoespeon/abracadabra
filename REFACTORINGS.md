@@ -60,7 +60,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Extract Interface](#extract-interface)
 - Specific to React:
   1. [Convert to Pure Component](#convert-to-pure-component)
-  1. [Extract useCallback()](#extract-use-callback)
+  1. [Extract useCallback()](#extract-usecallback)
 
 ## The Essentials
 
