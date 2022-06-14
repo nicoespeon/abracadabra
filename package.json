@@ -1,6 +1,6 @@
 {
   "name": "abracadabra",
-  "version": "6.14.1",
+  "version": "6.14.2",
   "displayName": "Abracadabra, refactor this!",
   "publisher": "nicoespeon",
   "description": "Automated refactorings for VS Code, in JavaScript and TypeScript.",
@@ -83,7 +83,7 @@
     "eslint-config-prettier": "8.4.0",
     "glob": "7.2.0",
     "husky": "7.0.4",
-    "hygen": "6.2.3",
+    "hygen": "6.2.7",
     "jest": "27.5.1",
     "lint-staged": "12.3.7",
     "mocha": "10.0.0",
