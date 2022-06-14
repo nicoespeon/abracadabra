@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No user-visible change. This release makes Abracadabra work in browser environments again.
+
 ## [6.14.1]
 
-No user visible change. This release fixes the deployment of 6.14 in all the target environments.
+No user-visible change. This release fixes the deployment of 6.14 in all the target environments.
 
 ## [6.14.0] - 2022-06-13 - A Cover Is Not the Book 📕
 

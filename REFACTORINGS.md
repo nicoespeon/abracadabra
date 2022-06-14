@@ -553,6 +553,8 @@ It converts ES6 classes that only have a `render()` method, only have safe prope
 
 A useful refactoring to extract a function props into a `useCallback()` declaration. It will resolve the required dependencies for you.
 
+_Note: it works in a web editor too (eg. https://github.dev/nicoespeon/abracadabra), but it can't resolve the required dependencies from the browser._
+
 ![][demo-extract-use-callback]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
