@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.14.1]
+
+No user visible change. This release fixes the deployment of 6.14 in all the target environments.
+
 ## [6.14.0] - 2022-06-13 - A Cover Is Not the Book 📕
 
 ### Added
@@ -1616,7 +1620,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.14.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.14.1...HEAD
+[6.14.1]: https://github.com/nicoespeon/abracadabra/compare/6.14.0...6.14.1
 [6.14.0]: https://github.com/nicoespeon/abracadabra/compare/6.13.0...6.14.0
 [6.13.0]: https://github.com/nicoespeon/abracadabra/compare/6.12.0...6.13.0
 [6.12.0]: https://github.com/nicoespeon/abracadabra/compare/6.11.0...6.12.0
