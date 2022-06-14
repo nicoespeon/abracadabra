@@ -12,6 +12,9 @@
   },
   "homepage": "https://github.com/nicoespeon/abracadabra",
   "bugs": "https://github.com/nicoespeon/abracadabra/issues",
+  "sponsor": {
+    "url": "https://github.com/sponsors/nicoespeon"
+  },
   "keywords": [
     "refactor",
     "legacy code",
