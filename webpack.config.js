@@ -44,8 +44,11 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
     extensions: [".ts", ".js"],
     alias: env.browser
       ? {
-          // This can't be resolved in the browser
-          "@eslint/eslintrc": false
+          // These can't be resolved in the browser
+          "@eslint/eslintrc": false,
+          "@typescript-eslint/parser": false,
+          eslint: false,
+          "eslint-plugin-react-hooks": false
         }
       : {},
     fallback: env.browser
