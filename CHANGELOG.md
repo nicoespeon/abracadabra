@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.14.2]
+
 No user-visible change. This release makes Abracadabra work in browser environments again.
 
 ## [6.14.1]
@@ -1622,7 +1624,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.14.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.14.2...HEAD
+[6.14.2]: https://github.com/nicoespeon/abracadabra/compare/6.14.1...6.14.2
 [6.14.1]: https://github.com/nicoespeon/abracadabra/compare/6.14.0...6.14.1
 [6.14.0]: https://github.com/nicoespeon/abracadabra/compare/6.13.0...6.14.0
 [6.13.0]: https://github.com/nicoespeon/abracadabra/compare/6.12.0...6.13.0
