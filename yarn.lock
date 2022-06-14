@@ -3998,10 +3998,10 @@ flow-parser@0.*:
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.120.1.tgz#26781130575fee4a45ecae0240b9d037e2746b72"
   integrity sha512-t5y9QoOegJuY+LCIjh0p6SGF7ItsxG5ycQApTSqWloutUZQ2gC0f6wMu91dab0/SSj2vH41bu5pDTLuvtP49ng==
 
-follow-redirects@^1.13.2:
-  version "1.14.8"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
-  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
+follow-redirects@^1.14.6:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -6407,13 +6407,13 @@ os-tmpdir@~1.0.2:
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
   integrity sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=
 
-ovsx@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.3.0.tgz#2f30c80c90fbe3c8fc406730c35371219187ca0a"
-  integrity sha512-UjZjzLt6Iq7LS/XFvEuBAWyn0zmsZEe8fuy5DsbcsIb0mW7PbVtB5Dhe4HeK7NJM228nyhYXC9WCeyBoMi4M3A==
+ovsx@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.5.1.tgz#3a8c2707ea120d542d1d226a47f24ac47b078710"
+  integrity sha512-3OWq0l7DuVHi2bd2aQe5+QVQlFIqvrcw3/2vGXL404L6Tr+R4QHtzfnYYghv8CCa85xJHjU0RhcaC7pyXkAUbg==
   dependencies:
     commander "^6.1.0"
-    follow-redirects "^1.13.2"
+    follow-redirects "^1.14.6"
     is-ci "^2.0.0"
     leven "^3.1.0"
     tmp "^0.2.1"
