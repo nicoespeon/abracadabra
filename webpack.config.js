@@ -42,6 +42,12 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
     // Support reading TypeScript and JavaScript files
     // => https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],
+    alias: env.browser
+      ? {
+          // This can't be resolved in the browser
+          "@eslint/eslintrc": false
+        }
+      : {},
     fallback: env.browser
       ? {
           assert: require.resolve("assert"),
