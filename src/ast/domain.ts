@@ -156,3 +156,12 @@ export function toArrowFunctionExpression({
 
   return arrowFunctionExpression;
 }
+
+export function cloneWithoutType<T extends t.Node>(node: T): T {
+  const nodeWithoutType = t.cloneNode(node);
+  if ("typeAnnotation" in nodeWithoutType) {
+    nodeWithoutType.typeAnnotation = undefined;
+  }
+
+  return nodeWithoutType;
+}

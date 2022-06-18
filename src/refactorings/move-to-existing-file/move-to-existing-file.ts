@@ -137,7 +137,7 @@ export function createVisitor(
         path,
         new MovableVariableDeclaration(
           path,
-          declaration.node.id,
+          t.cloneWithoutType(declaration.node.id),
           exportDeclaration
         )
       );

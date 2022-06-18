@@ -1,5 +1,5 @@
-import { RelativePath } from "../../editor/editor";
 import * as t from "../../ast";
+import { RelativePath } from "../../editor/editor";
 import { ExportDeclaration } from "./export-declaration";
 
 export interface MovableNode {
@@ -32,7 +32,6 @@ export class MovableVariableDeclaration implements MovableNode {
   ) {
     // We need to compute these in constructor because the `path` reference
     // will be removed and not accessible later.
-    this._value = path.node;
     const declarationPath = path.get("declarations")[0];
     this._hasReferencesThatCantBeImported = t.hasReferencesDefinedInSameScope(
       declarationPath,
@@ -44,6 +43,12 @@ export class MovableVariableDeclaration implements MovableNode {
       declarationPath.get("init"),
       exportDeclaration.parentPath
     );
+
+    const declarationWithoutType = path.node;
+    declarationWithoutType.declarations[0].id = t.cloneWithoutType(
+      declarationPath.get("id").node
+    );
+    this._value = declarationWithoutType;
   }
 
   get value(): t.VariableDeclaration {

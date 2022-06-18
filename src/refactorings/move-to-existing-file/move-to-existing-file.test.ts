@@ -448,6 +448,30 @@ console.log(level.LOW);`,
   HIGH: "high"
 };`
         }
+      },
+      {
+        description: "a typed variable",
+        setup: {
+          currentFile: `const [cursor]level: Level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};
+
+console.log(level.LOW);`,
+          otherFile: "",
+          path: new RelativePath("./other-file.ts")
+        },
+        expected: {
+          currentFile: `import { level } from "./other-file";
+
+console.log(level.LOW);`,
+          otherFile: `export const level = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high"
+};`
+        }
       }
     ],
     async ({ setup, expected }) => {
