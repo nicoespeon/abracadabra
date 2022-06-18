@@ -123,7 +123,7 @@ const doNothing = () => {};`
         expected: `doThis(() => {});`
       },
       {
-        description: "TODO: reported",
+        description: "function declarations above, but no reference",
         code: `function say(message) {
   logger.log(">", message);
 }
