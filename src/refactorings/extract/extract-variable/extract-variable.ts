@@ -1,13 +1,12 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
-
+import { Code, Editor, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
 import { renameSymbol } from "../../rename-symbol/rename-symbol";
-import { createOccurrence, Occurrence } from "./occurrence";
 import {
-  ReplacementStrategy,
-  askReplacementStrategy
+  askReplacementStrategy,
+  ReplacementStrategy
 } from "../replacement-strategy";
+import { createOccurrence, Occurrence } from "./occurrence";
 
 export async function extractVariable(editor: Editor) {
   const { code, selection } = editor;
@@ -146,11 +145,12 @@ function getOccurrenceLoc(
   node: t.SelectableNode,
   selection: Selection
 ): t.SourceLocation | null {
-  return t.isSelectableObjectProperty(node)
+  const result = t.isSelectableObjectProperty(node)
     ? findObjectPropertyLoc(selection, node)
     : t.isJSXExpressionContainer(node)
     ? node.expression.loc
     : node.loc;
+  return result ?? null;
 }
 
 function findObjectPropertyLoc(

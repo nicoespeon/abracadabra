@@ -134,6 +134,7 @@ export function createVisitor(
               const key = property.parameter.left;
               if (!t.isExpression(key)) return memo;
               if (t.isMemberExpression(key)) return memo;
+              if (t.isTSNonNullExpression(key)) return memo;
 
               result = t.tsPropertySignature(
                 key,
