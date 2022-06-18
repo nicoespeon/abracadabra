@@ -427,6 +427,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "abulka",
+      "name": "Andy Bulka",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11467530?v=4",
+      "profile": "http://www.andypatterns.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
