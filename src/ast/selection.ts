@@ -11,7 +11,10 @@ export interface ASTPosition {
   column: number;
 }
 
-export type SelectablePath<T = t.Node> = NodePath<T> & { node: Selectable<T> };
+export type SelectablePath<T = t.Node> = NodePath<T> & {
+  node: Selectable<T>;
+  hasNode: NodePath<T>["hasNode"];
+};
 export type SelectableNode = Selectable<t.Node>;
 export type SelectableIdentifier = Selectable<t.Identifier>;
 export type SelectableVariableDeclarator = Selectable<t.VariableDeclarator>;
