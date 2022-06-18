@@ -1,7 +1,6 @@
-import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { convertToArrowFunction } from "./convert-to-arrow-function";
 
 describe("Convert To Arrow Function", () => {
@@ -122,6 +121,31 @@ const doNothing = () => {};`
           "a function expression that's an argument to a call expression",
         code: `doThis(function[cursor] () {});`,
         expected: `doThis(() => {});`
+      },
+      {
+        description: "TODO: reported",
+        code: `function say(message) {
+  logger.log(">", message);
+}
+
+function sayGoodMorning() {
+  say("Good Morning");
+}
+
+function [cursor]sum(x) {
+  return x + 1;
+}`,
+        expected: `function say(message) {
+  logger.log(">", message);
+}
+
+function sayGoodMorning() {
+  say("Good Morning");
+}
+
+const sum = x => {
+  return x + 1;
+};`
       }
     ],
     async ({ code, expected }) => {

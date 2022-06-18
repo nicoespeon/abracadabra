@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Remove type annotations when moving a variable declaration with "Move to Existing File", so the import pattern is not broken.
+- Fix scenarios where "Convert to Arrow Function" wouldn't execute but should have. Thanks @abulka for the detailed report!
 
 ## [6.14.4]
 

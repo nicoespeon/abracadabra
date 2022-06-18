@@ -141,15 +141,25 @@ export function bindingNamesInScope<T>(path: NodePath<T>): string[] {
 export function referencesInScope(
   path: NodePath<t.FunctionDeclaration | t.FunctionExpression>
 ): NodePath[] {
-  const allBindings = Object.values(path.scope.getAllBindings()) as Binding[];
+  const functionName = path.node.id?.name;
+  const allBindings = Object.values(
+    path.scope.getAllBindings()
+  ) as FunctionBinding[];
 
-  return (
-    allBindings
-      // Omit imports that are bound to the program and would appear in the list
-      .filter((binding) => binding.path.isFunctionDeclaration())
-      .flatMap((binding) => binding.referencePaths)
-  );
+  return allBindings
+    .filter(
+      // Ensure bindings are of the correct type and we don't get more
+      (binding) =>
+        binding.path.isFunctionDeclaration() ||
+        binding.path.isFunctionExpression()
+    )
+    .filter(({ path }) => path.node.id?.name === functionName)
+    .flatMap((binding) => binding.referencePaths);
 }
+
+type FunctionBinding = Binding & {
+  path: NodePath<t.FunctionDeclaration | t.FunctionExpression>;
+};
 
 export function getReferencedImportDeclarations(
   path: NodePath<t.BlockStatement | t.Expression | null | undefined>,
