@@ -1,11 +1,10 @@
-import { Code, Modification } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import * as t from "../../../ast";
 import { last } from "../../../array";
-
-import { findExportedIdNames } from "../find-exported-id-names";
+import * as t from "../../../ast";
 import { VariableDeclarator } from "../../../ast";
+import { Code, Modification } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
+import { findExportedIdNames } from "../find-exported-id-names";
 
 export function findInlinableCode(
   selection: Selection,
@@ -34,7 +33,7 @@ export function findInlinableCode(
       const child = findInlinableCode(selection, parent, {
         id: property.value,
         init: property,
-        loc: parent.loc
+        loc: parent.loc ?? null
       });
       if (!child) return;
 
@@ -70,7 +69,7 @@ export function findInlinableCode(
       const child = findInlinableCode(selection, parent, {
         id: element,
         init,
-        loc: parent.loc
+        loc: parent.loc ?? null
       });
       if (!child) return;
 
