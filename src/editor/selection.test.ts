@@ -225,4 +225,60 @@ describe("Selection", () => {
       expect(result).toStrictEqual([anotherSelection]);
     });
   });
+
+  describe("determine if other selection overlaps or touches", () => {
+    it("can tell if another selection is overlapping", () => {
+      const selection = new Selection([0, 10], [1, 20]);
+      const other = new Selection([0, 7], [2, 10]);
+
+      const result = selection.overlapsWith(other);
+
+      expect(result).toBe(true);
+    });
+
+    it("can tell if another selection does not overlap", () => {
+      const selection = new Selection([0, 10], [1, 20]);
+      const other = new Selection([2, 7], [4, 10]);
+
+      const result = selection.overlapsWith(other);
+
+      expect(result).toBe(false);
+    });
+
+    it("can tell if another selection is touching", () => {
+      const selection = new Selection([0, 10], [1, 20]);
+      const other = new Selection([1, 20], [2, 10]);
+
+      const result = selection.touches(other);
+
+      expect(result).toBe(true);
+    });
+
+    it("can tell if another selection does not touch", () => {
+      const selection = new Selection([0, 10], [1, 20]);
+      const other = new Selection([2, 7], [4, 10]);
+
+      const result = selection.touches(other);
+
+      expect(result).toBe(false);
+    });
+
+    it("considers touching if it overlaps", () => {
+      const selection = new Selection([0, 10], [1, 20]);
+      const other = new Selection([0, 7], [2, 10]);
+
+      const result = selection.touches(other);
+
+      expect(result).toBe(true);
+    });
+
+    it("does not consider overlapping if it just touches", () => {
+      const selection = new Selection([0, 10], [1, 20]);
+      const other = new Selection([1, 20], [2, 10]);
+
+      const result = selection.overlapsWith(other);
+
+      expect(result).toBe(false);
+    });
+  });
 });
