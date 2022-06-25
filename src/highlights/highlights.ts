@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Selection } from "./selection";
+import { Selection } from "../editor/selection";
 
 export type Source = Selection;
 

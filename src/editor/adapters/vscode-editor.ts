@@ -11,7 +11,7 @@ import {
   Modification,
   Result
 } from "../editor";
-import { Highlights, Source } from "../highlights";
+import { Highlights, Source } from "../../highlights/highlights";
 import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";

@@ -9,7 +9,7 @@ import {
   RelativePath,
   Result
 } from "../editor";
-import { Source } from "../highlights";
+import { Source } from "../../highlights/highlights";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
