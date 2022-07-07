@@ -76,7 +76,7 @@
     "@types/pluralize": "0.0.29",
     "@types/sinon": "10.0.12",
     "@types/vscode": "1.68.1",
-    "@typescript-eslint/eslint-plugin": "5.28.0",
+    "@typescript-eslint/eslint-plugin": "5.30.5",
     "@vscode/test-electron": "2.1.5",
     "all-contributors-cli": "6.20.0",
     "assert": "2.0.0",
