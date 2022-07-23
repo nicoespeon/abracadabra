@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+import { Highlights, Source } from "../../highlights/highlights";
+import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";
 import { COLORS } from "../colors";
 import {
@@ -11,14 +13,10 @@ import {
   Modification,
   Result
 } from "../editor";
-import { Highlights, Source } from "../../highlights/highlights";
 import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-// These should persist across any editor instances.
-const highlightsPerFile = new Map<FilePath, Highlights>();
-type FilePath = string;
 let nextHighlightColorIndex = 0;
 
 export class VSCodeEditor implements Editor {
@@ -31,6 +29,7 @@ export class VSCodeEditor implements Editor {
   }
 
   static onDidChangeActiveTextEditor(editor: vscode.TextEditor) {
+    const highlightsPerFile = HighlightsRepository.get();
     const existingHighlights = highlightsPerFile.get(
       editor.document.uri.toString()
     );
@@ -45,6 +44,7 @@ export class VSCodeEditor implements Editor {
   }
 
   static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
+    const highlightsPerFile = HighlightsRepository.get();
     event.files.forEach((file) => {
       const existingHighlights = highlightsPerFile.get(file.oldUri.toString());
       if (!existingHighlights) return;
@@ -241,6 +241,7 @@ export class VSCodeEditor implements Editor {
     const selections = [source, ...bindings];
     this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
 
+    const highlightsPerFile = HighlightsRepository.get();
     const existingHighlights =
       highlightsPerFile.get(this.document.uri.toString()) ?? new Highlights();
     existingHighlights.set(source, bindings, decoration);
@@ -248,30 +249,18 @@ export class VSCodeEditor implements Editor {
   }
 
   removeHighlight(source: Source): void {
-    this.removeHighlightOfFile(source, this.document.uri.toString());
-  }
-
-  removeAllHighlights(): void {
-    Array.from(highlightsPerFile.entries()).forEach(([filePath, highlights]) =>
-      highlights
-        .sources()
-        .forEach((source) => this.removeHighlightOfFile(source, filePath))
+    HighlightsRepository.get().removeHighlightsOfFile(
+      source,
+      this.document.uri.toString()
     );
   }
 
-  private removeHighlightOfFile(source: Source, filePath: FilePath) {
-    const existingHighlights = highlightsPerFile.get(filePath);
-    if (!existingHighlights) return;
-
-    const decoration = existingHighlights.decorationOf(source);
-    if (decoration) {
-      decoration.dispose();
-      existingHighlights.delete(source);
-      highlightsPerFile.set(filePath, existingHighlights);
-    }
+  removeAllHighlights(): void {
+    HighlightsRepository.get().removeAllHighlights();
   }
 
   findHighlight(selection: Selection): Source | undefined {
+    const highlightsPerFile = HighlightsRepository.get();
     const existingHighlights = highlightsPerFile.get(
       this.document.uri.toString()
     );
