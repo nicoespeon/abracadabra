@@ -68,7 +68,7 @@ All refactorings that appear in Quick Fix suggestions can also be disabled in [y
 
 ### Versioning
 
-We follow [SemVer][semver] convention for versionning.
+We follow [SemVer][semver] convention for versioning.
 
 That means our releases use the following format:
 
