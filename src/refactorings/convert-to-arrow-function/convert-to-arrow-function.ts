@@ -1,6 +1,6 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 
 export async function convertToArrowFunction(editor: Editor) {
   const { code, selection } = editor;
@@ -9,15 +9,15 @@ export async function convertToArrowFunction(editor: Editor) {
     selection
   );
 
-  if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindFunctionDeclarationToConvert);
-    return;
-  }
-
   if (hasReferenceBefore) {
     editor.showError(
       ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore
     );
+    return;
+  }
+
+  if (!updatedCode.hasCodeChanged) {
+    editor.showError(ErrorReason.DidNotFindFunctionDeclarationToConvert);
     return;
   }
 
@@ -41,7 +41,12 @@ function updateCode(
         );
       }
 
-      hasReferenceBefore = converter.hasReferenceBefore;
+      if (converter.hasReferenceBefore) {
+        hasReferenceBefore = true;
+        path.stop();
+        return;
+      }
+
       path.replaceWith(converter.replacementNode);
       path.stop();
     })
