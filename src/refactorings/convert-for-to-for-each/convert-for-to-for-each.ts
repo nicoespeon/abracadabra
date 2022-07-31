@@ -1,10 +1,10 @@
 import { singular } from "pluralize";
 
-import { Editor, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 
 export async function convertForToForEach(editor: Editor) {
   const { code, selection } = editor;
@@ -112,6 +112,7 @@ export function createVisitor(
 
 function isList(expression: t.Expression, path: t.NodePath<t.ForOfStatement>) {
   if (t.isArrayExpression(expression)) return true;
+  if (t.isMemberExpression(expression)) return true;
   if (!t.isIdentifier(expression)) return false;
   const identifier = expression as t.Identifier;
   return identifierPointsToArray(identifier.name, path);

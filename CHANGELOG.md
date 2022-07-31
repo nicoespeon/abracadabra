@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Make "Convert For to ForEach" support Member Expressions (eg. `for (const item of foo.bar)`).
+
 ### Fixed
 
 - Remove type annotations when moving a variable declaration with "Move to Existing File", so the import pattern is not broken.

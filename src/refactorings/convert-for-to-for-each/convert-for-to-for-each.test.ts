@@ -1,10 +1,10 @@
-import { ErrorReason, Code } from "../../editor/editor";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { testEach } from "../../tests-helpers";
 import * as t from "../../ast";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
+import { testEach } from "../../tests-helpers";
 
-import { createVisitor, convertForToForEach } from "./convert-for-to-for-each";
 import { Selection } from "../../editor/selection";
+import { convertForToForEach, createVisitor } from "./convert-for-to-for-each";
 
 describe("Convert For To Foreach", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -263,6 +263,15 @@ items.forEach(item => {
         code: `for (const item of ['foo', 'bar', 'baz'])
   console.log(item);`,
         expected: `['foo', 'bar', 'baz'].forEach(item => {
+  console.log(item);
+});`
+      },
+      {
+        description: "for-of, with member expression on the right",
+        code: `for (const item of foo.bar) {
+  console.log(item);
+}`,
+        expected: `foo.bar.forEach(item => {
   console.log(item);
 });`
       }
