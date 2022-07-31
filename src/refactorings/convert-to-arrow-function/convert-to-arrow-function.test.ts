@@ -146,6 +146,59 @@ function sayGoodMorning() {
 const sum = x => {
   return x + 1;
 };`
+      },
+      {
+        description: "reference that's above function, but deferred",
+        code: `function main() {
+  for (const [id, path] of scripts) {
+    document.querySelector(id).addEventListener('click', () => run(path));
+  }
+
+  function run[cursor](path) {}
+}`,
+        expected: `function main() {
+  for (const [id, path] of scripts) {
+    document.querySelector(id).addEventListener('click', () => run(path));
+  }
+
+  const run = path => {};
+}`
+      },
+      {
+        description:
+          "reference that's above function, but deferred (object method)",
+        code: `const obj = {
+  runOnId(id, path) {
+    document.querySelector(id).addEventListener('click', () => run(path));
+  }
+};
+
+function run[cursor](path) {}`,
+        expected: `const obj = {
+  runOnId(id, path) {
+    document.querySelector(id).addEventListener('click', () => run(path));
+  }
+};
+
+const run = path => {};`
+      },
+      {
+        description:
+          "reference that's above function, but deferred (class method)",
+        code: `class Something {
+  runOnId(id, path) {
+    document.querySelector(id).addEventListener('click', () => run(path));
+  }
+}
+
+function run[cursor](path) {}`,
+        expected: `class Something {
+  runOnId(id, path) {
+    document.querySelector(id).addEventListener('click', () => run(path));
+  }
+}
+
+const run = path => {};`
       }
     ],
     async ({ code, expected }) => {

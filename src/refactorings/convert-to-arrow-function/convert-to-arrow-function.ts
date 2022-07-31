@@ -90,10 +90,22 @@ class FunctionDeclarationConverter implements Converter {
       const referenceSelection = Selection.fromAST(reference.node.loc);
       return (
         !referenceSelection.isEqualTo(pathSelection) &&
-        referenceSelection.startsBefore(pathSelection)
+        referenceSelection.startsBefore(pathSelection) &&
+        !hasFunctionScopeBetween(this.path, reference)
       );
     });
   }
+}
+
+function hasFunctionScopeBetween(
+  path: t.NodePath,
+  otherPath: t.NodePath
+): boolean {
+  // If they is an intermediate scope, the function parent will be different
+  return !t.areEquivalent(
+    path.getFunctionParent()?.node,
+    otherPath.getFunctionParent()?.node
+  );
 }
 
 class FunctionExpressionConverter implements Converter {

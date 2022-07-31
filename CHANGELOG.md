@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Make "Convert For to ForEach" support Member Expressions (eg. `for (const item of foo.bar)`).
+- Make "Convert to Arrow Function" handle more situations where the refactoring can be performed.
 
 ### Fixed
 
