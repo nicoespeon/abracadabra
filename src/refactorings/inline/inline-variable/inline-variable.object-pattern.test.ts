@@ -1,5 +1,5 @@
-import { Code } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { Code } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
 
 import { inlineVariable } from "./inline-variable";
@@ -62,6 +62,13 @@ console.log(id);`,
         code: `const { i[cursor]d } = session.users[key];
 console.log(id);`,
         expected: `console.log(session.users[key].id);`
+      },
+      {
+        description:
+          "init being a member expression with a computed identifier from a call expression",
+        code: `const { test[cursor] } = a[b()];
+const test2 = test;`,
+        expected: `const test2 = a[b()].test;`
       },
       {
         description: "nested",

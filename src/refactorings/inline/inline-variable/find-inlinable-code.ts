@@ -121,6 +121,12 @@ function getPropertyName(init: t.MemberExpression): string | null {
     return computed ? `[${property.name}]` : `.${property.name}`;
   }
 
+  if (t.isCallExpression(property) && t.isIdentifier(property.callee)) {
+    return computed
+      ? `[${property.callee.name}()]`
+      : `.${property.callee.name}()`;
+  }
+
   return `.${getInitName(property)}`;
 }
 
