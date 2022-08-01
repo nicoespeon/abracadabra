@@ -20,4 +20,5 @@ jobs:
       - run: yarn
       - run: yarn deploy:vscode
         env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
           VSCE_PAT: ${{ secrets.VSCODE_ACCESS_TOKEN }}
