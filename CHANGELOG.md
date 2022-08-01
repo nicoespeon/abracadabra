@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.15.1]
+
+No user-visible change. Mostly dependencies upgrades.
+
 ## [6.15.0] - 2022-08-01 - The Bare Necessities 🐻
 
 ### Added
