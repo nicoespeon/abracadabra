@@ -34,7 +34,7 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": ">=1.68.0",
+    "vscode": ">=1.69.0",
     "node": ">=14.0.0"
   },
   "main": "./out/extension.js",
