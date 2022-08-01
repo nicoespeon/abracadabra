@@ -64,6 +64,7 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
           http: false,
           https: false,
           os: false,
+          perf_hooks: false,
           path: require.resolve("path-browserify"),
           stream: false,
           unxhr: false,

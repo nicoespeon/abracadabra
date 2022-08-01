@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.15.2]
+
+No user-visible change. Fixed deployments to VS Code web.
+
 ## [6.15.1]
 
 No user-visible change. Mostly dependencies upgrades.
@@ -1649,7 +1653,9 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.15.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.15.2...HEAD
+[6.15.2]: https://github.com/nicoespeon/abracadabra/compare/6.15.1...6.15.2
+[6.15.1]: https://github.com/nicoespeon/abracadabra/compare/6.15.0...6.15.1
 [6.15.0]: https://github.com/nicoespeon/abracadabra/compare/6.14.4...6.15.0
 [6.14.4]: https://github.com/nicoespeon/abracadabra/compare/6.14.3...6.14.4
 [6.14.3]: https://github.com/nicoespeon/abracadabra/compare/6.14.2...6.14.3
