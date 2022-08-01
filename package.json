@@ -63,7 +63,7 @@
     "deploy:ovsx": "ovsx publish"
   },
   "devDependencies": {
-    "@babel/core": "7.18.6",
+    "@babel/core": "7.18.9",
     "@babel/preset-env": "7.18.9",
     "@babel/preset-typescript": "7.18.6",
     "@types/babel__traverse": "7.17.1",
