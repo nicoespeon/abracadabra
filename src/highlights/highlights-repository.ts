@@ -1,4 +1,4 @@
-import { Highlights, Source } from "./highlights";
+import { Decoration, Highlights, Source } from "./highlights";
 
 type FilePath = string;
 
@@ -33,16 +33,19 @@ export class HighlightsRepository {
     return Array.from(this.highlightsPerFile.entries());
   }
 
-  removeHighlightsOfFile(source: Source, filePath: FilePath): void {
+  removeHighlightsOfFile(
+    source: Source,
+    filePath: FilePath
+  ): Decoration | undefined {
     const existingHighlights = this.highlightsPerFile.get(filePath);
     if (!existingHighlights) return;
 
     const decoration = existingHighlights.decorationOf(source);
     if (!decoration) return;
 
-    decoration.dispose();
     existingHighlights.delete(source);
     this.highlightsPerFile.set(filePath, existingHighlights);
+    return decoration;
   }
 
   removeAllHighlights(): void {

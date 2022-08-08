@@ -1,23 +1,19 @@
-import * as vscode from "vscode";
 import { Selection } from "../editor/selection";
 
 export type Source = Selection;
+export type Decoration = number;
 
 export class Highlights {
   private highlights = new Map<
     Source,
-    { bindings: Selection[]; decoration: vscode.TextEditorDecorationType }
+    { bindings: Selection[]; decoration: Decoration }
   >();
 
-  set(
-    source: Source,
-    bindings: Selection[],
-    decoration: vscode.TextEditorDecorationType
-  ): void {
+  set(source: Source, bindings: Selection[], decoration: Decoration): void {
     this.highlights.set(source, { bindings, decoration });
   }
 
-  decorationOf(source: Source): vscode.TextEditorDecorationType | undefined {
+  decorationOf(source: Source): Decoration | undefined {
     return this.highlights.get(source)?.decoration;
   }
 
@@ -25,10 +21,7 @@ export class Highlights {
     return Array.from(this.highlights.keys());
   }
 
-  entries(): [
-    Source,
-    { bindings: Selection[]; decoration: vscode.TextEditorDecorationType }
-  ][] {
+  entries(): [Source, { bindings: Selection[]; decoration: Decoration }][] {
     return Array.from(this.highlights.entries());
   }
 

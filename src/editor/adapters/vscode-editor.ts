@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Highlights, Source } from "../../highlights/highlights";
+import { Decoration, Highlights, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";
 import { COLORS } from "../colors";
@@ -39,8 +39,32 @@ export class VSCodeEditor implements Editor {
       .entries()
       .forEach(([source, { bindings, decoration }]) => {
         const selections = [source, ...bindings];
-        editor.setDecorations(decoration, selections.map(toVSCodeRange));
+        editor.setDecorations(
+          VSCodeEditor.toVSCodeDecoration(decoration),
+          selections.map(toVSCodeRange)
+        );
       });
+  }
+
+  private static toVSCodeDecoration(
+    decoration: Decoration
+  ): vscode.TextEditorDecorationType {
+    const color = COLORS[decoration % COLORS.length];
+    return vscode.window.createTextEditorDecorationType({
+      light: {
+        border: `1px solid ${color.light}`,
+        backgroundColor: color.light,
+        overviewRulerColor: color.light
+      },
+      dark: {
+        border: `1px solid ${color.dark}`,
+        backgroundColor: color.dark,
+        overviewRulerColor: color.dark
+      },
+      overviewRulerLane: vscode.OverviewRulerLane.Right,
+      // We will recompute the proper highlights on update
+      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
+    });
   }
 
   static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
@@ -220,39 +244,35 @@ export class VSCodeEditor implements Editor {
     nextHighlightColorIndex = value;
   }
 
+  private vscodeDecorations = new Map<
+    Decoration,
+    vscode.TextEditorDecorationType
+  >();
+
   highlight(source: Source, bindings: Selection[]): void {
-    const color = COLORS[this.nextHighlightColorIndex % COLORS.length];
-    const decoration = vscode.window.createTextEditorDecorationType({
-      light: {
-        border: `1px solid ${color.light}`,
-        backgroundColor: color.light,
-        overviewRulerColor: color.light
-      },
-      dark: {
-        border: `1px solid ${color.dark}`,
-        backgroundColor: color.dark,
-        overviewRulerColor: color.dark
-      },
-      overviewRulerLane: vscode.OverviewRulerLane.Right,
-      // We will recompute the proper highlights on update
-      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
-    });
+    const vscodeDecoration = VSCodeEditor.toVSCodeDecoration(
+      this.nextHighlightColorIndex
+    );
 
     const selections = [source, ...bindings];
-    this.editor.setDecorations(decoration, selections.map(toVSCodeRange));
+    this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
+    this.vscodeDecorations.set(this.nextHighlightColorIndex, vscodeDecoration);
 
     const highlightsPerFile = HighlightsRepository.get();
     const existingHighlights =
       highlightsPerFile.get(this.document.uri.toString()) ?? new Highlights();
-    existingHighlights.set(source, bindings, decoration);
+    existingHighlights.set(source, bindings, this.nextHighlightColorIndex);
     highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
   }
 
   removeHighlight(source: Source): void {
-    HighlightsRepository.get().removeHighlightsOfFile(
+    const decoration = HighlightsRepository.get().removeHighlightsOfFile(
       source,
       this.document.uri.toString()
     );
+    if (decoration) {
+      this.vscodeDecorations.get(decoration)?.dispose();
+    }
   }
 
   removeAllHighlights(): void {
