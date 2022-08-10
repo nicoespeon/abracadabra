@@ -33,19 +33,25 @@ export class HighlightsRepository {
     return Array.from(this.highlightsPerFile.entries());
   }
 
-  removeHighlightsOfFile(
-    source: Source,
-    filePath: FilePath
-  ): Decoration | undefined {
+  decorationOf(source: Source, filePath: FilePath): Decoration | undefined {
     const existingHighlights = this.highlightsPerFile.get(filePath);
     if (!existingHighlights) return;
 
-    const decoration = existingHighlights.decorationOf(source);
-    if (!decoration) return;
+    return existingHighlights.decorationOf(source);
+  }
+
+  allDecorations(): Decoration[] {
+    return this.entries().flatMap(([, highlights]) =>
+      highlights.entries().map(([, { decoration }]) => decoration)
+    );
+  }
+
+  removeHighlightsOfFile(source: Source, filePath: FilePath): void {
+    const existingHighlights = this.highlightsPerFile.get(filePath);
+    if (!existingHighlights) return;
 
     existingHighlights.delete(source);
     this.highlightsPerFile.set(filePath, existingHighlights);
-    return decoration;
   }
 
   removeAllHighlights(): void {

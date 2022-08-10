@@ -266,17 +266,31 @@ export class VSCodeEditor implements Editor {
   }
 
   removeHighlight(source: Source): void {
-    const decoration = HighlightsRepository.get().removeHighlightsOfFile(
+    const highlightsPerFile = HighlightsRepository.get();
+    const decoration = highlightsPerFile.decorationOf(
       source,
       this.document.uri.toString()
     );
     if (decoration) {
-      this.vscodeDecorations.get(decoration)?.dispose();
+      this.disposeDecoration(decoration);
     }
+    highlightsPerFile.removeHighlightsOfFile(
+      source,
+      this.document.uri.toString()
+    );
   }
 
   removeAllHighlights(): void {
-    HighlightsRepository.get().removeAllHighlights();
+    const highlightsPerFile = HighlightsRepository.get();
+    highlightsPerFile
+      .allDecorations()
+      .forEach((decoration) => this.disposeDecoration(decoration));
+    highlightsPerFile.removeAllHighlights();
+  }
+
+  private disposeDecoration(decoration: Decoration): void {
+    this.vscodeDecorations.get(decoration)?.dispose();
+    this.vscodeDecorations.delete(decoration);
   }
 
   findHighlight(selection: Selection): Source | undefined {
