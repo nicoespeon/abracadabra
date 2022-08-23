@@ -31,7 +31,6 @@ export interface Editor {
   removeHighlight(source: Source): void;
   removeAllHighlights(): void;
   findHighlight(selection: Selection): Source | undefined;
-  nextHighlightColorIndex: number;
 }
 
 export type Modification = {

@@ -26,6 +26,5 @@ export async function toggleHighlight(editor: Editor): Promise<void> {
     editor.removeHighlight(existingHighlight);
   } else {
     editor.highlight(result.source, result.bindings);
-    editor.nextHighlightColorIndex += 1;
   }
 }

@@ -1,4 +1,6 @@
 import assert from "assert";
+import { Source } from "../../highlights/highlights";
+import { HighlightsRepository } from "../../highlights/highlights-repository";
 import {
   Choice,
   Code,
@@ -9,7 +11,6 @@ import {
   RelativePath,
   Result
 } from "../editor";
-import { Source } from "../../highlights/highlights";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
@@ -246,14 +247,21 @@ export class InMemoryEditor implements Editor {
     this.codeMatrix.splice(line, 1);
   }
 
+  private highlightsRepository = new HighlightsRepository();
   private highlights = new Map<Selection, number>();
   private highlightSelections = new Map<Source, Selection[]>();
-  nextHighlightColorIndex = 0;
 
   highlight(source: Source, bindings: Selection[]): void {
+    const decoration = this.highlightsRepository.save(
+      "irrelevant-path",
+      source,
+      bindings
+    );
+
     const selections = [source, ...bindings];
     selections.forEach((selection) => {
-      this.highlights.set(selection, this.nextHighlightColorIndex + 1);
+      // Add 1 so we start at [h1] instead of [h0].
+      this.highlights.set(selection, decoration + 1);
     });
     this.highlightSelections.set(source, bindings);
   }

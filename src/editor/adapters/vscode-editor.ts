@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Decoration, Highlights, Source } from "../../highlights/highlights";
+import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";
 import { COLORS } from "../colors";
@@ -17,7 +17,6 @@ import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-let nextHighlightColorIndex = 0;
 
 // Persist the instance across all editors.
 const highlightsRepository = new HighlightsRepository();
@@ -240,32 +239,22 @@ export class VSCodeEditor implements Editor {
     return Promise.resolve();
   }
 
-  get nextHighlightColorIndex() {
-    return nextHighlightColorIndex;
-  }
-  set nextHighlightColorIndex(value: number) {
-    nextHighlightColorIndex = value;
-  }
-
   private vscodeDecorations = new Map<
     Decoration,
     vscode.TextEditorDecorationType
   >();
 
   highlight(source: Source, bindings: Selection[]): void {
-    const vscodeDecoration = VSCodeEditor.toVSCodeDecoration(
-      this.nextHighlightColorIndex
+    const decoration = highlightsRepository.save(
+      this.document.uri.toString(),
+      source,
+      bindings
     );
 
     const selections = [source, ...bindings];
+    const vscodeDecoration = VSCodeEditor.toVSCodeDecoration(decoration);
     this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
-    this.vscodeDecorations.set(this.nextHighlightColorIndex, vscodeDecoration);
-
-    const existingHighlights =
-      highlightsRepository.get(this.document.uri.toString()) ??
-      new Highlights();
-    existingHighlights.set(source, bindings, this.nextHighlightColorIndex);
-    highlightsRepository.set(this.document.uri.toString(), existingHighlights);
+    this.vscodeDecorations.set(decoration, vscodeDecoration);
   }
 
   removeHighlight(source: Source): void {

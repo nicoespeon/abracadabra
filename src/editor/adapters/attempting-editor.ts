@@ -1,3 +1,4 @@
+import { Source } from "../../highlights/highlights";
 import {
   Choice,
   Code,
@@ -7,17 +8,13 @@ import {
   Modification,
   RelativePath
 } from "../editor";
-import { Source } from "../../highlights/highlights";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
 export class AttemptingEditor implements Editor {
   attemptSucceeded = true;
-  nextHighlightColorIndex: number;
 
-  constructor(private editor: Editor, private expectedReason: ErrorReason) {
-    this.nextHighlightColorIndex = editor.nextHighlightColorIndex;
-  }
+  constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
   workspaceFiles(): Promise<RelativePath[]> {
     return this.editor.workspaceFiles();
