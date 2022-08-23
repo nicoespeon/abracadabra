@@ -4,18 +4,6 @@ type FilePath = string;
 
 export class HighlightsRepository {
   private highlightsPerFile = new Map<FilePath, Highlights>();
-  private static instance: HighlightsRepository | null = null;
-
-  private constructor() {}
-
-  // These should usually persist across all editor instances.
-  static get(): HighlightsRepository {
-    if (!this.instance) {
-      this.instance = new HighlightsRepository();
-    }
-
-    return this.instance;
-  }
 
   get(filePath: FilePath): Highlights | undefined {
     return this.highlightsPerFile.get(filePath);

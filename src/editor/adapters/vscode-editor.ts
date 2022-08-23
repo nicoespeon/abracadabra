@@ -19,6 +19,9 @@ import { Selection } from "../selection";
 
 let nextHighlightColorIndex = 0;
 
+// Persist the instance across all editors.
+const highlightsRepository = new HighlightsRepository();
+
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
   private document: vscode.TextDocument;
@@ -29,8 +32,7 @@ export class VSCodeEditor implements Editor {
   }
 
   static onDidChangeActiveTextEditor(editor: vscode.TextEditor) {
-    const highlightsPerFile = HighlightsRepository.get();
-    const existingHighlights = highlightsPerFile.get(
+    const existingHighlights = highlightsRepository.get(
       editor.document.uri.toString()
     );
     if (!existingHighlights) return;
@@ -68,13 +70,14 @@ export class VSCodeEditor implements Editor {
   }
 
   static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
-    const highlightsPerFile = HighlightsRepository.get();
     event.files.forEach((file) => {
-      const existingHighlights = highlightsPerFile.get(file.oldUri.toString());
+      const existingHighlights = highlightsRepository.get(
+        file.oldUri.toString()
+      );
       if (!existingHighlights) return;
 
-      highlightsPerFile.set(file.newUri.toString(), existingHighlights);
-      highlightsPerFile.delete(file.oldUri.toString());
+      highlightsRepository.set(file.newUri.toString(), existingHighlights);
+      highlightsRepository.delete(file.oldUri.toString());
     });
   }
 
@@ -258,34 +261,32 @@ export class VSCodeEditor implements Editor {
     this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
     this.vscodeDecorations.set(this.nextHighlightColorIndex, vscodeDecoration);
 
-    const highlightsPerFile = HighlightsRepository.get();
     const existingHighlights =
-      highlightsPerFile.get(this.document.uri.toString()) ?? new Highlights();
+      highlightsRepository.get(this.document.uri.toString()) ??
+      new Highlights();
     existingHighlights.set(source, bindings, this.nextHighlightColorIndex);
-    highlightsPerFile.set(this.document.uri.toString(), existingHighlights);
+    highlightsRepository.set(this.document.uri.toString(), existingHighlights);
   }
 
   removeHighlight(source: Source): void {
-    const highlightsPerFile = HighlightsRepository.get();
-    const decoration = highlightsPerFile.decorationOf(
+    const decoration = highlightsRepository.decorationOf(
       source,
       this.document.uri.toString()
     );
     if (decoration) {
       this.disposeDecoration(decoration);
     }
-    highlightsPerFile.removeHighlightsOfFile(
+    highlightsRepository.removeHighlightsOfFile(
       source,
       this.document.uri.toString()
     );
   }
 
   removeAllHighlights(): void {
-    const highlightsPerFile = HighlightsRepository.get();
-    highlightsPerFile
+    highlightsRepository
       .allDecorations()
       .forEach((decoration) => this.disposeDecoration(decoration));
-    highlightsPerFile.removeAllHighlights();
+    highlightsRepository.removeAllHighlights();
   }
 
   private disposeDecoration(decoration: Decoration): void {
@@ -294,8 +295,7 @@ export class VSCodeEditor implements Editor {
   }
 
   findHighlight(selection: Selection): Source | undefined {
-    const highlightsPerFile = HighlightsRepository.get();
-    const existingHighlights = highlightsPerFile.get(
+    const existingHighlights = highlightsRepository.get(
       this.document.uri.toString()
     );
     if (!existingHighlights) return;
