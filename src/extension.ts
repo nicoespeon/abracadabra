@@ -183,11 +183,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (!editor) return;
-    VSCodeEditor.onDidChangeActiveTextEditor(editor);
+    VSCodeEditor.restoreHighlightDecorations(editor);
   });
 
   vscode.workspace.onWillRenameFiles((event) => {
-    VSCodeEditor.onWillRenameFiles(event);
+    VSCodeEditor.updateHighlights(event);
   });
 }
 

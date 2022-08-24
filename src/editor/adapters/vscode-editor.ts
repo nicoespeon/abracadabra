@@ -17,7 +17,6 @@ import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
-
 // Persist the instance across all editors.
 const highlightsRepository = new HighlightsRepository();
 
@@ -28,56 +27,6 @@ export class VSCodeEditor implements Editor {
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
     this.document = editor.document;
-  }
-
-  static onDidChangeActiveTextEditor(editor: vscode.TextEditor) {
-    const existingHighlights = highlightsRepository.get(
-      editor.document.uri.toString()
-    );
-    if (!existingHighlights) return;
-
-    existingHighlights
-      .entries()
-      .forEach(([source, { bindings, decoration }]) => {
-        const selections = [source, ...bindings];
-        editor.setDecorations(
-          VSCodeEditor.toVSCodeDecoration(decoration),
-          selections.map(toVSCodeRange)
-        );
-      });
-  }
-
-  private static toVSCodeDecoration(
-    decoration: Decoration
-  ): vscode.TextEditorDecorationType {
-    const color = COLORS[decoration % COLORS.length];
-    return vscode.window.createTextEditorDecorationType({
-      light: {
-        border: `1px solid ${color.light}`,
-        backgroundColor: color.light,
-        overviewRulerColor: color.light
-      },
-      dark: {
-        border: `1px solid ${color.dark}`,
-        backgroundColor: color.dark,
-        overviewRulerColor: color.dark
-      },
-      overviewRulerLane: vscode.OverviewRulerLane.Right,
-      // We will recompute the proper highlights on update
-      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
-    });
-  }
-
-  static onWillRenameFiles(event: vscode.FileWillRenameEvent) {
-    event.files.forEach((file) => {
-      const existingHighlights = highlightsRepository.get(
-        file.oldUri.toString()
-      );
-      if (!existingHighlights) return;
-
-      highlightsRepository.set(file.newUri.toString(), existingHighlights);
-      highlightsRepository.removeAllHighlightsOfFile(file.oldUri.toString());
-    });
   }
 
   async workspaceFiles(): Promise<RelativePath[]> {
@@ -282,6 +231,56 @@ export class VSCodeEditor implements Editor {
   private disposeDecoration(decoration: Decoration): void {
     this.vscodeDecorations.get(decoration)?.dispose();
     this.vscodeDecorations.delete(decoration);
+  }
+
+  static restoreHighlightDecorations(editor: vscode.TextEditor) {
+    const existingHighlights = highlightsRepository.get(
+      editor.document.uri.toString()
+    );
+    if (!existingHighlights) return;
+
+    existingHighlights
+      .entries()
+      .forEach(([source, { bindings, decoration }]) => {
+        const selections = [source, ...bindings];
+        editor.setDecorations(
+          VSCodeEditor.toVSCodeDecoration(decoration),
+          selections.map(toVSCodeRange)
+        );
+      });
+  }
+
+  private static toVSCodeDecoration(
+    decoration: Decoration
+  ): vscode.TextEditorDecorationType {
+    const color = COLORS[decoration % COLORS.length];
+    return vscode.window.createTextEditorDecorationType({
+      light: {
+        border: `1px solid ${color.light}`,
+        backgroundColor: color.light,
+        overviewRulerColor: color.light
+      },
+      dark: {
+        border: `1px solid ${color.dark}`,
+        backgroundColor: color.dark,
+        overviewRulerColor: color.dark
+      },
+      overviewRulerLane: vscode.OverviewRulerLane.Right,
+      // We will recompute the proper highlights on update
+      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
+    });
+  }
+
+  static updateHighlights(event: vscode.FileWillRenameEvent) {
+    event.files.forEach((file) => {
+      const existingHighlights = highlightsRepository.get(
+        file.oldUri.toString()
+      );
+      if (!existingHighlights) return;
+
+      highlightsRepository.set(file.newUri.toString(), existingHighlights);
+      highlightsRepository.removeAllHighlightsOfFile(file.oldUri.toString());
+    });
   }
 }
 
