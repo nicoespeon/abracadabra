@@ -27,10 +27,10 @@ export interface Editor {
     placeHolder?: string
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
+  findHighlight(selection: Selection): Source | undefined;
   highlight(source: Source, bindings: Selection[]): void;
   removeHighlight(source: Source): void;
   removeAllHighlights(): void;
-  findHighlight(selection: Selection): Source | undefined;
 }
 
 export type Modification = {

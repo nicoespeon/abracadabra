@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Source } from "../../highlights/highlights";
+import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import {
   Choice,
@@ -247,13 +247,20 @@ export class InMemoryEditor implements Editor {
     this.codeMatrix.splice(line, 1);
   }
 
+  private readonly filePath = "irrelevant-path";
   private highlightsRepository = new HighlightsRepository();
-  private highlights = new Map<Selection, number>();
-  private highlightSelections = new Map<Source, Selection[]>();
+  private highlights = new Map<Selection, Decoration>();
+
+  findHighlight(selection: Selection): Source | undefined {
+    return this.highlightsRepository.findHighlightsSource(
+      this.filePath,
+      selection
+    );
+  }
 
   highlight(source: Source, bindings: Selection[]): void {
-    const decoration = this.highlightsRepository.save(
-      "irrelevant-path",
+    const decoration = this.highlightsRepository.saveAndIncrement(
+      this.filePath,
       source,
       bindings
     );
@@ -263,29 +270,21 @@ export class InMemoryEditor implements Editor {
       // Add 1 so we start at [h1] instead of [h0].
       this.highlights.set(selection, decoration + 1);
     });
-    this.highlightSelections.set(source, bindings);
   }
 
   removeHighlight(source: Source): void {
-    const bindings = this.highlightSelections.get(source) ?? [];
+    const bindings = this.highlightsRepository.bindingsOf(
+      this.filePath,
+      source
+    );
     const selections = [source, ...bindings];
     selections.forEach((selection) => this.highlights.delete(selection));
-    this.highlightSelections.delete(source);
+    this.highlightsRepository.removeHighlightsOfFile(this.filePath, source);
   }
 
   removeAllHighlights(): void {
-    Array.from(this.highlightSelections.keys()).forEach((source) =>
-      this.removeHighlight(source)
-    );
-  }
-
-  findHighlight(selection: Selection): Source | undefined {
-    return Array.from(this.highlightSelections.entries()).find(
-      ([source, bindings]) => {
-        const selections = [source, ...bindings];
-        return selections.some((s) => selection.isInside(s));
-      }
-    )?.[0];
+    this.highlights.clear();
+    this.highlightsRepository.removeAllHighlights();
   }
 }
 

@@ -17,6 +17,10 @@ export class Highlights {
     return this.highlights.get(source)?.decoration;
   }
 
+  bindingsOf(source: Source): Selection[] {
+    return this.highlights.get(source)?.bindings ?? [];
+  }
+
   sources(): Source[] {
     return Array.from(this.highlights.keys());
   }

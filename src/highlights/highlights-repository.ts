@@ -7,36 +7,50 @@ export class HighlightsRepository {
   private highlightsPerFile = new Map<FilePath, Highlights>();
   private nextDecoration: Decoration = 0;
 
-  get(filePath: FilePath): Highlights | undefined {
-    return this.highlightsPerFile.get(filePath);
-  }
-
-  set(filePath: FilePath, highlights: Highlights): void {
-    this.highlightsPerFile.set(filePath, highlights);
-  }
-
-  delete(filePath: FilePath): void {
-    this.highlightsPerFile.delete(filePath);
-  }
-
   entries(): [FilePath, Highlights][] {
     return Array.from(this.highlightsPerFile.entries());
   }
 
-  decorationOf(source: Source, filePath: FilePath): Decoration | undefined {
+  get(filePath: FilePath): Highlights | undefined {
+    return this.highlightsPerFile.get(filePath);
+  }
+
+  findHighlightsSource(
+    filePath: FilePath,
+    selection: Selection
+  ): Source | undefined {
+    const existingHighlights = this.get(filePath);
+    if (!existingHighlights) return;
+
+    return existingHighlights.entries().find(([source, { bindings }]) => {
+      const selections = [source, ...bindings];
+      return selections.some((s) => selection.isInside(s));
+    })?.[0];
+  }
+
+  decorationOf(filePath: FilePath, source: Source): Decoration | undefined {
     const existingHighlights = this.highlightsPerFile.get(filePath);
     if (!existingHighlights) return;
 
     return existingHighlights.decorationOf(source);
   }
 
-  allDecorations(): Decoration[] {
-    return this.entries().flatMap(([, highlights]) =>
-      highlights.entries().map(([, { decoration }]) => decoration)
-    );
+  bindingsOf(filePath: FilePath, source: Source): Selection[] {
+    const existingHighlights = this.highlightsPerFile.get(filePath);
+    if (!existingHighlights) return [];
+
+    return existingHighlights.bindingsOf(source);
   }
 
-  save(filePath: FilePath, source: Source, bindings: Selection[]): Decoration {
+  set(filePath: FilePath, highlights: Highlights): void {
+    this.highlightsPerFile.set(filePath, highlights);
+  }
+
+  saveAndIncrement(
+    filePath: FilePath,
+    source: Source,
+    bindings: Selection[]
+  ): Decoration {
     const decoration = this.nextDecoration;
     const existingHighlights = this.get(filePath) ?? new Highlights();
     existingHighlights.set(source, bindings, decoration);
@@ -47,7 +61,7 @@ export class HighlightsRepository {
     return decoration;
   }
 
-  removeHighlightsOfFile(source: Source, filePath: FilePath): void {
+  removeHighlightsOfFile(filePath: FilePath, source: Source): void {
     const existingHighlights = this.highlightsPerFile.get(filePath);
     if (!existingHighlights) return;
 
@@ -55,11 +69,15 @@ export class HighlightsRepository {
     this.highlightsPerFile.set(filePath, existingHighlights);
   }
 
+  removeAllHighlightsOfFile(filePath: FilePath): void {
+    this.highlightsPerFile.delete(filePath);
+  }
+
   removeAllHighlights(): void {
     this.entries().forEach(([filePath, highlights]) =>
       highlights
         .sources()
-        .forEach((source) => this.removeHighlightsOfFile(source, filePath))
+        .forEach((source) => this.removeHighlightsOfFile(filePath, source))
     );
   }
 }

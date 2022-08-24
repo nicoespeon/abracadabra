@@ -76,7 +76,7 @@ export class VSCodeEditor implements Editor {
       if (!existingHighlights) return;
 
       highlightsRepository.set(file.newUri.toString(), existingHighlights);
-      highlightsRepository.delete(file.oldUri.toString());
+      highlightsRepository.removeAllHighlightsOfFile(file.oldUri.toString());
     });
   }
 
@@ -244,9 +244,17 @@ export class VSCodeEditor implements Editor {
     vscode.TextEditorDecorationType
   >();
 
+  private get filePath(): string {
+    return this.document.uri.toString();
+  }
+
+  findHighlight(selection: Selection): Source | undefined {
+    return highlightsRepository.findHighlightsSource(this.filePath, selection);
+  }
+
   highlight(source: Source, bindings: Selection[]): void {
-    const decoration = highlightsRepository.save(
-      this.document.uri.toString(),
+    const decoration = highlightsRepository.saveAndIncrement(
+      this.filePath,
       source,
       bindings
     );
@@ -258,41 +266,22 @@ export class VSCodeEditor implements Editor {
   }
 
   removeHighlight(source: Source): void {
-    const decoration = highlightsRepository.decorationOf(
-      source,
-      this.document.uri.toString()
-    );
-    if (decoration) {
-      this.disposeDecoration(decoration);
-    }
-    highlightsRepository.removeHighlightsOfFile(
-      source,
-      this.document.uri.toString()
-    );
+    const decoration = highlightsRepository.decorationOf(this.filePath, source);
+    if (!decoration) return;
+
+    this.disposeDecoration(decoration);
+    highlightsRepository.removeHighlightsOfFile(this.filePath, source);
   }
 
   removeAllHighlights(): void {
-    highlightsRepository
-      .allDecorations()
-      .forEach((decoration) => this.disposeDecoration(decoration));
+    this.vscodeDecorations.forEach((decoration) => decoration.dispose());
+    this.vscodeDecorations.clear();
     highlightsRepository.removeAllHighlights();
   }
 
   private disposeDecoration(decoration: Decoration): void {
     this.vscodeDecorations.get(decoration)?.dispose();
     this.vscodeDecorations.delete(decoration);
-  }
-
-  findHighlight(selection: Selection): Source | undefined {
-    const existingHighlights = highlightsRepository.get(
-      this.document.uri.toString()
-    );
-    if (!existingHighlights) return;
-
-    return existingHighlights.entries().find(([source, { bindings }]) => {
-      const selections = [source, ...bindings];
-      return selections.some((s) => selection.isInside(s));
-    })?.[0];
   }
 }
 
