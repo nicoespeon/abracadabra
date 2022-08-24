@@ -27,7 +27,8 @@
     "activityBar.activeBackground": "#51355a",
     "sash.hoverBorder": "#51355a",
     "statusBarItem.remoteBackground": "#34223a",
-    "statusBarItem.remoteForeground": "#e7e7e7"
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799"
   },
   "typescript.tsdk": "node_modules/typescript/lib"
 }
