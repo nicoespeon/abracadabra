@@ -34,7 +34,7 @@ describe("Create Class", () => {
       },
       {
         description:
-          "without argument on top of the program when is inside of a function",
+          "without argument on top of the program when is inside of a currying function",
         code: `
         function math() {
           return () => {
@@ -54,6 +54,44 @@ describe("Create Class", () => {
             return () => {
               new Math(1);
             }
+          }
+        }
+        `
+      },
+      {
+        description:
+          "without argument on top of the program when is inside of method function",
+        code: `
+        class XXX {
+          method() {
+            [cursor]new OOO();
+          }
+        }
+        `,
+        expected: `
+        class OOO {}
+        class XXX {
+          method() {
+            new OOO();
+          }
+        }
+        `
+      },
+      {
+        description:
+          "without argument on top of the program when is inside of method of a literal object",
+        code: `
+        const obj = {
+          method: () => {
+            [cursor]new OOO();
+          }
+        }
+        `,
+        expected: `
+        class OOO {}
+        const obj = {
+          method: () => {
+            new OOO();
           }
         }
         `
