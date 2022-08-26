@@ -86,21 +86,34 @@ function createParametersFrom(
     | t.Expression
   )[]
 ): (t.Identifier | t.RestElement | t.TSParameterProperty | t.Pattern)[] {
-  const countKind: Record<string, number> = {};
-  const types: Record<string, string> = {
-    StringLiteral: "str",
-    NumericLiteral: "num",
-    BooleanLiteral: "bool",
-    RegexLiteral: "regex",
-    ObjectExpression: "obj",
-    ObjectMethod: "fn",
-    ObjectProperty: "val",
-    ArrowFunctionExpression: "fn"
-  };
-  return fnArguments.map((arg) => {
-    countKind[arg.type] = countKind[arg.type] || 0;
-    countKind[arg.type] += 1;
+  return fnArguments.map((arg, index) => {
+    const identifier = t.identifier(getNameOfArg(arg, index + 1));
 
-    return t.identifier(`${types[arg.type]}${countKind[arg.type]}`);
+    return identifier;
   });
+}
+
+function getNameOfArg(arg: any, index: number) {
+  switch (arg.type) {
+    case "StringLiteral":
+      return addCountToStr(arg.value.toLowerCase(), index);
+    case "BooleanLiteral":
+      return addCountToStr("b", index);
+    case "NumericLiteral":
+      return addCountToStr("number", index);
+    case "CallExpression":
+    case "NewExpression":
+      return addCountToStr(arg.callee.name, index);
+    case "NullLiteral":
+    case "ArrowFunctionExpression":
+      return addCountToStr("param", index);
+    case "Identifier":
+      return addCountToStr(arg.name, index);
+    default:
+      return "param";
+  }
+}
+
+function addCountToStr(str: string, count: number) {
+  return `${str}${count === 1 ? "" : count}`;
 }

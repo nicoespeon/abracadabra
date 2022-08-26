@@ -19,20 +19,31 @@ describe("Create Class", () => {
           "with string argument. Should defined a class and add it to constructor",
         code: `new MyClass("Hello")`,
         expected: `class MyClass {
-  constructor(str1) {}
+  constructor(hello) {}
 }
 
 new MyClass("Hello")`
       },
       {
         description:
-          "with multiple primitive arguments. Should defined a class and add it to constructor",
-        code: `new MyClass("Hello", "wold", 1, 2, true, false)`,
+          "with multiple kinds of arguments. Should defined a class and add it to constructor given argument some names",
+        code: `new MyClass("world", true, 1, String("helo"), Boolean(false), null, undefined, new Class(), () => {}, new Proxy({}))`,
         expected: `class MyClass {
-  constructor(str1, str2, num1, num2, bool1, bool2) {}
+  constructor(
+    world,
+    b2,
+    number3,
+    String4,
+    Boolean5,
+    param6,
+    undefined7,
+    Class8,
+    param9,
+    Proxy10
+  ) {}
 }
 
-new MyClass("Hello", "wold", 1, 2, true, false)`
+new MyClass("world", true, 1, String("helo"), Boolean(false), null, undefined, new Class(), () => {}, new Proxy({}))`
       }
     ],
     async ({ code, expected }) => {
