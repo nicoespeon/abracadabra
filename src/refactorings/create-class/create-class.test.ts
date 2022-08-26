@@ -44,6 +44,52 @@ new MyClass("Hello")`
 }
 
 new MyClass("world", true, 1, String("helo"), Boolean(false), null, undefined, new Class(), () => {}, new Proxy({}))`
+      },
+      {
+        description:
+          "with multiple defined arguments. Should defined a class and add it to constructor ifering vars names",
+        code: `
+      const str = "World";
+      const bool = true;
+      const num = 1;
+      const strObject = String('xx');
+      const boolObject = Boolean(true);
+      const asNull = null;
+      const asUndefined = undefined;
+      const arrow = () => {};
+      class XX {}
+      const instance = new XX();
+      function callback() {}
+      [cursor]new MyClass(str, bool, num, strObject, boolObject, asNull, asUndefined, arrow, instance, callback)`,
+        expected: `
+      const str = "World";
+      const bool = true;
+      const num = 1;
+      const strObject = String('xx');
+      const boolObject = Boolean(true);
+      const asNull = null;
+      const asUndefined = undefined;
+      const arrow = () => {};
+      class XX {}
+      const instance = new XX();
+      function callback() {}
+
+      class MyClass {
+            constructor(
+                  str,
+                  bool2,
+                  num3,
+                  strObject4,
+                  boolObject5,
+                  asNull6,
+                  asUndefined7,
+                  arrow8,
+                  instance9,
+                  callback10
+            ) {}
+      }
+
+      new MyClass(str, bool, num, strObject, boolObject, asNull, asUndefined, arrow, instance, callback)`
       }
     ],
     async ({ code, expected }) => {

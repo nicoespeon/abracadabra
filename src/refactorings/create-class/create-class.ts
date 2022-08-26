@@ -41,12 +41,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           t.classBody(classBody)
         );
 
-        const isExported = t.isExportDeclaration(path.parent);
-        if (isExported) {
-          path.insertBefore(t.exportNamedDeclaration(classDeclaration));
-        } else {
-          path.insertBefore(classDeclaration);
-        }
+        path.parentPath.insertBefore(classDeclaration);
       }
 
       path.stop();
