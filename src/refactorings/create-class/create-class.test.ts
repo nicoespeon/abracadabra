@@ -34,6 +34,32 @@ describe("Create Class", () => {
       },
       {
         description:
+          "without argument on top of the program when is inside of a function",
+        code: `
+        function math() {
+          return () => {
+            return () => {
+              [cursor]new Math(1);
+            }
+          }
+        }
+        `,
+        expected: `
+        class Math {
+          constructor(number) {}
+        }
+
+        function math() {
+          return () => {
+            return () => {
+              new Math(1);
+            }
+          }
+        }
+        `
+      },
+      {
+        description:
           "with string argument. Should defined a class and add it to constructor",
         code: `new MyClass("Hello")`,
         expected: `class MyClass {
