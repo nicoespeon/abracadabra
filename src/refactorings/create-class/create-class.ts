@@ -41,7 +41,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           t.classBody(classBody)
         );
 
-        insertClassOnProgramBody(path, classDeclaration);
+        insertNewClassOnTopNode(path, classDeclaration);
       }
 
       path.stop();
@@ -58,13 +58,13 @@ function createParametersFrom(
   )[]
 ): (t.Identifier | t.RestElement | t.TSParameterProperty | t.Pattern)[] {
   return fnArguments.map((arg, index) => {
-    const identifier = t.identifier(getNameOfArg(arg, index + 1));
+    const identifier = t.identifier(generateArgName(arg, index + 1));
 
     return identifier;
   });
 }
 
-function getNameOfArg(arg: any, index: number) {
+function generateArgName(arg: any, index: number) {
   switch (arg.type) {
     case "StringLiteral":
       return addParamIndexToName(arg.value.toLowerCase(), index);
@@ -97,14 +97,14 @@ export function createVisitor(
     NewExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
-      if (classDefinitionExist(path)) return;
+      if (existsClassDefinition(path)) return;
 
       onMatch(path);
     }
   };
 }
 
-function classDefinitionExist(path: t.NodePath<NewExpression>) {
+function existsClassDefinition(path: t.NodePath<NewExpression>) {
   const node = path.node;
 
   if (t.isIdentifier(node.callee) && path.scope.bindings[node.callee.name]) {
@@ -114,18 +114,18 @@ function classDefinitionExist(path: t.NodePath<NewExpression>) {
   return false;
 }
 
-function insertClassOnProgramBody(
+function insertNewClassOnTopNode(
   path: t.NodePath<NewExpression>,
   classDec: t.ClassDeclaration
 ) {
-  const pathWhereToInsert = searchForProgramNode(path);
+  const pathWhereToInsert = findTopProgramNode(path);
 
   if (pathWhereToInsert !== null) {
     pathWhereToInsert.insertBefore(classDec);
   }
 }
 
-function searchForProgramNode(
+function findTopProgramNode(
   currNode: t.NodePath,
   lastNode: t.NodePath | null = null
 ): t.NodePath | null {
@@ -133,5 +133,5 @@ function searchForProgramNode(
     return lastNode;
   }
 
-  return searchForProgramNode(currNode.parentPath, currNode);
+  return findTopProgramNode(currNode.parentPath, currNode);
 }
