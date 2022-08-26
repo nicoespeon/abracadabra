@@ -64,7 +64,14 @@ function createParametersFrom(
   });
 }
 
-function generateArgName(arg: t.Expression, index: number) {
+function generateArgName(
+  arg:
+    | t.ArgumentPlaceholder
+    | t.JSXNamespacedName
+    | t.SpreadElement
+    | t.Expression,
+  index: number
+) {
   switch (arg.type) {
     case "StringLiteral":
       return addParamIndexToParamName(arg.value.toLowerCase(), index);
