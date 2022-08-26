@@ -41,12 +41,52 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           t.classBody(classBody)
         );
 
-        path.parentPath.insertBefore(classDeclaration);
+        insertClassOnProgramBody(path, classDeclaration);
       }
 
       path.stop();
     })
   );
+}
+
+function createParametersFrom(
+  fnArguments: (
+    | t.ArgumentPlaceholder
+    | t.JSXNamespacedName
+    | t.SpreadElement
+    | t.Expression
+  )[]
+): (t.Identifier | t.RestElement | t.TSParameterProperty | t.Pattern)[] {
+  return fnArguments.map((arg, index) => {
+    const identifier = t.identifier(getNameOfArg(arg, index + 1));
+
+    return identifier;
+  });
+}
+
+function getNameOfArg(arg: any, index: number) {
+  switch (arg.type) {
+    case "StringLiteral":
+      return addParamIndexToName(arg.value.toLowerCase(), index);
+    case "BooleanLiteral":
+      return addParamIndexToName("b", index);
+    case "NumericLiteral":
+      return addParamIndexToName("number", index);
+    case "CallExpression":
+    case "NewExpression":
+      return addParamIndexToName(arg.callee.name, index);
+    case "NullLiteral":
+    case "ArrowFunctionExpression":
+      return addParamIndexToName("param", index);
+    case "Identifier":
+      return addParamIndexToName(arg.name, index);
+    default:
+      return "param";
+  }
+}
+
+function addParamIndexToName(str: string, paramIndex: number) {
+  return `${str}${paramIndex === 1 ? "" : paramIndex}`;
 }
 
 export function createVisitor(
@@ -73,42 +113,25 @@ function classDefinitionExist(path: t.NodePath<NewExpression>) {
 
   return false;
 }
-function createParametersFrom(
-  fnArguments: (
-    | t.ArgumentPlaceholder
-    | t.JSXNamespacedName
-    | t.SpreadElement
-    | t.Expression
-  )[]
-): (t.Identifier | t.RestElement | t.TSParameterProperty | t.Pattern)[] {
-  return fnArguments.map((arg, index) => {
-    const identifier = t.identifier(getNameOfArg(arg, index + 1));
 
-    return identifier;
-  });
-}
+function insertClassOnProgramBody(
+  path: t.NodePath<NewExpression>,
+  classDec: t.ClassDeclaration
+) {
+  const pathWhereToInsert = searchForProgramNode(path);
 
-function getNameOfArg(arg: any, index: number) {
-  switch (arg.type) {
-    case "StringLiteral":
-      return addCountToStr(arg.value.toLowerCase(), index);
-    case "BooleanLiteral":
-      return addCountToStr("b", index);
-    case "NumericLiteral":
-      return addCountToStr("number", index);
-    case "CallExpression":
-    case "NewExpression":
-      return addCountToStr(arg.callee.name, index);
-    case "NullLiteral":
-    case "ArrowFunctionExpression":
-      return addCountToStr("param", index);
-    case "Identifier":
-      return addCountToStr(arg.name, index);
-    default:
-      return "param";
+  if (pathWhereToInsert !== null) {
+    pathWhereToInsert.insertBefore(classDec);
   }
 }
 
-function addCountToStr(str: string, count: number) {
-  return `${str}${count === 1 ? "" : count}`;
+function searchForProgramNode(
+  currNode: t.NodePath,
+  lastNode: t.NodePath | null = null
+): t.NodePath | null {
+  if (currNode.parentPath === null) {
+    return lastNode;
+  }
+
+  return searchForProgramNode(currNode.parentPath, currNode);
 }
