@@ -6,12 +6,33 @@ import { createClass } from "./create-class";
 
 describe("Create Class", () => {
   testEach<{ code: Code; expected: Code }>(
-    "should create class",
+    "should create class from undefined class",
     [
       {
-        description: "from undefined class",
+        description:
+          "without argument. Shoulld define class without constructor",
         code: `new MyClass()`,
         expected: "class MyClass {}\nnew MyClass()"
+      },
+      {
+        description:
+          "with string argument. Should defined a class and add it to constructor",
+        code: `new MyClass("Hello")`,
+        expected: `class MyClass {
+  constructor(str1) {}
+}
+
+new MyClass("Hello")`
+      },
+      {
+        description:
+          "with multiple primitive arguments. Should defined a class and add it to constructor",
+        code: `new MyClass("Hello", "wold", 1, 2, true, false)`,
+        expected: `class MyClass {
+  constructor(str1, str2, num1, num2, bool1, bool2) {}
+}
+
+new MyClass("Hello", "wold", 1, 2, true, false)`
       }
     ],
     async ({ code, expected }) => {
