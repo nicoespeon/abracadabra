@@ -44,6 +44,7 @@ import toggleBraces from "./refactorings/toggle-braces";
 import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
 import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
 import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
+import createClass from "./refactorings/create-class";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
@@ -107,7 +108,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       splitDeclarationAndInitialization,
       splitIfStatement,
       splitMultipleDeclarations,
-      toggleBraces
+      toggleBraces,
+      createClass
     ]
   }
 };

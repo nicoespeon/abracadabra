@@ -1,4 +1,5 @@
 export enum ErrorReason {
+  CantCreateClass,
   DidNotFindClass,
   DidNotFindObjectToDestructure,
   DidNotFindNumericLiteral,
@@ -59,6 +60,9 @@ export enum ErrorReason {
 
 export function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.CantCreateClass:
+      return didNotFind("an if statement to flip");
+
     case ErrorReason.DidNotFindClass:
       return didNotFind("a class to create a factory for");
 
