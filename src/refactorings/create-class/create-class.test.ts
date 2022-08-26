@@ -23,6 +23,20 @@ describe("Create Class", () => {
     }
   );
 
+  it("Should not create a new class if class already is defined", async () => {
+    const code = `class MyClass{}
+        [cursor]new MyClass();
+        `;
+    const expected = `class MyClass{}
+        new MyClass();
+        `;
+    const editor = new InMemoryEditor(code);
+
+    await createClass(editor);
+
+    expect(editor.code).toBe(expected);
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);

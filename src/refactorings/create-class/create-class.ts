@@ -48,7 +48,20 @@ export function createVisitor(
   return {
     NewExpression(path) {
       if (!selection.isInsidePath(path)) return;
+
+      if (classDefinitionExist(path)) return;
+
       onMatch(path);
     }
   };
+}
+
+function classDefinitionExist(path: t.NodePath<NewExpression>) {
+  const node = path.node;
+
+  if (t.isIdentifier(node.callee) && path.scope.bindings[node.callee.name]) {
+    return true;
+  }
+
+  return false;
 }
