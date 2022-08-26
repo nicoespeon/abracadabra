@@ -64,28 +64,31 @@ function createParametersFrom(
   });
 }
 
-function generateArgName(arg: any, index: number) {
+function generateArgName(arg: t.Expression, index: number) {
   switch (arg.type) {
     case "StringLiteral":
-      return addParamIndexToName(arg.value.toLowerCase(), index);
+      return addParamIndexToParamName(arg.value.toLowerCase(), index);
     case "BooleanLiteral":
-      return addParamIndexToName("b", index);
+      return addParamIndexToParamName("b", index);
     case "NumericLiteral":
-      return addParamIndexToName("number", index);
+      return addParamIndexToParamName("number", index);
     case "CallExpression":
     case "NewExpression":
-      return addParamIndexToName(arg.callee.name, index);
+      if ("name" in arg.callee) {
+        return addParamIndexToParamName(arg.callee.name, index);
+      }
+      return addParamIndexToParamName("param", index);
     case "NullLiteral":
     case "ArrowFunctionExpression":
-      return addParamIndexToName("param", index);
+      return addParamIndexToParamName("param", index);
     case "Identifier":
-      return addParamIndexToName(arg.name, index);
+      return addParamIndexToParamName(arg.name, index);
     default:
       return "param";
   }
 }
 
-function addParamIndexToName(str: string, paramIndex: number) {
+function addParamIndexToParamName(str: string, paramIndex: number) {
   return `${str}${paramIndex === 1 ? "" : paramIndex}`;
 }
 
