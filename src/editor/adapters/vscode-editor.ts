@@ -19,6 +19,10 @@ import { Selection } from "../selection";
 
 // Persist the instance across all editors.
 const highlightsRepository = new HighlightsRepository();
+const vscodeDecorations = new Map<
+  Decoration,
+  vscode.TextEditorDecorationType
+>();
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -27,6 +31,7 @@ export class VSCodeEditor implements Editor {
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
     this.document = editor.document;
+    console.log(">>> NEW EDITOR");
   }
 
   async workspaceFiles(): Promise<RelativePath[]> {
@@ -188,11 +193,6 @@ export class VSCodeEditor implements Editor {
     return Promise.resolve();
   }
 
-  private vscodeDecorations = new Map<
-    Decoration,
-    vscode.TextEditorDecorationType
-  >();
-
   private get filePath(): string {
     return this.document.uri.toString();
   }
@@ -211,26 +211,26 @@ export class VSCodeEditor implements Editor {
     const selections = [source, ...bindings];
     const vscodeDecoration = VSCodeEditor.toVSCodeDecoration(decoration);
     this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
-    this.vscodeDecorations.set(decoration, vscodeDecoration);
+    vscodeDecorations.set(decoration, vscodeDecoration);
   }
 
   removeHighlight(source: Source): void {
     const decoration = highlightsRepository.decorationOf(this.filePath, source);
-    if (!decoration) return;
+    if (decoration === undefined) return;
 
     this.disposeDecoration(decoration);
     highlightsRepository.removeHighlightsOfFile(this.filePath, source);
   }
 
-  removeAllHighlights(): void {
-    this.vscodeDecorations.forEach((decoration) => decoration.dispose());
-    this.vscodeDecorations.clear();
-    highlightsRepository.removeAllHighlights();
+  private disposeDecoration(decoration: Decoration): void {
+    vscodeDecorations.get(decoration)?.dispose();
+    vscodeDecorations.delete(decoration);
   }
 
-  private disposeDecoration(decoration: Decoration): void {
-    this.vscodeDecorations.get(decoration)?.dispose();
-    this.vscodeDecorations.delete(decoration);
+  removeAllHighlights(): void {
+    vscodeDecorations.forEach((decoration) => decoration.dispose());
+    vscodeDecorations.clear();
+    highlightsRepository.removeAllHighlights();
   }
 
   static restoreHighlightDecorations(editor: vscode.TextEditor) {
