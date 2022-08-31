@@ -1,6 +1,9 @@
 import { Position } from "../../editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import removeAllHighlightsConfig from "../remove-all-highlights";
 import { toggleHighlight } from "./toggle-highlight";
+
+const removeAllHighlights = removeAllHighlightsConfig.command.operation;
 
 describe("Toggle Highlight", () => {
   it("should add highlight around a single identifier", async () => {
@@ -73,7 +76,20 @@ const otherVariable = 456`);
 const someVariable = 123;
 const [h2]otherVariable[/h2] = 456`);
   });
+
+  it("should remove all highlights", async () => {
+    const editor = new InMemoryEditor(`
+const someVariable[cursor] = 123;
+const otherVariable = 456`);
+
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(2, 6));
+    await toggleHighlight(editor);
+    await removeAllHighlights(editor);
+
+    expect(editor.highlightedCode).toBe(`
+const someVariable = 123;
+const otherVariable = 456`);
+  });
 });
 
-// TODO: add a command to remove all highlights
-// TODO: on code update, recompute the impacted highlights
