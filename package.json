@@ -63,7 +63,7 @@
     "deploy:ovsx": "ovsx publish"
   },
   "devDependencies": {
-    "@babel/core": "7.18.9",
+    "@babel/core": "7.18.13",
     "@babel/preset-env": "7.18.9",
     "@babel/preset-typescript": "7.18.6",
     "@types/babel__traverse": "7.17.1",
@@ -119,7 +119,7 @@
     "react-codemod": "5.4.3",
     "recast": "0.20.5",
     "ts-morph": "12.1.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.2"
   },
   "resolutions": {
     "@babel/types": "7.18.4"
