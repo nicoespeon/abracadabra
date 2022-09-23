@@ -396,20 +396,20 @@ if (
       {
         description: "a class instantiation (cursor on new expression)",
         code: `console.log([cursor]new Card("jack"));`,
-        expected: `const extracted = new Card("jack");
-console.log(extracted);`
+        expected: `const card = new Card("jack");
+console.log(card);`
       },
       {
         description: "a class instantiation (cursor on class identifier)",
         code: `console.log(new [cursor]Card("jack"));`,
-        expected: `const extracted = new Card("jack");
-console.log(extracted);`
+        expected: `const card = new Card("jack");
+console.log(card);`
       },
       {
         description: "a thrown error",
         code: `throw new Er[cursor]ror("It failed");`,
-        expected: `const extracted = new Error("It failed");
-throw extracted;`
+        expected: `const error = new Error("It failed");
+throw error;`
       },
       {
         description: "a call expression parameter (multi-lines)",
@@ -462,9 +462,9 @@ doSomething([
         code: `doSomething([
   [cursor]new Author("Eliott")
 ]);`,
-        expected: `const extracted = new Author("Eliott");
+        expected: `const author = new Author("Eliott");
 doSomething([
-  extracted
+  author
 ]);`
       },
       {
