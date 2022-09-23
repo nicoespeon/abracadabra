@@ -445,6 +445,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "azhiv",
+      "name": "Artem Zhivoderov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32125472?v=4",
+      "profile": "https://github.com/azhiv",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
