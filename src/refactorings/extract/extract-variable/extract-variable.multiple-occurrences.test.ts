@@ -407,9 +407,9 @@ sendMessage(extracted);`
         description: "new expression",
         code: `console.log([cursor]new Actor("John"));
 sendMessage(new Actor("John"));`,
-        expected: `const extracted = new Actor("John");
-console.log(extracted);
-sendMessage(extracted);`
+        expected: `const actor = new Actor("John");
+console.log(actor);
+sendMessage(actor);`
       },
       {
         description: "JSX Element",

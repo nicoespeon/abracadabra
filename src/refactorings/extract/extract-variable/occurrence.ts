@@ -7,7 +7,8 @@ import {
   Variable,
   StringLiteralVariable,
   MemberExpressionVariable,
-  ShorthandVariable
+  ShorthandVariable,
+  NewExpressionVariable
 } from "./variable";
 import { Parts } from "./parts";
 import { DestructureStrategy } from "./destructure-strategy";
@@ -47,6 +48,10 @@ export function createOccurrence(
         path as t.NodePath<t.OptionalMemberExpression>
       )
     );
+  }
+
+  if (path.isNewExpression()) {
+    return new Occurrence(path, loc, new NewExpressionVariable(path));
   }
 
   if (path.isStringLiteral()) {
