@@ -91,5 +91,22 @@ const otherVariable = 456`);
 const someVariable = 123;
 const otherVariable = 456`);
   });
+
+  it("should not change the highlights if we update code after them", async () => {
+    const editor = new InMemoryEditor(`
+const someVariable[cursor] = 123;
+const otherVariable = 456`);
+
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(2, 6));
+    await toggleHighlight(editor);
+
+    // TODO: emit SourceChange events from editor => listen it from Domain and verify editor code is updated accordingly
+
+    expect(editor.highlightedCode).toBe(`
+const [h1]someVariable[/h1] = 123;
+const [h2]otherVariable[/h2] = 456`);
+  });
 });
 
+// TODO: write tests that simulates events from Editor for when there are code updates (code updated before/between/after, code removed before/between/after)

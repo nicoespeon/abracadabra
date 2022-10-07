@@ -16,6 +16,11 @@ import {
 import { AbsolutePath, RelativePath } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
+import {
+  DeleteSourceChange,
+  SourceChange,
+  UpdateSourceChange
+} from "../source-change";
 
 // Persist the instance across all editors.
 const highlightsRepository = new HighlightsRepository();
@@ -282,6 +287,53 @@ export class VSCodeEditor implements Editor {
       highlightsRepository.removeAllHighlightsOfFile(file.oldUri.toString());
     });
   }
+
+  static async onDidChangeTextDocument(
+    _event: vscode.TextDocumentChangeEvent
+  ) {}
+}
+
+export function createSourceChange(
+  change: vscode.TextDocumentContentChangeEvent
+): SourceChange {
+  const selection = createSelectionFromVSCode(change.range);
+
+  // rangeLength: 1
+  // rangeOffset: 521
+  // text:'m'
+
+  // rangeLength: 0
+  // rangeOffset: 520
+  // text:'i'
+
+  // rangeLength: 0
+  // rangeOffset: 519
+  // text:'aba'
+
+  // req => abariem
+  // TODO: wait to compute all changes before highlighting again?
+  console.log(">>> NEW CHANGE", change, selection);
+
+  if (change.text.length === 0) {
+    // selection overlaps
+    // rangeLength: 1
+    // rangeOffset: 475
+    // text: ''
+    return new DeleteSourceChange(selection);
+  }
+
+  // ADD
+  // selection touches
+  // rangeLength: 0
+  // rangeOffset: 478
+  // text: 'u'
+
+  // UPDATE
+  // selection overlaps
+  // rangeLength: 3
+  // rangeOffset: 556
+  // text: 'yoloo'
+  return new UpdateSourceChange(selection, change.text.length);
 }
 
 function createSelectionFromVSCode(

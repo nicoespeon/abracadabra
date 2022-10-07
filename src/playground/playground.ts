@@ -1,6 +1,4 @@
-// @ts-expect-error
 import express from "express";
-// @ts-expect-error
 import mysql from "mysql2/promise";
 
 async function createApp({ port }: { port: number } = { port: 3306 }) {
@@ -26,20 +24,22 @@ async function createApp({ port }: { port: number } = { port: 3306 }) {
 
     res.json();
   });
+
   app.get("/prices", async (req, res) => {
-    const { age } = req.query;
-    const { date } = req.query;
+    const { type, date, age } = req.query;
 
     const result = (
       await connection.query(
         "SELECT cost FROM `base_price` " + "WHERE `type` = ? ",
-        [req.query.type]
+        [type]
       )
     )[0][0];
+
+    let cost;
     if (age < 6) {
-      res.json({ cost: 0 });
+      cost = 0;
     } else {
-      if (req.query.type !== "night") {
+      if (type !== "night") {
         const holidays = (
           await connection.query("SELECT * FROM `holidays`")
         )[0];
@@ -66,34 +66,34 @@ async function createApp({ port }: { port: number } = { port: 3306 }) {
 
         // TODO apply reduction for others
         if (age < 15) {
-          res.json({ cost: Math.ceil(result.cost * 0.7) });
+          cost = Math.ceil(result.cost * 0.7);
         } else {
           if (age === undefined) {
-            let cost = result.cost * (1 - reduction / 100);
-            res.json({ cost: Math.ceil(cost) });
+            cost = Math.ceil(result.cost * (1 - reduction / 100));
           } else {
             if (age > 64) {
-              let cost = result.cost * 0.75 * (1 - reduction / 100);
-              res.json({ cost: Math.ceil(cost) });
+              cost = Math.ceil(result.cost * 0.75 * (1 - reduction / 100));
             } else {
-              let cost = result.cost * (1 - reduction / 100);
-              res.json({ cost: Math.ceil(cost) });
+              cost = Math.ceil(result.cost * (1 - reduction / 100));
             }
           }
         }
       } else {
         if (age >= 6) {
           if (age > 64) {
-            res.json({ cost: Math.ceil(result.cost * 0.4) });
+            cost = Math.ceil(result.cost * 0.4);
           } else {
-            res.json(result);
+            cost = result.cost;
           }
         } else {
-          res.json({ cost: 0 });
+          cost = 0;
         }
       }
     }
+
+    res.json({ cost });
   });
+
   return { app, connection };
 }
 
