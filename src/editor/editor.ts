@@ -2,17 +2,20 @@ import { Selection } from "./selection";
 import { RelativePath } from "./path";
 import { Position } from "./position";
 import { ErrorReason } from "./error-reason";
+import { Uri } from "vscode";
 
 export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
 
 export interface Editor {
+  codeOfByUri(uri: Uri): unknown;
   workspaceFiles(): Promise<RelativePath[]>;
   readonly selection: Selection;
   readonly code: Code;
   codeOf(path: RelativePath): Promise<Code>;
   write(code: Code, newCursorPosition?: Position): Promise<void>;
   writeIn(path: RelativePath, code: Code): Promise<void>;
+  writeInByUri(uri: Uri, code: Code): Promise<void>;
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],

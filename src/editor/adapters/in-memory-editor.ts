@@ -10,6 +10,7 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
+import { Uri } from "vscode";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -26,6 +27,13 @@ export class InMemoryEditor implements Editor {
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
+  }
+  writeInByUri(_uri: Uri, _code: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  codeOfByUri(_uri: Uri): unknown {
+    throw new Error("Method not implemented.");
   }
 
   async workspaceFiles(): Promise<RelativePath[]> {

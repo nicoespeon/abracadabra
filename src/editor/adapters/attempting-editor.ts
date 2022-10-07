@@ -1,3 +1,4 @@
+import { Uri } from "vscode";
 import {
   Choice,
   Code,
@@ -14,6 +15,12 @@ export class AttemptingEditor implements Editor {
   attemptSucceeded = true;
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
+  writeInByUri(_uri: Uri, _code: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  codeOfByUri(_uri: Uri): unknown {
+    throw new Error("Method not implemented.");
+  }
 
   workspaceFiles(): Promise<RelativePath[]> {
     return this.editor.workspaceFiles();

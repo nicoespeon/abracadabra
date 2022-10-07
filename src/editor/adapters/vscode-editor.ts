@@ -53,6 +53,12 @@ export class VSCodeEditor implements Editor {
     return file.toString();
   }
 
+  async codeOfByUri(fileUri: vscode.Uri) {
+    const readData = await vscode.workspace.fs.readFile(fileUri);
+
+    return Buffer.from(readData).toString();
+  }
+
   get selection(): Selection {
     return createSelectionFromVSCode(this.editor.selection);
   }
@@ -85,6 +91,21 @@ export class VSCodeEditor implements Editor {
 
   async writeIn(path: RelativePath, code: Code): Promise<void> {
     const fileUri = this.fileUriAt(path);
+    await VSCodeEditor.ensureFileExists(fileUri);
+
+    const edit = new vscode.WorkspaceEdit();
+    const WHOLE_DOCUMENT = new vscode.Range(
+      new vscode.Position(0, 0),
+      new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
+    );
+    edit.set(fileUri, [new vscode.TextEdit(WHOLE_DOCUMENT, code)]);
+    await vscode.workspace.applyEdit(edit);
+
+    const updatedDocument = await vscode.workspace.openTextDocument(fileUri);
+    await updatedDocument.save();
+  }
+
+  async writeInByUri(fileUri: vscode.Uri, code: string): Promise<void> {
     await VSCodeEditor.ensureFileExists(fileUri);
 
     const edit = new vscode.WorkspaceEdit();
