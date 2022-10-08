@@ -238,14 +238,11 @@ export class InMemoryEditor implements Editor {
     array.forEach((obj) => {
       const codeMatrix = this.createPos(obj.editor.code, functionReferences);
 
-      codeMatrix.forEach((xxx) => {
+      codeMatrix.forEach((pos) => {
         references.push(
           new CodeReference(
             obj.filename,
-            new Selection(
-              [xxx?.row || 0, xxx?.col || 0],
-              [xxx?.row || 0, xxx?.col || 0]
-            )
+            new Selection([pos.row, pos.col], [pos.row, pos.col])
           )
         );
       });
@@ -255,27 +252,28 @@ export class InMemoryEditor implements Editor {
   }
 
   private createPos(str: string, wordToSearch: string) {
-    const out = str.split("\n").map((e) => [...e]);
+    const splittedCode = str.split("\n").map((e) => [...e]);
+    const items: {
+      word: string;
+      row: number;
+      col: number;
+    }[] = [];
 
-    return (
-      out
-        .map((arr, row) => {
-          const word = arr.join("");
-          if (word.includes(wordToSearch)) {
-            return arr.map((_char, col) => ({
-              word,
-              row: row + 1,
-              col: col + 1
-            }));
-          }
+    splittedCode.forEach((arr, row) => {
+      const word = arr.join("");
+      if (word.includes(wordToSearch)) {
+        const post = arr.map((_char, col) => ({
+          word,
+          row: row + 1,
+          col: col + 1
+        }));
 
-          return null;
-        })
-        .filter(Boolean)
-        .flat()
-        // ignore null posibility because we already filtered lines above
-        // @ts-ignore
-        .filter((v, i, a) => a.findIndex((v2) => v2.word === v.word) === i)
+        items.push(...post);
+      }
+    });
+
+    return items.filter(
+      (v, i, a) => a.findIndex((v2) => v2.word === v.word) === i
     );
   }
 }
