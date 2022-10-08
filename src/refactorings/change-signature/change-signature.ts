@@ -1,54 +1,45 @@
-import { AbsolutePath, Editor } from "../../editor/editor";
+import { Editor } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import * as vscode from "vscode";
+import { Path } from "../../editor/path";
 
 export async function changeSignature(editor: Editor) {
   const { selection } = editor;
 
-  const locations = await findReferences(editor, selection);
+  const refrences = await findReferences(editor, selection);
 
   const filesContent = await Promise.all(
-    // @ts-ignore
-    locations.map(async (loc) => {
-      const content = await editor.codeOf(new AbsolutePath(loc.uri.path));
-      const start = loc.range.start;
-      const end = loc.range.end;
+    refrences.map(async (reference) => {
+      const content = await editor.codeOf(reference.path);
       return {
-        code: `${content}`,
-        uri: loc.uri,
-        selection: new Selection(
-          [start.line + 1, start.character],
-          [end.line + 1, end.character]
-        )
+        code: content,
+        path: reference.path,
+        selection: reference.selection
       };
     })
   );
 
   const alreadyTransformed: Record<string, string> = {};
   const result: {
-    uri: vscode.Uri;
+    path: Path;
     transformed: t.Transformed;
   }[] = [];
   filesContent.forEach((x) => {
     const codeToTransform =
-      alreadyTransformed[x.uri.fsPath] || (x.code as string);
+      alreadyTransformed[x.path.value] || (x.code as string);
     const transformed = updateCode(t.parse(codeToTransform), x.selection);
 
-    alreadyTransformed[x.uri.fsPath] = `${transformed.code}`;
+    alreadyTransformed[x.path.value] = `${transformed.code}`;
 
     result.push({
-      uri: x.uri,
+      path: x.path,
       transformed
     });
   });
 
   await Promise.all(
     result.map(async (result) => {
-      await editor.writeIn(
-        new AbsolutePath(result.uri.path),
-        alreadyTransformed[result.uri.fsPath]
-      );
+      await editor.writeIn(result.path, alreadyTransformed[result.path.value]);
 
       return true;
     })

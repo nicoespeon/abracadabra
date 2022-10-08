@@ -1,3 +1,4 @@
+import { CodeReference } from "../code-reference";
 import {
   Choice,
   Code,
@@ -80,7 +81,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.moveCursorTo(position);
   }
 
-  getSelectionReferences(selection: Selection): Promise<any> {
+  getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
     return this.editor.getSelectionReferences(selection);
   }
 }

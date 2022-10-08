@@ -2,6 +2,7 @@ import { Selection } from "./selection";
 import { RelativePath, Path } from "./path";
 import { Position } from "./position";
 import { ErrorReason } from "./error-reason";
+import { CodeReference } from "./code-reference";
 
 export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
@@ -26,7 +27,7 @@ export interface Editor {
     placeHolder?: string
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
-  getSelectionReferences(selection: Selection): Promise<any>;
+  getSelectionReferences(selection: Selection): Promise<CodeReference[]>;
 }
 
 export type Modification = {

@@ -14,6 +14,7 @@ import {
 import { Selection } from "../selection";
 import { Position } from "../position";
 import { AbsolutePath, Path, RelativePath } from "../path";
+import { CodeReference } from "../code-reference";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -191,12 +192,28 @@ export class VSCodeEditor implements Editor {
     return Promise.resolve();
   }
 
-  async getSelectionReferences(selection: Selection): Promise<any> {
-    return (await vscode.commands.executeCommand(
+  async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
+    const locations = (await vscode.commands.executeCommand(
       "vscode.executeReferenceProvider",
       this.document.uri,
       selection.start
     )) as vscode.Location[];
+
+    const references = locations.map((loc) => {
+      const start = loc.range.start;
+      const end = loc.range.end;
+
+      const path = new AbsolutePath(loc.uri.path);
+
+      const selection = new Selection(
+        [start.line + 1, start.character],
+        [end.line + 1, end.character]
+      );
+
+      return new CodeReference(path, selection);
+    });
+
+    return references;
   }
 }
 
