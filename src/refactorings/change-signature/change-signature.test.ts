@@ -4,38 +4,40 @@ import { testEach } from "../../tests-helpers";
 
 import { changeSignature } from "./change-signature";
 
+type TestSample = {
+  code: Code;
+  path: RelativePath;
+};
+
 describe("Change Signature", () => {
   testEach<{
-    setup: { currentFile: Code; otherFile: Code; path: RelativePath };
-    expected: { currentFile: Code; otherFile: Code };
+    setup: { currentFile: Code; path: RelativePath };
+    expected: { currentFile: Code };
   }>(
-    "should change signature",
+    "In same file",
     [
       {
-        description: "of a defined function without references",
+        description: "when there are a function without references",
         setup: {
           currentFile: `function [cursor]add(a, b) {
             return a + b;
           }`,
-          otherFile: "",
           path: new RelativePath("./aFileWitoutReferences.ts")
         },
         expected: {
           currentFile: `function add(b, a) {
             return a + b;
-          }`,
-          otherFile: ""
+          }`
         }
       },
       {
-        description: "of a defined function with references in same file",
+        description: "when there are a defined function with references",
         setup: {
           currentFile: `function [cursor]add(a, b) {
             return a + b;
           }
 
           add(1, 2);`,
-          otherFile: "",
           path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
         },
         expected: {
@@ -43,13 +45,12 @@ describe("Change Signature", () => {
             return a + b;
           }
 
-          add(2, 1);`,
-          otherFile: ""
+          add(2, 1);`
         }
       },
       {
         description:
-          "of a defined function with multiple references in same file",
+          "when there are a defined function with multiples references",
         setup: {
           currentFile: `function [cursor]add(a, b) {
             return a + b;
@@ -59,7 +60,6 @@ describe("Change Signature", () => {
           add(3, 4);
           add(5, 6);
           add(7, 8);`,
-          otherFile: "",
           path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
         },
         expected: {
@@ -70,13 +70,12 @@ describe("Change Signature", () => {
           add(2, 1);
           add(4, 3);
           add(6, 5);
-          add(8, 7);`,
-          otherFile: ""
+          add(8, 7);`
         }
       },
       {
         description:
-          "of a defined function with multiple references in a conditions in same file",
+          "when there are a defined function with multiple references in a conditions",
         setup: {
           currentFile: `function [cursor]add(a, b) {
             return a + b;
@@ -89,7 +88,6 @@ describe("Change Signature", () => {
             };
           }
           add(7, 8);`,
-          otherFile: "",
           path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
         },
         expected: {
@@ -103,8 +101,7 @@ describe("Change Signature", () => {
                 console.log('Inside');
             };
           }
-          add(8, 7);`,
-          otherFile: ""
+          add(8, 7);`
         }
       }
     ],
@@ -118,4 +115,112 @@ describe("Change Signature", () => {
       expect(extracted).toBe(expected.currentFile);
     }
   );
+
+  describe("Modules", () => {
+    const addModule = new RelativePath("./add.ts");
+    const anotherModule = new RelativePath("./anotherModule");
+
+    testEach<{
+      setup: {
+        currentFile: TestSample;
+        otherFiles: TestSample[];
+      };
+      expected: {
+        currentFile: TestSample;
+        otherFiles: TestSample[];
+      };
+    }>(
+      "should change signature of function with a reference in modules",
+      [
+        {
+          description: "that import the function",
+          setup: {
+            currentFile: {
+              code: `export function [cursor]add(a, b) {
+              return a + b;
+            }`,
+              path: new RelativePath("./module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {add} from './module';
+                add(1, 2)
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  return add(a, b);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          },
+          expected: {
+            currentFile: {
+              code: `export function add(b, a) {
+              return a + b;
+            }`,
+              path: new RelativePath("./module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {add} from './module';
+                add(2, 1)
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  return add(b, a);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          }
+        }
+      ],
+      async ({ setup, expected }) => {
+        const editor = new InMemoryEditor(setup.currentFile.code);
+        await editor.writeIn(setup.currentFile.path, editor.code);
+        await saveOtherFiles(setup, editor);
+
+        await changeSignature(editor);
+
+        const extracted = await editor.codeOf(setup.currentFile.path);
+        expect(extracted).toBe(expected.currentFile.code);
+        await validateOutput(expected, editor);
+      }
+    );
+  });
 });
+
+function validateOutput(
+  expected: { currentFile: TestSample; otherFiles: TestSample[] },
+  editor: InMemoryEditor
+) {
+  const promises = expected.otherFiles.map(async (file) => {
+    const extracted = await editor.codeOf(file.path);
+    expect(extracted).toBe(file.code);
+  });
+
+  return Promise.all(promises);
+}
+
+function saveOtherFiles(
+  setup: {
+    currentFile: TestSample;
+    otherFiles: TestSample[];
+  },
+  editor: InMemoryEditor
+) {
+  const promises = setup.otherFiles.map(async (file) => {
+    await editor.writeIn(file.path, file.code);
+  });
+
+  return Promise.all(promises);
+}
