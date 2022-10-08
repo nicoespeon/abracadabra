@@ -5,8 +5,7 @@ import { Path } from "../../editor/path";
 
 export async function changeSignature(editor: Editor) {
   const { selection } = editor;
-
-  const refrences = await findReferences(editor, selection);
+  const refrences = await editor.getSelectionReferences(selection);
 
   const filesContent = await Promise.all(
     refrences.map(async (reference) => {
@@ -44,10 +43,6 @@ export async function changeSignature(editor: Editor) {
       return true;
     })
   );
-}
-
-async function findReferences(editor: Editor, selection: Selection) {
-  return editor.getSelectionReferences(selection);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
