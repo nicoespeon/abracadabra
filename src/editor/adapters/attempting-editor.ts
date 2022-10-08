@@ -1,4 +1,3 @@
-import { Uri } from "vscode";
 import {
   Choice,
   Code,
@@ -8,6 +7,7 @@ import {
   Modification,
   RelativePath
 } from "../editor";
+import { Path } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
@@ -15,12 +15,6 @@ export class AttemptingEditor implements Editor {
   attemptSucceeded = true;
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
-  writeInByUri(_uri: Uri, _code: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  codeOfByUri(_uri: Uri): unknown {
-    throw new Error("Method not implemented.");
-  }
 
   workspaceFiles(): Promise<RelativePath[]> {
     return this.editor.workspaceFiles();
@@ -30,7 +24,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.code;
   }
 
-  codeOf(path: RelativePath): Promise<Code> {
+  codeOf(path: Path): Promise<Code> {
     return this.editor.codeOf(path);
   }
 
@@ -42,7 +36,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.write(code, newCursorPosition);
   }
 
-  writeIn(path: RelativePath, code: Code): Promise<void> {
+  writeIn(path: Path, code: Code): Promise<void> {
     return this.editor.writeIn(path, code);
   }
 

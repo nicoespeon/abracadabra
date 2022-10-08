@@ -13,7 +13,7 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
-import { AbsolutePath, RelativePath } from "../path";
+import { AbsolutePath, Path, RelativePath } from "../path";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -46,15 +46,11 @@ export class VSCodeEditor implements Editor {
     return this.document.getText();
   }
 
-  async codeOf(path: RelativePath): Promise<Code> {
+  async codeOf(path: Path): Promise<Code> {
     const fileUri = this.fileUriAt(path);
-    const file = await vscode.workspace.fs.readFile(fileUri);
-
-    return file.toString();
-  }
-
-  async codeOfByUri(fileUri: vscode.Uri) {
+    // Get file content even if user does not save last changes
     const doc = await vscode.workspace.openTextDocument(fileUri);
+
     return doc.getText();
   }
 
@@ -88,23 +84,8 @@ export class VSCodeEditor implements Editor {
     }
   }
 
-  async writeIn(path: RelativePath, code: Code): Promise<void> {
+  async writeIn(path: Path, code: Code): Promise<void> {
     const fileUri = this.fileUriAt(path);
-    await VSCodeEditor.ensureFileExists(fileUri);
-
-    const edit = new vscode.WorkspaceEdit();
-    const WHOLE_DOCUMENT = new vscode.Range(
-      new vscode.Position(0, 0),
-      new vscode.Position(Number.MAX_SAFE_INTEGER, 0)
-    );
-    edit.set(fileUri, [new vscode.TextEdit(WHOLE_DOCUMENT, code)]);
-    await vscode.workspace.applyEdit(edit);
-
-    const updatedDocument = await vscode.workspace.openTextDocument(fileUri);
-    await updatedDocument.save();
-  }
-
-  async writeInByUri(fileUri: vscode.Uri, code: string): Promise<void> {
     await VSCodeEditor.ensureFileExists(fileUri);
 
     const edit = new vscode.WorkspaceEdit();
@@ -130,8 +111,15 @@ export class VSCodeEditor implements Editor {
     }
   }
 
-  protected fileUriAt(path: RelativePath): vscode.Uri {
-    const filePath = path.absoluteFrom(this.document.uri.path);
+  protected fileUriAt(path: Path): vscode.Uri {
+    let filePath;
+
+    if (path instanceof RelativePath) {
+      filePath = path.absoluteFrom(this.document.uri.path);
+    } else {
+      filePath = path;
+    }
+
     return this.document.uri.with({ path: filePath.value });
   }
 

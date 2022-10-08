@@ -1,4 +1,4 @@
-import { Editor, ErrorReason } from "../../editor/editor";
+import { AbsolutePath, Editor } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import * as vscode from "vscode";
@@ -15,7 +15,7 @@ export async function changeSignature(editor: Editor) {
 
   const filesContent = await Promise.all(
     locations.map(async (loc) => {
-      const content = await editor.codeOfByUri(loc.uri);
+      const content = await editor.codeOf(new AbsolutePath(loc.uri.path));
       const start = loc.range.start;
       const end = loc.range.end;
       return {
@@ -49,13 +49,8 @@ export async function changeSignature(editor: Editor) {
 
   await Promise.all(
     result.map(async (result) => {
-      if (!result.transformed.hasCodeChanged) {
-        editor.showError(ErrorReason.CantChangeSignatureException);
-        return false;
-      }
-
-      await editor.writeInByUri(
-        result.uri,
+      await editor.writeIn(
+        new AbsolutePath(result.uri.path),
         alreadyTransformed[result.uri.fsPath]
       );
 
