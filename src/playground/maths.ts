@@ -1,8 +1,8 @@
-export function add(num2, num1) {
+export function add(num1, num2) {
   return num1 + num2;
 }
 
-add(200, 1);
+add(1, 200);
 
 function privateFn(a, b) {
   return a || b;

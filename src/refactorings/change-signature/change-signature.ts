@@ -6,79 +6,99 @@ import * as vscode from "vscode";
 
 export async function changeSignature(editor: Editor) {
   const panel = vscode.window.createWebviewPanel(
-    "changeSignature", // <--- identifier
-    "Change function signature", // <--- title
-    vscode.ViewColumn.One,
+    "changeSignature",
+    "Change function signature",
+    vscode.ViewColumn.Beside,
     {}
   );
 
-  // And set its HTML content
   panel.webview.options = {
     enableScripts: true
   };
   panel.webview.html = getMyWebviewContent(panel.webview);
 
-  // panel.webview.onDidReceiveMessage(
-  //   (message) => {
-  //     vscode.window.showErrorMessage(message.text);
-  //   },
-  //   undefined,
-  //   context.subscriptions
-  // );
+  panel.webview.onDidReceiveMessage(async (message) => {
+    const { selection } = editor;
+    const refrences = await editor.getSelectionReferences(selection);
 
-  const { selection } = editor;
-  const refrences = await editor.getSelectionReferences(selection);
+    const filesContent = await Promise.all(
+      refrences.map(async (reference) => {
+        const content = await editor.codeOf(reference.path);
+        return {
+          code: content,
+          path: reference.path,
+          selection: reference.selection
+        };
+      })
+    );
 
-  const filesContent = await Promise.all(
-    refrences.map(async (reference) => {
-      const content = await editor.codeOf(reference.path);
-      return {
-        code: content,
-        path: reference.path,
-        selection: reference.selection
-      };
-    })
-  );
+    const newValues = JSON.parse(message.values);
 
-  const alreadyTransformed: Record<string, string> = {};
-  const result: {
-    path: Path;
-    transformed: t.Transformed;
-  }[] = [];
+    const alreadyTransformed: Record<string, string> = {};
+    const result: {
+      path: Path;
+      transformed: t.Transformed;
+    }[] = [];
 
-  filesContent.forEach((x) => {
-    const codeToTransform =
-      alreadyTransformed[x.path.value] || (x.code as string);
+    filesContent.forEach((x) => {
+      const codeToTransform =
+        alreadyTransformed[x.path.value] || (x.code as string);
 
-    const transformed = updateCode(t.parse(codeToTransform), x.selection);
+      const transformed = updateCode(
+        t.parse(codeToTransform),
+        x.selection,
+        newValues
+      );
 
-    alreadyTransformed[x.path.value] = `${transformed.code}`;
+      alreadyTransformed[x.path.value] = `${transformed.code}`;
 
-    result.push({
-      path: x.path,
-      transformed
+      result.push({
+        path: x.path,
+        transformed
+      });
     });
-  });
 
-  // await Promise.all(
-  //   result.map(async (result) => {
-  //     await editor.writeIn(result.path, alreadyTransformed[result.path.value]);
+    vscode.window.showInformationMessage("Done");
 
-  //     return true;
-  //   })
-  // );
+    await Promise.all(
+      result.map(async (result) => {
+        await editor.writeIn(
+          result.path,
+          alreadyTransformed[result.path.value]
+        );
+
+        return true;
+      })
+    );
+  }, undefined);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+function updateCode(
+  ast: t.AST,
+  selection: Selection,
+  orders: { name: string; startAt: number; endAt: number }[]
+): t.Transformed {
   return t.transformAST(
     ast,
     createAVisitor(selection, (path) => {
       const node = path.node;
 
       if (t.isCallExpression(node)) {
-        node.arguments = [node.arguments[1], node.arguments[0]];
+        const args = node.arguments.slice();
+        orders.forEach((order) => {
+          const arg = node.arguments[order.startAt];
+          args[order.endAt] = arg;
+        });
+
+        node.arguments = args;
       } else if (t.isFunctionDeclaration(node)) {
-        node.params = [node.params[1], node.params[0]];
+        const params = node.params.slice();
+        orders.forEach((order) => {
+          const arg = node.params[order.startAt];
+          params[order.endAt] = arg;
+        });
+
+        node.params = params;
       }
 
       path.stop();
@@ -124,59 +144,42 @@ function createAVisitor(
   };
 }
 
-function getNameFromNode() {
-  const fnName = toModifyNode.id?.name;
-  const params = toModifyNode.params.map((node) => {
-    return t.isIdentifier(node) ? node.name : "";
-  });
-
-  return `${fnName}(${params.join(", ")})`;
-}
-
 function getMyWebviewContent(_webview: vscode.Webview): string {
   const params = toModifyNode?.params;
 
-  const paramsValue = params.map((param) => {
+  const paramsTrValues = params.map((param) => {
     const name = t.isIdentifier(param) ? param.name : "";
     return `
-     <li>
-        <code>${name}</code><span class="up"></span><span class="down"></span>
-      </li>
+      <tr>
+          <td class="params-name">${name}</td>
+          <td>
+            <span class="up"></span>
+            <span class="down"></span>
+          </td>
+        </tr>
     `;
   });
 
-  const nonce = getNonce();
-
   const html = `
-    <!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
   <head>
     <style>
-      code {
-        font-size: 1.5rem;
-        color: #e83e8c;
-        word-break: break-word;
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
       }
 
-      .param {
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        flex-wrap: nowrap;
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
       }
 
-      ul {
-        list-style: none;
-      }
-
-      ul li {
-        margin: 1rem 0;
-      }
-
-      ul code {
-        font-size: 1rem;
-        display: inline-block;
-        margin-right: 1rem;
+      th:last-child {
+        border-top-color: transparent;
+        border-right-color: transparent;
       }
 
       .up,
@@ -189,23 +192,19 @@ function getMyWebviewContent(_webview: vscode.Webview): string {
       }
 
       .up:after {
-        content: "△";
-      }
-
-      .up:hover:after {
         content: "▲";
       }
 
-      .down:after {
-        content: "▽";
+      .up:hover:after {
+        color: #625e5e;
       }
 
-      .down:hover:after {
+      .down:after {
         content: "▼";
       }
 
-      .btn-wrapper {
-        padding: 40px;
+      .down:hover:after {
+        color: #625e5e;
       }
 
       button {
@@ -219,28 +218,44 @@ function getMyWebviewContent(_webview: vscode.Webview): string {
         display: inline-block;
         text-decoration: none;
         font-size: 1rem;
-        color: #fff;
-        background-color: #2fade2;
+        background-color: transparent;
       }
 
       button:hover {
         cursor: pointer;
-        background-color: #2b91bc;
+        color: #1e1818;
       }
     </style>
   </head>
 
   <body>
-    <h3><code>${getNameFromNode()}</code></h3>
-    <ul id="params">
-      ${paramsValue.join("")}
-    </ul>
+    <h4>Parameters</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
 
-    <div class="btn-wrapper">
-      <button id="confirm">Confirm</button>
-    </div>
+      <tbody id="params">
+        ${paramsTrValues.join("")}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td colspan="2">
+            <button id="confirm">Confirm</button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
 
-    <script nonce="${nonce}">
+    <div class="btn-wrapper"></div>
+
+    <script>
+      const vscode = acquireVsCodeApi();
+      const startValues = document.querySelectorAll("#params .params-name");
       function moveUp(element) {
         if (element.previousElementSibling)
           element.parentNode.insertBefore(
@@ -255,36 +270,34 @@ function getMyWebviewContent(_webview: vscode.Webview): string {
       }
 
       document.querySelector("#params").addEventListener("click", function (e) {
-        if (e.target.className === "down") moveDown(e.target.parentNode);
-        else if (e.target.className === "up") moveUp(e.target.parentNode);
+        if (e.target.className === "down")
+          moveDown(e.target.parentNode.parentNode);
+        else if (e.target.className === "up")
+          moveUp(e.target.parentNode.parentNode);
       });
 
       document.querySelector("#confirm").addEventListener("click", () => {
-        const lis = document.querySelectorAll("#params li code");
+        const tdsElements = document.querySelectorAll("#params .params-name");
+        const tds = Array.from(tdsElements);
 
-        const values = Array.from(lis).map((li) => {
-          return li.innerHTML;
+        const items = Array.from(startValues).map((item, index) => {
+          const endAt = tds.findIndex((td) => td === item);
+
+          return {
+            name: item.innerHTML,
+            startAt: index,
+            endAt: endAt
+          };
         });
 
         vscode.postMessage({
-                        command: 'alert',
-                        text: '🐛  on line ' + count
-                    })
-        console.log(values);
+          command: "changed",
+          values: JSON.stringify(items)
+        });
       });
     </script>
   </body>
 </html>
   `;
   return html;
-}
-
-function getNonce() {
-  let text = "";
-  const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 32; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
 }
