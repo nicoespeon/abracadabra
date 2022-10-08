@@ -54,9 +54,8 @@ export class VSCodeEditor implements Editor {
   }
 
   async codeOfByUri(fileUri: vscode.Uri) {
-    const readData = await vscode.workspace.fs.readFile(fileUri);
-
-    return Buffer.from(readData).toString();
+    const doc = await vscode.workspace.openTextDocument(fileUri);
+    return doc.getText();
   }
 
   get selection(): Selection {

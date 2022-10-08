@@ -1,62 +1,67 @@
-import { Editor } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import * as vscode from "vscode";
 
 export async function changeSignature(editor: Editor) {
-  const { code, selection } = editor;
+  const { selection } = editor;
 
-  console.log(code);
-  let xxx = (await vscode.commands.executeCommand(
+  const locations = (await vscode.commands.executeCommand(
     "vscode.executeReferenceProvider",
     // @ts-ignore
     editor.document.uri,
     selection.start
   )) as vscode.Location[];
 
-  xxx = xxx.filter(
-    (v, i, a) => a.findIndex((v2) => v2.uri.path === v.uri.path) === i
-  );
-
   const filesContent = await Promise.all(
-    xxx.map(async (loc) => {
+    locations.map(async (loc) => {
       const content = await editor.codeOfByUri(loc.uri);
       const start = loc.range.start;
       const end = loc.range.end;
       return {
-        code: content,
+        code: `${content}`,
         uri: loc.uri,
         selection: new Selection(
-          [start.line, start.character],
-          [end.line, end.character]
+          [start.line + 1, start.character],
+          [end.line + 1, end.character]
         )
       };
     })
   );
 
+  const alreadyTransformed: Record<string, string> = {};
   const result: {
     uri: vscode.Uri;
     transformed: t.Transformed;
   }[] = [];
   filesContent.forEach((x) => {
+    const codeToTransform =
+      alreadyTransformed[x.uri.fsPath] || (x.code as string);
+    const transformed = updateCode(t.parse(codeToTransform), x.selection);
+
+    alreadyTransformed[x.uri.fsPath] = `${transformed.code}`;
+
     result.push({
       uri: x.uri,
-      transformed: updateCode(t.parse(x.code as string), x.selection)
+      transformed
     });
   });
 
   await Promise.all(
     result.map(async (result) => {
-      await editor.writeInByUri(result.uri, result.transformed.code);
+      if (!result.transformed.hasCodeChanged) {
+        editor.showError(ErrorReason.CantChangeSignatureException);
+        return false;
+      }
+
+      await editor.writeInByUri(
+        result.uri,
+        alreadyTransformed[result.uri.fsPath]
+      );
+
+      return true;
     })
   );
-
-  // if (!updatedCode.hasCodeChanged) {
-  //   editor.showError(ErrorReason.CantChangeSignatureException);
-  //   return;
-  // }
-
-  // await editor.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
@@ -70,6 +75,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       } else if (t.isFunctionDeclaration(node)) {
         node.params = [node.params[1], node.params[0]];
       }
+
+      path.stop();
     })
   );
 }
@@ -80,11 +87,7 @@ export function createVisitor(
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
-      if (!t.hasNodeId(path)) return;
       if (!selection.isInsidePath(path)) return;
-
-      const body = path.get("body");
-      if (!t.isSelectablePath(body)) return;
 
       onMatch(path);
     }
@@ -97,7 +100,11 @@ function createAVisitor(
 ): t.Visitor {
   return {
     CallExpression(path) {
-      if (!selection.isInsidePath(path)) return;
+      const nodeSelection = new Selection(
+        [path.node.loc?.start.line || 0, 0],
+        [path.node.loc?.end.line || 0, 0]
+      );
+      if (!selection.isSameLineThan(nodeSelection)) return;
 
       onMatch(path);
     },
