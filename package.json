@@ -718,14 +718,6 @@
           "when": "editorLangId == typescriptreact"
         },
         {
-          "command": "abracadabra.changeSignature",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.changeSignature",
-          "when": "editorLangId == typescript"
-        },
-        {
           "command": "abracadabra.convertTernaryToIfElse",
           "when": "editorLangId == vue"
         },

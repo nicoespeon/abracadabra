@@ -10,7 +10,7 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
-import { Path, AbsolutePath } from "../path";
+import { Path } from "../path";
 import { CodeReference } from "../code-reference";
 
 const LINE_SEPARATOR = "\n";
