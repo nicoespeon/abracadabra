@@ -18,12 +18,32 @@ describe("Change Signature", () => {
             return a + b;
           }`,
           otherFile: "",
-          path: new RelativePath("./other-file.ts")
+          path: new RelativePath("./aFileWitoutReferences.ts")
         },
         expected: {
           currentFile: `function add(b, a) {
             return a + b;
           }`,
+          otherFile: ""
+        }
+      },
+      {
+        description: "of a defined function with references in same file",
+        setup: {
+          currentFile: `function [cursor]add(a, b) {
+            return a + b;
+          }
+
+          add(1, 2);`,
+          otherFile: "",
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add(b, a) {
+            return a + b;
+          }
+
+          add(2, 1);`,
           otherFile: ""
         }
       }

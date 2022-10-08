@@ -27,6 +27,7 @@ export async function changeSignature(editor: Editor) {
   filesContent.forEach((x) => {
     const codeToTransform =
       alreadyTransformed[x.path.value] || (x.code as string);
+
     const transformed = updateCode(t.parse(codeToTransform), x.selection);
 
     alreadyTransformed[x.path.value] = `${transformed.code}`;
@@ -86,6 +87,7 @@ function createAVisitor(
         [path.node.loc?.start.line || 0, 0],
         [path.node.loc?.end.line || 0, 0]
       );
+
       if (!selection.isSameLineThan(nodeSelection)) return;
 
       onMatch(path);

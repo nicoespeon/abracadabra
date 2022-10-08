@@ -233,9 +233,50 @@ export class InMemoryEditor implements Editor {
       return editor.code.includes(functionReferences);
     });
 
-    return array.map((obj) => {
-      return new CodeReference(obj.filename, selection);
+    const references: CodeReference[] = [];
+
+    array.forEach((obj) => {
+      const codeMatrix = this.createPos(obj.editor.code, functionReferences);
+
+      codeMatrix.forEach((xxx) => {
+        references.push(
+          new CodeReference(
+            obj.filename,
+            new Selection(
+              [xxx?.row || 0, xxx?.col || 0],
+              [xxx?.row || 0, xxx?.col || 0]
+            )
+          )
+        );
+      });
     });
+
+    return references;
+  }
+
+  private createPos(str: string, wordToSearch: string) {
+    const out = str.split("\n").map((e) => [...e]);
+
+    return (
+      out
+        .map((arr, row) => {
+          const word = arr.join("");
+          if (word.includes(wordToSearch)) {
+            return arr.map((_char, col) => ({
+              word,
+              row: row + 1,
+              col: col + 1
+            }));
+          }
+
+          return null;
+        })
+        .filter(Boolean)
+        .flat()
+        // ignore null posibility because we already filtered lines above
+        // @ts-ignore
+        .filter((v, i, a) => a.findIndex((v2) => v2.word === v.word) === i)
+    );
   }
 }
 
