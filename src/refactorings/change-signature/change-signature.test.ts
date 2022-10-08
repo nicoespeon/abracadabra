@@ -46,6 +46,66 @@ describe("Change Signature", () => {
           add(2, 1);`,
           otherFile: ""
         }
+      },
+      {
+        description:
+          "of a defined function with multiple references in same file",
+        setup: {
+          currentFile: `function [cursor]add(a, b) {
+            return a + b;
+          }
+
+          add(1, 2);
+          add(3, 4);
+          add(5, 6);
+          add(7, 8);`,
+          otherFile: "",
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add(b, a) {
+            return a + b;
+          }
+
+          add(2, 1);
+          add(4, 3);
+          add(6, 5);
+          add(8, 7);`,
+          otherFile: ""
+        }
+      },
+      {
+        description:
+          "of a defined function with multiple references in a conditions in same file",
+        setup: {
+          currentFile: `function [cursor]add(a, b) {
+            return a + b;
+          }
+
+          if(add(1, 2)) {
+            switch(add(3, 4)) {
+              case 7:
+                console.log('Inside');
+            };
+          }
+          add(7, 8);`,
+          otherFile: "",
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add(b, a) {
+            return a + b;
+          }
+
+          if(add(2, 1)) {
+            switch(add(4, 3)) {
+              case 7:
+                console.log('Inside');
+            };
+          }
+          add(8, 7);`,
+          otherFile: ""
+        }
       }
     ],
     async ({ setup, expected }) => {
