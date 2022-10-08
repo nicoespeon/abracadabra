@@ -23,6 +23,7 @@ export async function changeSignature(editor: Editor) {
     path: Path;
     transformed: t.Transformed;
   }[] = [];
+
   filesContent.forEach((x) => {
     const codeToTransform =
       alreadyTransformed[x.path.value] || (x.code as string);

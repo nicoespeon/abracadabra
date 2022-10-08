@@ -10,7 +10,8 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
-import { Path } from "../path";
+import { Path, AbsolutePath } from "../path";
+import { CodeReference } from "../code-reference";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -206,8 +207,35 @@ export class InMemoryEditor implements Editor {
     this.codeMatrix.splice(line, 1);
   }
 
-  getSelectionReferences(_selection: Selection): Promise<any> {
-    throw new Error("Method not implemented.");
+  async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
+    const { start } = selection;
+    const endOfFunctionDef = {
+      OPEN_PARENTHESIS: "(",
+      SPACE_BEWTWEEN_OPEN_PARENTHESIS: " ",
+      ARROW_DEFINITION: "="
+    };
+
+    const line = this.codeMatrix[start.line];
+    const startLine = line.slice(start.character);
+
+    const endLineIndex = startLine.findIndex((item) => {
+      return Object.values(endOfFunctionDef).includes(item);
+    });
+
+    const functionReferences = line
+      .slice(start.character, start.character + endLineIndex)
+      .join("");
+
+    const array = Array.from(this.otherFiles, ([filename, editor]) => ({
+      filename,
+      editor
+    })).filter(({ editor }) => {
+      return editor.code.includes(functionReferences);
+    });
+
+    return array.map((obj) => {
+      return new CodeReference(obj.filename, selection);
+    });
   }
 }
 

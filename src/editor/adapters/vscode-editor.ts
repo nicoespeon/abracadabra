@@ -205,12 +205,12 @@ export class VSCodeEditor implements Editor {
 
       const path = new AbsolutePath(loc.uri.path);
 
-      const selection = new Selection(
+      const codeReferenceSelection = new Selection(
         [start.line + 1, start.character],
         [end.line + 1, end.character]
       );
 
-      return new CodeReference(path, selection);
+      return new CodeReference(path, codeReferenceSelection);
     });
 
     return references;
