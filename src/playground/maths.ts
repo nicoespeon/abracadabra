@@ -1,5 +1,5 @@
-export function add(num1, num2) {
-  return num1 + num2;
+export function add(param, num2) {
+  return param + num2;
 }
 
 add(1, 200);
