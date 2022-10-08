@@ -6,14 +6,10 @@ import * as vscode from "vscode";
 export async function changeSignature(editor: Editor) {
   const { selection } = editor;
 
-  const locations = (await vscode.commands.executeCommand(
-    "vscode.executeReferenceProvider",
-    // @ts-ignore
-    editor.document.uri,
-    selection.start
-  )) as vscode.Location[];
+  const locations = await findReferences(editor, selection);
 
   const filesContent = await Promise.all(
+    // @ts-ignore
     locations.map(async (loc) => {
       const content = await editor.codeOf(new AbsolutePath(loc.uri.path));
       const start = loc.range.start;
@@ -57,6 +53,10 @@ export async function changeSignature(editor: Editor) {
       return true;
     })
   );
+}
+
+async function findReferences(editor: Editor, selection: Selection) {
+  return editor.getSelectionReferences(selection);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

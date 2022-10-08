@@ -79,4 +79,8 @@ export class AttemptingEditor implements Editor {
   moveCursorTo(position: Position): Promise<void> {
     return this.editor.moveCursorTo(position);
   }
+
+  getSelectionReferences(selection: Selection): Promise<any> {
+    return this.editor.getSelectionReferences(selection);
+  }
 }

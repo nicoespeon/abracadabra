@@ -26,6 +26,7 @@ export interface Editor {
     placeHolder?: string
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
+  getSelectionReferences(selection: Selection): Promise<any>;
 }
 
 export type Modification = {

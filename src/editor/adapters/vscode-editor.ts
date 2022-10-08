@@ -190,6 +190,14 @@ export class VSCodeEditor implements Editor {
     this.editor.selection = toVSCodeCursor(position);
     return Promise.resolve();
   }
+
+  async getSelectionReferences(selection: Selection): Promise<any> {
+    return (await vscode.commands.executeCommand(
+      "vscode.executeReferenceProvider",
+      this.document.uri,
+      selection.start
+    )) as vscode.Location[];
+  }
 }
 
 function createSelectionFromVSCode(

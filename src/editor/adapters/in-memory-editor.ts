@@ -205,6 +205,10 @@ export class InMemoryEditor implements Editor {
   removeLine(line: number): void {
     this.codeMatrix.splice(line, 1);
   }
+
+  getSelectionReferences(_selection: Selection): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
 }
 
 type CodeMatrix = Line[];
