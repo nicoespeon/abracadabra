@@ -58,8 +58,6 @@ export async function changeSignature(editor: Editor) {
       });
     });
 
-    vscode.window.showInformationMessage("Done");
-
     await Promise.all(
       result.map(async (result) => {
         await editor.writeIn(
@@ -70,6 +68,8 @@ export async function changeSignature(editor: Editor) {
         return true;
       })
     );
+    panel.dispose();
+    vscode.window.showInformationMessage("Done");
   }, undefined);
 }
 
