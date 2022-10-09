@@ -371,18 +371,19 @@ function getParamsPositionWebViewContent(
         border-radius: 5px;
         line-height: 1.25rem;
         outline: none;
-        padding: 12px 24px;
         text-align: center;
         white-space: nowrap;
         display: inline-block;
         text-decoration: none;
-        font-size: 1rem;
-        background-color: transparent;
+        background: #1a85ff;
+        padding: 4px;
+        color: white;
+        font-size: 14px;
       }
 
       button:hover {
         cursor: pointer;
-        color: #1e1818;
+        color: white;
       }
     </style>
   </head>
@@ -393,13 +394,20 @@ function getParamsPositionWebViewContent(
       <thead>
         <tr>
           <th>Name</th>
-          <th><button id="confirm">Confirm</button></th>
+          <th></th>
         </tr>
       </thead>
 
       <tbody id="params">
         ${paramsTrValues.join("")}
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2" style="text-align: center">
+            <button id="confirm">Confirm</button>
+          </td>
+        </tr>
+      </tfoot>
     </table>
 
     <div class="btn-wrapper"></div>

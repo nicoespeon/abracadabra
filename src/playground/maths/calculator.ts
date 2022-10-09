@@ -7,3 +7,10 @@ function privateFn(a: number, b: number) {
 }
 
 privateFn(0, 1);
+
+function viewParametersTable(
+  literal: number | string | boolean,
+  obj = {},
+  [desc, descTwo, ...rest]: any[],
+  { item, itemTwo, ...anotherRest }: Record<string, any>
+) {}

@@ -186,8 +186,8 @@ describe("Change Signature", () => {
     async ({ setup, expected }) => {
       const editor = new InMemoryEditor(setup.currentFile);
       await editor.writeIn(setup.path, editor.code);
-      editor.saveUserChoices(userChangePositionOf("a", 0, 1));
-      editor.saveUserChoices(userChangePositionOf("b", 1, 0));
+      editor.saveUserChoices(userChangePositionOf(0, 1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
 
       await changeSignature(editor);
 
@@ -267,8 +267,8 @@ describe("Change Signature", () => {
       async ({ setup, expected }) => {
         const editor = new InMemoryEditor(setup.currentFile.code);
         await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.saveUserChoices(userChangePositionOf("a", 0, 1));
-        editor.saveUserChoices(userChangePositionOf("b", 1, 0));
+        editor.saveUserChoices(userChangePositionOf(0, 1));
+        editor.saveUserChoices(userChangePositionOf(1, 0));
         await saveOtherFiles(setup, editor);
 
         await changeSignature(editor);
@@ -291,14 +291,44 @@ describe("Change Signature", () => {
     const editor = new InMemoryEditor(code);
     await editor.writeIn(new RelativePath("aModule.js"), editor.code);
     jest.spyOn(editor, "showError");
-    editor.saveUserChoices(userChangePositionOf("a", 0, 1));
-    editor.saveUserChoices(userChangePositionOf("args", 1, 0));
+    editor.saveUserChoices(userChangePositionOf(0, 1));
+    editor.saveUserChoices(userChangePositionOf(1, 0));
 
     await changeSignature(editor);
 
     expect(editor.showError).toBeCalledWith(
       ErrorReason.CantChangeSignatureException
     );
+  });
+
+  it("Should", async () => {
+    const { setup, expected } = {
+      setup: {
+        currentFile: `function [cursor]add(a, str, {item}, {value = 1}, ...args) {
+            return a + item;
+          }
+
+          add(7, " years", {item: 1}, undefined, 1, 2, 3, 4);`,
+        path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+      },
+      expected: {
+        currentFile: `function add(str: string, a: number) {
+            return a + item;
+          }
+
+          add(" years", 7);`
+      }
+    };
+
+    const editor = new InMemoryEditor(setup.currentFile);
+    await editor.writeIn(setup.path, editor.code);
+    editor.saveUserChoices(userChangePositionOf(0, 1));
+    editor.saveUserChoices(userChangePositionOf(1, 0));
+
+    await changeSignature(editor);
+
+    const extracted = await editor.codeOf(setup.path);
+    expect(extracted).toBe(expected.currentFile);
   });
 });
 
@@ -328,9 +358,9 @@ function saveOtherFiles(
   return Promise.all(promises);
 }
 
-function userChangePositionOf(param: string, startAt: number, endAt: number) {
+function userChangePositionOf(startAt: number, endAt: number) {
   return {
-    label: param,
+    label: Date.now.toString(), // we don't care about param name in inMemory
     value: {
       startAt,
       endAt

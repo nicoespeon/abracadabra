@@ -8,10 +8,8 @@ let toModifyNode: t.FunctionDeclaration;
 export async function changeSignature(editor: Editor) {
   const params =
     toModifyNode?.params.map((p, index) => {
-      const name = t.isIdentifier(p) ? p.name : "unknown";
-
       return {
-        label: name,
+        label: getParamName(p),
         value: {
           startAt: index,
           endAt: index
@@ -130,6 +128,51 @@ export function createVisitor(
       onMatch(path);
     }
   };
+}
+
+function getParamName(
+  param:
+    | t.Identifier
+    | t.Pattern
+    | t.RestElement
+    | t.LVal
+    | t.ObjectProperty
+    | t.PatternLike
+    | t.Expression
+    | t.PrivateName
+): string {
+  if ("name" in param) {
+    return param.name;
+  }
+
+  if (t.isRestElement(param)) {
+    return `...${getParamName(param.argument)}`;
+  }
+
+  if (t.isObjectPattern(param)) {
+    const names: string[] = param.properties.map((property) => {
+      if ("key" in property) return getParamName(property.key);
+
+      return getParamName(property);
+    });
+    // For object destructuring put {param} as name
+    return `{${names.join(", ")}}`;
+  }
+
+  if (t.isAssignmentPattern(param)) {
+    return getParamName(param.left);
+  }
+
+  if (t.isArrayPattern(param)) {
+    const names: string[] = param.elements.map((element) => {
+      return getParamName(element as t.PatternLike);
+    });
+
+    // For array destructuring put [param] as name
+    return `[${names.join(", ")}]`;
+  }
+
+  return "unknown";
 }
 
 function createVisitorForReferences(
