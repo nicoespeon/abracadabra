@@ -330,8 +330,6 @@ describe("Change Signature", () => {
     await changeSignature(editor);
 
     const extracted = await editor.codeOf(setup.path);
-    console.log(extracted);
-
     expect(extracted).toBe(expected.currentFile);
   });
 });
