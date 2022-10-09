@@ -21,7 +21,7 @@ import { SelectedPosition } from "../editor";
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
   private document: vscode.TextDocument;
-  private panel: vscode.WebviewPanel | null = null;
+  public static panel: vscode.WebviewPanel | null = null;
 
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
@@ -223,26 +223,26 @@ export class VSCodeEditor implements Editor {
     params: Option[],
     onConfirm: (positions: SelectedPosition[]) => Promise<void>
   ): void {
-    if (this.panel !== null) {
-      this.panel.dispose();
+    if (VSCodeEditor.panel !== null) {
+      VSCodeEditor.panel.dispose();
     }
 
-    this.panel = vscode.window.createWebviewPanel(
+    VSCodeEditor.panel = vscode.window.createWebviewPanel(
       "changeSignature",
       "Change function signature",
       vscode.ViewColumn.Beside,
       {}
     );
 
-    this.panel.webview.options = {
+    VSCodeEditor.panel.webview.options = {
       enableScripts: true
     };
-    this.panel.webview.html = getParamsPositionWebViewContent(
+    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(
       params,
-      this.panel.webview
+      VSCodeEditor.panel.webview
     );
 
-    this.panel.webview.onDidReceiveMessage(
+    VSCodeEditor.panel.webview.onDidReceiveMessage(
       async (message: Record<string, string>) => {
         const values = JSON.parse(message.values) as {
           label: string;
@@ -261,14 +261,14 @@ export class VSCodeEditor implements Editor {
         });
 
         await onConfirm(result);
-        this.panel?.dispose();
-        this.panel = null;
+        VSCodeEditor.panel?.dispose();
+        VSCodeEditor.panel = null;
       },
       undefined
     );
 
-    this.panel.onDidDispose(() => {
-      this.panel = null;
+    VSCodeEditor.panel.onDidDispose(() => {
+      VSCodeEditor.panel = null;
     });
   }
 }
