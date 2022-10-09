@@ -301,33 +301,37 @@ describe("Change Signature", () => {
     );
   });
 
-  it("Should", async () => {
+  it("Should order correclty for complex parameters with defaults values", async () => {
     const { setup, expected } = {
       setup: {
-        currentFile: `function [cursor]add(a, str, {item}, {value = 1}, ...args) {
-            return a + item;
+        currentFile: `function [cursor]add(a, str, {item}, [value = 1]) {
+            console.log(a, str, item, value, args)
           }
 
-          add(7, " years", {item: 1}, undefined, 1, 2, 3, 4);`,
+          add(7, " years", {item: 3}, [1]);`,
         path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
       },
       expected: {
-        currentFile: `function add(str: string, a: number) {
-            return a + item;
+        currentFile: `function add([value = 1], {item}, str, a) {
+            console.log(a, str, item, value, args)
           }
 
-          add(" years", 7);`
+          add([1], {item: 3}, " years", 7);`
       }
     };
 
     const editor = new InMemoryEditor(setup.currentFile);
     await editor.writeIn(setup.path, editor.code);
-    editor.saveUserChoices(userChangePositionOf(0, 1));
-    editor.saveUserChoices(userChangePositionOf(1, 0));
+    editor.saveUserChoices(userChangePositionOf(0, 3));
+    editor.saveUserChoices(userChangePositionOf(3, 0));
+    editor.saveUserChoices(userChangePositionOf(1, 2));
+    editor.saveUserChoices(userChangePositionOf(2, 1));
 
     await changeSignature(editor);
 
     const extracted = await editor.codeOf(setup.path);
+    console.log(extracted);
+
     expect(extracted).toBe(expected.currentFile);
   });
 });
