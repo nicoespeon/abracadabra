@@ -1,9 +1,9 @@
 import { add } from "./maths";
 
-add(400, 3);
+add(3, 400);
 
-const privateFn = (a, b) => {
+function privateFn(a: number, b: number) {
   return a || b;
-};
+}
 
 privateFn(0, 1);

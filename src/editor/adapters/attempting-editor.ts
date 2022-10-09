@@ -86,10 +86,10 @@ export class AttemptingEditor implements Editor {
     return this.editor.getSelectionReferences(selection);
   }
 
-  askForPositions(
+  async askForPositions(
     params: SelectedPosition[],
     onConfirm: (positions: SelectedPosition[]) => Promise<void>
-  ): void {
-    this.editor.askForPositions(params, onConfirm);
+  ): Promise<void> {
+    await this.editor.askForPositions(params, onConfirm);
   }
 }
