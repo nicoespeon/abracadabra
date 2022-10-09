@@ -6,7 +6,9 @@ import {
   Editor,
   ErrorReason,
   Modification,
-  RelativePath
+  Option,
+  RelativePath,
+  SelectedPosition
 } from "../editor";
 import { Path } from "../path";
 import { Position } from "../position";
@@ -83,5 +85,12 @@ export class AttemptingEditor implements Editor {
 
   getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
     return this.editor.getSelectionReferences(selection);
+  }
+
+  askForPositions(
+    params: Option[],
+    onConfirm: (positions: SelectedPosition[]) => Promise<void>
+  ): void {
+    this.editor.askForPositions(params, onConfirm);
   }
 }

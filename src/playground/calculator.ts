@@ -1,6 +1,6 @@
 import { add } from "./maths";
 
-add(3, 400);
+add(400, 3);
 
 const privateFn = (a, b) => {
   return a || b;

@@ -9,16 +9,19 @@ import {
   ErrorReason,
   errorReasonToString,
   Choice,
-  Result
+  Result,
+  Option
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
 import { AbsolutePath, Path, RelativePath } from "../path";
 import { CodeReference } from "../code-reference";
+import { SelectedPosition } from "../editor";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
   private document: vscode.TextDocument;
+  private panel: vscode.WebviewPanel | null = null;
 
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
@@ -215,6 +218,59 @@ export class VSCodeEditor implements Editor {
 
     return references;
   }
+
+  askForPositions(
+    params: Option[],
+    onConfirm: (positions: SelectedPosition[]) => Promise<void>
+  ): void {
+    if (this.panel !== null) {
+      this.panel.dispose();
+    }
+
+    this.panel = vscode.window.createWebviewPanel(
+      "changeSignature",
+      "Change function signature",
+      vscode.ViewColumn.Beside,
+      {}
+    );
+
+    this.panel.webview.options = {
+      enableScripts: true
+    };
+    this.panel.webview.html = getParamsPositionWebViewContent(
+      params,
+      this.panel.webview
+    );
+
+    this.panel.webview.onDidReceiveMessage(
+      async (message: Record<string, string>) => {
+        const values = JSON.parse(message.values) as {
+          label: string;
+          startAt: number;
+          endAt: number;
+        }[];
+
+        const result: SelectedPosition[] = values.map((result) => {
+          return {
+            label: result.label,
+            value: {
+              startAt: result.startAt,
+              endAt: result.endAt
+            }
+          };
+        });
+
+        await onConfirm(result);
+        this.panel?.dispose();
+        this.panel = null;
+      },
+      undefined
+    );
+
+    this.panel.onDidDispose(() => {
+      this.panel = null;
+    });
+  }
 }
 
 function createSelectionFromVSCode(
@@ -245,4 +301,154 @@ function toVSCodeCommand(command: Command): string {
     default:
       return "";
   }
+}
+
+function getParamsPositionWebViewContent(
+  params: Option[],
+  _webview: vscode.Webview
+): string {
+  const paramsTrValues = params.map((param) => {
+    const name = param.label;
+    return `
+      <tr>
+          <td class="params-name">${name}</td>
+          <td>
+            <span class="up"></span>
+            <span class="down"></span>
+          </td>
+        </tr>
+    `;
+  });
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      th:last-child {
+        border-top-color: transparent;
+        border-right-color: transparent;
+      }
+
+      .up,
+      .down {
+        cursor: pointer;
+        display: inline-block;
+        width: 8px;
+        margin: 0 0.7rem;
+        font-size: 1.2rem;
+      }
+
+      .up:after {
+        content: "▲";
+      }
+
+      .up:hover:after {
+        color: #625e5e;
+      }
+
+      .down:after {
+        content: "▼";
+      }
+
+      .down:hover:after {
+        color: #625e5e;
+      }
+
+      button {
+        border: 1px solid transparent;
+        border-radius: 5px;
+        line-height: 1.25rem;
+        outline: none;
+        padding: 12px 24px;
+        text-align: center;
+        white-space: nowrap;
+        display: inline-block;
+        text-decoration: none;
+        font-size: 1rem;
+        background-color: transparent;
+      }
+
+      button:hover {
+        cursor: pointer;
+        color: #1e1818;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h4>Parameters</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th><button id="confirm">Confirm</button></th>
+        </tr>
+      </thead>
+
+      <tbody id="params">
+        ${paramsTrValues.join("")}
+      </tbody>
+    </table>
+
+    <div class="btn-wrapper"></div>
+
+    <script>
+      const vscode = acquireVsCodeApi();
+      const startValues = document.querySelectorAll("#params .params-name");
+      function moveUp(element) {
+        if (element.previousElementSibling)
+          element.parentNode.insertBefore(
+            element,
+            element.previousElementSibling
+          );
+      }
+
+      function moveDown(element) {
+        if (element.nextElementSibling)
+          element.parentNode.insertBefore(element.nextElementSibling, element);
+      }
+
+      document.querySelector("#params").addEventListener("click", function (e) {
+        if (e.target.className === "down")
+          moveDown(e.target.parentNode.parentNode);
+        else if (e.target.className === "up")
+          moveUp(e.target.parentNode.parentNode);
+      });
+
+      document.querySelector("#confirm").addEventListener("click", () => {
+        const tdsElements = document.querySelectorAll("#params .params-name");
+        const tds = Array.from(tdsElements);
+
+        const items = Array.from(startValues).map((item, index) => {
+          const endAt = tds.findIndex((td) => td === item);
+
+          return {
+            label: item.innerHTML,
+            startAt: index,
+            endAt: endAt
+          };
+        });
+
+        vscode.postMessage({
+          values: JSON.stringify(items)
+        });
+      });
+    </script>
+  </body>
+</html>
+  `;
+  return html;
 }

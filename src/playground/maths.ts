@@ -1,8 +1,8 @@
-export function add(param, num2) {
+export function add(num2, param) {
   return param + num2;
 }
 
-add(1, 200);
+add(200, 1);
 
 function privateFn(a, b) {
   return a || b;

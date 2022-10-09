@@ -6,7 +6,9 @@ import {
   ErrorReason,
   Choice,
   Result,
-  RelativePath
+  RelativePath,
+  Option,
+  SelectedPosition
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -275,6 +277,13 @@ export class InMemoryEditor implements Editor {
     return items.filter(
       (v, i, a) => a.findIndex((v2) => v2.word === v.word) === i
     );
+  }
+
+  askForPositions(
+    _params: Option[],
+    _onConfirm: (positions: SelectedPosition[]) => Promise<void>
+  ): void {
+    throw new Error("Method not implemented.");
   }
 }
 

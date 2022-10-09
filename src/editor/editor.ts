@@ -28,6 +28,10 @@ export interface Editor {
   ): Promise<Choice<T> | undefined>;
   moveCursorTo(position: Position): Promise<void>;
   getSelectionReferences(selection: Selection): Promise<CodeReference[]>;
+  askForPositions(
+    params: Option[],
+    callback: (positions: SelectedPosition[]) => Promise<void>
+  ): void;
 }
 
 export type Modification = {
@@ -52,3 +56,12 @@ export type Choice<T> = {
   description?: string;
   icon?: "file-code";
 };
+
+export type Option = {
+  label: string;
+};
+
+export type SelectedPosition = Choice<{
+  startAt: number;
+  endAt: number;
+}>;

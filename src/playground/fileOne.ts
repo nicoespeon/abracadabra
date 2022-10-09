@@ -1,6 +1,6 @@
 import { add } from "./maths";
 
-add(5, 600);
+add(600, 5);
 
 let privateFn;
 privateFn = (a, b) => {
