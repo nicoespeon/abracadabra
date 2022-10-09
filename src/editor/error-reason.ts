@@ -61,7 +61,7 @@ export enum ErrorReason {
 export function toString(reason: ErrorReason): string {
   switch (reason) {
     case ErrorReason.CantChangeSignatureException:
-      return didNotFind("Can't change function signature");
+      return cantDoIt("change function signature");
 
     case ErrorReason.DidNotFindClass:
       return didNotFind("a class to create a factory for");

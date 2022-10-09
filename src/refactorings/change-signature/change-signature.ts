@@ -1,4 +1,4 @@
-import { Editor, SelectedPosition } from "../../editor/editor";
+import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 import { Path } from "../../editor/path";
@@ -40,23 +40,28 @@ export async function changeSignature(editor: Editor) {
       transformed: t.Transformed;
     }[] = [];
 
-    filesContent.forEach((x) => {
+    for (const x of filesContent) {
       const codeToTransform =
         alreadyTransformed[x.path.value] || (x.code as string);
 
-      const transformed = updateCode(
-        t.parse(codeToTransform),
-        x.selection,
-        message
-      );
+      try {
+        const transformed = updateCode(
+          t.parse(codeToTransform),
+          x.selection,
+          message
+        );
 
-      alreadyTransformed[x.path.value] = `${transformed.code}`;
+        alreadyTransformed[x.path.value] = `${transformed.code}`;
 
-      result.push({
-        path: x.path,
-        transformed
-      });
-    });
+        result.push({
+          path: x.path,
+          transformed
+        });
+      } catch (error) {
+        editor.showError(ErrorReason.CantChangeSignatureException);
+        return;
+      }
+    }
 
     await Promise.all(
       result.map(async (result) => {
