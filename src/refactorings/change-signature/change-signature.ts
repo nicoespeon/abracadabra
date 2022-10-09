@@ -6,17 +6,20 @@ import { Path } from "../../editor/path";
 let toModifyNode: t.FunctionDeclaration;
 
 export async function changeSignature(editor: Editor) {
-  if (!toModifyNode) return;
+  const params =
+    toModifyNode?.params.map((p, index) => {
+      const name = t.isIdentifier(p) ? p.name : "unknown";
 
-  const params = toModifyNode.params.map((p) => {
-    const name = t.isIdentifier(p) ? p.name : "unknown";
+      return {
+        label: name,
+        value: {
+          startAt: index,
+          endAt: index
+        }
+      };
+    }) || [];
 
-    return {
-      label: name
-    };
-  });
-
-  editor.askForPositions(params, async (message) => {
+  await editor.askForPositions(params, async (message) => {
     const { selection } = editor;
     const refrences = await editor.getSelectionReferences(selection);
 
@@ -75,7 +78,7 @@ function updateCode(
 ): t.Transformed {
   return t.transformAST(
     ast,
-    createAVisitor(selection, (path) => {
+    createVisitorForReferences(selection, (path) => {
       const node = path.node;
 
       if (t.isCallExpression(node)) {
@@ -115,7 +118,7 @@ export function createVisitor(
   };
 }
 
-function createAVisitor(
+function createVisitorForReferences(
   selection: Selection,
   onMatch: (path: t.NodePath) => void
 ): t.Visitor {

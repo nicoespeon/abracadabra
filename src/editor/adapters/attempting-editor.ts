@@ -6,7 +6,6 @@ import {
   Editor,
   ErrorReason,
   Modification,
-  Option,
   RelativePath,
   SelectedPosition
 } from "../editor";
@@ -88,7 +87,7 @@ export class AttemptingEditor implements Editor {
   }
 
   askForPositions(
-    params: Option[],
+    params: SelectedPosition[],
     onConfirm: (positions: SelectedPosition[]) => Promise<void>
   ): void {
     this.editor.askForPositions(params, onConfirm);

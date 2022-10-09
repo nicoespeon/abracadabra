@@ -7,7 +7,6 @@ import {
   Choice,
   Result,
   RelativePath,
-  Option,
   SelectedPosition
 } from "../editor";
 import { Selection } from "../selection";
@@ -26,6 +25,7 @@ export class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
   private otherFiles = new Map<RelativePath, Editor>();
+  private userChoices: Choice<unknown>[] = [];
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
@@ -279,11 +279,15 @@ export class InMemoryEditor implements Editor {
     );
   }
 
-  askForPositions(
-    _params: Option[],
-    _onConfirm: (positions: SelectedPosition[]) => Promise<void>
-  ): void {
-    throw new Error("Method not implemented.");
+  async askForPositions(
+    _params: SelectedPosition[],
+    onConfirm: (positions: SelectedPosition[]) => Promise<void>
+  ): Promise<void> {
+    await onConfirm(this.userChoices as SelectedPosition[]);
+  }
+
+  public saveUserChoices<T>(choice: Choice<T>) {
+    this.userChoices.push(choice);
   }
 }
 

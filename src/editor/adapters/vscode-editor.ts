@@ -9,8 +9,7 @@ import {
   ErrorReason,
   errorReasonToString,
   Choice,
-  Result,
-  Option
+  Result
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
@@ -219,10 +218,10 @@ export class VSCodeEditor implements Editor {
     return references;
   }
 
-  askForPositions(
-    params: Option[],
+  async askForPositions(
+    params: SelectedPosition[],
     onConfirm: (positions: SelectedPosition[]) => Promise<void>
-  ): void {
+  ): Promise<void> {
     if (VSCodeEditor.panel !== null) {
       VSCodeEditor.panel.dispose();
     }
@@ -304,7 +303,7 @@ function toVSCodeCommand(command: Command): string {
 }
 
 function getParamsPositionWebViewContent(
-  params: Option[],
+  params: SelectedPosition[],
   _webview: vscode.Webview
 ): string {
   const paramsTrValues = params.map((param) => {

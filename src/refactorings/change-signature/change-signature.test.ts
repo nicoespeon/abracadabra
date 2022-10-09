@@ -108,6 +108,8 @@ describe("Change Signature", () => {
     async ({ setup, expected }) => {
       const editor = new InMemoryEditor(setup.currentFile);
       await editor.writeIn(setup.path, editor.code);
+      editor.saveUserChoices(userChangePositionOf("a", 0, 1));
+      editor.saveUserChoices(userChangePositionOf("b", 1, 0));
 
       await changeSignature(editor);
 
@@ -187,6 +189,8 @@ describe("Change Signature", () => {
       async ({ setup, expected }) => {
         const editor = new InMemoryEditor(setup.currentFile.code);
         await editor.writeIn(setup.currentFile.path, editor.code);
+        editor.saveUserChoices(userChangePositionOf("a", 0, 1));
+        editor.saveUserChoices(userChangePositionOf("b", 1, 0));
         await saveOtherFiles(setup, editor);
 
         await changeSignature(editor);
@@ -223,4 +227,14 @@ function saveOtherFiles(
   });
 
   return Promise.all(promises);
+}
+
+function userChangePositionOf(param: string, startAt: number, endAt: number) {
+  return {
+    label: param,
+    value: {
+      startAt,
+      endAt
+    }
+  };
 }

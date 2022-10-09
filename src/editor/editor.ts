@@ -29,9 +29,9 @@ export interface Editor {
   moveCursorTo(position: Position): Promise<void>;
   getSelectionReferences(selection: Selection): Promise<CodeReference[]>;
   askForPositions(
-    params: Option[],
+    params: SelectedPosition[],
     callback: (positions: SelectedPosition[]) => Promise<void>
-  ): void;
+  ): Promise<void>;
 }
 
 export type Modification = {
@@ -57,11 +57,10 @@ export type Choice<T> = {
   icon?: "file-code";
 };
 
-export type Option = {
-  label: string;
-};
-
-export type SelectedPosition = Choice<{
-  startAt: number;
-  endAt: number;
-}>;
+export type SelectedPosition = Omit<
+  Choice<{
+    startAt: number;
+    endAt: number;
+  }>,
+  "description" | "icon"
+>;
