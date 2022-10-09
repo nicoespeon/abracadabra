@@ -50,6 +50,39 @@ describe("Change Signature", () => {
       },
       {
         description:
+          "only wanted function keeping contract of the rest of functions",
+        setup: {
+          currentFile: `function [cursor]add(a, b) {
+            return a + b;
+          }
+
+          add(2, 3);
+
+          function subtract(a, b) {
+            return a - b;
+          }
+
+          subtract(1, 2);
+          `,
+          path: new RelativePath("./aFileWitoutReferences.ts")
+        },
+        expected: {
+          currentFile: `function add(b, a) {
+            return a + b;
+          }
+
+          add(3, 2);
+
+          function subtract(a, b) {
+            return a - b;
+          }
+
+          subtract(1, 2);
+          `
+        }
+      },
+      {
+        description:
           "when there are a defined function with multiples references",
         setup: {
           currentFile: `function [cursor]add(a, b) {

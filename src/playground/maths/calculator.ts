@@ -2,12 +2,7 @@ import { add } from "./maths";
 
 add(3, 400);
 
-function privateFn(a: number, b: number) {
-  return a || b;
-}
-
-privateFn(0, 1);
-
+// Used to view what params generates in webview table
 function viewParametersTable(
   literal: number | string | boolean,
   obj = {},
