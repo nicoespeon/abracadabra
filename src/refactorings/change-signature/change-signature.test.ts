@@ -1,4 +1,4 @@
-import { Code, RelativePath } from "../../editor/editor";
+import { Code, ErrorReason, RelativePath } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -103,6 +103,84 @@ describe("Change Signature", () => {
           }
           add(8, 7);`
         }
+      },
+      {
+        description: "when has a destructuring param",
+        setup: {
+          currentFile: `function [cursor]add(a, {item}) {
+            return a + item;
+          }
+
+          add(7, {item: 1});`,
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add({item}, a) {
+            return a + item;
+          }
+
+          add({item: 1}, 7);`
+        }
+      },
+      {
+        description: "with types in a ts code",
+        setup: {
+          currentFile: `function [cursor]add(a: number, str: string) {
+            return a + item;
+          }
+
+          add(7, " years");`,
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add(str: string, a: number) {
+            return a + item;
+          }
+
+          add(" years", 7);`
+        }
+      },
+      {
+        description: "with default values in parameters",
+        setup: {
+          currentFile: `function [cursor]add(a = 1, str = "Adios") {
+            return a + str;
+          }
+
+          add(7, " years");
+          add(1);`,
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add(str = "Adios", a = 1) {
+            return a + str;
+          }
+
+          add(" years", 7);
+          add(undefined, 1);`
+        }
+      },
+      {
+        description: "in a ts code with default parameters and types",
+        setup: {
+          currentFile: `function [cursor]add(a: number = 1, str: string = "Adios") {
+            return a + item;
+          }
+
+          add(7, " years");
+          add();
+          add(1);`,
+          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        },
+        expected: {
+          currentFile: `function add(str: string = "Adios", a: number = 1) {
+            return a + item;
+          }
+
+          add(" years", 7);
+          add();
+          add(undefined, 1);`
+        }
       }
     ],
     async ({ setup, expected }) => {
@@ -199,6 +277,27 @@ describe("Change Signature", () => {
         expect(extracted).toBe(expected.currentFile.code);
         await validateOutput(expected, editor);
       }
+    );
+  });
+
+  it("should show an error message if refactoring can't be made because rest param should be the last", async () => {
+    const code = `
+    function [cursor]aFn(a, ...args) {
+      return args.push(a);
+    }
+
+    aFn(0, 1);
+    `;
+    const editor = new InMemoryEditor(code);
+    await editor.writeIn(new RelativePath("aModule.js"), editor.code);
+    jest.spyOn(editor, "showError");
+    editor.saveUserChoices(userChangePositionOf("a", 0, 1));
+    editor.saveUserChoices(userChangePositionOf("args", 1, 0));
+
+    await changeSignature(editor);
+
+    expect(editor.showError).toBeCalledWith(
+      ErrorReason.CantChangeSignatureException
     );
   });
 });

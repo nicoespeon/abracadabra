@@ -88,18 +88,27 @@ function updateCode(
 
       if (t.isCallExpression(node)) {
         const args = node.arguments.slice();
-        orders.forEach((order) => {
-          const arg = node.arguments[order.value.startAt];
-          args[order.value.endAt] = arg;
-        });
+        if (args.length) {
+          orders.forEach((order) => {
+            const arg = node.arguments[order.value.startAt];
+            args[order.value.endAt] = arg;
+          });
+        }
 
-        node.arguments = args;
+        const newArgs = args.map((arg) => {
+          if (arg) return arg;
+
+          return t.identifier("undefined");
+        });
+        node.arguments = newArgs;
       } else if (t.isFunctionDeclaration(node)) {
         const params = node.params.slice();
-        orders.forEach((order) => {
-          const arg = node.params[order.value.startAt];
-          params[order.value.endAt] = arg;
-        });
+        if (params.length) {
+          orders.forEach((order) => {
+            const arg = node.params[order.value.startAt];
+            params[order.value.endAt] = arg;
+          });
+        }
 
         node.params = params;
       }
