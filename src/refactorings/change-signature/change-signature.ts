@@ -5,19 +5,7 @@ import { Path } from "../../editor/path";
 import * as vscode from "vscode";
 
 export async function changeSignature(editor: Editor) {
-  const panel = vscode.window.createWebviewPanel(
-    "changeSignature",
-    "Change function signature",
-    vscode.ViewColumn.Beside,
-    {}
-  );
-
-  panel.webview.options = {
-    enableScripts: true
-  };
-  panel.webview.html = getMyWebviewContent(panel.webview);
-
-  panel.webview.onDidReceiveMessage(async (message) => {
+  askForParamsPositions(async (message) => {
     const { selection } = editor;
     const refrences = await editor.getSelectionReferences(selection);
 
@@ -68,6 +56,26 @@ export async function changeSignature(editor: Editor) {
         return true;
       })
     );
+  });
+}
+
+function askForParamsPositions(
+  callback: (message: Record<string, string>) => Promise<void>
+) {
+  const panel = vscode.window.createWebviewPanel(
+    "changeSignature",
+    "Change function signature",
+    vscode.ViewColumn.Beside,
+    {}
+  );
+
+  panel.webview.options = {
+    enableScripts: true
+  };
+  panel.webview.html = getMyWebviewContent(panel.webview);
+
+  panel.webview.onDidReceiveMessage(async (message) => {
+    await callback(message);
     panel.dispose();
     vscode.window.showInformationMessage("Done");
   }, undefined);
@@ -234,21 +242,13 @@ function getMyWebviewContent(_webview: vscode.Webview): string {
       <thead>
         <tr>
           <th>Name</th>
-          <th></th>
+          <th><button id="confirm">Confirm</button></th>
         </tr>
       </thead>
 
       <tbody id="params">
         ${paramsTrValues.join("")}
       </tbody>
-      <tfoot>
-        <tr>
-          <td></td>
-          <td colspan="2">
-            <button id="confirm">Confirm</button>
-          </td>
-        </tr>
-      </tfoot>
     </table>
 
     <div class="btn-wrapper"></div>
