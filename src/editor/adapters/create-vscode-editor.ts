@@ -7,7 +7,8 @@ export function createVSCodeEditor(): VSCodeEditor | undefined {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) return;
 
-  return activeTextEditor.document.languageId === "vue"
+  return activeTextEditor.document.languageId === "vue" ||
+    activeTextEditor.document.languageId === "svelte"
     ? new VueVSCodeEditor(activeTextEditor)
     : new VSCodeEditor(activeTextEditor);
 }
