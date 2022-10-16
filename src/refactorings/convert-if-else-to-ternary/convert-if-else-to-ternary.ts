@@ -18,7 +18,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, node) => {
-      path.replaceWith(node);
+      t.replaceWithPreservingComments(path, node);
       path.stop();
     })
   );

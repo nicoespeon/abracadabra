@@ -25,7 +25,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         return t.variableDeclaration(kind, [declarator]);
       });
 
-      path.replaceWithMultiple(declarations);
+      t.replaceWithMultiplePreservingComments(path, declarations);
     })
   );
 }

@@ -40,7 +40,10 @@ function updateCode(
         : t.blockStatement([body]);
 
       forLoopStartLine = Position.fromAST(path.node.loc.start).line;
-      path.replaceWith(t.forEach(list, getParams(forEachBody), forEachBody));
+      t.replaceWithPreservingComments(
+        path,
+        t.forEach(list, getParams(forEachBody), forEachBody)
+      );
       path.stop();
     })
   );

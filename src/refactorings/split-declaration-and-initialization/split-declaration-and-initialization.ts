@@ -20,7 +20,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     createVisitor(selection, (path: t.NodePath<t.VariableDeclaration>) => {
       const declarations = path.node.declarations;
       const kind = path.node.kind === "const" ? "let" : path.node.kind;
-      path.replaceWithMultiple([
+      t.replaceWithMultiplePreservingComments(path, [
         t.variableDeclaration(
           kind,
           declarations.flatMap(({ id }) => createVariableDeclarators(id))

@@ -30,7 +30,8 @@ function updateCode(
     createVisitor(selection, (path: t.NodePath<t.ConditionalExpression>) => {
       const { parentPath, node } = path;
       if (t.isReturnStatement(parentPath.node)) {
-        parentPath.replaceWith(
+        t.replaceWithPreservingComments(
+          parentPath,
           createIfStatement(selection, node, t.returnStatement)
         );
 
@@ -46,7 +47,8 @@ function updateCode(
         const expressionParentPath = parentPath.parentPath;
         if (!expressionParentPath) return;
 
-        expressionParentPath.replaceWith(
+        t.replaceWithPreservingComments(
+          expressionParentPath,
           createIfStatement(selection, node, (expression) =>
             createAssignment(operator, left, expression)
           )
@@ -68,7 +70,7 @@ function updateCode(
 
         // VariableDeclarator is contained in a VariableDeclaration
         // => replace parentPath's parent path
-        parentPath.parentPath.replaceWithMultiple([
+        t.replaceWithMultiplePreservingComments(parentPath.parentPath, [
           createLetDeclaration(id),
           createIfStatement(selection, node, (expression) =>
             createAssignment("=", id, expression)
@@ -79,7 +81,8 @@ function updateCode(
         return;
       }
 
-      parentPath.replaceWith(
+      t.replaceWithPreservingComments(
+        parentPath,
         createIfStatement(selection, node, t.expressionStatement)
       );
       parentPath.stop();

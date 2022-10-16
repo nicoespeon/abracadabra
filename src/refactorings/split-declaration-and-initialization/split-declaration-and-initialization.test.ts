@@ -104,6 +104,17 @@ getLastName = () => {
         code: `const { firstName, lastName, ...others } = someObject;`,
         expected: `let firstName, lastName, others;
 ({ firstName, lastName, ...others } = someObject);`
+      },
+      {
+        description: "preserves comments",
+        code: `// leading comment
+[cursor]const firstName = "Jane";
+// trailing comment`,
+        expected: `// leading comment
+let firstName;
+
+firstName = "Jane";
+// trailing comment`
       }
     ],
     async ({ code, expected }) => {

@@ -27,7 +27,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
         // Case of <MyComponent prop="test" /> => <MyComponent prop={`test`} />
         path.replaceWith(t.jsxExpressionContainer(templateLiteral));
       } else {
-        path.replaceWith(templateLiteral);
+        t.replaceWithPreservingComments(path, templateLiteral);
       }
 
       path.stop();

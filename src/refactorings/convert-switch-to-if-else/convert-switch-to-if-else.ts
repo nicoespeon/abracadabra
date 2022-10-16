@@ -20,9 +20,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path, convertedNode) => {
       if (t.isBlockStatement(convertedNode)) {
-        path.replaceWithMultiple(convertedNode.body);
+        t.replaceWithMultiplePreservingComments(path, convertedNode.body);
       } else {
-        path.replaceWith(convertedNode);
+        t.replaceWithPreservingComments(path, convertedNode);
       }
       path.stop();
     })

@@ -44,7 +44,7 @@ function updateCode(
               path.isFunctionDeclaration()
           );
           if (parentFunction !== fnPath) return;
-          returnPath.replaceWith(t.continueStatement());
+          t.replaceWithPreservingComments(returnPath, t.continueStatement());
         }
       });
 
@@ -53,7 +53,8 @@ function updateCode(
           path.parentPath.node.loc.start
         ).line;
       }
-      path.parentPath.replaceWith(
+      t.replaceWithPreservingComments(
+        path.parentPath,
         t.forOfStatement(
           t.variableDeclaration("const", [t.variableDeclarator(item)]),
           items,

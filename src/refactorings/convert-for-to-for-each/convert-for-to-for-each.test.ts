@@ -274,6 +274,19 @@ items.forEach(item => {
         expected: `foo.bar.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "preserves comments",
+        code: `// leading comment
+[cursor]for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+// trailing comment`,
+        expected: `// leading comment
+items.forEach(item => {
+  console.log(item);
+});
+// trailing comment`
       }
     ],
     async ({ code, expected }) => {
