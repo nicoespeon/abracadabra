@@ -456,6 +456,16 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "srsholmes",
+      "name": "Simon Holmes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3579905?v=4",
+      "profile": "https://github.com/srsholmes",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
