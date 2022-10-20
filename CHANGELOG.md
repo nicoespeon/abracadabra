@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Support for `.svelte` files**. @srsholmes enabled Abracadabra refactorings support for `.svelte` files. How cool is that?!
+
+### Fixed
+
+- @chrstnbrn fixed an issue where comments might get deleted when performing some refactorings. Kudos!
+
 ## [6.15.3]
 
 No user-visible change. Attempting to fix CI deployments.
