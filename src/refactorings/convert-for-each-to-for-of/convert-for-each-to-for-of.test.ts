@@ -169,6 +169,42 @@ items.forEach((item) => {
     console.log(value);
   }
 });`
+      },
+      {
+        description: "preserves comments",
+        code: `
+// leading comment
+[cursor]items.forEach((item) => {
+  console.log(item);
+});
+// trailing comment`,
+        expected: `
+// leading comment
+for (const item of items) {
+  console.log(item);
+}
+// trailing comment`
+      },
+      {
+        description: "preserves comments for return",
+        code: `
+items.forEach((item) => {
+  if (item.type === 'foo') {
+    // leading comment
+    return;
+    // trailing comment
+  }
+  console.log(item);
+});`,
+        expected: `
+for (const item of items) {
+  if (item.type === 'foo') {
+    // leading comment
+    continue;
+    // trailing comment
+  }
+  console.log(item);
+}`
       }
     ].map(({ description, code, expected }) => ({
       description,

@@ -64,6 +64,19 @@ const lastName = "Doe";`
         description: "string literal with backticks",
         code: "const a = 'Hello[cursor] `you`'",
         expected: "const a = `Hello \\`you\\``"
+      },
+      {
+        description: "preserves comments",
+        code: `const name = 
+  // leading comment
+  [cursor]"Jane"
+  // trailing comment
+  ;`,
+        expected: `const name = 
+  // leading comment
+  \`Jane\`
+  // trailing comment
+  ;`
       }
     ],
     async ({ code, expected }) => {

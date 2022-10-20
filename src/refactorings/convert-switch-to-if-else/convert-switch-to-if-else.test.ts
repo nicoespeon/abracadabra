@@ -206,6 +206,40 @@ return sayHello();`
         expected: `if (tempScore === 12) {
   score += scores[tempScore];
 }`
+      },
+      {
+        description: "preserves comments",
+        code: `// leading comment
+[cursor]switch (name) {
+case "Jane":
+  sayHelloToJane();
+  break;
+default:
+  sayHello();
+  break;
+}
+// trailing comment`,
+        expected: `// leading comment
+if (name === "Jane") {
+  sayHelloToJane();
+} else {
+  sayHello();
+}
+// trailing comment`
+      },
+      {
+        description:
+          "preserves comments if switch only contains default statement",
+        code: `// leading comment
+[cursor]switch (tempScore) {
+  default:
+    score += scores[tempScore];
+    break;
+}
+// trailing comment`,
+        expected: `// leading comment
+score += scores[tempScore];
+// trailing comment`
       }
     ],
     async ({ code, expected }) => {

@@ -249,14 +249,41 @@ export function mergeCommentsInto<T extends t.Node>(
   node: T,
   commentedNodes: t.Node[]
 ): T {
+  const comments = commentedNodes.reduce<
+    { leading?: boolean; trailing?: boolean }[]
+  >(
+    // @ts-expect-error Recast does use a `comments` attribute.
+    (memo, { comments }) => memo.concat(comments),
+    []
+  );
+  const leadingComments = comments.filter((c) => c?.leading);
+  const trailingComments = comments.filter((c) => c?.trailing);
   return {
     ...node,
-    comments: commentedNodes.reduce(
-      // @ts-expect-error Recast does use a `comments` attribute.
-      (memo, { comments }) => memo.concat(comments),
-      []
-    )
+    leadingComments,
+    trailingComments,
+    comments
   };
+}
+
+export function replaceWithPreservingComments(
+  path: NodePath,
+  replacement: t.Node | NodePath<t.Node>
+) {
+  const replacementPath = path.replaceWith(replacement);
+  if (replacementPath[0]) {
+    preserveCommentsForRecast(replacementPath[0]);
+  }
+}
+
+export function replaceWithMultiplePreservingComments(
+  path: NodePath,
+  replacements: readonly t.Node[]
+) {
+  const replacementPaths = path.replaceWithMultiple(replacements);
+  for (const replacementPath of replacementPaths) {
+    preserveCommentsForRecast(replacementPath);
+  }
 }
 
 export type RootNodePath<T = t.Node> = NodePath<T> & {
