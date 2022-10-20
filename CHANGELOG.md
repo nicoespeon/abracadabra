@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Support for `.svelte` files**. @srsholmes enabled Abracadabra refactorings support for `.svelte` files. How cool is that?!
 
+### Changed
+
+- Give more user-friendly default names for `new` expressions, thanks to @azhiv
+
 ### Fixed
 
 - @chrstnbrn fixed an issue where comments might get deleted when performing some refactorings. Kudos!
