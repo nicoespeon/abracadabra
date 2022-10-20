@@ -56,7 +56,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withoutActionProvider: [reactConvertToPureComponent],
     withActionProvider: [reactExtractUseCallback]
   },
-  allButVue: {
+  allButVueAndSvelte: {
     languages: [
       "javascript",
       "javascriptreact",
