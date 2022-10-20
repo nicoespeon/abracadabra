@@ -72,7 +72,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       "javascriptreact",
       "typescript",
       "typescriptreact",
-      "vue"
+      "vue",
+      "svelte"
     ],
     withoutActionProvider: [
       extract,
