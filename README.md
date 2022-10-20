@@ -23,7 +23,7 @@ VS Code ships with [a few basic refactorings][vscode-refactorings]. Abracadabra 
 - ⚡ Shortcuts to trigger the most useful ones in no-time
 - 💡 Quick Fixes to suggest refactorings when appropriate
 - 🛠 Options to customize the UX to your needs
-- 💬 Refactorings that work with `.js`, `.jsx`, `.ts`, `.tsx` and `.vue` files
+- 💬 Refactorings that work with `.js`, `.jsx`, `.ts`, `.tsx`, `.vue` and `.svelte` files
 
 Refactor Legacy Code in a snap! 👌
 

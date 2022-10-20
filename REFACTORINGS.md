@@ -76,7 +76,7 @@ This refactoring allows you to rename things and make sure all references in you
 
 [VS Code does this refactoring][vscode-rename-symbol] very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
 
-Note that **it handles `.vue` files with a similar UX** while VS Code doesn't handle it natively yet.
+Note that **it handles `.vue` and `.svelte` files with a similar UX** while VS Code doesn't handle it natively yet.
 
 For Vue files, the support is limited: it can only rename **within the `<script>` tag**. It won't rename your identifier in the `<template>` tag for instance.
 
