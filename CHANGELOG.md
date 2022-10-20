@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.16.0] - 2022-10-20 - Kidnap the Svelty Claws 🎃
+
 ### Added
 
 - **Support for `.svelte` files**. @srsholmes enabled Abracadabra refactorings support for `.svelte` files. How cool is that?!
@@ -1669,7 +1671,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...HEAD
+[6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
 [6.15.3]: https://github.com/nicoespeon/abracadabra/compare/6.15.2...6.15.3
 [6.15.2]: https://github.com/nicoespeon/abracadabra/compare/6.15.1...6.15.2
 [6.15.1]: https://github.com/nicoespeon/abracadabra/compare/6.15.0...6.15.1
