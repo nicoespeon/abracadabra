@@ -11,7 +11,7 @@ type TestSample = {
 
 describe("Change Signature", () => {
   testEach<{
-    setup: { currentFile: Code; path: RelativePath };
+    setup: { currentFile: Code };
     expected: { currentFile: Code };
   }>(
     "In same file",
@@ -21,8 +21,7 @@ describe("Change Signature", () => {
         setup: {
           currentFile: `function [cursor]add(a, b) {
             return a + b;
-          }`,
-          path: new RelativePath("./aFileWitoutReferences.ts")
+          }`
         },
         expected: {
           currentFile: `function add(b, a) {
@@ -37,8 +36,7 @@ describe("Change Signature", () => {
             return a + b;
           }
 
-          add(1, 2);`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(1, 2);`
         },
         expected: {
           currentFile: `function add(b, a) {
@@ -63,8 +61,7 @@ describe("Change Signature", () => {
           }
 
           subtract(1, 2);
-          `,
-          path: new RelativePath("./aFileWitoutReferences.ts")
+          `
         },
         expected: {
           currentFile: `function add(b, a) {
@@ -92,8 +89,7 @@ describe("Change Signature", () => {
           add(1, 2);
           add(3, 4);
           add(5, 6);
-          add(7, 8);`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(7, 8);`
         },
         expected: {
           currentFile: `function add(b, a) {
@@ -120,8 +116,7 @@ describe("Change Signature", () => {
                 console.log('Inside');
             };
           }
-          add(7, 8);`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(7, 8);`
         },
         expected: {
           currentFile: `function add(b, a) {
@@ -144,8 +139,7 @@ describe("Change Signature", () => {
             return a + item;
           }
 
-          add(7, {item: 1});`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(7, {item: 1});`
         },
         expected: {
           currentFile: `function add({item}, a) {
@@ -162,8 +156,7 @@ describe("Change Signature", () => {
             return a + item;
           }
 
-          add(7, " years");`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(7, " years");`
         },
         expected: {
           currentFile: `function add(str: string, a: number) {
@@ -181,8 +174,7 @@ describe("Change Signature", () => {
           }
 
           add(7, " years");
-          add(1);`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(1);`
         },
         expected: {
           currentFile: `function add(str = "Adios", a = 1) {
@@ -202,8 +194,7 @@ describe("Change Signature", () => {
 
           add(7, " years");
           add();
-          add(1);`,
-          path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+          add(1);`
         },
         expected: {
           currentFile: `function add(str: string = "Adios", a: number = 1) {
@@ -217,14 +208,15 @@ describe("Change Signature", () => {
       }
     ],
     async ({ setup, expected }) => {
+      const path = new RelativePath("./aFile.ts");
       const editor = new InMemoryEditor(setup.currentFile);
-      await editor.writeIn(setup.path, editor.code);
+      await editor.writeIn(path, editor.code);
       editor.saveUserChoices(userChangePositionOf(0, 1));
       editor.saveUserChoices(userChangePositionOf(1, 0));
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(setup.path);
+      const extracted = await editor.codeOf(path);
       expect(extracted).toBe(expected.currentFile);
     }
   );
