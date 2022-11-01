@@ -11,46 +11,37 @@ type TestSample = {
 
 describe("Change Signature", () => {
   testEach<{
-    setup: { currentFile: Code };
-    expected: { currentFile: Code };
+    code: Code;
+    expected: Code;
   }>(
     "In same file",
     [
       {
         description: "when there are a function without references",
-        setup: {
-          currentFile: `function [cursor]add(a, b) {
+        code: `function [cursor]add(a, b) {
+            return a + b;
+          }`,
+        expected: `function add(b, a) {
             return a + b;
           }`
-        },
-        expected: {
-          currentFile: `function add(b, a) {
-            return a + b;
-          }`
-        }
       },
       {
         description: "when there are a defined function with references",
-        setup: {
-          currentFile: `function [cursor]add(a, b) {
+        code: `function [cursor]add(a, b) {
             return a + b;
           }
 
-          add(1, 2);`
-        },
-        expected: {
-          currentFile: `function add(b, a) {
+          add(1, 2);`,
+        expected: `function add(b, a) {
             return a + b;
           }
 
           add(2, 1);`
-        }
       },
       {
         description:
           "only wanted function keeping contract of the rest of functions",
-        setup: {
-          currentFile: `function [cursor]add(a, b) {
+        code: `function [cursor]add(a, b) {
             return a + b;
           }
 
@@ -61,10 +52,8 @@ describe("Change Signature", () => {
           }
 
           subtract(1, 2);
-          `
-        },
-        expected: {
-          currentFile: `function add(b, a) {
+          `,
+        expected: `function add(b, a) {
             return a + b;
           }
 
@@ -76,23 +65,19 @@ describe("Change Signature", () => {
 
           subtract(1, 2);
           `
-        }
       },
       {
         description:
           "when there are a defined function with multiples references",
-        setup: {
-          currentFile: `function [cursor]add(a, b) {
+        code: `function [cursor]add(a, b) {
             return a + b;
           }
 
           add(1, 2);
           add(3, 4);
           add(5, 6);
-          add(7, 8);`
-        },
-        expected: {
-          currentFile: `function add(b, a) {
+          add(7, 8);`,
+        expected: `function add(b, a) {
             return a + b;
           }
 
@@ -100,13 +85,11 @@ describe("Change Signature", () => {
           add(4, 3);
           add(6, 5);
           add(8, 7);`
-        }
       },
       {
         description:
           "when there are a defined function with multiple references in a conditions",
-        setup: {
-          currentFile: `function [cursor]add(a, b) {
+        code: `function [cursor]add(a, b) {
             return a + b;
           }
 
@@ -116,10 +99,8 @@ describe("Change Signature", () => {
                 console.log('Inside');
             };
           }
-          add(7, 8);`
-        },
-        expected: {
-          currentFile: `function add(b, a) {
+          add(7, 8);`,
+        expected: `function add(b, a) {
             return a + b;
           }
 
@@ -130,86 +111,69 @@ describe("Change Signature", () => {
             };
           }
           add(8, 7);`
-        }
       },
       {
         description: "when has a destructuring param",
-        setup: {
-          currentFile: `function [cursor]add(a, {item}) {
+        code: `function [cursor]add(a, {item}) {
             return a + item;
           }
 
-          add(7, {item: 1});`
-        },
-        expected: {
-          currentFile: `function add({item}, a) {
+          add(7, {item: 1});`,
+        expected: `function add({item}, a) {
             return a + item;
           }
 
           add({item: 1}, 7);`
-        }
       },
       {
         description: "with types in a ts code",
-        setup: {
-          currentFile: `function [cursor]add(a: number, str: string) {
+        code: `function [cursor]add(a: number, str: string) {
             return a + item;
           }
 
-          add(7, " years");`
-        },
-        expected: {
-          currentFile: `function add(str: string, a: number) {
+          add(7, " years");`,
+        expected: `function add(str: string, a: number) {
             return a + item;
           }
 
           add(" years", 7);`
-        }
       },
       {
         description: "with default values in parameters",
-        setup: {
-          currentFile: `function [cursor]add(a = 1, str = "Adios") {
+        code: `function [cursor]add(a = 1, str = "Adios") {
             return a + str;
           }
 
           add(7, " years");
-          add(1);`
-        },
-        expected: {
-          currentFile: `function add(str = "Adios", a = 1) {
+          add(1);`,
+        expected: `function add(str = "Adios", a = 1) {
             return a + str;
           }
 
           add(" years", 7);
           add(undefined, 1);`
-        }
       },
       {
         description: "in a ts code with default parameters and types",
-        setup: {
-          currentFile: `function [cursor]add(a: number = 1, str: string = "Adios") {
+        code: `function [cursor]add(a: number = 1, str: string = "Adios") {
             return a + item;
           }
 
           add(7, " years");
           add();
-          add(1);`
-        },
-        expected: {
-          currentFile: `function add(str: string = "Adios", a: number = 1) {
+          add(1);`,
+        expected: `function add(str: string = "Adios", a: number = 1) {
             return a + item;
           }
 
           add(" years", 7);
           add();
           add(undefined, 1);`
-        }
       }
     ],
-    async ({ setup, expected }) => {
+    async ({ code, expected }) => {
       const path = new RelativePath("./aFile.ts");
-      const editor = new InMemoryEditor(setup.currentFile);
+      const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
       editor.saveUserChoices(userChangePositionOf(0, 1));
       editor.saveUserChoices(userChangePositionOf(1, 0));
@@ -217,7 +181,7 @@ describe("Change Signature", () => {
       await changeSignature(editor);
 
       const extracted = await editor.codeOf(path);
-      expect(extracted).toBe(expected.currentFile);
+      expect(extracted).toBe(expected);
     }
   );
 
