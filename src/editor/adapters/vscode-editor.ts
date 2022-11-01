@@ -201,7 +201,7 @@ export class VSCodeEditor implements Editor {
       selection.start
     )) as vscode.Location[];
 
-    const references = locations.map((loc) => {
+    return locations.map((loc) => {
       const start = loc.range.start;
       const end = loc.range.end;
 
@@ -214,8 +214,6 @@ export class VSCodeEditor implements Editor {
 
       return new CodeReference(path, codeReferenceSelection);
     });
-
-    return references;
   }
 
   async askForPositions(
