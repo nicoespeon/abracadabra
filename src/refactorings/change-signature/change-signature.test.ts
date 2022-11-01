@@ -351,7 +351,7 @@ function saveOtherFiles(
 
 function userChangePositionOf(startAt: number, endAt: number) {
   return {
-    label: Date.now.toString(), // we don't care about param name in inMemory
+    label: "irrelevant",
     value: {
       startAt,
       endAt
