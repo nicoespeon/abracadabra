@@ -1,5 +1,5 @@
 import { Selection } from "./selection";
-import { RelativePath, Path } from "./path";
+import { Path } from "./path";
 import { Position } from "./position";
 import { ErrorReason } from "./error-reason";
 import { CodeReference } from "./code-reference";

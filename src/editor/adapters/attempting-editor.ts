@@ -6,7 +6,6 @@ import {
   Editor,
   ErrorReason,
   Modification,
-  RelativePath,
   SelectedPosition
 } from "../editor";
 import { Path } from "../path";
