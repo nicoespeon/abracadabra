@@ -115,13 +115,7 @@ export class VSCodeEditor implements Editor {
   }
 
   protected fileUriAt(path: Path): vscode.Uri {
-    let filePath;
-
-    if (path instanceof RelativePath) {
-      filePath = path.absoluteFrom(this.document.uri.path);
-    } else {
-      filePath = path;
-    }
+    const filePath = path.absoluteFrom(this.document.uri.path);
 
     return this.document.uri.with({ path: filePath.value });
   }
