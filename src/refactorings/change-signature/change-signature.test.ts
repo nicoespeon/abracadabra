@@ -1,4 +1,4 @@
-import { Code, ErrorReason, RelativePath } from "../../editor/editor";
+import { Code, ErrorReason, AbsolutePath } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
 
@@ -6,7 +6,7 @@ import { changeSignature } from "./change-signature";
 
 type TestSample = {
   code: Code;
-  path: RelativePath;
+  path: AbsolutePath;
 };
 
 describe("Change Signature", () => {
@@ -172,7 +172,7 @@ describe("Change Signature", () => {
       }
     ],
     async ({ code, expected }) => {
-      const path = new RelativePath("./aFile.ts");
+      const path = new AbsolutePath("/temp/aFile.ts");
       const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
       editor.saveUserChoices(userChangePositionOf(0, 1));
@@ -186,8 +186,8 @@ describe("Change Signature", () => {
   );
 
   describe("Modules", () => {
-    const addModule = new RelativePath("./add.ts");
-    const anotherModule = new RelativePath("./anotherModule");
+    const addModule = new AbsolutePath("/temp/add.ts");
+    const anotherModule = new AbsolutePath("/temp/anotherModule");
 
     testEach<{
       setup: {
@@ -208,7 +208,7 @@ describe("Change Signature", () => {
               code: `export function [cursor]add(a, b) {
               return a + b;
             }`,
-              path: new RelativePath("./module.ts")
+              path: new AbsolutePath("/temp/module.ts")
             },
             otherFiles: [
               {
@@ -232,7 +232,7 @@ describe("Change Signature", () => {
               code: `export function add(b, a) {
               return a + b;
             }`,
-              path: new RelativePath("./module.ts")
+              path: new AbsolutePath("/temp/module.ts")
             },
             otherFiles: [
               {
@@ -278,7 +278,7 @@ describe("Change Signature", () => {
     aFn(0, 1);
     `;
     const editor = new InMemoryEditor(code);
-    await editor.writeIn(new RelativePath("aModule.js"), editor.code);
+    await editor.writeIn(new AbsolutePath("/temp/aModule.js"), editor.code);
     jest.spyOn(editor, "showError");
     editor.saveUserChoices(userChangePositionOf(0, 1));
     editor.saveUserChoices(userChangePositionOf(1, 0));
@@ -298,7 +298,7 @@ describe("Change Signature", () => {
           }
 
           add(7, " years", {item: 3}, [1]);`,
-        path: new RelativePath("./aFileWithReferencesInsideSameFile.ts")
+        path: new AbsolutePath("/temp/aFileWithReferencesInsideSameFile.ts")
       },
       expected: {
         currentFile: `function add([value = 1], {item}, str, a) {
