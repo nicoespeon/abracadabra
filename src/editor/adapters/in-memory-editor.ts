@@ -6,7 +6,6 @@ import {
   ErrorReason,
   Choice,
   Result,
-  RelativePath,
   SelectedPosition
 } from "../editor";
 import { Selection } from "../selection";

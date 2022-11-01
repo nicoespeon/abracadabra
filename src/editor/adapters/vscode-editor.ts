@@ -13,7 +13,7 @@ import {
 } from "../editor";
 import { Selection } from "../selection";
 import { Position } from "../position";
-import { AbsolutePath, Path, RelativePath } from "../path";
+import { AbsolutePath, Path } from "../path";
 import { CodeReference } from "../code-reference";
 import { SelectedPosition } from "../editor";
 
