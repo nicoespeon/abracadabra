@@ -17,7 +17,7 @@ export async function changeSignature(editor: Editor) {
       };
     }) || [];
 
-  await editor.askForPositions(params, async (message) => {
+  await editor.askForPositions(params, async (newPositions) => {
     const { selection } = editor;
     const refrences = await editor.getSelectionReferences(selection);
 
@@ -46,7 +46,7 @@ export async function changeSignature(editor: Editor) {
         const transformed = updateCode(
           t.parse(codeToTransform),
           x.selection,
-          message
+          newPositions
         );
 
         alreadyTransformed[x.path.value] = `${transformed.code}`;
@@ -77,7 +77,7 @@ export async function changeSignature(editor: Editor) {
 function updateCode(
   ast: t.AST,
   selection: Selection,
-  orders: SelectedPosition[]
+  newPositions: SelectedPosition[]
 ): t.Transformed {
   return t.transformAST(
     ast,
@@ -87,7 +87,7 @@ function updateCode(
       if (t.isCallExpression(node)) {
         const args = node.arguments.slice();
         if (args.length) {
-          orders.forEach((order) => {
+          newPositions.forEach((order) => {
             const arg = node.arguments[order.value.startAt];
             args[order.value.endAt] = arg;
           });
@@ -102,7 +102,7 @@ function updateCode(
       } else if (t.isFunctionDeclaration(node)) {
         const params = node.params.slice();
         if (params.length) {
-          orders.forEach((order) => {
+          newPositions.forEach((order) => {
             const arg = node.params[order.value.startAt];
             params[order.value.endAt] = arg;
           });
