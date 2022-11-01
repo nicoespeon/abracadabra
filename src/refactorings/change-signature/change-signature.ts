@@ -67,8 +67,6 @@ export async function changeSignature(editor: Editor) {
           result.path,
           alreadyTransformed[result.path.value]
         );
-
-        return true;
       })
     );
   });
