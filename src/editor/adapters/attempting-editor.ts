@@ -18,7 +18,7 @@ export class AttemptingEditor implements Editor {
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
-  workspaceFiles(): Promise<RelativePath[]> {
+  workspaceFiles(): Promise<Path[]> {
     return this.editor.workspaceFiles();
   }
 

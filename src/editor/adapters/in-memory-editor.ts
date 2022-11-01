@@ -24,7 +24,7 @@ const SELECTION_END = "[end]";
 export class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
-  private otherFiles = new Map<RelativePath, Editor>();
+  private otherFiles = new Map<Path, Editor>();
   private userChoices: Choice<unknown>[] = [];
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
@@ -32,7 +32,7 @@ export class InMemoryEditor implements Editor {
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
-  async workspaceFiles(): Promise<RelativePath[]> {
+  async workspaceFiles(): Promise<Path[]> {
     return Array.from(this.otherFiles.keys());
   }
 
@@ -40,7 +40,7 @@ export class InMemoryEditor implements Editor {
     return this.read(this.codeMatrix);
   }
 
-  async codeOf(path: RelativePath): Promise<Code> {
+  async codeOf(path: Path): Promise<Code> {
     const otherFile = this.otherFiles.get(path);
     if (!otherFile) return "";
 
@@ -64,7 +64,7 @@ export class InMemoryEditor implements Editor {
   }
 
   async writeIn(path: Path, code: Code): Promise<void> {
-    this.otherFiles.set(path as RelativePath, new InMemoryEditor(code));
+    this.otherFiles.set(path, new InMemoryEditor(code));
   }
 
   readThenWrite(
@@ -213,7 +213,7 @@ export class InMemoryEditor implements Editor {
     const { start } = selection;
     const endOfFunctionDef = {
       OPEN_PARENTHESIS: "(",
-      SPACE_BEWTWEEN_OPEN_PARENTHESIS: " ",
+      SPACE_BETWEEN_OPEN_PARENTHESIS: " ",
       ARROW_DEFINITION: "="
     };
 
@@ -254,7 +254,7 @@ export class InMemoryEditor implements Editor {
   }
 
   private createPos(str: string, wordToSearch: string) {
-    const splittedCode = str.split("\n").map((e) => [...e]);
+    const splittedCode: string[][] = str.split("\n").map((e) => [...e]);
     const items: {
       word: string;
       row: number;

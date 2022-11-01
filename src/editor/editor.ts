@@ -8,7 +8,7 @@ export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
 
 export interface Editor {
-  workspaceFiles(): Promise<RelativePath[]>;
+  workspaceFiles(): Promise<Path[]>;
   readonly selection: Selection;
   readonly code: Code;
   codeOf(path: Path): Promise<Code>;

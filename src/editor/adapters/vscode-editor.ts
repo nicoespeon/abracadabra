@@ -27,7 +27,7 @@ export class VSCodeEditor implements Editor {
     this.document = editor.document;
   }
 
-  async workspaceFiles(): Promise<RelativePath[]> {
+  async workspaceFiles(): Promise<Path[]> {
     const uris = await this.findFileUris();
 
     return uris
