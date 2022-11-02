@@ -2,9 +2,10 @@ import { suite, test, afterEach } from "mocha";
 import { assert } from "chai";
 import * as sinon from "sinon";
 
-import { Editor, Code, RelativePath } from "./editor";
+import { Editor, Code, RelativePath, AbsolutePath } from "./editor";
 import { Position } from "./position";
 import { Selection } from "./selection";
+import { CodeReference } from "./code-reference";
 
 /**
  * This is a contract tests factory.
@@ -405,5 +406,27 @@ console.log("hello");
     const result = await editor.workspaceFiles();
 
     assert.sameDeepMembers(result, files);
+  });
+
+  test("should return the list of code references in same file", async () => {
+    const code = `function add(num1, num2) {
+return num1 + num2;
+}
+add(1, 2);
+`;
+    const editor = await createEditorOn(code);
+    const file =
+      __dirname + "/adapters/vscode-editor-tests/abracadabra-vscode-tests.ts";
+    const filePath = new AbsolutePath(file);
+    await editor.writeIn(filePath, code);
+    const codeReferences = await editor.getSelectionReferences(
+      new Selection([0, 9], [0, 9])
+    );
+
+    assert.strictEqual(codeReferences.length, 2);
+    assert.deepStrictEqual(codeReferences, [
+      new CodeReference(new AbsolutePath(file), new Selection([1, 9], [1, 12])),
+      new CodeReference(new AbsolutePath(file), new Selection([4, 0], [4, 3]))
+    ]);
   });
 }
