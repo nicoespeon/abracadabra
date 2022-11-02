@@ -127,6 +127,7 @@
   },
   "activationEvents": [
     "onCommand:abracadabra.addNumericSeparator",
+    "onCommand:abracadabra.changeSignature",
     "onCommand:abracadabra.convertForToForEach",
     "onCommand:abracadabra.convertForEachToForOf",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
@@ -174,6 +175,11 @@
       {
         "command": "abracadabra.addNumericSeparator",
         "title": "Add Numeric Separator",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.changeSignature",
+        "title": "Change Signature",
         "category": "Abracadabra"
       },
       {
@@ -409,6 +415,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.changeSignature.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.convertForToForEach.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -585,6 +596,30 @@
         },
         {
           "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.changeSignature",
           "when": "editorLangId == svelte"
         },
         {
