@@ -57,7 +57,6 @@ export async function changeSignature(editor: Editor) {
         });
       } catch (error) {
         editor.showError(ErrorReason.CantChangeSignatureException);
-        console.log(error);
         return;
       }
     }

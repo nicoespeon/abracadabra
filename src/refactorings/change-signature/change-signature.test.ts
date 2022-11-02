@@ -270,8 +270,6 @@ describe("Change Signature", () => {
   });
 
   it("should show an error message if refactoring can't be made because rest param should be the last", async () => {
-    const oldLog = console.log;
-    console.log = () => {};
     const code = `
     function [cursor]aFn(a, ...args) {
       return args.push(a);
@@ -290,7 +288,6 @@ describe("Change Signature", () => {
     expect(editor.showError).toBeCalledWith(
       ErrorReason.CantChangeSignatureException
     );
-    console.log = oldLog;
   });
 
   it("Should order correclty for complex parameters with defaults values", async () => {
