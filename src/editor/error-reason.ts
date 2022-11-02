@@ -1,5 +1,5 @@
 export enum ErrorReason {
-  CantChangeSignatureException,
+  CantChangeSignature,
   DidNotFindClass,
   DidNotFindObjectToDestructure,
   DidNotFindNumericLiteral,
@@ -60,7 +60,7 @@ export enum ErrorReason {
 
 export function toString(reason: ErrorReason): string {
   switch (reason) {
-    case ErrorReason.CantChangeSignatureException:
+    case ErrorReason.CantChangeSignature:
       return cantDoIt("change function signature");
 
     case ErrorReason.DidNotFindClass:

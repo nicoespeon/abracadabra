@@ -1,21 +1,16 @@
-import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
-
-let toModifyNode: t.FunctionDeclaration;
+import { Selection } from "../../editor/selection";
 
 export async function changeSignature(editor: Editor) {
-  const params =
-    toModifyNode?.params.map((p, index) => {
-      return {
-        label: getParamName(p),
-        value: {
-          startAt: index,
-          endAt: index
-        }
-      };
-    }) || [];
+  const { code, selection } = editor;
+  const params = getParams(code, selection);
+
+  if (!params) {
+    editor.showError(ErrorReason.CantChangeSignature);
+    return;
+  }
 
   await editor.askForPositions(params, async (newPositions) => {
     const { selection } = editor;
@@ -56,7 +51,7 @@ export async function changeSignature(editor: Editor) {
           transformed
         });
       } catch (error) {
-        editor.showError(ErrorReason.CantChangeSignatureException);
+        editor.showError(ErrorReason.CantChangeSignature);
         return;
       }
     }
@@ -70,6 +65,30 @@ export async function changeSignature(editor: Editor) {
       })
     );
   });
+}
+
+type Params = { label: string; value: { startAt: number; endAt: number } }[];
+
+function getParams(code: string, selection: Selection): Params | null {
+  let result: Params | null = null;
+
+  t.parseAndTraverseCode(
+    code,
+    createVisitor(selection, (path) => {
+      result = path.node.params.map((p, index) => {
+        return {
+          label: getParamName(p),
+          value: {
+            startAt: index,
+            endAt: index
+          }
+        };
+      });
+      path.stop();
+    })
+  );
+
+  return result;
 }
 
 function updateCode(
@@ -116,13 +135,12 @@ function updateCode(
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath) => void
+  onMatch: (path: t.NodePath<t.FunctionDeclaration>) => void
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
-      toModifyNode = path.node;
       onMatch(path);
     }
   };

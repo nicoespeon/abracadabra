@@ -1,5 +1,5 @@
-import { Code, ErrorReason, AbsolutePath } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { AbsolutePath, Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
 
 import { changeSignature } from "./change-signature";
@@ -285,9 +285,7 @@ describe("Change Signature", () => {
 
     await changeSignature(editor);
 
-    expect(editor.showError).toBeCalledWith(
-      ErrorReason.CantChangeSignatureException
-    );
+    expect(editor.showError).toBeCalledWith(ErrorReason.CantChangeSignature);
   });
 
   it("Should order correclty for complex parameters with defaults values", async () => {
