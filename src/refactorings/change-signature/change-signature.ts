@@ -2,10 +2,11 @@ import * as t from "../../ast";
 import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
 import { Selection } from "../../editor/selection";
+import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
 
 export async function changeSignature(editor: Editor) {
   const { code, selection } = editor;
-  const params = getParams(code, selection);
+  const { fixedSelection, params } = getParams(code, selection);
 
   if (!params) {
     editor.showError(ErrorReason.CantChangeSignature);
@@ -13,8 +14,7 @@ export async function changeSignature(editor: Editor) {
   }
 
   await editor.askForPositions(params, async (newPositions) => {
-    const { selection } = editor;
-    const refrences = await editor.getSelectionReferences(selection);
+    const refrences = await editor.getSelectionReferences(fixedSelection);
 
     const filesContent = await Promise.all(
       refrences.map(async (reference) => {
@@ -69,12 +69,16 @@ export async function changeSignature(editor: Editor) {
 
 type Params = { label: string; value: { startAt: number; endAt: number } }[];
 
-function getParams(code: string, selection: Selection): Params | null {
+function getParams(
+  code: string,
+  selection: Selection
+): { params: Params | null; fixedSelection: Selection } {
   let result: Params | null = null;
+  let arrowSelection: Selection = selection;
 
   t.parseAndTraverseCode(
     code,
-    createVisitor(selection, (path) => {
+    createVisitor(selection, (path, aArrowSelection) => {
       result = path.node.params.map((p, index) => {
         return {
           label: getParamName(p),
@@ -84,11 +88,16 @@ function getParams(code: string, selection: Selection): Params | null {
           }
         };
       });
+
+      arrowSelection = aArrowSelection;
       path.stop();
     })
   );
 
-  return result;
+  return {
+    params: result,
+    fixedSelection: arrowSelection
+  };
 }
 
 function updateCode(
@@ -116,7 +125,7 @@ function updateCode(
           return t.identifier("undefined");
         });
         node.arguments = newArgs;
-      } else if (t.isFunctionDeclaration(node)) {
+      } else if (isFunctionDeclarationOrArrowFunction(node)) {
         const params = node.params.slice();
         if (params.length) {
           newPositions.forEach((order) => {
@@ -135,13 +144,32 @@ function updateCode(
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.FunctionDeclaration>) => void
+  onMatch: (
+    path: t.NodePath<t.FunctionDeclaration | t.ArrowFunctionExpression>,
+    arrowSelection: Selection
+  ) => void
 ): t.Visitor {
   return {
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
-      onMatch(path);
+      onMatch(path, selection);
+    },
+    ArrowFunctionExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      if (!t.isVariableDeclarator(path.parent)) return;
+
+      if (!path.parent.loc) return;
+
+      // For code Line always starts at 1. So we need to start at 0.
+      // Starting at 1 will get body function instead of function declaration
+      const arrowSelection = new Selection(
+        [path.parent.loc.start.line - 1, path.parent.loc.start.column],
+        [path.parent.loc.end.line - 1, path.parent.loc.end.column]
+      );
+
+      onMatch(path, arrowSelection);
     }
   };
 }
@@ -208,6 +236,11 @@ function createVisitorForReferences(
     },
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
+      onMatch(path);
+    },
+    ArrowFunctionExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+
       onMatch(path);
     }
   };

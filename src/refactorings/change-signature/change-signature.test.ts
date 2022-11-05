@@ -14,7 +14,7 @@ describe("Change Signature", () => {
     code: Code;
     expected: Code;
   }>(
-    "In same file",
+    "In same file with a function declarations",
     [
       {
         description: "when there are a function without references",
@@ -22,6 +22,15 @@ describe("Change Signature", () => {
             return a + b;
           }`,
         expected: `function add(b, a) {
+            return a + b;
+          }`
+      },
+      {
+        description: "when there are a arrow function",
+        code: `const item = [cursor](a, b) => {
+            return a + b;
+          }`,
+        expected: `const item = (b, a) => {
             return a + b;
           }`
       },
@@ -169,6 +178,67 @@ describe("Change Signature", () => {
           add(" years", 7);
           add();
           add(undefined, 1);`
+      }
+    ],
+    async ({ code, expected }) => {
+      const path = new AbsolutePath("/temp/aFile.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    }
+  );
+
+  testEach<{
+    code: Code;
+    expected: Code;
+  }>(
+    "In same file with a arrow function declarations",
+    [
+      {
+        description: "when there are an arrow function without references",
+        code: `const add = [cursor](a, b) => {
+            return a + b;
+          }`,
+        expected: `const add = (b, a) => {
+            return a + b;
+          }`
+      },
+      {
+        description: "when there are an arrow function with references",
+        code: `const add = [cursor](a, b) => {
+            return a + b;
+          }
+          add(1, 2);
+          `,
+        expected: `const add = (b, a) => {
+            return a + b;
+          }
+          add(2, 1);
+          `
+      },
+      {
+        description:
+          "when there are a defined arrow function in multiple lines with references",
+        code: `const add = [cursor](
+          a,
+          b) => {
+            return a + b;
+          }
+          add(1, 2);
+          `,
+        expected: `const add = (
+          b,
+          a) => {
+            return a + b;
+          }
+          add(2, 1);
+          `
       }
     ],
     async ({ code, expected }) => {
