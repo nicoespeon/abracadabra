@@ -321,6 +321,57 @@ describe("Change Signature", () => {
               }
             ]
           }
+        },
+        {
+          description: "that import arrow function",
+          setup: {
+            currentFile: {
+              code: `export const add = [cursor](a, b) => {
+              return a + b;
+            }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {add} from './module';
+                add(1, 2)
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  return add(a, b);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          },
+          expected: {
+            currentFile: {
+              code: `export const add = (b, a) => {
+              return a + b;
+            }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {add} from './module';
+                add(2, 1)
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  return add(b, a);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          }
         }
       ],
       async ({ setup, expected }) => {
