@@ -414,6 +414,65 @@ describe("Change Signature", () => {
               }
             ]
           }
+        },
+        {
+          description: "that import a class and use a method",
+          setup: {
+            currentFile: {
+              code: `export class Maths {
+                [cursor]add(a, b) {
+                  return a + b;
+                }
+              }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {Maths} from './module';
+                const maths = new Maths();
+                maths.add(1, 2);
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  const maths = new Maths();
+                  return maths.add(a, b);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          },
+          expected: {
+            currentFile: {
+              code: `export class Maths {
+                add(b, a) {
+                  return a + b;
+                }
+              }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {Maths} from './module';
+                const maths = new Maths();
+                maths.add(2, 1);
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  const maths = new Maths();
+                  return maths.add(b, a);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          }
         }
       ],
       async ({ setup, expected }) => {
