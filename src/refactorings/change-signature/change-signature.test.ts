@@ -246,6 +246,57 @@ describe("Change Signature", () => {
     }
   );
 
+  testEach<{
+    code: Code;
+    expected: Code;
+  }>(
+    "In same file with class methods",
+    [
+      {
+        description: "when there are a class without references",
+        code: `class Maths {
+        [cursor]add(a, b) {
+          return a + b;
+        }
+      }`,
+        expected: `class Maths {
+        add(b, a) {
+          return a + b;
+        }
+      }`
+      },
+      {
+        description: "when there are a class with method references",
+        code: `class Maths {
+        [cursor]add(a, b) {
+          return a + b;
+        }
+      }
+      const maths = new Maths();
+      maths.add(1, 2);`,
+        expected: `class Maths {
+        add(b, a) {
+          return a + b;
+        }
+      }
+      const maths = new Maths();
+      maths.add(2, 1);`
+      }
+    ],
+    async ({ code, expected }) => {
+      const path = new AbsolutePath("/temp/aFile.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    }
+  );
+
   describe("Modules", () => {
     const addModule = new AbsolutePath("/temp/add.ts");
     const anotherModule = new AbsolutePath("/temp/anotherModule");
