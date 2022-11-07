@@ -162,14 +162,7 @@ export function createVisitor(
 
       if (!path.parent.loc) return;
 
-      // For code Line always starts at 1. So we need to start at 0.
-      // Starting at 1 will get body function instead of function declaration
-      const arrowSelection = new Selection(
-        [path.parent.loc.start.line - 1, path.parent.loc.start.column],
-        [path.parent.loc.end.line - 1, path.parent.loc.end.column]
-      );
-
-      onMatch(path, arrowSelection);
+      onMatch(path, Selection.fromAST(path.parent.loc));
     }
   };
 }
