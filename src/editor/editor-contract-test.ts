@@ -1,11 +1,11 @@
-import { suite, test, afterEach } from "mocha";
 import { assert } from "chai";
+import { afterEach, suite, test } from "mocha";
 import * as sinon from "sinon";
 
-import { Editor, Code, RelativePath, AbsolutePath } from "./editor";
+import { CodeReference } from "./code-reference";
+import { AbsolutePath, Code, Editor, RelativePath } from "./editor";
 import { Position } from "./position";
 import { Selection } from "./selection";
-import { CodeReference } from "./code-reference";
 
 /**
  * This is a contract tests factory.
@@ -415,18 +415,20 @@ return num1 + num2;
 add(1, 2);
 `;
     const editor = await createEditorOn(code);
-    const file =
-      __dirname + "/adapters/vscode-editor-tests/abracadabra-vscode-tests.ts";
-    const filePath = new AbsolutePath(file);
+    // Path seems to be fixed by the test runner.
+    // Not ideal but it works for now.
+    const filePath = new AbsolutePath(
+      `${__dirname}/adapters/vscode-editor-tests/abracadabra-vscode-tests.ts`
+    );
     await editor.writeIn(filePath, code);
     const codeReferences = await editor.getSelectionReferences(
-      new Selection([0, 9], [0, 9])
+      Selection.cursorAt(0, 9)
     );
 
     assert.strictEqual(codeReferences.length, 2);
     assert.deepStrictEqual(codeReferences, [
-      new CodeReference(new AbsolutePath(file), new Selection([1, 9], [1, 12])),
-      new CodeReference(new AbsolutePath(file), new Selection([4, 0], [4, 3]))
+      new CodeReference(filePath, new Selection([1, 9], [1, 12])),
+      new CodeReference(filePath, new Selection([4, 0], [4, 3]))
     ]);
   });
 }
