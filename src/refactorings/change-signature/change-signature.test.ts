@@ -14,7 +14,7 @@ describe("Change Signature", () => {
     code: Code;
     expected: Code;
   }>(
-    "In same file with a function declarations",
+    "In the same file with function declarations",
     [
       {
         description: "when there are a function without references",
@@ -198,10 +198,10 @@ describe("Change Signature", () => {
     code: Code;
     expected: Code;
   }>(
-    "In same file with a arrow function declarations",
+    "In the same file with arrow function declarations",
     [
       {
-        description: "when there are an arrow function without references",
+        description: "when there is an arrow function without references",
         code: `const add = [cursor](a, b) => {
             return a + b;
           }`,
@@ -210,7 +210,7 @@ describe("Change Signature", () => {
           }`
       },
       {
-        description: "when there are an arrow function with references",
+        description: "when there is an arrow function with references",
         code: `const add = [cursor](a, b) => {
             return a + b;
           }
@@ -224,7 +224,7 @@ describe("Change Signature", () => {
       },
       {
         description:
-          "when there are a defined arrow function in multiple lines with references",
+          "when there is a defined arrow function in multiple lines with references",
         code: `const add = [cursor](
           a,
           b) => {
