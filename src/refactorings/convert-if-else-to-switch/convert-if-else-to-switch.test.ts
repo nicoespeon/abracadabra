@@ -222,6 +222,31 @@ case "John":
 default:
   return sayHello();
 }`
+      },
+      {
+        description: "preserves comments",
+        code: `// leading comment
+[cursor]if (name === "Jane") {
+  sayHelloToJane();
+} else if (name === "John") {
+  sayHelloToJohn();
+} else {
+  sayHello();
+}
+// trailing comment`,
+        expected: `// leading comment
+switch (name) {
+case "Jane":
+  sayHelloToJane();
+  break;
+case "John":
+  sayHelloToJohn();
+  break;
+default:
+  sayHello();
+  break;
+}
+// trailing comment`
       }
     ],
     async ({ code, expected }) => {

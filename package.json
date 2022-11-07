@@ -1,6 +1,6 @@
 {
   "name": "abracadabra",
-  "version": "6.15.3",
+  "version": "6.16.0",
   "displayName": "Abracadabra, refactor this!",
   "publisher": "nicoespeon",
   "description": "Automated refactorings for VS Code, in JavaScript and TypeScript.",
@@ -21,7 +21,8 @@
     "javascript",
     "typescript",
     "react",
-    "vue"
+    "vue",
+    "svelte"
   ],
   "categories": [
     "Formatters",
@@ -63,20 +64,20 @@
     "deploy:ovsx": "ovsx publish"
   },
   "devDependencies": {
-    "@babel/core": "7.18.9",
-    "@babel/preset-env": "7.18.9",
+    "@babel/core": "7.18.13",
+    "@babel/preset-env": "7.19.3",
     "@babel/preset-typescript": "7.18.6",
     "@types/babel__traverse": "7.17.1",
-    "@types/chai": "4.3.1",
+    "@types/chai": "4.3.3",
     "@types/jest": "27.4.1",
     "@types/jscodeshift": "0.11.2",
-    "@types/mocha": "9.1.1",
-    "@types/node": "18.6.3",
+    "@types/mocha": "10.0.0",
+    "@types/node": "18.11.9",
     "@types/path-browserify": "1.0.0",
     "@types/pluralize": "0.0.29",
     "@types/sinon": "10.0.13",
     "@types/vscode": "1.69.0",
-    "@typescript-eslint/eslint-plugin": "5.31.0",
+    "@typescript-eslint/eslint-plugin": "5.42.0",
     "@vscode/test-electron": "2.1.5",
     "all-contributors-cli": "6.20.0",
     "assert": "2.0.0",
@@ -89,29 +90,29 @@
     "hygen": "6.2.8",
     "jest": "27.5.1",
     "lint-staged": "13.0.3",
-    "mocha": "10.0.0",
+    "mocha": "10.1.0",
     "npm-run-all": "4.1.5",
     "ovsx": "0.5.1",
     "path-browserify": "1.0.1",
     "prettier": "2.7.1",
     "pretty-quick": "3.1.3",
     "process": "0.11.10",
-    "sinon": "14.0.0",
-    "ts-loader": "9.3.1",
-    "util": "0.12.4",
+    "sinon": "14.0.1",
+    "ts-loader": "9.4.1",
+    "util": "0.12.5",
     "vsce": "2.10.0",
     "webpack": "5.74.0",
     "webpack-cli": "4.10.0"
   },
   "dependencies": {
-    "@babel/parser": "7.18.9",
+    "@babel/parser": "7.19.3",
     "@babel/traverse": "7.18.9",
     "@babel/types": "7.18.4",
-    "@eslint/eslintrc": "1.3.0",
-    "@typescript-eslint/parser": "5.31.0",
-    "@typescript/vfs": "1.3.5",
+    "@eslint/eslintrc": "1.3.3",
+    "@typescript-eslint/parser": "5.38.1",
+    "@typescript/vfs": "1.4.0",
     "change-case": "4.1.2",
-    "eslint": "8.21.0",
+    "eslint": "8.25.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "jscodeshift": "0.13.0",
     "minimatch": "5.1.0",
@@ -119,13 +120,14 @@
     "react-codemod": "5.4.3",
     "recast": "0.20.5",
     "ts-morph": "12.1.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.4"
   },
   "resolutions": {
     "@babel/types": "7.18.4"
   },
   "activationEvents": [
     "onCommand:abracadabra.addNumericSeparator",
+    "onCommand:abracadabra.changeSignature",
     "onCommand:abracadabra.convertForToForEach",
     "onCommand:abracadabra.convertForEachToForOf",
     "onCommand:abracadabra.convertFunctionDeclarationToArrowFunction",
@@ -167,13 +169,19 @@
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
     "onLanguage:typescriptreact",
-    "onLanguage:vue"
+    "onLanguage:vue",
+    "onLanguage:svelte"
   ],
   "contributes": {
     "commands": [
       {
         "command": "abracadabra.addNumericSeparator",
         "title": "Add Numeric Separator",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.changeSignature",
+        "title": "Change Signature",
         "category": "Abracadabra"
       },
       {
@@ -429,6 +437,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.changeSignature.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.convertForToForEach.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -604,6 +617,34 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.addNumericSeparator",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.changeSignature",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == javascript"
         },
@@ -622,6 +663,10 @@
         {
           "command": "abracadabra.convertForToForEach",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertForToForEach",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.convertForEachToForOf",
@@ -644,6 +689,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.convertForEachToForOf",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
           "when": "editorLangId == javascript"
         },
@@ -662,6 +711,10 @@
         {
           "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.convertIfElseToTernary",
@@ -684,6 +737,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.convertIfElseToTernary",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.convertIfElseToSwitch",
           "when": "editorLangId == javascript"
         },
@@ -702,6 +759,10 @@
         {
           "command": "abracadabra.convertIfElseToSwitch",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertIfElseToSwitch",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.convertSwitchToIfElse",
@@ -724,6 +785,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.convertSwitchToIfElse",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.convertTernaryToIfElse",
           "when": "editorLangId == javascript"
         },
@@ -742,6 +807,10 @@
         {
           "command": "abracadabra.convertTernaryToIfElse",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertTernaryToIfElse",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.convertToTemplateLiteral",
@@ -764,6 +833,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.convertToTemplateLiteral",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.convertLetToConst",
           "when": "editorLangId == javascript"
         },
@@ -782,6 +855,10 @@
         {
           "command": "abracadabra.convertLetToConst",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertLetToConst",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.createFactoryForConstructor",
@@ -804,6 +881,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.createFactoryForConstructor",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.destructureObject",
           "when": "editorLangId == javascript"
         },
@@ -824,6 +905,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.destructureObject",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.extract",
           "when": "editorLangId == javascript"
         },
@@ -844,6 +929,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.extract",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.extractClass",
           "when": "editorLangId == javascript"
         },
@@ -862,6 +951,10 @@
         {
           "command": "abracadabra.extractClass",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.extractClass",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.extractGenericType",
@@ -876,11 +969,15 @@
           "when": "editorLangId == vue"
         },
         {
-          "command": "abracadabra.extractInterface",
-          "when": "editorLangId == typescript"
+          "command": "abracadabra.extractGenericType",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.extractInterface",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extractInterface",
           "when": "editorLangId == typescriptreact"
         },
         {
@@ -888,6 +985,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.extractInterface",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.flipIfElse",
           "when": "editorLangId == javascript"
         },
@@ -906,6 +1007,10 @@
         {
           "command": "abracadabra.flipIfElse",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.flipIfElse",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.flipTernary",
@@ -928,6 +1033,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.flipTernary",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.inline",
           "when": "editorLangId == javascript"
         },
@@ -946,6 +1055,10 @@
         {
           "command": "abracadabra.inline",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.inline",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.liftUpConditional",
@@ -968,6 +1081,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.liftUpConditional",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.mergeIfStatements",
           "when": "editorLangId == javascript"
         },
@@ -988,6 +1105,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.mergeIfStatements",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.mergeWithPreviousIfStatement",
           "when": "editorLangId == javascript"
         },
@@ -1008,6 +1129,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.mergeWithPreviousIfStatement",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.moveStatementDown",
           "when": "editorLangId == javascript"
         },
@@ -1028,6 +1153,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.moveStatementDown",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.moveStatementUp",
           "when": "editorLangId == javascript"
         },
@@ -1046,6 +1175,10 @@
         {
           "command": "abracadabra.moveStatementUp",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.moveStatementUp",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.moveToExistingFile",
@@ -1082,6 +1215,10 @@
         {
           "command": "abracadabra.invertBooleanLogic",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.invertBooleanLogic",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.react.convertToPureComponent",
@@ -1096,6 +1233,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.react.convertToPureComponent",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.removeDeadCode",
           "when": "editorLangId == javascript"
         },
@@ -1114,6 +1255,10 @@
         {
           "command": "abracadabra.removeDeadCode",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.removeDeadCode",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.removeRedundantElse",
@@ -1136,6 +1281,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.removeRedundantElse",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.renameSymbol",
           "when": "editorLangId == javascript"
         },
@@ -1154,6 +1303,10 @@
         {
           "command": "abracadabra.renameSymbol",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.renameSymbol",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.replaceBinaryWithAssignment",
@@ -1176,6 +1329,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.simplifyTernary",
           "when": "editorLangId == javascript"
         },
@@ -1194,6 +1351,10 @@
         {
           "command": "abracadabra.simplifyTernary",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.simplifyTernary",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.splitDeclarationAndInitialization",
@@ -1216,6 +1377,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.splitDeclarationAndInitialization",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.splitIfStatement",
           "when": "editorLangId == javascript"
         },
@@ -1236,6 +1401,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.splitIfStatement",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.splitMultipleDeclarations",
           "when": "editorLangId == javascript"
         },
@@ -1256,6 +1425,10 @@
           "when": "editorLangId == vue"
         },
         {
+          "command": "abracadabra.splitMultipleDeclarations",
+          "when": "editorLangId == svelte"
+        },
+        {
           "command": "abracadabra.toggleBraces",
           "when": "editorLangId == javascript"
         },
@@ -1274,6 +1447,10 @@
         {
           "command": "abracadabra.toggleBraces",
           "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.toggleBraces",
+          "when": "editorLangId == svelte"
         }
       ]
     }

@@ -38,6 +38,10 @@ export class Path {
     const relativeValue = path.relative(path.dirname(value), this.value);
     return new RelativePath(relativeValue);
   }
+
+  absoluteFrom(value: string): AbsolutePath {
+    return new AbsolutePath(value);
+  }
 }
 
 export class AbsolutePath extends Path {
@@ -47,6 +51,10 @@ export class AbsolutePath extends Path {
     if (!this.isValueAbsolute) {
       throw new Error(`${value} is not an absolute path`);
     }
+  }
+
+  absoluteFrom(_value: string): AbsolutePath {
+    return this;
   }
 }
 

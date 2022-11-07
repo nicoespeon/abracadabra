@@ -5,6 +5,7 @@ import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
+import changeSignature from "./refactorings/change-signature";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
@@ -57,7 +58,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withoutActionProvider: [reactConvertToPureComponent],
     withActionProvider: [reactExtractUseCallback]
   },
-  allButVue: {
+  allButVueAndSvelte: {
     languages: [
       "javascript",
       "javascriptreact",
@@ -73,7 +74,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       "javascriptreact",
       "typescript",
       "typescriptreact",
-      "vue"
+      "vue",
+      "svelte"
     ],
     withoutActionProvider: [
       extract,
@@ -84,6 +86,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withActionProvider: [
       addNumericSeparator,
+      changeSignature,
       convertForEachToForOf,
       convertForToForEach,
       convertIfElseToSwitch,

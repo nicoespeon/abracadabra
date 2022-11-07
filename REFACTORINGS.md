@@ -20,6 +20,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Extract Type](#extract-type)
   1. [Inline Variable](#inline-variable)
   1. [Inline Function](#inline-function)
+  1. [Change Signature](#change-signature)
   1. [Move Statement Up](#move-statement-up)
   1. [Move Statement Down](#move-statement-down)
 - Simplifying Conditional Logic:
@@ -76,9 +77,9 @@ This refactoring allows you to rename things and make sure all references in you
 
 [VS Code does this refactoring][vscode-rename-symbol] very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
 
-Note that **it handles `.vue` files with a similar UX** while VS Code doesn't handle it natively yet.
+Note that **it handles `.vue` and `.svelte` files with a similar UX** while VS Code doesn't handle it natively yet.
 
-For Vue files, the support is limited: it can only rename **within the `<script>` tag**. It won't rename your identifier in the `<template>` tag for instance.
+For Vue and Svelte files, the support is limited: it can only rename **within the `<script>` tag**. It won't rename your identifier in the `<template>` tag for instance.
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -137,6 +138,17 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
 
 ![][demo-inline-function]
+![][demo-inline-function]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Change Signature
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+This refactoring allows you to change the order of a function parameters. It will resolve and update the references to that function.
+
+![][demo-change-signature]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -580,6 +592,7 @@ _Note: it works in a web editor too (eg. https://github.dev/nicoespeon/abracadab
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-generic-type.gif?raw=true
 [demo-inline-variable]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/inline-variable.gif?raw=true
 [demo-inline-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/inline-function.gif?raw=true
+[demo-change-signature]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/change-signature.gif?raw=true
 [demo-invert-boolean-logic]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/invert-boolean-logic.gif?raw=true
 [demo-invert-boolean-logic-partial]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/invert-boolean-logic-partial.gif?raw=true
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-redundant-else.gif?raw=true

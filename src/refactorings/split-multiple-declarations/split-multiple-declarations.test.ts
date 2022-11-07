@@ -40,6 +40,17 @@ let details = {age: 10, country: "Moon"};`
         code: `let firstName: string = 'John', age: number = 7`,
         expected: `let firstName: string = 'John';
 let age: number = 7;`
+      },
+      {
+        description: "preserves comments",
+        code: `// leading comment
+const x = 1, y = 2;
+// trailing comment`,
+        expected: `// leading comment
+const x = 1;
+
+const y = 2;
+// trailing comment`
       }
     ],
     async ({ code, expected }) => {

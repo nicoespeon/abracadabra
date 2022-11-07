@@ -113,6 +113,23 @@ describe("Convert If/Else to Ternary", () => {
 }`
       },
       {
+        description: "preserve comments before and after condition",
+        code: `function reservationMode(daysInAdvance) {
+  // leading comment
+  if ([cursor]daysInAdvance > 10) {
+    return "early";
+  } else {
+    return "normal";
+  }
+  // trailing comment
+}`,
+        expected: `function reservationMode(daysInAdvance) {
+  // leading comment
+  return daysInAdvance > 10 ? "early" : "normal";
+  // trailing comment
+}`
+      },
+      {
         description: "preserve comments for returned values",
         code: `function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Change Signature" thanks to @11joselu great work to find function references across files.
+
+## [6.16.0] - 2022-10-20 - Kidnap the Svelty Claws 🎃
+
+### Added
+
+- **Support for `.svelte` files**. @srsholmes enabled Abracadabra refactorings support for `.svelte` files. How cool is that?!
+
+### Changed
+
+- Give more user-friendly default names for `new` expressions, thanks to @azhiv
+
+### Fixed
+
+- @chrstnbrn fixed an issue where comments might get deleted when performing some refactorings. Kudos!
+
 ## [6.15.3]
 
 No user-visible change. Attempting to fix CI deployments.
@@ -1657,7 +1675,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...HEAD
+[6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
 [6.15.3]: https://github.com/nicoespeon/abracadabra/compare/6.15.2...6.15.3
 [6.15.2]: https://github.com/nicoespeon/abracadabra/compare/6.15.1...6.15.2
 [6.15.1]: https://github.com/nicoespeon/abracadabra/compare/6.15.0...6.15.1

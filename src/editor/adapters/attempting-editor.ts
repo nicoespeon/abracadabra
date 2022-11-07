@@ -1,4 +1,5 @@
 import { Source } from "../../highlights/highlights";
+import { CodeReference } from "../code-reference";
 import {
   Choice,
   Code,
@@ -6,8 +7,9 @@ import {
   Editor,
   ErrorReason,
   Modification,
-  RelativePath
+  SelectedPosition
 } from "../editor";
+import { Path } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
@@ -16,7 +18,7 @@ export class AttemptingEditor implements Editor {
 
   constructor(private editor: Editor, private expectedReason: ErrorReason) {}
 
-  workspaceFiles(): Promise<RelativePath[]> {
+  workspaceFiles(): Promise<Path[]> {
     return this.editor.workspaceFiles();
   }
 
@@ -24,7 +26,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.code;
   }
 
-  codeOf(path: RelativePath): Promise<Code> {
+  codeOf(path: Path): Promise<Code> {
     return this.editor.codeOf(path);
   }
 
@@ -36,7 +38,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.write(code, newCursorPosition);
   }
 
-  writeIn(path: RelativePath, code: Code): Promise<void> {
+  writeIn(path: Path, code: Code): Promise<void> {
     return this.editor.writeIn(path, code);
   }
 
@@ -94,5 +96,16 @@ export class AttemptingEditor implements Editor {
 
   findHighlight(selection: Selection): Source | undefined {
     return this.editor.findHighlight(selection);
+  }
+
+  getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
+    return this.editor.getSelectionReferences(selection);
+  }
+
+  async askForPositions(
+    params: SelectedPosition[],
+    onConfirm: (positions: SelectedPosition[]) => Promise<void>
+  ): Promise<void> {
+    await this.editor.askForPositions(params, onConfirm);
   }
 }

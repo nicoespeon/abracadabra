@@ -87,6 +87,15 @@ export class StringLiteralVariable extends Variable<t.Node> {
   }
 }
 
+export class NewExpressionVariable extends Variable<t.NewExpression> {
+  constructor(path: t.NodePath<t.NewExpression>) {
+    super(path);
+    if (path.node.callee.type === "Identifier") {
+      this.tryToSetNameWith(camelCase(path.node.callee.name));
+    }
+  }
+}
+
 export class MemberExpressionVariable extends Variable<
   t.MemberExpression | t.OptionalMemberExpression
 > {

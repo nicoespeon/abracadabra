@@ -1,19 +1,20 @@
 import { Selection } from "./selection";
-import { RelativePath } from "./path";
+import { Path } from "./path";
 import { Position } from "./position";
 import { ErrorReason } from "./error-reason";
 import { Source } from "../highlights/highlights";
+import { CodeReference } from "./code-reference";
 
 export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
 
 export interface Editor {
-  workspaceFiles(): Promise<RelativePath[]>;
+  workspaceFiles(): Promise<Path[]>;
   readonly selection: Selection;
   readonly code: Code;
-  codeOf(path: RelativePath): Promise<Code>;
+  codeOf(path: Path): Promise<Code>;
   write(code: Code, newCursorPosition?: Position): Promise<void>;
-  writeIn(path: RelativePath, code: Code): Promise<void>;
+  writeIn(path: Path, code: Code): Promise<void>;
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],
@@ -31,6 +32,11 @@ export interface Editor {
   highlight(source: Source, bindings: Selection[]): void;
   removeHighlight(source: Source): void;
   removeAllHighlights(): void;
+  getSelectionReferences(selection: Selection): Promise<CodeReference[]>;
+  askForPositions(
+    params: SelectedPosition[],
+    callback: (positions: SelectedPosition[]) => Promise<void>
+  ): Promise<void>;
 }
 
 export type Modification = {
@@ -55,3 +61,11 @@ export type Choice<T> = {
   description?: string;
   icon?: "file-code";
 };
+
+export type SelectedPosition = Omit<
+  Choice<{
+    startAt: number;
+    endAt: number;
+  }>,
+  "description" | "icon"
+>;

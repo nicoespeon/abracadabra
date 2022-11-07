@@ -22,6 +22,23 @@ describe("Convert Ternary to If/Else", () => {
 }`
       },
       {
+        description: "preserves comments for return",
+        code: `function reservationMode(daysInAdvance) {
+  // leading comment
+  return daysInA[cursor]dvance > 10 ? "early" : "normal";
+  // trailing comment
+}`,
+        expected: `function reservationMode(daysInAdvance) {
+  // leading comment
+  if (daysInAdvance > 10) {
+    return "early";
+  } else {
+    return "normal";
+  }
+  // trailing comment
+}`
+      },
+      {
         description: "assignment expression",
         code: `function reservationMode(daysInAdvance) {
   let mode;
@@ -60,6 +77,29 @@ describe("Convert Ternary to If/Else", () => {
 }`
       },
       {
+        description: "preserves comments for assignment expression",
+        code: `function reservationMode(daysInAdvance) {
+  let mode;
+  // leading comment
+  mode = daysInA[cursor]dvance > 10 ? "early" : "normal";
+  // trailing comment
+  return mode;
+}`,
+        expected: `function reservationMode(daysInAdvance) {
+  let mode;
+
+  // leading comment
+  if (daysInAdvance > 10) {
+    mode = "early";
+  } else {
+    mode = "normal";
+  }
+
+  // trailing comment
+  return mode;
+}`
+      },
+      {
         description: "variable declaration",
         code: `function reservationMode(daysInAdvance) {
   const mode = d[cursor]aysInAdvance > 10 ? "early" : "normal";
@@ -74,6 +114,28 @@ describe("Convert Ternary to If/Else", () => {
     mode = "normal";
   }
 
+  return mode;
+}`
+      },
+      {
+        description: "preserves comments for variable declaration",
+        code: `function reservationMode(daysInAdvance) {
+  // leading comment
+  const mode = d[cursor]aysInAdvance > 10 ? "early" : "normal";
+  // trailing comment
+  return mode;
+}`,
+        expected: `function reservationMode(daysInAdvance) {
+  // leading comment
+  let mode;
+
+  if (daysInAdvance > 10) {
+    mode = "early";
+  } else {
+    mode = "normal";
+  }
+
+  // trailing comment
   return mode;
 }`
       },
@@ -218,6 +280,23 @@ if (args.forcelink) {
   } else {
     doThat();
   }
+}`
+      },
+      {
+        description: "preserves comments for ternary that is not returned",
+        code: `function doSomething(isValid) {
+  // leading comment
+  [cursor]isValid ? doThis() : doThat();
+  // trailing comment
+}`,
+        expected: `function doSomething(isValid) {
+  // leading comment
+  if (isValid) {
+    doThis();
+  } else {
+    doThat();
+  }
+  // trailing comment
 }`
       }
     ],

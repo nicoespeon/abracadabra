@@ -5,7 +5,7 @@ import { Position } from "../position";
 import { Selection } from "../selection";
 import { VSCodeEditor } from "./vscode-editor";
 
-export class VueVSCodeEditor extends VSCodeEditor {
+export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
   get code(): Code {
     return super.code.slice(this.openingTagOffset, this.closingTagOffset);
   }

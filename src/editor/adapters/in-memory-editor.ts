@@ -1,6 +1,7 @@
 import assert from "assert";
 import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
+import { CodeReference } from "../code-reference";
 import {
   Choice,
   Code,
@@ -9,8 +10,10 @@ import {
   ErrorReason,
   Modification,
   RelativePath,
-  Result
+  Result,
+  SelectedPosition
 } from "../editor";
+import { Path } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 
@@ -24,14 +27,15 @@ const SELECTION_END = "[end]";
 export class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
-  private otherFiles = new Map<RelativePath, Editor>();
+  private otherFiles = new Map<Path, Editor>();
+  private userChoices: Choice<unknown>[] = [];
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }
 
-  async workspaceFiles(): Promise<RelativePath[]> {
+  async workspaceFiles(): Promise<Path[]> {
     return Array.from(this.otherFiles.keys());
   }
 
@@ -43,7 +47,7 @@ export class InMemoryEditor implements Editor {
     return this.read(this.highlightCodeMatrix(this.codeMatrix));
   }
 
-  async codeOf(path: RelativePath): Promise<Code> {
+  async codeOf(path: Path): Promise<Code> {
     const otherFile = this.otherFiles.get(path);
     if (!otherFile) return "";
 
@@ -66,7 +70,7 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
-  async writeIn(path: RelativePath, code: Code): Promise<void> {
+  async writeIn(path: Path, code: Code): Promise<void> {
     this.otherFiles.set(path, new InMemoryEditor(code));
   }
 
@@ -285,6 +289,87 @@ export class InMemoryEditor implements Editor {
   removeAllHighlights(): void {
     this.highlights.clear();
     this.highlightsRepository.removeAllHighlights();
+  }
+
+  async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
+    const { start } = selection;
+    const endOfFunctionDef = {
+      OPEN_PARENTHESIS: "(",
+      SPACE_BETWEEN_OPEN_PARENTHESIS: " ",
+      ARROW_DEFINITION: "="
+    };
+
+    const line = this.codeMatrix[start.line];
+    const startLine = line.slice(start.character);
+
+    const endLineIndex = startLine.findIndex((item) => {
+      return Object.values(endOfFunctionDef).includes(item);
+    });
+
+    const functionReferences = line
+      .slice(start.character, start.character + endLineIndex)
+      .join("");
+
+    const array = Array.from(this.otherFiles, ([filename, editor]) => ({
+      filename,
+      editor
+    })).filter(({ editor }) => {
+      return editor.code.includes(functionReferences);
+    });
+
+    const references: CodeReference[] = [];
+
+    array.forEach((obj) => {
+      const codeMatrix = this.createPos(obj.editor.code, functionReferences);
+
+      codeMatrix.forEach((pos) => {
+        references.push(
+          new CodeReference(
+            obj.filename,
+            new Selection([pos.row, pos.col], [pos.row, pos.col])
+          )
+        );
+      });
+    });
+
+    return references;
+  }
+
+  private createPos(str: string, wordToSearch: string) {
+    const splittedCode: string[][] = str.split("\n").map((e) => [...e]);
+    const items: {
+      word: string;
+      row: number;
+      col: number;
+    }[] = [];
+
+    splittedCode.forEach((arr, row) => {
+      const word = arr.join("");
+      if (word.includes(wordToSearch)) {
+        const post = arr.map((_char, col) => ({
+          word,
+          row: row + 1,
+          col: col + 1
+        }));
+
+        items.push(...post);
+      }
+    });
+
+    return items.filter(
+      (v, i, a) => a.findIndex((v2) => v2.word === v.word) === i
+    );
+  }
+
+  async askForPositions(
+    _params: SelectedPosition[],
+    onConfirm: (positions: SelectedPosition[]) => Promise<void>
+  ): Promise<void> {
+    await onConfirm(this.userChoices as SelectedPosition[]);
+  }
+
+  public saveUserChoices<T>(choice: Choice<T>) {
+    this.userChoices.push(choice);
   }
 }
 

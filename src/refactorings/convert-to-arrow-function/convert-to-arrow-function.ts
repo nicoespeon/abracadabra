@@ -47,7 +47,7 @@ function updateCode(
         return;
       }
 
-      path.replaceWith(converter.replacementNode);
+      t.replaceWithPreservingComments(path, converter.replacementNode);
       path.stop();
     })
   );
@@ -73,11 +73,7 @@ class FunctionDeclarationConverter implements Converter {
       t.toArrowFunctionExpression(this.path)
     );
 
-    const variableDeclaration = t.variableDeclaration("const", [declarator]);
-    // @ts-expect-error Recast does use a `comments` attribute.
-    variableDeclaration.comments = node.comments;
-
-    return variableDeclaration;
+    return t.variableDeclaration("const", [declarator]);
   }
 
   get hasReferenceBefore() {
