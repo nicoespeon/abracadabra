@@ -26,15 +26,6 @@ describe("Change Signature", () => {
           }`
       },
       {
-        description: "when there are a arrow function",
-        code: `const item = [cursor](a, b) => {
-            return a + b;
-          }`,
-        expected: `const item = (b, a) => {
-            return a + b;
-          }`
-      },
-      {
         description: "when there are a defined function with references",
         code: `function [cursor]add(a, b) {
             return a + b;
