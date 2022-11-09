@@ -125,7 +125,10 @@ function updateCode(
           return t.identifier("undefined");
         });
         node.arguments = newArgs;
-      } else if (isFunctionDeclarationOrArrowFunction(node)) {
+      } else if (
+        isFunctionDeclarationOrArrowFunction(node) ||
+        t.isClassMethod(node)
+      ) {
         const params = node.params.slice();
         if (params.length) {
           newPositions.forEach((order) => {
@@ -145,7 +148,9 @@ function updateCode(
 export function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.FunctionDeclaration | t.ArrowFunctionExpression>,
+    path: t.NodePath<
+      t.FunctionDeclaration | t.ArrowFunctionExpression | t.ClassMethod
+    >,
     arrowSelection: Selection
   ) => void
 ): t.Visitor {
@@ -163,6 +168,10 @@ export function createVisitor(
       if (!path.parent.loc) return;
 
       onMatch(path, Selection.fromAST(path.parent.loc));
+    },
+    ClassMethod(path) {
+      if (!selection.isInsidePath(path)) return;
+      onMatch(path, selection);
     }
   };
 }
@@ -234,6 +243,10 @@ function createVisitorForReferences(
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
+      onMatch(path);
+    },
+    ClassMethod(path) {
+      if (!selection.isInsidePath(path)) return;
       onMatch(path);
     }
   };
