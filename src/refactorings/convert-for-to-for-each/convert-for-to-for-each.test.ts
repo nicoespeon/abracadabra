@@ -93,7 +93,8 @@ items.forEach(item => {
 }`
       },
       {
-        description: "nested for-loop, cursor on nested, nested invalid",
+        description:
+          "nested for-loop, cursor on nested, nested would be invalid forEach",
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
@@ -274,6 +275,23 @@ items.forEach(item => {
         expected: `foo.bar.forEach(item => {
   console.log(item);
 });`
+      },
+      {
+        description: "nested for-of, cursor on nested",
+        code: `const items = ['foo', 'bar', 'baz'];
+
+for (const x of items) {
+  for (const y of items) {[cursor]
+    console.log(x * y);
+  }
+}`,
+        expected: `const items = ['foo', 'bar', 'baz'];
+
+for (const x of items) {
+  items.forEach(y => {
+    console.log(x * y);
+  });
+}`
       },
       {
         description: "preserves comments",

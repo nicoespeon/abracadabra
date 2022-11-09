@@ -101,6 +101,10 @@ export function createVisitor(
     ForOfStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       const { left, right } = path.node;
       if (!t.isVariableDeclaration(left)) return;
       if (!isList(right, path)) return;
@@ -152,6 +156,20 @@ function hasChildWhichMatchesSelection(
       if (!t.isIdentifier(test.left)) return;
 
       if (!getList(test, init)) return;
+
+      result = true;
+      childPath.stop();
+    },
+
+    ForOfStatement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const { left, right } = childPath.node;
+      if (!t.isVariableDeclaration(left)) return;
+      if (!isList(right, childPath)) return;
+
+      const identifier = getIdentifier(left);
+      if (!identifier) return;
 
       result = true;
       childPath.stop();

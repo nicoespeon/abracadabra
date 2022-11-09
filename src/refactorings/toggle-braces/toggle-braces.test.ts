@@ -181,6 +181,18 @@ if (isValid) {
 }`
       },
       {
+        description: "nested for statement, cursor on nested",
+        code: `for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 4; j++) {[cursor]
+    console.log(i * j);
+  }
+}`,
+        expected: `for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 4; j++)
+    console.log(i * j);
+}`
+      },
+      {
         description: "while statement",
         code: `while (true) cons[cursor]ole.log("Hello");`,
         expected: `while (true) {
