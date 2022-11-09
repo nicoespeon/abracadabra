@@ -1,8 +1,8 @@
 import * as t from "../../ast";
+import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
 import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
 import { Selection } from "../../editor/selection";
-import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
 
 export async function changeSignature(editor: Editor) {
   const { code, selection } = editor;
@@ -14,10 +14,10 @@ export async function changeSignature(editor: Editor) {
   }
 
   await editor.askForPositions(params, async (newPositions) => {
-    const refrences = await editor.getSelectionReferences(fixedSelection);
+    const references = await editor.getSelectionReferences(fixedSelection);
 
     const filesContent = await Promise.all(
-      refrences.map(async (reference) => {
+      references.map(async (reference) => {
         const content = await editor.codeOf(reference.path);
         return {
           code: content,
