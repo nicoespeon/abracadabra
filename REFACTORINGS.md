@@ -138,7 +138,6 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
 
 ![][demo-inline-function]
-![][demo-inline-function]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -147,6 +146,8 @@ This refactoring is similar to _Inline Variable_, but for functions. It replaces
 > 💡 Available as Quick Fix (`Alt ↵`)
 
 This refactoring allows you to change the order of a function parameters. It will resolve and update the references to that function.
+
+It supports function declarations, arrow functions, and class methods.
 
 ![][demo-change-signature]
 

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **[New Refactoring]** "Change Signature" thanks to @11joselu great work to find function references across files.
+- **[New Refactoring]** "Change Signature" thanks to @11joselu's great work to find function references across files.
 
 ## [6.16.0] - 2022-10-20 - Kidnap the Svelty Claws 🎃
 
