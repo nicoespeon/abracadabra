@@ -1,4 +1,5 @@
 export enum ErrorReason {
+  DidNotFindYodaCondition,
   CantChangeSignature,
   DidNotFindClass,
   DidNotFindObjectToDestructure,
@@ -60,6 +61,9 @@ export enum ErrorReason {
 
 export function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindYodaCondition:
+      return didNotFind("a binary expression to flip");
+
     case ErrorReason.CantChangeSignature:
       return cantDoIt("change function signature");
 

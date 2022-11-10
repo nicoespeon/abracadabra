@@ -22,6 +22,7 @@ import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipTernary from "./refactorings/flip-ternary";
+import flipYodaCondition from "./refactorings/flip-yoda-condition";
 import inline from "./refactorings/inline";
 import liftUpConditional from "./refactorings/lift-up-conditional";
 import mergeIfStatements from "./refactorings/merge-if-statements";
@@ -98,6 +99,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       createFactoryForConstructor,
       flipIfElse,
       flipTernary,
+      flipYodaCondition,
       inline,
       liftUpConditional,
       mergeIfStatements,
