@@ -15,11 +15,6 @@ export async function flipYodaCondition(editor: Editor) {
 }
 
 const flippedOperators = {
-  "+": "+",
-  "*": "*",
-  "&": "&",
-  "|": "|",
-  "^": "^",
   "==": "==",
   "===": "===",
   "!=": "!=",

@@ -9,14 +9,44 @@ describe("Flip Yoda Condition", () => {
     "should flip yoda condition",
     [
       {
-        description: "keep operator",
-        code: `a ==[cursor] b`,
-        expected: `b == a`
+        description: "loose equality",
+        code: "a ==[cursor] b",
+        expected: "b == a"
       },
       {
-        description: "flip operator",
-        code: `a >[cursor] b`,
-        expected: `b < a`
+        description: "strict equality",
+        code: "a ===[cursor] b",
+        expected: "b === a"
+      },
+      {
+        description: "loose inequality",
+        code: "a !=[cursor] b",
+        expected: "b != a"
+      },
+      {
+        description: "strict inequality",
+        code: "a !==[cursor] b",
+        expected: "b !== a"
+      },
+      {
+        description: "greather than",
+        code: "a >[cursor] b",
+        expected: "b < a"
+      },
+      {
+        description: "lower than",
+        code: "a <[cursor] b",
+        expected: "b > a"
+      },
+      {
+        description: "greater or equal",
+        code: "a >=[cursor] b",
+        expected: "b <= a"
+      },
+      {
+        description: "lower or equal",
+        code: "a <=[cursor] b",
+        expected: "b >= a"
       }
     ],
     async ({ code, expected }) => {
