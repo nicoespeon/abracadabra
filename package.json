@@ -1,6 +1,6 @@
 {
   "name": "abracadabra",
-  "version": "6.16.0",
+  "version": "6.17.0",
   "displayName": "Abracadabra, refactor this!",
   "publisher": "nicoespeon",
   "description": "Automated refactorings for VS Code, in JavaScript and TypeScript.",

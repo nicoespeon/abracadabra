@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.17.0] - 2022-11-15 - What Else Can I Do? 🌼
+
 ### Added
 
 - **[New Refactoring]** "Change Signature" thanks to @11joselu's great work to find function references across files.
@@ -1680,7 +1682,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...HEAD
+[6.17.0]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...6.17.0
 [6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
 [6.15.3]: https://github.com/nicoespeon/abracadabra/compare/6.15.2...6.15.3
 [6.15.2]: https://github.com/nicoespeon/abracadabra/compare/6.15.1...6.15.2
