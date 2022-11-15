@@ -2,11 +2,11 @@ import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
 
-import { flipYodaCondition } from "./flip-yoda-condition";
+import { flipOperator } from "./flip-operator";
 
-describe("Flip Yoda Condition", () => {
+describe("Flip Operator", () => {
   testEach<{ code: Code; expected: Code }>(
-    "should flip yoda condition",
+    "should flip operator",
     [
       {
         description: "loose equality",
@@ -52,7 +52,7 @@ describe("Flip Yoda Condition", () => {
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
-      await flipYodaCondition(editor);
+      await flipOperator(editor);
 
       expect(editor.code).toBe(expected);
     }
@@ -62,10 +62,10 @@ describe("Flip Yoda Condition", () => {
     const editor = new InMemoryEditor(`a in[cursor] b`);
     jest.spyOn(editor, "showError");
 
-    await flipYodaCondition(editor);
+    await flipOperator(editor);
 
     expect(editor.showError).toBeCalledWith(
-      ErrorReason.DidNotFindYodaCondition
+      ErrorReason.DidNotFindOperatorToFlip
     );
   });
 });

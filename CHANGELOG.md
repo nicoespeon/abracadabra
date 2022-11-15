@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** "Change Signature" thanks to @11joselu's great work to find function references across files.
 
-- **[New Refactoring]** "Flip Yoda Condition"
+- **[New Refactoring]** "Flip Operator"
 
 ### Fixed
 

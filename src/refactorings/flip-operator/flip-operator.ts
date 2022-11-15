@@ -1,13 +1,13 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 
-export async function flipYodaCondition(editor: Editor) {
+export async function flipOperator(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindYodaCondition);
+    editor.showError(ErrorReason.DidNotFindOperatorToFlip);
     return;
   }
 
