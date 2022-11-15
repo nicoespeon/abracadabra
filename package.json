@@ -145,6 +145,7 @@
     "onCommand:abracadabra.extractInterface",
     "onCommand:abracadabra.flipIfElse",
     "onCommand:abracadabra.flipTernary",
+    "onCommand:abracadabra.flipYodaCondition",
     "onCommand:abracadabra.inline",
     "onCommand:abracadabra.liftUpConditional",
     "onCommand:abracadabra.mergeIfStatements",
@@ -265,6 +266,11 @@
       {
         "command": "abracadabra.flipTernary",
         "title": "Flip Ternary",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.flipYodaCondition",
+        "title": "Flip Yoda Condition",
         "category": "Abracadabra"
       },
       {
@@ -496,6 +502,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.flipTernary.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.flipYodaCondition.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1012,6 +1023,30 @@
         },
         {
           "command": "abracadabra.flipTernary",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.flipYodaCondition",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.flipYodaCondition",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.flipYodaCondition",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.flipYodaCondition",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.flipYodaCondition",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.flipYodaCondition",
           "when": "editorLangId == svelte"
         },
         {

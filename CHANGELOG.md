@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** "Change Signature" thanks to @11joselu's great work to find function references across files.
 
+- **[New Refactoring]** "Flip Yoda Condition"
+
 ### Fixed
 
 - "Toggle Braces" and "Convert to ForEach" used to transform the outside-most wrapper that would match the transformation. Now, they transform the selected target, even if it's deeply nested. Props to @j4k0xb for finding this one.
