@@ -10,8 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **[New Refactoring]** "Change Signature" thanks to @11joselu's great work to find function references across files.
-
-- **[New Refactoring]** "Flip Operator"
+- **[New Refactoring]** "Flip Operator" thanks to @ramunsk's idea of introducing "Yoda Conditions" and @j4k0xb implementation of it.
 
 ### Fixed
 
