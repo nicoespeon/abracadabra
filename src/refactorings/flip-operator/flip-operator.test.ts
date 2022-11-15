@@ -47,6 +47,26 @@ describe("Flip Operator", () => {
         description: "lower or equal",
         code: "a <=[cursor] b",
         expected: "b >= a"
+      },
+      {
+        description: "logical and",
+        code: "a &&[cursor] b",
+        expected: "b && a"
+      },
+      {
+        description: "logical or",
+        code: "a ||[cursor] b",
+        expected: "b || a"
+      },
+      {
+        description: "nested logical or, cursor on nested",
+        code: "a && (b ||[cursor] c)",
+        expected: "a && (c || b)"
+      },
+      {
+        description: "nested logical or, cursor on wrapper",
+        code: "a [cursor]&& (b || c)",
+        expected: "b || c && (a)"
       }
     ],
     async ({ code, expected }) => {

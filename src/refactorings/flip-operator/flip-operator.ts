@@ -15,6 +15,8 @@ export async function flipOperator(editor: Editor) {
 }
 
 const flippedOperators = {
+  "&&": "&&",
+  "||": "||",
   "==": "==",
   "===": "===",
   "!=": "!=",
@@ -39,14 +41,54 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.BinaryExpression>) => void
+  onMatch: (path: t.NodePath<t.BinaryExpression | t.LogicalExpression>) => void
 ): t.Visitor {
   return {
     BinaryExpression(path) {
       if (!selection.isInsidePath(path)) return;
       if (!(path.node.operator in flippedOperators)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
+    },
+    LogicalExpression(path) {
+      if (!selection.isInsidePath(path)) return;
+      if (!(path.node.operator in flippedOperators)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path);
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    BinaryExpression(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+      if (!(childPath.node.operator in flippedOperators)) return;
+
+      result = true;
+      childPath.stop();
+    },
+    LogicalExpression(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+      if (!(childPath.node.operator in flippedOperators)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
