@@ -467,6 +467,15 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "ramunsk",
+      "name": "Ramunas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/514899?v=4",
+      "profile": "https://github.com/ramunsk",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
