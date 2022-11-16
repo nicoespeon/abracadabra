@@ -1,4 +1,6 @@
+// @ts-ignore
 import express from "express";
+// @ts-ignore
 import mysql from "mysql2/promise";
 
 async function createApp({ port }: { port: number } = { port: 3306 }) {
