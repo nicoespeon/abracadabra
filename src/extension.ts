@@ -190,7 +190,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   vscode.workspace.onWillRenameFiles((event) => {
-    VSCodeEditor.updateHighlights(event);
+    VSCodeEditor.renameHighlightsFilePath(event);
   });
 }
 

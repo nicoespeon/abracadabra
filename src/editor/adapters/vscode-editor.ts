@@ -280,7 +280,7 @@ export class VSCodeEditor implements Editor {
     });
   }
 
-  static updateHighlights(event: vscode.FileWillRenameEvent) {
+  static renameHighlightsFilePath(event: vscode.FileWillRenameEvent) {
     event.files.forEach((file) => {
       const existingHighlights = highlightsRepository.get(
         file.oldUri.toString()
