@@ -9,7 +9,6 @@ import {
   Editor,
   ErrorReason,
   Modification,
-  RelativePath,
   Result,
   SelectedPosition
 } from "../editor";
