@@ -80,33 +80,35 @@ const [h2]otherVariable[/h2] = 456`);
   it("should remove all highlights", async () => {
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;
-const otherVariable = 456`);
-
+const otherVariable = 456;`);
     await toggleHighlight(editor);
     editor.moveCursorTo(new Position(2, 6));
     await toggleHighlight(editor);
+
     await removeAllHighlights(editor);
 
     expect(editor.highlightedCode).toBe(`
 const someVariable = 123;
-const otherVariable = 456`);
+const otherVariable = 456;`);
   });
 
   it("should not change the highlights if we update code after them", async () => {
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;
-const otherVariable = 456`);
-
+const otherVariable = 456;`);
     await toggleHighlight(editor);
     editor.moveCursorTo(new Position(2, 6));
     await toggleHighlight(editor);
 
-    // TODO: emit SourceChange events from editor => listen it from Domain and verify editor code is updated accordingly
+    await editor.insert(`const anotherVariable = 789;`, new Position(4, 0));
 
     expect(editor.highlightedCode).toBe(`
 const [h1]someVariable[/h1] = 123;
-const [h2]otherVariable[/h2] = 456`);
+const [h2]otherVariable[/h2] = 456;
+const anotherVariable = 789;`);
   });
-});
 
-// TODO: write tests that simulates events from Editor for when there are code updates (code updated before/between/after, code removed before/between/after)
+  // TODO: simulate changes BEFORE the highlights => they should adapt
+  // TODO: simulate changes OVERLAPPING the highlights => they should adapt
+  // TODO: highlight nested identifier should identify the top-most binding
+});

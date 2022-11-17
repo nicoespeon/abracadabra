@@ -69,6 +69,21 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
+  insert(code: Code, position: Position): Promise<void> {
+    const newCodeMatrix = this.toCodeMatrix(code);
+
+    const index = Math.max(position.line - 1, 0);
+    for (let i = this.codeMatrix.length; i <= index; i++) {
+      this.codeMatrix.push([]);
+    }
+    newCodeMatrix.forEach((newLine, i) => {
+      if (!this.codeMatrix[index + i]) this.codeMatrix.push([]);
+      this.codeMatrix[index + i].splice(position.character, 0, ...newLine);
+    });
+
+    return Promise.resolve();
+  }
+
   async writeIn(path: Path, code: Code): Promise<void> {
     this.otherFiles.set(path, new InMemoryEditor(code));
   }
@@ -159,7 +174,11 @@ export class InMemoryEditor implements Editor {
   }
 
   private setCodeMatrix(code: Code) {
-    this.codeMatrix = code
+    this.codeMatrix = this.toCodeMatrix(code);
+  }
+
+  private toCodeMatrix(code: Code) {
+    return code
       .split(LINE_SEPARATOR)
       .map((line) => line.replace(CURSOR, ""))
       .map((line) => line.replace(SELECTION_START, ""))
