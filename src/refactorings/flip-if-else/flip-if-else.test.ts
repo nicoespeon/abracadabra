@@ -1,5 +1,5 @@
-import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
 
 import { flipIfElse } from "./flip-if-else";
@@ -255,6 +255,19 @@ doSomethingElse();`,
   doAnotherThing();
 } else {
   doSomething();
+}`
+      },
+      {
+        description: "preserve parentheses",
+        code: `if (false && (false || true)) {
+  console.log('true');
+} else {
+  console.log('false');
+}`,
+        expected: `if (!(false && (false || true))) {
+  console.log('false');
+} else {
+  console.log('true');
 }`
       }
     ],
