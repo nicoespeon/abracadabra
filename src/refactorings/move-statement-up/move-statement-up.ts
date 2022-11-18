@@ -1,7 +1,7 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
 import * as t from "../../ast";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 
 export async function moveStatementUp(editor: Editor) {
   const { code, selection } = editor;
@@ -92,6 +92,7 @@ function updateCode(
 
     if (hasComments(path)) {
       path.node.leadingComments.forEach((comment) => {
+        if (!comment.loc) return;
         const { height } = Selection.fromAST(comment.loc);
         newStatementPosition = newStatementPosition.addLines(height + 1);
       });
@@ -99,6 +100,7 @@ function updateCode(
 
     if (hasComments(pathAbove)) {
       pathAbove.node.leadingComments.forEach((comment) => {
+        if (!comment.loc) return;
         const { height } = Selection.fromAST(comment.loc);
         newStatementPosition = newStatementPosition.removeLines(height + 1);
       });
