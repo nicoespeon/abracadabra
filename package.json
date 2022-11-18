@@ -64,7 +64,7 @@
     "deploy:ovsx": "ovsx publish"
   },
   "devDependencies": {
-    "@babel/core": "7.18.13",
+    "@babel/core": "7.19.3",
     "@babel/preset-env": "7.19.3",
     "@babel/preset-typescript": "7.18.6",
     "@types/babel__traverse": "7.17.1",
@@ -106,8 +106,8 @@
   },
   "dependencies": {
     "@babel/parser": "7.19.3",
-    "@babel/traverse": "7.18.9",
-    "@babel/types": "7.18.4",
+    "@babel/traverse": "7.19.3",
+    "@babel/types": "7.19.3",
     "@eslint/eslintrc": "1.3.3",
     "@typescript-eslint/parser": "5.38.1",
     "@typescript/vfs": "1.4.0",
@@ -118,12 +118,12 @@
     "minimatch": "5.1.0",
     "pluralize": "8.0.0",
     "react-codemod": "5.4.3",
-    "recast": "0.20.5",
+    "recast": "0.21.5",
     "ts-morph": "12.1.0",
     "typescript": "4.8.4"
   },
   "resolutions": {
-    "@babel/types": "7.18.4"
+    "@babel/types": "7.19.3"
   },
   "activationEvents": [
     "onCommand:abracadabra.addNumericSeparator",
