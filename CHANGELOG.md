@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Some refactorings were not preserving important parentheses, which could have introduced regressions (eg. "Flip If/Else"). Now they do just fine!
+
 ## [6.17.0] - 2022-11-15 - What Else Can I Do? 🌼
 
 ### Added
