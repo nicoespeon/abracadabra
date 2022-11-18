@@ -477,6 +477,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "yume-chan",
+      "name": "Simon Chan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1330321?v=4",
+      "profile": "https://github.com/yume-chan",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
