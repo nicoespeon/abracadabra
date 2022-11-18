@@ -1,6 +1,6 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 
 export async function createFactoryForConstructor(editor: Editor) {
   const { code, selection } = editor;
@@ -110,6 +110,8 @@ function toArrayExpression(pattern: t.ArrayPattern): t.ArrayExpression {
       ? toObjectExpression(element)
       : t.isAssignmentPattern(element)
       ? assignmentToObjectExpression(element)
+      : t.isTSParameterProperty(element)
+      ? null
       : element;
   });
   return t.arrayExpression(elements);
