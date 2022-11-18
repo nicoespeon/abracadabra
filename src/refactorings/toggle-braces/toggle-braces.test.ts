@@ -123,9 +123,9 @@ if (isValid) {
 }`,
         expected: `function TestComponent() {
   return (
-    <section>
+    (<section>
       <TestComponent testProp={"test"} />
-    </section>
+    </section>)
   );
 }`
       },
@@ -392,9 +392,9 @@ doAnotherThing();`
 }`,
         expected: `function TestComponent() {
   return (
-    <section>
+    (<section>
       <TestComponent testProp="test" />
-    </section>
+    </section>)
   );
 }`
       },

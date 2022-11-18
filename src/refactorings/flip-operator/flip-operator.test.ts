@@ -66,7 +66,7 @@ describe("Flip Operator", () => {
       {
         description: "nested logical or, cursor on wrapper",
         code: "a [cursor]&& (b || c)",
-        expected: "b || c && (a)"
+        expected: "(b || c) && (a)"
       }
     ],
     async ({ code, expected }) => {

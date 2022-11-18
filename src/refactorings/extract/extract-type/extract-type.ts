@@ -1,7 +1,7 @@
-import { Command, Editor, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
 import * as t from "../../../ast";
+import { Command, Editor, ErrorReason } from "../../../editor/editor";
+import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 
 export async function extractType(editor: Editor) {
   const { code, selection } = editor;
@@ -54,7 +54,7 @@ function updateCode(
 
       const leadingComments = pathWhereToDeclareType.node.leadingComments || [];
       const start =
-        leadingComments[0]?.loc.start || pathWhereToDeclareType.node.loc.start;
+        leadingComments[0]?.loc?.start || pathWhereToDeclareType.node.loc.start;
       newNodePosition = Position.fromAST(start);
       pathWhereToDeclareType.insertBefore(typeDeclaration);
       replaceTypeWith(typeIdentifier);

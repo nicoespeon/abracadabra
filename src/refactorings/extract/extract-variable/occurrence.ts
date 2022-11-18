@@ -162,9 +162,9 @@ export class Occurrence<T extends t.Node = t.Node> {
     const parent = parentPath ? parentPath.node : this.path.node;
     if (!parent.loc) return this.selection.start;
 
-    const firstLeadingComment = parent.leadingComments?.[0];
-    return firstLeadingComment
-      ? Position.fromAST(firstLeadingComment.loc.start)
+    const firstLeadingCommentLoc = parent.leadingComments?.[0]?.loc;
+    return firstLeadingCommentLoc
+      ? Position.fromAST(firstLeadingCommentLoc.start)
       : Position.fromAST(parent.loc.start);
   }
 

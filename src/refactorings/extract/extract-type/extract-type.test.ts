@@ -77,7 +77,7 @@ let something: { response: Extracted };`
         description: "as expression",
         code: `console.log(person as [cursor]{ name: string });`,
         expected: `interface [cursor]Extracted {
-  name: string;
+  name: string
 }
 
 console.log(person as Extracted);`
@@ -130,9 +130,9 @@ const someMachine = createMachine<C<typeof someModel>, Extracted>()`
         description: "object type using commas",
         code: `function doSomething(options: { first: number, second: boolean, third: string }[cursor]) {}`,
         expected: `interface Extracted {
-  first: number;
-  second: boolean;
-  third: string;
+  first: number,
+  second: boolean,
+  third: string
 }
 
 function doSomething(options: Extracted) {}`

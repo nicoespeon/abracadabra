@@ -35,7 +35,7 @@ function Bar() {
     console.log(e);
   }, []);
 
-  return <Foo onFoo={onFoo} />;
+  return (<Foo onFoo={onFoo} />);
 }`
       },
       {

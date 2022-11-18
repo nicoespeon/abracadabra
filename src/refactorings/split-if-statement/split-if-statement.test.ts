@@ -47,7 +47,7 @@ describe("Split If Statement", () => {
   doSomething();
 }`,
         expected: `if (isValid) {
-  if (isCorrect || shouldDoSomething) {
+  if ((isCorrect || shouldDoSomething)) {
     doSomething();
   }
 }`
