@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Decoration, Source } from "../../highlights/highlights";
+import { Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { CodeReference } from "../code-reference";
 import {
