@@ -14,7 +14,7 @@ describe("Change Signature", () => {
     code: Code;
     expected: Code;
   }>(
-    "In same file",
+    "In the same file with function declarations",
     [
       {
         description: "when there are a function without references",
@@ -185,6 +185,118 @@ describe("Change Signature", () => {
     }
   );
 
+  testEach<{
+    code: Code;
+    expected: Code;
+  }>(
+    "In the same file with arrow function declarations",
+    [
+      {
+        description: "when there is an arrow function without references",
+        code: `const add = [cursor](a, b) => {
+            return a + b;
+          }`,
+        expected: `const add = (b, a) => {
+            return a + b;
+          }`
+      },
+      {
+        description: "when there is an arrow function with references",
+        code: `const add = [cursor](a, b) => {
+            return a + b;
+          }
+          add(1, 2);
+          `,
+        expected: `const add = (b, a) => {
+            return a + b;
+          }
+          add(2, 1);
+          `
+      },
+      {
+        description:
+          "when there is a defined arrow function in multiple lines with references",
+        code: `const add = [cursor](
+          a,
+          b) => {
+            return a + b;
+          }
+          add(1, 2);
+          `,
+        expected: `const add = (
+          b,
+          a) => {
+            return a + b;
+          }
+          add(2, 1);
+          `
+      }
+    ],
+    async ({ code, expected }) => {
+      const path = new AbsolutePath("/temp/aFile.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    }
+  );
+
+  testEach<{
+    code: Code;
+    expected: Code;
+  }>(
+    "In same file with class methods",
+    [
+      {
+        description: "when there are a class without references",
+        code: `class Maths {
+        [cursor]add(a, b) {
+          return a + b;
+        }
+      }`,
+        expected: `class Maths {
+        add(b, a) {
+          return a + b;
+        }
+      }`
+      },
+      {
+        description: "when there are a class with method references",
+        code: `class Maths {
+        [cursor]add(a, b) {
+          return a + b;
+        }
+      }
+      const maths = new Maths();
+      maths.add(1, 2);`,
+        expected: `class Maths {
+        add(b, a) {
+          return a + b;
+        }
+      }
+      const maths = new Maths();
+      maths.add(2, 1);`
+      }
+    ],
+    async ({ code, expected }) => {
+      const path = new AbsolutePath("/temp/aFile.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    }
+  );
+
   describe("Modules", () => {
     const addModule = new AbsolutePath("/temp/add.ts");
     const anotherModule = new AbsolutePath("/temp/anotherModule");
@@ -245,6 +357,116 @@ describe("Change Signature", () => {
                 code: `import {add} from './anotherModule';
                 export const calculateAdd = (a, b) => {
                   return add(b, a);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          }
+        },
+        {
+          description: "that import arrow function",
+          setup: {
+            currentFile: {
+              code: `export const add = [cursor](a, b) => {
+              return a + b;
+            }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {add} from './module';
+                add(1, 2)
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  return add(a, b);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          },
+          expected: {
+            currentFile: {
+              code: `export const add = (b, a) => {
+              return a + b;
+            }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {add} from './module';
+                add(2, 1)
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  return add(b, a);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          }
+        },
+        {
+          description: "that import a class and use a method",
+          setup: {
+            currentFile: {
+              code: `export class Maths {
+                [cursor]add(a, b) {
+                  return a + b;
+                }
+              }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {Maths} from './module';
+                const maths = new Maths();
+                maths.add(1, 2);
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  const maths = new Maths();
+                  return maths.add(a, b);
+                }
+              `,
+                path: anotherModule
+              }
+            ]
+          },
+          expected: {
+            currentFile: {
+              code: `export class Maths {
+                add(b, a) {
+                  return a + b;
+                }
+              }`,
+              path: new AbsolutePath("/temp/module.ts")
+            },
+            otherFiles: [
+              {
+                code: `import {Maths} from './module';
+                const maths = new Maths();
+                maths.add(2, 1);
+              `,
+                path: addModule
+              },
+              {
+                code: `import {add} from './anotherModule';
+                export const calculateAdd = (a, b) => {
+                  const maths = new Maths();
+                  return maths.add(b, a);
                 }
               `,
                 path: anotherModule

@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Some refactorings were not preserving important parentheses, which could have introduced regressions (eg. "Flip If/Else"). Now they do just fine!
+
+## [6.17.0] - 2022-11-15 - What Else Can I Do? 🌼
+
 ### Added
 
-- **[New Refactoring]** "Change Signature" thanks to @11joselu great work to find function references across files.
+- **[New Refactoring]** "Change Signature" thanks to @11joselu's great work to find function references across files.
+- **[New Refactoring]** "Flip Operator" thanks to @ramunsk's idea of introducing "Yoda Conditions" and @j4k0xb implementation of it.
+
+### Fixed
+
+- "Toggle Braces" and "Convert to ForEach" used to transform the outside-most wrapper that would match the transformation. Now, they transform the selected target, even if it's deeply nested. Props to @j4k0xb for finding this one.
 
 ## [6.16.0] - 2022-10-20 - Kidnap the Svelty Claws 🎃
 
@@ -1675,7 +1686,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...HEAD
+[6.17.0]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...6.17.0
 [6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
 [6.15.3]: https://github.com/nicoespeon/abracadabra/compare/6.15.2...6.15.3
 [6.15.2]: https://github.com/nicoespeon/abracadabra/compare/6.15.1...6.15.2

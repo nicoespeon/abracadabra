@@ -337,7 +337,10 @@ export class InMemoryEditor implements Editor {
         references.push(
           new CodeReference(
             obj.filename,
-            new Selection([pos.row, pos.col], [pos.row, pos.col])
+            new Selection(
+              [pos.row, pos.col],
+              [pos.row, pos.col + functionReferences.length]
+            )
           )
         );
       });
@@ -357,19 +360,21 @@ export class InMemoryEditor implements Editor {
     splittedCode.forEach((arr, row) => {
       const word = arr.join("");
       if (word.includes(wordToSearch)) {
-        const post = arr.map((_char, col) => ({
-          word,
-          row: row + 1,
-          col: col + 1
-        }));
+        const post = arr.map((_char, col) => {
+          const nextWord = arr.slice(col, col + wordToSearch.length).join("");
+
+          return {
+            word,
+            row: row + 1,
+            col: nextWord === wordToSearch ? col : -1
+          };
+        });
 
         items.push(...post);
       }
     });
 
-    return items.filter(
-      (v, i, a) => a.findIndex((v2) => v2.word === v.word) === i
-    );
+    return items.filter((item) => item.col !== -1);
   }
 
   async askForPositions(

@@ -29,6 +29,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Simplify Ternary](#simplify-ternary)
   1. [Flip If/Else](#flip-ifelse)
   1. [Flip Ternary](#flip-ternary)
+  1. [Flip Operator](#flip-operator)
   1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
   1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
   1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
@@ -138,7 +139,6 @@ This refactoring is the opposite of _Extract Variable_. It replaces a redundant 
 This refactoring is similar to _Inline Variable_, but for functions. It replaces each call to the function with the function body. It helps to remove needless indirections.
 
 ![][demo-inline-function]
-![][demo-inline-function]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -147,6 +147,8 @@ This refactoring is similar to _Inline Variable_, but for functions. It replaces
 > 💡 Available as Quick Fix (`Alt ↵`)
 
 This refactoring allows you to change the order of a function parameters. It will resolve and update the references to that function.
+
+It supports function declarations, arrow functions, and class methods.
 
 ![][demo-change-signature]
 
@@ -237,6 +239,16 @@ Flips the `if` and `else` statements. It's a useful refactoring to have in your 
 Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 
 ![][demo-flip-ternary]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Flip Operator
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Flips the left and right side of an operator. Very handy to introduce [Yoda Conditions](https://en.wikipedia.org/wiki/Yoda_conditions) in the code.
+
+![][demo-flip-operator]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -598,6 +610,7 @@ _Note: it works in a web editor too (eg. https://github.dev/nicoespeon/abracadab
 [demo-remove-redundant-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-redundant-else.gif?raw=true
 [demo-flip-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-if-else.gif?raw=true
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-ternary.gif?raw=true
+[demo-flip-operator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-operator.gif?raw=true
 [demo-add-numeric-separator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/add-numeric-separator.gif?raw=true
 [demo-destructure-object]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/destructure-object.gif?raw=true
 [demo-convert-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-arrow-function.gif?raw=true

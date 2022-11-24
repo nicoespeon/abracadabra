@@ -1,4 +1,5 @@
 export enum ErrorReason {
+  DidNotFindOperatorToFlip,
   CantChangeSignature,
   DidNotFindClass,
   DidNotFindObjectToDestructure,
@@ -60,6 +61,9 @@ export enum ErrorReason {
 
 export function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindOperatorToFlip:
+      return didNotFind("an operator to flip");
+
     case ErrorReason.CantChangeSignature:
       return cantDoIt("change function signature");
 

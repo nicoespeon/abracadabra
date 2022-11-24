@@ -135,6 +135,18 @@ function hasChildWhichMatchesSelection(
 
       result = true;
       childPath.stop();
+    },
+    Loop(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const operation = t.isBlockStatement(childPath.node.body)
+        ? new RemoveBracesFromLoop(childPath)
+        : new AddBracesToLoop(childPath);
+
+      if (!operation.canExecute) return;
+
+      result = true;
+      childPath.stop();
     }
   });
 

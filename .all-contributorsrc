@@ -323,7 +323,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/55899582?v=4",
       "profile": "https://github.com/j4k0xb",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -466,6 +467,24 @@
       "contributions": [
         "ideas",
         "code"
+      ]
+    },
+    {
+      "login": "ramunsk",
+      "name": "Ramunas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/514899?v=4",
+      "profile": "https://github.com/ramunsk",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "yume-chan",
+      "name": "Simon Chan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1330321?v=4",
+      "profile": "https://github.com/yume-chan",
+      "contributions": [
+        "bug"
       ]
     }
   ],

@@ -20,4 +20,4 @@ jobs:
       - run: yarn
       - run: yarn deploy:ovsx -p ${{ secrets.OVSX_ACCESS_TOKEN }}
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: "--max_old_space_size=8192"

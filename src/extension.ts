@@ -4,6 +4,8 @@ import { createCommand } from "./commands";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
+import { Refactoring, RefactoringWithActionProvider } from "./types";
+
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
@@ -25,6 +27,7 @@ import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
+import flipOperator from "./refactorings/flip-operator";
 import flipTernary from "./refactorings/flip-ternary";
 import inline from "./refactorings/inline";
 import invertBooleanLogic from "./refactorings/invert-boolean-logic";
@@ -45,7 +48,6 @@ import splitDeclarationAndInitialization from "./refactorings/split-declaration-
 import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 import toggleBraces from "./refactorings/toggle-braces";
-import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
@@ -99,6 +101,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       createFactoryForConstructor,
       flipIfElse,
       flipTernary,
+      flipOperator,
       inline,
       liftUpConditional,
       mergeIfStatements,

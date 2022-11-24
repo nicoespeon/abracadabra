@@ -30,7 +30,7 @@ describe("Extract Interface", () => {
 }
 
 interface Extracted {
-  isEqualTo(position: Position): boolean;
+  isEqualTo(position: Position): boolean
 }`
       },
       {
@@ -47,7 +47,7 @@ interface Extracted {
 }
 
 interface Extracted {
-  isEqualTo(position: {x: number, y: number}): boolean;
+  isEqualTo(position: {x: number, y: number}): boolean
 }`
       },
       {
@@ -64,7 +64,7 @@ interface Extracted {
 }
 
 interface Extracted {
-  isEqualTo(position?: Position): boolean;
+  isEqualTo(position?: Position): boolean
 }`
       },
       {
@@ -87,7 +87,7 @@ interface Extracted {
 }
 
 interface Extracted {
-  isEqualTo(position: Position): boolean;
+  isEqualTo(position: Position): boolean
 }`
       },
       {
@@ -108,11 +108,11 @@ interface Extracted {
 }
 
 interface Extracted {
-  x: number;
-  readonly y: number;
-  isValid: boolean;
-  name: string;
-  someData: any;
+  x: number
+  readonly y: number
+  isValid: boolean
+  name: string
+  someData: any
 }`
       },
       {
@@ -131,7 +131,7 @@ interface Extracted {
 }
 
 interface Extracted {
-  x: number;
+  x: number
 }`
       },
       {
@@ -154,9 +154,9 @@ interface Extracted {
 }
 
 interface Extracted {
-  name: string;
-  readonly isValid: boolean;
-  y: number;
+  name: string
+  readonly isValid: boolean
+  y: number
 }`
       },
       {
@@ -185,7 +185,7 @@ class AnotherPosition implements Extracted {
 }
 
 interface Extracted {
-  isEqualTo(position: Position): boolean;
+  isEqualTo(position: Position): boolean
 }`
       },
       {
@@ -206,8 +206,8 @@ interface Extracted {
 }
 
 interface Extracted {
-  readonly numbers: number[];
-  bar(): number;
+  readonly numbers: number[]
+  bar(): number
 }`
       },
       {
@@ -228,8 +228,8 @@ interface Extracted {
 }
 
 interface Extracted {
-  readonly numbers: number[];
-  bar(): number;
+  readonly numbers: number[]
+  bar(): number
 }`
       },
       {
@@ -242,7 +242,7 @@ interface Extracted {
 }
 
 interface Extracted<T extends string> {
-  readonly items: T[];
+  readonly items: T[]
 }`
       },
       {
@@ -267,7 +267,7 @@ interface Extracted<T extends string> {
 }
 
 interface Extracted {
-  isEqualTo(position: Position): boolean;
+  isEqualTo(position: Position): boolean
 }`
       },
       {
@@ -293,9 +293,9 @@ interface Extracted {
 
 interface Extracted {
   /* TODO: add the missing return type */
-  isEqualTo(position: Position): any;
+  isEqualTo(position: Position): any
   /* TODO: add the missing return type */
-  fetch(): Promise<any>;
+  fetch(): Promise<any>
 }`
       }
     ],

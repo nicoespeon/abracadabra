@@ -154,5 +154,5 @@ function getNegatedIfTest(test: t.IfStatement["test"]): t.IfStatement["test"] {
     };
   }
 
-  return t.unaryExpression("!", test, true);
+  return t.unaryExpression("!", test);
 }

@@ -1,8 +1,9 @@
-import { suite, test, afterEach } from "mocha";
 import { assert } from "chai";
+import { afterEach, suite, test } from "mocha";
 import * as sinon from "sinon";
 
-import { Editor, Code, RelativePath } from "./editor";
+import { CodeReference } from "./code-reference";
+import { AbsolutePath, Code, Editor, RelativePath } from "./editor";
 import { Position } from "./position";
 import { Selection } from "./selection";
 
@@ -405,5 +406,29 @@ console.log("hello");
     const result = await editor.workspaceFiles();
 
     assert.sameDeepMembers(result, files);
+  });
+
+  test("should return the list of code references in same file", async () => {
+    const code = `function add(num1, num2) {
+return num1 + num2;
+}
+add(1, 2);
+`;
+    const editor = await createEditorOn(code);
+    // Path seems to be fixed by the test runner.
+    // Not ideal but it works for now.
+    const filePath = new AbsolutePath(
+      `${__dirname}/adapters/vscode-editor-tests/abracadabra-vscode-tests.ts`
+    );
+    await editor.writeIn(filePath, code);
+    const codeReferences = await editor.getSelectionReferences(
+      Selection.cursorAt(0, 9)
+    );
+
+    assert.strictEqual(codeReferences.length, 2);
+    assert.deepStrictEqual(codeReferences, [
+      new CodeReference(filePath, new Selection([1, 9], [1, 12])),
+      new CodeReference(filePath, new Selection([4, 0], [4, 3]))
+    ]);
   });
 }

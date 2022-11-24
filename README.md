@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-47-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-49-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -139,7 +139,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center"><a href="https://bandism.net/"><img src="https://avatars.githubusercontent.com/u/22633385?v=4?s=100" width="100px;" alt="Ikko Ashimine"/><br /><sub><b>Ikko Ashimine</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=eltociear" title="Documentation">📖</a></td>
       <td align="center"><a href="https://github.com/vfonic"><img src="https://avatars.githubusercontent.com/u/67437?v=4?s=100" width="100px;" alt="Viktor"/><br /><sub><b>Viktor</b></sub></a><br /><a href="#ideas-vfonic" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center"><a href="https://github.com/sumbatx15"><img src="https://avatars.githubusercontent.com/u/28981577?v=4?s=100" width="100px;" alt="sumbatx15"/><br /><sub><b>sumbatx15</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Asumbatx15" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=sumbatx15" title="Code">💻</a></td>
-      <td align="center"><a href="https://github.com/j4k0xb"><img src="https://avatars.githubusercontent.com/u/55899582?v=4?s=100" width="100px;" alt="j4k0xb"/><br /><sub><b>j4k0xb</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aj4k0xb" title="Bug reports">🐛</a></td>
+      <td align="center"><a href="https://github.com/j4k0xb"><img src="https://avatars.githubusercontent.com/u/55899582?v=4?s=100" width="100px;" alt="j4k0xb"/><br /><sub><b>j4k0xb</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aj4k0xb" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=j4k0xb" title="Code">💻</a></td>
       <td align="center"><a href="http://ianobermiller.com"><img src="https://avatars.githubusercontent.com/u/897931?v=4?s=100" width="100px;" alt="Ian Obermiller"/><br /><sub><b>Ian Obermiller</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=ianobermiller" title="Code">💻</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=ianobermiller" title="Documentation">📖</a> <a href="#ideas-ianobermiller" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center"><a href="http://forivall.com"><img src="https://avatars.githubusercontent.com/u/760204?v=4?s=100" width="100px;" alt="Emily Marigold Klassen"/><br /><sub><b>Emily Marigold Klassen</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=forivall" title="Documentation">📖</a></td>
       <td align="center"><a href="http://zardoy.com"><img src="https://avatars.githubusercontent.com/u/46503702?v=4?s=100" width="100px;" alt="Vitaly"/><br /><sub><b>Vitaly</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=zardoy" title="Code">💻</a> <a href="#infra-zardoy" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#ideas-zardoy" title="Ideas, Planning, & Feedback">🤔</a></td>
@@ -159,6 +159,8 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center"><a href="http://www.andrewash.com"><img src="https://avatars.githubusercontent.com/u/357170?v=4?s=100" width="100px;" alt="Andrew Ash"/><br /><sub><b>Andrew Ash</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=ash211" title="Documentation">📖</a></td>
       <td align="center"><a href="https://github.com/azhiv"><img src="https://avatars.githubusercontent.com/u/32125472?v=4?s=100" width="100px;" alt="Artem Zhivoderov"/><br /><sub><b>Artem Zhivoderov</b></sub></a><br /><a href="#ideas-azhiv" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=azhiv" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/srsholmes"><img src="https://avatars.githubusercontent.com/u/3579905?v=4?s=100" width="100px;" alt="Simon Holmes"/><br /><sub><b>Simon Holmes</b></sub></a><br /><a href="#ideas-srsholmes" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=srsholmes" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/ramunsk"><img src="https://avatars.githubusercontent.com/u/514899?v=4?s=100" width="100px;" alt="Ramunas"/><br /><sub><b>Ramunas</b></sub></a><br /><a href="#ideas-ramunsk" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center"><a href="https://github.com/yume-chan"><img src="https://avatars.githubusercontent.com/u/1330321?v=4?s=100" width="100px;" alt="Simon Chan"/><br /><sub><b>Simon Chan</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ayume-chan" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
