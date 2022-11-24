@@ -121,8 +121,7 @@ const anotherVariable = 789;`);
 
     expect(editor.highlightedCode).toBe(`
 const [h1]someVariable[/h1] = 123;
-const [h2]otherVariable[/h2] = 456;
-`);
+const [h2]otherVariable[/h2] = 456;`);
   });
 
   it("should adapt the highlights if we insert code before them", async () => {
@@ -136,6 +135,20 @@ const otherVariable = 456;`);
 
     expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
 /* hey */const [h2]otherVariable[/h2] = 456;`);
+  });
+
+  it("should adapt the highlights if we delete code before them", async () => {
+    const editor = new InMemoryEditor(`/* hey */
+const someVariable[cursor] = 123;
+const otherVariable = 456;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(2, 6));
+    await toggleHighlight(editor);
+
+    await editor.delete(new Selection([0, 0], [1, 0]));
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+const [h2]otherVariable[/h2] = 456;`);
   });
 
   // TODO: simulate changes OVERLAPPING the highlights => they should adapt

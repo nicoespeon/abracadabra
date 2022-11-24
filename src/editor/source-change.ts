@@ -9,6 +9,23 @@ export class DeleteSourceChange implements SourceChange {
   constructor(readonly selection: Selection) {}
 
   applyToSelection(selection: Selection): Selection {
+    const { start, end, height } = this.selection;
+
+    if (selection.end.isBefore(start)) return selection;
+    if (end.isBefore(selection.start)) {
+      const deletedOnSameLine = end.isSameLineThan(selection.start);
+      return Selection.fromPositions(
+        selection.start
+          .removeLines(height)
+          .removeCharacters(deletedOnSameLine ? end.character : 0),
+        selection.end
+          .removeLines(height)
+          .removeCharacters(
+            deletedOnSameLine && selection.isOneLine ? end.character : 0
+          )
+      );
+    }
+
     return selection;
     // TODO: re-implement, driven with tests
     // const remainingSelections = selection.exclude(this.selection);
