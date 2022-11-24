@@ -292,9 +292,49 @@ export class VSCodeEditor implements Editor {
     });
   }
 
-  static async onDidChangeTextDocument(
-    _event: vscode.TextDocumentChangeEvent
-  ) {}
+  static async repositionHighlights(event: vscode.TextDocumentChangeEvent) {
+    const changes = event.contentChanges.map((change) =>
+      createSourceChange(change)
+    );
+
+    console.log(">>> recomputeHighlightsSelections", { changes });
+    // TODO: implement, delegating the work to the repository
+
+    // const filePath = event.document.uri.toString();
+    // const existingHighlights = highlightsRepository.get(filePath);
+    // if (!existingHighlights) return;
+
+    // const allHighlightsSelections = existingHighlights
+    //   .entries()
+    //   .map(([source, { bindings }]) => [source, ...bindings]);
+
+    // changes.forEach(async (change) => {
+    //   const match = allHighlightsSelections.find((highlightSelections) =>
+    //     highlightSelections.some((highlightSelection) =>
+    //       highlightSelection.touches(change.selection)
+    //     )
+    //   );
+    //   if (!match) return;
+
+    //   // TODO: for all the non-match, it should update the highlights Selections
+
+    //   const [source] = match;
+    //   VSCodeEditor.removeHighlightOfFile(source, filePath);
+
+    //   // We can't re-highlight changes in a non-active editor for now.
+    //   // It would require starting a valid `editor` without it.
+    //   if (!vscode.window.activeTextEditor) return;
+
+    //   const newSource = source.touches(change.selection)
+    //     ? change.applyToSelection(source)
+    //     : source;
+    //   const editor = new VSCodeEditor(
+    //     vscode.window.activeTextEditor,
+    //     newSource
+    //   );
+    //   await toggleHighlight(editor);
+    // });
+  }
 
   async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
     const locations = (await vscode.commands.executeCommand(
@@ -372,7 +412,7 @@ export class VSCodeEditor implements Editor {
   }
 }
 
-export function createSourceChange(
+function createSourceChange(
   change: vscode.TextDocumentContentChangeEvent
 ): SourceChange {
   const selection = createSelectionFromVSCode(change.range);

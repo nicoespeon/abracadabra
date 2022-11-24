@@ -192,6 +192,10 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.workspace.onWillRenameFiles((event) => {
     VSCodeEditor.renameHighlightsFilePath(event);
   });
+
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    VSCodeEditor.repositionHighlights(event);
+  });
 }
 
 export function deactivate() {}
