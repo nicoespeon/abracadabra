@@ -1,5 +1,5 @@
 import { last } from "../array";
-import { ASTPosition, NodePath, isSelectableNode } from "../ast";
+import { ASTPosition, isSelectableNode, NodePath } from "../ast";
 import { Code } from "./editor";
 
 export class Position {
@@ -53,6 +53,14 @@ export class Position {
 
   isAfter(position: Position): boolean {
     return this.isEqualTo(position) || !this.isBefore(position);
+  }
+
+  isStrictlyBefore(position: Position): boolean {
+    return this.isBefore(position) && !this.isEqualTo(position);
+  }
+
+  isStrictlyAfter(position: Position): boolean {
+    return this.isAfter(position) && !this.isEqualTo(position);
   }
 
   putAtStartOfLine(): Position {

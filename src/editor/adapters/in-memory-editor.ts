@@ -103,20 +103,10 @@ export class InMemoryEditor implements Editor {
         }
       }
 
-      line.forEach((_char, charIndex) => {
-        if (
-          lineIndex === selection.start.line &&
-          charIndex < selection.start.character
-        )
-          return;
-        if (
-          lineIndex === selection.end.line &&
-          charIndex >= selection.end.character
-        )
-          return;
-
-        this.codeMatrix[lineIndex][charIndex] = "";
-      });
+      this.codeMatrix[lineIndex].splice(
+        selection.start.character,
+        selection.width
+      );
     });
 
     this.highlightsRepository.repositionHighlights(
