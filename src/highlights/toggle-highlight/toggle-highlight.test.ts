@@ -108,6 +108,19 @@ const [h2]otherVariable[/h2] = 456;
 const anotherVariable = 789;`);
   });
 
+  it("should adapt the highlights if we insert code before them", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+const otherVariable = 456;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(1, 6));
+    await toggleHighlight(editor);
+
+    await editor.insert(`/* hey */`, new Position(1, 0));
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+/* hey */const [h2]otherVariable[/h2] = 456;`);
+  });
+
   it("should not change the highlights if we delete code after them", async () => {
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;
@@ -122,19 +135,6 @@ const anotherVariable = 789;`);
     expect(editor.highlightedCode).toBe(`
 const [h1]someVariable[/h1] = 123;
 const [h2]otherVariable[/h2] = 456;`);
-  });
-
-  it("should adapt the highlights if we insert code before them", async () => {
-    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
-const otherVariable = 456;`);
-    await toggleHighlight(editor);
-    editor.moveCursorTo(new Position(1, 6));
-    await toggleHighlight(editor);
-
-    await editor.insert(`/* hey */`, new Position(1, 0));
-
-    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
-/* hey */const [h2]otherVariable[/h2] = 456;`);
   });
 
   it("should adapt the highlights if we delete code before them", async () => {
