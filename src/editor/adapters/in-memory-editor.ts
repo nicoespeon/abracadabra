@@ -227,7 +227,10 @@ export class InMemoryEditor implements Editor {
   }
 
   private highlightCodeMatrix(codeMatrix: CodeMatrix): CodeMatrix {
-    const selections = Array.from(this.highlights.keys());
+    const allDecorations = this.highlightsRepository.getAllDecorations(
+      this.filePath
+    );
+    const selections = Array.from(allDecorations.keys());
 
     return codeMatrix.map((line, lineIndex) => {
       const startSelections = selections.filter(
@@ -242,18 +245,20 @@ export class InMemoryEditor implements Editor {
           ({ start }) => start.character === charIndex
         );
         if (start) {
-          const index = this.highlights.get(start);
+          const index = allDecorations.get(start);
           assert(typeof index == "number");
-          return [`[h${index}]`, char];
+          // Add 1 so we start at [h1] instead of [h0].
+          return [`[h${index + 1}]`, char];
         }
 
         const end = endSelections.find(
           ({ end }) => end.character === charIndex
         );
         if (end) {
-          const index = this.highlights.get(end);
+          const index = allDecorations.get(end);
           assert(typeof index == "number");
-          return [`[/h${index}]`, char];
+          // Add 1 so we start at [h1] instead of [h0].
+          return [`[/h${index + 1}]`, char];
         }
 
         return char;
@@ -271,7 +276,6 @@ export class InMemoryEditor implements Editor {
 
   private readonly filePath = "irrelevant-path";
   private highlightsRepository = new HighlightsRepository();
-  private highlights = new Map<Selection, Decoration>();
 
   findHighlight(selection: Selection): Source | undefined {
     return this.highlightsRepository.findHighlightsSource(
@@ -281,31 +285,14 @@ export class InMemoryEditor implements Editor {
   }
 
   highlight(source: Source, bindings: Selection[]): void {
-    const decoration = this.highlightsRepository.saveAndIncrement(
-      this.filePath,
-      source,
-      bindings
-    );
-
-    const selections = [source, ...bindings];
-    selections.forEach((selection) => {
-      // Add 1 so we start at [h1] instead of [h0].
-      this.highlights.set(selection, decoration + 1);
-    });
+    this.highlightsRepository.saveAndIncrement(this.filePath, source, bindings);
   }
 
   removeHighlight(source: Source): void {
-    const bindings = this.highlightsRepository.bindingsOf(
-      this.filePath,
-      source
-    );
-    const selections = [source, ...bindings];
-    selections.forEach((selection) => this.highlights.delete(selection));
     this.highlightsRepository.removeHighlightsOfFile(this.filePath, source);
   }
 
   removeAllHighlights(): void {
-    this.highlights.clear();
     this.highlightsRepository.removeAllHighlights();
   }
 

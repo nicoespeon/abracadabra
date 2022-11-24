@@ -29,6 +29,17 @@ export class Highlights {
     return Array.from(this.highlights.entries());
   }
 
+  get allDecorations(): Map<Selection, Decoration> {
+    const result = new Map<Selection, Decoration>();
+
+    this.entries().forEach(([source, { bindings, decoration }]) => {
+      result.set(source, decoration);
+      bindings.forEach((selection) => result.set(selection, decoration));
+    });
+
+    return result;
+  }
+
   delete(source: Source): void {
     this.highlights.delete(source);
   }

@@ -15,6 +15,12 @@ export class HighlightsRepository {
     return this.highlightsPerFile.get(filePath);
   }
 
+  getAllDecorations(filePath: FilePath): Map<Selection, Decoration> {
+    return (
+      this.get(filePath)?.allDecorations ?? new Map<Selection, Decoration>()
+    );
+  }
+
   findHighlightsSource(
     filePath: FilePath,
     selection: Selection
