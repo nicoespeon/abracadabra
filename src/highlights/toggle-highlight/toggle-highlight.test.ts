@@ -108,7 +108,19 @@ const [h2]otherVariable[/h2] = 456;
 const anotherVariable = 789;`);
   });
 
-  // TODO: simulate changes BEFORE the highlights => they should adapt
+  it("should adapt the highlights if we update code before them", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+const otherVariable = 456;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(1, 6));
+    await toggleHighlight(editor);
+
+    await editor.insert(`/* hey */`, new Position(1, 0));
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+/* hey */const [h2]otherVariable[/h2] = 456;`);
+  });
+
   // TODO: simulate changes OVERLAPPING the highlights => they should adapt
   // TODO: highlight nested identifier should identify the top-most binding
 });

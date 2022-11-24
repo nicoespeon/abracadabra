@@ -15,6 +15,7 @@ import {
 import { Path } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
+import { UpdateSourceChange } from "../source-change";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -80,6 +81,11 @@ export class InMemoryEditor implements Editor {
       if (!this.codeMatrix[index + i]) this.codeMatrix.push([]);
       this.codeMatrix[index + i].splice(position.character, 0, ...newLine);
     });
+
+    this.highlightsRepository.repositionHighlights(
+      this.filePath,
+      new UpdateSourceChange(Selection.cursorAtPosition(position), code.length)
+    );
 
     return Promise.resolve();
   }

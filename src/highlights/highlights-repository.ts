@@ -1,4 +1,5 @@
 import { Selection } from "../editor/selection";
+import { SourceChange } from "../editor/source-change";
 import { Decoration, Highlights, Source } from "./highlights";
 
 type FilePath = string;
@@ -85,5 +86,21 @@ export class HighlightsRepository {
         .sources()
         .forEach((source) => this.removeHighlightsOfFile(filePath, source))
     );
+  }
+
+  repositionHighlights(filePath: FilePath, change: SourceChange): void {
+    const existingHighlights = this.highlightsPerFile.get(filePath);
+    if (!existingHighlights) return;
+
+    const newHighlights = new Highlights();
+    const highlightsEntries = existingHighlights.entries();
+    for (const [source, { bindings, decoration }] of highlightsEntries) {
+      newHighlights.set(
+        change.applyToSelection(source),
+        bindings.map((b) => change.applyToSelection(b)),
+        decoration
+      );
+    }
+    this.highlightsPerFile.set(filePath, newHighlights);
   }
 }
