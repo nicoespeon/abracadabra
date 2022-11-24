@@ -1,4 +1,4 @@
-import { Position } from "../../editor";
+import { Position, Selection } from "../../editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import removeAllHighlightsConfig from "../remove-all-highlights";
 import { toggleHighlight } from "./toggle-highlight";
@@ -92,7 +92,7 @@ const someVariable = 123;
 const otherVariable = 456;`);
   });
 
-  it("should not change the highlights if we update code after them", async () => {
+  it("should not change the highlights if we insert code after them", async () => {
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;
 const otherVariable = 456;`);
@@ -108,7 +108,24 @@ const [h2]otherVariable[/h2] = 456;
 const anotherVariable = 789;`);
   });
 
-  it("should adapt the highlights if we update code before them", async () => {
+  it("should not change the highlights if we delete code after them", async () => {
+    const editor = new InMemoryEditor(`
+const someVariable[cursor] = 123;
+const otherVariable = 456;
+const anotherVariable = 789;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(2, 6));
+    await toggleHighlight(editor);
+
+    await editor.delete(new Selection([3, 0], [4, 0]));
+
+    expect(editor.highlightedCode).toBe(`
+const [h1]someVariable[/h1] = 123;
+const [h2]otherVariable[/h2] = 456;
+`);
+  });
+
+  it("should adapt the highlights if we insert code before them", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 const otherVariable = 456;`);
     await toggleHighlight(editor);

@@ -90,6 +90,37 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
+  delete(selection: Selection): Promise<void> {
+    this.codeMatrix.forEach((line, lineIndex) => {
+      if (lineIndex < selection.start.line) return;
+      if (lineIndex > selection.end.line) return;
+
+      if (selection.start.character === 0 || lineIndex > selection.start.line) {
+        if (lineIndex < selection.end.line) {
+          // Delete this line
+          this.codeMatrix.splice(lineIndex, 1);
+          return;
+        }
+      }
+
+      line.forEach((_char, charIndex) => {
+        if (
+          lineIndex === selection.start.line &&
+          charIndex < selection.start.character
+        )
+          return;
+        if (
+          lineIndex === selection.end.line &&
+          charIndex >= selection.end.character
+        )
+          return;
+
+        this.codeMatrix[lineIndex][charIndex] = "";
+      });
+    });
+    return Promise.resolve();
+  }
+
   async writeIn(path: Path, code: Code): Promise<void> {
     this.otherFiles.set(path, new InMemoryEditor(code));
   }
