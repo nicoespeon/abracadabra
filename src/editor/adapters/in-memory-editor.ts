@@ -72,7 +72,7 @@ export class InMemoryEditor implements Editor {
   insert(code: Code, position: Position): Promise<void> {
     const newCodeMatrix = this.toCodeMatrix(code);
 
-    const index = Math.max(position.line - 1, 0);
+    const index = Math.max(position.line, 0);
     for (let i = this.codeMatrix.length; i <= index; i++) {
       this.codeMatrix.push([]);
     }

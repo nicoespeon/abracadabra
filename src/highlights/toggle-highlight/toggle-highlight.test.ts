@@ -100,7 +100,7 @@ const otherVariable = 456;`);
     editor.moveCursorTo(new Position(2, 6));
     await toggleHighlight(editor);
 
-    await editor.insert(`const anotherVariable = 789;`, new Position(4, 0));
+    await editor.insert(`const anotherVariable = 789;`, new Position(3, 0));
 
     expect(editor.highlightedCode).toBe(`
 const [h1]someVariable[/h1] = 123;
