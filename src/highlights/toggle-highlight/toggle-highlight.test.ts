@@ -151,32 +151,53 @@ const otherVariable = 456;`);
 const [h2]otherVariable[/h2] = 456;`);
   });
 
-  it("should adapt the highlights if we insert code inside them", async () => {
+  it("should remove highlight if we rename a binding that's not the source", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
-const otherVariable = 456;`);
+console.log(someVariable);`);
     await toggleHighlight(editor);
-    editor.moveCursorTo(new Position(1, 6));
-    await toggleHighlight(editor);
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+console.log([h1]someVariable[/h1]);`);
 
-    await editor.insert(`Name`, new Position(0, 18));
+    await editor.delete(new Selection([1, 21], [1, 24]));
 
-    expect(editor.highlightedCode).toBe(`const [h1]someVariableName[/h1] = 123;
-const [h2]otherVariable[/h2] = 456;`);
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+console.log(someVaria);`);
   });
 
-  it("should adapt the highlights if we delete code inside them", async () => {
+  it("should remove all highlights if we rename the source", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
-const otherVariable = 456;`);
+console.log(someVariable);`);
     await toggleHighlight(editor);
-    editor.moveCursorTo(new Position(1, 6));
+
+    await editor.delete(new Selection([0, 15], [0, 18]));
+
+    expect(editor.highlightedCode).toBe(`const someVaria = 123;
+console.log(someVariable);`);
+  });
+
+  // Requires parsing AST to recompute all the time. May be fine, but not yet.
+  it.skip("should highlight new reference that gets inserted", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+console.log("test");`);
+    await toggleHighlight(editor);
+
+    await editor.insert(", someVariable", new Position(1, 18));
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+console.log("test", [h1]someVariable[/h1]);`);
+  });
+
+  // Requires parsing AST to recompute all the time. May be fine, but not yet.
+  it.skip("should add highlights if we rename the source and new bindings match", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+console.log(someVaria);`);
     await toggleHighlight(editor);
 
     await editor.delete(new Selection([0, 15], [0, 18]));
 
     expect(editor.highlightedCode).toBe(`const [h1]someVaria[/h1] = 123;
-const [h2]otherVariable[/h2] = 456;`);
+console.log([h1]someVaria[/h1]);`);
   });
 
-  // TODO: simulate changes OVERLAPPING the highlights => they should adapt
   // TODO: highlight nested identifier should identify the top-most binding
 });

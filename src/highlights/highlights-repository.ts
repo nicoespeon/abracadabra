@@ -95,9 +95,13 @@ export class HighlightsRepository {
     const newHighlights = new Highlights();
     const highlightsEntries = existingHighlights.entries();
     for (const [source, { bindings, decoration }] of highlightsEntries) {
+      if (change.modifies(source)) continue;
+
       newHighlights.set(
         change.applyToSelection(source),
-        bindings.map((b) => change.applyToSelection(b)),
+        bindings
+          .filter((b) => !change.modifies(b))
+          .map((b) => change.applyToSelection(b)),
         decoration
       );
     }

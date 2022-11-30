@@ -91,7 +91,7 @@ export class InMemoryEditor implements Editor {
   }
 
   delete(selection: Selection): Promise<void> {
-    this.codeMatrix.forEach((line, lineIndex) => {
+    this.codeMatrix.forEach((_line, lineIndex) => {
       if (lineIndex < selection.start.line) return;
       if (lineIndex > selection.end.line) return;
 
