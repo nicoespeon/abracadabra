@@ -79,7 +79,7 @@
     "@types/vscode": "1.69.0",
     "@typescript-eslint/eslint-plugin": "5.42.0",
     "@vscode/test-electron": "2.1.5",
-    "all-contributors-cli": "6.20.0",
+    "all-contributors-cli": "6.24.0",
     "assert": "2.0.0",
     "babel-jest": "27.5.1",
     "buffer": "6.0.3",
