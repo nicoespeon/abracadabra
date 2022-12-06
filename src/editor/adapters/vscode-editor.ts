@@ -16,6 +16,7 @@ import { Position } from "../position";
 import { AbsolutePath, Path } from "../path";
 import { CodeReference } from "../code-reference";
 import { SelectedPosition } from "../editor";
+import changeSignatureTemplate from "./change-signature.webview.html";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -228,10 +229,7 @@ export class VSCodeEditor implements Editor {
     VSCodeEditor.panel.webview.options = {
       enableScripts: true
     };
-    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(
-      params,
-      VSCodeEditor.panel.webview
-    );
+    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(params);
 
     VSCodeEditor.panel.webview.onDidReceiveMessage(
       async (message: Record<string, string>) => {
@@ -294,10 +292,7 @@ function toVSCodeCommand(command: Command): string {
   }
 }
 
-function getParamsPositionWebViewContent(
-  params: SelectedPosition[],
-  _webview: vscode.Webview
-): string {
+function getParamsPositionWebViewContent(params: SelectedPosition[]): string {
   const paramsTrValues = params.map((param) => {
     const name = param.label;
     return `
@@ -311,143 +306,10 @@ function getParamsPositionWebViewContent(
     `;
   });
 
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <style>
-      table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-      }
+  const html = changeSignatureTemplate.replace(
+    "{{tableContent}}",
+    paramsTrValues.join("")
+  );
 
-      td,
-      th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-
-      th:last-child {
-        border-top-color: transparent;
-        border-right-color: transparent;
-      }
-
-      .up,
-      .down {
-        cursor: pointer;
-        display: inline-block;
-        width: 8px;
-        margin: 0 0.7rem;
-        font-size: 1.2rem;
-      }
-
-      .up:after {
-        content: "▲";
-      }
-
-      .up:hover:after {
-        color: #625e5e;
-      }
-
-      .down:after {
-        content: "▼";
-      }
-
-      .down:hover:after {
-        color: #625e5e;
-      }
-
-      button {
-        border: 1px solid transparent;
-        border-radius: 5px;
-        line-height: 1.25rem;
-        outline: none;
-        text-align: center;
-        white-space: nowrap;
-        display: inline-block;
-        text-decoration: none;
-        background: #1a85ff;
-        padding: 4px;
-        color: white;
-        font-size: 14px;
-      }
-
-      button:hover {
-        cursor: pointer;
-        color: white;
-      }
-    </style>
-  </head>
-
-  <body>
-    <h4>Parameters</h4>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody id="params">
-        ${paramsTrValues.join("")}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="2" style="text-align: center">
-            <button id="confirm">Confirm</button>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-
-    <div class="btn-wrapper"></div>
-
-    <script>
-      const vscode = acquireVsCodeApi();
-      const startValues = document.querySelectorAll("#params .params-name");
-      function moveUp(element) {
-        if (element.previousElementSibling)
-          element.parentNode.insertBefore(
-            element,
-            element.previousElementSibling
-          );
-      }
-
-      function moveDown(element) {
-        if (element.nextElementSibling)
-          element.parentNode.insertBefore(element.nextElementSibling, element);
-      }
-
-      document.querySelector("#params").addEventListener("click", function (e) {
-        if (e.target.className === "down")
-          moveDown(e.target.parentNode.parentNode);
-        else if (e.target.className === "up")
-          moveUp(e.target.parentNode.parentNode);
-      });
-
-      document.querySelector("#confirm").addEventListener("click", () => {
-        const tdsElements = document.querySelectorAll("#params .params-name");
-        const tds = Array.from(tdsElements);
-
-        const items = Array.from(startValues).map((item, index) => {
-          const endAt = tds.findIndex((td) => td === item);
-
-          return {
-            label: item.innerHTML,
-            startAt: index,
-            endAt: endAt
-          };
-        });
-
-        vscode.postMessage({
-          values: JSON.stringify(items)
-        });
-      });
-    </script>
-  </body>
-</html>
-  `;
   return html;
 }
