@@ -229,7 +229,10 @@ export class VSCodeEditor implements Editor {
     VSCodeEditor.panel.webview.options = {
       enableScripts: true
     };
-    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(params);
+    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(
+      changeSignatureTemplate,
+      params
+    );
 
     VSCodeEditor.panel.webview.onDidReceiveMessage(
       async (message: Record<string, string>) => {
@@ -292,7 +295,10 @@ function toVSCodeCommand(command: Command): string {
   }
 }
 
-function getParamsPositionWebViewContent(params: SelectedPosition[]): string {
+function getParamsPositionWebViewContent(
+  html: string,
+  params: SelectedPosition[]
+): string {
   const paramsTrValues = params.map((param) => {
     const name = param.label;
     return `
@@ -306,10 +312,5 @@ function getParamsPositionWebViewContent(params: SelectedPosition[]): string {
     `;
   });
 
-  const html = changeSignatureTemplate.replace(
-    "{{tableContent}}",
-    paramsTrValues.join("")
-  );
-
-  return html;
+  return html.replace("{{tableContent}}", paramsTrValues.join(""));
 }
