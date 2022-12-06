@@ -1,8 +1,10 @@
+import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { AbsolutePath, Code, ErrorReason } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 import { testEach } from "../../tests-helpers";
 
-import { changeSignature } from "./change-signature";
+import { changeSignature, createVisitor } from "./change-signature";
 
 type TestSample = {
   code: Code;
@@ -541,6 +543,45 @@ describe("Change Signature", () => {
     const extracted = await editor.codeOf(setup.path);
     expect(extracted).toBe(expected.currentFile);
   });
+
+  testEach<{ code: Code; selection?: Selection }>(
+    "should not show refactoring",
+    [
+      {
+        description: "on an arrow function without parameters",
+        code: `const add = () => {
+          return 0;
+        };`,
+        selection: Selection.cursorAt(0, 13)
+      },
+      {
+        description: "on an function without parameters",
+        code: `function add() {
+          return 0;
+        }`,
+        selection: Selection.cursorAt(0, 9)
+      },
+      {
+        description: "on an class method without parameters",
+        code: `class Math {
+          add() {
+            return 0;
+          }
+        }`,
+        selection: Selection.cursorAt(1, 23)
+      }
+    ],
+    ({ code, selection = Selection.cursorAt(0, 13) }) => {
+      const ast = t.parse(code);
+      let canConvert = false;
+      t.traverseAST(
+        ast,
+        createVisitor(selection, () => (canConvert = true))
+      );
+
+      expect(canConvert).toBeFalsy();
+    }
+  );
 });
 
 function validateOutput(
