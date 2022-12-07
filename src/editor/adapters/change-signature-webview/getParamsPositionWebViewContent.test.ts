@@ -74,6 +74,17 @@ describe("Change signature Webview Content", () => {
           '[{"label":"paramA","startAt":0,"endAt":0},{"label":"paramB","startAt":1,"endAt":1}]'
       });
     });
+
+    it("Should not change order if I move the first parameter up", async () => {
+      const upButtons = document.querySelectorAll<HTMLElement>(".up");
+      upButtons[0].click();
+      document.getElementById("confirm")?.click();
+
+      expect(postMessage).toHaveBeenCalledWith({
+        values:
+          '[{"label":"paramA","startAt":0,"endAt":0},{"label":"paramB","startAt":1,"endAt":1}]'
+      });
+    });
   });
 });
 
