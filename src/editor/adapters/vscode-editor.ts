@@ -233,12 +233,14 @@ export class VSCodeEditor implements Editor {
       createChangeSignatureWebviewTemplate(params);
 
     VSCodeEditor.panel.webview.onDidReceiveMessage(
-      async (message: Record<string, string>) => {
-        const values = JSON.parse(message.values) as {
+      async (message: {
+        values: {
           label: string;
           startAt: number;
           endAt: number;
         }[];
+      }) => {
+        const values = message.values;
 
         const result: SelectedPosition[] = values.map((result) => {
           return {

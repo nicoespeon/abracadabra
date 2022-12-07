@@ -35,8 +35,10 @@ describe("Change signature Webview Content", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
-        values:
-          '[{"label":"paramA","startAt":0,"endAt":0},{"label":"paramB","startAt":1,"endAt":1}]'
+        values: [
+          { label: "paramA", startAt: 0, endAt: 0 },
+          { label: "paramB", startAt: 1, endAt: 1 }
+        ]
       });
     });
 
@@ -46,8 +48,10 @@ describe("Change signature Webview Content", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
-        values:
-          '[{"label":"paramA","startAt":0,"endAt":1},{"label":"paramB","startAt":1,"endAt":0}]'
+        values: [
+          { label: "paramA", startAt: 0, endAt: 1 },
+          { label: "paramB", startAt: 1, endAt: 0 }
+        ]
       });
     });
 
@@ -57,8 +61,10 @@ describe("Change signature Webview Content", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
-        values:
-          '[{"label":"paramA","startAt":0,"endAt":1},{"label":"paramB","startAt":1,"endAt":0}]'
+        values: [
+          { label: "paramA", startAt: 0, endAt: 1 },
+          { label: "paramB", startAt: 1, endAt: 0 }
+        ]
       });
     });
 
@@ -68,8 +74,10 @@ describe("Change signature Webview Content", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
-        values:
-          '[{"label":"paramA","startAt":0,"endAt":0},{"label":"paramB","startAt":1,"endAt":1}]'
+        values: [
+          { label: "paramA", startAt: 0, endAt: 0 },
+          { label: "paramB", startAt: 1, endAt: 1 }
+        ]
       });
     });
 
@@ -79,8 +87,10 @@ describe("Change signature Webview Content", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
-        values:
-          '[{"label":"paramA","startAt":0,"endAt":0},{"label":"paramB","startAt":1,"endAt":1}]'
+        values: [
+          { label: "paramA", startAt: 0, endAt: 0 },
+          { label: "paramB", startAt: 1, endAt: 1 }
+        ]
       });
     });
   });
