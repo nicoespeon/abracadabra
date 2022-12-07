@@ -1,7 +1,7 @@
 import type { SelectedPosition } from "../../editor";
 import changeSignatureTemplate from "./change-signature.html";
 
-export function getParamsPositionWebViewContent(
+export function createChangeSignatureWebviewTemplate(
   params: SelectedPosition[]
 ): string {
   const paramsTrValues = params.map((param) => {

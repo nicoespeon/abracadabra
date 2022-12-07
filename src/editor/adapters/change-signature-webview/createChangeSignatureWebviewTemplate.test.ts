@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
 import { SelectedPosition } from "../../editor";
-import { getParamsPositionWebViewContent } from "./getParamsPositionWebViewContent";
+import { createChangeSignatureWebviewTemplate } from "./createChangeSignatureWebviewTemplate";
 
 type AcquireVsCodeAPIPostMessage = Function | jest.Mock<void>;
 
@@ -114,7 +114,7 @@ function render(
 }
 
 function loadHTML(params: SelectedPosition[]) {
-  return getParamsPositionWebViewContent(params);
+  return createChangeSignatureWebviewTemplate(params);
 }
 
 function acquireVsCodeApi(postMessage: AcquireVsCodeAPIPostMessage = () => {}) {
