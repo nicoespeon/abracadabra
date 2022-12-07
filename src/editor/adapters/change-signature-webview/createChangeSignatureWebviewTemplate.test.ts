@@ -19,6 +19,24 @@ describe("Change signature Webview Content", () => {
     expect(params[1].textContent).toBe("paramB");
   });
 
+  it("Should render arrow up", () => {
+    const selections = [createSelectedPosition("paramA", 0)];
+
+    const document = render(loadHTML(selections), acquireVsCodeApi());
+
+    const up = document.getElementById("up");
+    expect(up).not.toBeNull();
+  });
+
+  it("Should render arrow down", () => {
+    const selections = [createSelectedPosition("paramA", 0)];
+
+    const document = render(loadHTML(selections), acquireVsCodeApi());
+
+    const down = document.getElementById("down");
+    expect(down).not.toBeNull();
+  });
+
   describe("Params orders", () => {
     const postMessage = jest.fn();
     let document: Document;
@@ -43,8 +61,10 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move paramB as a first parameter", async () => {
-      const upButtons = document.querySelectorAll<HTMLElement>(".up");
-      upButtons[1].click();
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[1].click();
+      const upButton = document.getElementById("up") as HTMLSpanElement;
+      upButton.click();
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -56,8 +76,10 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move paramA as last parameter", async () => {
-      const downButtons = document.querySelectorAll<HTMLElement>(".down");
-      downButtons[0].click();
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[0].click();
+      const downButton = document.getElementById("down") as HTMLSpanElement;
+      downButton.click();
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -68,30 +90,38 @@ describe("Change signature Webview Content", () => {
       });
     });
 
-    it("Should not change order if I move the last parameter down", async () => {
-      const downButtons = document.querySelectorAll<HTMLElement>(".down");
-      downButtons[1].click();
-      document.getElementById("confirm")?.click();
+    it("Should down button be disabled when I select the last parameter", async () => {
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[1].click();
+      const downButton = document.getElementById("down") as HTMLSpanElement;
 
-      expect(postMessage).toHaveBeenCalledWith({
-        values: [
-          { label: "paramA", startAt: 0, endAt: 0 },
-          { label: "paramB", startAt: 1, endAt: 1 }
-        ]
-      });
+      expect(downButton.classList.contains("disabled")).toBeTruthy();
     });
 
-    it("Should not change order if I move the first parameter up", async () => {
-      const upButtons = document.querySelectorAll<HTMLElement>(".up");
-      upButtons[0].click();
-      document.getElementById("confirm")?.click();
+    it("Should up button be disabled when I select the first parameter", async () => {
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[0].click();
+      const upButton = document.getElementById("up") as HTMLSpanElement;
 
-      expect(postMessage).toHaveBeenCalledWith({
-        values: [
-          { label: "paramA", startAt: 0, endAt: 0 },
-          { label: "paramB", startAt: 1, endAt: 1 }
-        ]
-      });
+      expect(upButton.classList.contains("disabled")).toBeTruthy();
+    });
+
+    it("Should up button be disabled when I move paramB as a first paramater", async () => {
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[1].click();
+      const up = document.getElementById("up") as HTMLSpanElement;
+      up.click();
+
+      expect(up.classList.contains("disabled")).toBeTruthy();
+    });
+
+    it("Should down button be disabled when I move paramA as a last paramater", async () => {
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[1].click();
+      const down = document.getElementById("down") as HTMLSpanElement;
+      down.click();
+
+      expect(down.classList.contains("disabled")).toBeTruthy();
     });
   });
 });

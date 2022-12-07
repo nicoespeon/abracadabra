@@ -14,9 +14,8 @@
         padding: 8px;
       }
 
-      th:last-child {
-        border-top-color: transparent;
-        border-right-color: transparent;
+      tbody tr {
+        cursor: pointer;
       }
 
       .up,
@@ -63,6 +62,14 @@
         cursor: pointer;
         color: white;
       }
+
+      .param--selected {
+        background-color: rgba(100, 207, 255, 0.3);
+      }
+
+      .disabled {
+        opacity: 0.3;
+      }
     </style>
   </head>
 
@@ -71,8 +78,17 @@
     <table>
       <thead>
         <tr>
-          <th>Name</th>
-          <th></th>
+          <th>Add</th>
+          <th>Remove</th>
+          <th>
+            <span class="up" id="up"></span>
+          </th>
+          <th>
+            <span class="down" id="down"></span>
+          </th>
+        </tr>
+        <tr>
+          <th colspan="4">Name</th>
         </tr>
       </thead>
 
@@ -81,7 +97,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="2" style="text-align: center">
+          <td colspan="4" style="text-align: center">
             <button id="confirm">Confirm</button>
           </td>
         </tr>
@@ -107,11 +123,34 @@
           element.parentNode.insertBefore(element.nextElementSibling, element);
       }
 
-      document.querySelector("#params").addEventListener("click", function (e) {
-        if (e.target.className === "down")
-          moveDown(e.target.parentNode.parentNode);
-        else if (e.target.className === "up")
-          moveUp(e.target.parentNode.parentNode);
+      document.getElementById("up").addEventListener("click", (ev) => {
+        if (ev.target.classList.contains("disable")) return;
+        const el = document.querySelector(".param--selected");
+        if (!el) return;
+
+        moveUp(el);
+        validateArrowsState(el);
+      });
+
+      document.getElementById("down").addEventListener("click", (ev) => {
+        if (ev.target.classList.contains("disable")) return;
+        const el = document.querySelector(".param--selected");
+        if (!el) return;
+
+        moveDown(el);
+        validateArrowsState(el);
+      });
+
+      const paramsTr = document.querySelectorAll("tbody tr");
+      paramsTr.forEach((tr) => {
+        tr.addEventListener("click", () => {
+          paramsTr.forEach((tr) => {
+            tr.classList.remove("param--selected");
+          });
+
+          tr.classList.add("param--selected");
+          validateArrowsState(tr);
+        });
       });
 
       document.querySelector("#confirm").addEventListener("click", () => {
@@ -132,6 +171,20 @@
           values: items
         });
       });
+
+      function validateArrowsState(el) {
+        if (!el.previousElementSibling) {
+          document.getElementById("up").classList.add("disabled");
+        } else {
+          document.getElementById("up").classList.remove("disabled");
+        }
+
+        if (!el.nextElementSibling) {
+          document.getElementById("down").classList.add("disabled");
+        } else {
+          document.getElementById("down").classList.remove("disabled");
+        }
+      }
     </script>
   </body>
 </html>
