@@ -101,7 +101,7 @@ function render(
 
 function loadHTML(params: SelectedPosition[]) {
   const changeSignatureTemplate = fs.readFileSync(
-    path.resolve(__dirname, "change-signature.webview.html"),
+    path.resolve(__dirname, "change-signature.html"),
     "utf8"
   );
 

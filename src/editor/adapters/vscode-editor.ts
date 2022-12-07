@@ -16,7 +16,7 @@ import { Position } from "../position";
 import { AbsolutePath, Path } from "../path";
 import { CodeReference } from "../code-reference";
 import { SelectedPosition } from "../editor";
-import changeSignatureTemplate from "./change-signature.webview.html";
+import changeSignatureTemplate from "./change-signature-webview/change-signature.html";
 import { getParamsPositionWebViewContent } from "./change-signature-webview/getParamsPositionWebViewContent";
 
 export class VSCodeEditor implements Editor {
