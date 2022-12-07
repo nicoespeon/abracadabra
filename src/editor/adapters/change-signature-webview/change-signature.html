@@ -109,6 +109,10 @@
     <script>
       const vscode = acquireVsCodeApi();
       const startValues = document.querySelectorAll("#params .params-name");
+      const up = document.getElementById("up");
+      const down = document.getElementById("down");
+      const selectedClass = "param--selected";
+      const disabledClass = "disabled";
 
       function moveUp(element) {
         if (element.previousElementSibling)
@@ -123,18 +127,34 @@
           element.parentNode.insertBefore(element.nextElementSibling, element);
       }
 
-      document.getElementById("up").addEventListener("click", (ev) => {
+      function validateArrowsState(el) {
+        if (!el.previousElementSibling) {
+          up.classList.add(disabledClass);
+        } else {
+          up.classList.remove(disabledClass);
+        }
+
+        if (!el.nextElementSibling) {
+          down.classList.add(disabledClass);
+        } else {
+          down.classList.remove(disabledClass);
+        }
+      }
+
+      up.addEventListener("click", (ev) => {
+        ev.stopPropagation();
         if (ev.target.classList.contains("disable")) return;
-        const el = document.querySelector(".param--selected");
+        const el = document.querySelector(`.${selectedClass}`);
         if (!el) return;
 
         moveUp(el);
         validateArrowsState(el);
       });
 
-      document.getElementById("down").addEventListener("click", (ev) => {
+      down.addEventListener("click", (ev) => {
+        ev.stopPropagation();
         if (ev.target.classList.contains("disable")) return;
-        const el = document.querySelector(".param--selected");
+        const el = document.querySelector(`.${selectedClass}`);
         if (!el) return;
 
         moveDown(el);
@@ -143,17 +163,19 @@
 
       const paramsTr = document.querySelectorAll("tbody tr");
       paramsTr.forEach((tr) => {
-        tr.addEventListener("click", () => {
+        tr.addEventListener("click", (ev) => {
+          ev.stopPropagation();
           paramsTr.forEach((tr) => {
-            tr.classList.remove("param--selected");
+            tr.classList.remove(selectedClass);
           });
 
-          tr.classList.add("param--selected");
+          tr.classList.add(selectedClass);
           validateArrowsState(tr);
         });
       });
 
-      document.querySelector("#confirm").addEventListener("click", () => {
+      document.querySelector("#confirm").addEventListener("click", (ev) => {
+        ev.stopPropagation();
         const tdsElements = document.querySelectorAll("#params .params-name");
         const tds = Array.from(tdsElements);
 
@@ -172,19 +194,14 @@
         });
       });
 
-      function validateArrowsState(el) {
-        if (!el.previousElementSibling) {
-          document.getElementById("up").classList.add("disabled");
-        } else {
-          document.getElementById("up").classList.remove("disabled");
+      document.body.addEventListener("click", () => {
+        const el = document.querySelector(`.${selectedClass}`);
+        if (el) {
+          el.classList.remove(selectedClass);
+          up.classList.remove(disabledClass);
+          down.classList.remove(disabledClass);
         }
-
-        if (!el.nextElementSibling) {
-          document.getElementById("down").classList.add("disabled");
-        } else {
-          document.getElementById("down").classList.remove("disabled");
-        }
-      }
+      });
     </script>
   </body>
 </html>
