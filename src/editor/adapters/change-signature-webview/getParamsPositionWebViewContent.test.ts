@@ -21,7 +21,7 @@ describe("Change signature Webview Content", () => {
     expect(params[1].textContent).toBe("paramB");
   });
 
-  describe("Changing params order", () => {
+  describe("Params orders", () => {
     const postMessage = jest.fn();
     let document: Document;
 
@@ -43,8 +43,8 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move paramB as a first parameter", async () => {
-      const downButtons = document.querySelectorAll<HTMLElement>(".up");
-      downButtons[1].click();
+      const upButtons = document.querySelectorAll<HTMLElement>(".up");
+      upButtons[1].click();
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -54,13 +54,24 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move paramA as last parameter", async () => {
-      const upButtons = document.querySelectorAll<HTMLElement>(".down");
-      upButtons[0].click();
+      const downButtons = document.querySelectorAll<HTMLElement>(".down");
+      downButtons[0].click();
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
         values:
           '[{"label":"paramA","startAt":0,"endAt":1},{"label":"paramB","startAt":1,"endAt":0}]'
+      });
+    });
+
+    it("Should not change order if I move the last parameter down", async () => {
+      const downButtons = document.querySelectorAll<HTMLElement>(".down");
+      downButtons[1].click();
+      document.getElementById("confirm")?.click();
+
+      expect(postMessage).toHaveBeenCalledWith({
+        values:
+          '[{"label":"paramA","startAt":0,"endAt":0},{"label":"paramB","startAt":1,"endAt":1}]'
       });
     });
   });
