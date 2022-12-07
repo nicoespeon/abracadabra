@@ -88,6 +88,7 @@
     "eslint-config-prettier": "8.5.0",
     "glob": "8.0.3",
     "html-loader": "4.2.0",
+    "html-loader-jest": "0.2.1",
     "husky": "8.0.1",
     "hygen": "6.2.8",
     "jest": "27.5.1",
