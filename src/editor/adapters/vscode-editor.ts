@@ -17,6 +17,7 @@ import { AbsolutePath, Path } from "../path";
 import { CodeReference } from "../code-reference";
 import { SelectedPosition } from "../editor";
 import changeSignatureTemplate from "./change-signature.webview.html";
+import { getParamsPositionWebViewContent } from "./change-signature-webview/getParamsPositionWebViewContent";
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -293,24 +294,4 @@ function toVSCodeCommand(command: Command): string {
     default:
       return "";
   }
-}
-
-function getParamsPositionWebViewContent(
-  html: string,
-  params: SelectedPosition[]
-): string {
-  const paramsTrValues = params.map((param) => {
-    const name = param.label;
-    return `
-      <tr>
-          <td class="params-name">${name}</td>
-          <td>
-            <span class="up"></span>
-            <span class="down"></span>
-          </td>
-        </tr>
-    `;
-  });
-
-  return html.replace("{{tableContent}}", paramsTrValues.join(""));
 }
