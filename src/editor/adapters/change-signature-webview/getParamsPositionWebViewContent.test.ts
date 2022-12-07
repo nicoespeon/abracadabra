@@ -6,33 +6,37 @@ import { getParamsPositionWebViewContent } from "./getParamsPositionWebViewConte
 
 type AcquireVsCodeAPIPostMessage = Function | jest.Mock<void>;
 
-describe("Webview Content", () => {
-  describe("Change signature template", () => {
-    it("Should render params labels", async () => {
+describe("Change signature Webview Content", () => {
+  it("Should render params labels", async () => {
+    const selections = [
+      createSelectedPosition("paramA", 0),
+      createSelectedPosition("paramB", 1)
+    ];
+
+    const { document } = render(loadHTML(selections), acquireVsCodeApi());
+
+    const params = document.querySelectorAll(".params-name");
+    expect(params).toHaveLength(2);
+    expect(params[0].textContent).toBe("paramA");
+    expect(params[1].textContent).toBe("paramB");
+  });
+
+  describe("Changing params order", () => {
+    const postMessage = jest.fn();
+    let document: Document;
+
+    beforeEach(() => {
       const selections = [
         createSelectedPosition("paramA", 0),
         createSelectedPosition("paramB", 1)
       ];
-
-      const { document } = render(loadHTML(selections), acquireVsCodeApi());
-
-      const params = document.querySelectorAll(".params-name");
-      expect(params).toHaveLength(2);
-      expect(params[0].textContent).toBe("paramA");
-      expect(params[1].textContent).toBe("paramB");
-    });
-
-    it("Should be able to confirm signature without changing parameters orders", async () => {
-      const selections = [
-        createSelectedPosition("paramA", 0),
-        createSelectedPosition("paramB", 1)
-      ];
-      const postMessage = jest.fn();
-
-      const { document } = render(
+      document = render(
         loadHTML(selections),
         acquireVsCodeApi(postMessage)
-      );
+      ).document;
+    });
+
+    it("Should be able to confirm signature without any changes", async () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -42,16 +46,6 @@ describe("Webview Content", () => {
     });
 
     it("Should be able to move paramB as a first parameter", async () => {
-      const selections = [
-        createSelectedPosition("paramA", 0),
-        createSelectedPosition("paramB", 1)
-      ];
-      const postMessage = jest.fn();
-      const { document } = render(
-        loadHTML(selections),
-        acquireVsCodeApi(postMessage)
-      );
-
       const downButtons = document.querySelectorAll<HTMLElement>(".up");
       downButtons[1].click();
       document.getElementById("confirm")?.click();
@@ -63,16 +57,6 @@ describe("Webview Content", () => {
     });
 
     it("Should be able to move paramA as last parameter", async () => {
-      const selections = [
-        createSelectedPosition("paramA", 0),
-        createSelectedPosition("paramB", 1)
-      ];
-      const postMessage = jest.fn();
-
-      const { document } = render(
-        loadHTML(selections),
-        acquireVsCodeApi(postMessage)
-      );
       const upButtons = document.querySelectorAll<HTMLElement>(".down");
       upButtons[0].click();
       document.getElementById("confirm")?.click();
