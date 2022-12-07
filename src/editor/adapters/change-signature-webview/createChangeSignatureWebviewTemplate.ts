@@ -1,5 +1,4 @@
 import type { SelectedPosition } from "../../editor";
-import changeSignatureTemplate from "./change-signature.html";
 
 export function createChangeSignatureWebviewTemplate(
   params: SelectedPosition[]
@@ -16,6 +15,9 @@ export function createChangeSignatureWebviewTemplate(
         </tr>
     `;
   });
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const changeSignatureTemplate = require("./change-signature.html");
 
   return changeSignatureTemplate.replace(
     "{{tableContent}}",

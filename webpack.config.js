@@ -101,7 +101,10 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
       },
       {
         test: /\.html$/i,
-        loader: "html-loader"
+        loader: "html-loader",
+        options: {
+          esModule: false,
+        },
       }
     ]
   }
