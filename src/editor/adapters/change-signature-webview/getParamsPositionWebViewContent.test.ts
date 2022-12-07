@@ -13,7 +13,7 @@ describe("Change signature Webview Content", () => {
       createSelectedPosition("paramB", 1)
     ];
 
-    const { document } = render(loadHTML(selections), acquireVsCodeApi());
+    const document = render(loadHTML(selections), acquireVsCodeApi());
 
     const params = document.querySelectorAll(".params-name");
     expect(params).toHaveLength(2);
@@ -30,10 +30,7 @@ describe("Change signature Webview Content", () => {
         createSelectedPosition("paramA", 0),
         createSelectedPosition("paramB", 1)
       ];
-      document = render(
-        loadHTML(selections),
-        acquireVsCodeApi(postMessage)
-      ).document;
+      document = render(loadHTML(selections), acquireVsCodeApi(postMessage));
     });
 
     it("Should be able to confirm signature without any changes", async () => {
@@ -93,10 +90,7 @@ function render(
     }
   });
 
-  return {
-    window,
-    document: window.document
-  };
+  return window.document;
 }
 
 function loadHTML(params: SelectedPosition[]) {
