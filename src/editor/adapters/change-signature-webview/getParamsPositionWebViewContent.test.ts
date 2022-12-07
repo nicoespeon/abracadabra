@@ -4,6 +4,8 @@ import { JSDOM } from "jsdom";
 import { SelectedPosition } from "../../editor";
 import { getParamsPositionWebViewContent } from "./getParamsPositionWebViewContent";
 
+type AcquireVsCodeAPIPostMessage = Function | jest.Mock<void>;
+
 describe("Webview Content", () => {
   describe("Change signature template", () => {
     it("Should render params labels", async () => {
@@ -12,7 +14,7 @@ describe("Webview Content", () => {
         createSelectedPosition("paramB", 1)
       ];
 
-      const { document } = render(loadHTML(selections));
+      const { document } = render(loadHTML(selections), acquireVsCodeApi());
 
       const params = document.querySelectorAll(".params-name");
       expect(params).toHaveLength(2);
@@ -26,13 +28,11 @@ describe("Webview Content", () => {
         createSelectedPosition("paramB", 1)
       ];
       const postMessage = jest.fn();
-      const mockAcquireVsCodeApi = () => {
-        return {
-          postMessage
-        };
-      };
-      const { document } = render(loadHTML(selections), mockAcquireVsCodeApi);
 
+      const { document } = render(
+        loadHTML(selections),
+        acquireVsCodeApi(postMessage)
+      );
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -47,12 +47,10 @@ describe("Webview Content", () => {
         createSelectedPosition("paramB", 1)
       ];
       const postMessage = jest.fn();
-      const mockAcquireVsCodeApi = () => {
-        return {
-          postMessage
-        };
-      };
-      const { document } = render(loadHTML(selections), mockAcquireVsCodeApi);
+      const { document } = render(
+        loadHTML(selections),
+        acquireVsCodeApi(postMessage)
+      );
 
       const downButtons = document.querySelectorAll<HTMLElement>(".up");
       downButtons[1].click();
@@ -70,13 +68,11 @@ describe("Webview Content", () => {
         createSelectedPosition("paramB", 1)
       ];
       const postMessage = jest.fn();
-      const mockAcquireVsCodeApi = () => {
-        return {
-          postMessage
-        };
-      };
-      const { document } = render(loadHTML(selections), mockAcquireVsCodeApi);
 
+      const { document } = render(
+        loadHTML(selections),
+        acquireVsCodeApi(postMessage)
+      );
       const upButtons = document.querySelectorAll<HTMLElement>(".down");
       upButtons[0].click();
       document.getElementById("confirm")?.click();
@@ -102,7 +98,10 @@ function createSelectedPosition(
     label: paramLabel
   };
 }
-function render(html: string, vsCodeApi = acquireVsCodeApi) {
+function render(
+  html: string,
+  vsCodeApi: () => { postMessage: AcquireVsCodeAPIPostMessage }
+) {
   const { window } = new JSDOM(html, {
     runScripts: "dangerously",
     beforeParse(window) {
@@ -125,8 +124,10 @@ function loadHTML(params: SelectedPosition[]) {
   return getParamsPositionWebViewContent(changeSignatureTemplate, params);
 }
 
-function acquireVsCodeApi() {
-  return {
-    postMessage: () => {}
+function acquireVsCodeApi(postMessage: AcquireVsCodeAPIPostMessage = () => {}) {
+  return () => {
+    return {
+      postMessage
+    };
   };
 }
