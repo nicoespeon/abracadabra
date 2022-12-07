@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { JSDOM } from "jsdom";
 import { SelectedPosition } from "../../editor";
 import { getParamsPositionWebViewContent } from "./getParamsPositionWebViewContent";
@@ -116,12 +114,7 @@ function render(
 }
 
 function loadHTML(params: SelectedPosition[]) {
-  const changeSignatureTemplate = fs.readFileSync(
-    path.resolve(__dirname, "change-signature.html"),
-    "utf8"
-  );
-
-  return getParamsPositionWebViewContent(changeSignatureTemplate, params);
+  return getParamsPositionWebViewContent(params);
 }
 
 function acquireVsCodeApi(postMessage: AcquireVsCodeAPIPostMessage = () => {}) {

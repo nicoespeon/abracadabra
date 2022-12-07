@@ -16,7 +16,6 @@ import { Position } from "../position";
 import { AbsolutePath, Path } from "../path";
 import { CodeReference } from "../code-reference";
 import { SelectedPosition } from "../editor";
-import changeSignatureTemplate from "./change-signature-webview/change-signature.html";
 import { getParamsPositionWebViewContent } from "./change-signature-webview/getParamsPositionWebViewContent";
 
 export class VSCodeEditor implements Editor {
@@ -230,10 +229,7 @@ export class VSCodeEditor implements Editor {
     VSCodeEditor.panel.webview.options = {
       enableScripts: true
     };
-    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(
-      changeSignatureTemplate,
-      params
-    );
+    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(params);
 
     VSCodeEditor.panel.webview.onDidReceiveMessage(
       async (message: Record<string, string>) => {
