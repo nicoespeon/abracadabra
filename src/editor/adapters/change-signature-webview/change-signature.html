@@ -18,6 +18,10 @@
         cursor: pointer;
       }
 
+      tbody td input {
+        max-width: 150px;
+      }
+
       .up,
       .down {
         cursor: pointer;
@@ -78,17 +82,16 @@
     <table>
       <thead>
         <tr>
-          <th>Add</th>
-          <th>Remove</th>
-          <th>
+          <th colspan="4">
+            <span id="add">+</span>
+            <span id="remove">-</span>
             <span class="up" id="up"></span>
-          </th>
-          <th>
             <span class="down" id="down"></span>
           </th>
         </tr>
         <tr>
-          <th colspan="4">Name</th>
+          <th colspan="3">Name</th>
+          <th colspan="1">Value</th>
         </tr>
       </thead>
 
@@ -107,7 +110,6 @@
     <div class="btn-wrapper"></div>
 
     <script>
-      const vscode = acquireVsCodeApi();
       const startValues = document.querySelectorAll("#params .params-name");
       const up = document.getElementById("up");
       const down = document.getElementById("down");
@@ -161,6 +163,12 @@
         validateArrowsState(el);
       });
 
+      document.getElementById("add").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+
+        createParam();
+      });
+
       const paramsTr = document.querySelectorAll("tbody tr");
       paramsTr.forEach((tr) => {
         tr.addEventListener("click", (ev) => {
@@ -179,15 +187,30 @@
         const tdsElements = document.querySelectorAll("#params .params-name");
         const tds = Array.from(tdsElements);
 
-        const items = Array.from(startValues).map((item, index) => {
-          const endAt = tds.findIndex((td) => td === item);
+        const items = tds.map((item, index) => {
+          const startAt = Array.from(startValues).findIndex(
+            (td) => td === item
+          );
 
-          return {
-            label: item.innerHTML,
-            startAt: index,
-            endAt: endAt
+          let label = item.textContent;
+          let value = '';
+          if (item.firstChild.nodeName === "INPUT") {
+            label = item.firstChild.value;
+            value = item.nextElementSibling.firstChild.value;
+          }
+
+          const result = {
+            label,
+            startAt,
+            endAt: index,
           };
+
+          if (value) result.value = value;
+
+          return result;
         });
+
+        const vscode = acquireVsCodeApi();
 
         vscode.postMessage({
           values: items
@@ -202,6 +225,19 @@
           down.classList.remove(disabledClass);
         }
       });
+
+      function createParam() {
+        const template = `
+            <td colspan="3" class="params-name"><input class="input-param-name"/></td>
+            <td colspan="1" class="params-value"><input class="input-param-value"/></td>
+        `;
+
+        const tr = document.createElement("tr");
+        tr.classList.add("param");
+        tr.innerHTML = template;
+
+        document.querySelector("tbody").appendChild(tr);
+      }
     </script>
   </body>
 </html>

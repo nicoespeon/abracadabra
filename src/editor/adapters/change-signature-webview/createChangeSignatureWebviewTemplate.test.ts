@@ -5,7 +5,7 @@ import { createChangeSignatureWebviewTemplate } from "./createChangeSignatureWeb
 type AcquireVsCodeAPIPostMessage = Function | jest.Mock<void>;
 
 describe("Change signature Webview Content", () => {
-  it("Should render params labels", async () => {
+  it("Should render params labels", () => {
     const selections = [
       createSelectedPosition("paramA", 0),
       createSelectedPosition("paramB", 1)
@@ -17,6 +17,20 @@ describe("Change signature Webview Content", () => {
     expect(params).toHaveLength(2);
     expect(params[0].textContent).toBe("paramA");
     expect(params[1].textContent).toBe("paramB");
+  });
+
+  it("Should render disabled inputs", () => {
+    const selections = [
+      createSelectedPosition("paramA", 0),
+      createSelectedPosition("paramB", 1)
+    ];
+
+    const document = render(loadHTML(selections), acquireVsCodeApi());
+
+    const inputs = document.querySelectorAll<HTMLInputElement>("td input");
+    expect(inputs).toHaveLength(2);
+    expect(inputs[0].disabled).toBeTruthy();
+    expect(inputs[1].disabled).toBeTruthy();
   });
 
   it("Should render arrow up", () => {
@@ -49,7 +63,7 @@ describe("Change signature Webview Content", () => {
       document = render(loadHTML(selections), acquireVsCodeApi(postMessage));
     });
 
-    it("Should be able to confirm signature without any changes", async () => {
+    it("Should be able to confirm signature without any changes", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -60,7 +74,7 @@ describe("Change signature Webview Content", () => {
       });
     });
 
-    it("Should be able to move paramB as a first parameter", async () => {
+    it("Should be able to move paramB as a first parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
       const upButton = document.getElementById("up") as HTMLSpanElement;
@@ -69,13 +83,13 @@ describe("Change signature Webview Content", () => {
 
       expect(postMessage).toHaveBeenCalledWith({
         values: [
-          { label: "paramA", startAt: 0, endAt: 1 },
-          { label: "paramB", startAt: 1, endAt: 0 }
+          { label: "paramB", startAt: 1, endAt: 0 },
+          { label: "paramA", startAt: 0, endAt: 1 }
         ]
       });
     });
 
-    it("Should be able to move paramA as last parameter", async () => {
+    it("Should be able to move paramA as last parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[0].click();
       const downButton = document.getElementById("down") as HTMLSpanElement;
@@ -84,13 +98,13 @@ describe("Change signature Webview Content", () => {
 
       expect(postMessage).toHaveBeenCalledWith({
         values: [
-          { label: "paramA", startAt: 0, endAt: 1 },
-          { label: "paramB", startAt: 1, endAt: 0 }
+          { label: "paramB", startAt: 1, endAt: 0 },
+          { label: "paramA", startAt: 0, endAt: 1 }
         ]
       });
     });
 
-    it("Should down button be disabled when I select the last parameter", async () => {
+    it("Should down button be disabled when I select the last parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
       const downButton = document.getElementById("down") as HTMLSpanElement;
@@ -98,7 +112,7 @@ describe("Change signature Webview Content", () => {
       expect(downButton.classList.contains("disabled")).toBeTruthy();
     });
 
-    it("Should up button be disabled when I select the first parameter", async () => {
+    it("Should up button be disabled when I select the first parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[0].click();
       const upButton = document.getElementById("up") as HTMLSpanElement;
@@ -106,7 +120,7 @@ describe("Change signature Webview Content", () => {
       expect(upButton.classList.contains("disabled")).toBeTruthy();
     });
 
-    it("Should up button be disabled when I move paramB as a first paramater", async () => {
+    it("Should up button be disabled when I move paramB as a first paramater", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
       const up = document.getElementById("up") as HTMLSpanElement;
@@ -115,13 +129,48 @@ describe("Change signature Webview Content", () => {
       expect(up.classList.contains("disabled")).toBeTruthy();
     });
 
-    it("Should down button be disabled when I move paramA as a last paramater", async () => {
+    it("Should down button be disabled when I move paramA as a last paramater", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
       const down = document.getElementById("down") as HTMLSpanElement;
       down.click();
 
       expect(down.classList.contains("disabled")).toBeTruthy();
+    });
+  });
+
+  describe("Adding params", () => {
+    const postMessage = jest.fn();
+    let document: Document;
+
+    beforeEach(() => {
+      const selections = [
+        createSelectedPosition("paramA", 0),
+        createSelectedPosition("paramB", 1)
+      ];
+      document = render(loadHTML(selections), acquireVsCodeApi(postMessage));
+    });
+
+    it("Should be able to add new parameter", async () => {
+      const addBtn = document.getElementById("add") as HTMLElement;
+      addBtn.click();
+      const inputLabel = document.querySelector(
+        ".input-param-name"
+      ) as HTMLInputElement;
+      inputLabel.value = "newParam";
+      const inputValue = document.querySelector(
+        ".input-param-value"
+      ) as HTMLInputElement;
+      inputValue.value = true.toString();
+      document.getElementById("confirm")?.click();
+
+      expect(postMessage).toHaveBeenCalledWith({
+        values: [
+          { label: "paramA", startAt: 0, endAt: 0 },
+          { label: "paramB", startAt: 1, endAt: 1 },
+          { label: "newParam", startAt: -1, endAt: 2, value: "true" }
+        ]
+      });
     });
   });
 });

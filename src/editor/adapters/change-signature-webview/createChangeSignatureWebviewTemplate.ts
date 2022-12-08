@@ -7,7 +7,8 @@ export function createChangeSignatureWebviewTemplate(
     const name = param.label;
     return `
       <tr class="param">
-        <td colspan="4" class="params-name">${name}</td>
+        <td colspan="3" class="params-name">${name}</td>
+        <td colspan="1" class="params-value"><input disabled/></td>
       </tr>
     `;
   });
