@@ -61,6 +61,7 @@ export type SelectedPosition = Omit<
   Choice<{
     startAt: number;
     endAt: number;
+    val?: unknown;
   }>,
   "description" | "icon"
 >;

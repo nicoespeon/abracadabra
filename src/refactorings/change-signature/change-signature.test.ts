@@ -1,6 +1,6 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { AbsolutePath, Code, ErrorReason } from "../../editor/editor";
+import { AbsolutePath, Code, ErrorReason, SelectedPosition} from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { testEach } from "../../tests-helpers";
 
@@ -512,7 +512,7 @@ describe("Change Signature", () => {
     expect(editor.showError).toBeCalledWith(ErrorReason.CantChangeSignature);
   });
 
-  it("Should order correclty for complex parameters with defaults values", async () => {
+  it("Should order correctly for complex parameters with defaults values", async () => {
     const { setup, expected } = {
       setup: {
         currentFile: `function [cursor]add(a, str, {item}, [value = 1]) {
@@ -582,6 +582,142 @@ describe("Change Signature", () => {
       expect(canConvert).toBeFalsy();
     }
   );
+
+  describe("Adding new parameter", () => {
+    testEach<{
+      code: Code;
+      expected: Code;
+      newValue: any;
+    }>(
+      "In same file",
+      [
+        {
+          description: "is able to add <boolean> parameter in a function",
+          newValue: true,
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", true);`
+        },
+        {
+          description: "is able to add <number> parameter in a function",
+          newValue: 120,
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", 120);`
+        },
+        {
+          description: "is able to add <array> parameter in a function",
+          newValue: [1, 2, 3],
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", [1, 2, 3]);`
+        },
+        {
+          description: "is able to add <empty object> parameter in a function",
+          newValue: { id: 1, name: "Abracadabra" },
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", {
+            id: 1,
+            name: "Abracadabra"
+          });`
+        },
+        {
+          description: "is able to add <boolean> parameter in a class method",
+          newValue: true,
+          code: `class Math {
+            [cursor]add(a, b) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years");`,
+          expected: `class Math {
+            add(a, b, newParam) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years", true);`
+        },
+        {
+          description: "is able to add <array> parameter in a class method",
+          newValue: [true],
+          code: `class Math {
+            [cursor]add(a, b) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years");`,
+          expected: `class Math {
+            add(a, b, newParam) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years", [true]);`
+        },
+        {
+          description: "is able to add <array> parameter in an arrow function",
+          newValue: [true],
+          code: `const add = [cursor](a, b) => {
+            return a + b;
+          }
+
+          add(7, "years");`,
+          expected: `const add = (a, b, newParam) => {
+            return a + b;
+          }
+
+          add(7, "years", [true]);`
+        }
+      ],
+      async ({ code, expected, newValue }) => {
+        const path = new AbsolutePath("/temp/file.ts");
+        const editor = new InMemoryEditor(code);
+        await editor.writeIn(path, editor.code);
+        editor.saveUserChoices(userChangePositionOf(0, 0));
+        editor.saveUserChoices(userChangePositionOf(1, 1));
+        editor.saveUserChoices(
+          userChangePositionOf(-1, 2, "newParam", newValue)
+        );
+
+        await changeSignature(editor);
+
+        const extracted = await editor.codeOf(path);
+        expect(extracted).toBe(expected);
+      }
+    );
+  });
 });
 
 function validateOutput(
@@ -610,12 +746,21 @@ function saveOtherFiles(
   return Promise.all(promises);
 }
 
-function userChangePositionOf(startAt: number, endAt: number) {
-  return {
-    label: "irrelevant",
+function userChangePositionOf(
+  startAt: number,
+  endAt: number,
+  label = "irrelevant",
+  value?: any
+): SelectedPosition {
+  const result: SelectedPosition = {
+    label,
     value: {
       startAt,
       endAt
     }
   };
+
+  if (value) result.value.val = value;
+
+  return result;
 }

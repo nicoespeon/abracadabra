@@ -114,17 +114,19 @@ function updateCode(
         const args = node.arguments.slice();
         if (args.length) {
           newPositions.forEach((order) => {
-            const arg = node.arguments[order.value.startAt];
-            args[order.value.endAt] = arg;
+            if (order.value.startAt === -1) {
+              args[order.value.endAt] = t.valueToNode(order.value.val);
+            } else {
+              args[order.value.endAt] = node.arguments[order.value.startAt];
+            }
           });
         }
 
-        const newArgs = args.map((arg) => {
+        node.arguments = args.map((arg) => {
           if (arg) return arg;
 
           return t.identifier("undefined");
         });
-        node.arguments = newArgs;
       } else if (
         isFunctionDeclarationOrArrowFunction(node) ||
         t.isClassMethod(node)
@@ -132,8 +134,11 @@ function updateCode(
         const params = node.params.slice();
         if (params.length) {
           newPositions.forEach((order) => {
-            const arg = node.params[order.value.startAt];
-            params[order.value.endAt] = arg;
+            if (order.value.startAt === -1) {
+              params[order.value.endAt] = t.identifier(order.label);
+            } else {
+              params[order.value.endAt] = node.params[order.value.startAt];
+            }
           });
         }
 
