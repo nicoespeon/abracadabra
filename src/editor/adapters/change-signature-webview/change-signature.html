@@ -101,7 +101,7 @@
           </th>
         </tr>
         <tr>
-          <th colspan="3">Name</th>
+          <th colspan="3" width="128">Name</th>
           <th colspan="1">Value</th>
         </tr>
       </thead>
@@ -200,12 +200,13 @@
         const items = [];
         for (let index = 0; index < tds.length; index++) {
           const item = tds[index];
-          const startAt = Array.from(startValues).findIndex((td) => td === item);
+          const startAt = Array.from(startValues).findIndex(
+            (td) => td === item
+          );
 
           let label = item.textContent;
-          let value = '';
+          let value = "";
           if (item.firstChild.nodeName === "INPUT") {
-
             if (!item.firstChild.value) {
               item.firstChild.focus();
               return;
@@ -224,7 +225,7 @@
           const result = {
             label,
             startAt,
-            endAt: index,
+            endAt: index
           };
 
           if (value) result.value = value;
