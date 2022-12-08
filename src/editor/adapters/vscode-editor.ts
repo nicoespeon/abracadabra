@@ -238,6 +238,7 @@ export class VSCodeEditor implements Editor {
           label: string;
           startAt: number;
           endAt: number;
+          value?: string;
         }[];
       }) => {
         const values = message.values;
@@ -247,7 +248,8 @@ export class VSCodeEditor implements Editor {
             label: result.label,
             value: {
               startAt: result.startAt,
-              endAt: result.endAt
+              endAt: result.endAt,
+              val: result.value
             }
           };
         });
