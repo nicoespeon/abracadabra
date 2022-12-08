@@ -1,4 +1,5 @@
 import * as t from "../../ast";
+import { parse } from "../../ast";
 import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
 import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
@@ -115,7 +116,29 @@ function updateCode(
         if (args.length) {
           newPositions.forEach((order) => {
             if (order.value.startAt === -1) {
-              args[order.value.endAt] = t.valueToNode(order.value.val);
+              try {
+                const parsed = parse(order.value.val as string);
+                const node = parsed.program.body[0];
+                if (t.isExpressionStatement(node)) {
+                  if (t.isSequenceExpression(node.expression)) {
+                    args[order.value.endAt] = t.valueToNode(order.value.val);
+                  } else {
+                    args[order.value.endAt] = node.expression;
+                  }
+                }
+              } catch (e) {
+                // In case where new value is a literal object ex: {name: 1, ...}
+                // we save that value in a variable "fake" to simulate a correct expression
+                // without it, the parse fn throw an error like "Missing semicolon. (1:13)"
+                const fakedBlockCode = `fake = ${order.value.val}`;
+                const parsed = parse(fakedBlockCode);
+                const node = parsed.program.body[0];
+                if (t.isExpressionStatement(node)) {
+                  if (t.isAssignmentExpression(node.expression)) {
+                    args[order.value.endAt] = node.expression.right;
+                  }
+                }
+              }
             } else {
               args[order.value.endAt] = node.arguments[order.value.startAt];
             }

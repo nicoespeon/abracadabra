@@ -587,13 +587,13 @@ describe("Change Signature", () => {
     testEach<{
       code: Code;
       expected: Code;
-      newValue: any;
+      newValue: string;
     }>(
       "In same file",
       [
         {
           description: "is able to add <boolean> parameter in a function",
-          newValue: true,
+          newValue: "true",
           code: `function [cursor]add(a, b) {
             console.log(a, b)
           }
@@ -607,7 +607,7 @@ describe("Change Signature", () => {
         },
         {
           description: "is able to add <number> parameter in a function",
-          newValue: 120,
+          newValue: "120",
           code: `function [cursor]add(a, b) {
             console.log(a, b)
           }
@@ -621,7 +621,7 @@ describe("Change Signature", () => {
         },
         {
           description: "is able to add <array> parameter in a function",
-          newValue: [1, 2, 3],
+          newValue: "[1, 2, 3]",
           code: `function [cursor]add(a, b) {
             console.log(a, b)
           }
@@ -635,7 +635,7 @@ describe("Change Signature", () => {
         },
         {
           description: "is able to add <empty object> parameter in a function",
-          newValue: { id: 1, name: "Abracadabra" },
+          newValue: "{ id: 1, name: 'Abracadabra' }",
           code: `function [cursor]add(a, b) {
             console.log(a, b)
           }
@@ -645,14 +645,26 @@ describe("Change Signature", () => {
             console.log(a, b)
           }
 
-          add(7, "years", {
-            id: 1,
-            name: "Abracadabra"
-          });`
+          add(7, "years", { id: 1, name: 'Abracadabra' });`
+        },
+        {
+          description:
+            "is able to add <instance class> parameter in a function",
+          newValue: "new AbsolutePath('/temp/')",
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", new AbsolutePath('/temp/'));`
         },
         {
           description: "is able to add <boolean> parameter in a class method",
-          newValue: true,
+          newValue: "true",
           code: `class Math {
             [cursor]add(a, b) {
               console.log(a, b)
@@ -670,7 +682,7 @@ describe("Change Signature", () => {
         },
         {
           description: "is able to add <array> parameter in a class method",
-          newValue: [true],
+          newValue: "[true]",
           code: `class Math {
             [cursor]add(a, b) {
               console.log(a, b)
@@ -688,7 +700,7 @@ describe("Change Signature", () => {
         },
         {
           description: "is able to add <array> parameter in an arrow function",
-          newValue: [true],
+          newValue: "[true]",
           code: `const add = [cursor](a, b) => {
             return a + b;
           }
@@ -717,6 +729,33 @@ describe("Change Signature", () => {
         expect(extracted).toBe(expected);
       }
     );
+
+    xit("Should order correctly for complex parameters with defaults values", async () => {
+      const { code, expected, newValue } = {
+        newValue: "new AbsolutePath('/temp/')",
+        code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+        expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", new AbsolutePath('/temp/'));`
+      };
+      const path = new AbsolutePath("/temp/file.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 0));
+      editor.saveUserChoices(userChangePositionOf(1, 1));
+      editor.saveUserChoices(userChangePositionOf(-1, 2, "newParam", newValue));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    });
   });
 });
 
@@ -750,7 +789,7 @@ function userChangePositionOf(
   startAt: number,
   endAt: number,
   label = "irrelevant",
-  value?: any
+  value?: string
 ): SelectedPosition {
   const result: SelectedPosition = {
     label,
