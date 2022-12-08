@@ -14,21 +14,26 @@
         padding: 8px;
       }
 
+      th > span {
+        display: inline-block;
+        min-width: 21px;
+        min-height: 21px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        margin-right: 8px;
+      }
+
+      #remove {
+        position: relative;
+        top: -5px;
+      }
+
       tbody tr {
         cursor: pointer;
       }
 
       tbody td input {
         max-width: 150px;
-      }
-
-      .up,
-      .down {
-        cursor: pointer;
-        display: inline-block;
-        width: 8px;
-        margin: 0 0.7rem;
-        font-size: 1.2rem;
       }
 
       .up:after {
@@ -84,7 +89,7 @@
         <tr>
           <th colspan="4">
             <span id="add">+</span>
-            <span id="remove">-</span>
+            <span id="remove">⚊</span>
             <span class="up" id="up"></span>
             <span class="down" id="down"></span>
           </th>
