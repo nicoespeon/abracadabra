@@ -116,27 +116,17 @@ function updateCode(
         if (args.length) {
           newPositions.forEach((order) => {
             if (order.value.startAt === -1) {
-              try {
-                const parsed = parse(order.value.val as string);
-                const node = parsed.program.body[0];
-                if (t.isExpressionStatement(node)) {
-                  if (t.isSequenceExpression(node.expression)) {
-                    args[order.value.endAt] = t.valueToNode(order.value.val);
-                  } else {
-                    args[order.value.endAt] = node.expression;
-                  }
-                }
-              } catch (e) {
-                // In case where new value is a literal object ex: {name: 1, ...}
-                // we save that value in a variable "fake" to simulate a correct expression
-                // without it, the parse fn throw an error like "Missing semicolon. (1:13)"
-                const fakedBlockCode = `fake = ${order.value.val}`;
-                const parsed = parse(fakedBlockCode);
-                const node = parsed.program.body[0];
-                if (t.isExpressionStatement(node)) {
-                  if (t.isAssignmentExpression(node.expression)) {
-                    args[order.value.endAt] = node.expression.right;
-                  }
+              // Convert to a valid code.
+              // Without that. It will trigger invalid "Missing semicolon (n, n)"
+              // That error occurs only for literal objects like: {id: 1, ...}
+              const fakedBlockCode = `const faked = ${order.value.val}`;
+              const parsed = parse(fakedBlockCode);
+              const node = parsed.program.body[0];
+
+              if (t.isVariableDeclaration(node)) {
+                const variableDeclarator = node.declarations[0];
+                if (variableDeclarator.init) {
+                  args[order.value.endAt] = variableDeclarator.init;
                 }
               }
             } else {
