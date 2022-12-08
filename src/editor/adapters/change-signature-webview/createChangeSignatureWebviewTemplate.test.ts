@@ -140,20 +140,21 @@ describe("Change signature Webview Content", () => {
   });
 
   describe("Adding params", () => {
-    const postMessage = jest.fn();
+    let postMessage: AcquireVsCodeAPIPostMessage;
     let document: Document;
 
     beforeEach(() => {
+      postMessage = jest.fn();
       const selections = [
         createSelectedPosition("paramA", 0),
         createSelectedPosition("paramB", 1)
       ];
       document = render(loadHTML(selections), acquireVsCodeApi(postMessage));
+      const addBtn = document.getElementById("add") as HTMLElement;
+      addBtn.click();
     });
 
     it("Should be able to add new parameter", async () => {
-      const addBtn = document.getElementById("add") as HTMLElement;
-      addBtn.click();
       const inputLabel = document.querySelector(
         ".input-param-name"
       ) as HTMLInputElement;
@@ -171,6 +172,32 @@ describe("Change signature Webview Content", () => {
           { label: "newParam", startAt: -1, endAt: 2, value: "true" }
         ]
       });
+    });
+
+    it("Should param name input be focused when has empty value on submit", async () => {
+      document.getElementById("confirm")?.click();
+
+      const inputLabel = document.querySelector(
+        ".input-param-name"
+      ) as HTMLInputElement;
+      const focusedElement = document.activeElement;
+      expect(inputLabel).toEqual(focusedElement);
+      expect(postMessage).not.toHaveBeenCalled();
+    });
+
+    it("Should param value input be focused when has empty value on submit", async () => {
+      const inputLabel = document.querySelector(
+        ".input-param-name"
+      ) as HTMLInputElement;
+      inputLabel.value = "newParam";
+      document.getElementById("confirm")?.click();
+
+      const inputValue = document.querySelector(
+        ".input-param-value"
+      ) as HTMLInputElement;
+      const focusedElement = document.activeElement;
+      expect(inputValue).toEqual(focusedElement);
+      expect(postMessage).not.toHaveBeenCalled();
     });
   });
 });

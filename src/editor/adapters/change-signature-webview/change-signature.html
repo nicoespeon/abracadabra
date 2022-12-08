@@ -191,16 +191,27 @@
         ev.stopPropagation();
         const tdsElements = document.querySelectorAll("#params .params-name");
         const tds = Array.from(tdsElements);
-
-        const items = tds.map((item, index) => {
-          const startAt = Array.from(startValues).findIndex(
-            (td) => td === item
-          );
+        const items = [];
+        for (let index = 0; index < tds.length; index++) {
+          const item = tds[index];
+          const startAt = Array.from(startValues).findIndex((td) => td === item);
 
           let label = item.textContent;
           let value = '';
           if (item.firstChild.nodeName === "INPUT") {
+
+            if (!item.firstChild.value) {
+              item.firstChild.focus();
+              return;
+            }
+
             label = item.firstChild.value;
+
+            if (!item.nextElementSibling.firstChild.value) {
+              item.nextElementSibling.firstChild.focus();
+              return;
+            }
+
             value = item.nextElementSibling.firstChild.value;
           }
 
@@ -212,8 +223,8 @@
 
           if (value) result.value = value;
 
-          return result;
-        });
+          items.push(result);
+        }
 
         const vscode = acquireVsCodeApi();
 
