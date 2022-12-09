@@ -223,6 +223,11 @@
         tr.dispatchEvent(new Event('click'));
       });
 
+      document.getElementById("remove").addEventListener("click", (ev) => {
+        const el = document.querySelector(`.${selectedClass}`);
+        if (el) el.remove();
+      });
+
       document.getElementById('form').addEventListener('submit', (ev) => {
         ev.preventDefault();
         const form = ev.target;

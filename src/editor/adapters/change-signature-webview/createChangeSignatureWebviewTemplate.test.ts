@@ -241,6 +241,33 @@ describe("Change signature Webview Content", () => {
       expect(up.classList.contains("disabled")).toBeFalsy();
     });
   });
+
+  describe("Removing param", () => {
+    let postMessage: AcquireVsCodeAPIPostMessage;
+    let document: Document;
+
+    beforeEach(() => {
+      postMessage = jest.fn();
+      const selections = [
+        createSelectedPosition("paramA", 0),
+        createSelectedPosition("paramB", 1)
+      ];
+      document = render(loadHTML(selections), acquireVsCodeApi(postMessage));
+    });
+
+    it("Should be able to remove paramB parameter", async () => {
+      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+      paramsTr[1].click();
+
+      const removeBtn = document.getElementById("remove") as HTMLElement;
+      removeBtn.click();
+      document.getElementById("confirm")?.click();
+
+      expect(postMessage).toHaveBeenCalledWith({
+        values: [{ label: "paramA", startAt: 0, endAt: 0 }]
+      });
+    });
+  });
 });
 
 function createSelectedPosition(
