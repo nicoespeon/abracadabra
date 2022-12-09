@@ -731,6 +731,116 @@ describe("Change Signature", () => {
       }
     );
   });
+
+  describe("Removing a parameter", () => {
+    testEach<{
+      code: Code;
+      expected: Code;
+    }>(
+      "In same file",
+      [
+        {
+          description: "is able to remove <boolean> parameter in a function",
+          code: `function [cursor]add(a, b) {
+            console.log(a)
+          }
+
+          add(7, true);`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <array> parameter with default value in a function",
+          code: `function [cursor]add(a, b = []) {
+            console.log(a)
+          }
+
+          add(7);`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <literal object> parameter in a function",
+          code: `function [cursor]add(a, b) {
+            console.log(a)
+          }
+
+          add(7, { id: 1, name: 'Abracadabra' });`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <instance class> parameter in a function",
+          code: `function [cursor]add(a, b) {
+            console.log(a)
+          }
+
+          add(7, new AbsolutePath('/temp/'));`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <boolean> parameter with default value in a class method",
+          code: `class Math {
+            [cursor]add(a, b = true) {
+              console.log(a)
+            }
+          }
+
+          math.add(7, "years");`,
+          expected: `class Math {
+            add(a) {
+              console.log(a)
+            }
+          }
+
+          math.add(7);`
+        },
+        {
+          description:
+            "is able to remove <array> parameter in an arrow function",
+          code: `const add = [cursor](a, b) => {
+            return a;
+          }
+
+          add(7, []);`,
+          expected: `const add = a => {
+            return a;
+          }
+
+          add(7);`
+        }
+      ],
+      async ({ code, expected }) => {
+        const path = new AbsolutePath("/temp/file.ts");
+        const editor = new InMemoryEditor(code);
+        await editor.writeIn(path, editor.code);
+        editor.saveUserChoices(userChangePositionOf(0, 0));
+        editor.saveUserChoices(userChangePositionOf(1, -1));
+
+        await changeSignature(editor);
+
+        const extracted = await editor.codeOf(path);
+        expect(extracted).toBe(expected);
+      }
+    );
+  });
 });
 
 function validateOutput(

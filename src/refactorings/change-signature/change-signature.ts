@@ -129,6 +129,9 @@ function updateCode(
                   args[order.value.endAt] = variableDeclarator.init;
                 }
               }
+            }
+            if (order.value.endAt === -1) {
+              args.splice(order.value.startAt, 1);
             } else {
               args[order.value.endAt] = node.arguments[order.value.startAt];
             }
@@ -149,6 +152,9 @@ function updateCode(
           newPositions.forEach((order) => {
             if (order.value.startAt === -1) {
               params[order.value.endAt] = t.identifier(order.label);
+            }
+            if (order.value.endAt === -1) {
+              params.splice(order.value.startAt, 1);
             } else {
               params[order.value.endAt] = node.params[order.value.startAt];
             }
