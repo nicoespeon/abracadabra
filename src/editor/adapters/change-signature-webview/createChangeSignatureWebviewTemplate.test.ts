@@ -286,6 +286,43 @@ describe("Change signature Webview Content", () => {
       });
     });
   });
+
+  it("Should be able to remove second parameter and add new one", () => {
+    const postMessage = jest.fn();
+    const selections = [
+      createSelectedPosition("paramA", 0),
+      createSelectedPosition("paramB", 1)
+    ];
+    const document = render(
+      loadHTML(selections),
+      acquireVsCodeApi(postMessage)
+    );
+
+    const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+    paramsTr[1].click();
+    const removeBtn = document.getElementById("remove") as HTMLElement;
+    removeBtn.click();
+    const addBtn = document.getElementById("add") as HTMLElement;
+    addBtn.click();
+    const inputLabel = document.querySelector(
+      ".input-param-name"
+    ) as HTMLInputElement;
+    inputLabel.value = "newParam";
+    const inputValue = document.querySelector(
+      ".input-param-value"
+    ) as HTMLInputElement;
+    inputValue.value = true.toString();
+
+    document.getElementById("confirm")?.click();
+
+    expect(postMessage).toHaveBeenCalledWith({
+      values: [
+        { label: "paramA", startAt: 0, endAt: 0 },
+        { label: "newParam", startAt: -1, endAt: 1, value: "true" },
+        { label: "paramB", startAt: 1, endAt: -1 }
+      ]
+    });
+  });
 });
 
 function createSelectedPosition(
