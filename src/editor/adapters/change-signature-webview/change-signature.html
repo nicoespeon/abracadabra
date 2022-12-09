@@ -225,29 +225,26 @@
 
       document.getElementById('form').addEventListener('submit', (ev) => {
         ev.preventDefault();
+        const form = ev.target;
+        const isValid = form.checkValidity();
+
+        if (!isValid) {
+          const inputs = Array.from(document.querySelectorAll('input:not([disabled])'));
+          const input = inputs.find((input) => !input.value);
+          if (input) input.focus();
+          return;
+        }
+
         const confirmBtn = document.querySelector("#confirm");
         const tdsElements = document.querySelectorAll("#params .params-name");
         const tds = Array.from(tdsElements);
-        const items = [];
-        for (let index = 0; index < tds.length; index++) {
-          const item = tds[index];
+        const items = tds.map((item, index) => {
           const startAt = Array.from(startValues).findIndex((td) => td === item);
-
           let label = item.textContent;
           let value = "";
+          // When user add new param we need inputs values
           if (item.firstChild.nodeName === "INPUT") {
-            if (!item.firstChild.value) {
-              item.firstChild.focus();
-              return;
-            }
-
             label = item.firstChild.value;
-
-            if (!item.nextElementSibling.firstChild.value) {
-              item.nextElementSibling.firstChild.focus();
-              return;
-            }
-
             value = item.nextElementSibling.firstChild.value;
           }
 
@@ -259,8 +256,8 @@
 
           if (value) result.value = value;
 
-          items.push(result);
-        }
+          return result;
+        })
 
         confirmBtn.disabled = true;
         const vscode = acquireVsCodeApi();
