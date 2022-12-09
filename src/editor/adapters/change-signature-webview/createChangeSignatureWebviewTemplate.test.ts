@@ -163,7 +163,7 @@ describe("Change signature Webview Content", () => {
       addBtn.click();
     });
 
-    it("Should be able to add new parameter", async () => {
+    it("Should be able to add new parameter", () => {
       const inputLabel = document.querySelector(
         ".input-param-name"
       ) as HTMLInputElement;
@@ -183,7 +183,7 @@ describe("Change signature Webview Content", () => {
       });
     });
 
-    it("Should param name input be focused when has empty value on submit", async () => {
+    it("Should param name input be focused when has empty value on submit", () => {
       document.getElementById("confirm")?.click();
 
       const inputLabel = document.querySelector(
@@ -194,7 +194,7 @@ describe("Change signature Webview Content", () => {
       expect(postMessage).not.toHaveBeenCalled();
     });
 
-    it("Should param value input be focused when has empty value on submit", async () => {
+    it("Should param value input be focused when has empty value on submit", () => {
       const inputLabel = document.querySelector(
         ".input-param-name"
       ) as HTMLInputElement;
@@ -209,7 +209,7 @@ describe("Change signature Webview Content", () => {
       expect(postMessage).not.toHaveBeenCalled();
     });
 
-    it("Should be able to move Up new parameter", async () => {
+    it("Should be able to move Up new parameter", () => {
       const up = document.getElementById("up") as HTMLSpanElement;
       up.click();
 
@@ -218,7 +218,7 @@ describe("Change signature Webview Content", () => {
       expect(newParamTr.classList.contains("param--selected")).toBeTruthy();
     });
 
-    it("Should be able to move Up then Down the new parameter", async () => {
+    it("Should be able to move Up then Down the new parameter", () => {
       const up = document.getElementById("up") as HTMLSpanElement;
       up.click();
       const down = document.getElementById("down") as HTMLSpanElement;
@@ -255,7 +255,22 @@ describe("Change signature Webview Content", () => {
       document = render(loadHTML(selections), acquireVsCodeApi(postMessage));
     });
 
-    it("Should be able to remove paramB parameter", async () => {
+    it("Should be able to remove paramB parameter", () => {
+      const addBtn = document.getElementById("add") as HTMLElement;
+      addBtn.click();
+      const removeBtn = document.getElementById("remove") as HTMLElement;
+      removeBtn.click();
+      document.getElementById("confirm")?.click();
+
+      expect(postMessage).toHaveBeenCalledWith({
+        values: [
+          { label: "paramA", startAt: 0, endAt: 0 },
+          { label: "paramB", startAt: 1, endAt: 1 }
+        ]
+      });
+    });
+
+    it("Should be able to add a new parameter and remove it", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
 
