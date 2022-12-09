@@ -867,11 +867,11 @@ describe("Change Signature", () => {
   });
 
   it("Should be able to combine add new parameters and remove some", async () => {
-    const code = `function [cursor]add(a, b) {
+    const code = `function [cursor]add(a, b, c) {
             console.log(b)
           }
 
-          add(7, { id: 1, name: 'Abracadabra' });`;
+          add(7, { id: 1, name: 'Abracadabra' }, [1]);`;
     const expected = `function add(b, newParam) {
             console.log(b)
           }
@@ -881,8 +881,9 @@ describe("Change Signature", () => {
     const path = new AbsolutePath("/temp/file.ts");
     const editor = new InMemoryEditor(code);
     await editor.writeIn(path, editor.code);
-    editor.saveUserChoices(userChangePositionOf(0, -1));
-    editor.saveUserChoices(userChangePositionOf(1, 0));
+    editor.saveUserChoices(userChangePositionOf(0, -1, "a"));
+    editor.saveUserChoices(userChangePositionOf(1, 0, "b"));
+    editor.saveUserChoices(userChangePositionOf(2, -1, "c"));
     editor.saveUserChoices(userChangePositionOf(-1, 1, "newParam", "true"));
 
     await changeSignature(editor);

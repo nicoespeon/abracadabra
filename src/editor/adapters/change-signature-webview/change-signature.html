@@ -197,6 +197,17 @@
         return startAt === -1;
       }
 
+      function insert(arr, index, newItem) {
+        return [
+          // part of the array before the specified index
+          ...arr.slice(0, index),
+          // inserted item
+          newItem,
+          // part of the array after the specified index
+          ...arr.slice(index)
+        ];
+      }
+
       addTrClickEvents();
 
       up.addEventListener("click", (ev) => {
@@ -248,7 +259,7 @@
         const tds = Array.from(tdsElements);
         const startTdsValues =  Array.from(startValues);
 
-        const items = tds.map((item, index) => {
+        let items = tds.map((item, index) => {
           const startAt = Array.from(startValues).findIndex((td) => td === item);
           let label = item.textContent;
           let value = "";
@@ -275,11 +286,11 @@
           const existInNewParams = items.find((item) => item.label === paramName);
 
           if (!existInNewParams) {
-            items.push({
+            items = insert(items, index, {
               label: paramName,
               startAt: index,
               endAt: -1
-            })
+            });
           }
         });
 

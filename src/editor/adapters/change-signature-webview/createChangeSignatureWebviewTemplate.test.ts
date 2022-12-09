@@ -318,8 +318,8 @@ describe("Change signature Webview Content", () => {
     expect(postMessage).toHaveBeenCalledWith({
       values: [
         { label: "paramA", startAt: 0, endAt: 0 },
-        { label: "newParam", startAt: -1, endAt: 1, value: "true" },
-        { label: "paramB", startAt: 1, endAt: -1 }
+        { label: "paramB", startAt: 1, endAt: -1 },
+        { label: "newParam", startAt: -1, endAt: 1, value: "true" }
       ]
     });
   });
