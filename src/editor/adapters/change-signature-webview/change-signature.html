@@ -193,6 +193,10 @@
         });
       }
 
+      function isNewParam(startAt) {
+        return startAt === -1;
+      }
+
       addTrClickEvents();
 
       up.addEventListener("click", (ev) => {
@@ -240,15 +244,17 @@
           return;
         }
 
-        const confirmBtn = document.querySelector("#confirm");
         const tdsElements = document.querySelectorAll("#params .params-name");
         const tds = Array.from(tdsElements);
+        const startTdsValues =  Array.from(startValues);
+
         const items = tds.map((item, index) => {
           const startAt = Array.from(startValues).findIndex((td) => td === item);
           let label = item.textContent;
           let value = "";
-          // When user add new param we need inputs values
-          if (item.firstChild.nodeName === "INPUT") {
+
+          if (isNewParam(startAt)) {
+            // When user add new param we need inputs values
             label = item.firstChild.value;
             value = item.nextElementSibling.firstChild.value;
           }
@@ -262,11 +268,25 @@
           if (value) result.value = value;
 
           return result;
-        })
+        });
 
+        startTdsValues.forEach((td, index) => {
+          const paramName = td.textContent;
+          const existInNewParams = items.find((item) => item.label === paramName);
+
+          if (!existInNewParams) {
+            items.push({
+              label: paramName,
+              startAt: index,
+              endAt: -1
+            })
+          }
+        });
+
+        const confirmBtn = document.querySelector("#confirm");
         confirmBtn.disabled = true;
-        const vscode = acquireVsCodeApi();
 
+        const vscode = acquireVsCodeApi();
         vscode.postMessage({
           values: items
         });

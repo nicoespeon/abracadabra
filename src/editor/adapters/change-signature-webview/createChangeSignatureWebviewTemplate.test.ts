@@ -264,7 +264,10 @@ describe("Change signature Webview Content", () => {
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
-        values: [{ label: "paramA", startAt: 0, endAt: 0 }]
+        values: [
+          { label: "paramA", startAt: 0, endAt: 0 },
+          { label: "paramB", startAt: 1, endAt: -1 }
+        ]
       });
     });
   });
