@@ -120,7 +120,7 @@ describe("Change signature Webview Content", () => {
       expect(upButton.classList.contains("disabled")).toBeTruthy();
     });
 
-    it("Should up button be disabled when I move paramB as a first paramater", () => {
+    it("Should up button be disabled when I move paramB as a first parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
       const up = document.getElementById("up") as HTMLSpanElement;
@@ -129,13 +129,22 @@ describe("Change signature Webview Content", () => {
       expect(up.classList.contains("disabled")).toBeTruthy();
     });
 
-    it("Should down button be disabled when I move paramA as a last paramater", () => {
+    it("Should down button be disabled when I move paramA as a last parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
       const down = document.getElementById("down") as HTMLSpanElement;
       down.click();
 
       expect(down.classList.contains("disabled")).toBeTruthy();
+    });
+
+    it("Should Confirm button be disabled after submit", () => {
+      const confirmBtn = document.getElementById(
+        "confirm"
+      ) as HTMLButtonElement;
+      confirmBtn.click();
+
+      expect(confirmBtn.disabled).toBeTruthy();
     });
   });
 
@@ -198,6 +207,38 @@ describe("Change signature Webview Content", () => {
       const focusedElement = document.activeElement;
       expect(inputValue).toEqual(focusedElement);
       expect(postMessage).not.toHaveBeenCalled();
+    });
+
+    it("Should be able to move Up new parameter", async () => {
+      const up = document.getElementById("up") as HTMLSpanElement;
+      up.click();
+
+      const trs = document.querySelectorAll("tbody tr");
+      const newParamTr = trs[1];
+      expect(newParamTr.classList.contains("param--selected")).toBeTruthy();
+    });
+
+    it("Should be able to move Up then Down the new parameter", async () => {
+      const up = document.getElementById("up") as HTMLSpanElement;
+      up.click();
+      const down = document.getElementById("down") as HTMLSpanElement;
+      down.click();
+
+      const trs = document.querySelectorAll("tbody tr");
+      const newParamTr = trs[2];
+      expect(newParamTr.classList.contains("param--selected")).toBeTruthy();
+    });
+
+    it("Should down button be disabled when user add new parameter because is the last param", () => {
+      const down = document.getElementById("down") as HTMLSpanElement;
+
+      expect(down.classList.contains("disabled")).toBeTruthy();
+    });
+
+    it("Should up button be enabled when user add new parameter because is the last param", () => {
+      const up = document.getElementById("up") as HTMLSpanElement;
+
+      expect(up.classList.contains("disabled")).toBeFalsy();
     });
   });
 });

@@ -14,6 +14,10 @@
         padding: 8px;
       }
 
+      th {
+        user-select: none;
+      }
+
       th > span {
         display: inline-block;
         min-width: 21px;
@@ -76,6 +80,12 @@
       button:hover {
         cursor: pointer;
         color: white;
+      }
+
+      button[disabled] {
+        background-color: #e2e2e2;
+        color: #b1b1b1;
+        cursor: not-allowed;
       }
 
       .param--selected {
@@ -154,6 +164,36 @@
         }
       }
 
+      function addTrClickEvents() {
+        const paramsTr = document.querySelectorAll("tbody tr");
+
+        function findParentTr(el) {
+          if (!el) return null;
+          if (el.nodeName === 'TR') return el;
+
+          return findParentTr(el.parentNode)
+        }
+
+        function handleClick(ev) {
+          ev.stopPropagation();
+          const el = findParentTr(ev.target);
+          if (!el) return;
+          paramsTr.forEach((el) => {
+            el.classList.remove(selectedClass);
+          });
+
+          el.classList.add(selectedClass);
+          validateArrowsState(el);
+        }
+
+        paramsTr.forEach((tr) => {
+          tr.removeEventListener('click', handleClick);
+          tr.addEventListener("click", handleClick);
+        });
+      }
+
+      addTrClickEvents();
+
       up.addEventListener("click", (ev) => {
         ev.stopPropagation();
         if (ev.target.classList.contains("disable")) return;
@@ -177,20 +217,9 @@
       document.getElementById("add").addEventListener("click", (ev) => {
         ev.stopPropagation();
 
-        createParam();
-      });
-
-      const paramsTr = document.querySelectorAll("tbody tr");
-      paramsTr.forEach((tr) => {
-        tr.addEventListener("click", (ev) => {
-          ev.stopPropagation();
-          paramsTr.forEach((tr) => {
-            tr.classList.remove(selectedClass);
-          });
-
-          tr.classList.add(selectedClass);
-          validateArrowsState(tr);
-        });
+        const tr = createParam();
+        addTrClickEvents();
+        tr.dispatchEvent(new Event('click'));
       });
 
       document.querySelector("#confirm").addEventListener("click", (ev) => {
@@ -233,6 +262,7 @@
           items.push(result);
         }
 
+        ev.target.disabled = true;
         const vscode = acquireVsCodeApi();
 
         vscode.postMessage({
@@ -240,7 +270,9 @@
         });
       });
 
-      document.body.addEventListener("click", () => {
+      document.body.addEventListener("click", (evt) => {
+        if(evt.target.nodeName === "INPUT") return;
+
         const el = document.querySelector(`.${selectedClass}`);
         if (el) {
           el.classList.remove(selectedClass);
@@ -256,10 +288,13 @@
         `;
 
         const tr = document.createElement("tr");
-        tr.classList.add("param");
+        tr.classList.add(`param`);
         tr.innerHTML = template;
 
         document.querySelector("tbody").appendChild(tr);
+        tr.querySelector('.input-param-name').focus();
+
+        return tr;
       }
     </script>
   </body>
