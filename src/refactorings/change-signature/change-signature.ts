@@ -117,7 +117,7 @@ function updateCode(
           newPositions.forEach((order) => {
             if (order.value.startAt === -1) {
               // Convert to a valid code.
-              // Without that. It will trigger invalid "Missing semicolon (n, n)"
+              // Without that will trigger invalid "Missing semicolon (n, n)"
               // That error occurs only for literal objects like: {id: 1, ...}
               const fakedBlockCode = `const faked = ${order.value.val}`;
               const parsed = parse(fakedBlockCode);
@@ -149,9 +149,9 @@ function updateCode(
         const params = node.params.slice();
         if (params.length) {
           newPositions.forEach((order) => {
-            if (order.value.startAt === -1) {
+            if (isNewParameter(order)) {
               params[order.value.endAt] = t.identifier(order.label);
-            } else if (order.value.endAt === -1) {
+            } else if (hasRemovedTheParameter(order)) {
               params.splice(order.value.startAt, 1);
             } else {
               params[order.value.endAt] = node.params[order.value.startAt];
@@ -285,4 +285,12 @@ function hasParameters(
   node: t.FunctionDeclaration | t.ArrowFunctionExpression | t.ClassMethod
 ) {
   return node.params.length > 0;
+}
+
+function isNewParameter(order: SelectedPosition) {
+  return order.value.startAt === -1;
+}
+
+function hasRemovedTheParameter(order: SelectedPosition) {
+  return order.value.endAt === -1;
 }
