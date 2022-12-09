@@ -158,10 +158,14 @@ export function createVisitor(
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
 
+      if (!hasParameters(path.node)) return;
+
       onMatch(path, selection);
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
+
+      if (!hasParameters(path.node)) return;
 
       if (!t.isVariableDeclarator(path.parent)) return;
 
@@ -171,6 +175,9 @@ export function createVisitor(
     },
     ClassMethod(path) {
       if (!selection.isInsidePath(path)) return;
+
+      if (!hasParameters(path.node)) return;
+
       onMatch(path, selection);
     }
   };
@@ -250,4 +257,10 @@ function createVisitorForReferences(
       onMatch(path);
     }
   };
+}
+
+function hasParameters(
+  node: t.FunctionDeclaration | t.ArrowFunctionExpression | t.ClassMethod
+) {
+  return node.params.length > 0;
 }
