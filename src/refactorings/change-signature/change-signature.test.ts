@@ -840,6 +840,55 @@ describe("Change Signature", () => {
         expect(extracted).toBe(expected);
       }
     );
+
+    it("Should be able to remove first parameter of a function with multiples parameters", async () => {
+      const code = `function [cursor]add(a, b) {
+            console.log(b)
+          }
+
+          add(7, { id: 1, name: 'Abracadabra' });`;
+      const expected = `function add(b) {
+            console.log(b)
+          }
+
+          add({ id: 1, name: 'Abracadabra' });`;
+
+      const path = new AbsolutePath("/temp/file.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, -1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    });
+  });
+
+  it("Should be able to combine add new parameters and remove some", async () => {
+    const code = `function [cursor]add(a, b) {
+            console.log(b)
+          }
+
+          add(7, { id: 1, name: 'Abracadabra' });`;
+    const expected = `function add(b, newParam) {
+            console.log(b)
+          }
+
+          add({ id: 1, name: 'Abracadabra' }, true);`;
+
+    const path = new AbsolutePath("/temp/file.ts");
+    const editor = new InMemoryEditor(code);
+    await editor.writeIn(path, editor.code);
+    editor.saveUserChoices(userChangePositionOf(0, -1));
+    editor.saveUserChoices(userChangePositionOf(1, 0));
+    editor.saveUserChoices(userChangePositionOf(-1, 1, "newParam", "true"));
+
+    await changeSignature(editor);
+
+    const extracted = await editor.codeOf(path);
+    expect(extracted).toBe(expected);
   });
 });
 
