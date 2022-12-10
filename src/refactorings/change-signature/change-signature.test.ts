@@ -1,6 +1,11 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { AbsolutePath, Code, ErrorReason, SelectedPosition} from "../../editor/editor";
+import {
+  AbsolutePath,
+  Code,
+  ErrorReason,
+  SelectedPosition
+} from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { testEach } from "../../tests-helpers";
 
@@ -659,6 +664,32 @@ describe("Change Signature", () => {
       await editor.writeIn(path, editor.code);
       editor.saveUserChoices(userChangePositionOf(0, -1));
       editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    });
+
+    it("Should be able to remove multiple parameters", async () => {
+      const code = `function [cursor]add(a, b, paramOne, paramTwo) {
+            console.log(a, b)
+          }
+
+          add(7, 8, -9, -99);`;
+      const expected = `function add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, 8);`;
+
+      const path = new AbsolutePath("/temp/file.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 0));
+      editor.saveUserChoices(userChangePositionOf(1, 1));
+      editor.saveUserChoices(userChangePositionOf(2, -1));
+      editor.saveUserChoices(userChangePositionOf(3, -1));
 
       await changeSignature(editor);
 

@@ -574,7 +574,7 @@ describe("Modules", () => {
       async ({ setup, expected }) => {
         const editor = new InMemoryEditor(setup.currentFile.code);
         await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.saveUserChoices(userChangePositionOf(0, 1));
+        editor.saveUserChoices(userChangePositionOf(0, 0));
         editor.saveUserChoices(userChangePositionOf(1, -1));
         await saveOtherFiles(setup, editor);
 

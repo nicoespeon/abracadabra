@@ -112,7 +112,10 @@ function updateCode(
       const node = path.node;
 
       if (t.isCallExpression(node)) {
-        const args = node.arguments.slice();
+        const args = node.arguments.slice().filter((_param, index) => {
+          return !hasRemovedTheParameter(newPositions[index]);
+        });
+
         if (args.length) {
           newPositions.forEach((order) => {
             if (order.value.startAt === -1) {
@@ -129,8 +132,6 @@ function updateCode(
                   args[order.value.endAt] = variableDeclarator.init;
                 }
               }
-            } else if (order.value.endAt === -1) {
-              args.splice(order.value.startAt, 1);
             } else {
               args[order.value.endAt] = node.arguments[order.value.startAt];
             }
@@ -146,13 +147,14 @@ function updateCode(
         isFunctionDeclarationOrArrowFunction(node) ||
         t.isClassMethod(node)
       ) {
-        const params = node.params.slice();
+        const params = node.params.slice().filter((_param, index) => {
+          return !hasRemovedTheParameter(newPositions[index]);
+        });
+
         if (params.length) {
           newPositions.forEach((order) => {
             if (isNewParameter(order)) {
               params[order.value.endAt] = t.identifier(order.label);
-            } else if (hasRemovedTheParameter(order)) {
-              params.splice(order.value.startAt, 1);
             } else {
               params[order.value.endAt] = node.params[order.value.startAt];
             }
