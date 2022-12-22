@@ -19,7 +19,7 @@ describe("Change signature Webview Content", () => {
     expect(params[1].textContent).toBe("paramB");
   });
 
-  it("Should render disabled inputs", () => {
+  it("Should disable existing params inputs", () => {
     const selections = [
       createSelectedPosition("paramA", 0),
       createSelectedPosition("paramB", 1)
