@@ -75,8 +75,7 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move paramB as a first parameter", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[1].click();
+      selectParam(document, 1);
       clickUp(document);
       document.getElementById("confirm")?.click();
 
@@ -89,10 +88,8 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move paramA as last parameter", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[0].click();
-      const downButton = document.getElementById("down") as HTMLSpanElement;
-      downButton.click();
+      selectParam(document, 0);
+      clickDown(document);
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -104,24 +101,21 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should down button be disabled when I select the last parameter", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[1].click();
+      selectParam(document, 1);
       const downButton = document.getElementById("down") as HTMLSpanElement;
 
       expect(downButton.classList.contains("disabled")).toBeTruthy();
     });
 
     it("Should up button be disabled when I select the first parameter", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[0].click();
+      selectParam(document, 0);
       const upButton = document.getElementById("up") as HTMLSpanElement;
 
       expect(upButton.classList.contains("disabled")).toBeTruthy();
     });
 
     it("Should up button be disabled when I move paramB as a first parameter", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[1].click();
+      selectParam(document, 1);
       clickUp(document);
 
       const up = document.getElementById("up") as HTMLSpanElement;
@@ -129,8 +123,7 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should down button be disabled when I move paramA as a last parameter", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[1].click();
+      selectParam(document, 1);
       clickDown(document);
 
       const down = document.getElementById("down") as HTMLSpanElement;
@@ -267,8 +260,7 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to add a new parameter and remove it", () => {
-      const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-      paramsTr[1].click();
+      selectParam(document, 1);
 
       const removeBtn = document.getElementById("remove") as HTMLElement;
       removeBtn.click();
@@ -294,8 +286,7 @@ describe("Change signature Webview Content", () => {
       acquireVsCodeApi(postMessage)
     );
 
-    const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
-    paramsTr[1].click();
+    selectParam(document, 1);
     const removeBtn = document.getElementById("remove") as HTMLElement;
     removeBtn.click();
     const addBtn = document.getElementById("add") as HTMLElement;
@@ -368,4 +359,9 @@ function clickUp(document: Document) {
 function clickDown(document: Document) {
   const down = document.getElementById("down") as HTMLSpanElement;
   down.click();
+}
+
+function selectParam(document: Document, paramIndex: number) {
+  const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
+  paramsTr[paramIndex].click();
 }
