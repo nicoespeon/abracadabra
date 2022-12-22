@@ -77,8 +77,7 @@ describe("Change signature Webview Content", () => {
     it("Should be able to move paramB as a first parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
-      const upButton = document.getElementById("up") as HTMLSpanElement;
-      upButton.click();
+      clickUp(document);
       document.getElementById("confirm")?.click();
 
       expect(postMessage).toHaveBeenCalledWith({
@@ -123,18 +122,18 @@ describe("Change signature Webview Content", () => {
     it("Should up button be disabled when I move paramB as a first parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
-      const up = document.getElementById("up") as HTMLSpanElement;
-      up.click();
+      clickUp(document);
 
+      const up = document.getElementById("up") as HTMLSpanElement;
       expect(up.classList.contains("disabled")).toBeTruthy();
     });
 
     it("Should down button be disabled when I move paramA as a last parameter", () => {
       const paramsTr = document.querySelectorAll<HTMLTableRowElement>(".param");
       paramsTr[1].click();
-      const down = document.getElementById("down") as HTMLSpanElement;
-      down.click();
+      clickDown(document);
 
+      const down = document.getElementById("down") as HTMLSpanElement;
       expect(down.classList.contains("disabled")).toBeTruthy();
     });
 
@@ -210,8 +209,7 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move Up new parameter", () => {
-      const up = document.getElementById("up") as HTMLSpanElement;
-      up.click();
+      clickUp(document);
 
       const trs = document.querySelectorAll("tbody tr");
       const newParamTr = trs[1];
@@ -219,10 +217,8 @@ describe("Change signature Webview Content", () => {
     });
 
     it("Should be able to move Up then Down the new parameter", () => {
-      const up = document.getElementById("up") as HTMLSpanElement;
-      up.click();
-      const down = document.getElementById("down") as HTMLSpanElement;
-      down.click();
+      clickUp(document);
+      clickDown(document);
 
       const trs = document.querySelectorAll("tbody tr");
       const newParamTr = trs[2];
@@ -362,4 +358,14 @@ function acquireVsCodeApi(postMessage: AcquireVsCodeAPIPostMessage = () => {}) {
       postMessage
     };
   };
+}
+
+function clickUp(document: Document) {
+  const up = document.getElementById("up") as HTMLSpanElement;
+  up.click();
+}
+
+function clickDown(document: Document) {
+  const down = document.getElementById("down") as HTMLSpanElement;
+  down.click();
 }
