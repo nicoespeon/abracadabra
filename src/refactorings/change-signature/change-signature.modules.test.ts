@@ -9,7 +9,7 @@ type TestSample = {
   path: AbsolutePath;
 };
 
-describe("Modules", () => {
+describe("Change Signature: Modules", () => {
   const addModule = new AbsolutePath("/temp/add.ts");
   const anotherModule = new AbsolutePath("/temp/anotherModule");
 
