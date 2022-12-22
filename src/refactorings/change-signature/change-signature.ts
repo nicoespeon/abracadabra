@@ -118,7 +118,7 @@ function updateCode(
 
         if (args.length) {
           newPositions.forEach((order) => {
-            if (order.value.startAt === -1) {
+            if (isNewParameter(order)) {
               // Convert to a valid code.
               // Without that will trigger invalid "Missing semicolon (n, n)"
               // That error occurs only for literal objects like: {id: 1, ...}
