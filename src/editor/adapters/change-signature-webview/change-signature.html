@@ -14,18 +14,36 @@
         padding: 8px;
       }
 
-      th:last-child {
-        border-top-color: transparent;
-        border-right-color: transparent;
+      th {
+        user-select: none;
       }
 
-      .up,
-      .down {
-        cursor: pointer;
+      th > span {
         display: inline-block;
-        width: 8px;
-        margin: 0 0.7rem;
-        font-size: 1.2rem;
+        min-width: 21px;
+        min-height: 21px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        margin-right: 8px;
+      }
+
+      #remove {
+        position: relative;
+        top: -5px;
+      }
+
+      tbody tr {
+        cursor: pointer;
+      }
+
+      tbody td input {
+        max-width: 120px;
+        min-height: 20px;
+      }
+
+      input[disabled] {
+        background-color: #d1d1d1;
+        border: 1px solid #8b8b8b;
       }
 
       .up:after {
@@ -63,36 +81,62 @@
         cursor: pointer;
         color: white;
       }
+
+      button[disabled] {
+        background-color: #e2e2e2;
+        color: #b1b1b1;
+        cursor: not-allowed;
+      }
+
+      .param--selected {
+        background-color: rgba(100, 207, 255, 0.3);
+      }
+
+      .disabled {
+        opacity: 0.3;
+      }
     </style>
   </head>
 
   <body>
     <h4>Parameters</h4>
-    <table>
-      <thead>
+    <form id="form">
+      <table>
+        <thead>
         <tr>
-          <th>Name</th>
-          <th></th>
+          <th colspan="4">
+            <span id="add">+</span>
+            <span id="remove">⚊</span>
+            <span class="up" id="up"></span>
+            <span class="down" id="down"></span>
+          </th>
         </tr>
-      </thead>
+        <tr>
+          <th colspan="3" width="128">Name</th>
+          <th colspan="1">Value</th>
+        </tr>
+        </thead>
 
       <tbody id="params">
         {{tableContent}}
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="2" style="text-align: center">
+          <td colspan="4" style="text-align: center">
             <button id="confirm">Confirm</button>
           </td>
         </tr>
-      </tfoot>
-    </table>
-
-    <div class="btn-wrapper"></div>
+        </tfoot>
+      </table>
+      <div class="btn-wrapper"></div>
+    </form>
 
     <script>
-      const vscode = acquireVsCodeApi();
       const startValues = document.querySelectorAll("#params .params-name");
+      const up = document.getElementById("up");
+      const down = document.getElementById("down");
+      const selectedClass = "param--selected";
+      const disabledClass = "disabled";
 
       function moveUp(element) {
         if (element.previousElementSibling)
@@ -107,31 +151,185 @@
           element.parentNode.insertBefore(element.nextElementSibling, element);
       }
 
-      document.querySelector("#params").addEventListener("click", function (e) {
-        if (e.target.className === "down")
-          moveDown(e.target.parentNode.parentNode);
-        else if (e.target.className === "up")
-          moveUp(e.target.parentNode.parentNode);
+      function validateArrowsState(el) {
+        if (!el.previousElementSibling) {
+          up.classList.add(disabledClass);
+        } else {
+          up.classList.remove(disabledClass);
+        }
+
+        if (!el.nextElementSibling) {
+          down.classList.add(disabledClass);
+        } else {
+          down.classList.remove(disabledClass);
+        }
+      }
+
+      function addTrClickEvents() {
+        const paramsTr = document.querySelectorAll("tbody tr");
+
+        function findParentTr(el) {
+          if (!el) return null;
+          if (el.nodeName === 'TR') return el;
+
+          return findParentTr(el.parentNode)
+        }
+
+        function handleClick(ev) {
+          ev.stopPropagation();
+          const el = findParentTr(ev.target);
+          if (!el) return;
+          paramsTr.forEach((el) => {
+            el.classList.remove(selectedClass);
+          });
+
+          el.classList.add(selectedClass);
+          validateArrowsState(el);
+        }
+
+        paramsTr.forEach((tr) => {
+          tr.removeEventListener('click', handleClick);
+          tr.addEventListener("click", handleClick);
+        });
+      }
+
+      function isNewParam(startAt) {
+        return startAt === -1;
+      }
+
+      function insert(arr, index, newItem) {
+        return [
+          // part of the array before the specified index
+          ...arr.slice(0, index),
+          // inserted item
+          newItem,
+          // part of the array after the specified index
+          ...arr.slice(index)
+        ];
+      }
+
+      addTrClickEvents();
+
+      up.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        if (ev.target.classList.contains("disable")) return;
+        const el = document.querySelector(`.${selectedClass}`);
+        if (!el) return;
+
+        moveUp(el);
+        validateArrowsState(el);
       });
 
-      document.querySelector("#confirm").addEventListener("click", () => {
+      down.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        if (ev.target.classList.contains("disable")) return;
+        const el = document.querySelector(`.${selectedClass}`);
+        if (!el) return;
+
+        moveDown(el);
+        validateArrowsState(el);
+      });
+
+      document.getElementById("add").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+
+        const tr = createParam();
+        addTrClickEvents();
+        tr.dispatchEvent(new Event('click'));
+      });
+
+      document.getElementById("remove").addEventListener("click", (ev) => {
+        const el = document.querySelector(`.${selectedClass}`);
+        if (el) el.remove();
+      });
+
+      document.getElementById('form').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const form = ev.target;
+        const isValid = form.checkValidity();
+
+        if (!isValid) {
+          const inputs = Array.from(document.querySelectorAll('input:not([disabled])'));
+          const input = inputs.find((input) => !input.value);
+          if (input) input.focus();
+          return;
+        }
+
         const tdsElements = document.querySelectorAll("#params .params-name");
         const tds = Array.from(tdsElements);
+        const startTdsValues =  Array.from(startValues);
 
-        const items = Array.from(startValues).map((item, index) => {
-          const endAt = tds.findIndex((td) => td === item);
+        let items = tds.map((item, index) => {
+          const startAt = Array.from(startValues).findIndex((td) => td === item);
+          let label = item.textContent;
+          let value = "";
 
-          return {
-            label: item.innerHTML,
-            startAt: index,
-            endAt: endAt
+          if (isNewParam(startAt)) {
+            // When user add new param we need inputs values
+            label = item.firstChild.value;
+            value = item.nextElementSibling.firstChild.value;
+          }
+
+          const result = {
+            label,
+            startAt,
+            endAt: index
           };
+
+          if (value) result.value = value;
+
+          return result;
         });
 
+        startTdsValues.forEach((td, index) => {
+          const paramName = td.textContent;
+          const existInNewParams = items.find((item) => item.label === paramName);
+
+          if (!existInNewParams) {
+            items = insert(items, index, {
+              label: paramName,
+              startAt: index,
+              endAt: -1
+            });
+          }
+        });
+
+        const confirmBtn = document.querySelector("#confirm");
+        confirmBtn.disabled = true;
+
+        const vscode = acquireVsCodeApi();
         vscode.postMessage({
           values: items
         });
       });
+
+
+      document.body.addEventListener("click", (evt) => {
+        if(evt.target.nodeName === "INPUT") return;
+
+        const el = document.querySelector(`.${selectedClass}`);
+        if (el) {
+          el.classList.remove(selectedClass);
+          up.classList.remove(disabledClass);
+          down.classList.remove(disabledClass);
+        }
+      });
+
+      function createParam() {
+        const template = `
+            <td colspan="3" class="params-name"><input class="input-param-name" required/></td>
+            <td colspan="1" class="params-value"><input class="input-param-value" required/></td>
+        `;
+
+        const tr = document.createElement("tr");
+        tr.classList.add(`param`);
+        tr.innerHTML = template;
+
+        document.querySelector("tbody").appendChild(tr);
+        tr.querySelector('.input-param-name').focus();
+
+        return tr;
+      }
     </script>
   </body>
 </html>

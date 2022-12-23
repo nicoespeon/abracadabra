@@ -6,13 +6,10 @@ export function createChangeSignatureWebviewTemplate(
   const paramsTrValues = params.map((param) => {
     const name = param.label;
     return `
-      <tr>
-          <td class="params-name">${name}</td>
-          <td>
-            <span class="up"></span>
-            <span class="down"></span>
-          </td>
-        </tr>
+      <tr class="param">
+        <td colspan="3" class="params-name">${name}</td>
+        <td colspan="1" class="params-value"><input disabled/></td>
+      </tr>
     `;
   });
 

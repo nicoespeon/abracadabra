@@ -1,4 +1,5 @@
 import * as t from "../../ast";
+import { parse } from "../../ast";
 import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
 import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
@@ -111,29 +112,52 @@ function updateCode(
       const node = path.node;
 
       if (t.isCallExpression(node)) {
-        const args = node.arguments.slice();
+        const args = node.arguments.slice().filter((_param, index) => {
+          return !hasRemovedTheParameter(newPositions[index]);
+        });
+
         if (args.length) {
           newPositions.forEach((order) => {
-            const arg = node.arguments[order.value.startAt];
-            args[order.value.endAt] = arg;
+            if (isNewParameter(order)) {
+              // Convert to a valid code.
+              // Without that will trigger invalid "Missing semicolon (n, n)"
+              // That error occurs only for literal objects like: {id: 1, ...}
+              const fakedBlockCode = `const faked = ${order.value.val}`;
+              const parsed = parse(fakedBlockCode);
+              const node = parsed.program.body[0];
+
+              if (t.isVariableDeclaration(node)) {
+                const variableDeclarator = node.declarations[0];
+                if (variableDeclarator.init) {
+                  args[order.value.endAt] = variableDeclarator.init;
+                }
+              }
+            } else {
+              args[order.value.endAt] = node.arguments[order.value.startAt];
+            }
           });
         }
 
-        const newArgs = args.map((arg) => {
+        node.arguments = args.map((arg) => {
           if (arg) return arg;
 
           return t.identifier("undefined");
         });
-        node.arguments = newArgs;
       } else if (
         isFunctionDeclarationOrArrowFunction(node) ||
         t.isClassMethod(node)
       ) {
-        const params = node.params.slice();
+        const params = node.params.slice().filter((_param, index) => {
+          return !hasRemovedTheParameter(newPositions[index]);
+        });
+
         if (params.length) {
           newPositions.forEach((order) => {
-            const arg = node.params[order.value.startAt];
-            params[order.value.endAt] = arg;
+            if (isNewParameter(order)) {
+              params[order.value.endAt] = t.identifier(order.label);
+            } else {
+              params[order.value.endAt] = node.params[order.value.startAt];
+            }
           });
         }
 
@@ -263,4 +287,12 @@ function hasParameters(
   node: t.FunctionDeclaration | t.ArrowFunctionExpression | t.ClassMethod
 ) {
   return node.params.length > 0;
+}
+
+function isNewParameter(order: SelectedPosition) {
+  return order.value.startAt === -1;
+}
+
+function hasRemovedTheParameter(order: SelectedPosition) {
+  return order.value.endAt === -1;
 }

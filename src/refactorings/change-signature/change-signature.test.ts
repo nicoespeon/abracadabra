@@ -1,15 +1,15 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { AbsolutePath, Code, ErrorReason } from "../../editor/editor";
+import {
+  AbsolutePath,
+  Code,
+  ErrorReason,
+  SelectedPosition
+} from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { testEach } from "../../tests-helpers";
 
 import { changeSignature, createVisitor } from "./change-signature";
-
-type TestSample = {
-  code: Code;
-  path: AbsolutePath;
-};
 
 describe("Change Signature", () => {
   testEach<{
@@ -299,200 +299,6 @@ describe("Change Signature", () => {
     }
   );
 
-  describe("Modules", () => {
-    const addModule = new AbsolutePath("/temp/add.ts");
-    const anotherModule = new AbsolutePath("/temp/anotherModule");
-
-    testEach<{
-      setup: {
-        currentFile: TestSample;
-        otherFiles: TestSample[];
-      };
-      expected: {
-        currentFile: TestSample;
-        otherFiles: TestSample[];
-      };
-    }>(
-      "should change signature of function with a reference in modules",
-      [
-        {
-          description: "that import the function",
-          setup: {
-            currentFile: {
-              code: `export function [cursor]add(a, b) {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1, 2)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export function add(b, a) {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(2, 1)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(b, a);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        },
-        {
-          description: "that import arrow function",
-          setup: {
-            currentFile: {
-              code: `export const add = [cursor](a, b) => {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1, 2)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export const add = (b, a) => {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(2, 1)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(b, a);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        },
-        {
-          description: "that import a class and use a method",
-          setup: {
-            currentFile: {
-              code: `export class Maths {
-                [cursor]add(a, b) {
-                  return a + b;
-                }
-              }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(1, 2);
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export class Maths {
-                add(b, a) {
-                  return a + b;
-                }
-              }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(2, 1);
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(b, a);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        }
-      ],
-      async ({ setup, expected }) => {
-        const editor = new InMemoryEditor(setup.currentFile.code);
-        await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.saveUserChoices(userChangePositionOf(0, 1));
-        editor.saveUserChoices(userChangePositionOf(1, 0));
-        await saveOtherFiles(setup, editor);
-
-        await changeSignature(editor);
-
-        const extracted = await editor.codeOf(setup.currentFile.path);
-        expect(extracted).toBe(expected.currentFile.code);
-        await validateOutput(expected, editor);
-      }
-    );
-  });
-
   it("should show an error message if refactoring can't be made because rest param should be the last", async () => {
     const code = `
     function [cursor]aFn(a, ...args) {
@@ -512,7 +318,7 @@ describe("Change Signature", () => {
     expect(editor.showError).toBeCalledWith(ErrorReason.CantChangeSignature);
   });
 
-  it("Should order correclty for complex parameters with defaults values", async () => {
+  it("Should order correctly for complex parameters with defaults values", async () => {
     const { setup, expected } = {
       setup: {
         currentFile: `function [cursor]add(a, str, {item}, [value = 1]) {
@@ -582,40 +388,358 @@ describe("Change Signature", () => {
       expect(canConvert).toBeFalsy();
     }
   );
+
+  describe("Adding new parameter", () => {
+    testEach<{
+      code: Code;
+      expected: Code;
+      newValue: string;
+    }>(
+      "In same file",
+      [
+        {
+          description: "is able to add <boolean> parameter in a function",
+          newValue: "true",
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", true);`
+        },
+        {
+          description: "is able to add <number> parameter in a function",
+          newValue: "120",
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", 120);`
+        },
+        {
+          description: "is able to add <array> parameter in a function",
+          newValue: "[1, 2, 3]",
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", [1, 2, 3]);`
+        },
+        {
+          description:
+            "is able to add <literal object> parameter in a function",
+          newValue: "{ id: 1, name: 'Abracadabra' }",
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", { id: 1, name: 'Abracadabra' });`
+        },
+        {
+          description:
+            "is able to add <instance class> parameter in a function",
+          newValue: "new AbsolutePath('/temp/')",
+          code: `function [cursor]add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, "years");`,
+          expected: `function add(a, b, newParam) {
+            console.log(a, b)
+          }
+
+          add(7, "years", new AbsolutePath('/temp/'));`
+        },
+        {
+          description: "is able to add <boolean> parameter in a class method",
+          newValue: "true",
+          code: `class Math {
+            [cursor]add(a, b) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years");`,
+          expected: `class Math {
+            add(a, b, newParam) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years", true);`
+        },
+        {
+          description: "is able to add <array> parameter in a class method",
+          newValue: "[1, 2, 3]",
+          code: `class Math {
+            [cursor]add(a, b) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years");`,
+          expected: `class Math {
+            add(a, b, newParam) {
+              console.log(a, b)
+            }
+          }
+
+          math.add(7, "years", [1, 2, 3]);`
+        },
+        {
+          description: "is able to add <array> parameter in an arrow function",
+          newValue: "[true]",
+          code: `const add = [cursor](a, b) => {
+            return a + b;
+          }
+
+          add(7, "years");`,
+          expected: `const add = (a, b, newParam) => {
+            return a + b;
+          }
+
+          add(7, "years", [true]);`
+        }
+      ],
+      async ({ code, expected, newValue }) => {
+        const path = new AbsolutePath("/temp/file.ts");
+        const editor = new InMemoryEditor(code);
+        await editor.writeIn(path, editor.code);
+        editor.saveUserChoices(userChangePositionOf(0, 0));
+        editor.saveUserChoices(userChangePositionOf(1, 1));
+        editor.saveUserChoices(
+          userChangePositionOf(-1, 2, "newParam", newValue)
+        );
+
+        await changeSignature(editor);
+
+        const extracted = await editor.codeOf(path);
+        expect(extracted).toBe(expected);
+      }
+    );
+  });
+
+  describe("Removing a parameter", () => {
+    testEach<{
+      code: Code;
+      expected: Code;
+    }>(
+      "In same file",
+      [
+        {
+          description: "is able to remove <boolean> parameter in a function",
+          code: `function [cursor]add(a, b) {
+            console.log(a)
+          }
+
+          add(7, true);`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <array> parameter with default value in a function",
+          code: `function [cursor]add(a, b = []) {
+            console.log(a)
+          }
+
+          add(7);`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <literal object> parameter in a function",
+          code: `function [cursor]add(a, b) {
+            console.log(a)
+          }
+
+          add(7, { id: 1, name: 'Abracadabra' });`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <instance class> parameter in a function",
+          code: `function [cursor]add(a, b) {
+            console.log(a)
+          }
+
+          add(7, new AbsolutePath('/temp/'));`,
+          expected: `function add(a) {
+            console.log(a)
+          }
+
+          add(7);`
+        },
+        {
+          description:
+            "is able to remove <boolean> parameter with default value in a class method",
+          code: `class Math {
+            [cursor]add(a, b = true) {
+              console.log(a)
+            }
+          }
+
+          math.add(7, "years");`,
+          expected: `class Math {
+            add(a) {
+              console.log(a)
+            }
+          }
+
+          math.add(7);`
+        },
+        {
+          description:
+            "is able to remove <array> parameter in an arrow function",
+          code: `const add = [cursor](a, b) => {
+            return a;
+          }
+
+          add(7, []);`,
+          expected: `const add = a => {
+            return a;
+          }
+
+          add(7);`
+        }
+      ],
+      async ({ code, expected }) => {
+        const path = new AbsolutePath("/temp/file.ts");
+        const editor = new InMemoryEditor(code);
+        await editor.writeIn(path, editor.code);
+        editor.saveUserChoices(userChangePositionOf(0, 0));
+        editor.saveUserChoices(userChangePositionOf(1, -1));
+
+        await changeSignature(editor);
+
+        const extracted = await editor.codeOf(path);
+        expect(extracted).toBe(expected);
+      }
+    );
+
+    it("Should be able to remove first parameter of a function with multiples parameters", async () => {
+      const code = `function [cursor]add(a, b) {
+            console.log(b)
+          }
+
+          add(7, { id: 1, name: 'Abracadabra' });`;
+      const expected = `function add(b) {
+            console.log(b)
+          }
+
+          add({ id: 1, name: 'Abracadabra' });`;
+
+      const path = new AbsolutePath("/temp/file.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, -1));
+      editor.saveUserChoices(userChangePositionOf(1, 0));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    });
+
+    it("Should be able to remove multiple parameters", async () => {
+      const code = `function [cursor]add(a, b, paramOne, paramTwo) {
+            console.log(a, b)
+          }
+
+          add(7, 8, -9, -99);`;
+      const expected = `function add(a, b) {
+            console.log(a, b)
+          }
+
+          add(7, 8);`;
+
+      const path = new AbsolutePath("/temp/file.ts");
+      const editor = new InMemoryEditor(code);
+      await editor.writeIn(path, editor.code);
+      editor.saveUserChoices(userChangePositionOf(0, 0));
+      editor.saveUserChoices(userChangePositionOf(1, 1));
+      editor.saveUserChoices(userChangePositionOf(2, -1));
+      editor.saveUserChoices(userChangePositionOf(3, -1));
+
+      await changeSignature(editor);
+
+      const extracted = await editor.codeOf(path);
+      expect(extracted).toBe(expected);
+    });
+  });
+
+  it("Should be able to combine add new parameters and remove some", async () => {
+    const code = `function [cursor]add(a, b, c) {
+            console.log(b)
+          }
+
+          add(7, { id: 1, name: 'Abracadabra' }, [1]);`;
+    const expected = `function add(b, newParam) {
+            console.log(b)
+          }
+
+          add({ id: 1, name: 'Abracadabra' }, true);`;
+
+    const path = new AbsolutePath("/temp/file.ts");
+    const editor = new InMemoryEditor(code);
+    await editor.writeIn(path, editor.code);
+    editor.saveUserChoices(userChangePositionOf(0, -1, "a"));
+    editor.saveUserChoices(userChangePositionOf(1, 0, "b"));
+    editor.saveUserChoices(userChangePositionOf(2, -1, "c"));
+    editor.saveUserChoices(userChangePositionOf(-1, 1, "newParam", "true"));
+
+    await changeSignature(editor);
+
+    const extracted = await editor.codeOf(path);
+    expect(extracted).toBe(expected);
+  });
 });
 
-function validateOutput(
-  expected: { currentFile: TestSample; otherFiles: TestSample[] },
-  editor: InMemoryEditor
-) {
-  const promises = expected.otherFiles.map(async (file) => {
-    const extracted = await editor.codeOf(file.path);
-    expect(extracted).toBe(file.code);
-  });
-
-  return Promise.all(promises);
-}
-
-function saveOtherFiles(
-  setup: {
-    currentFile: TestSample;
-    otherFiles: TestSample[];
-  },
-  editor: InMemoryEditor
-) {
-  const promises = setup.otherFiles.map(async (file) => {
-    await editor.writeIn(file.path, file.code);
-  });
-
-  return Promise.all(promises);
-}
-
-function userChangePositionOf(startAt: number, endAt: number) {
-  return {
-    label: "irrelevant",
+function userChangePositionOf(
+  startAt: number,
+  endAt: number,
+  label = "irrelevant",
+  value?: string
+): SelectedPosition {
+  const result: SelectedPosition = {
+    label,
     value: {
       startAt,
       endAt
     }
   };
+
+  if (value) result.value.val = value;
+
+  return result;
 }
