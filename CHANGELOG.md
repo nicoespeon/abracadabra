@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- 'Change Signature' now supports adding and removing parameters, thanks to @11joselu 🎉
+
 ### Improved
 
-- Do not show 'Change signature' quick fix when a function/method does _not_ have parameters (thanks @11joselu)
+- Do not show 'Change Signature' quick fix when a function/method does _not_ have parameters (thanks @11joselu)
 
 ### Fixed
 
