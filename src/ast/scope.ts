@@ -126,7 +126,9 @@ export function findAncestorThatCanHaveVariableDeclaration<T extends t.Node>(
 ): SelectablePath<T> | null {
   if (path === null) return null;
   if (isSelectablePath(path)) {
+    // @ts-expect-error Not sure how to solve, looks like a typedef issue
     if (path.isProgram()) return path;
+    // @ts-expect-error Not sure how to solve, looks like a typedef issue
     if (path.isStatement() && !path.isBlockStatement()) return path;
   }
 
