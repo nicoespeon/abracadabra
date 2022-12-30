@@ -35,8 +35,8 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": ">=1.69.0",
-    "node": ">=14.0.0"
+    "vscode": ">=1.72.0",
+    "node": ">=18.0.0"
   },
   "main": "./out/extension.js",
   "browser": "./out/extension-browser.js",
@@ -73,11 +73,11 @@
     "@types/jscodeshift": "0.11.2",
     "@types/jsdom": "^20.0.1",
     "@types/mocha": "10.0.1",
-    "@types/node": "18.11.9",
+    "@types/node": "18.11.18",
     "@types/path-browserify": "1.0.0",
     "@types/pluralize": "0.0.29",
     "@types/sinon": "10.0.13",
-    "@types/vscode": "1.69.0",
+    "@types/vscode": "1.72.0",
     "@typescript-eslint/eslint-plugin": "5.45.0",
     "@vscode/test-electron": "2.1.5",
     "all-contributors-cli": "6.24.0",
