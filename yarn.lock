@@ -3060,12 +3060,7 @@ commander@^7.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.1.0.tgz#f2eaecf131f10e36e07d894698226e36ae0eb5ff"
   integrity sha512-pRxBna3MJe6HKnBGsDyMv8ETbptw3axEdYHoqNh7gu5oDcew8fs0xnivZGm06Ogk8zGAJ9VX+OPEr2GXEQK4dg==
 
-commander@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.3.0.tgz#f619114a5a2d2054e0d9ff1b31d5ccf89255e26b"
-  integrity sha512-hv95iU5uXPbK83mjrJKuZyFM/LBAoCV/XhVGkS5Je6tl7sxr6A0ITMw5WoRV46/UaJ46Nllm3Xt7IaJhXTIkzw==
-
-commander@^9.4.1:
+commander@^9.3.0, commander@^9.4.1:
   version "9.4.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-9.4.1.tgz#d1dd8f2ce6faf93147295c0df13c7c21141cfbdd"
   integrity sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==
@@ -8574,10 +8569,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vsce@2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/vsce/-/vsce-2.10.0.tgz#19a9f070ec319e26d4f23567f32826f48fc694aa"
-  integrity sha512-b+wB3XMapEi368g64klSM6uylllZdNutseqbNY+tUoHYSy6g2NwnlWuAGKDQTYc0IqfDUjUFRQBpPgA89Q+Fyw==
+vsce@2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/vsce/-/vsce-2.15.0.tgz#4a992e78532092a34a755143c6b6c2cabcb7d729"
+  integrity sha512-P8E9LAZvBCQnoGoizw65JfGvyMqNGlHdlUXD1VAuxtvYAaHBKLBdKPnpy60XKVDAkQCfmMu53g+gq9FM+ydepw==
   dependencies:
     azure-devops-node-api "^11.0.1"
     chalk "^2.4.2"
