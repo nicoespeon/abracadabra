@@ -1,5 +1,5 @@
-import { Code, ErrorReason } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
 
 import { inlineVariable } from "./inline-variable";
@@ -277,6 +277,14 @@ console.log(\`Hello \${name}\`);`,
         expected: `console.log(\`Hello world!
 
 How are you doing?\`);`
+      },
+      {
+        description: "with the satisfies operator",
+        code: `[start]const foo = "bar";[end]
+const hello = "World!";
+console.log(foo satisfies string);`,
+        expected: `const hello = "World!";
+console.log("bar" satisfies string);`
       }
     ],
     async ({ code, expected }) => {

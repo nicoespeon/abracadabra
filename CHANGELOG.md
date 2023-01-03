@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Upgrade the parser so it handles TS new `satisfies` operator syntax.
+
 ### Changed
 
 - Activation of the extension is now delayed [after VS Code has fully started](https://code.visualstudio.com/api/references/activation-events#onStartupFinished). Thus, it won't slow down your editor startup since you probably don't need your refactorings right away—I bet you won't notice they load ~2s after your editor is up 😄
