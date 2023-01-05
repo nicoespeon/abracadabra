@@ -244,9 +244,8 @@ export class VSCodeEditor implements Editor {
   }
 
   static restoreHighlightDecorations(editor: vscode.TextEditor) {
-    const existingHighlights = highlightsRepository.get(
-      editor.document.uri.toString()
-    );
+    const filePath = editor.document.uri.toString();
+    const existingHighlights = highlightsRepository.get(filePath);
     if (!existingHighlights) return;
 
     existingHighlights
@@ -294,47 +293,13 @@ export class VSCodeEditor implements Editor {
   }
 
   static async repositionHighlights(event: vscode.TextDocumentChangeEvent) {
-    const changes = event.contentChanges.map((change) =>
-      createSourceChange(change)
-    );
-
-    console.log(">>> recomputeHighlightsSelections", { changes });
-    // TODO: implement, delegating the work to the repository
-
-    // const filePath = event.document.uri.toString();
-    // const existingHighlights = highlightsRepository.get(filePath);
-    // if (!existingHighlights) return;
-
-    // const allHighlightsSelections = existingHighlights
-    //   .entries()
-    //   .map(([source, { bindings }]) => [source, ...bindings]);
-
-    // changes.forEach(async (change) => {
-    //   const match = allHighlightsSelections.find((highlightSelections) =>
-    //     highlightSelections.some((highlightSelection) =>
-    //       highlightSelection.touches(change.selection)
-    //     )
-    //   );
-    //   if (!match) return;
-
-    //   // TODO: for all the non-match, it should update the highlights Selections
-
-    //   const [source] = match;
-    //   VSCodeEditor.removeHighlightOfFile(source, filePath);
-
-    //   // We can't re-highlight changes in a non-active editor for now.
-    //   // It would require starting a valid `editor` without it.
-    //   if (!vscode.window.activeTextEditor) return;
-
-    //   const newSource = source.touches(change.selection)
-    //     ? change.applyToSelection(source)
-    //     : source;
-    //   const editor = new VSCodeEditor(
-    //     vscode.window.activeTextEditor,
-    //     newSource
-    //   );
-    //   await toggleHighlight(editor);
-    // });
+    const filePath = event.document.uri.toString();
+    event.contentChanges.forEach((change) => {
+      highlightsRepository.repositionHighlights(
+        filePath,
+        createSourceChange(change)
+      );
+    });
   }
 
   async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
@@ -420,42 +385,9 @@ function createSourceChange(
 ): SourceChange {
   const selection = createSelectionFromVSCode(change.range);
 
-  // rangeLength: 1
-  // rangeOffset: 521
-  // text:'m'
-
-  // rangeLength: 0
-  // rangeOffset: 520
-  // text:'i'
-
-  // rangeLength: 0
-  // rangeOffset: 519
-  // text:'aba'
-
-  // req => abariem
-  // TODO: wait to compute all changes before highlighting again?
-  console.log(">>> NEW CHANGE", change, selection);
-
-  if (change.text.length === 0) {
-    // selection overlaps
-    // rangeLength: 1
-    // rangeOffset: 475
-    // text: ''
-    return new DeleteSourceChange(selection);
-  }
-
-  // ADD
-  // selection touches
-  // rangeLength: 0
-  // rangeOffset: 478
-  // text: 'u'
-
-  // UPDATE
-  // selection overlaps
-  // rangeLength: 3
-  // rangeOffset: 556
-  // text: 'yoloo'
-  return new UpdateSourceChange(selection, change.text.length);
+  return change.text.length === 0
+    ? new DeleteSourceChange(selection)
+    : new UpdateSourceChange(selection, change.text.length);
 }
 
 function createSelectionFromVSCode(
