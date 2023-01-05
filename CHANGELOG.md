@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.18.1]
+
 ### Fixed
 
 - Upgrade the parser so it handles TS new `satisfies` operator syntax.
@@ -1704,7 +1706,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.1...HEAD
+[6.18.1]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...6.18.1
 [6.18.0]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...6.18.0
 [6.17.0]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...6.17.0
 [6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
