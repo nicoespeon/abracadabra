@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.18.2]
+
+No user-visible change. Attempting to fix CI deployments.
+
 ## [6.18.1]
 
 ### Fixed
@@ -1706,7 +1710,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.2...HEAD
+[6.18.2]: https://github.com/nicoespeon/abracadabra/compare/6.18.1...6.18.2
 [6.18.1]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...6.18.1
 [6.18.0]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...6.18.0
 [6.17.0]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...6.17.0
