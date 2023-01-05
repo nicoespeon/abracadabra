@@ -40,7 +40,6 @@ export class VSCodeEditor implements Editor {
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
     this.document = editor.document;
-    console.log(">>> NEW EDITOR");
   }
 
   async workspaceFiles(): Promise<Path[]> {
@@ -219,9 +218,30 @@ export class VSCodeEditor implements Editor {
     );
 
     const selections = [source, ...bindings];
-    const vscodeDecoration = VSCodeEditor.toVSCodeDecoration(decoration);
+    const vscodeDecoration = this.toVSCodeDecoration(decoration);
     this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
     vscodeDecorations.set(decoration, vscodeDecoration);
+  }
+
+  private toVSCodeDecoration(
+    decoration: Decoration
+  ): vscode.TextEditorDecorationType {
+    const color = COLORS[decoration % COLORS.length];
+    return vscode.window.createTextEditorDecorationType({
+      light: {
+        border: `1px solid ${color.light}`,
+        backgroundColor: color.light,
+        overviewRulerColor: color.light
+      },
+      dark: {
+        border: `1px solid ${color.dark}`,
+        backgroundColor: color.dark,
+        overviewRulerColor: color.dark
+      },
+      overviewRulerLane: vscode.OverviewRulerLane.Right,
+      // We will recompute the proper highlights on update
+      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
+    });
   }
 
   removeHighlight(source: Source): void {
@@ -251,33 +271,12 @@ export class VSCodeEditor implements Editor {
     existingHighlights
       .entries()
       .forEach(([source, { bindings, decoration }]) => {
-        const selections = [source, ...bindings];
-        editor.setDecorations(
-          VSCodeEditor.toVSCodeDecoration(decoration),
-          selections.map(toVSCodeRange)
-        );
-      });
-  }
+        const vscodeDecoration = vscodeDecorations.get(decoration);
+        if (!vscodeDecoration) return;
 
-  private static toVSCodeDecoration(
-    decoration: Decoration
-  ): vscode.TextEditorDecorationType {
-    const color = COLORS[decoration % COLORS.length];
-    return vscode.window.createTextEditorDecorationType({
-      light: {
-        border: `1px solid ${color.light}`,
-        backgroundColor: color.light,
-        overviewRulerColor: color.light
-      },
-      dark: {
-        border: `1px solid ${color.dark}`,
-        backgroundColor: color.dark,
-        overviewRulerColor: color.dark
-      },
-      overviewRulerLane: vscode.OverviewRulerLane.Right,
-      // We will recompute the proper highlights on update
-      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
-    });
+        const selections = [source, ...bindings];
+        editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
+      });
   }
 
   static renameHighlightsFilePath(event: vscode.FileWillRenameEvent) {
