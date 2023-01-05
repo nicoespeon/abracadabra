@@ -221,7 +221,6 @@ class MergeAlternateAndConsequent extends MergeIfStatements<t.IfStatementWithAlt
       ...this.path,
       node: { ...this.path.node, alternate: null }
     };
-    // @ts-expect-error Don't know why it complains?!
     const alternatePath: t.NodePath = this.path.get("alternate");
     if (!canMergeIfStatementWithPath(ifWithoutAlternate, alternatePath))
       return false;

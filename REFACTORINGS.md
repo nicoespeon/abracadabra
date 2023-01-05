@@ -146,7 +146,7 @@ This refactoring is similar to _Inline Variable_, but for functions. It replaces
 
 > 💡 Available as Quick Fix (`Alt ↵`)
 
-This refactoring allows you to change the order of a function parameters. It will resolve and update the references to that function.
+This refactoring allows you to add, remove, or change the order of a function parameters. It will resolve and update the references to that function.
 
 It supports function declarations, arrow functions, and class methods.
 

@@ -23,6 +23,7 @@ import {
   SourceChange,
   UpdateSourceChange
 } from "../source-change";
+import { createChangeSignatureWebviewTemplate } from "./change-signature-webview/createChangeSignatureWebviewTemplate";
 
 // Persist the instance across all editors.
 const highlightsRepository = new HighlightsRepository();
@@ -376,25 +377,27 @@ export class VSCodeEditor implements Editor {
     VSCodeEditor.panel.webview.options = {
       enableScripts: true
     };
-    VSCodeEditor.panel.webview.html = getParamsPositionWebViewContent(
-      params,
-      VSCodeEditor.panel.webview
-    );
+    VSCodeEditor.panel.webview.html =
+      createChangeSignatureWebviewTemplate(params);
 
     VSCodeEditor.panel.webview.onDidReceiveMessage(
-      async (message: Record<string, string>) => {
-        const values = JSON.parse(message.values) as {
+      async (message: {
+        values: {
           label: string;
           startAt: number;
           endAt: number;
+          value?: string;
         }[];
+      }) => {
+        const values = message.values;
 
         const result: SelectedPosition[] = values.map((result) => {
           return {
             label: result.label,
             value: {
               startAt: result.startAt,
-              endAt: result.endAt
+              endAt: result.endAt,
+              val: result.value
             }
           };
         });
@@ -490,162 +493,4 @@ function toVSCodeCommand(command: Command): string {
     default:
       return "";
   }
-}
-
-function getParamsPositionWebViewContent(
-  params: SelectedPosition[],
-  _webview: vscode.Webview
-): string {
-  const paramsTrValues = params.map((param) => {
-    const name = param.label;
-    return `
-      <tr>
-          <td class="params-name">${name}</td>
-          <td>
-            <span class="up"></span>
-            <span class="down"></span>
-          </td>
-        </tr>
-    `;
-  });
-
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <style>
-      table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-      }
-
-      td,
-      th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-
-      th:last-child {
-        border-top-color: transparent;
-        border-right-color: transparent;
-      }
-
-      .up,
-      .down {
-        cursor: pointer;
-        display: inline-block;
-        width: 8px;
-        margin: 0 0.7rem;
-        font-size: 1.2rem;
-      }
-
-      .up:after {
-        content: "▲";
-      }
-
-      .up:hover:after {
-        color: #625e5e;
-      }
-
-      .down:after {
-        content: "▼";
-      }
-
-      .down:hover:after {
-        color: #625e5e;
-      }
-
-      button {
-        border: 1px solid transparent;
-        border-radius: 5px;
-        line-height: 1.25rem;
-        outline: none;
-        text-align: center;
-        white-space: nowrap;
-        display: inline-block;
-        text-decoration: none;
-        background: #1a85ff;
-        padding: 4px;
-        color: white;
-        font-size: 14px;
-      }
-
-      button:hover {
-        cursor: pointer;
-        color: white;
-      }
-    </style>
-  </head>
-
-  <body>
-    <h4>Parameters</h4>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody id="params">
-        ${paramsTrValues.join("")}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="2" style="text-align: center">
-            <button id="confirm">Confirm</button>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-
-    <div class="btn-wrapper"></div>
-
-    <script>
-      const vscode = acquireVsCodeApi();
-      const startValues = document.querySelectorAll("#params .params-name");
-      function moveUp(element) {
-        if (element.previousElementSibling)
-          element.parentNode.insertBefore(
-            element,
-            element.previousElementSibling
-          );
-      }
-
-      function moveDown(element) {
-        if (element.nextElementSibling)
-          element.parentNode.insertBefore(element.nextElementSibling, element);
-      }
-
-      document.querySelector("#params").addEventListener("click", function (e) {
-        if (e.target.className === "down")
-          moveDown(e.target.parentNode.parentNode);
-        else if (e.target.className === "up")
-          moveUp(e.target.parentNode.parentNode);
-      });
-
-      document.querySelector("#confirm").addEventListener("click", () => {
-        const tdsElements = document.querySelectorAll("#params .params-name");
-        const tds = Array.from(tdsElements);
-
-        const items = Array.from(startValues).map((item, index) => {
-          const endAt = tds.findIndex((td) => td === item);
-
-          return {
-            label: item.innerHTML,
-            startAt: index,
-            endAt: endAt
-          };
-        });
-
-        vscode.postMessage({
-          values: JSON.stringify(items)
-        });
-      });
-    </script>
-  </body>
-</html>
-  `;
-  return html;
 }

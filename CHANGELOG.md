@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Upgrade the parser so it handles TS new `satisfies` operator syntax.
+
+### Changed
+
+- Activation of the extension is now delayed [after VS Code has fully started](https://code.visualstudio.com/api/references/activation-events#onStartupFinished). Thus, it won't slow down your editor startup since you probably don't need your refactorings right away—I bet you won't notice they load ~2s after your editor is up 😄
+
+## [6.18.0] - 2022-12-28 - He Mele No Refactoring 🏄
+
+### Added
+
+- 'Change Signature' now supports adding and removing parameters, thanks to @11joselu 🎉
+
+### Improved
+
+- Do not show 'Change Signature' quick fix when a function/method does _not_ have parameters (thanks @11joselu)
+
+### Fixed
+
 - Some refactorings were not preserving important parentheses, which could have introduced regressions (eg. "Flip If/Else"). Now they do just fine!
 
 ## [6.17.0] - 2022-11-15 - What Else Can I Do? 🌼
@@ -1686,7 +1704,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...HEAD
+[6.18.0]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...6.18.0
 [6.17.0]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...6.17.0
 [6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
 [6.15.3]: https://github.com/nicoespeon/abracadabra/compare/6.15.2...6.15.3
