@@ -4,6 +4,6 @@ module.exports = {
   testPathIgnorePatterns: ["/node_modules/", "/out/", ".contract.test.ts"],
   transform: {
     "^.+\\.[jt]sx?$": "babel-jest",
-    "\\.(html)$": "html-loader-jest"
+    "^.+\\.html?$": "jest-html-loader"
   }
 };
