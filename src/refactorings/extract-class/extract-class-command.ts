@@ -51,7 +51,7 @@ export class ExtractClassCommand {
 
   private async extractClassAndWrite(fieldsToExtract: string[]): Promise<void> {
     const initialSourceText = this.node.getFullText();
-    const source = new ClassRefactor(new TypescriptClassNode(this.node));
+    const source = ClassRefactor.createFromClassDeclaration(this.node);
     const extracted = source.extractClass(
       this.extractingClassName,
       fieldsToExtract
