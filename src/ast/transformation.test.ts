@@ -111,5 +111,14 @@ function test() {}`);
 
       expect(() => parse(code)).toThrow();
     });
+
+    it("should parse `satisfies` with comments inside", () => {
+      const code = `const irrelant = {
+  // this comment should not make parsing fail
+  dummy: 0,
+} satisfies DummyType;`;
+
+      expect(() => parse(code)).not.toThrow();
+    });
   });
 });

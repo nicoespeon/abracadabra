@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Generated interfaces now have a consistent `;` at the end of each line. This is a side-effect of upgrading Recast to solve [#795](https://github.com/nicoespeon/abracadabra/issues/795)
+
+### Fixed
+
+- Fixed a bug where parser would not handle comments within an object that uses the `satisfies` operator. Kudos to @byronwall for [the detailed report](https://github.com/nicoespeon/abracadabra/issues/795)!
+
 ## [6.18.2]
 
 No user-visible change. Attempting to fix CI deployments.
