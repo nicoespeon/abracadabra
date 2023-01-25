@@ -1,10 +1,9 @@
+import { ClassDeclaration, ParameterDeclaration, Project } from "ts-morph";
 import * as vscode from "vscode";
-import { Project, ClassDeclaration, ParameterDeclaration } from "ts-morph";
-import { ClassRefactor } from "./class-refactor";
-import { TypescriptClassNode } from "./typescript-class-node";
-import { UmlNotation } from "./uml-notation";
 import { assert } from "../../assert";
 import { classNameMatcher } from "./class-name-matcher";
+import { ClassRefactor } from "./class-refactor";
+import { UmlNotation } from "./uml-notation";
 
 // REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
 
