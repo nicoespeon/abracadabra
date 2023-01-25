@@ -16,14 +16,15 @@ export class DeleteSourceChange implements SourceChange {
 
     if (end.isStrictlyBefore(selection.start)) {
       const deletedOnSameLine = end.isSameLineThan(selection.start);
+      const length = Math.max(end.character - start.character, 0);
       return Selection.fromPositions(
         selection.start
           .removeLines(height)
-          .removeCharacters(deletedOnSameLine ? end.character : 0),
+          .removeCharacters(deletedOnSameLine ? length : 0),
         selection.end
           .removeLines(height)
           .removeCharacters(
-            deletedOnSameLine && selection.isOneLine ? end.character : 0
+            deletedOnSameLine && selection.isOneLine ? length : 0
           )
       );
     }
@@ -46,15 +47,14 @@ export class AddSourceChange implements SourceChange {
     if (!changeIsBeforeSelection) return selection;
 
     const updateOnSameLine = start.isSameLineThan(selection.start);
+    const length = Math.max(end.character - start.character, 0);
     return Selection.fromPositions(
       selection.start
         .addLines(height)
-        .addCharacters(updateOnSameLine ? end.character : 0),
+        .addCharacters(updateOnSameLine ? length : 0),
       selection.end
         .addLines(height)
-        .addCharacters(
-          updateOnSameLine && selection.isOneLine ? end.character : 0
-        )
+        .addCharacters(updateOnSameLine && selection.isOneLine ? length : 0)
     );
   }
 

@@ -157,6 +157,19 @@ const otherVariable = 456;`);
 /* hey */const [h2]otherVariable[/h2] = 456;`);
   });
 
+  it("should adapt the highlights if we insert code before them (with indentation)", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+    const otherVariable = 456;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(1, 10));
+    await toggleHighlight(editor);
+
+    await editor.insert(`/* hey */`, new Position(1, 2));
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+  /* hey */  const [h2]otherVariable[/h2] = 456;`);
+  });
+
   it("should adapt the highlights if we insert lines of code before them", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 
