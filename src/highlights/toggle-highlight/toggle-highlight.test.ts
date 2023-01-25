@@ -47,6 +47,26 @@ function doSomething() {
 console.log(someVariable);`);
   });
 
+  it("should add highlight until the top-most binding", async () => {
+    const editor = new InMemoryEditor(`
+function doSomething(req) {
+  const liftPassCost = [cursor]req.query.cost;
+  const liftPassType = req.query.type;
+
+  console.log(liftPassCost, liftPassType);
+}`);
+
+    await toggleHighlight(editor);
+
+    expect(editor.highlightedCode).toBe(`
+function doSomething([h1]req[/h1]) {
+  const liftPassCost = [h1]req[/h1].query.cost;
+  const liftPassType = [h1]req[/h1].query.type;
+
+  console.log(liftPassCost, liftPassType);
+}`);
+  });
+
   it("should add distinct highlights on different identifiers", async () => {
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;

@@ -145,8 +145,11 @@ export function selectableReferencesInScope(
 ): SelectablePath[] {
   const bindings = path.scope.getAllBindings() as Record<string, Binding>;
   const pathBindings = bindings[path.node.name] as Binding | undefined;
+  if (!pathBindings) return [];
 
-  return pathBindings?.referencePaths.filter(isSelectablePath) ?? [];
+  return [pathBindings.path, ...pathBindings.referencePaths]
+    .filter((path) => t.isIdentifier(path))
+    .filter(isSelectablePath);
 }
 
 export function referencesInScope(
