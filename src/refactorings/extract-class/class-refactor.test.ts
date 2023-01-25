@@ -1,5 +1,4 @@
 import { ClassRefactor } from "./class-refactor";
-import { TypescriptClassNode } from "./typescript-class-node";
 import { formatTs } from "./format-ts";
 
 describe(ClassRefactor.name, () => {
@@ -16,7 +15,7 @@ describe(ClassRefactor.name, () => {
           a(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -41,7 +40,7 @@ describe(ClassRefactor.name, () => {
           b(): void {}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -65,7 +64,7 @@ describe(ClassRefactor.name, () => {
           b(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -91,7 +90,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -119,7 +118,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -140,7 +139,7 @@ describe(ClassRefactor.name, () => {
           private  b(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -172,7 +171,7 @@ describe(ClassRefactor.name, () => {
           private c(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -200,7 +199,7 @@ describe(ClassRefactor.name, () => {
           a(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -236,7 +235,7 @@ describe(ClassRefactor.name, () => {
           private c(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -275,7 +274,7 @@ describe(ClassRefactor.name, () => {
           private c(){}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -319,7 +318,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -338,7 +337,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["prop"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -364,7 +363,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -388,7 +387,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedClassRefactor = classRefactor.extractClass("Extracted", [
         "a"
       ]);
@@ -414,7 +413,7 @@ describe(ClassRefactor.name, () => {
           }
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(classRefactor).toEqualString(expected);
     });
@@ -433,7 +432,7 @@ describe(ClassRefactor.name, () => {
           a():void{}
         }
       `;
-      const classRefactor = createClassRefactor(source);
+      const classRefactor = ClassRefactor.createFromSource(source);
       const extractedRefactor = classRefactor.extractClass("Extracted", ["a"]);
       expectTsClassRefactor(extractedRefactor).toEqualString(expected);
     });
@@ -445,8 +444,4 @@ function expectTsClassRefactor(classRefactor: ClassRefactor) {
     toEqualString: (expected: string) =>
       expect(formatTs(classRefactor.serialize())).toBe(formatTs(expected))
   };
-}
-
-function createClassRefactor(source: string): ClassRefactor {
-  return new ClassRefactor(TypescriptClassNode.from(source));
 }

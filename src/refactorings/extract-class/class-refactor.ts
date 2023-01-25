@@ -1,12 +1,24 @@
+import { ClassDeclaration } from "ts-morph";
+import { Code } from "../../editor/editor";
 import { ClassNode, InstanceMember } from "./class-node";
+import { TypescriptClassNode } from "./typescript-class-node";
 
 export class ClassRefactor {
-  constructor(private node: ClassNode) {}
+  private constructor(private node: ClassNode) {}
+
+  static createFromClassDeclaration(
+    declaration: ClassDeclaration
+  ): ClassRefactor {
+    return new ClassRefactor(new TypescriptClassNode(declaration));
+  }
+
+  static createFromSource(source: Code): ClassRefactor {
+    return new ClassRefactor(TypescriptClassNode.from(source));
+  }
 
   extractClass(className: string, fieldNames: string[]): ClassRefactor {
-    const extractingNode = this.node.createClassNodeWithSameInstanceMembers(
-      className
-    );
+    const extractingNode =
+      this.node.createClassNodeWithSameInstanceMembers(className);
     const extracted = new ExtractingClassRefactor(
       this.node,
       extractingNode,

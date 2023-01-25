@@ -1,9 +1,9 @@
-import { ErrorReason, Code, Command } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { Code, Command, ErrorReason } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
 
-import { extractType } from "./extract-type";
 import { Selection } from "../../../editor/selection";
+import { extractType } from "./extract-type";
 
 describe("Extract Type", () => {
   testEach<{ code: Code; expected: Code }>(
@@ -77,7 +77,7 @@ let something: { response: Extracted };`
         description: "as expression",
         code: `console.log(person as [cursor]{ name: string });`,
         expected: `interface [cursor]Extracted {
-  name: string
+  name: string;
 }
 
 console.log(person as Extracted);`
@@ -130,9 +130,9 @@ const someMachine = createMachine<C<typeof someModel>, Extracted>()`
         description: "object type using commas",
         code: `function doSomething(options: { first: number, second: boolean, third: string }[cursor]) {}`,
         expected: `interface Extracted {
-  first: number,
-  second: boolean,
-  third: string
+  first: number;
+  second: boolean;
+  third: string;
 }
 
 function doSomething(options: Extracted) {}`

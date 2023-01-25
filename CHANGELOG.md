@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Generated interfaces now have a consistent `;` at the end of each line. This is a side-effect of upgrading Recast to solve [#795](https://github.com/nicoespeon/abracadabra/issues/795)
+
+### Fixed
+
+- Fixed a bug where parser would not handle comments within an object that uses the `satisfies` operator. Kudos to @byronwall for [the detailed report](https://github.com/nicoespeon/abracadabra/issues/795)!
+
+## [6.18.2]
+
+No user-visible change. Attempting to fix CI deployments.
+
+## [6.18.1]
+
 ### Fixed
 
 - Upgrade the parser so it handles TS new `satisfies` operator syntax.
@@ -1704,7 +1718,9 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.18.2...HEAD
+[6.18.2]: https://github.com/nicoespeon/abracadabra/compare/6.18.1...6.18.2
+[6.18.1]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...6.18.1
 [6.18.0]: https://github.com/nicoespeon/abracadabra/compare/6.17.0...6.18.0
 [6.17.0]: https://github.com/nicoespeon/abracadabra/compare/6.16.0...6.17.0
 [6.16.0]: https://github.com/nicoespeon/abracadabra/compare/6.15.3...6.16.0
