@@ -15,7 +15,7 @@ import {
 import { Path } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
-import { DeleteSourceChange, UpdateSourceChange } from "../source-change";
+import { AddSourceChange, DeleteSourceChange } from "../source-change";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -71,20 +71,31 @@ export class InMemoryEditor implements Editor {
   }
 
   insert(code: Code, position: Position): Promise<void> {
-    const newCodeMatrix = this.toCodeMatrix(code);
+    const insertedCode = this.toCodeMatrix(code);
+    const newCode: CodeMatrix = [];
+    const { line, character } = position;
 
-    const index = Math.max(position.line, 0);
-    for (let i = this.codeMatrix.length; i <= index; i++) {
-      this.codeMatrix.push([]);
+    // Push the beginning of the original code
+    newCode.push(...this.codeMatrix.slice(0, line));
+
+    // Insert code
+    const codeLine = this.codeMatrix[line] ?? [];
+    newCode.push([...codeLine.slice(0, character), ...(insertedCode[0] ?? [])]);
+    for (let j = 1; j < insertedCode.length; j++) {
+      newCode.push(insertedCode[j]);
     }
-    newCodeMatrix.forEach((newLine, i) => {
-      if (!this.codeMatrix[index + i]) this.codeMatrix.push([]);
-      this.codeMatrix[index + i].splice(position.character, 0, ...newLine);
-    });
+    newCode[newCode.length - 1].push(...codeLine.slice(character));
+
+    // Push the rest of the original code
+    newCode.push(...this.codeMatrix.slice(line + 1));
+
+    this.codeMatrix = newCode;
 
     this.highlightsRepository.repositionHighlights(
       this.filePath,
-      new UpdateSourceChange(Selection.cursorAtPosition(position), code.length)
+      new AddSourceChange(
+        Selection.cursorAtPosition(position).extendToCode(code)
+      )
     );
 
     return Promise.resolve();

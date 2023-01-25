@@ -1,5 +1,6 @@
 import * as t from "../ast";
 import { ASTSelection } from "../ast";
+import { Code } from "./editor";
 import { Position } from "./position";
 
 export class Selection {
@@ -70,6 +71,21 @@ export class Selection {
 
   get isEmpty(): boolean {
     return this.start.isEqualTo(this.end);
+  }
+
+  extendToCode(code: Code): Selection {
+    const codeMatrix = code.split("\n");
+    const codeHeight = Math.max(codeMatrix.length - 1, 0);
+    const lastLineLength = codeMatrix[codeHeight]?.length ?? 0;
+    const end =
+      codeHeight === 0
+        ? this.end.addCharacters(lastLineLength)
+        : this.end
+            .addLines(codeHeight)
+            .putAtStartOfLine()
+            .addCharacters(lastLineLength);
+
+    return Selection.fromPositions(this.start, end);
   }
 
   extendToStartOfLine(): Selection {

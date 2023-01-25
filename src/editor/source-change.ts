@@ -36,29 +36,26 @@ export class DeleteSourceChange implements SourceChange {
   }
 }
 
-export class UpdateSourceChange implements SourceChange {
-  constructor(readonly selection: Selection, private textLength: number) {}
+export class AddSourceChange implements SourceChange {
+  constructor(readonly selection: Selection) {}
 
   applyToSelection(selection: Selection): Selection {
     const { start, end, height } = this.selection;
 
-    if (selection.end.isStrictlyBefore(start)) return selection;
+    const changeIsBeforeSelection = start.isStrictlyBefore(selection.start);
+    if (!changeIsBeforeSelection) return selection;
 
-    if (end.isStrictlyBefore(selection.start)) {
-      const updateOnSameLine = end.isSameLineThan(selection.start);
-      return Selection.fromPositions(
-        selection.start
-          .addLines(height)
-          .addCharacters(updateOnSameLine ? this.textLength : 0),
-        selection.end
-          .addLines(height)
-          .addCharacters(
-            updateOnSameLine && selection.isOneLine ? this.textLength : 0
-          )
-      );
-    }
-
-    return selection;
+    const updateOnSameLine = start.isSameLineThan(selection.start);
+    return Selection.fromPositions(
+      selection.start
+        .addLines(height)
+        .addCharacters(updateOnSameLine ? end.character : 0),
+      selection.end
+        .addLines(height)
+        .addCharacters(
+          updateOnSameLine && selection.isOneLine ? end.character : 0
+        )
+    );
   }
 
   modifies(selection: Selection): boolean {

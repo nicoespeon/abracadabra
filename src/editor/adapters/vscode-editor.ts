@@ -19,9 +19,9 @@ import { AbsolutePath, Path } from "../path";
 import { Position } from "../position";
 import { Selection } from "../selection";
 import {
+  AddSourceChange,
   DeleteSourceChange,
-  SourceChange,
-  UpdateSourceChange
+  SourceChange
 } from "../source-change";
 import { createChangeSignatureWebviewTemplate } from "./change-signature-webview/createChangeSignatureWebviewTemplate";
 
@@ -293,10 +293,9 @@ export class VSCodeEditor implements Editor {
 
   static async repositionHighlights(event: vscode.TextDocumentChangeEvent) {
     const filePath = event.document.uri.toString();
-    event.contentChanges.forEach((change) => {
-      highlightsRepository.repositionHighlights(
-        filePath,
-        createSourceChange(change)
+    event.contentChanges.forEach((contentChange) => {
+      createSourceChanges(contentChange).map((change) =>
+        highlightsRepository.repositionHighlights(filePath, change)
       );
     });
   }
@@ -379,14 +378,25 @@ export class VSCodeEditor implements Editor {
   }
 }
 
-function createSourceChange(
+function createSourceChanges(
   change: vscode.TextDocumentContentChangeEvent
-): SourceChange {
+): SourceChange[] {
   const selection = createSelectionFromVSCode(change.range);
 
-  return change.text.length === 0
-    ? new DeleteSourceChange(selection)
-    : new UpdateSourceChange(selection, change.text.length);
+  if (change.text.length === 0) {
+    return [new DeleteSourceChange(selection)];
+  }
+
+  if (selection.isEmpty) {
+    return [new AddSourceChange(selection.extendToCode(change.text))];
+  }
+
+  return [
+    new DeleteSourceChange(selection),
+    new AddSourceChange(
+      Selection.cursorAtPosition(selection.start).extendToCode(change.text)
+    )
+  ];
 }
 
 function createSelectionFromVSCode(

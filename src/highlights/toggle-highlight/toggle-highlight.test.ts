@@ -137,6 +137,46 @@ const otherVariable = 456;`);
 /* hey */const [h2]otherVariable[/h2] = 456;`);
   });
 
+  it("should adapt the highlights if we insert lines of code before them", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+
+const otherVariable = 456;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(2, 6));
+    await toggleHighlight(editor);
+
+    await editor.insert(
+      `/* hey */
+
+// This is a new line`,
+      new Position(1, 0)
+    );
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+/* hey */
+
+// This is a new line
+const [h2]otherVariable[/h2] = 456;`);
+  });
+
+  it("should adapt the highlights if we insert lines of code before them (inserted code would end at same line than highlight starts)", async () => {
+    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
+const otherVariable = 456;`);
+    await toggleHighlight(editor);
+    editor.moveCursorTo(new Position(1, 6));
+    await toggleHighlight(editor);
+
+    await editor.insert(
+      `
+    // This is a comment`,
+      new Position(0, 25)
+    );
+
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+    // This is a comment
+const [h2]otherVariable[/h2] = 456;`);
+  });
+
   it("should adapt the highlights if we delete code before them", async () => {
     const editor = new InMemoryEditor(`/* hey */
 const someVariable[cursor] = 123;
