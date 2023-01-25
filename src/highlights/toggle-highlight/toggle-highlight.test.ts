@@ -238,6 +238,4 @@ console.log(someVaria);`);
     expect(editor.highlightedCode).toBe(`const [h1]someVaria[/h1] = 123;
 console.log([h1]someVaria[/h1]);`);
   });
-
-  // TODO: highlight nested identifier should identify the top-most binding
 });

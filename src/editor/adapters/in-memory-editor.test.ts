@@ -57,6 +57,4 @@ const hello = "world";`);
 // This assigns the variable
 const hello = "world";`);
   });
-
-  // TODO: what if Position(8, 0)
 });
