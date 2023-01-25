@@ -68,7 +68,7 @@ export class Selection {
     return this.isEqualTo(Selection.cursorAt(0, 0));
   }
 
-  isEmpty(): boolean {
+  get isEmpty(): boolean {
     return this.start.isEqualTo(this.end);
   }
 
