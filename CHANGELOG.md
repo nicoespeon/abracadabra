@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New feature to support refactorings: **Highlight Identifiers**. It can help you highlight all references to different variables.
+
+![][demo-toggle-highlights]
+
 ### Changed
 
 - Generated interfaces now have a consistent `;` at the end of each line. This is a side-effect of upgrading Recast to solve [#795](https://github.com/nicoespeon/abracadabra/issues/795)
@@ -1809,6 +1815,7 @@ function doSomething(someData) {
 
 <!-- Demo images -->
 
+[demo-toggle-highlights]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-highlights.png?raw=true
 [demo-extract-substring]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-substring.gif?raw=true
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements-else-if.gif?raw=true
