@@ -1,6 +1,7 @@
-import { Position } from "./position";
 import * as t from "../ast";
 import { ASTSelection } from "../ast";
+import { Code } from "./editor";
+import { Position } from "./position";
 
 export class Selection {
   private _start: Position;
@@ -68,8 +69,23 @@ export class Selection {
     return this.isEqualTo(Selection.cursorAt(0, 0));
   }
 
-  isEmpty(): boolean {
+  get isEmpty(): boolean {
     return this.start.isEqualTo(this.end);
+  }
+
+  extendToCode(code: Code): Selection {
+    const codeMatrix = code.split("\n");
+    const codeHeight = Math.max(codeMatrix.length - 1, 0);
+    const lastLineLength = codeMatrix[codeHeight]?.length ?? 0;
+    const end =
+      codeHeight === 0
+        ? this.end.addCharacters(lastLineLength)
+        : this.end
+            .addLines(codeHeight)
+            .putAtStartOfLine()
+            .addCharacters(lastLineLength);
+
+    return Selection.fromPositions(this.start, end);
   }
 
   extendToStartOfLine(): Selection {
@@ -109,6 +125,49 @@ export class Selection {
     return selection.end.isAfter(this.end)
       ? Selection.fromPositions(this.start, selection.end)
       : this;
+  }
+
+  mergeWith(selection: Selection): Selection[] {
+    if (!this.overlapsWith(selection)) {
+      return [this, selection];
+    }
+
+    if (this.isInside(selection)) {
+      return [selection];
+    }
+
+    if (selection.isInside(this)) {
+      return [this];
+    }
+
+    if (this.start.isAfter(selection.start)) {
+      return [Selection.fromPositions(selection.start, this.end)];
+    }
+
+    return [Selection.fromPositions(this.start, selection.end)];
+  }
+
+  exclude(selection: Selection): Selection[] {
+    if (!this.overlapsWith(selection)) {
+      return [this];
+    }
+
+    if (this.isInside(selection)) {
+      return [];
+    }
+
+    if (selection.isInside(this)) {
+      return [
+        Selection.fromPositions(this.start, selection.start),
+        Selection.fromPositions(selection.end, this.end)
+      ];
+    }
+
+    if (this.start.isAfter(selection.start)) {
+      return [Selection.fromPositions(selection.end, this.end)];
+    }
+
+    return [Selection.fromPositions(this.start, selection.start)];
   }
 
   isInsidePath<T extends t.Node>(
@@ -173,6 +232,20 @@ export class Selection {
     return (
       this.start.isSameLineThan(selection.start) &&
       this.end.isSameLineThan(selection.end)
+    );
+  }
+
+  overlapsWith(selection: Selection): boolean {
+    return !(
+      this.start.isAfter(selection.end) || this.end.isBefore(selection.start)
+    );
+  }
+
+  touches(selection: Selection): boolean {
+    return (
+      this.overlapsWith(selection) ||
+      this.start.isEqualTo(selection.end) ||
+      this.end.isEqualTo(selection.start)
     );
   }
 }

@@ -1,22 +1,36 @@
 import * as vscode from "vscode";
-
+import { Decoration, Source } from "../../highlights/highlights";
+import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";
+import { CodeReference } from "../code-reference";
+import { COLORS } from "../colors";
 import {
-  Editor,
+  Choice,
   Code,
-  Modification,
   Command,
+  Editor,
   ErrorReason,
   errorReasonToString,
-  Choice,
-  Result
+  Modification,
+  Result,
+  SelectedPosition
 } from "../editor";
-import { Selection } from "../selection";
-import { Position } from "../position";
 import { AbsolutePath, Path } from "../path";
-import { CodeReference } from "../code-reference";
-import { SelectedPosition } from "../editor";
+import { Position } from "../position";
+import { Selection } from "../selection";
+import {
+  AddSourceChange,
+  DeleteSourceChange,
+  SourceChange
+} from "../source-change";
 import { createChangeSignatureWebviewTemplate } from "./change-signature-webview/createChangeSignatureWebviewTemplate";
+
+// Persist the instance across all editors.
+const highlightsRepository = new HighlightsRepository();
+const vscodeDecorations = new Map<
+  Decoration,
+  vscode.TextEditorDecorationType
+>();
 
 export class VSCodeEditor implements Editor {
   private editor: vscode.TextEditor;
@@ -117,7 +131,6 @@ export class VSCodeEditor implements Editor {
 
   protected fileUriAt(path: Path): vscode.Uri {
     const filePath = path.absoluteFrom(this.document.uri.path);
-
     return this.document.uri.with({ path: filePath.value });
   }
 
@@ -187,6 +200,106 @@ export class VSCodeEditor implements Editor {
   moveCursorTo(position: Position) {
     this.editor.selection = toVSCodeCursor(position);
     return Promise.resolve();
+  }
+
+  private get filePath(): string {
+    return this.document.uri.toString();
+  }
+
+  findHighlight(selection: Selection): Source | undefined {
+    return highlightsRepository.findHighlightsSource(this.filePath, selection);
+  }
+
+  highlight(source: Source, bindings: Selection[]): void {
+    const decoration = highlightsRepository.saveAndIncrement(
+      this.filePath,
+      source,
+      bindings
+    );
+
+    const selections = [source, ...bindings];
+    const vscodeDecoration = this.toVSCodeDecoration(decoration);
+    this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
+    vscodeDecorations.set(decoration, vscodeDecoration);
+  }
+
+  private toVSCodeDecoration(
+    decoration: Decoration
+  ): vscode.TextEditorDecorationType {
+    const color = COLORS[decoration % COLORS.length];
+    return vscode.window.createTextEditorDecorationType({
+      light: {
+        border: `1px solid ${color.light}`,
+        color: color.lightText,
+        backgroundColor: color.light,
+        overviewRulerColor: color.light
+      },
+      dark: {
+        border: `1px solid ${color.dark}`,
+        color: color.darkText,
+        backgroundColor: color.dark,
+        overviewRulerColor: color.dark
+      },
+      overviewRulerLane: vscode.OverviewRulerLane.Right,
+      // We will recompute the proper highlights on update
+      rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
+    });
+  }
+
+  removeHighlight(source: Source): void {
+    const decoration = highlightsRepository.decorationOf(this.filePath, source);
+    if (decoration === undefined) return;
+
+    this.disposeDecoration(decoration);
+    highlightsRepository.removeHighlightsOfFile(this.filePath, source);
+  }
+
+  private disposeDecoration(decoration: Decoration): void {
+    vscodeDecorations.get(decoration)?.dispose();
+    vscodeDecorations.delete(decoration);
+  }
+
+  removeAllHighlights(): void {
+    vscodeDecorations.forEach((decoration) => decoration.dispose());
+    vscodeDecorations.clear();
+    highlightsRepository.removeAllHighlights();
+  }
+
+  static restoreHighlightDecorations(editor: vscode.TextEditor) {
+    const filePath = editor.document.uri.toString();
+    const existingHighlights = highlightsRepository.get(filePath);
+    if (!existingHighlights) return;
+
+    existingHighlights
+      .entries()
+      .forEach(([source, { bindings, decoration }]) => {
+        const vscodeDecoration = vscodeDecorations.get(decoration);
+        if (!vscodeDecoration) return;
+
+        const selections = [source, ...bindings];
+        editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
+      });
+  }
+
+  static renameHighlightsFilePath(event: vscode.FileWillRenameEvent) {
+    event.files.forEach((file) => {
+      const existingHighlights = highlightsRepository.get(
+        file.oldUri.toString()
+      );
+      if (!existingHighlights) return;
+
+      highlightsRepository.set(file.newUri.toString(), existingHighlights);
+      highlightsRepository.removeAllHighlightsOfFile(file.oldUri.toString());
+    });
+  }
+
+  static async repositionHighlights(event: vscode.TextDocumentChangeEvent) {
+    const filePath = event.document.uri.toString();
+    event.contentChanges.forEach((contentChange) => {
+      createSourceChanges(contentChange).map((change) =>
+        highlightsRepository.repositionHighlights(filePath, change)
+      );
+    });
   }
 
   async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
@@ -267,12 +380,40 @@ export class VSCodeEditor implements Editor {
   }
 }
 
+function createSourceChanges(
+  change: vscode.TextDocumentContentChangeEvent
+): SourceChange[] {
+  const selection = createSelectionFromVSCode(change.range);
+
+  if (change.text.length === 0) {
+    return [new DeleteSourceChange(selection)];
+  }
+
+  if (selection.isEmpty) {
+    return [new AddSourceChange(selection.extendToCode(change.text))];
+  }
+
+  return [
+    new DeleteSourceChange(selection),
+    new AddSourceChange(
+      Selection.cursorAtPosition(selection.start).extendToCode(change.text)
+    )
+  ];
+}
+
 function createSelectionFromVSCode(
   selection: vscode.Selection | vscode.Range
 ): Selection {
   return new Selection(
     [selection.start.line, selection.start.character],
     [selection.end.line, selection.end.character]
+  );
+}
+
+function toVSCodeRange(selection: Selection): vscode.Range {
+  return new vscode.Range(
+    toVSCodePosition(selection.start),
+    toVSCodePosition(selection.end)
   );
 }
 

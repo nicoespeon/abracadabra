@@ -51,6 +51,38 @@ All other refactorings are available through [VS Code Quick Fixes][vscode-quick-
 
 Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings][vscode-settings] 🔥 (look for _Abracadabra_)
 
+## Features that support refactorings
+
+Besides refactorings, Abracadabra also gives you some extra features that are here to support refactoring work.
+
+### Highlight Identifiers
+
+![][demo-toggle-highlights]
+
+When working with Legacy Code, a very useful refactoring consists in extracting pure logic out of the I/O code that is hard to test (eg. HTTP calls).
+
+To help you spot all the I/O bits in a chunk of code, Abracadabra can highlight them for you!
+
+| Feature               | Keybinding         | On Mac  |
+| :-------------------- | :----------------- | :------ |
+| Toggle Highlight      | `Ctrl + H`         | `⌃ H`   |
+| Remove All Highlights | `Ctrl + Shift + H` | `⇧ ⌃ H` |
+
+1. Put your cursor over an Identifier you want to highlight
+2. Press `Ctrl + H`
+
+All references to this Identifier will be highlighted. The highlight will persist even when you modify the code.
+
+To remove, either:
+
+- Put your cursor over a highlighted reference and press `Ctrl + H` again
+- Press `Ctrl + Shift + H` from anywhere, to remove all highlights
+
+This is handy for marking I/O code when refactoring, but you can use it to highlight any interesting Identifier and its references. Here are a few typical use cases:
+
+- Mark all usages of a variable, to help you regroup them
+- Identify variables that are always passed together in function calls
+
 ## Configuration
 
 | Setting                       | Description                                       | Default                 |
@@ -220,6 +252,7 @@ Have a look, give them a try, use a combination of tools that work best for you.
 
 <!-- Demo images -->
 
+[demo-toggle-highlights]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-highlights.png?raw=true
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/command-palette.png?raw=true
 [demo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 

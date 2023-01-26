@@ -1,3 +1,4 @@
+import { Source } from "../../highlights/highlights";
 import { CodeReference } from "../code-reference";
 import {
   Choice,
@@ -79,6 +80,22 @@ export class AttemptingEditor implements Editor {
 
   moveCursorTo(position: Position): Promise<void> {
     return this.editor.moveCursorTo(position);
+  }
+
+  highlight(source: Source, bindings: Selection[]) {
+    return this.editor.highlight(source, bindings);
+  }
+
+  removeHighlight(source: Source) {
+    return this.editor.removeHighlight(source);
+  }
+
+  removeAllHighlights(): void {
+    return this.editor.removeAllHighlights();
+  }
+
+  findHighlight(selection: Selection): Source | undefined {
+    return this.editor.findHighlight(selection);
   }
 
   getSelectionReferences(selection: Selection): Promise<CodeReference[]> {

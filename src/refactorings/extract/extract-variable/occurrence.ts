@@ -56,7 +56,7 @@ export function createOccurrence(
 
   if (path.isStringLiteral()) {
     if (path.parentPath.isJSX()) {
-      if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+      if (!selection.isEmpty && selection.isStrictlyInsidePath(path)) {
         if (path.parentPath.isJSXExpressionContainer()) {
           path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
           return createOccurrence(path, loc, selection);
@@ -82,7 +82,7 @@ export function createOccurrence(
       );
     }
 
-    if (!selection.isEmpty() && selection.isStrictlyInsidePath(path)) {
+    if (!selection.isEmpty && selection.isStrictlyInsidePath(path)) {
       path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
       return createOccurrence(path, loc, selection);
     }
@@ -96,7 +96,7 @@ export function createOccurrence(
 
   if (
     path.isTemplateLiteral() &&
-    !selection.isEmpty() &&
+    !selection.isEmpty &&
     PartialTemplateLiteralOccurrence.isValid(path, loc, selection)
   ) {
     return new PartialTemplateLiteralOccurrence(path, loc, selection);

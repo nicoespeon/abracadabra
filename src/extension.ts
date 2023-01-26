@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
-
 import { RefactoringActionProvider } from "./action-providers";
 import { createCommand } from "./commands";
+import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import removeAllHighlights from "./highlights/remove-all-highlights";
+import toggleHighlight from "./highlights/toggle-highlight";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 import addNumericSeparator from "./refactorings/add-numeric-separator";
@@ -18,6 +20,10 @@ import convertToTemplateLiteral from "./refactorings/convert-to-template-literal
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
 import destructureObject from "./refactorings/destructure-object";
 import extract from "./refactorings/extract";
+// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
+import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
+import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
+import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -42,10 +48,6 @@ import splitDeclarationAndInitialization from "./refactorings/split-declaration-
 import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 import toggleBraces from "./refactorings/toggle-braces";
-// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
-import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
-import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
-import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
@@ -130,20 +132,21 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  Object.values(refactorings).forEach(
-    ({ withoutActionProvider, withActionProvider }) => {
-      withoutActionProvider
-        .concat(withActionProvider)
-        .forEach(({ command }) =>
-          context.subscriptions.push(
-            vscode.commands.registerCommand(
-              `abracadabra.${command.key}`,
-              createCommand(command.operation)
-            )
-          )
-        );
-    }
+  const commands = Object.values(refactorings).flatMap(
+    ({ withoutActionProvider, withActionProvider }) =>
+      withoutActionProvider.concat(withActionProvider)
   );
+
+  commands
+    .concat([toggleHighlight, removeAllHighlights])
+    .forEach(({ command }) => {
+      context.subscriptions.push(
+        vscode.commands.registerCommand(
+          `abracadabra.${command.key}`,
+          createCommand(command.operation)
+        )
+      );
+    });
 
   const withActionProviderPerLanguage = Object.values(refactorings).reduce(
     (memo, { languages, withActionProvider }) => {
@@ -182,6 +185,24 @@ export function activate(context: vscode.ExtensionContext) {
       new ExtractClassActionProvider(),
       { providedCodeActionKinds: [vscode.CodeActionKind.RefactorExtract] }
     );
+  });
+
+  vscode.window.onDidChangeActiveTextEditor((editor) => {
+    if (!editor) return;
+    VSCodeEditor.restoreHighlightDecorations(editor);
+  });
+
+  vscode.workspace.onWillRenameFiles((event) => {
+    VSCodeEditor.renameHighlightsFilePath(event);
+  });
+
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    VSCodeEditor.repositionHighlights(event);
+
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (activeTextEditor) {
+      VSCodeEditor.restoreHighlightDecorations(activeTextEditor);
+    }
   });
 }
 

@@ -324,6 +324,16 @@
         "command": "abracadabra.toggleBraces",
         "title": "Toggle Braces",
         "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.toggleHighlight",
+        "title": "Toggle Highlight",
+        "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.removeAllHighlights",
+        "title": "Remove All Highlights",
+        "category": "Abracadabra"
       }
     ],
     "keybindings": [
@@ -335,6 +345,16 @@
       {
         "command": "abracadabra.renameSymbol",
         "key": "f2",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "abracadabra.toggleHighlight",
+        "key": "ctrl+h",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "abracadabra.removeAllHighlights",
+        "key": "shift+ctrl+h",
         "when": "editorTextFocus"
       },
       {

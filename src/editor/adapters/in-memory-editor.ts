@@ -1,17 +1,21 @@
+import assert from "assert";
+import { Source } from "../../highlights/highlights";
+import { HighlightsRepository } from "../../highlights/highlights-repository";
+import { CodeReference } from "../code-reference";
 import {
-  Editor,
-  Code,
-  Modification,
-  Command,
-  ErrorReason,
   Choice,
+  Code,
+  Command,
+  Editor,
+  ErrorReason,
+  Modification,
   Result,
   SelectedPosition
 } from "../editor";
-import { Selection } from "../selection";
-import { Position } from "../position";
 import { Path } from "../path";
-import { CodeReference } from "../code-reference";
+import { Position } from "../position";
+import { Selection } from "../selection";
+import { AddSourceChange, DeleteSourceChange } from "../source-change";
 
 const LINE_SEPARATOR = "\n";
 const CHARS_SEPARATOR = "";
@@ -39,6 +43,10 @@ export class InMemoryEditor implements Editor {
     return this.read(this.codeMatrix);
   }
 
+  get highlightedCode(): Code {
+    return this.read(this.highlightCodeMatrix(this.codeMatrix));
+  }
+
   async codeOf(path: Path): Promise<Code> {
     const otherFile = this.otherFiles.get(path);
     if (!otherFile) return "";
@@ -59,6 +67,64 @@ export class InMemoryEditor implements Editor {
     if (newCursorPosition) {
       this._selection = Selection.cursorAtPosition(newCursorPosition);
     }
+    return Promise.resolve();
+  }
+
+  insert(code: Code, position: Position): Promise<void> {
+    const insertedCode = this.toCodeMatrix(code);
+    const newCode: CodeMatrix = [];
+    const { line, character } = position;
+
+    // Push the beginning of the original code
+    newCode.push(...this.codeMatrix.slice(0, line));
+
+    // Insert code
+    const codeLine = this.codeMatrix[line] ?? [];
+    newCode.push([...codeLine.slice(0, character), ...(insertedCode[0] ?? [])]);
+    for (let j = 1; j < insertedCode.length; j++) {
+      newCode.push(insertedCode[j]);
+    }
+    newCode[newCode.length - 1].push(...codeLine.slice(character));
+
+    // Push the rest of the original code
+    newCode.push(...this.codeMatrix.slice(line + 1));
+
+    this.codeMatrix = newCode;
+
+    this.highlightsRepository.repositionHighlights(
+      this.filePath,
+      new AddSourceChange(
+        Selection.cursorAtPosition(position).extendToCode(code)
+      )
+    );
+
+    return Promise.resolve();
+  }
+
+  delete(selection: Selection): Promise<void> {
+    this.codeMatrix.forEach((_line, lineIndex) => {
+      if (lineIndex < selection.start.line) return;
+      if (lineIndex > selection.end.line) return;
+
+      if (selection.start.character === 0 || lineIndex > selection.start.line) {
+        if (lineIndex < selection.end.line) {
+          // Delete this line
+          this.codeMatrix.splice(lineIndex, 1);
+          return;
+        }
+      }
+
+      this.codeMatrix[lineIndex].splice(
+        selection.start.character,
+        selection.width
+      );
+    });
+
+    this.highlightsRepository.repositionHighlights(
+      this.filePath,
+      new DeleteSourceChange(selection)
+    );
+
     return Promise.resolve();
   }
 
@@ -147,12 +213,16 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve(defaultValue);
   }
 
-  moveCursorTo(_position: Position) {
-    return Promise.resolve();
+  async moveCursorTo(position: Position) {
+    this._selection = Selection.cursorAtPosition(position);
   }
 
   private setCodeMatrix(code: Code) {
-    this.codeMatrix = code
+    this.codeMatrix = this.toCodeMatrix(code);
+  }
+
+  private toCodeMatrix(code: Code) {
+    return code
       .split(LINE_SEPARATOR)
       .map((line) => line.replace(CURSOR, ""))
       .map((line) => line.replace(SELECTION_START, ""))
@@ -200,12 +270,74 @@ export class InMemoryEditor implements Editor {
       .join(LINE_SEPARATOR);
   }
 
+  private highlightCodeMatrix(codeMatrix: CodeMatrix): CodeMatrix {
+    const allDecorations = this.highlightsRepository.getAllDecorations(
+      this.filePath
+    );
+    const selections = Array.from(allDecorations.keys());
+
+    return codeMatrix.map((line, lineIndex) => {
+      const startSelections = selections.filter(
+        ({ start }) => start.line === lineIndex
+      );
+      const endSelections = selections.filter(
+        ({ end }) => end.line === lineIndex
+      );
+
+      return line.flatMap((char, charIndex) => {
+        const start = startSelections.find(
+          ({ start }) => start.character === charIndex
+        );
+        if (start) {
+          const index = allDecorations.get(start);
+          assert(typeof index == "number");
+          // Add 1 so we start at [h1] instead of [h0].
+          return [`[h${index + 1}]`, char];
+        }
+
+        const end = endSelections.find(
+          ({ end }) => end.character === charIndex
+        );
+        if (end) {
+          const index = allDecorations.get(end);
+          assert(typeof index == "number");
+          // Add 1 so we start at [h1] instead of [h0].
+          return [`[/h${index + 1}]`, char];
+        }
+
+        return char;
+      });
+    });
+  }
+
   isLineBlank(line: number): boolean {
     return this.codeMatrix[line].join(CHARS_SEPARATOR).trim() === "";
   }
 
   removeLine(line: number): void {
     this.codeMatrix.splice(line, 1);
+  }
+
+  private readonly filePath = "irrelevant-path";
+  private highlightsRepository = new HighlightsRepository();
+
+  findHighlight(selection: Selection): Source | undefined {
+    return this.highlightsRepository.findHighlightsSource(
+      this.filePath,
+      selection
+    );
+  }
+
+  highlight(source: Source, bindings: Selection[]): void {
+    this.highlightsRepository.saveAndIncrement(this.filePath, source, bindings);
+  }
+
+  removeHighlight(source: Source): void {
+    this.highlightsRepository.removeHighlightsOfFile(this.filePath, source);
+  }
+
+  removeAllHighlights(): void {
+    this.highlightsRepository.removeAllHighlights();
   }
 
   async getSelectionReferences(selection: Selection): Promise<CodeReference[]> {
