@@ -4,7 +4,11 @@ import * as t from "@babel/types";
 import { assert } from "../assert";
 import { Position } from "../editor/position";
 import { Selection } from "../editor/selection";
-import { referencesInScope, isShadowIn } from "./scope";
+import {
+  isShadowIn,
+  referencesInScope,
+  selectableReferencesInScope
+} from "./scope";
 import { isSelectableNode } from "./selection";
 import { parseAndTraverseCode, traverseNode } from "./transformation";
 
@@ -66,6 +70,69 @@ const lambda = (title: string) => title.length > 0;`;
     const result = isShadowIn(identifier.node, ancestors);
 
     expect(result).toBe(true);
+  });
+
+  it("should find all references to an Identifier", () => {
+    let identifierPath: NodePath<t.Identifier> | undefined;
+    const code = `function doSomething(req) {
+  const liftPassCost = req.query.cost;
+  const liftPassType = req.query.type;
+
+  console.log(liftPassCost, liftPassType);
+}`;
+    parseAndTraverseCode(code, {
+      Identifier(path) {
+        if (path.node.name !== "req") return;
+        identifierPath = path;
+        path.stop();
+      }
+    });
+
+    assert(
+      identifierPath?.node.name === "req",
+      "Could not find target Identifier from AST"
+    );
+
+    const result = selectableReferencesInScope(identifierPath);
+
+    expect(result).toHaveLength(3);
+  });
+
+  it("should find all references to an Identifier in children scopes", () => {
+    let identifierPath: NodePath<t.Identifier> | undefined;
+    const code = `function doSomething(result) {
+  let cost = 0;
+
+  if (isMonday) {
+    cost = 10;
+    if (isHoliday) {
+      cost = 20;
+      result.cost = 100;
+    }
+  }
+
+  function ignoredBecauseShadowed(cost) {
+    console.log(cost);
+  }
+
+  console.log(cost);
+}`;
+    parseAndTraverseCode(code, {
+      Identifier(path) {
+        if (path.node.name !== "cost") return;
+        identifierPath = path;
+        path.stop();
+      }
+    });
+
+    assert(
+      identifierPath?.node.name === "cost",
+      "Could not find target Identifier from AST"
+    );
+
+    const result = selectableReferencesInScope(identifierPath);
+
+    expect(result).toHaveLength(4);
   });
 });
 

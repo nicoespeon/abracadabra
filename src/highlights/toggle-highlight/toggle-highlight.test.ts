@@ -47,7 +47,7 @@ function doSomething() {
 console.log(someVariable);`);
   });
 
-  it("should add highlight until the top-most binding", async () => {
+  it("should add highlights until the top-most binding", async () => {
     const editor = new InMemoryEditor(`
 function doSomething(req) {
   const liftPassCost = [cursor]req.query.cost;
@@ -64,6 +64,34 @@ function doSomething([h1]req[/h1]) {
   const liftPassType = [h1]req[/h1].query.type;
 
   console.log(liftPassCost, liftPassType);
+}`);
+  });
+
+  it("should highlight all references of a let declaration", async () => {
+    const editor = new InMemoryEditor(`
+let cost[cursor];
+console.log(cost);
+
+if (isValid) {
+  cost = 10;
+
+  if (isHolidays) {
+    cost = 20;
+  }
+}`);
+
+    await toggleHighlight(editor);
+
+    expect(editor.highlightedCode).toBe(`
+let [h1]cost[/h1];
+console.log([h1]cost[/h1]);
+
+if (isValid) {
+  [h1]cost[/h1] = 10;
+
+  if (isHolidays) {
+    [h1]cost[/h1] = 20;
+  }
 }`);
   });
 
