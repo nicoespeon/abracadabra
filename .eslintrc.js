@@ -39,7 +39,7 @@ module.exports = {
     "max-nested-callbacks": ERROR,
     "new-cap": ERROR,
     "no-invalid-this": ERROR,
-    "no-unused-expressions": ERROR,
+    "no-unused-expressions": OFF,
 
     "consistent-this": OFF,
     "no-control-regex": OFF,
