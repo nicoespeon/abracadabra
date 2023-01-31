@@ -206,6 +206,10 @@ export class VSCodeEditor implements Editor {
     return this.document.uri.toString();
   }
 
+  highlightSourcesForCurrentFile(): Selection[] {
+    return highlightsRepository.get(this.filePath)?.sources() ?? [];
+  }
+
   findHighlight(selection: Selection): Source | undefined {
     return highlightsRepository.findHighlightsSource(this.filePath, selection);
   }

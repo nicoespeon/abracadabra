@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { RefactoringActionProvider } from "./action-providers";
 import { createCommand } from "./commands";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import refreshHighlights from "./highlights/refresh-highlights";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
@@ -138,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   commands
-    .concat([toggleHighlight, removeAllHighlights])
+    .concat([toggleHighlight, refreshHighlights, removeAllHighlights])
     .forEach(({ command }) => {
       context.subscriptions.push(
         vscode.commands.registerCommand(

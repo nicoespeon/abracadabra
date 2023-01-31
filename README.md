@@ -66,6 +66,7 @@ To help you spot all the I/O bits in a chunk of code, Abracadabra can highlight 
 | Feature               | Keybinding         | On Mac  |
 | :-------------------- | :----------------- | :------ |
 | Toggle Highlight      | `Ctrl + H`         | `⌃ H`   |
+| Refresh Highlights    | `Ctrl + Alt + H`   | `⌃ ⌥ H` |
 | Remove All Highlights | `Ctrl + Shift + H` | `⇧ ⌃ H` |
 
 1. Put your cursor over an Identifier you want to highlight
@@ -82,6 +83,18 @@ This is handy for marking I/O code when refactoring, but you can use it to highl
 
 - Mark all usages of a variable, to help you regroup them
 - Identify variables that are always passed together in function calls
+
+#### Does it highlights new references automatically?
+
+Say you have highlighted a variable. Now you add some more code that refers to the same variable.
+
+It won't be _automatically_ highlighted.
+
+We could. But a naive implementation of this would constantly parse the AST of the code you are working with, which would probably affect your editor performances (not good).
+
+One way to do it would be to toggle highlight over the reference once to remove the old highlight, then again to get the new reference! But that's annoying!
+
+That's why you have a "Refresh Highlights" command. Hit `Ctrl + Alt + H` and references will be recomputed again for you!
 
 ## Configuration
 

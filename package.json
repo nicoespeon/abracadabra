@@ -331,6 +331,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.refreshHighlights",
+        "title": "Refresh Highlights",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.removeAllHighlights",
         "title": "Remove All Highlights",
         "category": "Abracadabra"
@@ -350,6 +355,11 @@
       {
         "command": "abracadabra.toggleHighlight",
         "key": "ctrl+h",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "abracadabra.refreshHighlights",
+        "key": "ctrl+alt+h",
         "when": "editorTextFocus"
       },
       {

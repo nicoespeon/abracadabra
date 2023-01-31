@@ -288,28 +288,4 @@ console.log(someVariable);`);
     expect(editor.highlightedCode).toBe(`const someVaria = 123;
 console.log(someVariable);`);
   });
-
-  // Requires parsing AST to recompute all the time. May be fine, but not yet.
-  it.skip("should highlight new reference that gets inserted", async () => {
-    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
-console.log("test");`);
-    await toggleHighlight(editor);
-
-    await editor.insert(", someVariable", new Position(1, 18));
-
-    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
-console.log("test", [h1]someVariable[/h1]);`);
-  });
-
-  // Requires parsing AST to recompute all the time. May be fine, but not yet.
-  it.skip("should add highlights if we rename the source and new bindings match", async () => {
-    const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
-console.log(someVaria);`);
-    await toggleHighlight(editor);
-
-    await editor.delete(new Selection([0, 15], [0, 18]));
-
-    expect(editor.highlightedCode).toBe(`const [h1]someVaria[/h1] = 123;
-console.log([h1]someVaria[/h1]);`);
-  });
 });

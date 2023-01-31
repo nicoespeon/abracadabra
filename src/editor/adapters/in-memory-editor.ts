@@ -321,6 +321,10 @@ export class InMemoryEditor implements Editor {
   private readonly filePath = "irrelevant-path";
   private highlightsRepository = new HighlightsRepository();
 
+  highlightSourcesForCurrentFile(): Selection[] {
+    return this.highlightsRepository.get(this.filePath)?.sources() ?? [];
+  }
+
   findHighlight(selection: Selection): Source | undefined {
     return this.highlightsRepository.findHighlightsSource(
       this.filePath,

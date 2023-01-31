@@ -82,6 +82,10 @@ export class AttemptingEditor implements Editor {
     return this.editor.moveCursorTo(position);
   }
 
+  highlightSourcesForCurrentFile(): Selection[] {
+    return this.editor.highlightSourcesForCurrentFile();
+  }
+
   highlight(source: Source, bindings: Selection[]) {
     return this.editor.highlight(source, bindings);
   }
