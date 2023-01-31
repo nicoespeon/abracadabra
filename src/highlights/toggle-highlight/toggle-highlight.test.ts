@@ -265,6 +265,19 @@ console.log([h1]someVariable[/h1]);`);
 console.log(someVaria);`);
   });
 
+  it("should remove highlight if we delete a binding", async () => {
+    const editor = new InMemoryEditor(`const req[cursor] = { type: "val" };
+console.log(req.type);`);
+    await toggleHighlight(editor);
+    expect(editor.highlightedCode).toBe(`const [h1]req[/h1] = { type: "val" };
+console.log([h1]req[/h1].type);`);
+
+    await editor.delete(new Selection([1, 12], [1, 16]));
+
+    expect(editor.highlightedCode).toBe(`const [h1]req[/h1] = { type: "val" };
+console.log(type);`);
+  });
+
   it("should remove all highlights if we rename the source", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 console.log(someVariable);`);
