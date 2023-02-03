@@ -194,6 +194,7 @@ function isExtractable(path: t.NodePath): boolean {
     !t.isBlockStatement(path) &&
     !t.isSpreadElement(path) &&
     !t.isTSTypeAnnotation(path) &&
+    !t.isJSXIdentifier(path) &&
     !t.isTSTypeParameterInstantiation(path) &&
     // Don't extract object method because we don't handle `this`.
     !t.isObjectMethod(path)

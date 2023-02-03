@@ -37,6 +37,16 @@ describe("Extract Variable - JSX we can extract", () => {
 }`
       },
       {
+        description: "a JSXAttribute, cursor on the name",
+        code: `function MyComponent() {
+  return <div id[cursor]="test">Hello</div>;
+}`,
+        expectedCode: `function MyComponent() {
+  const extracted = <div id="test">Hello</div>;
+  return extracted;
+}`
+      },
+      {
         description: "a JSX element (cursor on opening tag)",
         code: `function render() {
   return <d[cursor]iv className="text-lg font-weight-bold">
