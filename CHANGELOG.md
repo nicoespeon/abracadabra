@@ -1820,7 +1820,7 @@ function doSomething(someData) {
 
 <!-- Demo images -->
 
-[demo-toggle-highlights]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-highlights.png?raw=true
+[demo-toggle-highlights]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-highlights.gif?raw=true
 [demo-extract-substring]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-substring.gif?raw=true
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 [demo-merge-if-statements-else-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-statements-else-if.gif?raw=true
