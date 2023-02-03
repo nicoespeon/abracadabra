@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed a bug where parser would not handle comments within an object that uses the `satisfies` operator. Kudos to @byronwall for [the detailed report](https://github.com/nicoespeon/abracadabra/issues/795)!
+- Inlining JSX in a JSX attribute doesn't remove the curly braces anymore. Thanks @automatensalat for reporting.
 
 ## [6.18.2]
 

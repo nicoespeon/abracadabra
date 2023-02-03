@@ -243,6 +243,16 @@ const page = <div>{header}</div>;`,
         expected: `const page = <div><h1>Hello</h1></div>;`
       },
       {
+        description: "a JSX element into a JSX attribute",
+        code: `function MyComponent() {
+  const header[cursor] = <span>hello</span>;
+  return <Menu header={header} />
+}`,
+        expected: `function MyComponent() {
+  return <Menu header={<span>hello</span>} />
+}`
+      },
+      {
         description: "a multi-lines JSX element into another",
         code: `const header[cursor] = (
   <h1>Hello</h1>
