@@ -495,6 +495,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "jerone",
+      "name": "Jeroen van Warmerdam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55841?v=4",
+      "profile": "https://github.com/jerone",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
