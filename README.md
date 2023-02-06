@@ -37,7 +37,7 @@ Refactor Legacy Code in a snap! 👌
 
 ## List of available refactorings
 
-We have 35+ automated refactorings such as Extract Variable, Extract Type, Flip If/Else, Move to Existing File, etc.
+We have 40+ automated refactorings such as Extract Variable, Extract Type, Flip If/Else, Move to Existing File, etc.
 
 **👉 [Here's the full catalog of refactorings available][all-refactorings]**
 
@@ -265,7 +265,7 @@ Have a look, give them a try, use a combination of tools that work best for you.
 
 <!-- Demo images -->
 
-[demo-toggle-highlights]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-highlights.png?raw=true
+[demo-toggle-highlights]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-highlights.gif?raw=true
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/command-palette.png?raw=true
 [demo-abracadabra]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true
 
