@@ -302,7 +302,8 @@ class InlinableIdentifier implements InlinableCode {
           grandParent: ancestors[ancestors.length - 2]?.node ?? null,
           shouldWrapInParenthesis:
             t.isUnaryExpression(parent.node) ||
-            (t.isTSAsExpression(self.init) && !parentHasParenthesis),
+            (t.isTSAsExpression(self.init) && !parentHasParenthesis) ||
+            (t.isFunction(self.init) && Boolean(self.init.async)),
           shorthandKey:
             t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&

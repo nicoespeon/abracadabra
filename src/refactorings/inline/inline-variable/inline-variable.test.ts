@@ -295,6 +295,20 @@ const hello = "World!";
 console.log(foo satisfies string);`,
         expected: `const hello = "World!";
 console.log("bar" satisfies string);`
+      },
+      {
+        description: "a variable declaration that is an async arrow expression",
+        code: `const foo[cursor] = async (a: number) => {
+  console.log(a);
+};
+const bar = async () => {
+  await foo(3);
+};`,
+        expected: `const bar = async () => {
+  await (async (a: number) => {
+  console.log(a);
+})(3);
+};`
       }
     ],
     async ({ code, expected }) => {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inline Variable was producing invalid code when inlining an async arrow function expression. Not anymore! Thanks @automatensalat for reporting, as always 😉
+
 ## [6.19.0] - 2022-02-03 - Let’s go Highlight an Identifier 🪁
 
 ### Added
