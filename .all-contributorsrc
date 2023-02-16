@@ -504,6 +504,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "stevebeauge",
+      "name": "Steve Beaugé",
+      "avatar_url": "https://avatars.githubusercontent.com/u/184604?v=4",
+      "profile": "http://blog.hand-net.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
