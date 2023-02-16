@@ -354,17 +354,20 @@
       },
       {
         "command": "abracadabra.toggleHighlight",
-        "key": "ctrl+h",
+        "key": "ctrl+alt+h",
+        "mac": "ctrl+h",
         "when": "editorTextFocus"
       },
       {
         "command": "abracadabra.refreshHighlights",
-        "key": "ctrl+alt+h",
+        "key": "shift+alt+h",
+        "mac": "ctrl+alt+h",
         "when": "editorTextFocus"
       },
       {
         "command": "abracadabra.removeAllHighlights",
-        "key": "shift+ctrl+h",
+        "key": "shift+ctrl+alt+h",
+        "mac": "shift+ctrl+h",
         "when": "editorTextFocus"
       },
       {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **(Breaking)** Change Windows key bindings for the Toggle Highlight feature. It was hijacking the default shortcut to replace code on this OS, which is not cool. Thanks @stevebeauge for reporting.
+
 ### Fixed
 
 - Inline Variable was producing invalid code when inlining an async arrow function expression. Not anymore! Thanks @automatensalat for reporting, as always 😉

@@ -63,21 +63,21 @@ When working with Legacy Code, a very useful refactoring consists in extracting 
 
 To help you spot all the I/O bits in a chunk of code, Abracadabra can highlight them for you!
 
-| Feature               | Keybinding         | On Mac  |
-| :-------------------- | :----------------- | :------ |
-| Toggle Highlight      | `Ctrl + H`         | `⌃ H`   |
-| Refresh Highlights    | `Ctrl + Alt + H`   | `⌃ ⌥ H` |
-| Remove All Highlights | `Ctrl + Shift + H` | `⇧ ⌃ H` |
+| Feature               | Keybinding               | On Mac  |
+| :-------------------- | :----------------------- | :------ |
+| Toggle Highlight      | `Ctrl + Alt + H`         | `⌃ H`   |
+| Refresh Highlights    | `Shift + Alt + H`        | `⌃ ⌥ H` |
+| Remove All Highlights | `Ctrl + Shift + Alt + H` | `⇧ ⌃ H` |
 
 1. Put your cursor over an Identifier you want to highlight
-2. Press `Ctrl + H`
+2. Press `Ctrl + Alt + H`
 
 All references to this Identifier will be highlighted. The highlight will persist even when you modify the code.
 
 To remove, either:
 
-- Put your cursor over a highlighted reference and press `Ctrl + H` again
-- Press `Ctrl + Shift + H` from anywhere, to remove all highlights
+- Put your cursor over a highlighted reference and press `Ctrl + Alt + H` again
+- Press `Ctrl + Shift + Alt + H` from anywhere, to remove all highlights
 
 This is handy for marking I/O code when refactoring, but you can use it to highlight any interesting Identifier and its references. Here are a few typical use cases:
 
@@ -94,7 +94,7 @@ We could. But a naive implementation of this would constantly parse the AST of t
 
 One way to do it would be to toggle highlight over the reference once to remove the old highlight, then again to get the new reference! But that's annoying!
 
-That's why you have a "Refresh Highlights" command. Hit `Ctrl + Alt + H` and references will be recomputed again for you!
+That's why you have a "Refresh Highlights" command. Hit `Shift + Alt + H` and references will be recomputed again for you!
 
 ## Configuration
 
