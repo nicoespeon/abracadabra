@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2023-02-15 - Bella Note 🍝
+
 ### Changed
 
 - **(Breaking)** Change Windows key bindings for the Toggle Highlight feature. It was hijacking the default shortcut to replace code on this OS, which is not cool. Thanks @stevebeauge for reporting.
@@ -15,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Inline Variable was producing invalid code when inlining an async arrow function expression. Not anymore! Thanks @automatensalat for reporting, as always 😉
 
-## [6.19.0] - 2022-02-03 - Let’s go Highlight an Identifier 🪁
+## [6.19.0] - 2023-02-03 - Let’s go Highlight an Identifier 🪁
 
 ### Added
 
@@ -1736,7 +1738,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/6.19.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/7.0.0...HEAD
+[7.0.0]: https://github.com/nicoespeon/abracadabra/compare/6.19.0...7.0.0
 [6.19.0]: https://github.com/nicoespeon/abracadabra/compare/6.18.2...6.19.0
 [6.18.2]: https://github.com/nicoespeon/abracadabra/compare/6.18.1...6.18.2
 [6.18.1]: https://github.com/nicoespeon/abracadabra/compare/6.18.0...6.18.1
