@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-51-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-52-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -210,6 +210,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://byroni.us"><img src="https://avatars.githubusercontent.com/u/495404?v=4?s=100" width="100px;" alt="byron wall"/><br /><sub><b>byron wall</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Abyronwall" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jerone"><img src="https://avatars.githubusercontent.com/u/55841?v=4?s=100" width="100px;" alt="Jeroen van Warmerdam"/><br /><sub><b>Jeroen van Warmerdam</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=jerone" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://blog.hand-net.com"><img src="https://avatars.githubusercontent.com/u/184604?v=4?s=100" width="100px;" alt="Steve Beaugé"/><br /><sub><b>Steve Beaugé</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Astevebeauge" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
