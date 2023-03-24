@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Change Signature wasn't working on nested functions. It has been reported by @SamB and fixed!
+
 ## [7.0.0] - 2023-02-15 - Bella Note 🍝
 
 ### Changed
