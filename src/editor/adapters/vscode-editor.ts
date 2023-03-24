@@ -314,15 +314,8 @@ export class VSCodeEditor implements Editor {
     )) as vscode.Location[];
 
     return locations.map((loc) => {
-      const start = loc.range.start;
-      const end = loc.range.end;
-
       const path = new AbsolutePath(loc.uri.path);
-
-      const codeReferenceSelection = new Selection(
-        [start.line + 1, start.character],
-        [end.line + 1, end.character]
-      );
+      const codeReferenceSelection = createSelectionFromVSCode(loc.range);
 
       return new CodeReference(path, codeReferenceSelection);
     });

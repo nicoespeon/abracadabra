@@ -427,8 +427,8 @@ add(1, 2);
 
     assert.strictEqual(codeReferences.length, 2);
     assert.deepStrictEqual(codeReferences, [
-      new CodeReference(filePath, new Selection([1, 9], [1, 12])),
-      new CodeReference(filePath, new Selection([4, 0], [4, 3]))
+      new CodeReference(filePath, new Selection([0, 9], [0, 12])),
+      new CodeReference(filePath, new Selection([3, 0], [3, 3]))
     ]);
   });
 }

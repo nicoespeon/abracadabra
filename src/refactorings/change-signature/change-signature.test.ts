@@ -171,6 +171,23 @@ describe("Change Signature", () => {
           add(" years", 7);
           add();
           add(undefined, 1);`
+      },
+      {
+        description: "of a nested function",
+        code: `function outer() {
+          function [cursor]add(a, b) {
+            return a + b;
+          }
+
+          return add(1, 2);
+        }`,
+        expected: `function outer() {
+          function add(b, a) {
+            return a + b;
+          }
+
+          return add(2, 1);
+        }`
       }
     ],
     async ({ code, expected }) => {
