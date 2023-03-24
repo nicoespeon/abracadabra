@@ -380,8 +380,8 @@ export class InMemoryEditor implements Editor {
           new CodeReference(
             obj.filename,
             new Selection(
-              [pos.row, pos.col],
-              [pos.row, pos.col + functionReferences.length]
+              [pos.row - 1, pos.col],
+              [pos.row - 1, pos.col + functionReferences.length]
             )
           )
         );

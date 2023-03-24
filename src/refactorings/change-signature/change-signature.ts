@@ -1,8 +1,9 @@
 import * as t from "../../ast";
-import { parse } from "../../ast";
+import { isSelectablePath, parse } from "../../ast";
 import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
 import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 
 export async function changeSignature(editor: Editor) {
@@ -181,25 +182,20 @@ export function createVisitor(
   return {
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
-
       if (!hasParameters(path.node)) return;
 
       onMatch(path, selection);
     },
     ArrowFunctionExpression(path) {
       if (!selection.isInsidePath(path)) return;
-
       if (!hasParameters(path.node)) return;
-
       if (!t.isVariableDeclarator(path.parent)) return;
-
       if (!path.parent.loc) return;
 
       onMatch(path, Selection.fromAST(path.parent.loc));
     },
     ClassMethod(path) {
       if (!selection.isInsidePath(path)) return;
-
       if (!hasParameters(path.node)) return;
 
       onMatch(path, selection);
@@ -258,10 +254,15 @@ function createVisitorForReferences(
 ): t.Visitor {
   return {
     CallExpression(path) {
-      const nodeSelection = new Selection(
-        [path.node.loc?.start.line || 0, 0],
-        [path.node.loc?.end.line || 0, 0]
-      );
+      if (!isSelectablePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const start = Position.fromAST(path.node.loc.start).putAtStartOfLine();
+      const end = Position.fromAST(path.node.loc.end).putAtStartOfLine();
+      const nodeSelection = Selection.fromPositions(start, end);
 
       if (!selection.isSameLineThan(nodeSelection)) return;
 
@@ -269,18 +270,76 @@ function createVisitorForReferences(
     },
     FunctionDeclaration(path) {
       if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path);
     },
     ArrowFunctionExpression(path) {
-      if (!selection.isInsidePath(path)) return;
+      if (!selection.isInsidePath(path.parentPath)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
     },
     ClassMethod(path) {
       if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path);
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    CallExpression(childPath) {
+      if (!isSelectablePath(childPath)) return;
+
+      const start = Position.fromAST(
+        childPath.node.loc.start
+      ).putAtStartOfLine();
+      const end = Position.fromAST(childPath.node.loc.end).putAtStartOfLine();
+      const nodeSelection = Selection.fromPositions(start, end);
+
+      if (!selection.isSameLineThan(nodeSelection)) return;
+
+      result = true;
+      childPath.stop();
+    },
+    FunctionDeclaration(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    },
+    ArrowFunctionExpression(childPath) {
+      if (!selection.isInsidePath(childPath.parentPath)) return;
+
+      result = true;
+      childPath.stop();
+    },
+    ClassMethod(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
 
 function hasParameters(
