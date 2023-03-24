@@ -344,6 +344,11 @@
         "command": "abracadabra.removeAllHighlights",
         "title": "Remove All Highlights",
         "category": "Abracadabra"
+      },
+      {
+        "command": "abracadabra.wrapInJsxFragment",
+        "title": "Wrap in JSX Fragment",
+        "category": "Abracadabra"
       }
     ],
     "keybindings": [
@@ -1464,6 +1469,14 @@
         {
           "command": "abracadabra.toggleBraces",
           "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.wrapInJSXFragment",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.wrapInJSXFragment",
+          "when": "editorLangId == typescriptreact"
         }
       ]
     }

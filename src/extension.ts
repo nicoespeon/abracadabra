@@ -1,12 +1,11 @@
 import * as vscode from "vscode";
+
 import { RefactoringActionProvider } from "./action-providers";
 import { createCommand } from "./commands";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import refreshHighlights from "./highlights/refresh-highlights";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
-import { Refactoring, RefactoringWithActionProvider } from "./types";
-
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
@@ -49,6 +48,8 @@ import splitDeclarationAndInitialization from "./refactorings/split-declaration-
 import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 import toggleBraces from "./refactorings/toggle-braces";
+import wrapInJsxFrament from "./refactorings/wrap-in-jsx-fragment";
+import { Refactoring, RefactoringWithActionProvider } from "./types";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
@@ -58,7 +59,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
-    withoutActionProvider: [reactConvertToPureComponent],
+    withoutActionProvider: [reactConvertToPureComponent, wrapInJsxFrament],
     withActionProvider: [reactExtractUseCallback]
   },
   allButVueAndSvelte: {
