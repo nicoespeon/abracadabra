@@ -530,6 +530,18 @@ for (var i = 0; i < items.length; i++) {}`
   const extracted = arr.reduce((sum, current) => sum + current, 0);
   return extracted;
 }`
+      },
+      {
+        description: "expression bound to a variable",
+        code: `const a = 1;
+console.log(a);
+console.log([start]a + 1[end]);
+console.log(a + 1);`,
+        expected: `const a = 1;
+const extracted = a + 1;
+console.log(a);
+console.log(extracted);
+console.log(extracted);`
       }
     ],
     async ({ code, expected }) => {

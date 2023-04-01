@@ -1,8 +1,8 @@
-import { Code, Modification } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
-import * as t from "../../../ast";
 import { assert } from "../../../assert";
+import * as t from "../../../ast";
+import { Code, Modification } from "../../../editor/editor";
+import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 
 import { Occurrence } from "./occurrence";
 
@@ -53,9 +53,19 @@ export class DeclarationOnCommonAncestor extends VariableDeclarationModification
       );
     }
 
-    return Selection.cursorAtPosition(
-      Position.fromAST(commonAncestor.node.loc.start)
-    );
+    const latestDeclarationSelection = referencedDeclarationsSelections(
+      this.topMostOccurrence.path
+    ).sort((a, b) => (a.startsBefore(b) ? 1 : -1))[0];
+
+    return latestDeclarationSelection
+      ? Selection.cursorAtPosition(
+          latestDeclarationSelection.end
+            .putAtNextLine()
+            .putAtSameCharacter(latestDeclarationSelection.start)
+        )
+      : Selection.cursorAtPosition(
+          Position.fromAST(commonAncestor.node.loc.start)
+        );
   }
 
   private get topMostOccurrence(): Occurrence {
@@ -82,4 +92,33 @@ export class MergeDestructuredDeclaration implements Modification {
       Position.fromAST(this.lastDestructuredProperty.loc.end)
     );
   }
+}
+
+function referencedDeclarationsSelections(
+  path: t.NodePath<t.Node>
+): Selection[] {
+  const result = new Set<Selection>();
+
+  t.traversePath(
+    path.node,
+    {
+      Identifier(childPath) {
+        t.selectableReferencesInScope(childPath)
+          .filter(
+            ({ parentPath }) =>
+              parentPath?.isVariableDeclarator() &&
+              t.isSelectablePath(parentPath.parentPath)
+          )
+          .map(({ parentPath }) =>
+            Selection.fromAST(
+              (parentPath?.parent as t.Selectable<t.VariableDeclaration>).loc
+            )
+          )
+          .forEach((selection) => result.add(selection));
+      }
+    },
+    path.scope
+  );
+
+  return Array.from(result);
 }

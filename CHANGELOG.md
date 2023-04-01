@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Change Signature wasn't working on nested functions. It has been reported by @SamB and fixed!
+- Extract Variable may declare the new variable before another variable it references under some circumstances. These have been fixed. Kudos to @tjx666 for finding that!
 
 ## [7.0.0] - 2023-02-15 - Bella Note 🍝
 
