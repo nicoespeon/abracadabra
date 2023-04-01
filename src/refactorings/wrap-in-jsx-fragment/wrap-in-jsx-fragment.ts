@@ -31,16 +31,45 @@ export function createVisitor(
 ): t.Visitor {
   // TODO: implement the check here 🧙‍
   return {
-    JSXElement(path) {
+    ReturnStatement(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const fragment = t.jsxFragment(
-        t.jsxOpeningFragment(),
-        t.jsxClosingFragment(),
-        [path.node]
-      );
-      path.replaceWith(fragment);
-      onMatch(path, path.node);
+      const childPath = path.get("argument");
+      console.log("childPath", childPath);
+      if (childPath.isJSXElement()) {
+        const fragment = t.jsxFragment(
+          t.jsxOpeningFragment(),
+          t.jsxClosingFragment(),
+          [childPath.node]
+        );
+        childPath.node.extra?.parenthesized
+          ? childPath.replaceWith(t.expressionStatement(fragment))
+          : childPath.replaceWith(t.parenthesizedExpression(fragment));
+        onMatch(childPath, childPath.node);
+      } else {
+        path.traverse({
+          ReturnStatement: (nestedPath) => {
+            const nestedChildPath = nestedPath.get("argument");
+            if (!selection.isInsidePath(nestedPath)) return;
+            if (nestedChildPath.isJSXElement()) {
+              const fragment = t.jsxFragment(
+                t.jsxOpeningFragment(),
+                t.jsxClosingFragment(),
+                [nestedChildPath.node]
+              );
+              nestedChildPath.node.extra?.parenthesized
+                ? nestedChildPath.replaceWith(
+                    t.jsxExpressionContainer(fragment)
+                  )
+                : nestedChildPath.replaceWith(
+                    t.parenthesizedExpression(fragment)
+                  );
+              onMatch(nestedChildPath, nestedChildPath.node);
+              nestedPath.stop();
+            }
+          }
+        });
+      }
     }
   };
 }
