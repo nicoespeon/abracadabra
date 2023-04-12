@@ -1,14 +1,18 @@
-import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
 
 import { wrapInJsxFragment } from "./wrap-in-jsx-fragment";
 
-describe("Wrap In Jsx Fragment", () => {
+describe("Wrap In JSX Fragment", () => {
   testEach<{ code: Code; expected: Code }>(
-    "should wrap in jsx fragment",
+    "should wrap in JSX fragment",
     [
-      // TODO: write successful test cases here
+      {
+        description: "a regular JSX div",
+        code: `return <div>[cursor]Something witty goes here</div>;`,
+        expected: `return (<><div>Something witty goes here</div></>);`
+      }
     ],
     async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
