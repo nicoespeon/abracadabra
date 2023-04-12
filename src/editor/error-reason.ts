@@ -63,7 +63,7 @@ export enum ErrorReason {
 export function toString(reason: ErrorReason): string {
   switch (reason) {
     case ErrorReason.CouldNotWrapInJsxFragment:
-      return didNotFind("something to wrap in a jsx fragment");
+      return didNotFind("something to wrap in a JSX fragment");
 
     case ErrorReason.DidNotFindOperatorToFlip:
       return didNotFind("an operator to flip");
