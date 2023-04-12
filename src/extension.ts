@@ -59,8 +59,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
-    withoutActionProvider: [reactConvertToPureComponent, wrapInJsxFrament],
-    withActionProvider: [reactExtractUseCallback]
+    withoutActionProvider: [reactConvertToPureComponent],
+    withActionProvider: [reactExtractUseCallback, wrapInJsxFrament]
   },
   allButVueAndSvelte: {
     languages: [
