@@ -11,6 +11,26 @@ describe("Wrap In JSX Fragment", () => {
       {
         description: "a regular JSX div",
         code: `return <div>[cursor]Something witty goes here</div>;`,
+        expected: `return <><div>Something witty goes here</div></>;`
+      },
+      {
+        description: "a regular JSX div, cursor within content",
+        code: `return <div>Something witty[cursor] goes here</div>;`,
+        expected: `return <><div>Something witty goes here</div></>;`
+      },
+      {
+        description: "nested JSX elements, cursor on wrapper",
+        code: `return <div[cursor]><span>Something witty goes here</span></div>;`,
+        expected: `return <><div><span>Something witty goes here</span></div></>;`
+      },
+      {
+        description: "nested JSX elements, cursor on nested",
+        code: `return <div><span[cursor]>Something witty goes here</span></div>;`,
+        expected: `return <div><><span>Something witty goes here</span></></div>;`
+      },
+      {
+        description: "parenthesized, returned JSX",
+        code: `return ([cursor]<div>Something witty goes here</div>);`,
         expected: `return (<><div>Something witty goes here</div></>);`
       }
     ],

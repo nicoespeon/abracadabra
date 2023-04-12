@@ -19,7 +19,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path, node) => {
       t.replaceWithPreservingComments(path, node);
-      path.stop();
     })
   );
 }
@@ -29,44 +28,39 @@ export function createVisitor(
   onMatch: (path: t.NodePath, node: t.Node) => void
 ): t.Visitor {
   return {
-    ReturnStatement(path) {
+    JSXElement(path) {
       if (!selection.isInsidePath(path)) return;
 
-      const childPath = path.get("argument");
-      if (childPath.isJSXElement()) {
-        const fragment = t.jsxFragment(
-          t.jsxOpeningFragment(),
-          t.jsxClosingFragment(),
-          [childPath.node]
-        );
-        childPath.node.extra?.parenthesized
-          ? childPath.replaceWith(t.expressionStatement(fragment))
-          : childPath.replaceWith(t.parenthesizedExpression(fragment));
-        onMatch(childPath, childPath.node);
-      } else {
-        path.traverse({
-          ReturnStatement: (nestedPath) => {
-            const nestedChildPath = nestedPath.get("argument");
-            if (!selection.isInsidePath(nestedPath)) return;
-            if (nestedChildPath.isJSXElement()) {
-              const fragment = t.jsxFragment(
-                t.jsxOpeningFragment(),
-                t.jsxClosingFragment(),
-                [nestedChildPath.node]
-              );
-              nestedChildPath.node.extra?.parenthesized
-                ? nestedChildPath.replaceWith(
-                    t.jsxExpressionContainer(fragment)
-                  )
-                : nestedChildPath.replaceWith(
-                    t.parenthesizedExpression(fragment)
-                  );
-              onMatch(nestedChildPath, nestedChildPath.node);
-              nestedPath.stop();
-            }
-          }
-        });
-      }
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      const extra = path.node.extra;
+      const fragment = t.jsxFragment(
+        t.jsxOpeningFragment(),
+        t.jsxClosingFragment(),
+        [{ ...path.node, extra: { parenthesized: false } }]
+      );
+      path.replaceWith(fragment);
+      onMatch(path, { ...path.node, extra });
+      path.stop();
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    JSXElement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
