@@ -18,7 +18,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, node) => {
-      // TODO: implement the transformation here 🧙‍
       t.replaceWithPreservingComments(path, node);
       path.stop();
     })
@@ -29,7 +28,6 @@ export function createVisitor(
   selection: Selection,
   onMatch: (path: t.NodePath, node: t.Node) => void
 ): t.Visitor {
-  // TODO: implement the check here 🧙‍
   return {
     ReturnStatement(path) {
       if (!selection.isInsidePath(path)) return;
