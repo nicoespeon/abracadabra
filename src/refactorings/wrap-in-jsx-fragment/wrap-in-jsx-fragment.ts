@@ -33,7 +33,6 @@ export function createVisitor(
       if (!selection.isInsidePath(path)) return;
 
       const childPath = path.get("argument");
-      console.log("childPath", childPath);
       if (childPath.isJSXElement()) {
         const fragment = t.jsxFragment(
           t.jsxOpeningFragment(),
