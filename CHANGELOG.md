@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change Signature wasn't working on nested functions. It has been reported by @SamB and fixed!
 - Extract Variable may declare the new variable before another variable it references under some circumstances. These have been fixed. Kudos to @tjx666 for finding that!
 
+### Added
+
+- **[New Refactoring]** "Wrap in JSX Fragment" thanks to @DerTimonius. This will help you refactor JSX code to add more elements within a single root.
+
 ## [7.0.0] - 2023-02-15 - Bella Note 🍝
 
 ### Changed
