@@ -33,15 +33,17 @@ describe("Wrap In JSX Fragment", () => {
         expected: `return (<><div>Something witty goes here</div></>);`
       },
       {
-        description: "nested return statment, cursor on nested",
+        description: "nested return statement, cursor on nested",
         code: `const arr = new Array(4).fill(0);
-               return <div>{arr.map(el => {
-                return <p[cursor]>{el}</p>
-               })}</div>;`,
+return <div>{arr.map(el => {
+  return <p[cursor]>{el}</p>;
+})}</div>;`,
         expected: `const arr = new Array(4).fill(0);
-        return (<div>{arr.map(el => {
-         return <><p>{el}</p></>
-        })}</div>);`
+return (
+  <div>{arr.map(el => {
+    return <><p>{el}</p></>;
+  })}</div>
+);`
       }
     ],
     async ({ code, expected }) => {
