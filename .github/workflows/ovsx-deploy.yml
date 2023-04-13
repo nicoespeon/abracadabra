@@ -1,8 +1,9 @@
 name: Open VSX Deploy
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - "main"
 
 jobs:
   deploy:
