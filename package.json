@@ -55,7 +55,7 @@
     "build:node": "webpack",
     "build:browser": "webpack --env browser",
     "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
-    "vscode:prepublish": "run-p -l \"build:* --mode production --verbose\"",
+    "vscode:prepublish": "run-p -l \"build:* --mode production\"",
     "package": "vsce package",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
     "package:install": "code --install-extension dist/*.vsix",

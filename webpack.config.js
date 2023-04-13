@@ -8,6 +8,8 @@ const webpack = require("webpack");
 
 /** @returns {import('webpack').Configuration} */
 const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
+  stats: "verbose",
+
   // Leaves the source code as close as possible to the original
   // (when packaging we set this to 'production')
   mode: "none",
@@ -103,8 +105,8 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
         test: /\.html$/i,
         loader: "html-loader",
         options: {
-          esModule: false,
-        },
+          esModule: false
+        }
       }
     ]
   }
