@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.1]
+
+No user-visible change. Mostly dependencies upgrades.
+
 ## [7.1.0] - 2023-04-13 - Two Worlds, One JSX 🌴
 
 ### Fixed
@@ -1749,7 +1753,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/7.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/7.1.1...HEAD
+[7.1.1]: https://github.com/nicoespeon/abracadabra/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/nicoespeon/abracadabra/compare/7.0.0...7.1.0
 [7.0.0]: https://github.com/nicoespeon/abracadabra/compare/6.19.0...7.0.0
 [6.19.0]: https://github.com/nicoespeon/abracadabra/compare/6.18.2...6.19.0
