@@ -1,7 +1,6 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { wrapInJsxFragment } from "./wrap-in-jsx-fragment";
 
 describe("Wrap In JSX Fragment", () => {
@@ -32,6 +31,17 @@ describe("Wrap In JSX Fragment", () => {
         description: "parenthesized, returned JSX",
         code: `return ([cursor]<div>Something witty goes here</div>);`,
         expected: `return (<><div>Something witty goes here</div></>);`
+      },
+      {
+        description: "nested return statment, cursor on nested",
+        code: `const arr = new Array(4).fill(0);
+               return <div>{arr.map(el => {
+                return <p[cursor]>{el}</p>
+               })}</div>;`,
+        expected: `const arr = new Array(4).fill(0);
+        return (<div>{arr.map(el => {
+         return <><p>{el}</p></>
+        })}</div>);`
       }
     ],
     async ({ code, expected }) => {
