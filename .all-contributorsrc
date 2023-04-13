@@ -532,6 +532,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "leodr",
+      "name": "Leo Driesch",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39763575?v=4",
+      "profile": "http://dribbble.com/leodriesch",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
