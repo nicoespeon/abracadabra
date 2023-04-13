@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-54-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-55-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -213,6 +213,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center" valign="top" width="14.28%"><a href="http://blog.hand-net.com"><img src="https://avatars.githubusercontent.com/u/184604?v=4?s=100" width="100px;" alt="Steve Beaugé"/><br /><sub><b>Steve Beaugé</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Astevebeauge" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/SamB"><img src="https://avatars.githubusercontent.com/u/13903?v=4?s=100" width="100px;" alt="Samuel Bronson"/><br /><sub><b>Samuel Bronson</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3ASamB" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/timonjurschitsch/"><img src="https://avatars.githubusercontent.com/u/103483059?v=4?s=100" width="100px;" alt="Timon Jurschitsch"/><br /><sub><b>Timon Jurschitsch</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=DerTimonius" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://dribbble.com/leodriesch"><img src="https://avatars.githubusercontent.com/u/39763575?v=4?s=100" width="100px;" alt="Leo Driesch"/><br /><sub><b>Leo Driesch</b></sub></a><br /><a href="#ideas-leodr" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
