@@ -585,6 +585,11 @@
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.wrapInJsxFragment.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         }
       }
     },
@@ -1471,11 +1476,11 @@
           "when": "editorLangId == svelte"
         },
         {
-          "command": "abracadabra.wrapInJSXFragment",
+          "command": "abracadabra.wrapInJsxFragment",
           "when": "editorLangId == javascriptreact"
         },
         {
-          "command": "abracadabra.wrapInJSXFragment",
+          "command": "abracadabra.wrapInJsxFragment",
           "when": "editorLangId == typescriptreact"
         }
       ]
