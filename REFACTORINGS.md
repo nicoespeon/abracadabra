@@ -38,8 +38,6 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Merge If Statements](#merge-if-statements)
   1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
   1. [Lift Up Conditional](#lift-up-conditional)
-- Encapsulation:
-  1. [Extract Class](#extract-class)
 - Moving Features:
   1. [Move to Existing File](#move-to-existing-file)
   1. [Remove Dead Code](#remove-dead-code)
@@ -347,20 +345,6 @@ Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting 
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-## Encapsulation
-
-### Extract Class
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-Often, classes grow too big and do too many things. You want to split them by extracting some behavior in a new class.
-
-This is where Abracadabra comes in and automate most of the grunt work for you. It can extract the properties and function you want in a keystrokes! It will take care of creating the new class while preserving existing behavior—it's a refactoring after all.
-
-![][demo-extract-class]
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
 ## Moving Features
 
 ### Move to Existing File
@@ -652,7 +636,6 @@ Handy when you need to add another JSX element next to the one you have, but kee
 [demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-pure-component.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-ternary.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-interface.gif?raw=true
-[demo-extract-class]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-class.gif?raw=true
 [demo-extract-use-callback]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-use-callback.gif?raw=true
 [demo-toggle-braces]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-braces.gif?raw=true
 [demo-wrap-in-jsx-fragment]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/wrap-in-jsx-fragment.gif?raw=true

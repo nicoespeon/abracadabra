@@ -20,10 +20,6 @@ import convertToTemplateLiteral from "./refactorings/convert-to-template-literal
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
 import destructureObject from "./refactorings/destructure-object";
 import extract from "./refactorings/extract";
-// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
-import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
-import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
-import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -173,21 +169,6 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }
   );
-
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand(
-      ABRACADABRA_EXTRACT_CLASS_COMMAND,
-      ExtractClassCommand.execute
-    )
-  );
-
-  refactorings.allLanguages.languages.forEach((language) => {
-    vscode.languages.registerCodeActionsProvider(
-      language,
-      new ExtractClassActionProvider(),
-      { providedCodeActionKinds: [vscode.CodeActionKind.RefactorExtract] }
-    );
-  });
 
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (!editor) return;

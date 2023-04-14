@@ -211,11 +211,6 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.extractClass",
-        "title": "Extract Class",
-        "category": "Abracadabra"
-      },
-      {
         "command": "abracadabra.extractGenericType",
         "title": "Extract Generic Type",
         "category": "Abracadabra"
@@ -482,11 +477,6 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.destructureObject.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.extractClass.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -929,30 +919,6 @@
         },
         {
           "command": "abracadabra.extract",
-          "when": "editorLangId == svelte"
-        },
-        {
-          "command": "abracadabra.extractClass",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.extractClass",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.extractClass",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.extractClass",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.extractClass",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.extractClass",
           "when": "editorLangId == svelte"
         },
         {
