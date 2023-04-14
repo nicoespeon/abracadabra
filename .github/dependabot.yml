@@ -1,51 +1,42 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: monthly
-    time: "10:00"
-  open-pull-requests-limit: 10
-  reviewers:
-  - nicoespeon
-  ignore:
-  - dependency-name: jscodeshift
-    versions:
-    - "> 0.6.4, < 1"
-  - dependency-name: react-codemod
-    versions:
-    - "> 5.1.1, < 6"
-  - dependency-name: "@types/babel__traverse"
-    versions:
-    - "> 7.0.9, < 7.1"
-  - dependency-name: "@types/jscodeshift"
-    versions:
-    - "> 0.6.3, < 1"
-  - dependency-name: "@types/node"
-    versions:
-    - ">= 14.a, < 15"
-  - dependency-name: webpack-cli
-    versions:
-    - 4.5.0
-  - dependency-name: "@babel/types"
-    versions:
-    - 7.12.12
-    - 7.13.0
-  - dependency-name: "@types/vscode"
-    versions:
-    - 1.53.0
-  - dependency-name: husky
-    versions:
-    - 5.1.2
-  - dependency-name: "@types/chai"
-    versions:
-    - 4.2.15
-  - dependency-name: "@types/mocha"
-    versions:
-    - 8.2.1
-  - dependency-name: mocha
-    versions:
-    - 8.3.0
-  - dependency-name: "@types/babel__traverse"
-    versions:
-    - 7.11.0
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+      time: "10:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - nicoespeon
+    ignore:
+      - dependency-name: "@types/babel__traverse"
+        versions:
+          - "> 7.0.9, < 7.1"
+      - dependency-name: "@types/node"
+        versions:
+          - ">= 14.a, < 15"
+      - dependency-name: webpack-cli
+        versions:
+          - 4.5.0
+      - dependency-name: "@babel/types"
+        versions:
+          - 7.12.12
+          - 7.13.0
+      - dependency-name: "@types/vscode"
+        versions:
+          - 1.53.0
+      - dependency-name: husky
+        versions:
+          - 5.1.2
+      - dependency-name: "@types/chai"
+        versions:
+          - 4.2.15
+      - dependency-name: "@types/mocha"
+        versions:
+          - 8.2.1
+      - dependency-name: mocha
+        versions:
+          - 8.3.0
+      - dependency-name: "@types/babel__traverse"
+        versions:
+          - 7.11.0
