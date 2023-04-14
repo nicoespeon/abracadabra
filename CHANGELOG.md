@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0] - 2023-04-13 - Let It Go 🏔️
+
+### Breaking Changes
+
+The following refactorings were removed from Abracadabra (until re-implemented):
+
+- Extract Class
+- Convert to Pure Component (React)
+
+Why? There are causing trouble that aren't worth it ([see detailed ADR][adr-0013]).
+
 ## [7.1.1]
 
 No user-visible change. Mostly dependencies upgrades.
@@ -1753,7 +1764,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/7.1.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.0.0...HEAD
+[8.0.0]: https://github.com/nicoespeon/abracadabra/compare/7.1.1...8.0.0
 [7.1.1]: https://github.com/nicoespeon/abracadabra/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/nicoespeon/abracadabra/compare/7.0.0...7.1.0
 [7.0.0]: https://github.com/nicoespeon/abracadabra/compare/6.19.0...7.0.0
@@ -1860,3 +1872,4 @@ function doSomething(someData) {
 
 [guard-clause]: https://deviq.com/guard-clause/
 [adr-0008]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/0008-don-t-propose-quick-fix-for-react-convert-to-pure-component.md
+[adr-0013]: https://github.com/nicoespeon/abracadabra/blob/main/docs/adr/0013-remove-extract-class-and-convert-to-pure-component-refactorings.md
