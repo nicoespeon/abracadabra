@@ -276,11 +276,6 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.react.convertToPureComponent",
-        "title": "(React) Convert to Pure Component",
-        "category": "Abracadabra"
-      },
-      {
         "command": "abracadabra.removeDeadCode",
         "title": "Remove Dead Code",
         "category": "Abracadabra"
@@ -1207,22 +1202,6 @@
         },
         {
           "command": "abracadabra.invertBooleanLogic",
-          "when": "editorLangId == svelte"
-        },
-        {
-          "command": "abracadabra.react.convertToPureComponent",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.react.convertToPureComponent",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.react.convertToPureComponent",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.react.convertToPureComponent",
           "when": "editorLangId == svelte"
         },
         {

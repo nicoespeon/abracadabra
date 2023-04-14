@@ -59,7 +59,6 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Extract Generic Type](#extract-generic-type)
   1. [Extract Interface](#extract-interface)
 - Specific to React:
-  1. [Convert to Pure Component](#convert-to-pure-component)
   1. [Extract useCallback()](#extract-usecallback)
   1. [Wrap in JSX Fragment](#wrap-in-jsx-fragment)
 
@@ -544,18 +543,6 @@ This is very useful when you need to invert a dependency: create an interface fr
 
 ## Specific to React
 
-### Convert to Pure Component
-
-> **Not** available as a Quick Fix, use the [Command Palette][command-palette] to run this one
-
-This one is specific to React and comes from [react codemod][react-codemod].
-
-It converts ES6 classes that only have a `render()` method, only have safe properties (statics and props), and do not have refs to Functional Components.
-
-![][demo-convert-to-pure-component]
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
 ### Extract useCallback()
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -587,7 +574,6 @@ Handy when you need to add another JSX element next to the one you have, but kee
 [vscode-settings]: https://code.visualstudio.com/docs/getstarted/settings
 [replace-nested-conditional-with-guard-clauses]: https://refactoring.guru/replace-nested-conditional-with-guard-clauses
 [decompose-conditional]: https://refactoring.guru/decompose-conditional
-[react-codemod]: https://github.com/reactjs/react-codemod
 
 <!-- Demo images -->
 
@@ -633,7 +619,6 @@ Handy when you need to add another JSX element next to the one you have, but kee
 [demo-create-factory-for-constructor]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/create-factory-for-constructor.gif?raw=true
 [demo-move-to-existing-file]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-to-existing-file.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-dead-code.gif?raw=true
-[demo-convert-to-pure-component]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-pure-component.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-ternary.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-interface.gif?raw=true
 [demo-extract-use-callback]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-use-callback.gif?raw=true
