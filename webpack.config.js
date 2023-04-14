@@ -5,6 +5,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+// const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 /** @returns {import('webpack').Configuration} */
 const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
@@ -85,8 +86,11 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
         new webpack.ProvidePlugin({
           Buffer: ["buffer", "Buffer"]
         })
+        //new BundleAnalyzerPlugin()
       ]
-    : [],
+    : [
+        //new BundleAnalyzerPlugin()
+      ],
 
   module: {
     rules: [

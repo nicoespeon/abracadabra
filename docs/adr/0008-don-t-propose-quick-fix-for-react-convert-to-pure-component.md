@@ -6,6 +6,8 @@ Date: 2020-03-27
 
 Accepted
 
+Amended by [13. Remove Extract Class and Convert to Pure Component refactorings](0013-remove-extract-class-and-convert-to-pure-component-refactorings.md)
+
 ## Context
 
 After analysing performances of the extension on a big JavaScript file, [we noticed][comment] the "Convert to Pure Component" Quick Fix took most of the time:

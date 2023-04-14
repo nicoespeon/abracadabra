@@ -20,10 +20,6 @@ import convertToTemplateLiteral from "./refactorings/convert-to-template-literal
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
 import destructureObject from "./refactorings/destructure-object";
 import extract from "./refactorings/extract";
-// REFACTOR: this refactoring wasn't implemented following the usual pattern. See https://github.com/nicoespeon/abracadabra/issues/180
-import { ExtractClassActionProvider } from "./refactorings/extract-class/extract-class-action-provider";
-import { ExtractClassCommand } from "./refactorings/extract-class/extract-class-command";
-import { ABRACADABRA_EXTRACT_CLASS_COMMAND } from "./refactorings/extract-class/EXTRACT_CLASS_COMMAND";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -37,7 +33,6 @@ import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
 import moveToExistingFile from "./refactorings/move-to-existing-file";
-import reactConvertToPureComponent from "./refactorings/react/convert-to-pure-component";
 import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
@@ -59,7 +54,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
-    withoutActionProvider: [reactConvertToPureComponent],
+    withoutActionProvider: [],
     withActionProvider: [reactExtractUseCallback, wrapInJsxFrament]
   },
   allButVueAndSvelte: {
@@ -173,21 +168,6 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }
   );
-
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand(
-      ABRACADABRA_EXTRACT_CLASS_COMMAND,
-      ExtractClassCommand.execute
-    )
-  );
-
-  refactorings.allLanguages.languages.forEach((language) => {
-    vscode.languages.registerCodeActionsProvider(
-      language,
-      new ExtractClassActionProvider(),
-      { providedCodeActionKinds: [vscode.CodeActionKind.RefactorExtract] }
-    );
-  });
 
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (!editor) return;
