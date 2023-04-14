@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.1]
+
+No user-visible change. Mostly dependencies upgrades.
+
 ## [8.0.0] - 2023-04-13 - Let It Go 🏔️
 
 ### Breaking Changes
@@ -1764,7 +1768,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.0.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.0.1...HEAD
+[8.0.1]: https://github.com/nicoespeon/abracadabra/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/nicoespeon/abracadabra/compare/7.1.1...8.0.0
 [7.1.1]: https://github.com/nicoespeon/abracadabra/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/nicoespeon/abracadabra/compare/7.0.0...7.1.0
