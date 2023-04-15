@@ -1,4 +1,5 @@
 export enum ErrorReason {
+  DidNotRemoveJsxFragment,
   CouldNotWrapInJsxFragment,
   DidNotFindOperatorToFlip,
   CantChangeSignature,
@@ -62,6 +63,9 @@ export enum ErrorReason {
 
 export function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotRemoveJsxFragment:
+      return didNotFind("a jsx fragment that could safely be removed");
+
     case ErrorReason.CouldNotWrapInJsxFragment:
       return didNotFind("something to wrap in a JSX fragment");
 

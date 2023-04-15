@@ -279,6 +279,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.removeJsxFragment",
+        "title": "Remove JSX Fragment",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.removeRedundantElse",
         "title": "Remove Redundant Else",
         "category": "Abracadabra"
@@ -530,6 +535,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.removeDeadCode.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.removeJsxFragment.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1225,6 +1235,14 @@
         {
           "command": "abracadabra.removeDeadCode",
           "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.removeJsxFragment",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.removeJsxFragment",
+          "when": "editorLangId == typescriptreact"
         },
         {
           "command": "abracadabra.removeRedundantElse",

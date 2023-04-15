@@ -35,6 +35,7 @@ import moveStatementUp from "./refactorings/move-statement-up";
 import moveToExistingFile from "./refactorings/move-to-existing-file";
 import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
+import removeJsxFragment from "./refactorings/remove-jsx-fragment";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
 import renameSymbol from "./refactorings/rename-symbol";
 import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assignment";
@@ -54,7 +55,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
-    withoutActionProvider: [],
+    withoutActionProvider: [removeJsxFragment],
     withActionProvider: [reactExtractUseCallback, wrapInJsxFrament]
   },
   allButVueAndSvelte: {
