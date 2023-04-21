@@ -3,9 +3,9 @@ import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
 import { removeJsxFragment } from "./remove-jsx-fragment";
 
-describe("Remove Jsx Fragment", () => {
+describe("Remove JSX Fragment", () => {
   testEach<{ code: Code; expected: Code }>(
-    "should remove jsx fragment",
+    "should remove JSX fragment",
     [
       {
         description: "a single div inside JSX",
