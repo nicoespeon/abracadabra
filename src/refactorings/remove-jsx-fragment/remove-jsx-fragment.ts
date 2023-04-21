@@ -17,19 +17,23 @@ export async function removeJsxFragment(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path, node) => {
-      t.replaceWithPreservingComments(path, node);
+    createVisitor(selection, (path, child) => {
+      t.replaceWithPreservingComments(path, child);
     })
   );
 }
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath, node: t.Node) => void
+  onMatch: (path: t.NodePath, child: t.Node) => void
 ): t.Visitor {
   return {
     JSXFragment(path) {
       if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
 
       const children = path.node.children;
       const jsxElements = children.filter(
@@ -37,8 +41,31 @@ export function createVisitor(
       );
       if (jsxElements.length !== 1) return;
 
-      path.replaceWith(jsxElements[0]);
-      onMatch(path, path.node);
+      onMatch(path, jsxElements[0]);
+      path.stop();
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    JSXElement(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const children = childPath.node.children;
+      const jsxElements = children.filter(
+        (child) => child.type === "JSXElement"
+      );
+      if (jsxElements.length !== 1) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
