@@ -14,9 +14,18 @@ describe("Remove JSX Fragment", () => {
       },
       {
         description: "a div with multiple children inside JSX",
-        code: "return <><div>[cursor]<h2>I'm a heading</h2><p>I'm just a paragraph</p></div></>;",
-        expected:
-          "return <div><h2>I'm a heading</h2><p>I'm just a paragraph</p></div>;"
+        code: `return (<>
+  <div>
+    <h2>[cursor]I'm a heading</h2>
+    <p>I'm just a paragraph</p>
+  </div>
+</>);`,
+        expected: `return (
+  <div>
+    <h2>I'm a heading</h2>
+    <p>I'm just a paragraph</p>
+  </div>
+);`
       }
     ],
     async ({ code, expected }) => {
