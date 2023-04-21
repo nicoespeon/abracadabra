@@ -28,20 +28,26 @@ describe("Remove Jsx Fragment", () => {
     }
   );
 
+  it("should not remove JSX Fragment if it has 2+ children", async () => {
+    const editor = new InMemoryEditor(
+      `return <><div>Something</div>[cursor]<div>Something else</div></>`
+    );
+    const originalCode = editor.code;
+
+    await removeJsxFragment(editor);
+
+    expect(editor.code).toBe(originalCode);
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
-    const failingCode = [
-      `// This is a comment, can't be refactored`,
-      "return <><div>Something</div>[cursor]<div>Something else</div></>"
-    ];
-    for (const code of failingCode) {
-      const editor = new InMemoryEditor(code);
-      jest.spyOn(editor, "showError");
+    const code = `// This is a comment, can't be refactored`;
+    const editor = new InMemoryEditor(code);
+    jest.spyOn(editor, "showError");
 
-      await removeJsxFragment(editor);
+    await removeJsxFragment(editor);
 
-      expect(editor.showError).toBeCalledWith(
-        ErrorReason.DidNotRemoveJsxFragment
-      );
-    }
+    expect(editor.showError).toBeCalledWith(
+      ErrorReason.DidNotRemoveJsxFragment
+    );
   });
 });
