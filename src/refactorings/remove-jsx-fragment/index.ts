@@ -1,11 +1,16 @@
-import { removeJsxFragment } from "./remove-jsx-fragment";
+import { createVisitor, removeJsxFragment } from "./remove-jsx-fragment";
 
-import { Refactoring } from "../../types";
+import { RefactoringWithActionProvider } from "../../types";
 
-const config: Refactoring = {
+const config: RefactoringWithActionProvider = {
   command: {
     key: "removeJsxFragment",
-    operation: removeJsxFragment
+    operation: removeJsxFragment,
+    title: "Remove JSX Fragment"
+  },
+  actionProvider: {
+    message: "Remove JSX Fragment",
+    createVisitor
   }
 };
 
