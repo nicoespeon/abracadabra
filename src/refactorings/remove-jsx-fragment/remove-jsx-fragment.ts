@@ -35,10 +35,8 @@ export function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const children = path.node.children;
-      const jsxElements = children.filter(
-        (child) => child.type === "JSXElement"
-      );
+      const { children } = path.node;
+      const jsxElements = children.filter((child) => t.isJSXElement(child));
       if (jsxElements.length !== 1) return;
 
       onMatch(path, jsxElements[0]);
@@ -57,10 +55,8 @@ function hasChildWhichMatchesSelection(
     JSXElement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
 
-      const children = childPath.node.children;
-      const jsxElements = children.filter(
-        (child) => child.type === "JSXElement"
-      );
+      const { children } = childPath.node;
+      const jsxElements = children.filter((child) => t.isJSXElement(child));
       if (jsxElements.length !== 1) return;
 
       result = true;
