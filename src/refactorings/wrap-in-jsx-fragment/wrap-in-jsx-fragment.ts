@@ -17,15 +17,22 @@ export async function wrapInJsxFragment(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path, node) => {
-      t.replaceWithPreservingComments(path, node);
+    createVisitor(selection, (path) => {
+      const extra = path.node.extra;
+      const fragment = t.jsxFragment(
+        t.jsxOpeningFragment(),
+        t.jsxClosingFragment(),
+        [{ ...path.node, extra: { parenthesized: false } }]
+      );
+
+      t.replaceWithPreservingComments(path, { ...fragment, extra });
     })
   );
 }
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath, node: t.Node) => void
+  onMatch: (path: t.NodePath<t.JSXElement>) => void
 ): t.Visitor {
   return {
     JSXElement(path) {
@@ -35,14 +42,7 @@ export function createVisitor(
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      const extra = path.node.extra;
-      const fragment = t.jsxFragment(
-        t.jsxOpeningFragment(),
-        t.jsxClosingFragment(),
-        [{ ...path.node, extra: { parenthesized: false } }]
-      );
-      path.replaceWith(fragment);
-      onMatch(path, { ...path.node, extra });
+      onMatch(path);
       path.stop();
     }
   };
