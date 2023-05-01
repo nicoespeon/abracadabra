@@ -108,7 +108,7 @@
     "vsce": "2.15.0",
     "webpack": "5.79.0",
     "webpack-bundle-analyzer": "4.8.0",
-    "webpack-cli": "5.0.1"
+    "webpack-cli": "5.0.2"
   },
   "dependencies": {
     "@babel/parser": "7.21.4",
