@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Change Signature" was not working on multi-line calls. Thanks to @pomeh, this has been fixed!
+
 ### Added
 
 - **[New Refactoring]** "Remove JSX Fragment" thanks to @DerTimonius. This allows you to switch back and forth with "Wrap in JSX Fragment".
