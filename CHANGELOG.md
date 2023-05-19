@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Remove JSX Fragment" thanks to @DerTimonius. This allows you to switch back and forth with "Wrap in JSX Fragment".
+
 ## [8.0.1]
 
 No user-visible change. Mostly dependencies upgrades.

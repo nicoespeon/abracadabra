@@ -2,12 +2,12 @@ import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 
-export async function wrapInJsxFragment(editor: Editor) {
+export async function removeJsxFragment(editor: Editor) {
   const { code, selection } = editor;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.CouldNotWrapInJsxFragment);
+    editor.showError(ErrorReason.DidNotRemoveJsxFragment);
     return;
   }
 
@@ -17,32 +17,29 @@ export async function wrapInJsxFragment(editor: Editor) {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path) => {
-      const extra = path.node.extra;
-      const fragment = t.jsxFragment(
-        t.jsxOpeningFragment(),
-        t.jsxClosingFragment(),
-        [{ ...path.node, extra: { parenthesized: false } }]
-      );
-
-      t.replaceWithPreservingComments(path, { ...fragment, extra });
+    createVisitor(selection, (path, child) => {
+      t.replaceWithPreservingComments(path, child);
     })
   );
 }
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath<t.JSXElement>) => void
+  onMatch: (path: t.NodePath, child: t.Node) => void
 ): t.Visitor {
   return {
-    JSXElement(path) {
+    JSXFragment(path) {
       if (!selection.isInsidePath(path)) return;
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
-      onMatch(path);
+      const { children } = path.node;
+      const jsxElements = children.filter((child) => t.isJSXElement(child));
+      if (jsxElements.length !== 1) return;
+
+      onMatch(path, jsxElements[0]);
       path.stop();
     }
   };
@@ -57,6 +54,10 @@ function hasChildWhichMatchesSelection(
   path.traverse({
     JSXElement(childPath) {
       if (!selection.isInsidePath(childPath)) return;
+
+      const { children } = childPath.node;
+      const jsxElements = children.filter((child) => t.isJSXElement(child));
+      if (jsxElements.length !== 1) return;
 
       result = true;
     }
