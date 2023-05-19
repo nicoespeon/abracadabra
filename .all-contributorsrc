@@ -541,6 +541,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "pomeh",
+      "name": "Romain Guerin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/285534?v=4",
+      "profile": "http://about.me/romainguerin",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
