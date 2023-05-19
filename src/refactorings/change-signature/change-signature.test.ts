@@ -52,7 +52,8 @@ describe("Change Signature", () => {
             return a + b;
           }
 
-          add(2, 1);`
+          add(2,
+            1);`
       },
       {
         description:
