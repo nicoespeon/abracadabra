@@ -264,7 +264,7 @@ function createVisitorForReferences(
       const end = Position.fromAST(path.node.loc.end).putAtStartOfLine();
       const nodeSelection = Selection.fromPositions(start, end);
 
-      if (!selection.isSameLineThan(nodeSelection)) return;
+      if (!selection.start.isSameLineThan(nodeSelection.start)) return;
 
       onMatch(path);
     },
@@ -314,7 +314,7 @@ function hasChildWhichMatchesSelection(
       const end = Position.fromAST(childPath.node.loc.end).putAtStartOfLine();
       const nodeSelection = Selection.fromPositions(start, end);
 
-      if (!selection.isSameLineThan(nodeSelection)) return;
+      if (!selection.start.isSameLineThan(nodeSelection.start)) return;
 
       result = true;
       childPath.stop();

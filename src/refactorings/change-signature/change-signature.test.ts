@@ -41,6 +41,21 @@ describe("Change Signature", () => {
           add(2, 1);`
       },
       {
+        description: "when function call contains new lines",
+        code: `function [cursor]add(a, b) {
+            return a + b;
+          }
+
+          add(1,
+            2);`,
+        expected: `function add(b, a) {
+            return a + b;
+          }
+
+          add(2,
+            1);`
+      },
+      {
         description:
           "only wanted function keeping contract of the rest of functions",
         code: `function [cursor]add(a, b) {
