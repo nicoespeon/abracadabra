@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.0] - 2023-05-19 - You’ll Be in My Heart 🌳
+
 ### Fixed
 
 - "Change Signature" was not working on multi-line calls. Thanks to @pomeh, this has been fixed!
@@ -1776,7 +1778,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.0.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.1.0...HEAD
+[8.1.0]: https://github.com/nicoespeon/abracadabra/compare/8.0.1...8.1.0
 [8.0.1]: https://github.com/nicoespeon/abracadabra/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/nicoespeon/abracadabra/compare/7.1.1...8.0.0
 [7.1.1]: https://github.com/nicoespeon/abracadabra/compare/7.1.0...7.1.1
