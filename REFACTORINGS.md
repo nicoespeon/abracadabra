@@ -61,6 +61,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
 - Specific to React:
   1. [Extract useCallback()](#extract-usecallback)
   1. [Wrap in JSX Fragment](#wrap-in-jsx-fragment)
+  1. [Remove JSX Fragment](#remove-jsx-fragment)
 
 ## The Essentials
 
@@ -565,6 +566,18 @@ Handy when you need to add another JSX element next to the one you have, but kee
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Remove JSX Fragment
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Reverse operation of "Wrap in JSX Fragment". Useful when something is unnecessarily nested inside a fragment.
+
+It won't remove a fragment that's required though: only the ones that have a single child node.
+
+![][demo-remove-jsx-fragment]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 <!-- Links -->
 
 [command-palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
@@ -624,6 +637,7 @@ Handy when you need to add another JSX element next to the one you have, but kee
 [demo-extract-use-callback]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-use-callback.gif?raw=true
 [demo-toggle-braces]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-braces.gif?raw=true
 [demo-wrap-in-jsx-fragment]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/wrap-in-jsx-fragment.gif?raw=true
+[demo-remove-jsx-fragment]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-jsx-fragment.gif?raw=true
 
 <!-- Logo -->
 
