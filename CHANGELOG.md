@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.1]
+
 ### Fixed
 
 - Fix a scenario where extracting a variable could mess up with the code. Eg.
@@ -1808,7 +1810,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.1.1...HEAD
+[8.1.1]: https://github.com/nicoespeon/abracadabra/compare/8.1.0...8.1.1
 [8.1.0]: https://github.com/nicoespeon/abracadabra/compare/8.0.1...8.1.0
 [8.0.1]: https://github.com/nicoespeon/abracadabra/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/nicoespeon/abracadabra/compare/7.1.1...8.0.0
