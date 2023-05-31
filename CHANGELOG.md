@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix a scenario where extracting a variable could mess up with the code. Eg.
+
+```js
+function updateQuality() {
+  for (var i = 0; i < items.length; i++) {
+    // Extracting `items[i]` used to produce invalid code, not anymore!
+    if (items[i].name != "SULFURAS") {
+      items[i].sellIn = items[i].sellIn - 1;
+    }
+  }
+
+  return items;
+}
+```
+
 ## [8.1.0] - 2023-05-19 - You’ll Be in My Heart 🌳
 
 ### Fixed

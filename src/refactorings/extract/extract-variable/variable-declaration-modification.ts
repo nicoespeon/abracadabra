@@ -59,9 +59,7 @@ export class DeclarationOnCommonAncestor extends VariableDeclarationModification
 
     return latestDeclarationSelection
       ? Selection.cursorAtPosition(
-          latestDeclarationSelection.end
-            .putAtNextLine()
-            .putAtSameCharacter(latestDeclarationSelection.start)
+          latestDeclarationSelection.end.putAtNextLine().putAtStartOfLine()
         )
       : Selection.cursorAtPosition(
           Position.fromAST(commonAncestor.node.loc.start)
