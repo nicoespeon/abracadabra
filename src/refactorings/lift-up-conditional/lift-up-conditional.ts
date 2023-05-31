@@ -1,6 +1,6 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 
 export async function liftUpConditional(editor: Editor) {
   const { code, selection } = editor;
@@ -34,9 +34,9 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
       const newParentIfAlternate = node.alternate
         ? t.blockStatement([buildNestedIfStatementFor(node.alternate)])
-        : t.hasSiblingStatement(path)
+        : t.hasSiblingStatement(path) || parentAlternate
         ? t.blockStatement([buildNestedIfStatementFor(t.emptyStatement())])
-        : parentIf.alternate;
+        : null;
 
       parentIfPath.replaceWith(
         t.ifStatement(node.test, parentIf.consequent, newParentIfAlternate)

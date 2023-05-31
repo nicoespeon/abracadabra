@@ -24,6 +24,19 @@ function updateQuality() {
 }
 ```
 
+- Fix "Lift Up Conditional" when the parent if has an alternate node. The original specs were incorrect and have been fixed.
+
+```js
+// Lifting up `if (isCorrect)` used to produce invalid code, not anymore!
+if (isValid) {
+  if (isCorrect) {
+    doSomething();
+  }
+} else {
+  doAnotherThing();
+}
+```
+
 ## [8.1.0] - 2023-05-19 - You’ll Be in My Heart 🌳
 
 ### Fixed
