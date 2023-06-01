@@ -86,7 +86,7 @@
     "buffer": "6.0.3",
     "chai": "4.3.7",
     "eslint-config-prettier": "8.7.0",
-    "glob": "8.1.0",
+    "glob": "10.2.6",
     "html-loader": "4.2.0",
     "husky": "8.0.3",
     "hygen": "6.2.11",
