@@ -5873,16 +5873,17 @@ os-tmpdir@~1.0.2:
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
   integrity sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=
 
-ovsx@0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.8.0.tgz#e41dffaa8b6230a684e041c1cfe00d5f5b31344d"
-  integrity sha512-W1U7lgBIbhSB1DcqyGKeenKzmwWYY78SkWd+BUKKyLyqN6w39Uekdr0PKAM7dyBGb0JLtLE7d86A1jJVn8bEng==
+ovsx@0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.8.1.tgz#6510e276130d5ac1dc50642fd19a521b826fbc10"
+  integrity sha512-smfdxuSScUwzEsNgxdEWTmWVYaRmb2Xa1qF/LadMtowq/gg01+zNxDGUAlqALin82RBj++IF0O+qrzrC10O7ww==
   dependencies:
     "@vscode/vsce" "^2.15.0"
     commander "^6.1.0"
     follow-redirects "^1.14.6"
     is-ci "^2.0.0"
     leven "^3.1.0"
+    semver "^5.1.0"
     tmp "^0.2.1"
 
 p-limit@^2.2.0:
