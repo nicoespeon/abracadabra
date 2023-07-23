@@ -269,6 +269,35 @@ doSomethingElse();`,
 } else {
   console.log('true');
 }`
+      },
+      {
+        description: "don't mess up return statements when not using ';'",
+        code: `const obj = {
+  m1() {
+    const result = Math.random()
+    return result
+  },
+  m2() {
+    if (Math.random() < 0.5) {[cursor]
+      // 1
+    } else {
+      // 2
+    }
+  },
+}`,
+        expected: `const obj = {
+  m1() {
+    const result = Math.random()
+    return result
+  },
+  m2() {
+    if (Math.random() >= 0.5) {
+      // 2
+    } else {
+      // 1
+    }
+  },
+}`
       }
     ],
     async ({ code, expected }) => {

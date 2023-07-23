@@ -1,7 +1,7 @@
+import { allButLast, last } from "../../array";
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
-import { last, allButLast } from "../../array";
 
 import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
@@ -22,7 +22,7 @@ export async function flipIfElse(editor: Editor) {
       .replace(/\)\n\s*{} else {/, ") {} else {")
       // Created guard clause puts the return on the next line
       // Make it one-line so it's easier to read
-      .replace(/\)\n\s*return/, ") return")
+      .replace(/(if\s+\(.*\))\n\s*return/, "$1 return")
   );
 }
 
