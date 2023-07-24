@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.2]
+
 ### Fixed
 
 - Flip If/Else refactoring would mess up code if you were styling code without semicolons. Thanks to @victor-homyakov for reporting!
@@ -1814,7 +1816,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.1.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.1.2...HEAD
+[8.1.2]: https://github.com/nicoespeon/abracadabra/compare/8.1.1...8.1.2
 [8.1.1]: https://github.com/nicoespeon/abracadabra/compare/8.1.0...8.1.1
 [8.1.0]: https://github.com/nicoespeon/abracadabra/compare/8.0.1...8.1.0
 [8.0.1]: https://github.com/nicoespeon/abracadabra/compare/8.0.0...8.0.1
