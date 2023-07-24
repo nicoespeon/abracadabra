@@ -550,11 +550,21 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "victor-homyakov",
+      "name": "Victor Homyakov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/121449?v=4",
+      "profile": "https://github.com/victor-homyakov",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "contributorsSortAlphabetically": false,
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
   "types": {},
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs"
 }
