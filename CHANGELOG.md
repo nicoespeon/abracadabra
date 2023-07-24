@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Flip If/Else refactoring would mess up code if you were styling code without semicolons. Thanks to @victor-homyakov for reporting!
+
 ## [8.1.1]
 
 ### Fixed
