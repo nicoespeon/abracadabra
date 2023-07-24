@@ -1,8 +1,8 @@
-import * as path from "path";
+import { glob } from "glob";
 import Mocha from "mocha";
-import glob from "glob";
+import * as path from "path";
 
-export function run(): Promise<void> {
+export async function run(): Promise<void> {
   const mocha = new Mocha({
     ui: "tdd",
     color: true,
@@ -12,25 +12,13 @@ export function run(): Promise<void> {
   // The folder containing the source code where tests are located
   const testsRoot = path.resolve(__dirname, "..");
 
-  return new Promise((resolve, reject) => {
-    glob("**/**.contract.test.js", { cwd: testsRoot }, (err, files) => {
-      if (err) {
-        return reject(err);
-      }
+  const files = await glob("**/**.contract.test.js", { cwd: testsRoot });
 
-      files.forEach((file) => mocha.addFile(path.resolve(testsRoot, file)));
+  files.forEach((file) => mocha.addFile(path.resolve(testsRoot, file)));
 
-      try {
-        mocha.run((failures) => {
-          if (failures > 0) {
-            reject(new Error(`${failures} tests failed.`));
-          } else {
-            resolve();
-          }
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
+  mocha.run((failures) => {
+    if (failures > 0) {
+      throw new Error(`${failures} tests failed.`);
+    }
   });
 }
