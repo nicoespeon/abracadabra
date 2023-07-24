@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-56-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-57-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -215,6 +215,9 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/timonjurschitsch/"><img src="https://avatars.githubusercontent.com/u/103483059?v=4?s=100" width="100px;" alt="Timon Jurschitsch"/><br /><sub><b>Timon Jurschitsch</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=DerTimonius" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://dribbble.com/leodriesch"><img src="https://avatars.githubusercontent.com/u/39763575?v=4?s=100" width="100px;" alt="Leo Driesch"/><br /><sub><b>Leo Driesch</b></sub></a><br /><a href="#ideas-leodr" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://about.me/romainguerin"><img src="https://avatars.githubusercontent.com/u/285534?v=4?s=100" width="100px;" alt="Romain Guerin"/><br /><sub><b>Romain Guerin</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Apomeh" title="Bug reports">🐛</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/victor-homyakov"><img src="https://avatars.githubusercontent.com/u/121449?v=4?s=100" width="100px;" alt="Victor Homyakov"/><br /><sub><b>Victor Homyakov</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Avictor-homyakov" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
