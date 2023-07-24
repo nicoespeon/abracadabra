@@ -1,16 +1,16 @@
+import { minimatch } from "minimatch";
 import * as vscode from "vscode";
-import minimatch from "minimatch";
 
-import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
-import { Editor } from "./editor/editor";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
+import { Editor } from "./editor/editor";
+import { ConsoleLogger, TypeChecker } from "./type-checker";
+import { RefactoringWithActionProvider } from "./types";
 import {
   getIgnoredFolders,
   getIgnoredPatterns,
   shouldShowInQuickFix
 } from "./vscode-configuration";
-import { TypeChecker, ConsoleLogger } from "./type-checker";
 
 type Refactoring = RefactoringWithActionProvider;
 
