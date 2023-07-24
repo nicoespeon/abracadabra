@@ -1,6 +1,6 @@
+import { glob } from "glob";
 import { suite } from "mocha";
 import * as vscode from "vscode";
-import glob from "glob";
 
 import { createEditorContractTests } from "../editor-contract-test";
 import { RelativePath } from "../path";
@@ -17,20 +17,11 @@ class TestableVSCodeEditor extends VSCodeEditor {
    * using glob() instead to retrieve files from the testing workspace.
    */
   protected async findFileUris(): Promise<vscode.Uri[]> {
-    return new Promise((resolve, reject) => {
-      glob(
-        "**/*",
-        { cwd: this.workspaceUri.path, nodir: true },
-        (err, files) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(files.map((file) => this.fileUriAt(new RelativePath(file))));
-        }
-      );
+    const files = await glob("**/*", {
+      cwd: this.workspaceUri.path,
+      nodir: true
     });
+    return files.map((file) => this.fileUriAt(new RelativePath(file)));
   }
 }
 
