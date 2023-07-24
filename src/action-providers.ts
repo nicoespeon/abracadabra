@@ -1,5 +1,5 @@
+import { minimatch } from "minimatch";
 import * as vscode from "vscode";
-import minimatch from "minimatch";
 
 import { RefactoringWithActionProvider } from "./types";
 import * as t from "./ast";
