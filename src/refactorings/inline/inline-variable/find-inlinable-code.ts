@@ -296,6 +296,29 @@ class InlinableIdentifier implements InlinableCode {
         const parentHasParenthesis =
           t.isCallExpression(parent.node) || t.isIfStatement(parent.node);
 
+        /**
+         * @example
+         * const x = a + b
+         * const result = x * 100
+         *
+         * // Expected
+         * const result = (a + b) * 100
+         */
+        const isBinaryInlinedInBinary =
+          t.isBinaryExpression(parent.node) && t.isBinaryExpression(self.init);
+
+        /**
+         * @example
+         * const style = isHead ? chalk.underline : chalk.red
+         * sha = style(sha)
+         *
+         * // Expected
+         * sha = (isHead ? chalk.underline : chalk.red)(sha)
+         */
+        const isConditionInlinedInCall =
+          t.isCallExpression(parent.node) &&
+          t.isConditionalExpression(self.init);
+
         self.identifiersToReplace.push({
           loc: node.loc,
           parent: parent.node,
@@ -303,7 +326,9 @@ class InlinableIdentifier implements InlinableCode {
           shouldWrapInParenthesis:
             t.isUnaryExpression(parent.node) ||
             (t.isTSAsExpression(self.init) && !parentHasParenthesis) ||
-            (t.isFunction(self.init) && Boolean(self.init.async)),
+            (t.isFunction(self.init) && Boolean(self.init.async)) ||
+            isBinaryInlinedInBinary ||
+            isConditionInlinedInCall,
           shorthandKey:
             t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&

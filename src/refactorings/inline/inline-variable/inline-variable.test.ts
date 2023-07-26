@@ -320,6 +320,30 @@ const bar = async () => {
     }
   );
 
+  describe("preserve parenthesis around inlined expression", () => {
+    it("should do this for binary expressions", async () => {
+      const code = `const someValue[cursor] = a + b
+const result = someValue * 100`;
+      const editor = new InMemoryEditor(code);
+
+      await inlineVariable(editor);
+
+      expect(editor.code).toBe(`const result = (a + b) * 100`);
+    });
+
+    it("should do this for binary expressions", async () => {
+      const code = `const style[cursor] = commit.head === true ? chalk.red.underline : chalk.red
+sha = style(sha)`;
+      const editor = new InMemoryEditor(code);
+
+      await inlineVariable(editor);
+
+      expect(editor.code).toBe(
+        `sha = (commit.head === true ? chalk.red.underline : chalk.red)(sha)`
+      );
+    });
+  });
+
   describe("multiple variables declaration", () => {
     it("should select the correct variable value (basic scenario)", async () => {
       const code = `const one = 1, [cursor]two = 2, three = 3;

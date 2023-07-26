@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inline Variable now adds parentheses around expressions that should have one. Thanks @xixixao for catching these. Eg.
+
+```js
+const x = a + b;
+const result = x * 100;
+
+// Used to wrongly result in
+const result = a + b * 100;
+
+// Will now result in
+const result = (a + b) * 100;
+```
+
 ## [8.1.3]
 
 No user-visible change. Mostly dependencies upgrades.
