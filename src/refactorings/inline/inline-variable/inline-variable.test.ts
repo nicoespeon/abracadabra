@@ -330,19 +330,102 @@ const result = someValue * 100`;
 
       expect(editor.code).toBe(`const result = (a + b) * 100`);
     });
+  });
 
-    it("should do this for binary expressions", async () => {
-      const code = `const style[cursor] = commit.head === true ? chalk.red.underline : chalk.red
-sha = style(sha)`;
+  testEach<{ code: Code; expected: Code }>(
+    "should preserve parenthesis around inlined variable",
+    [
+      {
+        description: "binary expression",
+        code: `const someValue[cursor] = a + b
+const result = someValue * 100`,
+        expected: `const result = (a + b) * 100`
+      },
+      {
+        description: "binary expression in function call",
+        code: `const style[cursor] = commit.head === true ? chalk.red.underline : chalk.red
+sha = style(sha)`,
+        expected: `sha = (commit.head === true ? chalk.red.underline : chalk.red)(sha)`
+      },
+      {
+        description: "arrow function",
+        code: `const test[cursor] = bar => bar()
+foo || test
+test ? a : b
+test()`,
+        expected: `foo || (bar => bar())
+(bar => bar()) ? a : b
+(bar => bar())()`
+      },
+      {
+        description: "object in arrow function body",
+        code: `const test[cursor] = {}
+const fn = () => test`,
+        expected: `const fn = () => ({})`
+      },
+      {
+        description: "assignment expression",
+        code: `const test[cursor] = (a = 2)
+1 + test
+a = a || test`,
+        expected: `1 + (a = 2)
+a = a || (a = 2)`
+      },
+      {
+        description: "assignment expression with increment",
+        code: `const test[cursor] = (a += 2)
+1 + test`,
+        expected: "1 + (a += 2)"
+      },
+      {
+        description: "awaited arrow function",
+        code: `const test[cursor] = () => {}
+async function fn() {
+  await test;
+}`,
+        expected: `async function fn() {
+  await (() => {});
+}`
+      },
+      {
+        description: "await expression",
+        code: `const test[cursor] = await 1
+test()`,
+        expected: `(await 1)()`
+      },
+      {
+        description: "class extension",
+        code: `const test[cursor] = B ? C : D
+class A extends test {}`,
+        expected: `class A extends (B ? C : D) {}`
+      },
+      {
+        description: "nullish coalescing",
+        code: `const test[cursor] = a ?? b
+test || c`,
+        expected: `(a ?? b) || c`
+      },
+      {
+        description: "void expression",
+        code: `const test[cursor] = void 0
+test?.()`,
+        expected: `(void 0)?.()`
+      },
+      {
+        description: "update expression",
+        code: `const test[cursor] = ++a
+new test`,
+        expected: `new (++a)`
+      }
+    ],
+    async ({ code, expected }) => {
       const editor = new InMemoryEditor(code);
 
       await inlineVariable(editor);
 
-      expect(editor.code).toBe(
-        `sha = (commit.head === true ? chalk.red.underline : chalk.red)(sha)`
-      );
-    });
-  });
+      expect(editor.code).toBe(expected);
+    }
+  );
 
   describe("multiple variables declaration", () => {
     it("should select the correct variable value (basic scenario)", async () => {

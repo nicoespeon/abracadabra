@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- @j4k0xb found even more occurrences of patterns that require parentheses when executing Inline Variable. These are now covered.
+
 ## [8.1.4]
 
 ### Fixed

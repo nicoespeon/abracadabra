@@ -304,8 +304,10 @@ class InlinableIdentifier implements InlinableCode {
          * // Expected
          * const result = (a + b) * 100
          */
-        const isBinaryInlinedInBinary =
-          t.isBinaryExpression(parent.node) && t.isBinaryExpression(self.init);
+        const isBinaryOrLogicalInlinedInBinaryOrLogical =
+          (t.isBinaryExpression(parent.node) ||
+            t.isLogicalExpression(parent.node)) &&
+          (t.isBinaryExpression(self.init) || t.isLogicalExpression(self.init));
 
         /**
          * @example
@@ -324,11 +326,19 @@ class InlinableIdentifier implements InlinableCode {
           parent: parent.node,
           grandParent: ancestors[ancestors.length - 2]?.node ?? null,
           shouldWrapInParenthesis:
+            t.isUnaryExpression(self.init) ||
             t.isUnaryExpression(parent.node) ||
             (t.isTSAsExpression(self.init) && !parentHasParenthesis) ||
             (t.isFunction(self.init) && Boolean(self.init.async)) ||
-            isBinaryInlinedInBinary ||
-            isConditionInlinedInCall,
+            isBinaryOrLogicalInlinedInBinaryOrLogical ||
+            isConditionInlinedInCall ||
+            t.isArrowFunctionExpression(self.init) ||
+            (t.isObjectExpression(self.init) &&
+              t.isArrowFunctionExpression(parent.node)) ||
+            t.isAssignmentExpression(self.init) ||
+            t.isAwaitExpression(self.init) ||
+            t.isClassDeclaration(parent.node) ||
+            t.isUpdateExpression(self.init),
           shorthandKey:
             t.isObjectProperty(parent.node) &&
             parent.node.shorthand &&
