@@ -73,7 +73,7 @@
     "@types/jest": "29.5.3",
     "@types/jsdom": "20.0.1",
     "@types/mocha": "10.0.1",
-    "@types/node": "18.15.11",
+    "@types/node": "20.8.0",
     "@types/path-browserify": "1.0.0",
     "@types/pluralize": "0.0.29",
     "@types/sinon": "10.0.13",
