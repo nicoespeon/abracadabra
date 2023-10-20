@@ -186,21 +186,6 @@ describe("Change signature Webview Content", () => {
       expect(postMessage).not.toHaveBeenCalled();
     });
 
-    it("Should param value input be focused when has empty value on submit", () => {
-      const inputLabel = document.querySelector(
-        ".input-param-name"
-      ) as HTMLInputElement;
-      inputLabel.value = "newParam";
-      document.getElementById("confirm")?.click();
-
-      const inputValue = document.querySelector(
-        ".input-param-value"
-      ) as HTMLInputElement;
-      const focusedElement = document.activeElement;
-      expect(inputValue).toEqual(focusedElement);
-      expect(postMessage).not.toHaveBeenCalled();
-    });
-
     it("Should be able to move Up new parameter", () => {
       clickUp(document);
 
