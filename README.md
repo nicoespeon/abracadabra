@@ -37,7 +37,7 @@ Refactor Legacy Code in a snap! 👌
 
 ## List of available refactorings
 
-We have 40+ automated refactorings such as Extract Variable, Extract Type, Flip If/Else, Move to Existing File, etc.
+We have 40+ automated refactorings such as Extract Variable, Extract Type, Flip If/Else, etc.
 
 **👉 [Here's the full catalog of refactorings available][all-refactorings]**
 

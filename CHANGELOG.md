@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking
+
+- Removed "Move to existing file" since VS Code now has a native "Move to file" that works like a charm ❤️
+
 ### Fixed
 
 - @j4k0xb found even more occurrences of patterns that require parentheses when executing Inline Variable. These are now covered.

@@ -264,11 +264,6 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.moveToExistingFile",
-        "title": "Move to Existing File",
-        "category": "Abracadabra"
-      },
-      {
         "command": "abracadabra.invertBooleanLogic",
         "title": "Invert Boolean Logic",
         "category": "Abracadabra"
@@ -520,11 +515,6 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.mergeWithPreviousIfStatement.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.moveToExistingFile.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1171,22 +1161,6 @@
         {
           "command": "abracadabra.moveStatementUp",
           "when": "editorLangId == svelte"
-        },
-        {
-          "command": "abracadabra.moveToExistingFile",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.moveToExistingFile",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.moveToExistingFile",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.moveToExistingFile",
-          "when": "editorLangId == typescriptreact"
         },
         {
           "command": "abracadabra.invertBooleanLogic",

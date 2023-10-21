@@ -39,7 +39,6 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
   1. [Lift Up Conditional](#lift-up-conditional)
 - Moving Features:
-  1. [Move to Existing File](#move-to-existing-file)
   1. [Remove Dead Code](#remove-dead-code)
 - Organizing data:
   1. [Split Declaration and Initialization](#split-declaration-and-initialization)
@@ -347,22 +346,6 @@ Hocus, pocus… This refactoring takes care of the gymnastic for you! Resulting 
 
 ## Moving Features
 
-### Move to Existing File
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-VS Code allows you to move things to new files. But how do you move things to _existing_ files?
-
-Well, now you can with Abracadabra ✨
-
-Trigger the refactoring on a function you want to move, select the destination file, let it take care of the rest. It works for top-level function declarations, resolves required imports, and prevents you from creating circular dependencies.
-
-It works on function, type, interface, and variable declarations.
-
-![][demo-move-to-existing-file]
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
 ### Remove Dead Code
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -630,7 +613,6 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-convert-for-to-for-each]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-to-for-each.gif?raw=true
 [demo-convert-for-each-to-for-of]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-each-to-for-of.gif?raw=true
 [demo-create-factory-for-constructor]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/create-factory-for-constructor.gif?raw=true
-[demo-move-to-existing-file]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-to-existing-file.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-dead-code.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-ternary.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-interface.gif?raw=true

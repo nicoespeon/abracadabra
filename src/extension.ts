@@ -32,7 +32,6 @@ import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
-import moveToExistingFile from "./refactorings/move-to-existing-file";
 import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeJsxFragment from "./refactorings/remove-jsx-fragment";
@@ -61,16 +60,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       wrapInJsxFrament,
       removeJsxFragment
     ]
-  },
-  allButVueAndSvelte: {
-    languages: [
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact"
-    ],
-    withoutActionProvider: [],
-    withActionProvider: [moveToExistingFile]
   },
   allLanguages: {
     languages: [
