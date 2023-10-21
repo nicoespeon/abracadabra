@@ -1,7 +1,7 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
 import * as t from "../../ast";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 
 export async function moveStatementDown(editor: Editor) {
   const { code, selection } = editor;
@@ -99,7 +99,6 @@ function updateCode(
       if (
         !path.isClassMethod() &&
         !path.isObjectMethod() &&
-        // @ts-expect-error Not sure why it complains about types, probably inferrence issue
         !Position.hasSpaceBetweenPaths(path, pathBelow)
       ) {
         newStatementPosition = newStatementPosition.putAtNextLine();
@@ -111,6 +110,7 @@ function updateCode(
       const extracted = path.getSibling(path.key - 1);
 
       if (
+        // @ts-expect-error Not sure why it complains about types, probably inferrence issue
         pathBelow.isObjectProperty() &&
         !Position.hasSpaceBetweenPaths(path, extracted)
       ) {
