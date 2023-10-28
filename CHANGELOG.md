@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0] - 2023-10-28 - On My Way 🐻
+
 ### Breaking
 
 - Removed "Move to existing file" since VS Code now has a native "Move to file" that works like a charm ❤️
@@ -1849,7 +1851,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/8.1.4...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.0.0...HEAD
+[9.0.0]: https://github.com/nicoespeon/abracadabra/compare/8.1.4...9.0.0
 [8.1.4]: https://github.com/nicoespeon/abracadabra/compare/8.1.3...8.1.4
 [8.1.3]: https://github.com/nicoespeon/abracadabra/compare/8.1.2...8.1.3
 [8.1.2]: https://github.com/nicoespeon/abracadabra/compare/8.1.1...8.1.2
