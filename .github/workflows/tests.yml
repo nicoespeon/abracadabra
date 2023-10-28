@@ -5,7 +5,8 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-latest
+    # Use MacOS so we can run VS Code (eg. https://github.com/microsoft/vscode-test/issues/230)
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
