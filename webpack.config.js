@@ -29,7 +29,7 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
     devtoolModuleFilenameTemplate: "../[resource-path]"
   },
 
-  devtool: "source-map",
+  devtool: false,
 
   externals: {
     // The vscode-module is created on-the-fly and must be excluded.
