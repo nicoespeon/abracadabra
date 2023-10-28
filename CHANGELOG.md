@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Breaking
+## [9.0.2]
 
-- Removed "Destructure Object" since VS Code has a native "Convert parameters to destructured object" since TS 3.4 that works much better. Also, "Destructure Object" was causing performance trouble and was making the bundle much bigger than necessary, because it was using the whole TS library.
-- Removed "Extract useCallback" for a similar reason. Although the feature doesn't exist, this one-off refactoring had an unreasonable impact on the whole extension (bundle size and performances).
+No user-visible change. Mostly dependencies upgrades.
+
+### Breaking
 
 ## [9.0.1]
 
@@ -21,6 +22,8 @@ No user-visible change. Mostly dependencies upgrades.
 ### Breaking
 
 - Removed "Move to existing file" since VS Code now has a native "Move to file" that works like a charm ❤️
+- Removed "Destructure Object" since VS Code has a native "Convert parameters to destructured object" since TS 3.4 that works much better. Also, "Destructure Object" was causing performance trouble and was making the bundle much bigger than necessary, because it was using the whole TS library.
+- Removed "Extract useCallback" for a similar reason. Although the feature doesn't exist, this one-off refactoring had an unreasonable impact on the whole extension (bundle size and performances).
 
 ### Added
 
@@ -1860,7 +1863,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.0.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.0.2...HEAD
+[9.0.2]: https://github.com/nicoespeon/abracadabra/compare/9.0.1...9.0.2
 [9.0.1]: https://github.com/nicoespeon/abracadabra/compare/9.0.0...9.0.1
 [9.0.0]: https://github.com/nicoespeon/abracadabra/compare/8.1.4...9.0.0
 [8.1.4]: https://github.com/nicoespeon/abracadabra/compare/8.1.3...8.1.4
