@@ -12,12 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build & deploy to Open VSX
+      - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
           node-version: 18.0.0
           registry-url: https://registry.npmjs.org/
-      - run: yarn
-      - run: yarn deploy:ovsx -p ${{ secrets.OVSX_ACCESS_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build & deploy to Open VSX
+        run: yarn deploy:ovsx -p ${{ secrets.OVSX_ACCESS_TOKEN }}
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"
