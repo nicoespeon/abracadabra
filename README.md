@@ -98,10 +98,11 @@ That's why you have a "Refresh Highlights" command. Hit `Shift + Alt + H` and re
 
 ## Configuration
 
-| Setting                       | Description                                       | Default                 |
-| ----------------------------- | ------------------------------------------------- | ----------------------- |
-| `abracadabra.ignoredFolders`  | Folders where it won't propose refactorings       | `["node_modules"]`      |
-| `abracadabra.ignoredPatterns` | Glob patterns where it won't propose refactorings | `["dist/*", "build/*"]` |
+| Setting                         | Description                                                                          | Default                 |
+| ------------------------------- | ------------------------------------------------------------------------------------ | ----------------------- |
+| `abracadabra.ignoredFolders`    | Folders where it won't propose refactorings                                          | `["node_modules"]`      |
+| `abracadabra.ignoredPatterns`   | Glob patterns where it won't propose refactorings                                    | `["dist/*", "build/*"]` |
+| `abracadabra.maxFileLinesCount` | Don't propose refactorings on files that have more lines of code than this threshold | `10.000`                |
 
 For the glob patterns, read [glob's documentation](https://github.com/isaacs/node-glob/blob/f5a57d3d6e19b324522a3fa5bdd5075fd1aa79d1/README.md#glob-primer) to see what you can filter out.
 

@@ -9,6 +9,7 @@ import { RefactoringWithActionProvider } from "./types";
 import {
   getIgnoredFolders,
   getIgnoredPatterns,
+  getMaxFileLinesCount,
   shouldShowInQuickFix
 } from "./vscode-configuration";
 
@@ -17,12 +18,10 @@ type Refactoring = RefactoringWithActionProvider;
 export class RefactoringActionProvider implements vscode.CodeActionProvider {
   constructor(private refactorings: Refactoring[]) {}
 
-  provideCodeActions(
-    document: vscode.TextDocument
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
+  async provideCodeActions(document: vscode.TextDocument) {
     const NO_ACTION: vscode.CodeAction[] = [];
 
-    if (this.isNavigatingAnIgnoredFile(document.uri.path)) {
+    if (await this.isNavigatingAnIgnoredFile(document.uri.path)) {
       return NO_ACTION;
     }
 
@@ -39,7 +38,7 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     }
   }
 
-  private isNavigatingAnIgnoredFile(filePath: string): boolean {
+  private async isNavigatingAnIgnoredFile(filePath: string) {
     const relativeFilePath = vscode.workspace.asRelativePath(filePath);
     const isFolderIgnored = getIgnoredFolders().some((ignored) =>
       relativeFilePath.includes(`/${ignored}/`)
@@ -47,7 +46,14 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     const isPatternIgnored = getIgnoredPatterns().some((ignored) =>
       minimatch(relativeFilePath, ignored)
     );
-    return isFolderIgnored || isPatternIgnored;
+    const fileContent = await vscode.workspace.fs.readFile(
+      vscode.Uri.file(filePath)
+    );
+    const fileLength = new TextDecoder("utf8")
+      .decode(fileContent)
+      .split("\n").length;
+    const isTooLarge = fileLength > getMaxFileLinesCount();
+    return isFolderIgnored || isPatternIgnored || isTooLarge;
   }
 
   private findApplicableRefactorings({

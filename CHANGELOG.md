@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed "Move to existing file" since VS Code now has a native "Move to file" that works like a charm ❤️
 
+### Added
+
+- New `abracadabra.maxFileLinesCount` option that will disable refactorings based on the number of lines of a file. Default value is 10,000. The goal is to reduce the impact on performance when you have a large file (eg. a bundle) in your codebase.
+
 ### Fixed
 
 - @j4k0xb found even more occurrences of patterns that require parentheses when executing Inline Variable. These are now covered.

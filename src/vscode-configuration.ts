@@ -37,3 +37,18 @@ export function shouldShowInQuickFix(refactoringKey: string): boolean {
 
   return typeof result === "boolean" ? result : true;
 }
+
+export function getMaxFileLinesCount(): number {
+  const result = vscode.workspace
+    .getConfiguration("abracadabra")
+    .get("maxFileLinesCount");
+
+  if (typeof result !== "number") {
+    console.log(
+      `abracadabra.maxFileLinesCount should be a number but current value is ${result}`
+    );
+    return 10_000;
+  }
+
+  return Math.max(result, 1);
+}

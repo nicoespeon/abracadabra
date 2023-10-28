@@ -409,6 +409,11 @@
           ],
           "description": "Glob patterns where it won't propose Quick Fixes (defaults: `dist/*`, `build/*`)."
         },
+        "abracadabra.maxFileLinesCount": {
+          "type": "number",
+          "default": 10000,
+          "description": "Don't propose refactorings on files that have more lines of code than this threshold."
+        },
         "abracadabra.addNumericSeparator.showInQuickFix": {
           "type": "boolean",
           "default": true,
