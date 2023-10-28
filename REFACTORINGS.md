@@ -56,8 +56,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
 - Specific to TypeScript:
   1. [Extract Generic Type](#extract-generic-type)
   1. [Extract Interface](#extract-interface)
-- Specific to React:
-  1. [Extract useCallback()](#extract-usecallback)
+- Specific to JSX:
   1. [Wrap in JSX Fragment](#wrap-in-jsx-fragment)
   1. [Remove JSX Fragment](#remove-jsx-fragment)
 
@@ -510,19 +509,7 @@ This is very useful when you need to invert a dependency: create an interface fr
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-## Specific to React
-
-### Extract useCallback()
-
-> 💡 Available as Quick Fix (`Alt ↵`)
-
-A useful refactoring to extract a function props into a `useCallback()` declaration. It will resolve the required dependencies for you.
-
-_Note: it works in a web editor too (eg. https://github.dev/nicoespeon/abracadabra), but it can't resolve the required dependencies from the browser._
-
-![][demo-extract-use-callback]
-
-[⬆️ Go to Table of Contents](#table-of-contents)
+## Specific to JSX
 
 ### Wrap in JSX Fragment
 
@@ -600,7 +587,6 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-dead-code.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-ternary.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-interface.gif?raw=true
-[demo-extract-use-callback]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-use-callback.gif?raw=true
 [demo-toggle-braces]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-braces.gif?raw=true
 [demo-wrap-in-jsx-fragment]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/wrap-in-jsx-fragment.gif?raw=true
 [demo-remove-jsx-fragment]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-jsx-fragment.gif?raw=true

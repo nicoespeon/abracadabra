@@ -31,7 +31,6 @@ import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
-import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeJsxFragment from "./refactorings/remove-jsx-fragment";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
@@ -54,11 +53,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
-    withActionProvider: [
-      reactExtractUseCallback,
-      wrapInJsxFrament,
-      removeJsxFragment
-    ]
+    withActionProvider: [wrapInJsxFrament, removeJsxFragment]
   },
   allLanguages: {
     languages: [
