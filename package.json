@@ -79,12 +79,14 @@
     "@types/sinon": "10.0.13",
     "@types/vscode": "1.83.0",
     "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.50.0",
     "@vscode/test-electron": "2.3.4",
     "all-contributors-cli": "6.26.1",
     "assert": "2.0.0",
     "babel-jest": "29.5.0",
     "buffer": "6.0.3",
     "chai": "4.3.7",
+    "eslint": "8.37.0",
     "eslint-config-prettier": "8.7.0",
     "glob": "10.3.3",
     "html-loader": "4.2.0",
@@ -104,6 +106,7 @@
     "process": "0.11.10",
     "sinon": "15.2.0",
     "ts-loader": "9.4.2",
+    "typescript": "4.9.4",
     "util": "0.12.5",
     "vsce": "2.15.0",
     "webpack": "5.83.1",
@@ -114,16 +117,10 @@
     "@babel/parser": "7.21.5",
     "@babel/traverse": "7.20.12",
     "@babel/types": "7.20.7",
-    "@eslint/eslintrc": "1.3.3",
-    "@typescript-eslint/parser": "5.50.0",
-    "@typescript/vfs": "1.4.0",
     "change-case": "4.1.2",
-    "eslint": "8.37.0",
-    "eslint-plugin-react-hooks": "4.6.0",
     "minimatch": "9.0.2",
     "pluralize": "8.0.0",
-    "recast": "0.23.1",
-    "typescript": "4.9.4"
+    "recast": "0.23.1"
   },
   "resolutions": {
     "@babel/types": "7.20.7"
@@ -196,11 +193,6 @@
       {
         "command": "abracadabra.createFactoryForConstructor",
         "title": "Create Factory for Constructor",
-        "category": "Abracadabra"
-      },
-      {
-        "command": "abracadabra.destructureObject",
-        "title": "Destructure Object",
         "category": "Abracadabra"
       },
       {
@@ -470,11 +462,6 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.createFactoryForConstructor.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.destructureObject.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -869,30 +856,6 @@
         },
         {
           "command": "abracadabra.createFactoryForConstructor",
-          "when": "editorLangId == svelte"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.destructureObject",
           "when": "editorLangId == svelte"
         },
         {

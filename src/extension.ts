@@ -18,7 +18,6 @@ import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
-import destructureObject from "./refactorings/destructure-object";
 import extract from "./refactorings/extract";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
@@ -32,7 +31,6 @@ import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
 import moveStatementDown from "./refactorings/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement-up";
-import reactExtractUseCallback from "./refactorings/react/extract-use-callback";
 import removeDeadCode from "./refactorings/remove-dead-code";
 import removeJsxFragment from "./refactorings/remove-jsx-fragment";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
@@ -55,11 +53,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
-    withActionProvider: [
-      reactExtractUseCallback,
-      wrapInJsxFrament,
-      removeJsxFragment
-    ]
+    withActionProvider: [wrapInJsxFrament, removeJsxFragment]
   },
   allLanguages: {
     languages: [
@@ -72,7 +66,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withoutActionProvider: [
       extract,
-      destructureObject,
       moveStatementDown,
       moveStatementUp,
       renameSymbol

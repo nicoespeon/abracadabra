@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking
+
+- Removed "Destructure Object" since VS Code has a native "Convert parameters to destructured object" since TS 3.4 that works much better. Also, "Destructure Object" was causing performance trouble and was making the bundle much bigger than necessary, because it was using the whole TS library.
+- Removed "Extract useCallback" for a similar reason. Although the feature doesn't exist, this one-off refactoring had an unreasonable impact on the whole extension (bundle size and performances).
+
 ## [9.0.1]
 
 No user-visible change. Mostly dependencies upgrades.

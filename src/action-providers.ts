@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import * as t from "./ast";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { Editor } from "./editor/editor";
-import { ConsoleLogger, TypeChecker } from "./type-checker";
 import { RefactoringWithActionProvider } from "./types";
 import {
   getIgnoredFolders,
@@ -90,8 +89,7 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
               }
 
               applicableRefactorings.set(key, refactoring);
-            },
-            new TypeChecker(code, new ConsoleLogger())
+            }
           );
 
           this.visit(visitor, path);

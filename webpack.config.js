@@ -29,7 +29,7 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
     devtoolModuleFilenameTemplate: "../[resource-path]"
   },
 
-  devtool: "source-map",
+  devtool: false,
 
   externals: {
     // The vscode-module is created on-the-fly and must be excluded.
@@ -43,15 +43,7 @@ const createConfig = (/** @type {{ browser?: boolean; }} */ env) => ({
     // Support reading TypeScript and JavaScript files
     // => https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],
-    alias: env.browser
-      ? {
-          // These can't be resolved in the browser
-          "@eslint/eslintrc": false,
-          "@typescript-eslint/parser": false,
-          eslint: false,
-          "eslint-plugin-react-hooks": false
-        }
-      : {},
+    alias: {},
     fallback: env.browser
       ? {
           assert: require.resolve("assert"),

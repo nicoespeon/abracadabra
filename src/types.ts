@@ -1,7 +1,6 @@
 import { Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
-import { TypeChecker } from "./type-checker";
 export interface Refactoring {
   command: {
     key: string;
@@ -20,8 +19,7 @@ export interface RefactoringWithActionProvider {
     isPreferred?: boolean;
     createVisitor: (
       selection: Selection,
-      onMatch: (path: NodePath) => void,
-      typeChecker: TypeChecker
+      onMatch: (path: NodePath) => void
     ) => Visitor;
     updateMessage?: (path: NodePath) => string;
   };
