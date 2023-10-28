@@ -199,11 +199,6 @@
         "category": "Abracadabra"
       },
       {
-        "command": "abracadabra.destructureObject",
-        "title": "Destructure Object",
-        "category": "Abracadabra"
-      },
-      {
         "command": "abracadabra.extract",
         "title": "Extract",
         "category": "Abracadabra"
@@ -470,11 +465,6 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.createFactoryForConstructor.showInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
-        },
-        "abracadabra.destructureObject.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -869,30 +859,6 @@
         },
         {
           "command": "abracadabra.createFactoryForConstructor",
-          "when": "editorLangId == svelte"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == javascript"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == javascriptreact"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.destructureObject",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.destructureObject",
           "when": "editorLangId == svelte"
         },
         {

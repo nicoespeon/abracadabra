@@ -46,7 +46,6 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Convert let to const](#convert-let-to-const)
 - Working around the syntax:
   1. [Add Numeric Separator](#add-numeric-separator)
-  1. [Destructure Object](#destructure-object)
   1. [Convert to Arrow Function](#convert-to-arrow-function)
   1. [Toggle Braces](#toggle-braces)
   1. [Convert to Template Literal](#convert-to-template-literal)
@@ -400,20 +399,6 @@ Did you know you could write `10_000` instead of `10000`? Well, now you know. An
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
-### Destructure Object
-
-> **Not** available as a Quick Fix, use the [Command Palette][command-palette] to run this one. Temporary until we get [#416](https://github.com/nicoespeon/abracadabra/issues/416) resolved.
-
-Sometimes it's more convenient to destructure variables out of an object. It reduces the noise in the code.
-
-Whenever the shape of the object can be inferred, you'll be able to destructure it automatically. That works from any occurrence of the identifier you want to destructure!
-
-_P.S: this may work best with TypeScript code since it's easier to infer the object shape there 😉_
-
-![][demo-destructure-object]
-
-[⬆️ Go to Table of Contents](#table-of-contents)
-
 ### Convert to Arrow Function
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -589,7 +574,6 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-flip-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-ternary.gif?raw=true
 [demo-flip-operator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-operator.gif?raw=true
 [demo-add-numeric-separator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/add-numeric-separator.gif?raw=true
-[demo-destructure-object]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/destructure-object.gif?raw=true
 [demo-convert-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-arrow-function.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-ternary-to-if-else.gif?raw=true

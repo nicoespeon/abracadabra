@@ -4,7 +4,6 @@ export enum ErrorReason {
   DidNotFindOperatorToFlip,
   CantChangeSignature,
   DidNotFindClass,
-  DidNotFindObjectToDestructure,
   DidNotFindNumericLiteral,
   DidNotFindIdentifiersToRename,
   DidNotFindStatementToToggleBraces,
@@ -77,9 +76,6 @@ export function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindClass:
       return didNotFind("a class to create a factory for");
-
-    case ErrorReason.DidNotFindObjectToDestructure:
-      return didNotFind("an object to destructure");
 
     case ErrorReason.DidNotFindNumericLiteral:
       return didNotFind("a numeric literal to add separators to");
