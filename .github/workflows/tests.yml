@@ -1,12 +1,12 @@
-name: Open VSX Deploy
+name: Tests
 
 on:
-  release:
-    types: [published]
+  push
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  run-tests:
+    # Use MacOS so we can run VS Code (eg. https://github.com/microsoft/vscode-test/issues/230)
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
@@ -21,7 +21,5 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: Build & deploy to Open VSX
-        run: yarn deploy:ovsx -p ${{ secrets.OVSX_ACCESS_TOKEN }}
-        env:
-          NODE_OPTIONS: "--max_old_space_size=8192"
+      - name: Run CI Tests
+        run: yarn test:ci
