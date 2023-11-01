@@ -110,7 +110,7 @@
     "util": "0.12.5",
     "vsce": "2.15.0",
     "webpack": "5.83.1",
-    "webpack-bundle-analyzer": "4.9.0",
+    "webpack-bundle-analyzer": "4.9.1",
     "webpack-cli": "5.1.4"
   },
   "dependencies": {
