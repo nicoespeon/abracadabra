@@ -2074,15 +2074,15 @@
     jszip "^3.10.1"
     semver "^7.5.2"
 
-"@vscode/vsce@^2.15.0":
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/@vscode/vsce/-/vsce-2.19.0.tgz#342225662811245bc40d855636d000147c394b11"
-  integrity sha512-dAlILxC5ggOutcvJY24jxz913wimGiUrHaPkk16Gm9/PGFbz1YezWtrXsTKUtJws4fIlpX2UIlVlVESWq8lkfQ==
+"@vscode/vsce@^2.19.0":
+  version "2.22.0"
+  resolved "https://registry.yarnpkg.com/@vscode/vsce/-/vsce-2.22.0.tgz#1eb3ebc6b89581a150bb44dd7d731a064019b617"
+  integrity sha512-8df4uJiM3C6GZ2Sx/KilSKVxsetrTBBIUb3c0W4B1EWHcddioVs5mkyDKtMNP0khP/xBILVSzlXxhV+nm2rC9A==
   dependencies:
     azure-devops-node-api "^11.0.1"
     chalk "^2.4.2"
     cheerio "^1.0.0-rc.9"
-    commander "^6.1.0"
+    commander "^6.2.1"
     glob "^7.0.6"
     hosted-git-info "^4.0.2"
     jsonc-parser "^3.2.0"
@@ -2092,7 +2092,7 @@
     minimatch "^3.0.3"
     parse-semver "^1.1.1"
     read "^1.0.7"
-    semver "^5.1.0"
+    semver "^7.5.2"
     tmp "^0.2.1"
     typed-rest-client "^1.8.4"
     url-join "^4.0.1"
@@ -3141,7 +3141,7 @@ commander@^2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-commander@^6.1.0:
+commander@^6.1.0, commander@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
@@ -6312,17 +6312,17 @@ os-tmpdir@~1.0.2:
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
   integrity sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=
 
-ovsx@0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.8.1.tgz#6510e276130d5ac1dc50642fd19a521b826fbc10"
-  integrity sha512-smfdxuSScUwzEsNgxdEWTmWVYaRmb2Xa1qF/LadMtowq/gg01+zNxDGUAlqALin82RBj++IF0O+qrzrC10O7ww==
+ovsx@0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/ovsx/-/ovsx-0.8.3.tgz#3c67a595e423f3f70a3d62da3735dd07dfbca69f"
+  integrity sha512-LG7wTzy4eYV/KolFeO4AwWPzQSARvCONzd5oHQlNvYOlji2r/zjbdK8pyObZN84uZlk6rQBWrJrAdJfh/SX0Hg==
   dependencies:
-    "@vscode/vsce" "^2.15.0"
+    "@vscode/vsce" "^2.19.0"
     commander "^6.1.0"
     follow-redirects "^1.14.6"
     is-ci "^2.0.0"
     leven "^3.1.0"
-    semver "^5.1.0"
+    semver "^7.5.2"
     tmp "^0.2.1"
 
 p-limit@^2.2.0:
