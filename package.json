@@ -80,7 +80,7 @@
     "@types/vscode": "1.83.0",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.50.0",
-    "@vscode/test-electron": "2.3.4",
+    "@vscode/test-electron": "2.3.8",
     "all-contributors-cli": "6.26.1",
     "assert": "2.1.0",
     "babel-jest": "29.5.0",
