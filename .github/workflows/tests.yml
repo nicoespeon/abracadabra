@@ -23,3 +23,5 @@ jobs:
 
       - name: Run CI Tests
         run: yarn test:ci
+        env:
+          NODE_OPTIONS: "--max_old_space_size=8192"
