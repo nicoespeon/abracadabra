@@ -100,7 +100,6 @@ function updateCode(
       if (
         !path.isClassMethod() &&
         !path.isObjectMethod() &&
-        // @ts-expect-error Not sure why it complains about types, probably inferrence issue
         !Position.hasSpaceBetweenPaths(path, pathBelow)
       ) {
         newStatementPosition = newStatementPosition.putAtNextLine();
@@ -112,6 +111,7 @@ function updateCode(
       const extracted = path.getSibling(path.key - 1);
 
       if (
+        // @ts-expect-error Not sure why it doesn't compile
         pathBelow.isObjectProperty() &&
         !Position.hasSpaceBetweenPaths(path, extracted)
       ) {
