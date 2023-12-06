@@ -1,7 +1,7 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
 import * as t from "../../ast";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 
 export async function moveStatementDown(editor: Editor) {
   const { code, selection } = editor;
@@ -57,6 +57,7 @@ function updateCode(
     // if a child would match the selection closer.
     if (hasChildWhichMatchesSelection(path, selection)) return;
     if (typeof path.key !== "number") return;
+    if (!path.container) return;
 
     const container = ([] as object[]).concat(path.container);
     if (path.key >= container.length - 1) {
@@ -130,10 +131,12 @@ function updateCode(
 
 function getSelectablePathBelow(
   path: t.NodePath,
-  key: number | string = path.key
+  key: number | string | null = path.key
 ): t.SelectablePath | undefined {
   // Not implemented yet
   if (typeof key === "string") return;
+  if (key === null) return;
+  if (!path.container) return;
 
   const pathBelowKey = key + 1;
   const container = ([] as object[]).concat(path.container);

@@ -118,10 +118,11 @@ function updateCode(
 
 function getSelectablePathAbove(
   path: t.NodePath,
-  key: number | string = path.key
+  key: number | string | null = path.key
 ): t.SelectablePath | undefined {
   // Not implemented yet
   if (typeof key === "string") return;
+  if (key === null) return;
 
   const pathAboveKey = key - 1;
   if (pathAboveKey < 0) return;
