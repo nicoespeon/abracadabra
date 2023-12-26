@@ -18,7 +18,7 @@ const commonOptions = {
   bundle: true,
   minify: production,
   sourcemap: !production,
-  metafile: production,
+  metafile: !production,
   loader: { ".html": "text" },
   external: ["vscode"]
 };
