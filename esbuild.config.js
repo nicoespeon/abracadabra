@@ -6,15 +6,36 @@ const esbuild = require("esbuild");
 const plugin = require("node-stdlib-browser/helpers/esbuild/plugin");
 const stdLibBrowser = require("node-stdlib-browser");
 
-const platform = process.argv[2];
 const production = process.argv.includes("--production");
 
 /**
- * @type {Record<string, esbuild.BuildOptions>}
+ * @type {esbuild.BuildOptions}
+ *
  */
-const platformOptions = {
-  browser: {
+const commonOptions = {
+  entryPoints: ["./src/extension.ts"],
+  format: "cjs",
+  bundle: true,
+  minify: production,
+  sourcemap: !production,
+  metafile: production,
+  loader: { ".html": "text" },
+  external: ["vscode"]
+};
+
+/**
+ * @type {esbuild.BuildOptions[]}
+ */
+const options = [
+  {
+    ...commonOptions,
+    outfile: "out/extension.js",
+    platform: "node"
+  },
+  {
+    ...commonOptions,
     outfile: "out/extension-browser.js",
+    platform: "browser",
     inject: [require.resolve("node-stdlib-browser/helpers/esbuild/shim")],
     define: {
       assert: "assert",
@@ -23,27 +44,18 @@ const platformOptions = {
       util: "util",
       Buffer: "Buffer"
     },
-    plugins: [plugin(stdLibBrowser)],
-    platform: "browser"
-  },
-  node: {
-    outfile: "out/extension.js",
-    platform: "node"
+    plugins: [plugin(stdLibBrowser)]
   }
-};
+];
 
-(async () => {
-  const result = await esbuild.build({
-    entryPoints: ["./src/extension.ts"],
-    format: "cjs",
-    bundle: true,
-    minify: production,
-    sourcemap: true,
-    metafile: true,
-    loader: { ".html": "text" },
-    external: ["vscode"],
-    ...platformOptions[platform]
+options
+  .filter(({ platform }) => process.argv.includes(`--${platform}`))
+  .forEach(async (option) => {
+    const result = await esbuild.build(option);
+    if (production) return;
+
+    await fs.writeFile(
+      `out/meta-${option.platform}.json`,
+      JSON.stringify(result.metafile)
+    );
   });
-
-  await fs.writeFile(`meta-${platform}.json`, JSON.stringify(result.metafile));
-})();
