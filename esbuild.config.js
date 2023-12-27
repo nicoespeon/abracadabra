@@ -10,7 +10,6 @@ const production = process.argv.includes("--production");
 
 /**
  * @type {esbuild.BuildOptions}
- *
  */
 const commonOptions = {
   entryPoints: ["./src/extension.ts"],
