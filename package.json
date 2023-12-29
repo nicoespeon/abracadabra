@@ -81,7 +81,7 @@
     "@typescript-eslint/parser": "6.13.2",
     "@vscode/test-electron": "2.3.8",
     "all-contributors-cli": "6.26.1",
-    "babel-jest": "29.5.0",
+    "babel-jest": "29.7.0",
     "chai": "4.3.10",
     "esbuild": "0.19.9",
     "eslint": "8.37.0",
