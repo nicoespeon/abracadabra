@@ -1,7 +1,9 @@
 name: Tests
 
 on:
-  push
+  push:
+  pull_request:
+    types: [review_requested]
 
 jobs:
   run-tests:

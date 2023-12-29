@@ -4,7 +4,7 @@ Date: 2022-02-02
 
 ## Status
 
-Accepted
+Superceded by [15. Use esbuild to build instead of webpack](0015-use-esbuild-to-build-instead-of-webpack.md)
 
 ## Context
 
