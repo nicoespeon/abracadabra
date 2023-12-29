@@ -16,6 +16,7 @@ Architecture decisions for this project [are documented here][adrs], using the [
 - [Code Style](#code-style)
   - [Structure of TS files](#structure-of-ts-files)
 - [Debug locally](#debug-locally)
+  - [Analyze the bundle](#analyze-the-bundle)
 - [Create a package and use it](#create-a-package-and-use-it)
 - [Open a PR and add acknowledge your contribution](#open-a-pr-and-add-acknowledge-your-contribution)
 - [Deploy a new version](#deploy-a-new-version)
@@ -151,6 +152,14 @@ If you do changes, rebuild the project by clicking on the reload icon.
 ![][debugger-rebuild]
 
 While debugging the extension is helpful to see changes in action, you can use the unit tests to develop without having to rebuild the project at every change.
+
+### Analyze the bundle
+
+If you want to see what's in the final build, run `yarn build` (don't use `--production` target).
+
+This will generate `meta-*.json` files in the `out/` folder.
+
+To visualize them, go to <https://esbuild.github.io/analyze/> and import the file you want to visualize. It will give you the size of the build and a detailed breakdown of what's inside.
 
 ## Create a package and use it
 
