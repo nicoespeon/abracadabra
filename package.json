@@ -111,7 +111,7 @@
     "change-case": "4.1.2",
     "minimatch": "9.0.3",
     "pluralize": "8.0.0",
-    "recast": "0.23.1"
+    "recast": "0.23.4"
   },
   "activationEvents": [
     "onLanguage:javascript",
