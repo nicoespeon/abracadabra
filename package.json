@@ -85,7 +85,7 @@
     "chai": "4.3.10",
     "esbuild": "0.19.10",
     "eslint": "8.37.0",
-    "eslint-config-prettier": "9.0.0",
+    "eslint-config-prettier": "9.1.0",
     "glob": "10.3.10",
     "husky": "8.0.3",
     "hygen": "6.2.11",
