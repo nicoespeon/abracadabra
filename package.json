@@ -74,7 +74,7 @@
     "@types/jsdom": "21.1.4",
     "@types/mocha": "10.0.6",
     "@types/node": "20.10.6",
-    "@types/pluralize": "0.0.32",
+    "@types/pluralize": "0.0.33",
     "@types/sinon": "17.0.2",
     "@types/vscode": "1.85.0",
     "@typescript-eslint/eslint-plugin": "6.13.2",
