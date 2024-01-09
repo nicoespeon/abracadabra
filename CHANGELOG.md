@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Trying to execute a refactoring in an untitled tab used to throw an error, but not anymore thanks to @j4k0xb!
+
 ## [9.0.2]
 
 No user-visible change. Mostly dependencies upgrades.
