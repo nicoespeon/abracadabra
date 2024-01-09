@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.0] - 2024-01-08 - Knowing What I Know Now 👑
+
 ### Added
 
 - New `abracadabra.getMaxFileSizeKb` option that will disable refactorings based on the size of a file. Default value is 250 (in kB). The idea is to complement `abracadabra.maxFileLinesCount` for files that would be minified.
@@ -1871,7 +1873,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.0.2...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.0...HEAD
+[9.1.0]: https://github.com/nicoespeon/abracadabra/compare/9.0.2...9.1.0
 [9.0.2]: https://github.com/nicoespeon/abracadabra/compare/9.0.1...9.0.2
 [9.0.1]: https://github.com/nicoespeon/abracadabra/compare/9.0.0...9.0.1
 [9.0.0]: https://github.com/nicoespeon/abracadabra/compare/8.1.4...9.0.0
