@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.1]
+
+No user-visible change. Attempting to fix CI deployment.
+
 ## [9.1.0] - 2024-01-08 - Knowing What I Know Now 👑
 
 ### Added
@@ -1873,7 +1877,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.1...HEAD
+[9.1.1]: https://github.com/nicoespeon/abracadabra/compare/9.1.0...9.1.1
 [9.1.0]: https://github.com/nicoespeon/abracadabra/compare/9.0.2...9.1.0
 [9.0.2]: https://github.com/nicoespeon/abracadabra/compare/9.0.1...9.0.2
 [9.0.1]: https://github.com/nicoespeon/abracadabra/compare/9.0.0...9.0.1
