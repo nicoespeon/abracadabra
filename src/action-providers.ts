@@ -20,7 +20,7 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
   async provideCodeActions(document: vscode.TextDocument) {
     const NO_ACTION: vscode.CodeAction[] = [];
 
-    if (await this.isNavigatingAnIgnoredFile(document.uri.path)) {
+    if (this.isNavigatingAnIgnoredFile(document)) {
       return NO_ACTION;
     }
 
@@ -37,21 +37,15 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     }
   }
 
-  private async isNavigatingAnIgnoredFile(filePath: string) {
-    const relativeFilePath = vscode.workspace.asRelativePath(filePath);
+  private isNavigatingAnIgnoredFile(document: vscode.TextDocument) {
+    const relativeFilePath = vscode.workspace.asRelativePath(document.uri.path);
     const isFolderIgnored = getIgnoredFolders().some((ignored) =>
-      relativeFilePath.includes(`/${ignored}/`)
+      `/${relativeFilePath}`.includes(`/${ignored}/`)
     );
     const isPatternIgnored = getIgnoredPatterns().some((ignored) =>
       minimatch(relativeFilePath, ignored)
     );
-    const fileContent = await vscode.workspace.fs.readFile(
-      vscode.Uri.file(filePath)
-    );
-    const fileLength = new TextDecoder("utf8")
-      .decode(fileContent)
-      .split("\n").length;
-    const isTooLarge = fileLength > getMaxFileLinesCount();
+    const isTooLarge = document.lineCount > getMaxFileLinesCount();
     return isFolderIgnored || isPatternIgnored || isTooLarge;
   }
 
