@@ -9,6 +9,7 @@ import {
   getIgnoredFolders,
   getIgnoredPatterns,
   getMaxFileLinesCount,
+  getMaxFileSizeKb,
   shouldShowInQuickFix
 } from "./vscode-configuration";
 
@@ -45,8 +46,10 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     const isPatternIgnored = getIgnoredPatterns().some((ignored) =>
       minimatch(relativeFilePath, ignored)
     );
-    const isTooLarge = document.lineCount > getMaxFileLinesCount();
-    return isFolderIgnored || isPatternIgnored || isTooLarge;
+    const isTooLong = document.lineCount > getMaxFileLinesCount();
+    const fileSize = document.getText().length / 1024;
+    const isTooBig = fileSize > getMaxFileSizeKb();
+    return isFolderIgnored || isPatternIgnored || isTooLong || isTooBig;
   }
 
   private findApplicableRefactorings({

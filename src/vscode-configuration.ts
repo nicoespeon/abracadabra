@@ -52,3 +52,18 @@ export function getMaxFileLinesCount(): number {
 
   return Math.max(result, 1);
 }
+
+export function getMaxFileSizeKb(): number {
+  const result = vscode.workspace
+    .getConfiguration("abracadabra")
+    .get("maxFileSizeInKb");
+
+  if (typeof result !== "number") {
+    console.log(
+      `abracadabra.maxFileSizeInKb should be a number but current value is ${result}`
+    );
+    return 250;
+  }
+
+  return Math.max(result, 1);
+}

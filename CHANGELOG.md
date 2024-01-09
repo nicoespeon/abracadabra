@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New `abracadabra.getMaxFileSizeKb` option that will disable refactorings based on the size of a file. Default value is 250 (in kB). The idea is to complement `abracadabra.maxFileLinesCount` for files that would be minified.
+
 ### Fixed
 
 - Trying to execute a refactoring in an untitled tab used to throw an error, but not anymore thanks to @j4k0xb!

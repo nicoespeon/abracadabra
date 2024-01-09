@@ -394,6 +394,11 @@
           "default": 10000,
           "description": "Don't propose refactorings on files that have more lines of code than this threshold."
         },
+        "abracadabra.maxFileSizeInKb": {
+          "type": "number",
+          "default": 250,
+          "description": "Don't propose refactorings on files that are bigger than this threshold (kB)."
+        },
         "abracadabra.addNumericSeparator.showInQuickFix": {
           "type": "boolean",
           "default": true,
