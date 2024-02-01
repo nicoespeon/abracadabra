@@ -105,7 +105,7 @@
     "vsce": "2.15.0"
   },
   "dependencies": {
-    "@babel/parser": "7.23.6",
+    "@babel/parser": "7.23.9",
     "@babel/traverse": "7.23.5",
     "@babel/types": "7.20.7",
     "change-case": "4.1.2",
