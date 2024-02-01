@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.23.5",
-    "@babel/preset-env": "7.23.7",
+    "@babel/preset-env": "7.23.9",
     "@babel/preset-typescript": "7.23.3",
     "@types/babel__traverse": "7.20.4",
     "@types/chai": "4.3.5",
