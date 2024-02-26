@@ -117,6 +117,17 @@ const doNothing = () => {};`
 };`
       },
       {
+        description: "a default exported function expression",
+        code: `export default function [cursor]sayHello(name: string) {
+  console.log(\`Well, hello here \${name} 👋\`);
+}`,
+        expected: `const sayHello = (name: string) => {
+  console.log(\`Well, hello here \${name} 👋\`);
+};
+
+export default sayHello;`
+      },
+      {
         description:
           "a function expression that's an argument to a call expression",
         code: `doThis(function[cursor] () {});`,

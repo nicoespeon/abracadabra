@@ -33,7 +33,9 @@ function updateCode(
     ast,
     createVisitor(selection, (path) => {
       let converter: Converter;
-      if (path.isFunctionDeclaration()) {
+      if (path.parentPath.isExportDefaultDeclaration()) {
+        converter = new DefaultExportChildConverter(path);
+      } else if (path.isFunctionDeclaration()) {
         converter = new FunctionDeclarationConverter(path);
       } else {
         converter = new FunctionExpressionConverter(
@@ -58,6 +60,30 @@ function updateCode(
 interface Converter {
   hasReferenceBefore: boolean;
   replaceNode: () => void;
+}
+
+class DefaultExportChildConverter implements Converter {
+  constructor(
+    private path: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
+  ) {}
+
+  readonly hasReferenceBefore = false;
+
+  replaceNode() {
+    const { node } = this.path;
+
+    const name = node.id ? node.id.name : "converted";
+    const identifier = t.identifier(name);
+    const declarator = t.variableDeclarator(
+      identifier,
+      t.toArrowFunctionExpression(this.path)
+    );
+
+    const newNode = t.variableDeclaration("const", [declarator]);
+
+    this.path.insertBefore(newNode);
+    t.replaceWithPreservingComments(this.path, t.identifier(name));
+  }
 }
 
 class FunctionDeclarationConverter implements Converter {
