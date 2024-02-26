@@ -569,6 +569,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "waltergalvao",
+      "name": "Walter Galvao",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1367578?v=4",
+      "profile": "https://www.linkedin.com/in/waltergalvao",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
