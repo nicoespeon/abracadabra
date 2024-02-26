@@ -47,7 +47,7 @@ function updateCode(
         return;
       }
 
-      t.replaceWithPreservingComments(path, converter.replacementNode);
+      converter.replaceNode();
       path.stop();
     })
   );
@@ -57,13 +57,13 @@ function updateCode(
 
 interface Converter {
   hasReferenceBefore: boolean;
-  replacementNode: t.Node;
+  replaceNode: () => void;
 }
 
 class FunctionDeclarationConverter implements Converter {
   constructor(private path: t.NodePath<t.FunctionDeclaration>) {}
 
-  get replacementNode() {
+  replaceNode() {
     const { node } = this.path;
 
     const name = node.id ? node.id.name : "converted";
@@ -73,7 +73,9 @@ class FunctionDeclarationConverter implements Converter {
       t.toArrowFunctionExpression(this.path)
     );
 
-    return t.variableDeclaration("const", [declarator]);
+    const newNode = t.variableDeclaration("const", [declarator]);
+
+    t.replaceWithPreservingComments(this.path, newNode);
   }
 
   get hasReferenceBefore() {
@@ -109,8 +111,9 @@ class FunctionExpressionConverter implements Converter {
 
   readonly hasReferenceBefore = false;
 
-  get replacementNode() {
-    return t.toArrowFunctionExpression(this.path);
+  replaceNode() {
+    const newNode = t.toArrowFunctionExpression(this.path);
+    t.replaceWithPreservingComments(this.path, newNode);
   }
 }
 
