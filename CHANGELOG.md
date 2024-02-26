@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- @waltergalvao found an issue with "Convert to Arrow Function" when the function was default exported. This should be working fine now!
+
 ## [9.1.1]
 
 No user-visible change. Attempting to fix CI deployment.
