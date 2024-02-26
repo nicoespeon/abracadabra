@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.2]
+
 ### Fixed
 
 - @waltergalvao found an issue with "Convert to Arrow Function" when the function was default exported. This should be working fine now!
@@ -1881,7 +1883,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.2...HEAD
+[9.1.2]: https://github.com/nicoespeon/abracadabra/compare/9.1.1...9.1.2
 [9.1.1]: https://github.com/nicoespeon/abracadabra/compare/9.1.0...9.1.1
 [9.1.0]: https://github.com/nicoespeon/abracadabra/compare/9.0.2...9.1.0
 [9.0.2]: https://github.com/nicoespeon/abracadabra/compare/9.0.1...9.0.2
