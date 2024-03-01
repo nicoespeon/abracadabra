@@ -108,7 +108,7 @@
     "@babel/parser": "7.23.9",
     "@babel/traverse": "7.23.5",
     "@babel/types": "7.20.7",
-    "change-case": "4.1.2",
+    "change-case": "5.4.3",
     "minimatch": "9.0.3",
     "pluralize": "8.0.0",
     "recast": "0.23.4"
