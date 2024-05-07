@@ -26,6 +26,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       );
 
       t.replaceWithPreservingComments(path, { ...fragment, extra });
+      path.stop();
     })
   );
 }
@@ -43,7 +44,6 @@ export function createVisitor(
       if (hasChildWhichMatchesSelection(path, selection)) return;
 
       onMatch(path);
-      path.stop();
     }
   };
 }

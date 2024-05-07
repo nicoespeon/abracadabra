@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Wrap in JSX Fragment" was preventing other valid refactorings to be suggested. It was fixed, so now you can easily convert some string prop into a template literal again!
+
 ## [9.1.2]
 
 ### Fixed
