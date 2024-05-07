@@ -1,7 +1,6 @@
-import { camelCase } from "change-case";
-
 import { Code } from "../../../editor/editor";
 import * as t from "../../../ast";
+import { camelCase } from "./changeCase";
 
 export class Variable<T = t.Node> {
   protected _name: string;
