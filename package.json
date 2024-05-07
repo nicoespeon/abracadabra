@@ -42,7 +42,7 @@
   "browser": "./out/extension-browser.js",
   "scripts": {
     "contrib": "all-contributors",
-    "prepare": "husky install",
+    "prepare": "husky",
     "hygen": "hygen",
     "new": "hygen refactoring new",
     "test": "jest",
