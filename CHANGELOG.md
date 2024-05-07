@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.3]
+
 ### Fixed
 
 - "Wrap in JSX Fragment" was preventing other valid refactorings to be suggested. It was fixed, so now you can easily convert some string prop into a template literal again!
@@ -1887,7 +1889,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.2...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.3...HEAD
+[9.1.3]: https://github.com/nicoespeon/abracadabra/compare/9.1.2...9.1.3
 [9.1.2]: https://github.com/nicoespeon/abracadabra/compare/9.1.1...9.1.2
 [9.1.1]: https://github.com/nicoespeon/abracadabra/compare/9.1.0...9.1.1
 [9.1.0]: https://github.com/nicoespeon/abracadabra/compare/9.0.2...9.1.0
