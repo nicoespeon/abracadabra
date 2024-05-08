@@ -169,9 +169,9 @@ export function activate(context: vscode.ExtensionContext) {
     VSCodeEditor.repositionHighlights(event);
 
     const activeTextEditor = vscode.window.activeTextEditor;
-    if (activeTextEditor) {
-      VSCodeEditor.restoreHighlightDecorations(activeTextEditor);
-    }
+    if (!activeTextEditor) return;
+
+    VSCodeEditor.restoreHighlightDecorations(activeTextEditor);
   });
 }
 
