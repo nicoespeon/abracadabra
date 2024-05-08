@@ -1,4 +1,4 @@
-import { Editor, ErrorReason } from "../../editor/editor";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
@@ -66,4 +66,26 @@ export function createVisitor(
       onMatch(path);
     }
   };
+}
+
+export function isInsertingVariableInStringLiteral(
+  code: Code,
+  selection: Selection
+): boolean {
+  const lines = code.split("\n");
+  const currentLine = lines[selection.start.line] ?? "";
+  const previous2Chars =
+    currentLine[selection.start.character - 2] +
+    currentLine[selection.start.character - 1];
+  if (previous2Chars !== "${") return false;
+
+  const nextChar = currentLine[selection.start.character];
+  if (nextChar !== "}") return false;
+
+  let result = false;
+  t.traverseAST(
+    t.parse(code),
+    createVisitor(selection, () => (result = true))
+  );
+  return result;
 }

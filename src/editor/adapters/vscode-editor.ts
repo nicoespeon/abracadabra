@@ -398,7 +398,7 @@ function createSourceChanges(
   ];
 }
 
-function createSelectionFromVSCode(
+export function createSelectionFromVSCode(
   selection: vscode.Selection | vscode.Range
 ): Selection {
   return new Selection(

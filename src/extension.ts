@@ -2,7 +2,10 @@ import * as vscode from "vscode";
 
 import { RefactoringActionProvider } from "./action-providers";
 import { createCommand } from "./commands";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import {
+  VSCodeEditor,
+  createSelectionFromVSCode
+} from "./editor/adapters/vscode-editor";
 import refreshHighlights from "./highlights/refresh-highlights";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
@@ -43,6 +46,7 @@ import splitMultipleDeclarations from "./refactorings/split-multiple-declaration
 import toggleBraces from "./refactorings/toggle-braces";
 import wrapInJsxFrament from "./refactorings/wrap-in-jsx-fragment";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
+import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
@@ -172,6 +176,21 @@ export function activate(context: vscode.ExtensionContext) {
     if (!activeTextEditor) return;
 
     VSCodeEditor.restoreHighlightDecorations(activeTextEditor);
+
+    if (event.document !== activeTextEditor.document) return;
+
+    const hasAddsOrUpdates = event.contentChanges.some(
+      (change) => change.text.length > 0
+    );
+    if (!hasAddsOrUpdates) return;
+
+    const code = activeTextEditor.document.getText();
+    const selection = createSelectionFromVSCode(activeTextEditor.selection);
+    if (isInsertingVariableInStringLiteral(code, selection)) {
+      vscode.commands.executeCommand(
+        `abracadabra.${convertToTemplateLiteral.command.key}`
+      );
+    }
   });
 }
 
