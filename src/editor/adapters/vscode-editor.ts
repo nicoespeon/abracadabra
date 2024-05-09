@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { match } from "ts-pattern";
 import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";
@@ -381,21 +382,30 @@ function createSourceChanges(
   change: vscode.TextDocumentContentChangeEvent
 ): SourceChange[] {
   const selection = createSelectionFromVSCode(change.range);
+  const changeType = determineVSCodeChangeType(change);
 
-  if (change.text.length === 0) {
-    return [new DeleteSourceChange(selection)];
-  }
+  return match(changeType)
+    .with("add", () => [
+      new AddSourceChange(selection.extendToCode(change.text))
+    ])
+    .with("delete", () => [new DeleteSourceChange(selection)])
+    .with("replace", () => [
+      new DeleteSourceChange(selection),
+      new AddSourceChange(
+        Selection.cursorAtPosition(selection.start).extendToCode(change.text)
+      )
+    ])
+    .exhaustive();
+}
 
-  if (selection.isEmpty) {
-    return [new AddSourceChange(selection.extendToCode(change.text))];
-  }
+type ChangeType = "add" | "delete" | "replace";
+export function determineVSCodeChangeType(
+  change: vscode.TextDocumentContentChangeEvent
+): ChangeType {
+  if (change.text.length === 0) return "delete";
 
-  return [
-    new DeleteSourceChange(selection),
-    new AddSourceChange(
-      Selection.cursorAtPosition(selection.start).extendToCode(change.text)
-    )
-  ];
+  const selection = createSelectionFromVSCode(change.range);
+  return selection.isEmpty ? "add" : "replace";
 }
 
 export function createSelectionFromVSCode(
