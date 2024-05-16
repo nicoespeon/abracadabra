@@ -66,13 +66,23 @@ const lastName = "Doe";`
         expected: "const a = `Hello \\`you\\``"
       },
       {
+        description: "string literal with ${value}",
+        code: "const a = 'Hello[cursor] ${you} ${me2}'",
+        expected: "const a = `Hello ${you} ${me2}`"
+      },
+      {
+        description: "string literal with empty ${}",
+        code: "const a = 'Hello[cursor] ${}'",
+        expected: "const a = `Hello ${}`"
+      },
+      {
         description: "preserves comments",
-        code: `const name = 
+        code: `const name =
   // leading comment
   [cursor]"Jane"
   // trailing comment
   ;`,
-        expected: `const name = 
+        expected: `const name =
   // leading comment
   \`Jane\`
   // trailing comment
@@ -117,6 +127,20 @@ const lastName = "Doe";`
       expect(editor.code).toBe(originalCode);
     }
   );
+
+  it("should preserve cursor position when it converts a JSX prop", async () => {
+    const editor = new InMemoryEditor(
+      `<TestComponent testProp="t[cursor]est" />`
+    );
+
+    await convertToTemplateLiteral(editor);
+
+    const expectedEditor = new InMemoryEditor(
+      `<TestComponent testProp={\`t[cursor]est\`} />`
+    );
+    expect(editor.code).toBe(expectedEditor.code);
+    expect(editor.selection).toEqual(expectedEditor.selection);
+  });
 
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;

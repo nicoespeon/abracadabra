@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - When triggering a refactoring from a quick fix (the 💡 icon), Abracadabra will use the code and position you were on when the fix was suggested. This should be invisible for most use-case, but will play nicely with extensions like [cursorless](https://marketplace.visualstudio.com/items?itemName=pokey.cursorless). Thanks @jaresty for reporting, and @pokey for adding more context 😉
+- "Convert to Template String" will now preserve `${}` and `${someValue}` as-is, without escaping it. It's technically a bug (= changes the behavior of the code) but usage indicates these are meant to become interpolated variables. So it's more likely to do what you want.
 
 ## [9.1.3]
 
