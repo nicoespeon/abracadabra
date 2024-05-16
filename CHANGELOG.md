@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- When triggering a refactoring from a quick fix (the 💡 icon), Abracadabra will use the code and position you were on when the fix was suggested. This should be invisible for most use-case, but will play nicely with extensions like [cursorless](https://marketplace.visualstudio.com/items?itemName=pokey.cursorless). Thanks @jaresty for reporting, and @pokey for adding more context 😉
+
 ## [9.1.3]
 
 ### Fixed

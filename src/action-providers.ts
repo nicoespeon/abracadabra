@@ -12,6 +12,7 @@ import {
   getMaxFileSizeKb,
   shouldShowInQuickFix
 } from "./vscode-configuration";
+import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 
 type Refactoring = RefactoringWithActionProvider;
 
@@ -30,7 +31,7 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
 
     try {
       return this.findApplicableRefactorings(editor).map((refactoring) =>
-        this.buildCodeActionFor(refactoring)
+        this.buildCodeActionFor(refactoring, editor)
       );
     } catch {
       // Silently fail, we don't care why it failed (e.g. code can't be parsed).
@@ -129,7 +130,7 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     return matchingType ? visitor[matchingType] : null;
   }
 
-  private buildCodeActionFor(refactoring: Refactoring) {
+  private buildCodeActionFor(refactoring: Refactoring, editor: VSCodeEditor) {
     const action = new vscode.CodeAction(
       `${refactoring.actionProvider.message} ✨`,
       vscode.CodeActionKind.RefactorRewrite
@@ -138,7 +139,9 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     action.isPreferred = refactoring.actionProvider.isPreferred;
     action.command = {
       command: `abracadabra.${refactoring.command.key}`,
-      title: refactoring.command.title
+      title: refactoring.command.title,
+      // Provide current editor, so refactoring executes with same context
+      arguments: [editor]
     };
 
     return action;
