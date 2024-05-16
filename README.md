@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-59-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-60-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -221,6 +221,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/victor-homyakov"><img src="https://avatars.githubusercontent.com/u/121449?v=4?s=100" width="100px;" alt="Victor Homyakov"/><br /><sub><b>Victor Homyakov</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Avictor-homyakov" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/xixixao"><img src="https://avatars.githubusercontent.com/u/1473433?v=4?s=100" width="100px;" alt="Michal Srb"/><br /><sub><b>Michal Srb</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Axixixao" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/waltergalvao"><img src="https://avatars.githubusercontent.com/u/1367578?v=4?s=100" width="100px;" alt="Walter Galvao"/><br /><sub><b>Walter Galvao</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Awaltergalvao" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.youtube.com/channel/UCML02pamUSxtbwAcrUdVmXg"><img src="https://avatars.githubusercontent.com/u/755842?v=4?s=100" width="100px;" alt="Pokey Rule"/><br /><sub><b>Pokey Rule</b></sub></a><br /><a href="#ideas-pokey" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
