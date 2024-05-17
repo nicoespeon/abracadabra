@@ -2,7 +2,11 @@ import * as vscode from "vscode";
 
 import { RefactoringActionProvider } from "./action-providers";
 import { createCommand } from "./commands";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import {
+  VSCodeEditor,
+  createSelectionFromVSCode,
+  getCodeChangeFromVSCode
+} from "./editor/adapters/vscode-editor";
 import refreshHighlights from "./highlights/refresh-highlights";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
@@ -43,6 +47,7 @@ import splitMultipleDeclarations from "./refactorings/split-multiple-declaration
 import toggleBraces from "./refactorings/toggle-braces";
 import wrapInJsxFrament from "./refactorings/wrap-in-jsx-fragment";
 import { Refactoring, RefactoringWithActionProvider } from "./types";
+import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
@@ -169,8 +174,28 @@ export function activate(context: vscode.ExtensionContext) {
     VSCodeEditor.repositionHighlights(event);
 
     const activeTextEditor = vscode.window.activeTextEditor;
-    if (activeTextEditor) {
-      VSCodeEditor.restoreHighlightDecorations(activeTextEditor);
+    if (!activeTextEditor) return;
+
+    VSCodeEditor.restoreHighlightDecorations(activeTextEditor);
+
+    if (event.document !== activeTextEditor.document) return;
+
+    const changes = event.contentChanges.map(getCodeChangeFromVSCode);
+    const hasAddsOrUpdates = changes.some((change) => change.type !== "delete");
+    if (!hasAddsOrUpdates) return;
+
+    const code = activeTextEditor.document.getText();
+    const selection = createSelectionFromVSCode(activeTextEditor.selection);
+
+    const canAutoConvert =
+      vscode.workspace
+        .getConfiguration("abracadabra")
+        .get("autoConvertToTemplateLiteral") === true;
+
+    if (canAutoConvert && isInsertingVariableInStringLiteral(code, selection)) {
+      vscode.commands.executeCommand(
+        `abracadabra.${convertToTemplateLiteral.command.key}`
+      );
     }
   });
 }

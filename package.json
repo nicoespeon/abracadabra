@@ -110,7 +110,8 @@
     "@babel/types": "7.20.7",
     "minimatch": "9.0.3",
     "pluralize": "8.0.0",
-    "recast": "0.23.4"
+    "recast": "0.23.4",
+    "ts-pattern": "5.1.1"
   },
   "activationEvents": [
     "onLanguage:javascript",
@@ -397,6 +398,11 @@
           "type": "number",
           "default": 250,
           "description": "Don't propose refactorings on files that are bigger than this threshold (kB)."
+        },
+        "abracadabra.autoConvertToTemplateLiteral": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically convert a string into a template literal when you insert `${}`."
         },
         "abracadabra.addNumericSeparator.showInQuickFix": {
           "type": "boolean",

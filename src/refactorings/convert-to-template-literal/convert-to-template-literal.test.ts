@@ -5,7 +5,8 @@ import { testEach } from "../../tests-helpers";
 import * as t from "../../ast";
 import {
   convertToTemplateLiteral,
-  createVisitor
+  createVisitor,
+  isInsertingVariableInStringLiteral
 } from "./convert-to-template-literal";
 
 describe("Convert To Template Literal", () => {
@@ -66,13 +67,23 @@ const lastName = "Doe";`
         expected: "const a = `Hello \\`you\\``"
       },
       {
+        description: "string literal with ${value}",
+        code: "const a = 'Hello[cursor] ${you} ${me2}'",
+        expected: "const a = `Hello ${you} ${me2}`"
+      },
+      {
+        description: "string literal with empty ${}",
+        code: "const a = 'Hello[cursor] ${}'",
+        expected: "const a = `Hello ${}`"
+      },
+      {
         description: "preserves comments",
-        code: `const name = 
+        code: `const name =
   // leading comment
   [cursor]"Jane"
   // trailing comment
   ;`,
-        expected: `const name = 
+        expected: `const name =
   // leading comment
   \`Jane\`
   // trailing comment
@@ -118,6 +129,20 @@ const lastName = "Doe";`
     }
   );
 
+  it("should preserve cursor position when it converts a JSX prop", async () => {
+    const editor = new InMemoryEditor(
+      `<TestComponent testProp="t[cursor]est" />`
+    );
+
+    await convertToTemplateLiteral(editor);
+
+    const expectedEditor = new InMemoryEditor(
+      `<TestComponent testProp={\`t[cursor]est\`} />`
+    );
+    expect(editor.code).toBe(expectedEditor.code);
+    expect(editor.selection).toEqual(expectedEditor.selection);
+  });
+
   it("should show an error message if refactoring can't be made", async () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
@@ -128,5 +153,60 @@ const lastName = "Doe";`
     expect(editor.showError).toBeCalledWith(
       ErrorReason.DidNotFindStringToConvert
     );
+  });
+
+  describe("isInsertingVariableInStringLiteral", () => {
+    it("should return true if selection is inside a ${} in a string literal", () => {
+      const editor = new InMemoryEditor(`const name = "Hello $\{[cursor]}";`);
+
+      const result = isInsertingVariableInStringLiteral(
+        editor.code,
+        editor.selection
+      );
+
+      expect(result).toBeTruthy();
+    });
+
+    it("should return true if selection is inside a ${} in a string with single-quote", () => {
+      const editor = new InMemoryEditor(`const name = 'Hello $\{[cursor]}';`);
+
+      const result = isInsertingVariableInStringLiteral(
+        editor.code,
+        editor.selection
+      );
+
+      expect(result).toBeTruthy();
+    });
+
+    it("should return false if selection after a ${ without a closing }", () => {
+      const editor = new InMemoryEditor(`const name = "Hello $\{[cursor]";`);
+
+      const result = isInsertingVariableInStringLiteral(
+        editor.code,
+        editor.selection
+      );
+
+      expect(result).toBeFalsy();
+    });
+
+    it("should return false if selection is not inside a ${}", () => {
+      const editor = new InMemoryEditor(`const name = "He[cursor]llo $\{}";`);
+
+      const result = isInsertingVariableInStringLiteral(
+        editor.code,
+        editor.selection
+      );
+
+      expect(result).toBeFalsy();
+    });
+
+    it("should return false if selection is invalid", () => {
+      const code = `const name = "Hello $\{}";`;
+      const selection = Selection.cursorAt(12345, 6789);
+
+      const result = isInsertingVariableInStringLiteral(code, selection);
+
+      expect(result).toBeFalsy();
+    });
   });
 });

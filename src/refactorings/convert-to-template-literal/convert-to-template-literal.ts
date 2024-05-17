@@ -1,4 +1,5 @@
-import { Editor, ErrorReason } from "../../editor/editor";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
@@ -11,21 +12,32 @@ export async function convertToTemplateLiteral(editor: Editor) {
     return;
   }
 
-  await editor.write(updatedCode.code);
+  const newCode = updatedCode.code.replace(/\$\\{(\w*)}/g, "${$1}");
+  await editor.write(newCode);
+  await editor.moveCursorTo(updatedCode.newCursorPosition);
 }
 
-function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  return t.transformAST(
+function updateCode(
+  ast: t.AST,
+  selection: Selection
+): t.Transformed & { newCursorPosition: Position } {
+  let newCursorPosition = selection.start;
+
+  const transformedCode = t.transformAST(
     ast,
     createVisitor(selection, (path) => {
+      const sanitizedValue = path.node.value
+        .replace(/`/g, "\\`")
+        .replace(/{/g, "\\{");
       const templateLiteral = t.templateLiteral(
-        [t.templateElement(path.node.value.replace(/`/g, "\\`"))],
+        [t.templateElement(sanitizedValue)],
         []
       );
 
       if (t.isJSXAttribute(path.parentPath)) {
         // Case of <MyComponent prop="test" /> => <MyComponent prop={`test`} />
         path.replaceWith(t.jsxExpressionContainer(templateLiteral));
+        newCursorPosition = newCursorPosition.addCharacters(1);
       } else {
         t.replaceWithPreservingComments(path, templateLiteral);
       }
@@ -33,6 +45,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       path.stop();
     })
   );
+
+  return { ...transformedCode, newCursorPosition };
 }
 
 export function createVisitor(
@@ -52,4 +66,26 @@ export function createVisitor(
       onMatch(path);
     }
   };
+}
+
+export function isInsertingVariableInStringLiteral(
+  code: Code,
+  selection: Selection
+): boolean {
+  const lines = code.split("\n");
+  const currentLine = lines[selection.start.line] ?? "";
+  const previous2Chars =
+    currentLine[selection.start.character - 2] +
+    currentLine[selection.start.character - 1];
+  if (previous2Chars !== "${") return false;
+
+  const nextChar = currentLine[selection.start.character];
+  if (nextChar !== "}") return false;
+
+  let result = false;
+  t.traverseAST(
+    t.parse(code),
+    createVisitor(selection, () => (result = true))
+  );
+  return result;
 }

@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { match } from "ts-pattern";
 import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";
@@ -7,6 +8,7 @@ import { COLORS } from "../colors";
 import {
   Choice,
   Code,
+  CodeChange,
   Command,
   Editor,
   ErrorReason,
@@ -381,24 +383,45 @@ function createSourceChanges(
   change: vscode.TextDocumentContentChangeEvent
 ): SourceChange[] {
   const selection = createSelectionFromVSCode(change.range);
+  const changeType = getCodeChangeFromVSCode(change).type;
 
-  if (change.text.length === 0) {
-    return [new DeleteSourceChange(selection)];
-  }
-
-  if (selection.isEmpty) {
-    return [new AddSourceChange(selection.extendToCode(change.text))];
-  }
-
-  return [
-    new DeleteSourceChange(selection),
-    new AddSourceChange(
-      Selection.cursorAtPosition(selection.start).extendToCode(change.text)
-    )
-  ];
+  return match(changeType)
+    .with("add", () => [
+      new AddSourceChange(selection.extendToCode(change.text))
+    ])
+    .with("delete", () => [new DeleteSourceChange(selection)])
+    .with("update", () => [
+      new DeleteSourceChange(selection),
+      new AddSourceChange(
+        Selection.cursorAtPosition(selection.start).extendToCode(change.text)
+      )
+    ])
+    .exhaustive();
 }
 
-function createSelectionFromVSCode(
+export function getCodeChangeFromVSCode(
+  change: vscode.TextDocumentContentChangeEvent
+): CodeChange {
+  if (change.text.length === 0) {
+    return {
+      type: "delete",
+      offset: change.rangeOffset,
+      length: change.rangeLength
+    };
+  }
+
+  const selection = createSelectionFromVSCode(change.range);
+  return selection.isEmpty
+    ? { type: "add", offset: change.rangeOffset, text: change.text }
+    : {
+        type: "update",
+        offset: change.rangeOffset,
+        text: change.text,
+        length: change.rangeLength
+      };
+}
+
+export function createSelectionFromVSCode(
   selection: vscode.Selection | vscode.Range
 ): Selection {
   return new Selection(

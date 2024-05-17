@@ -441,6 +441,10 @@ Hence, Abracadabra is proposing the refactoring for such scenario!
 
 ![][demo-convert-to-template-literal]
 
+By default, this refactoring will automatically apply if you write `${}` in a string literal. This is convenient behavior in most scenarios, but technically changes code behaviour.
+
+If you want to disable the automatic transformation, you can turn OFF `abracadabra.autoConvertToTemplateLiteral` in [VS Code settings][vscode-settings].
+
 [⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Replace Binary with Assignment
