@@ -399,6 +399,11 @@
           "default": 250,
           "description": "Don't propose refactorings on files that are bigger than this threshold (kB)."
         },
+        "abracadabra.autoConvertToTemplateLiteral": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically convert a string into a template literal when you insert `${}`."
+        },
         "abracadabra.addNumericSeparator.showInQuickFix": {
           "type": "boolean",
           "default": true,

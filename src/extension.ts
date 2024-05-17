@@ -186,7 +186,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     const code = activeTextEditor.document.getText();
     const selection = createSelectionFromVSCode(activeTextEditor.selection);
-    if (isInsertingVariableInStringLiteral(code, selection)) {
+
+    const canAutoConvert =
+      vscode.workspace
+        .getConfiguration("abracadabra")
+        .get("autoConvertToTemplateLiteral") === true;
+
+    if (canAutoConvert && isInsertingVariableInStringLiteral(code, selection)) {
       vscode.commands.executeCommand(
         `abracadabra.${convertToTemplateLiteral.command.key}`
       );
