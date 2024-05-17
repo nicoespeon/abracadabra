@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.2.0] - 2024-05-17 - Grim Grinning Literals 👻
+
 ### Changed
 
 - When triggering a refactoring from a quick fix (the 💡 icon), Abracadabra will use the code and position you were on when the fix was suggested. This should be invisible for most use-case, but will play nicely with extensions like [cursorless](https://marketplace.visualstudio.com/items?itemName=pokey.cursorless). Thanks @jaresty for reporting, and @pokey for adding more context 😉
@@ -1894,7 +1896,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.1.3...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.2.0...HEAD
+[9.2.0]: https://github.com/nicoespeon/abracadabra/compare/9.1.3...9.2.0
 [9.1.3]: https://github.com/nicoespeon/abracadabra/compare/9.1.2...9.1.3
 [9.1.2]: https://github.com/nicoespeon/abracadabra/compare/9.1.1...9.1.2
 [9.1.1]: https://github.com/nicoespeon/abracadabra/compare/9.1.0...9.1.1
