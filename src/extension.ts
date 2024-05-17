@@ -4,7 +4,8 @@ import { RefactoringActionProvider } from "./action-providers";
 import { createCommand } from "./commands";
 import {
   VSCodeEditor,
-  createSelectionFromVSCode
+  createSelectionFromVSCode,
+  getCodeChangeFromVSCode
 } from "./editor/adapters/vscode-editor";
 import refreshHighlights from "./highlights/refresh-highlights";
 import removeAllHighlights from "./highlights/remove-all-highlights";
@@ -179,9 +180,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     if (event.document !== activeTextEditor.document) return;
 
-    const hasAddsOrUpdates = event.contentChanges.some(
-      (change) => change.text.length > 0
-    );
+    const changes = event.contentChanges.map(getCodeChangeFromVSCode);
+    const hasAddsOrUpdates = changes.some((change) => change.type !== "delete");
     if (!hasAddsOrUpdates) return;
 
     const code = activeTextEditor.document.getText();

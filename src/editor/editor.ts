@@ -71,3 +71,9 @@ export type SelectedPosition = Omit<
   }>,
   "description" | "icon"
 >;
+
+export type CodeChange =
+  | { type: "add"; offset: number; text: string }
+  | { type: "delete"; offset: number; length: number }
+  | { type: "update"; offset: number; length: number; text: string };
+

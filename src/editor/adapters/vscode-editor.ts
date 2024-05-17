@@ -8,6 +8,7 @@ import { COLORS } from "../colors";
 import {
   Choice,
   Code,
+  CodeChange,
   Command,
   Editor,
   ErrorReason,
@@ -382,14 +383,14 @@ function createSourceChanges(
   change: vscode.TextDocumentContentChangeEvent
 ): SourceChange[] {
   const selection = createSelectionFromVSCode(change.range);
-  const changeType = determineVSCodeChangeType(change);
+  const changeType = getCodeChangeFromVSCode(change).type;
 
   return match(changeType)
     .with("add", () => [
       new AddSourceChange(selection.extendToCode(change.text))
     ])
     .with("delete", () => [new DeleteSourceChange(selection)])
-    .with("replace", () => [
+    .with("update", () => [
       new DeleteSourceChange(selection),
       new AddSourceChange(
         Selection.cursorAtPosition(selection.start).extendToCode(change.text)
@@ -398,14 +399,26 @@ function createSourceChanges(
     .exhaustive();
 }
 
-type ChangeType = "add" | "delete" | "replace";
-export function determineVSCodeChangeType(
+export function getCodeChangeFromVSCode(
   change: vscode.TextDocumentContentChangeEvent
-): ChangeType {
-  if (change.text.length === 0) return "delete";
+): CodeChange {
+  if (change.text.length === 0) {
+    return {
+      type: "delete",
+      offset: change.rangeOffset,
+      length: change.rangeLength
+    };
+  }
 
   const selection = createSelectionFromVSCode(change.range);
-  return selection.isEmpty ? "add" : "replace";
+  return selection.isEmpty
+    ? { type: "add", offset: change.rangeOffset, text: change.text }
+    : {
+        type: "update",
+        offset: change.rangeOffset,
+        text: change.text,
+        length: change.rangeLength
+      };
 }
 
 export function createSelectionFromVSCode(
