@@ -93,7 +93,7 @@
     "jest-environment-jsdom": "29.7.0",
     "jest-html-loader": "1.0.0",
     "jsdom": "23.0.1",
-    "lint-staged": "13.2.3",
+    "lint-staged": "15.2.5",
     "mocha": "10.2.0",
     "node-stdlib-browser": "1.2.0",
     "ovsx": "0.8.3",
