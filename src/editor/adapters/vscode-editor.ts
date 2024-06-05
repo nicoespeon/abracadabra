@@ -35,13 +35,22 @@ const vscodeDecorations = new Map<
 >();
 
 export class VSCodeEditor implements Editor {
-  private editor: vscode.TextEditor;
+  protected editor: vscode.TextEditor;
+  private editorSelection: vscode.Selection;
   private document: vscode.TextDocument;
   public static panel: vscode.WebviewPanel | null = null;
 
-  constructor(editor: vscode.TextEditor) {
+  constructor(
+    editor: vscode.TextEditor,
+    editorSelection: vscode.Selection = editor.selection
+  ) {
     this.editor = editor;
+    this.editorSelection = editorSelection;
     this.document = editor.document;
+  }
+
+  withSelection(selection: Selection): Editor {
+    return new VSCodeEditor(this.editor, toVSCodeSelection(selection));
   }
 
   async workspaceFiles(): Promise<Path[]> {
@@ -75,14 +84,14 @@ export class VSCodeEditor implements Editor {
   }
 
   get selection(): Selection {
-    return createSelectionFromVSCode(this.editor.selection);
+    return createSelectionFromVSCode(this.editorSelection);
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
     // We need to register initial position BEFORE we update the document.
     const cursorAtInitialStartPosition = new vscode.Selection(
-      this.editor.selection.start,
-      this.editor.selection.start
+      this.editorSelection.start,
+      this.editorSelection.start
     );
 
     const edit = new vscode.WorkspaceEdit();
@@ -90,7 +99,7 @@ export class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
 
     // Put cursor at correct position
-    this.editor.selection = newCursorPosition
+    this.editorSelection = newCursorPosition
       ? toVSCodeCursor(newCursorPosition)
       : cursorAtInitialStartPosition;
 
@@ -171,7 +180,7 @@ export class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
 
     if (newCursorPosition) {
-      this.editor.selection = toVSCodeCursor(newCursorPosition);
+      this.editorSelection = toVSCodeCursor(newCursorPosition);
     }
   }
 
@@ -200,7 +209,7 @@ export class VSCodeEditor implements Editor {
   }
 
   moveCursorTo(position: Position) {
-    this.editor.selection = toVSCodeCursor(position);
+    this.editorSelection = toVSCodeCursor(position);
     return Promise.resolve();
   }
 
@@ -432,6 +441,13 @@ export function createSelectionFromVSCode(
 
 function toVSCodeRange(selection: Selection): vscode.Range {
   return new vscode.Range(
+    toVSCodePosition(selection.start),
+    toVSCodePosition(selection.end)
+  );
+}
+
+export function toVSCodeSelection(selection: Selection): vscode.Selection {
+  return new vscode.Selection(
     toVSCodePosition(selection.start),
     toVSCodePosition(selection.end)
   );

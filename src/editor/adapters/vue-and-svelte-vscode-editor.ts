@@ -3,9 +3,16 @@ import * as vscode from "vscode";
 import { Code, Command, Modification, Result } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";
-import { VSCodeEditor } from "./vscode-editor";
+import { VSCodeEditor, toVSCodeSelection } from "./vscode-editor";
 
 export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
+  withSelection(selection: Selection): VueAndSvelteVSCodeEditor {
+    return new VueAndSvelteVSCodeEditor(
+      this.editor,
+      toVSCodeSelection(selection)
+    );
+  }
+
   get code(): Code {
     return super.code.slice(this.openingTagOffset, this.closingTagOffset);
   }

@@ -141,7 +141,7 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
       command: `abracadabra.${refactoring.command.key}`,
       title: refactoring.command.title,
       // Provide current editor, so refactoring executes with same context
-      arguments: [editor]
+      arguments: [editor.withSelection(editor.selection)]
     };
 
     return action;
