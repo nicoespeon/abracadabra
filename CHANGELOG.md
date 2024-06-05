@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.2.1]
+
+### Fixed
+
+- The cursorless fix wasn't actually working because the underlying cursor position was mutated. This has been properly fixed and it's now working as expected!
+
 ## [9.2.0] - 2024-05-17 - Grim Grinning Literals 👻
 
 ### Changed
