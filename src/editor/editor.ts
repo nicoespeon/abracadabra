@@ -21,7 +21,7 @@ export interface Editor {
     newCursorPosition?: Position
   ): Promise<void>;
   delegate(command: Command): Promise<Result>;
-  showError(reason: ErrorReason): Promise<void>;
+  showError(reason: ErrorReason | string): Promise<void>;
   askUserInput(defaultValue?: string): Promise<string | undefined>;
   askUserChoice<T>(
     choices: Choice<T>[],
@@ -76,4 +76,3 @@ export type CodeChange =
   | { type: "add"; offset: number; text: string }
   | { type: "delete"; offset: number; length: number }
   | { type: "update"; offset: number; length: number; text: string };
-

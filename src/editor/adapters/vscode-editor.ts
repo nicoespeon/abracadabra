@@ -189,8 +189,10 @@ export class VSCodeEditor implements Editor {
     return Result.OK;
   }
 
-  async showError(reason: ErrorReason) {
-    await vscode.window.showErrorMessage(errorReasonToString(reason));
+  async showError(reason: ErrorReason | string) {
+    const message =
+      typeof reason === "string" ? reason : errorReasonToString(reason);
+    await vscode.window.showErrorMessage(message);
   }
 
   async askUserChoice<T>(choices: Choice<T>[], placeHolder?: string) {

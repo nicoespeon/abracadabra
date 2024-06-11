@@ -16,7 +16,10 @@ import { Selection } from "../selection";
 export class AttemptingEditor implements Editor {
   attemptSucceeded = true;
 
-  constructor(private editor: Editor, private expectedReason: ErrorReason) {}
+  constructor(
+    private editor: Editor,
+    private expectedReason: ErrorReason
+  ) {}
 
   workspaceFiles(): Promise<Path[]> {
     return this.editor.workspaceFiles();
@@ -58,7 +61,7 @@ export class AttemptingEditor implements Editor {
     return this.editor.delegate(command);
   }
 
-  async showError(reason: ErrorReason) {
+  async showError(reason: ErrorReason | string) {
     if (reason === this.expectedReason) {
       this.attemptSucceeded = false;
       return Promise.resolve();
