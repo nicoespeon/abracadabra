@@ -110,6 +110,7 @@ export class VSCodeEditor implements Editor {
         new vscode.Range(position, position),
         vscode.TextEditorRevealType.Default
       );
+      this.editor.selection = new vscode.Selection(position, position);
     }
   }
 
