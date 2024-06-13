@@ -96,7 +96,7 @@ export class VSCodeEditor implements Editor {
 
     const edit = new vscode.WorkspaceEdit();
     edit.set(this.document.uri, [new vscode.TextEdit(this.editRange, code)]);
-    await vscode.workspace.applyEdit(edit);
+    await vscode.workspace.applyEdit(edit, { isRefactoring: true });
 
     // Put cursor at correct position
     this.editorSelection = newCursorPosition
