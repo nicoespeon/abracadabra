@@ -136,6 +136,19 @@ const someMachine = createMachine<C<typeof someModel>, Extracted>()`
 }
 
 function doSomething(options: Extracted) {}`
+      },
+      {
+        description: "type literal",
+        code: `type Context = {[cursor]
+  state: "reading";
+  value: string
+}`,
+        expected: `type Extracted = {
+  state: "reading";
+  value: string;
+};
+
+type Context = Extracted;`
       }
     ],
     async ({ code, expected }) => {

@@ -43,7 +43,10 @@ function updateCode(
         typeAnnotation
       );
 
-      if (t.isTSTypeLiteral(typeAnnotation)) {
+      if (
+        t.isTSTypeLiteral(typeAnnotation) &&
+        !t.isTSTypeAliasDeclaration(path.parent)
+      ) {
         typeDeclaration = t.tsInterfaceDeclaration(
           typeIdentifier,
           null,
@@ -77,6 +80,7 @@ function createVisitor(
   onMatch: (
     path: t.NodePath<
       | t.TSTypeAnnotation
+      | t.TSTypeLiteral
       | t.TSAsExpression
       | t.TSBaseType
       | t.TSTypeReference
@@ -162,6 +166,18 @@ function createVisitor(
       onMatch(path, path.node.typeAnnotation, (identifier) => {
         // @ts-expect-error It seems genericTypeAnnotation was typed with Flow in mind, but it works with TS
         path.node.typeAnnotation = t.genericTypeAnnotation(identifier);
+      });
+    },
+
+    TSTypeLiteral(path) {
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path, path.node, (identifier) => {
+        path.replaceWith(t.tsTypeReference(identifier));
       });
     },
 
