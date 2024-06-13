@@ -143,12 +143,30 @@ function doSomething(options: Extracted) {}`
   state: "reading";
   value: string
 }`,
-        expected: `type Extracted = {
+        expected: `type [cursor]Extracted = {
   state: "reading";
   value: string;
 };
 
 type Context = Extracted;`
+      },
+      {
+        description: "type literal in a union type",
+        code: `type Context =
+  | { state: "reading"; value: string }
+  | {[cursor]
+      state: "editing";
+      value: string;
+      draftValue: string;
+    };`,
+        expected: `type [cursor]Extracted = {
+  state: "editing";
+  value: string;
+  draftValue: string;
+};
+
+type Context =
+  { state: "reading"; value: string } | Extracted;`
       }
     ],
     async ({ code, expected }) => {

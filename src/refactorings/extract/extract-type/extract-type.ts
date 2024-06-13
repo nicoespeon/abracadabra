@@ -45,7 +45,8 @@ function updateCode(
 
       if (
         t.isTSTypeLiteral(typeAnnotation) &&
-        !t.isTSTypeAliasDeclaration(path.parent)
+        !t.isTSTypeAliasDeclaration(path.parent) &&
+        !t.isTSUnionType(path.parent)
       ) {
         typeDeclaration = t.tsInterfaceDeclaration(
           typeIdentifier,
@@ -244,6 +245,12 @@ function hasChildWhichMatchesSelection(
     TSBaseType(childPath) {
       if (!selection.isInsidePath(childPath)) return;
       if (!t.isTSTypeParameterInstantiation(childPath.parent)) return;
+
+      result = true;
+      childPath.stop();
+    },
+    TSTypeLiteral(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
 
       result = true;
       childPath.stop();
