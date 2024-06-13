@@ -4,7 +4,10 @@ import * as vscode from "vscode";
 import * as t from "./ast";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { Editor } from "./editor/editor";
-import { RefactoringWithActionProvider } from "./types";
+import {
+  RefactoringWithActionProvider,
+  RefactoringWithActionProvider__NEW
+} from "./types";
 import {
   getIgnoredFolders,
   getIgnoredPatterns,
@@ -14,7 +17,9 @@ import {
 } from "./vscode-configuration";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 
-type Refactoring = RefactoringWithActionProvider;
+type Refactoring =
+  | RefactoringWithActionProvider
+  | RefactoringWithActionProvider__NEW;
 
 export class RefactoringActionProvider implements vscode.CodeActionProvider {
   constructor(private refactorings: Refactoring[]) {}

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { RefactoringActionProvider } from "./action-providers";
-import { createCommand } from "./commands";
+import { createCommand, createCommand__NEW } from "./commands";
 import {
   VSCodeEditor,
   createSelectionFromVSCode,
@@ -46,19 +46,25 @@ import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 import toggleBraces from "./refactorings/toggle-braces";
 import wrapInJsxFrament from "./refactorings/wrap-in-jsx-fragment";
-import { Refactoring, RefactoringWithActionProvider } from "./types";
+import {
+  Refactoring,
+  RefactoringWithActionProvider,
+  RefactoringWithActionProvider__NEW
+} from "./types";
 import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
     languages: ["typescript", "typescriptreact"],
     withoutActionProvider: [],
-    withActionProvider: [extractGenericType, extractInterface]
+    withActionProvider: [extractGenericType, extractInterface],
+    withActionProvider__NEW: []
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
-    withActionProvider: [wrapInJsxFrament, removeJsxFragment]
+    withActionProvider: [wrapInJsxFrament, removeJsxFragment],
+    withActionProvider__NEW: []
   },
   allLanguages: {
     languages: [
@@ -102,9 +108,9 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       simplifyTernary,
       splitDeclarationAndInitialization,
       splitIfStatement,
-      splitMultipleDeclarations,
       toggleBraces
-    ]
+    ],
+    withActionProvider__NEW: [splitMultipleDeclarations]
   }
 };
 
@@ -112,6 +118,7 @@ type ConfiguredRefactoring = {
   languages: string[];
   withoutActionProvider: Refactoring[];
   withActionProvider: RefactoringWithActionProvider[];
+  withActionProvider__NEW: RefactoringWithActionProvider__NEW[];
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -137,17 +144,34 @@ export function activate(context: vscode.ExtensionContext) {
       );
     });
 
+  const commands__NEW = Object.values(refactorings).flatMap(
+    ({ withActionProvider__NEW }) => withActionProvider__NEW
+  );
+
+  commands__NEW.forEach(({ command }) => {
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        `abracadabra.${command.key}`,
+        createCommand__NEW(command.operation)
+      )
+    );
+  });
+
   const withActionProviderPerLanguage = Object.values(refactorings).reduce(
-    (memo, { languages, withActionProvider }) => {
+    (memo, { languages, withActionProvider, withActionProvider__NEW }) => {
       languages.forEach((language) => {
         if (!memo[language]) memo[language] = [];
         memo[language].push(...withActionProvider);
+        memo[language].push(...withActionProvider__NEW);
       });
 
       return memo;
     },
     {} as {
-      [language: string]: RefactoringWithActionProvider[];
+      [language: string]: (
+        | RefactoringWithActionProvider
+        | RefactoringWithActionProvider__NEW
+      )[];
     }
   );
 

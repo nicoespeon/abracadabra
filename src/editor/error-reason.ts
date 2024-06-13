@@ -8,7 +8,6 @@ export enum ErrorReason {
   DidNotFindIdentifiersToRename,
   DidNotFindStatementToToggleBraces,
   DidNotFindTypeToExtract,
-  DidNotFindMultipleDeclarationsToSplit,
   CantImportReferences,
   DidNotFindOtherFiles,
   CanNotExtractClass,
@@ -86,9 +85,6 @@ export function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindTypeToExtract:
       return didNotFind("a type to extract");
-
-    case ErrorReason.DidNotFindMultipleDeclarationsToSplit:
-      return didNotFind("multiple variable declarations to split");
 
     case ErrorReason.CantImportReferences:
       return cantDoIt(
@@ -240,7 +236,7 @@ export function toString(reason: ErrorReason): string {
   }
 }
 
-function didNotFind(element: string): string {
+export function didNotFind(element: string): string {
   return `I didn't find ${element} from current selection 🤔`;
 }
 

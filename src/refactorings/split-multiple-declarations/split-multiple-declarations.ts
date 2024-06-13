@@ -1,17 +1,23 @@
-import { Editor, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
+import { didNotFind } from "../../editor/error-reason";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { OperationResult } from "../../types";
 
-export async function splitMultipleDeclarations(editor: Editor) {
-  const { code, selection } = editor;
+export function splitMultipleDeclarations(
+  code: Code,
+  selection: Selection
+): OperationResult {
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindMultipleDeclarationsToSplit);
-    return;
+    return {
+      action: "show error",
+      reason: didNotFind("multiple variable declarations to split")
+    };
   }
 
-  await editor.write(updatedCode.code);
+  return { action: "write", code: updatedCode.code };
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
