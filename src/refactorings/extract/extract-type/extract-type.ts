@@ -2,7 +2,7 @@ import * as t from "../../../ast";
 import { Command, Editor, ErrorReason } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
-import { pascalCase } from "../extract-variable/changeCase";
+import { pascalCase } from "../changeCase";
 
 export async function extractType(editor: Editor) {
   const { code, selection } = editor;
