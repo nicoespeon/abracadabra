@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- "Extract Type" can now extract type literals. This is particularly handy when you have such a union type:
+
+```ts
+type Context =
+  | { state: "reading"; value: string }
+  | {
+      state: "editing";
+      value: string;
+      draftValue: string;
+    };
+```
+
+Put your cursor wherever within `{ state: "reading"; value: string }`, hit Ctrl+Shift+V (⌘ ⇧ V) and there you have it:
+
+```ts
+type ReadingContext = { state: "reading"; value: string };
+
+type Context =
+  | ReadingContext
+  | {
+      state: "editing";
+      value: string;
+      draftValue: string;
+    };
+```
+
+The `ReadingContext` name was inferred, it it can be. In any case, you are in "rename mode" right away so you can type whatever is better, press Enter, be done.
+
 ## [9.2.1]
 
 ### Fixed
