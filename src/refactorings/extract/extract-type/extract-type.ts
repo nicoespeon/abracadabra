@@ -2,6 +2,7 @@ import * as t from "../../../ast";
 import { Command, Editor, ErrorReason } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
+import { pascalCase } from "../extract-variable/changeCase";
 
 export async function extractType(editor: Editor) {
   const { code, selection } = editor;
@@ -36,7 +37,7 @@ function updateCode(
       if (!pathWhereToDeclareType) return;
       if (!pathWhereToDeclareType.parentPath) return;
 
-      const typeIdentifier = t.identifier("Extracted");
+      const typeIdentifier = t.identifier(extractedIdentifierName(path));
       let typeDeclaration: t.Node = t.tsTypeAliasDeclaration(
         typeIdentifier,
         null,
@@ -76,19 +77,46 @@ function updateCode(
   return { ...result, newNodePosition };
 }
 
+type MatchedPath = t.NodePath<
+  | t.TSTypeAnnotation
+  | t.TSTypeLiteral
+  | t.TSAsExpression
+  | t.TSBaseType
+  | t.TSTypeReference
+  | t.TSTypeQuery
+  | t.TSUnionType
+  | t.TSIntersectionType
+>;
+
+function extractedIdentifierName(path: MatchedPath): string {
+  const defaultName = "Extracted";
+
+  if (
+    t.isTSTypeLiteral(path.node) &&
+    t.isTSUnionType(path.parent) &&
+    t.isTSTypeAliasDeclaration(path.parentPath.parent)
+  ) {
+    const member = getFirstStringLiteralPropertyMember(path.node);
+    return member?.literal.type === "StringLiteral"
+      ? pascalCase(member.literal.value + path.parentPath.parent.id.name)
+      : defaultName;
+  }
+
+  return defaultName;
+}
+
+function getFirstStringLiteralPropertyMember(node: t.TSTypeLiteral) {
+  const match = node.members.find(
+    (member) => member.typeAnnotation?.typeAnnotation?.type === "TSLiteralType"
+  );
+
+  return match?.typeAnnotation?.typeAnnotation as t.TSLiteralType | undefined;
+}
+
 function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<
-      | t.TSTypeAnnotation
-      | t.TSTypeLiteral
-      | t.TSAsExpression
-      | t.TSBaseType
-      | t.TSTypeReference
-      | t.TSTypeQuery
-      | t.TSUnionType
-      | t.TSIntersectionType
-    >,
+    path: MatchedPath,
     extractedTypeAnnotation: t.TSType,
     replaceType: (identifier: t.Identifier) => void
   ) => void

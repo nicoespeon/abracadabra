@@ -153,20 +153,37 @@ type Context = Extracted;`
       {
         description: "type literal in a union type",
         code: `type Context =
-  | { state: "reading"; value: string }
+  | { value: string }
   | {[cursor]
-      state: "editing";
       value: string;
       draftValue: string;
     };`,
         expected: `type [cursor]Extracted = {
-  state: "editing";
   value: string;
   draftValue: string;
 };
 
 type Context =
-  { state: "reading"; value: string } | Extracted;`
+  { value: string } | Extracted;`
+      },
+      {
+        description:
+          "type literal in a union type (infer name from first string literal)",
+        code: `type Context =
+  | { state: "reading"; value: string }
+  | {[cursor]
+      state: "is editing";
+      value: string;
+      draftValue: string;
+    };`,
+        expected: `type [cursor]IsEditingContext = {
+  state: "is editing";
+  value: string;
+  draftValue: string;
+};
+
+type Context =
+  { state: "reading"; value: string } | IsEditingContext;`
       }
     ],
     async ({ code, expected }) => {
