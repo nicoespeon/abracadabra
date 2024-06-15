@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.3.0] - 2024-06-15 - You've Got a Type in Me 🚀
+
 ### Added
 
 - "Extract Type" can now extract type literals. This is particularly handy when you have such a union type:
@@ -1932,7 +1934,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.2.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.3.0...HEAD
+[9.3.0]: https://github.com/nicoespeon/abracadabra/compare/9.2.1...9.3.0
 [9.2.1]: https://github.com/nicoespeon/abracadabra/compare/9.2.0...9.2.1
 [9.2.0]: https://github.com/nicoespeon/abracadabra/compare/9.1.3...9.2.0
 [9.1.3]: https://github.com/nicoespeon/abracadabra/compare/9.1.2...9.1.3
