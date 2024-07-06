@@ -2,10 +2,7 @@ import { Binding, NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { first } from "../array";
 import { getImportDeclarations, TypeDeclaration } from "./domain";
-import {
-  areEquivalent,
-  isFunctionDeclarationOrArrowFunction
-} from "./identity";
+import { areEquivalent } from "./identity";
 import { isSelectablePath, SelectablePath } from "./selection";
 
 export function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
@@ -52,8 +49,7 @@ export function isShadowIn(
 
   function isDeclaredInFunction(node: t.Node): boolean {
     return (
-      isFunctionDeclarationOrArrowFunction(node) &&
-      node.params.some((node) => areEquivalent(id, node))
+      t.isFunction(node) && node.params.some((node) => areEquivalent(id, node))
     );
   }
 
