@@ -82,7 +82,7 @@
     "@vscode/test-electron": "2.4.0",
     "all-contributors-cli": "6.26.1",
     "babel-jest": "29.7.0",
-    "chai": "4.3.10",
+    "chai": "5.1.1",
     "esbuild": "0.22.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
