@@ -167,6 +167,16 @@ return {title: title};`,
 return {title: document.title};`
       },
       {
+        description: "shadowed variable in a method",
+        code: `const hello[cursor] = "Hello!";
+console.log(hello);
+
+fn({ set(hello) {} });`,
+        expected: `console.log("Hello!");
+
+fn({ set(hello) {} });`
+      },
+      {
         description: "export outside of declaration scope",
         code: `function sayHello() {
   const hello = [cursor]"Hello!";
