@@ -596,6 +596,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "ipanasenko",
+      "name": "Illia Panasenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/576152?v=4",
+      "profile": "https://ipanasenko.me",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
