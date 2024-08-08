@@ -39,15 +39,15 @@ export function createVisitor(
       match([path.node.left, path.node.operator, path.node.right])
         .with(
           [whenNodeIs(true), "||", P.any],
+          [whenNodeIs(false), "&&", P.any],
           [P.any, "||", whenNodeIs(false)],
           [P.any, "&&", whenNodeIs(true)],
-          [whenNodeIs(false), "&&", P.any],
           () => onMatch(path, path.node.left)
         )
         .with(
-          [P.any, "||", whenNodeIs(true)],
           [whenNodeIs(false), "||", P.any],
           [whenNodeIs(true), "&&", P.any],
+          [P.any, "||", whenNodeIs(true)],
           [P.any, "&&", whenNodeIs(false)],
           () => onMatch(path, path.node.right)
         )
