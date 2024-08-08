@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.0] - 2024-08-08 - Boolean Mine 🐘
+
 ### Added
 
 - **[New Refactoring]** "Simplify Boolean" thanks to @ipanasenko suggestion. Some refactorings may left you with logical expressions that look like `someCondition && true` and that can be simplified. This refactoring will take care of figuring out how.
@@ -1942,7 +1944,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.3.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.0...HEAD
+[9.4.0]: https://github.com/nicoespeon/abracadabra/compare/9.3.0...9.4.0
 [9.3.0]: https://github.com/nicoespeon/abracadabra/compare/9.2.1...9.3.0
 [9.2.1]: https://github.com/nicoespeon/abracadabra/compare/9.2.0...9.2.1
 [9.2.0]: https://github.com/nicoespeon/abracadabra/compare/9.1.3...9.2.0
