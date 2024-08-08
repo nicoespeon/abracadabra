@@ -13,7 +13,7 @@ describe("Extract Variable - Multiple occurrences", () => {
 
     await extractVariable(editor);
 
-    expect(editor.askUserChoice).not.toBeCalled();
+    expect(editor.askUserChoice).not.toHaveBeenCalled();
   });
 
   it("should ask the user what to replace if there are multiple occurrences", async () => {
@@ -24,7 +24,7 @@ sendMessage("Hello");`;
 
     await extractVariable(editor);
 
-    expect(editor.askUserChoice).toBeCalledWith([
+    expect(editor.askUserChoice).toHaveBeenCalledWith([
       {
         value: ReplacementStrategy.AllOccurrences,
         label: "Replace all 2 occurrences"

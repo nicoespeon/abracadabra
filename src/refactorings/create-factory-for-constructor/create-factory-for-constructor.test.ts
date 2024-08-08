@@ -119,6 +119,6 @@ export function createEmployee() {
 
     await createFactoryForConstructor(editor);
 
-    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindClass);
+    expect(editor.showError).toHaveBeenCalledWith(ErrorReason.DidNotFindClass);
   });
 });

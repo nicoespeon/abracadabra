@@ -85,7 +85,7 @@ describe("Simplify Boolean", () => {
 
     await simplifyBoolean(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindBooleanToSimplify
     );
   });

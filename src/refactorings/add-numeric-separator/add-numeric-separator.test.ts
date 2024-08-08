@@ -55,7 +55,7 @@ console.log(1234567890);`
 
     await addNumericSeparator(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindNumericLiteral
     );
   });

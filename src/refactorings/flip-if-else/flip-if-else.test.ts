@@ -316,6 +316,8 @@ doSomethingElse();`,
 
     await flipIfElse(editor);
 
-    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindIfElseToFlip);
+    expect(editor.showError).toHaveBeenCalledWith(
+      ErrorReason.DidNotFindIfElseToFlip
+    );
   });
 });

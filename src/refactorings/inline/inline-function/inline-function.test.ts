@@ -604,7 +604,7 @@ const firstName = hasName ? getFirstName() : null;`,
 
       await inlineFunction(editor);
 
-      expect(editor.showError).toBeCalledWith(expectedError);
+      expect(editor.showError).toHaveBeenCalledWith(expectedError);
     }
   );
 
@@ -638,7 +638,7 @@ export { sayHello }`;
 
       await inlineFunction(editor);
 
-      expect(editor.showError).toBeCalledWith(
+      expect(editor.showError).toHaveBeenCalledWith(
         ErrorReason.CantRemoveExportedFunction
       );
     });

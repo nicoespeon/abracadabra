@@ -230,7 +230,7 @@ function [cursor]doSomething() {}`;
 
     await convertToArrowFunction(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore
     );
   });
@@ -242,7 +242,7 @@ function [cursor]doSomething() {}`;
 
     await convertToArrowFunction(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindFunctionDeclarationToConvert
     );
   });

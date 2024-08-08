@@ -179,7 +179,7 @@ describe("Extract Generic Type - Interface declaration", () => {
 
       await extractGenericType(editor);
 
-      expect(editor.askUserChoice).toBeCalledWith([
+      expect(editor.askUserChoice).toHaveBeenCalledWith([
         {
           value: ReplacementStrategy.AllOccurrences,
           label: "Replace all 2 occurrences"

@@ -119,7 +119,7 @@ someVariable = 'newValue';`
 
     await convertLetToConst(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindLetToConvertToConst
     );
   });

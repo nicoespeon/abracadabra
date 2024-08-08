@@ -227,7 +227,7 @@ for (const item of items) {
 
     await convertForEachToForOf(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindForEachToConvertToForOf
     );
   });

@@ -14,7 +14,7 @@ describe("AttemptingEditor", () => {
 
       attemptingEditor.showError(EXPECTED_REASON);
 
-      expect(editor.showError).not.toBeCalled();
+      expect(editor.showError).not.toHaveBeenCalled();
     });
 
     it("should say attempt didn't succeeded", async () => {
@@ -36,8 +36,8 @@ describe("AttemptingEditor", () => {
 
       attemptingEditor.showError(ANY_OTHER_REASON);
 
-      expect(editor.showError).toBeCalledTimes(1);
-      expect(editor.showError).toBeCalledWith(ANY_OTHER_REASON);
+      expect(editor.showError).toHaveBeenCalledTimes(1);
+      expect(editor.showError).toHaveBeenCalledWith(ANY_OTHER_REASON);
     });
 
     it("should say attempt succeeded", async () => {

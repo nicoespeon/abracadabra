@@ -291,7 +291,7 @@ if (startTime > 0) {
 
     await extractVariable(editor);
 
-    expect(editor.askUserChoice).toBeCalledWith([
+    expect(editor.askUserChoice).toHaveBeenCalledWith([
       {
         label: "Destructure => `const { baz } = foo.bar`",
         value: DestructureStrategy.Destructure
@@ -310,7 +310,7 @@ if (startTime > 0) {
 
     await extractVariable(editor);
 
-    expect(editor.askUserChoice).not.toBeCalled();
+    expect(editor.askUserChoice).not.toHaveBeenCalled();
   });
 
   it("should not ask if user wants to destructure if it can't be", async () => {
@@ -320,7 +320,7 @@ if (startTime > 0) {
 
     await extractVariable(editor);
 
-    expect(editor.askUserChoice).not.toBeCalled();
+    expect(editor.askUserChoice).not.toHaveBeenCalled();
   });
 
   it("should preserve member expression if user says so", async () => {

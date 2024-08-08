@@ -479,7 +479,7 @@ const result = one + two + three;`;
 
       await inlineVariable(editor);
 
-      expect(editor.showError).toBeCalledWith(
+      expect(editor.showError).toHaveBeenCalledWith(
         ErrorReason.DidNotFindInlinableCode
       );
     });
@@ -527,7 +527,7 @@ const result = one + 2 + three;`);
 
     await inlineVariable(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindInlinableCode
     );
   });
@@ -539,7 +539,7 @@ const result = one + 2 + three;`);
 
     await inlineVariable(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindInlinableCodeIdentifiers
     );
   });
@@ -551,7 +551,7 @@ const result = one + 2 + three;`);
 
     await inlineVariable(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindInlinableCodeIdentifiers
     );
   });
@@ -591,7 +591,7 @@ export default foo;`
 
       await inlineVariable(editor);
 
-      expect(editor.showError).toBeCalledWith(
+      expect(editor.showError).toHaveBeenCalledWith(
         ErrorReason.CantInlineExportedVariables
       );
     }
@@ -640,7 +640,7 @@ export default Value;`
 
       await inlineVariable(editor);
 
-      expect(editor.showError).toBeCalledWith(
+      expect(editor.showError).toHaveBeenCalledWith(
         ErrorReason.CantInlineExportedVariables
       );
     }
@@ -655,7 +655,7 @@ hello = "World!";`;
 
     await inlineVariable(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.CantInlineRedeclaredVariables
     );
   });

@@ -422,7 +422,7 @@ doSomethingElse();
 
     await mergeWithPreviousIfStatement(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindStatementToMerge
     );
   });

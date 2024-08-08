@@ -285,6 +285,8 @@ if (canLog) {
 
     await liftUpConditional(editor);
 
-    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindNestedIf);
+    expect(editor.showError).toHaveBeenCalledWith(
+      ErrorReason.DidNotFindNestedIf
+    );
   });
 });

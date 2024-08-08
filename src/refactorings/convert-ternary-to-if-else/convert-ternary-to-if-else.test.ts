@@ -316,7 +316,7 @@ if (args.forcelink) {
 
     await convertTernaryToIfElse(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindTernaryToConvert
     );
   });
@@ -328,7 +328,7 @@ if (args.forcelink) {
 
     await convertTernaryToIfElse(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.CantConvertTernaryWithOtherDeclarations
     );
   });

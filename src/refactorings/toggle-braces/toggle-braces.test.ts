@@ -559,7 +559,7 @@ while (true);`
 
     await toggleBraces(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindStatementToToggleBraces
     );
   });

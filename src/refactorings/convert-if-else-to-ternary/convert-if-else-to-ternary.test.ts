@@ -302,7 +302,7 @@ describe("Convert If/Else to Ternary", () => {
 
     await convertIfElseToTernary(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindIfElseToConvert
     );
   });

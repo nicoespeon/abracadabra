@@ -133,7 +133,7 @@ firstName = "Jane";
 
     await splitDeclarationAndInitialization(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindDeclarationToSplit
     );
   });
@@ -145,7 +145,7 @@ firstName = "Jane";
 
     await splitDeclarationAndInitialization(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindDeclarationToSplit
     );
   });

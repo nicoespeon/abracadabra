@@ -200,7 +200,7 @@ describe("Split If Statement", () => {
 
     await splitIfStatement(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindIfStatementToSplit
     );
   });
@@ -212,7 +212,7 @@ describe("Split If Statement", () => {
 
     await splitIfStatement(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindIfStatementToSplit
     );
   });

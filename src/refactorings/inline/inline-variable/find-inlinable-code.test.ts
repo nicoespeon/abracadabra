@@ -33,7 +33,7 @@ describe("InlinableObjectPattern", () => {
 
     inlinable.updateIdentifiersWith("name");
 
-    expect(child.updateIdentifiersWith).toBeCalledWith("user.name");
+    expect(child.updateIdentifiersWith).toHaveBeenCalledWith("user.name");
   });
 
   it("should resolve inlined code path if inlined code is already a member expression", () => {
@@ -43,7 +43,9 @@ describe("InlinableObjectPattern", () => {
 
     inlinable.updateIdentifiersWith("user.first");
 
-    expect(child.updateIdentifiersWith).toBeCalledWith("user.names.first");
+    expect(child.updateIdentifiersWith).toHaveBeenCalledWith(
+      "user.names.first"
+    );
   });
 
   it("should resolve inlined code path if inlined code is an object property", () => {
@@ -53,7 +55,7 @@ describe("InlinableObjectPattern", () => {
 
     inlinable.updateIdentifiersWith("n: name");
 
-    expect(child.updateIdentifiersWith).toBeCalledWith("user.n");
+    expect(child.updateIdentifiersWith).toHaveBeenCalledWith("user.n");
   });
 
   it("should resolve inlined code path if inlined code is a complex member expression", () => {
@@ -63,7 +65,7 @@ describe("InlinableObjectPattern", () => {
 
     inlinable.updateIdentifiersWith("session.data[0].first");
 
-    expect(child.updateIdentifiersWith).toBeCalledWith(
+    expect(child.updateIdentifiersWith).toHaveBeenCalledWith(
       "session.data[0].user.first"
     );
   });

@@ -62,7 +62,7 @@ return (
 
     await wrapInJsxFragment(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.CouldNotWrapInJsxFragment
     );
   });

@@ -60,7 +60,7 @@ describe("Simplify Ternary", () => {
 
     await simplifyTernary(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindTernaryToSimplify
     );
   });

@@ -309,7 +309,7 @@ default:
 
     await convertSwitchToIfElse(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindSwitchToConvert
     );
   });

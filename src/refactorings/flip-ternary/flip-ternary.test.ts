@@ -63,7 +63,7 @@ describe("Flip Ternary", () => {
 
     await flipTernary(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindTernaryToFlip
     );
   });

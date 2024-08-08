@@ -70,7 +70,7 @@ describe("Remove JSX Fragment", () => {
 
     await removeJsxFragment(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotRemoveJsxFragment
     );
   });

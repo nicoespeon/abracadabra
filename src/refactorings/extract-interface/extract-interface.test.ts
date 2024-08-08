@@ -315,7 +315,7 @@ interface Extracted {
 
     await extractInterface(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindClassToExtractInterface
     );
   });
@@ -335,6 +335,6 @@ interface Extracted {
 
     await extractInterface(editor);
 
-    expect(editor.moveCursorTo).toBeCalledWith(new Position(10, 10));
+    expect(editor.moveCursorTo).toHaveBeenCalledWith(new Position(10, 10));
   });
 });

@@ -472,7 +472,7 @@ function sayByeBye() {
     await moveStatementUp(editor);
 
     expect(editor.code).toBe(originalCode);
-    expect(editor.showError).not.toBeCalled();
+    expect(editor.showError).not.toHaveBeenCalled();
   });
 
   it("should not move the parent node if the selected child node can't be moved", async () => {
@@ -522,7 +522,7 @@ class Path {
 
     await moveStatementUp(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.CantMoveMultiLinesStatementUp
     );
   });

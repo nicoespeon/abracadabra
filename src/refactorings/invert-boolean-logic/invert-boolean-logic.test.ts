@@ -174,7 +174,7 @@ describe("Invert Boolean Logic", () => {
 
     await invertBooleanLogic(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindInvertableBooleanLogic
     );
   });
@@ -186,7 +186,7 @@ describe("Invert Boolean Logic", () => {
 
     await invertBooleanLogic(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindInvertableBooleanLogic
     );
   });

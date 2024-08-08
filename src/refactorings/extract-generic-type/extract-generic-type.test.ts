@@ -21,7 +21,7 @@ describe("Extract Generic Type", () => {
 
     await extractGenericType(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindExtractableCode
     );
   });

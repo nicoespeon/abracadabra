@@ -487,7 +487,7 @@ describe("Merge If Statements", () => {
 
     await mergeIfStatements(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindIfStatementsToMerge
     );
   });

@@ -330,6 +330,8 @@ if (false) {
 
     await removeDeadCode(editor);
 
-    expect(editor.showError).toBeCalledWith(ErrorReason.DidNotFindDeadCode);
+    expect(editor.showError).toHaveBeenCalledWith(
+      ErrorReason.DidNotFindDeadCode
+    );
   });
 });

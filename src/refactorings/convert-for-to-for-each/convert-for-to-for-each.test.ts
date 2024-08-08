@@ -413,7 +413,7 @@ for (let entry of typedArray) {
 
     await convertForToForEach(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindForLoopToConvert
     );
   });

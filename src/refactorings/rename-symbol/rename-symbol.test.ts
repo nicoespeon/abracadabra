@@ -10,7 +10,7 @@ describe("Rename Symbol", () => {
 
     await renameSymbol(editor);
 
-    expect(editor.delegate).toBeCalledWith(Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenCalledWith(Command.RenameSymbol);
   });
 
   describe("rename not supported by editor", () => {
@@ -21,7 +21,7 @@ describe("Rename Symbol", () => {
 
       await renameSymbol(editor);
 
-      expect(editor.askUserInput).toBeCalledWith("hello");
+      expect(editor.askUserInput).toHaveBeenCalledWith("hello");
     });
 
     it("should not ask user for new name if cursor isn't on an Identifier", async () => {
@@ -31,7 +31,7 @@ describe("Rename Symbol", () => {
 
       await renameSymbol(editor);
 
-      expect(editor.askUserInput).not.toBeCalled();
+      expect(editor.askUserInput).not.toHaveBeenCalled();
     });
 
     it("renames identifier with user input", async () => {

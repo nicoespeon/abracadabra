@@ -347,7 +347,9 @@ describe("Change Signature", () => {
 
     await changeSignature(editor);
 
-    expect(editor.showError).toBeCalledWith(ErrorReason.CantChangeSignature);
+    expect(editor.showError).toHaveBeenCalledWith(
+      ErrorReason.CantChangeSignature
+    );
   });
 
   it("Should order correctly for complex parameters with defaults values", async () => {

@@ -150,7 +150,7 @@ const lastName = "Doe";`
 
     await convertToTemplateLiteral(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindStringToConvert
     );
   });

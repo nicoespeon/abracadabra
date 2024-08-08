@@ -84,7 +84,7 @@ describe("Flip Operator", () => {
 
     await flipOperator(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindOperatorToFlip
     );
   });

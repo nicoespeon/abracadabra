@@ -291,7 +291,7 @@ console.log("some text");`;
 
     await removeRedundantElse(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindRedundantElse
     );
   });

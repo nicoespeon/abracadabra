@@ -28,8 +28,8 @@ console.log(hello);`);
 
     await extractVariable(editor);
 
-    expect(editor.delegate).toBeCalledTimes(1);
-    expect(editor.delegate).toBeCalledWith(Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenCalledTimes(1);
+    expect(editor.delegate).toHaveBeenCalledWith(Command.RenameSymbol);
   });
 
   it("should extract with correct indentation", async () => {
@@ -80,7 +80,7 @@ console.log(hello);`);
 
       await extractVariable(editor);
 
-      expect(editor.showError).toBeCalledWith(
+      expect(editor.showError).toHaveBeenCalledWith(
         ErrorReason.DidNotFindExtractableCode
       );
     });

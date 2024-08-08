@@ -226,7 +226,7 @@ type Context =
 
     await extractType(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindTypeToExtract
     );
   });

@@ -181,7 +181,7 @@ fees = fees + 10;`
 
     await replaceBinaryWithAssignment(editor);
 
-    expect(editor.showError).toBeCalledWith(
+    expect(editor.showError).toHaveBeenCalledWith(
       ErrorReason.DidNotFindBinaryExpression
     );
   });
