@@ -26,6 +26,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
 - Simplifying Conditional Logic:
   1. [Invert Boolean Logic](#invert-boolean-logic)
   1. [Remove Redundant Else](#remove-redundant-else)
+  1. [Simplify Boolean](#simplify-boolean)
   1. [Simplify Ternary](#simplify-ternary)
   1. [Flip If/Else](#flip-ifelse)
   1. [Flip Ternary](#flip-ternary)
@@ -210,6 +211,16 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Simplify Boolean
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Simplify boolean expressions that you might end up with after executing other refactorings.
+
+![][demo-simplify-boolean]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Simplify Ternary
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -217,6 +228,8 @@ Removes the `else` keyword when it's not necessary, resulting in less nested cod
 Simplify ternary expressions that you might end up with after executing other refactorings.
 
 ![][demo-simplify-ternary]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
 
 ### Flip If/Else
 
@@ -589,6 +602,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-convert-for-each-to-for-of]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-each-to-for-of.gif?raw=true
 [demo-create-factory-for-constructor]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/create-factory-for-constructor.gif?raw=true
 [demo-remove-dead-code]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/remove-dead-code.gif?raw=true
+[demo-simplify-boolean]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-boolean.gif?raw=true
 [demo-simplify-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/simplify-ternary.gif?raw=true
 [demo-extract-interface]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-interface.gif?raw=true
 [demo-toggle-braces]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/toggle-braces.gif?raw=true
