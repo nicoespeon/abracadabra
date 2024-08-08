@@ -40,6 +40,7 @@ import removeJsxFragment from "./refactorings/remove-jsx-fragment";
 import removeRedundantElse from "./refactorings/remove-redundant-else";
 import renameSymbol from "./refactorings/rename-symbol";
 import replaceBinaryWithAssignment from "./refactorings/replace-binary-with-assignment";
+import simplifyBoolean from "./refactorings/simplify-boolean";
 import simplifyTernary from "./refactorings/simplify-ternary";
 import splitDeclarationAndInitialization from "./refactorings/split-declaration-and-initialization";
 import splitIfStatement from "./refactorings/split-if-statement";
@@ -105,6 +106,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       removeDeadCode,
       removeRedundantElse,
       replaceBinaryWithAssignment,
+      simplifyBoolean,
       simplifyTernary,
       splitDeclarationAndInitialization,
       splitIfStatement,

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Simplify Boolean" thanks to @ipanasenko suggestion. Some refactorings may left you with logical expressions that look like `someCondition && true` and that can be simplified. This refactoring will take care of figuring out how.
+
+### Fixed
+
+- @j4k0xb fixed "Inline Variable" when there was a shadowed parameter involved.
+
 ## [9.3.0] - 2024-06-15 - You've Got a Type in Me 🚀
 
 ### Added

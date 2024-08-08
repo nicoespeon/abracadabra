@@ -1,4 +1,5 @@
 export enum ErrorReason {
+  DidNotFindBooleanToSimplify,
   DidNotRemoveJsxFragment,
   CouldNotWrapInJsxFragment,
   DidNotFindOperatorToFlip,
@@ -59,6 +60,9 @@ export enum ErrorReason {
 
 export function toString(reason: ErrorReason): string {
   switch (reason) {
+    case ErrorReason.DidNotFindBooleanToSimplify:
+      return didNotFind("a boolean to simplify");
+
     case ErrorReason.DidNotRemoveJsxFragment:
       return didNotFind("a jsx fragment that could safely be removed");
 
