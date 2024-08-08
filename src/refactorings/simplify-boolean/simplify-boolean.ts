@@ -36,22 +36,23 @@ export function createVisitor(
     LogicalExpression(path) {
       if (!selection.isInsidePath(path)) return;
 
-      match([path.node.left, path.node.operator, path.node.right])
+      const { left, right, operator } = path.node;
+
+      match([left, operator, right])
         .with(
-          [whenNodeIs(true), "||", P.any],
-          [whenNodeIs(false), "&&", P.any],
-          [P.any, "||", whenNodeIs(false)],
-          [P.any, "&&", whenNodeIs(true)],
-          () => onMatch(path, path.node.left)
+          [whenNodeIs(true), "||", P._],
+          [whenNodeIs(false), "&&", P._],
+          [P._, "||", whenNodeIs(false)],
+          [P._, "&&", whenNodeIs(true)],
+          () => onMatch(path, left)
         )
         .with(
-          [whenNodeIs(false), "||", P.any],
-          [whenNodeIs(true), "&&", P.any],
-          [P.any, "||", whenNodeIs(true)],
-          [P.any, "&&", whenNodeIs(false)],
-          () => onMatch(path, path.node.right)
-        )
-        .otherwise(() => {});
+          [whenNodeIs(false), "||", P._],
+          [whenNodeIs(true), "&&", P._],
+          [P._, "||", whenNodeIs(true)],
+          [P._, "&&", whenNodeIs(false)],
+          () => onMatch(path, right)
+        );
     }
   };
 }
