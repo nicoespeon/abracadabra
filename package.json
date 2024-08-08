@@ -274,6 +274,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.simplifyBoolean",
+        "title": "Simplify Boolean",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.simplifyTernary",
         "title": "Simplify Ternary",
         "category": "Abracadabra"
@@ -530,6 +535,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.replaceBinaryWithAssignment.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.simplifyBoolean.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1254,6 +1264,30 @@
         },
         {
           "command": "abracadabra.replaceBinaryWithAssignment",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.simplifyBoolean",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.simplifyBoolean",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.simplifyBoolean",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.simplifyBoolean",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.simplifyBoolean",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.simplifyBoolean",
           "when": "editorLangId == svelte"
         },
         {
