@@ -2,16 +2,6 @@ import { Editor, Command, Result, ErrorReason } from "../../editor/editor";
 import * as t from "../../ast";
 
 export async function renameSymbol(editor: Editor) {
-  // Some editors will only rename the portion that is selected
-  // Ensure we have a cursor so the whole symbol is renamed.
-  console.log(">>> selection is", editor.selection.start, editor.selection.end);
-  await editor.moveCursorTo(editor.selection.start);
-  console.log(
-    ">>> selection is AFTER",
-    editor.selection.start,
-    editor.selection.end
-  );
-
   // Editor built-in rename works fine => ok to delegate the work for now.
   const result = await editor.delegate(Command.RenameSymbol);
 

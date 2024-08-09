@@ -212,8 +212,6 @@ export class VSCodeEditor implements Editor {
   }
 
   moveCursorTo(position: Position) {
-    console.log(">>> MOVE selection to position", position);
-    // this.editor.se
     this.editorSelection = toVSCodeCursor(position);
     return Promise.resolve();
   }
