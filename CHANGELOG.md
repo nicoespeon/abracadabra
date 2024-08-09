@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.1]
+
+### Fixed
+
+The extension stopped working because the tool we are using to package it (esbuild) had a change that was incompatible with our code. The upgrade from 0.19 to 0.22 broke the extension.
+
+Fortunately, that was fixed with esbuild 0.23 and upgrading to this latest version seem to have fixed the build.
+
 ## [9.4.0] - 2024-08-08 - Boolean Mine 🐘
 
 ### Added
@@ -1944,7 +1952,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.1...HEAD
+[9.4.1]: https://github.com/nicoespeon/abracadabra/compare/9.4.0...9.4.1
 [9.4.0]: https://github.com/nicoespeon/abracadabra/compare/9.3.0...9.4.0
 [9.3.0]: https://github.com/nicoespeon/abracadabra/compare/9.2.1...9.3.0
 [9.2.1]: https://github.com/nicoespeon/abracadabra/compare/9.2.0...9.2.1
