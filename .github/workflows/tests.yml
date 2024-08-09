@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: 22.0.0
+          node-version: 22.5.1
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
