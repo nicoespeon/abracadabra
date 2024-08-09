@@ -219,6 +219,7 @@ export class VSCodeEditor implements Editor {
   }
 
   private changeEditorSelection(selection: vscode.Selection) {
+    this.editor.selection = selection;
     this.editorSelection = selection;
   }
 
