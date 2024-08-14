@@ -159,7 +159,7 @@ export function selectableReferencesInScope(
 
   return referencePaths
     .filter((path) => t.isIdentifier(path))
-    .filter(isSelectablePath);
+    .filter((path) => isSelectablePath(path));
 }
 
 export function referencesInScope(
