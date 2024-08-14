@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No user-visible change. Attempting to fix CI deployments with vsce not being compatible with Yarn v4.
 
+Found it! Had to use `--no-dependencies` so vsce doesn't use the `yarn list` command that does not exist in v4. This should not be an issue since the code is bundled before. [Source](https://github.com/microsoft/vscode-vsce/issues/517#issuecomment-1724528163).
+
 ## [9.4.4]
 
 No user-visible change. Attempting to fix CI deployments with vsce not being compatible with Yarn v4.
