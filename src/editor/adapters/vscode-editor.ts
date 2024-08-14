@@ -99,9 +99,11 @@ export class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit, { isRefactoring: true });
 
     // Put cursor at correct position
-    this.editorSelection = newCursorPosition
-      ? toVSCodeCursor(newCursorPosition)
-      : cursorAtInitialStartPosition;
+    this.changeEditorSelection(
+      newCursorPosition
+        ? toVSCodeCursor(newCursorPosition)
+        : cursorAtInitialStartPosition
+    );
 
     // Scroll to correct position if it changed
     if (newCursorPosition) {
@@ -181,7 +183,7 @@ export class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
 
     if (newCursorPosition) {
-      this.editorSelection = toVSCodeCursor(newCursorPosition);
+      this.changeEditorSelection(toVSCodeCursor(newCursorPosition));
     }
   }
 
@@ -212,8 +214,13 @@ export class VSCodeEditor implements Editor {
   }
 
   moveCursorTo(position: Position) {
-    this.editorSelection = toVSCodeCursor(position);
+    this.changeEditorSelection(toVSCodeCursor(position));
     return Promise.resolve();
+  }
+
+  private changeEditorSelection(selection: vscode.Selection) {
+    this.editor.selection = selection;
+    this.editorSelection = selection;
   }
 
   private get filePath(): string {

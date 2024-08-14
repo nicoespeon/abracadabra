@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Extracting a variable (`Ctrl + Alt + V` / `⌥ ⌘ V`) while selecting a portion of the value may result in a partial selection when you get to name the extracted variable. Annoying! Not anymore… The whole identifier is now selected, so you can just write the name right away 😉
+
 ## [9.4.1]
 
 ### Fixed
