@@ -20,7 +20,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Run CI Tests
         run: yarn test:ci
