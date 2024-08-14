@@ -19,7 +19,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Build & deploy to Open VSX
         run: yarn deploy:ovsx -p ${{ secrets.OVSX_ACCESS_TOKEN }}

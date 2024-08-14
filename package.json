@@ -47,7 +47,7 @@
     "new": "hygen refactoring new",
     "test": "jest",
     "pretest:contract": "tsup-node 'src/**/*.ts' --loader '.html=text' --out-dir out",
-    "test:contract": "node ./out/test/run-contract-tests.js",
+    "test:contract": "yarn pretest:contract && node ./out/test/run-contract-tests.js",
     "test:ci": "yarn typecheck && yarn test && yarn test:contract",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint -c .eslintrc.js --ext .ts src",
@@ -56,7 +56,7 @@
     "build:browser": "node esbuild.config.js --browser",
     "prepackage": "rm -rf dist/*.vsix && rm -rf out/",
     "vscode:prepublish": "yarn build --production",
-    "package": "vsce package",
+    "package": "vsce package && yarn postpackage",
     "postpackage": "mkdir -p dist && mv *.vsix dist",
     "package:install": "code --install-extension dist/*.vsix",
     "deploy": "yarn deploy:vscode && yarn deploy:ovsx",
@@ -86,7 +86,7 @@
     "esbuild": "0.23.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
-    "glob": "10.3.10",
+    "glob": "11.0.0",
     "husky": "9.0.11",
     "hygen": "6.2.11",
     "jest": "29.7.0",
@@ -1420,5 +1420,6 @@
         }
       ]
     }
-  }
+  },
+  "packageManager": "yarn@4.4.0"
 }
