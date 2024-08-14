@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.2]
+
 ### Fixed
 
 - Extracting a variable (`Ctrl + Alt + V` / `⌥ ⌘ V`) while selecting a portion of the value may result in a partial selection when you get to name the extracted variable. Annoying! Not anymore… The whole identifier is now selected, so you can just write the name right away 😉
@@ -1956,7 +1958,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.2...HEAD
+[9.4.2]: https://github.com/nicoespeon/abracadabra/compare/9.4.1...9.4.2
 [9.4.1]: https://github.com/nicoespeon/abracadabra/compare/9.4.0...9.4.1
 [9.4.0]: https://github.com/nicoespeon/abracadabra/compare/9.3.0...9.4.0
 [9.3.0]: https://github.com/nicoespeon/abracadabra/compare/9.2.1...9.3.0
