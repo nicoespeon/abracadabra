@@ -101,7 +101,7 @@
     "pretty-quick": "4.0.0",
     "sinon": "18.0.0",
     "tsup": "8.1.0",
-    "typescript": "5.3.3",
+    "typescript": "5.5.4",
     "vsce": "2.15.0"
   },
   "dependencies": {
