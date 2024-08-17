@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.6]
+
 ### Fixed
 
 - Made Abracadabra parse `<X> y` type assertions on regular TS files. It was failing to handle these as it was considering them as invalid JSX code. It won't break anymore with this syntax.
@@ -1976,7 +1978,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.5...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.6...HEAD
+[9.4.6]: https://github.com/nicoespeon/abracadabra/compare/9.4.5...9.4.6
 [9.4.5]: https://github.com/nicoespeon/abracadabra/compare/9.4.4...9.4.5
 [9.4.4]: https://github.com/nicoespeon/abracadabra/compare/9.4.3...9.4.4
 [9.4.3]: https://github.com/nicoespeon/abracadabra/compare/9.4.2...9.4.3
