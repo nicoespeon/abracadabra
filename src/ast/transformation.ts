@@ -1,4 +1,8 @@
-import { parse as babelParse, ParserOptions } from "@babel/parser";
+import {
+  parse as babelParse,
+  ParserOptions,
+  ParserPlugin
+} from "@babel/parser";
 import traverse, { NodePath, TraverseOptions, Visitor } from "@babel/traverse";
 import * as t from "@babel/types";
 import * as recast from "recast";
@@ -100,6 +104,42 @@ export function parse(code: Code): AST {
 }
 
 function getBabelParseOptions(): ParserOptions {
+  const plugins: ParserPlugin[] = [
+    "asyncGenerators",
+    "bigInt",
+    "classPrivateMethods",
+    "classPrivateProperties",
+    "classProperties",
+    // Not compatible with "decorators-legacy"
+    // "decorators",
+    "decorators-legacy",
+    "doExpressions",
+    "dynamicImport",
+    // Make tests fail, not sure why
+    // "estree",
+    "exportDefaultFrom",
+    "exportNamespaceFrom",
+    // Not compatible with "typescript"
+    // "flow",
+    // "flowComments",
+    "functionBind",
+    "functionSent",
+    "importMeta",
+    "jsx",
+    "logicalAssignment",
+    "nullishCoalescingOperator",
+    "numericSeparator",
+    "objectRestSpread",
+    "optionalCatchBinding",
+    "optionalChaining",
+    "partialApplication",
+    ["pipelineOperator", { proposal: "minimal" }],
+    "placeholders",
+    "throwExpressions",
+    "topLevelAwait",
+    "typescript"
+  ];
+
   return {
     sourceType: "module",
     allowImportExportEverywhere: true,
@@ -109,41 +149,7 @@ function getBabelParseOptions(): ParserOptions {
     // Tokens are necessary for Recast to do its magic ✨
     tokens: true,
 
-    plugins: [
-      "asyncGenerators",
-      "bigInt",
-      "classPrivateMethods",
-      "classPrivateProperties",
-      "classProperties",
-      // Not compatible with "decorators-legacy"
-      // "decorators",
-      "decorators-legacy",
-      "doExpressions",
-      "dynamicImport",
-      // Make tests fail, not sure why
-      // "estree",
-      "exportDefaultFrom",
-      "exportNamespaceFrom",
-      // Not compatible with "typescript"
-      // "flow",
-      // "flowComments",
-      "functionBind",
-      "functionSent",
-      "importMeta",
-      "jsx",
-      "logicalAssignment",
-      "nullishCoalescingOperator",
-      "numericSeparator",
-      "objectRestSpread",
-      "optionalCatchBinding",
-      "optionalChaining",
-      "partialApplication",
-      ["pipelineOperator", { proposal: "minimal" }],
-      "placeholders",
-      "throwExpressions",
-      "topLevelAwait",
-      "typescript"
-    ]
+    plugins
   };
 }
 
