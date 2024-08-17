@@ -90,20 +90,38 @@ export function parse(code: Code): AST {
   try {
     return recast.parse(code, {
       parser: {
-        parse: (source: Code) => babelParse(source, getBabelParseOptions())
+        parse: (source: Code) =>
+          babelParse(source, getBabelParseOptions({ withJSX: true }))
       },
       // VS Code considers tabs to be of size 1
       tabWidth: 1
     });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : error;
-    throw new Error(
-      `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${message}`
-    );
+  } catch {
+    // Retry, but disable JSX in case we have type inference on a TS file.
+    // Ideally, we would pass the editor language as a param, but this will
+    // require a significant refactoring.
+    try {
+      return recast.parse(code, {
+        parser: {
+          parse: (source: Code) =>
+            babelParse(source, getBabelParseOptions({ withJSX: false }))
+        },
+        tabWidth: 1
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : error;
+      throw new Error(
+        `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${message}`
+      );
+    }
   }
 }
 
-function getBabelParseOptions(): ParserOptions {
+function getBabelParseOptions({
+  withJSX
+}: {
+  withJSX: boolean;
+}): ParserOptions {
   const plugins: ParserPlugin[] = [
     "asyncGenerators",
     "bigInt",
@@ -125,7 +143,6 @@ function getBabelParseOptions(): ParserOptions {
     "functionBind",
     "functionSent",
     "importMeta",
-    "jsx",
     "logicalAssignment",
     "nullishCoalescingOperator",
     "numericSeparator",
@@ -139,6 +156,10 @@ function getBabelParseOptions(): ParserOptions {
     "topLevelAwait",
     "typescript"
   ];
+
+  if (withJSX) {
+    plugins.push("jsx");
+  }
 
   return {
     sourceType: "module",

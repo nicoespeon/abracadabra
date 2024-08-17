@@ -120,5 +120,11 @@ function test() {}`);
 
       expect(() => parse(code)).not.toThrow();
     });
+
+    it("should parse '<X> y' type assertions", () => {
+      const code = `console.log(<string>'hello')`;
+
+      expect(() => parse(code)).not.toThrow();
+    });
   });
 });

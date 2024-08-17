@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Made Abracadabra parse `<X> y` type assertions on regular TS files. It was failing to handle these as it was considering them as invalid JSX code. It won't break anymore with this syntax.
+
 ## [9.4.5]
 
 No user-visible change. Attempting to fix CI deployments with vsce not being compatible with Yarn v4.
