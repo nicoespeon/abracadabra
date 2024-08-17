@@ -606,6 +606,15 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "montoner0",
+      "name": "montoner0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13542804?v=4",
+      "profile": "https://github.com/montoner0",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
