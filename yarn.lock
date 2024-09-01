@@ -3348,7 +3348,7 @@ __metadata:
     pretty-quick: "npm:4.0.0"
     recast: "npm:0.23.4"
     sinon: "npm:18.0.0"
-    ts-pattern: "npm:5.2.0"
+    ts-pattern: "npm:5.3.1"
     tsup: "npm:8.1.0"
     typescript: "npm:5.5.4"
     vsce: "npm:2.15.0"
@@ -10994,10 +10994,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-pattern@npm:5.2.0":
-  version: 5.2.0
-  resolution: "ts-pattern@npm:5.2.0"
-  checksum: 10c0/99d0bc0d2f3aa19d8ff50b028f4e1c3da35b21f4503f329f8818863b614df3850c0b3709c703e18f5902e68b9682d29719c82b709e07907e87e374e5c70a01f5
+"ts-pattern@npm:5.3.1":
+  version: 5.3.1
+  resolution: "ts-pattern@npm:5.3.1"
+  checksum: 10c0/4d5082edb2d0a198a4f46abc834317fa2be616277be7721df71a93ea33180b85443ae2e92ff28a0cda51f038b5e347b35ad79936a55ed468e23268fbc48503a1
   languageName: node
   linkType: hard
 
