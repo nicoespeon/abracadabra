@@ -3242,16 +3242,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-electron@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@vscode/test-electron@npm:2.4.0"
+"@vscode/test-electron@npm:2.4.1":
+  version: 2.4.1
+  resolution: "@vscode/test-electron@npm:2.4.1"
   dependencies:
     http-proxy-agent: "npm:^7.0.2"
-    https-proxy-agent: "npm:^7.0.4"
+    https-proxy-agent: "npm:^7.0.5"
     jszip: "npm:^3.10.1"
     ora: "npm:^7.0.1"
     semver: "npm:^7.6.2"
-  checksum: 10c0/689e56b2a24ac67da033ea8c11468b1db14b1ec7ff82e9cf1c39295b6bcb2fe29b0880c1c66ebb2f7e8c6e644158c3d713737c9c41c35ae7f944bdc291abe5a5
+  checksum: 10c0/c06fcb259237ec3860df01595d03fbd6387444ee984bb61d7f88501f36f68cb92821d7db219d4c0dcebfee631cf67174cf291597259bb776cb3b3e3b6a3fc275
   languageName: node
   linkType: hard
 
@@ -3325,7 +3325,7 @@ __metadata:
     "@types/vscode": "npm:1.90.0"
     "@typescript-eslint/eslint-plugin": "npm:8.3.0"
     "@typescript-eslint/parser": "npm:8.8.0"
-    "@vscode/test-electron": "npm:2.4.0"
+    "@vscode/test-electron": "npm:2.4.1"
     all-contributors-cli: "npm:6.26.1"
     babel-jest: "npm:29.7.0"
     chai: "npm:4.3.10"
@@ -6538,16 +6538,6 @@ __metadata:
     agent-base: "npm:^7.0.2"
     debug: "npm:4"
   checksum: 10c0/2490e3acec397abeb88807db52cac59102d5ed758feee6df6112ab3ccd8325e8a1ce8bce6f4b66e5470eca102d31e425ace904242e4fa28dbe0c59c4bafa7b2c
-  languageName: node
-  linkType: hard
-
-"https-proxy-agent@npm:^7.0.4":
-  version: 7.0.4
-  resolution: "https-proxy-agent@npm:7.0.4"
-  dependencies:
-    agent-base: "npm:^7.0.2"
-    debug: "npm:4"
-  checksum: 10c0/bc4f7c38da32a5fc622450b6cb49a24ff596f9bd48dcedb52d2da3fa1c1a80e100fb506bd59b326c012f21c863c69b275c23de1a01d0b84db396822fdf25e52b
   languageName: node
   linkType: hard
 
