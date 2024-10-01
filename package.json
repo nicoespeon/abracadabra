@@ -78,7 +78,7 @@
     "@types/sinon": "17.0.2",
     "@types/vscode": "1.90.0",
     "@typescript-eslint/eslint-plugin": "8.3.0",
-    "@typescript-eslint/parser": "6.16.0",
+    "@typescript-eslint/parser": "8.8.0",
     "@vscode/test-electron": "2.4.0",
     "all-contributors-cli": "6.26.1",
     "babel-jest": "29.7.0",
