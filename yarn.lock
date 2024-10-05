@@ -3203,10 +3203,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.90.0":
-  version: 1.90.0
-  resolution: "@types/vscode@npm:1.90.0"
-  checksum: 10c0/6f18c57feca20b9ec12cb63a8c192bbf8b5138da078771af8f944fc193084565124626dde31f7ff16e7000ed2a12dde963542e2d2fe965bd24f94cdd4397e9a2
+"@types/vscode@npm:1.93.0":
+  version: 1.93.0
+  resolution: "@types/vscode@npm:1.93.0"
+  checksum: 10c0/5b62f6a333e21ba1687b93270489dcaf84a7474085b1bc440431508ff3bd0aebadd238812ddaa7e66a95417bb8d01c7b7ce5b6d8968bda5ac8f2fc7919366f9f
   languageName: node
   linkType: hard
 
@@ -3571,7 +3571,7 @@ __metadata:
     "@types/node": "npm:22.7.4"
     "@types/pluralize": "npm:0.0.33"
     "@types/sinon": "npm:17.0.2"
-    "@types/vscode": "npm:1.90.0"
+    "@types/vscode": "npm:1.93.0"
     "@typescript-eslint/eslint-plugin": "npm:8.3.0"
     "@typescript-eslint/parser": "npm:8.8.0"
     "@vscode/test-electron": "npm:2.4.1"
