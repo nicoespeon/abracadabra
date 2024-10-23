@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Abracadabra was not working well with Vue files with content above the script tag. This has been fixed and refactorings should work fine again! Thanks @yinluobing and @acabreragnz for reporting 🙏
+
 ## [9.4.6]
 
 ### Fixed

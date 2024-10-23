@@ -9,7 +9,8 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
   withSelection(selection: Selection): VueAndSvelteVSCodeEditor {
     return new VueAndSvelteVSCodeEditor(
       this.editor,
-      toVSCodeSelection(selection)
+      // Input selection was offset already. Reset it so we don't do it twice.
+      toVSCodeSelection(this.resetEditorSelection(selection))
     );
   }
 
@@ -75,6 +76,15 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
     return Selection.fromPositions(
       selection.start.removeLines(offsetLinesCount),
       selection.end.removeLines(offsetLinesCount)
+    );
+  }
+
+  private resetEditorSelection(selection: Selection): Selection {
+    const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
+
+    return Selection.fromPositions(
+      selection.start.addLines(offsetLinesCount),
+      selection.end.addLines(offsetLinesCount)
     );
   }
 
