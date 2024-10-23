@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-63-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-64-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -226,6 +226,9 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center" valign="top" width="14.28%"><a href="https://www.youtube.com/channel/UCML02pamUSxtbwAcrUdVmXg"><img src="https://avatars.githubusercontent.com/u/755842?v=4?s=100" width="100px;" alt="Pokey Rule"/><br /><sub><b>Pokey Rule</b></sub></a><br /><a href="#ideas-pokey" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://ipanasenko.me"><img src="https://avatars.githubusercontent.com/u/576152?v=4?s=100" width="100px;" alt="Illia Panasenko"/><br /><sub><b>Illia Panasenko</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=ipanasenko" title="Code">💻</a> <a href="#ideas-ipanasenko" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/montoner0"><img src="https://avatars.githubusercontent.com/u/13542804?v=4?s=100" width="100px;" alt="montoner0"/><br /><sub><b>montoner0</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Amontoner0" title="Bug reports">🐛</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yinluobing"><img src="https://avatars.githubusercontent.com/u/5945624?v=4?s=100" width="100px;" alt="yinluobing"/><br /><sub><b>yinluobing</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ayinluobing" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
