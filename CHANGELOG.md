@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Change Signature" on a nested function was not working as expected and would change the signature of the wrapping function instead of the selected one. Thanks @marabesi for reporting this one!
+
 ## [9.4.7]
 
 ### Fixed

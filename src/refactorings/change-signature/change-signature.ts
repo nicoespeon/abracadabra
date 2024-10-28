@@ -184,6 +184,10 @@ export function createVisitor(
       if (!selection.isInsidePath(path)) return;
       if (!hasParameters(path.node)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path, selection);
     },
     ArrowFunctionExpression(path) {
@@ -192,15 +196,55 @@ export function createVisitor(
       if (!t.isVariableDeclarator(path.parent)) return;
       if (!path.parent.loc) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path, Selection.fromAST(path.parent.loc));
     },
     ClassMethod(path) {
       if (!selection.isInsidePath(path)) return;
       if (!hasParameters(path.node)) return;
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(path, selection);
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    FunctionDeclaration(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+      if (!hasParameters(childPath.node)) return;
+
+      result = true;
+    },
+    ArrowFunctionExpression(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+      if (!hasParameters(childPath.node)) return;
+      if (!t.isVariableDeclarator(childPath.parent)) return;
+      if (!childPath.parent.loc) return;
+
+      result = true;
+    },
+    ClassMethod(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+      if (!hasParameters(childPath.node)) return;
+
+      result = true;
+    }
+  });
+
+  return result;
 }
 
 function getParamName(
@@ -258,7 +302,7 @@ function createVisitorForReferences(
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+      if (hasChildWhichMatchesSelectionForReferences(path, selection)) return;
 
       const start = Position.fromAST(path.node.loc.start).putAtStartOfLine();
       const end = Position.fromAST(path.node.loc.end).putAtStartOfLine();
@@ -273,7 +317,7 @@ function createVisitorForReferences(
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+      if (hasChildWhichMatchesSelectionForReferences(path, selection)) return;
 
       onMatch(path);
     },
@@ -282,7 +326,7 @@ function createVisitorForReferences(
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+      if (hasChildWhichMatchesSelectionForReferences(path, selection)) return;
 
       onMatch(path);
     },
@@ -291,14 +335,14 @@ function createVisitorForReferences(
 
       // Since we visit nodes from parent to children, first check
       // if a child would match the selection closer.
-      if (hasChildWhichMatchesSelection(path, selection)) return;
+      if (hasChildWhichMatchesSelectionForReferences(path, selection)) return;
 
       onMatch(path);
     }
   };
 }
 
-function hasChildWhichMatchesSelection(
+function hasChildWhichMatchesSelectionForReferences(
   path: t.NodePath,
   selection: Selection
 ): boolean {
