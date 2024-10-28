@@ -75,13 +75,13 @@ function getParams(
   code: string,
   selection: Selection
 ): { params: Params | null; fixedSelection: Selection } {
-  let result: Params | null = null;
-  let arrowSelection: Selection = selection;
+  let params: Params | null = null;
+  let fixedSelection: Selection = selection;
 
   t.parseAndTraverseCode(
     code,
-    createVisitor(selection, (path, aArrowSelection) => {
-      result = path.node.params.map((p, index) => {
+    createVisitor(selection, (path, arrowSelection) => {
+      params = path.node.params.map((p, index) => {
         return {
           label: getParamName(p),
           value: {
@@ -91,15 +91,12 @@ function getParams(
         };
       });
 
-      arrowSelection = aArrowSelection;
+      fixedSelection = arrowSelection;
       path.stop();
     })
   );
 
-  return {
-    params: result,
-    fixedSelection: arrowSelection
-  };
+  return { params, fixedSelection };
 }
 
 function updateCode(
