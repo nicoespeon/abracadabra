@@ -633,6 +633,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "marabesi",
+      "name": "Matheus Marabesi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2129872?v=4",
+      "profile": "https://marabesi.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
