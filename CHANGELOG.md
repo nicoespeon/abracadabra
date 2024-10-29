@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.8]
+
 ### Fixed
 
 - "Change Signature" on a nested function was not working as expected and would change the signature of the wrapping function instead of the selected one. Thanks @marabesi for reporting this one!
@@ -1988,7 +1990,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.7...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.8...HEAD
+[9.4.8]: https://github.com/nicoespeon/abracadabra/compare/9.4.7...9.4.8
 [9.4.7]: https://github.com/nicoespeon/abracadabra/compare/9.4.6...9.4.7
 [9.4.6]: https://github.com/nicoespeon/abracadabra/compare/9.4.5...9.4.6
 [9.4.5]: https://github.com/nicoespeon/abracadabra/compare/9.4.4...9.4.5
