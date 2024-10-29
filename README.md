@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-65-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-66-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -230,6 +230,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/yinluobing"><img src="https://avatars.githubusercontent.com/u/5945624?v=4?s=100" width="100px;" alt="yinluobing"/><br /><sub><b>yinluobing</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Ayinluobing" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/acabreragnz"><img src="https://avatars.githubusercontent.com/u/6330366?v=4?s=100" width="100px;" alt="Toni Cabrera"/><br /><sub><b>Toni Cabrera</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Aacabreragnz" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://marabesi.com"><img src="https://avatars.githubusercontent.com/u/2129872?v=4?s=100" width="100px;" alt="Matheus Marabesi"/><br /><sub><b>Matheus Marabesi</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Amarabesi" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
