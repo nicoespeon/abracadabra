@@ -65,13 +65,11 @@ export async function changeSignature(editor: Editor) {
   );
 }
 
-type Params = { label: string; value: { startAt: number; endAt: number } }[];
-
 function getParams(
   code: string,
   selection: Selection
-): { params: Params | null; fixedSelection: Selection } {
-  let params: Params | null = null;
+): { params: SelectedPosition[] | null; fixedSelection: Selection } {
+  let params: SelectedPosition[] | null = null;
   let fixedSelection: Selection = selection;
 
   t.parseAndTraverseCode(
