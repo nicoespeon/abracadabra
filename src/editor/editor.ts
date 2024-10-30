@@ -34,7 +34,9 @@ export interface Editor {
   removeHighlight(source: Source): void;
   removeAllHighlights(): void;
   getSelectionReferences(selection: Selection): Promise<CodeReference[]>;
-  askForPositions(params: SelectedPosition[]): Promise<SelectedPosition[]>;
+  askForPositions(
+    currentPositions: SelectedPosition[]
+  ): Promise<SelectedPosition[]>;
 }
 
 export type Modification = {

@@ -343,7 +343,7 @@ export class VSCodeEditor implements Editor {
   }
 
   async askForPositions(
-    params: SelectedPosition[]
+    currentPositions: SelectedPosition[]
   ): Promise<SelectedPosition[]> {
     return new Promise((resolve) => {
       if (VSCodeEditor.panel !== null) {
@@ -361,7 +361,7 @@ export class VSCodeEditor implements Editor {
         enableScripts: true
       };
       VSCodeEditor.panel.webview.html =
-        createChangeSignatureWebviewTemplate(params);
+        createChangeSignatureWebviewTemplate(currentPositions);
 
       VSCodeEditor.panel.webview.onDidReceiveMessage(
         async (message: {
@@ -372,20 +372,18 @@ export class VSCodeEditor implements Editor {
             value?: string;
           }[];
         }) => {
-          const values = message.values;
-
-          const result: SelectedPosition[] = values.map((result) => {
+          const newPositions = message.values.map((value) => {
             return {
-              label: result.label,
+              label: value.label,
               value: {
-                startAt: result.startAt,
-                endAt: result.endAt,
-                val: result.value
+                startAt: value.startAt,
+                endAt: value.endAt,
+                val: value.value
               }
-            };
+            } satisfies SelectedPosition;
           });
 
-          resolve(result);
+          resolve(newPositions);
           VSCodeEditor.panel?.dispose();
           VSCodeEditor.panel = null;
         },

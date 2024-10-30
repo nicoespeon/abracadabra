@@ -110,8 +110,8 @@ export class AttemptingEditor implements Editor {
   }
 
   async askForPositions(
-    params: SelectedPosition[]
+    currentPositions: SelectedPosition[]
   ): Promise<SelectedPosition[]> {
-    return this.editor.askForPositions(params);
+    return this.editor.askForPositions(currentPositions);
   }
 }
