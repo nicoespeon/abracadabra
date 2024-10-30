@@ -9,18 +9,11 @@ export enum ErrorReason {
   DidNotFindIdentifiersToRename,
   DidNotFindStatementToToggleBraces,
   DidNotFindTypeToExtract,
-  CantImportReferences,
-  DidNotFindOtherFiles,
-  CanNotExtractClass,
   DidNotFindFunctionDeclarationToConvert,
   CantConvertFunctionDeclarationBecauseUsedBefore,
   DidNotFindLetToConvertToConst,
   DidNotFindSwitchToConvert,
-  DidNotFindJsxAttributeToAddBracesTo,
-  DidNotFindBracesToRemove,
   DidNotFindClassToExtractInterface,
-  DidNotFindReactComponent,
-  DidNotFindIfStatementToAddBraces,
   DidNotFindDeadCode,
   DidNotFindForEachToConvertToForOf,
   DidNotFindForLoopToConvert,
@@ -38,9 +31,6 @@ export enum ErrorReason {
   DidNotFindIfElseToConvert,
   DidNotFindTernaryToConvert,
   CantConvertTernaryWithOtherDeclarations,
-  DidNotFindArrowFunctionToAddBraces,
-  DidNotFindBracesToRemoveFromArrowFunction,
-  DidNotFindBracesToRemoveFromIfStatement,
   DidNotFindIfStatementToSplit,
   DidNotFindIfStatementsToMerge,
   DidNotFindDeclarationToSplit,
@@ -51,7 +41,6 @@ export enum ErrorReason {
   CantMoveMultiLinesStatementDown,
   CantInlineExportedVariables,
   CantInlineRedeclaredVariables,
-  CantRemoveBracesFromArrowFunction,
   CantRemoveExportedFunction,
   CantInlineFunctionWithMultipleReturns,
   CantInlineAssignedFunctionWithoutReturn,
@@ -90,17 +79,6 @@ export function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFindTypeToExtract:
       return didNotFind("a type to extract");
 
-    case ErrorReason.CantImportReferences:
-      return cantDoIt(
-        "move this, it has references that can't be imported (circular reference)"
-      );
-
-    case ErrorReason.DidNotFindOtherFiles:
-      return didNotFind("other files in the workspace");
-
-    case ErrorReason.CanNotExtractClass:
-      return didNotFind("a class to extract");
-
     case ErrorReason.DidNotFindFunctionDeclarationToConvert:
       return didNotFind("a function declaration to convert");
 
@@ -115,20 +93,8 @@ export function toString(reason: ErrorReason): string {
     case ErrorReason.DidNotFindSwitchToConvert:
       return didNotFind("a switch statement to convert");
 
-    case ErrorReason.DidNotFindJsxAttributeToAddBracesTo:
-      return didNotFind("a jsx attribute to add braces to");
-
-    case ErrorReason.DidNotFindBracesToRemove:
-      return didNotFind("braces to remove from jsx attribute");
-
     case ErrorReason.DidNotFindClassToExtractInterface:
       return didNotFind("a class to extract the interface");
-
-    case ErrorReason.DidNotFindReactComponent:
-      return didNotFind("a React component to convert");
-
-    case ErrorReason.DidNotFindIfStatementToAddBraces:
-      return didNotFind("a valid if statement to add braces to");
 
     case ErrorReason.DidNotFindDeadCode:
       return didNotFind("dead code to delete");
@@ -181,15 +147,6 @@ export function toString(reason: ErrorReason): string {
     case ErrorReason.CantConvertTernaryWithOtherDeclarations:
       return cantDoIt("convert a ternary declared along other variables");
 
-    case ErrorReason.DidNotFindArrowFunctionToAddBraces:
-      return didNotFind("an arrow function to add braces");
-
-    case ErrorReason.DidNotFindBracesToRemoveFromArrowFunction:
-      return didNotFind("braces to remove");
-
-    case ErrorReason.DidNotFindBracesToRemoveFromIfStatement:
-      return didNotFind("braces to remove");
-
     case ErrorReason.DidNotFindIfStatementToSplit:
       return didNotFind("an if statement that can be split");
 
@@ -219,9 +176,6 @@ export function toString(reason: ErrorReason): string {
 
     case ErrorReason.CantInlineRedeclaredVariables:
       return cantDoIt("inline redeclared variables yet");
-
-    case ErrorReason.CantRemoveBracesFromArrowFunction:
-      return cantDoIt("remove braces from this arrow function");
 
     case ErrorReason.CantRemoveExportedFunction:
       return "I didn't remove the function because it's exported 🤓";
