@@ -15,58 +15,54 @@ export async function changeSignature(editor: Editor) {
     return;
   }
 
-  await editor.askForPositions(params, async (newPositions) => {
-    const references = await editor.getSelectionReferences(fixedSelection);
+  const newPositions = await editor.askForPositions(params);
+  const references = await editor.getSelectionReferences(fixedSelection);
 
-    const filesContent = await Promise.all(
-      references.map(async (reference) => {
-        const content = await editor.codeOf(reference.path);
-        return {
-          code: content,
-          path: reference.path,
-          selection: reference.selection
-        };
-      })
-    );
+  const filesContent = await Promise.all(
+    references.map(async (reference) => {
+      const content = await editor.codeOf(reference.path);
+      return {
+        code: content,
+        path: reference.path,
+        selection: reference.selection
+      };
+    })
+  );
 
-    const alreadyTransformed: Record<string, string> = {};
-    const result: {
-      path: Path;
-      transformed: t.Transformed;
-    }[] = [];
+  const alreadyTransformed: Record<string, string> = {};
+  const result: {
+    path: Path;
+    transformed: t.Transformed;
+  }[] = [];
 
-    for (const x of filesContent) {
-      const codeToTransform =
-        alreadyTransformed[x.path.value] || (x.code as string);
+  for (const x of filesContent) {
+    const codeToTransform =
+      alreadyTransformed[x.path.value] || (x.code as string);
 
-      try {
-        const transformed = updateCode(
-          t.parse(codeToTransform),
-          x.selection,
-          newPositions
-        );
+    try {
+      const transformed = updateCode(
+        t.parse(codeToTransform),
+        x.selection,
+        newPositions
+      );
 
-        alreadyTransformed[x.path.value] = `${transformed.code}`;
+      alreadyTransformed[x.path.value] = `${transformed.code}`;
 
-        result.push({
-          path: x.path,
-          transformed
-        });
-      } catch (error) {
-        editor.showError(ErrorReason.CantChangeSignature);
-        return;
-      }
+      result.push({
+        path: x.path,
+        transformed
+      });
+    } catch (error) {
+      editor.showError(ErrorReason.CantChangeSignature);
+      return;
     }
+  }
 
-    await Promise.all(
-      result.map(async (result) => {
-        await editor.writeIn(
-          result.path,
-          alreadyTransformed[result.path.value]
-        );
-      })
-    );
-  });
+  await Promise.all(
+    result.map(async (result) => {
+      await editor.writeIn(result.path, alreadyTransformed[result.path.value]);
+    })
+  );
 }
 
 type Params = { label: string; value: { startAt: number; endAt: number } }[];

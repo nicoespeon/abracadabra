@@ -420,10 +420,9 @@ export class InMemoryEditor implements Editor {
   }
 
   async askForPositions(
-    _params: SelectedPosition[],
-    onConfirm: (positions: SelectedPosition[]) => Promise<void>
-  ): Promise<void> {
-    await onConfirm(this.userChoices as SelectedPosition[]);
+    _params: SelectedPosition[]
+  ): Promise<SelectedPosition[]> {
+    return this.userChoices as SelectedPosition[];
   }
 
   public saveUserChoices<T>(choice: Choice<T>) {

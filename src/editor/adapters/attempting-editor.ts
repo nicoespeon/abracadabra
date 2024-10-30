@@ -110,9 +110,8 @@ export class AttemptingEditor implements Editor {
   }
 
   async askForPositions(
-    params: SelectedPosition[],
-    onConfirm: (positions: SelectedPosition[]) => Promise<void>
-  ): Promise<void> {
-    await this.editor.askForPositions(params, onConfirm);
+    params: SelectedPosition[]
+  ): Promise<SelectedPosition[]> {
+    return this.editor.askForPositions(params);
   }
 }

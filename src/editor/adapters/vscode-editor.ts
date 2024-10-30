@@ -343,57 +343,58 @@ export class VSCodeEditor implements Editor {
   }
 
   async askForPositions(
-    params: SelectedPosition[],
-    onConfirm: (positions: SelectedPosition[]) => Promise<void>
-  ): Promise<void> {
-    if (VSCodeEditor.panel !== null) {
-      VSCodeEditor.panel.dispose();
-    }
+    params: SelectedPosition[]
+  ): Promise<SelectedPosition[]> {
+    return new Promise((resolve) => {
+      if (VSCodeEditor.panel !== null) {
+        VSCodeEditor.panel.dispose();
+      }
 
-    VSCodeEditor.panel = vscode.window.createWebviewPanel(
-      "changeSignature",
-      "Change function signature",
-      vscode.ViewColumn.Beside,
-      {}
-    );
+      VSCodeEditor.panel = vscode.window.createWebviewPanel(
+        "changeSignature",
+        "Change function signature",
+        vscode.ViewColumn.Beside,
+        {}
+      );
 
-    VSCodeEditor.panel.webview.options = {
-      enableScripts: true
-    };
-    VSCodeEditor.panel.webview.html =
-      createChangeSignatureWebviewTemplate(params);
+      VSCodeEditor.panel.webview.options = {
+        enableScripts: true
+      };
+      VSCodeEditor.panel.webview.html =
+        createChangeSignatureWebviewTemplate(params);
 
-    VSCodeEditor.panel.webview.onDidReceiveMessage(
-      async (message: {
-        values: {
-          label: string;
-          startAt: number;
-          endAt: number;
-          value?: string;
-        }[];
-      }) => {
-        const values = message.values;
+      VSCodeEditor.panel.webview.onDidReceiveMessage(
+        async (message: {
+          values: {
+            label: string;
+            startAt: number;
+            endAt: number;
+            value?: string;
+          }[];
+        }) => {
+          const values = message.values;
 
-        const result: SelectedPosition[] = values.map((result) => {
-          return {
-            label: result.label,
-            value: {
-              startAt: result.startAt,
-              endAt: result.endAt,
-              val: result.value
-            }
-          };
-        });
+          const result: SelectedPosition[] = values.map((result) => {
+            return {
+              label: result.label,
+              value: {
+                startAt: result.startAt,
+                endAt: result.endAt,
+                val: result.value
+              }
+            };
+          });
 
-        await onConfirm(result);
-        VSCodeEditor.panel?.dispose();
+          resolve(result);
+          VSCodeEditor.panel?.dispose();
+          VSCodeEditor.panel = null;
+        },
+        undefined
+      );
+
+      VSCodeEditor.panel.onDidDispose(() => {
         VSCodeEditor.panel = null;
-      },
-      undefined
-    );
-
-    VSCodeEditor.panel.onDidDispose(() => {
-      VSCodeEditor.panel = null;
+      });
     });
   }
 }
