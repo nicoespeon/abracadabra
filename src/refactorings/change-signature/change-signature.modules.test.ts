@@ -2,7 +2,8 @@ import { AbsolutePath } from "../../editor/path";
 import { testEach } from "../../tests-helpers";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { changeSignature } from "./change-signature";
-import { Code, SelectedPosition } from "../../editor/editor";
+import { Code } from "../../editor/editor";
+import { selectedPosition, swapBothArguments } from "./selected-position";
 
 type TestSample = {
   code: Code;
@@ -190,14 +191,13 @@ describe("Change Signature: Modules", () => {
     async ({ setup, expected }) => {
       const editor = new InMemoryEditor(setup.currentFile.code);
       await editor.writeIn(setup.currentFile.path, editor.code);
-      editor.saveUserChoices(userChangePositionOf(0, 1));
-      editor.saveUserChoices(userChangePositionOf(1, 0));
+      editor.replyWithPositions(swapBothArguments());
       await saveOtherFiles(setup, editor);
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(setup.currentFile.path);
-      expect(extracted).toBe(expected.currentFile.code);
+      const result = await editor.codeOf(setup.currentFile.path);
+      expect(result).toBe(expected.currentFile.code);
       await validateOutput(expected, editor);
     }
   );
@@ -380,17 +380,17 @@ describe("Change Signature: Modules", () => {
       async ({ setup, expected }) => {
         const editor = new InMemoryEditor(setup.currentFile.code);
         await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.saveUserChoices(userChangePositionOf(0, 1));
-        editor.saveUserChoices(userChangePositionOf(1, 0));
-        editor.saveUserChoices(
-          userChangePositionOf(-1, 2, "newParameter", "100")
-        );
+        editor.replyWithPositions([
+          selectedPosition(0, 1),
+          selectedPosition(1, 0),
+          selectedPosition(-1, 2, "newParameter", "100")
+        ]);
         await saveOtherFiles(setup, editor);
 
         await changeSignature(editor);
 
-        const extracted = await editor.codeOf(setup.currentFile.path);
-        expect(extracted).toBe(expected.currentFile.code);
+        const result = await editor.codeOf(setup.currentFile.path);
+        expect(result).toBe(expected.currentFile.code);
         await validateOutput(expected, editor);
       }
     );
@@ -574,14 +574,16 @@ describe("Change Signature: Modules", () => {
       async ({ setup, expected }) => {
         const editor = new InMemoryEditor(setup.currentFile.code);
         await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.saveUserChoices(userChangePositionOf(0, 0));
-        editor.saveUserChoices(userChangePositionOf(1, -1));
+        editor.replyWithPositions([
+          selectedPosition(0, 0),
+          selectedPosition(1, -1)
+        ]);
         await saveOtherFiles(setup, editor);
 
         await changeSignature(editor);
 
-        const extracted = await editor.codeOf(setup.currentFile.path);
-        expect(extracted).toBe(expected.currentFile.code);
+        const result = await editor.codeOf(setup.currentFile.path);
+        expect(result).toBe(expected.currentFile.code);
         await validateOutput(expected, editor);
       }
     );
@@ -593,8 +595,8 @@ function validateOutput(
   editor: InMemoryEditor
 ) {
   const promises = expected.otherFiles.map(async (file) => {
-    const extracted = await editor.codeOf(file.path);
-    expect(extracted).toBe(file.code);
+    const result = await editor.codeOf(file.path);
+    expect(result).toBe(file.code);
   });
 
   return Promise.all(promises);
@@ -612,23 +614,4 @@ function saveOtherFiles(
   });
 
   return Promise.all(promises);
-}
-
-function userChangePositionOf(
-  startAt: number,
-  endAt: number,
-  label = "irrelevant",
-  value?: string
-): SelectedPosition {
-  const result: SelectedPosition = {
-    label,
-    value: {
-      startAt,
-      endAt
-    }
-  };
-
-  if (value) result.value.val = value;
-
-  return result;
 }

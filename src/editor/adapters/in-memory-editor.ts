@@ -28,7 +28,7 @@ export class InMemoryEditor implements Editor {
   private codeMatrix: CodeMatrix = [];
   private _selection: Selection = Selection.cursorAt(0, 0);
   private otherFiles = new Map<Path, Editor>();
-  private userChoices: Choice<unknown>[] = [];
+  private userPositions: SelectedPosition[] | null = null;
 
   constructor(code: Code, position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
@@ -420,13 +420,13 @@ export class InMemoryEditor implements Editor {
   }
 
   async askForPositions(
-    _currentPositions: SelectedPosition[]
+    currentPositions: SelectedPosition[]
   ): Promise<SelectedPosition[]> {
-    return this.userChoices as SelectedPosition[];
+    return this.userPositions ?? currentPositions;
   }
 
-  public saveUserChoices<T>(choice: Choice<T>) {
-    this.userChoices.push(choice);
+  replyWithPositions(positions: SelectedPosition[]) {
+    this.userPositions = positions;
   }
 }
 

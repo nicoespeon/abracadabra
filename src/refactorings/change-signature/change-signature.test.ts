@@ -1,15 +1,10 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import {
-  AbsolutePath,
-  Code,
-  ErrorReason,
-  SelectedPosition
-} from "../../editor/editor";
+import { AbsolutePath, Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
 import { testEach } from "../../tests-helpers";
-
 import { changeSignature, createVisitor } from "./change-signature";
+import { selectedPosition, swapBothArguments } from "./selected-position";
 
 describe("Change Signature", () => {
   testEach<{
@@ -209,13 +204,12 @@ describe("Change Signature", () => {
       const path = new AbsolutePath("/temp/aFile.ts");
       const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
-      editor.saveUserChoices(userChangePositionOf(0, 1));
-      editor.saveUserChoices(userChangePositionOf(1, 0));
+      editor.replyWithPositions(swapBothArguments());
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(path);
-      expect(extracted).toBe(expected);
+      const result = await editor.codeOf(path);
+      expect(result).toBe(expected);
     }
   );
 
@@ -270,13 +264,12 @@ describe("Change Signature", () => {
       const path = new AbsolutePath("/temp/aFile.ts");
       const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
-      editor.saveUserChoices(userChangePositionOf(0, 1));
-      editor.saveUserChoices(userChangePositionOf(1, 0));
+      editor.replyWithPositions(swapBothArguments());
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(path);
-      expect(extracted).toBe(expected);
+      const result = await editor.codeOf(path);
+      expect(result).toBe(expected);
     }
   );
 
@@ -321,13 +314,12 @@ describe("Change Signature", () => {
       const path = new AbsolutePath("/temp/aFile.ts");
       const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
-      editor.saveUserChoices(userChangePositionOf(0, 1));
-      editor.saveUserChoices(userChangePositionOf(1, 0));
+      editor.replyWithPositions(swapBothArguments());
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(path);
-      expect(extracted).toBe(expected);
+      const result = await editor.codeOf(path);
+      expect(result).toBe(expected);
     }
   );
 
@@ -342,8 +334,7 @@ describe("Change Signature", () => {
     const editor = new InMemoryEditor(code);
     await editor.writeIn(new AbsolutePath("/temp/aModule.js"), editor.code);
     jest.spyOn(editor, "showError");
-    editor.saveUserChoices(userChangePositionOf(0, 1));
-    editor.saveUserChoices(userChangePositionOf(1, 0));
+    editor.replyWithPositions([selectedPosition(0, 1), selectedPosition(1, 0)]);
 
     await changeSignature(editor);
 
@@ -373,15 +364,17 @@ describe("Change Signature", () => {
 
     const editor = new InMemoryEditor(setup.currentFile);
     await editor.writeIn(setup.path, editor.code);
-    editor.saveUserChoices(userChangePositionOf(0, 3));
-    editor.saveUserChoices(userChangePositionOf(3, 0));
-    editor.saveUserChoices(userChangePositionOf(1, 2));
-    editor.saveUserChoices(userChangePositionOf(2, 1));
+    editor.replyWithPositions([
+      selectedPosition(0, 3),
+      selectedPosition(3, 0),
+      selectedPosition(1, 2),
+      selectedPosition(2, 1)
+    ]);
 
     await changeSignature(editor);
 
-    const extracted = await editor.codeOf(setup.path);
-    expect(extracted).toBe(expected.currentFile);
+    const result = await editor.codeOf(setup.path);
+    expect(result).toBe(expected.currentFile);
   });
 
   testEach<{ code: Code; selection?: Selection }>(
@@ -558,16 +551,16 @@ describe("Change Signature", () => {
         const path = new AbsolutePath("/temp/file.ts");
         const editor = new InMemoryEditor(code);
         await editor.writeIn(path, editor.code);
-        editor.saveUserChoices(userChangePositionOf(0, 0));
-        editor.saveUserChoices(userChangePositionOf(1, 1));
-        editor.saveUserChoices(
-          userChangePositionOf(-1, 2, "newParam", newValue)
-        );
+        editor.replyWithPositions([
+          selectedPosition(0, 0),
+          selectedPosition(1, 1),
+          selectedPosition(-1, 2, "newParam", newValue)
+        ]);
 
         await changeSignature(editor);
 
-        const extracted = await editor.codeOf(path);
-        expect(extracted).toBe(expected);
+        const result = await editor.codeOf(path);
+        expect(result).toBe(expected);
       }
     );
   });
@@ -671,13 +664,15 @@ describe("Change Signature", () => {
         const path = new AbsolutePath("/temp/file.ts");
         const editor = new InMemoryEditor(code);
         await editor.writeIn(path, editor.code);
-        editor.saveUserChoices(userChangePositionOf(0, 0));
-        editor.saveUserChoices(userChangePositionOf(1, -1));
+        editor.replyWithPositions([
+          selectedPosition(0, 0),
+          selectedPosition(1, -1)
+        ]);
 
         await changeSignature(editor);
 
-        const extracted = await editor.codeOf(path);
-        expect(extracted).toBe(expected);
+        const result = await editor.codeOf(path);
+        expect(result).toBe(expected);
       }
     );
 
@@ -696,13 +691,15 @@ describe("Change Signature", () => {
       const path = new AbsolutePath("/temp/file.ts");
       const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
-      editor.saveUserChoices(userChangePositionOf(0, -1));
-      editor.saveUserChoices(userChangePositionOf(1, 0));
+      editor.replyWithPositions([
+        selectedPosition(0, -1),
+        selectedPosition(1, 0)
+      ]);
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(path);
-      expect(extracted).toBe(expected);
+      const result = await editor.codeOf(path);
+      expect(result).toBe(expected);
     });
 
     it("Should be able to remove multiple parameters", async () => {
@@ -720,15 +717,17 @@ describe("Change Signature", () => {
       const path = new AbsolutePath("/temp/file.ts");
       const editor = new InMemoryEditor(code);
       await editor.writeIn(path, editor.code);
-      editor.saveUserChoices(userChangePositionOf(0, 0));
-      editor.saveUserChoices(userChangePositionOf(1, 1));
-      editor.saveUserChoices(userChangePositionOf(2, -1));
-      editor.saveUserChoices(userChangePositionOf(3, -1));
+      editor.replyWithPositions([
+        selectedPosition(0, 0),
+        selectedPosition(1, 1),
+        selectedPosition(2, -1),
+        selectedPosition(3, -1)
+      ]);
 
       await changeSignature(editor);
 
-      const extracted = await editor.codeOf(path);
-      expect(extracted).toBe(expected);
+      const result = await editor.codeOf(path);
+      expect(result).toBe(expected);
     });
   });
 
@@ -747,33 +746,16 @@ describe("Change Signature", () => {
     const path = new AbsolutePath("/temp/file.ts");
     const editor = new InMemoryEditor(code);
     await editor.writeIn(path, editor.code);
-    editor.saveUserChoices(userChangePositionOf(0, -1, "a"));
-    editor.saveUserChoices(userChangePositionOf(1, 0, "b"));
-    editor.saveUserChoices(userChangePositionOf(2, -1, "c"));
-    editor.saveUserChoices(userChangePositionOf(-1, 1, "newParam", "true"));
+    editor.replyWithPositions([
+      selectedPosition(0, -1, "a"),
+      selectedPosition(1, 0, "b"),
+      selectedPosition(2, -1, "c"),
+      selectedPosition(-1, 1, "newParam", "true")
+    ]);
 
     await changeSignature(editor);
 
-    const extracted = await editor.codeOf(path);
-    expect(extracted).toBe(expected);
+    const result = await editor.codeOf(path);
+    expect(result).toBe(expected);
   });
 });
-
-function userChangePositionOf(
-  startAt: number,
-  endAt: number,
-  label = "irrelevant",
-  value?: string
-): SelectedPosition {
-  const result: SelectedPosition = {
-    label,
-    value: {
-      startAt,
-      endAt
-    }
-  };
-
-  if (value) result.value.val = value;
-
-  return result;
-}
