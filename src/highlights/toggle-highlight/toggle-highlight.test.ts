@@ -1,4 +1,5 @@
-import { Position, Selection } from "../../editor";
+import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import removeAllHighlightsConfig from "../remove-all-highlights";
 import { toggleHighlight } from "./toggle-highlight";

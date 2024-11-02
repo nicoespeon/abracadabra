@@ -1,4 +1,5 @@
-import { Editor, Command, Result, ErrorReason } from "../../editor/editor";
+import { Command, Code } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
 
 export async function renameSymbol(editor: Editor) {

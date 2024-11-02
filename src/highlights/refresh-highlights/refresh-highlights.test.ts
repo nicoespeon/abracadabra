@@ -1,4 +1,4 @@
-import { Position } from "../../editor";
+import { Position } from "../../editor/position";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { toggleHighlight } from "../toggle-highlight/toggle-highlight";
 import { refreshHighlights } from "./refresh-highlights";
