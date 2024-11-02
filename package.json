@@ -98,6 +98,7 @@
     "node-stdlib-browser": "1.2.1",
     "ovsx": "0.9.5",
     "prettier": "3.3.2",
+    "prettier-plugin-organize-imports": "4.1.0",
     "pretty-quick": "4.0.0",
     "sinon": "18.0.0",
     "tsup": "8.1.0",
