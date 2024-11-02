@@ -1,8 +1,8 @@
 import { createVisitor, flipIfElse } from "./flip-if-else";
 
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "flipIfElse",
     operation: flipIfElse,

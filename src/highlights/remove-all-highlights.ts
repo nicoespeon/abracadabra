@@ -1,6 +1,6 @@
-import { Refactoring } from "../refactorings";
+import { RefactoringConfig } from "../refactorings";
 
-const config: Refactoring = {
+const config: RefactoringConfig = {
   command: {
     key: "removeAllHighlights",
     operation: async (editor) => editor.removeAllHighlights()

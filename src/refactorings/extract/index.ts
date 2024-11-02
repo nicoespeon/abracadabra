@@ -1,13 +1,13 @@
 import { extractVariable } from "./extract-variable/extract-variable";
 import { extractType } from "./extract-type/extract-type";
 
-import { Refactoring } from "../../refactorings";
+import { RefactoringConfig } from "../../refactorings";
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
-const config: Refactoring = {
+const config: RefactoringConfig = {
   command: {
     key: "extract",
     operation: extract

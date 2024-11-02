@@ -1,8 +1,8 @@
 import { createVisitor, flipTernary } from "./flip-ternary";
 
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "flipTernary",
     operation: flipTernary,

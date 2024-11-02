@@ -2,15 +2,15 @@ import * as vscode from "vscode";
 
 import {
   EditorCommand,
-  Operation,
-  Operation__NEW,
+  Refactoring,
+  Refactoring__NEW,
   RefactoringState
 } from "./refactorings";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import { Result } from "./editor/editor";
 
-export function createCommand(execute: Operation) {
+export function createCommand(execute: Refactoring) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
@@ -19,7 +19,7 @@ export function createCommand(execute: Operation) {
   };
 }
 
-export function createCommand__NEW(execute: Operation__NEW) {
+export function createCommand__NEW(execute: Refactoring__NEW) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
@@ -29,7 +29,7 @@ export function createCommand__NEW(execute: Operation__NEW) {
 }
 
 async function executeRefactoring(
-  refactor: Operation__NEW,
+  refactor: Refactoring__NEW,
   editor: VSCodeEditor,
   state: RefactoringState = {
     state: "new",

@@ -1,7 +1,7 @@
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import { createVisitor, wrapInJsxFragment } from "./wrap-in-jsx-fragment";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "wrapInJsxFragment",
     operation: wrapInJsxFragment,

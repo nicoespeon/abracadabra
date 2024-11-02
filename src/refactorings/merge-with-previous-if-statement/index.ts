@@ -3,9 +3,9 @@ import {
   mergeWithPreviousIfStatement
 } from "./merge-with-previous-if-statement";
 
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "mergeWithPreviousIfStatement",
     operation: mergeWithPreviousIfStatement,

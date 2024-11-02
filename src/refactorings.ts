@@ -2,18 +2,18 @@ import { Code, Command, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
 
-export interface Refactoring {
+export interface RefactoringConfig {
   command: {
     key: string;
-    operation: Operation;
+    operation: Refactoring;
   };
 }
 
-export interface RefactoringWithActionProvider {
+export interface RefactoringWithActionProviderConfig {
   command: {
     key: string;
     title: string;
-    operation: Operation;
+    operation: Refactoring;
   };
   actionProvider: {
     message: string;
@@ -26,13 +26,13 @@ export interface RefactoringWithActionProvider {
   };
 }
 
-export type Operation = (editor: Editor) => Promise<void>;
+export type Refactoring = (editor: Editor) => Promise<void>;
 
-export interface RefactoringWithActionProvider__NEW {
+export interface RefactoringWithActionProviderConfig__NEW {
   command: {
     key: string;
     title: string;
-    operation: Operation__NEW;
+    operation: Refactoring__NEW;
   };
   actionProvider: {
     message: string;
@@ -45,7 +45,7 @@ export interface RefactoringWithActionProvider__NEW {
   };
 }
 
-export type Operation__NEW = (state: RefactoringState) => EditorCommand;
+export type Refactoring__NEW = (state: RefactoringState) => EditorCommand;
 
 export type RefactoringState =
   | ({ state: "new" } & BaseRefactoringState)

@@ -1,8 +1,8 @@
 import { createVisitor, convertForToForEach } from "./convert-for-to-for-each";
 
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "convertForToForEach",
     operation: convertForToForEach,

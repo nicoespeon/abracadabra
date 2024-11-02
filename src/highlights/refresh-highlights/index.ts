@@ -1,7 +1,7 @@
-import { Refactoring } from "../../refactorings";
+import { RefactoringConfig } from "../../refactorings";
 import { refreshHighlights } from "./refresh-highlights";
 
-const config: Refactoring = {
+const config: RefactoringConfig = {
   command: {
     key: "refreshHighlights",
     operation: refreshHighlights

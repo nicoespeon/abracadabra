@@ -1,8 +1,8 @@
 import { moveStatementDown } from "./move-statement-down";
 
-import { Refactoring } from "../../refactorings";
+import { RefactoringConfig } from "../../refactorings";
 
-const config: Refactoring = {
+const config: RefactoringConfig = {
   command: {
     key: "moveStatementDown",
     operation: moveStatementDown

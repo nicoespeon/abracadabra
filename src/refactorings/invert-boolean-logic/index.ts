@@ -4,9 +4,9 @@ import {
   getNegatedOperator
 } from "./invert-boolean-logic";
 
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "invertBooleanLogic",
     operation: invertBooleanLogic,

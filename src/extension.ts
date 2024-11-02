@@ -48,9 +48,9 @@ import splitMultipleDeclarations from "./refactorings/split-multiple-declaration
 import toggleBraces from "./refactorings/toggle-braces";
 import wrapInJsxFrament from "./refactorings/wrap-in-jsx-fragment";
 import {
-  Refactoring,
-  RefactoringWithActionProvider,
-  RefactoringWithActionProvider__NEW
+  RefactoringConfig,
+  RefactoringWithActionProviderConfig,
+  RefactoringWithActionProviderConfig__NEW
 } from "./refactorings";
 import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 
@@ -118,9 +118,9 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
 
 type ConfiguredRefactoring = {
   languages: string[];
-  withoutActionProvider: Refactoring[];
-  withActionProvider: RefactoringWithActionProvider[];
-  withActionProvider__NEW: RefactoringWithActionProvider__NEW[];
+  withoutActionProvider: RefactoringConfig[];
+  withActionProvider: RefactoringWithActionProviderConfig[];
+  withActionProvider__NEW: RefactoringWithActionProviderConfig__NEW[];
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -171,8 +171,8 @@ export function activate(context: vscode.ExtensionContext) {
     },
     {} as {
       [language: string]: (
-        | RefactoringWithActionProvider
-        | RefactoringWithActionProvider__NEW
+        | RefactoringWithActionProviderConfig
+        | RefactoringWithActionProviderConfig__NEW
       )[];
     }
   );

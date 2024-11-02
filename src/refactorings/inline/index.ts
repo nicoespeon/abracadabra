@@ -6,10 +6,10 @@ import {
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
-import { RefactoringWithActionProvider } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "inline",
     title: "Inline Variable/Function",
