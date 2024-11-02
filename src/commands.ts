@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
-import { Result } from "./editor/editor";
 import {
   Refactoring,
   Refactoring__NEW,
@@ -51,7 +50,7 @@ async function executeRefactoring(
 
     case "delegate": {
       const delegateResult = await editor.delegate(result.command);
-      if (delegateResult === Result.NotSupported) {
+      if (delegateResult === "not supported") {
         return executeRefactoring(refactor, editor, {
           state: "command not supported",
           code: state.code,

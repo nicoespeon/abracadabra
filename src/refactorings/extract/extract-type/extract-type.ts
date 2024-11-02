@@ -1,5 +1,5 @@
 import * as t from "../../../ast";
-import { Command, Editor, ErrorReason } from "../../../editor/editor";
+import { Editor, ErrorReason } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
 import { pascalCase } from "../changeCase";
@@ -20,7 +20,7 @@ export async function extractType(editor: Editor) {
       .putAtStartOfLine()
       .goToNextNthWordInCode(2, updatedCode.code)
   );
-  await editor.delegate(Command.RenameSymbol);
+  await editor.delegate("rename symbol");
 }
 
 function updateCode(

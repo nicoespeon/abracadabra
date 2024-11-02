@@ -1,7 +1,6 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
-import { ReplacementStrategy } from "../replacement-strategy";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Multiple occurrences", () => {
@@ -25,11 +24,11 @@ sendMessage("Hello");`;
 
     expect(editor.askUserChoice).toHaveBeenCalledWith([
       {
-        value: ReplacementStrategy.AllOccurrences,
+        value: "all occurrences",
         label: "Replace all 2 occurrences"
       },
       {
-        value: ReplacementStrategy.SelectedOccurrence,
+        value: "selected occurrence",
         label: "Replace this occurrence only"
       }
     ]);

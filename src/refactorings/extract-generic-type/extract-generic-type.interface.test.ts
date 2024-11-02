@@ -1,8 +1,7 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, Command } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { Position } from "../../editor/position";
-import { ReplacementStrategy } from "../extract/replacement-strategy";
+import { testEach } from "../../tests-helpers";
 import { extractGenericType } from "./extract-generic-type";
 
 describe("Extract Generic Type - Interface declaration", () => {
@@ -104,7 +103,7 @@ describe("Extract Generic Type - Interface declaration", () => {
 
     await extractGenericType(editor);
 
-    expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenNthCalledWith(1, "rename symbol");
   });
 
   describe("cursor position", () => {
@@ -180,11 +179,11 @@ describe("Extract Generic Type - Interface declaration", () => {
 
       expect(editor.askUserChoice).toHaveBeenCalledWith([
         {
-          value: ReplacementStrategy.AllOccurrences,
+          value: "all occurrences",
           label: "Replace all 2 occurrences"
         },
         {
-          value: ReplacementStrategy.SelectedOccurrence,
+          value: "selected occurrence",
           label: "Replace this occurrence only"
         }
       ]);

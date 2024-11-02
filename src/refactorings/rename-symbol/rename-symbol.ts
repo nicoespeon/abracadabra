@@ -1,11 +1,11 @@
 import * as t from "../../ast";
-import { Command, Editor, ErrorReason, Result } from "../../editor/editor";
+import { Editor, ErrorReason } from "../../editor/editor";
 
 export async function renameSymbol(editor: Editor) {
   // Editor built-in rename works fine => ok to delegate the work for now.
-  const result = await editor.delegate(Command.RenameSymbol);
+  const result = await editor.delegate("rename symbol");
 
-  if (result === Result.NotSupported) {
+  if (result === "not supported") {
     const selectedSymbol = findSelectedSymbol(editor);
     await selectedSymbol.rename();
   }

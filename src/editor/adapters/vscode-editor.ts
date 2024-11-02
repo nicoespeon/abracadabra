@@ -187,9 +187,9 @@ export class VSCodeEditor implements Editor {
     }
   }
 
-  async delegate(command: Command) {
+  async delegate(command: Command): Promise<Result> {
     await vscode.commands.executeCommand(toVSCodeCommand(command));
-    return Result.OK;
+    return "ok";
   }
 
   async showError(reason: ErrorReason | string) {
@@ -475,7 +475,7 @@ function toVSCodePosition(position: Position): vscode.Position {
 
 function toVSCodeCommand(command: Command): string {
   switch (command) {
-    case Command.RenameSymbol:
+    case "rename symbol":
       return "editor.action.rename";
 
     default:

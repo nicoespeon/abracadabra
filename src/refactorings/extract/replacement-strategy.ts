@@ -5,24 +5,23 @@ export async function askReplacementStrategy(
   editor: Editor
 ): Promise<ReplacementStrategy> {
   const occurrencesCount = otherOccurrences.length;
-  if (occurrencesCount <= 0) return ReplacementStrategy.SelectedOccurrence;
+  if (occurrencesCount <= 0) return "selected occurrence";
 
   const choice = await editor.askUserChoice([
     {
-      value: ReplacementStrategy.AllOccurrences,
+      value: "all occurrences" as const,
       label: `Replace all ${occurrencesCount + 1} occurrences`
     },
     {
-      value: ReplacementStrategy.SelectedOccurrence,
+      value: "selected occurrence" as const,
       label: "Replace this occurrence only"
     }
   ]);
 
-  return choice ? choice.value : ReplacementStrategy.None;
+  return choice ? choice.value : "none";
 }
 
-export enum ReplacementStrategy {
-  AllOccurrences,
-  SelectedOccurrence,
-  None
-}
+export type ReplacementStrategy =
+  | "all occurrences"
+  | "selected occurrence"
+  | "none";

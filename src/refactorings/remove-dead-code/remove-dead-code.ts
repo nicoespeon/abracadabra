@@ -19,27 +19,27 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     ast,
     createVisitor(selection, (path, scenario) => {
       switch (scenario) {
-        case DeadCodeScenario.EmptyAlternate:
+        case "empty alternate":
           path.node.alternate = null;
           break;
 
-        case DeadCodeScenario.EmptyIfStatement:
+        case "empty if statement":
           path.remove();
           break;
 
-        case DeadCodeScenario.FalsyTest:
+        case "falsy test":
           replaceWithAlternate(path);
           break;
 
-        case DeadCodeScenario.TruthyTest:
+        case "truthy test":
           replaceWithConsequent(path);
           break;
 
-        case DeadCodeScenario.NestedTestEqual:
+        case "nested test equal":
           replaceWithConsequent(path);
           break;
 
-        case DeadCodeScenario.NestedTestOpposite:
+        case "nested test opposite":
           replaceWithAlternate(path);
           break;
 
@@ -61,22 +61,22 @@ export function createVisitor(
       const { test } = path.node;
 
       if (t.isFalsy(test)) {
-        onMatch(path, DeadCodeScenario.FalsyTest);
+        onMatch(path, "falsy test");
         return;
       }
 
       if (t.isTruthy(test)) {
-        onMatch(path, DeadCodeScenario.TruthyTest);
+        onMatch(path, "truthy test");
         return;
       }
 
       if (isEmptyIfStatement(path.node)) {
-        onMatch(path, DeadCodeScenario.EmptyIfStatement);
+        onMatch(path, "empty if statement");
         return;
       }
 
       if (hasEmptyAlternate(path.node)) {
-        onMatch(path, DeadCodeScenario.EmptyAlternate);
+        onMatch(path, "empty alternate");
       }
 
       checkDeadCodeFromBranches(path, onMatch);
@@ -158,21 +158,21 @@ function checkDeadCodeFromNestedIf(
   const { test: nestedTest } = nestedPath.node;
 
   if (isEmptyIfStatement(nestedPath.node)) {
-    onMatch(nestedPath, DeadCodeScenario.EmptyIfStatement);
+    onMatch(nestedPath, "empty if statement");
     return;
   }
 
   if (hasEmptyAlternate(nestedPath.node)) {
-    onMatch(nestedPath, DeadCodeScenario.EmptyAlternate);
+    onMatch(nestedPath, "empty alternate");
   }
 
   if (t.areOpposite(test, nestedTest)) {
-    onMatch(nestedPath, DeadCodeScenario.NestedTestOpposite);
+    onMatch(nestedPath, "nested test opposite");
     return;
   }
 
   if (t.areEquivalent(test, nestedTest)) {
-    onMatch(nestedPath, DeadCodeScenario.NestedTestEqual);
+    onMatch(nestedPath, "nested test equal");
     return;
   }
 }
@@ -211,14 +211,13 @@ function replaceWithConsequent(path: t.NodePath<t.IfStatement>) {
   t.replaceWithBodyOf(path, path.node.consequent);
 }
 
-enum DeadCodeScenario {
-  FalsyTest,
-  TruthyTest,
-  EmptyIfStatement,
-  EmptyAlternate,
-  NestedTestOpposite,
-  NestedTestEqual
-}
+type DeadCodeScenario =
+  | "falsy test"
+  | "truthy test"
+  | "empty if statement"
+  | "empty alternate"
+  | "nested test opposite"
+  | "nested test equal";
 
 type OnMatch = (
   path: t.NodePath<t.IfStatement>,

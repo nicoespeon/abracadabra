@@ -21,9 +21,9 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
     return this.offsetEditorSelection(super.selection);
   }
 
-  async delegate(command: Command) {
-    if (command === Command.RenameSymbol) {
-      return Result.NotSupported;
+  async delegate(command: Command): Promise<Result> {
+    if (command === "rename symbol") {
+      return "not supported";
     }
 
     return super.delegate(command);

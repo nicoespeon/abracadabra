@@ -194,8 +194,8 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve();
   }
 
-  delegate(_command: Command) {
-    return Promise.resolve(Result.OK);
+  delegate(_command: Command): Promise<Result> {
+    return Promise.resolve("ok");
   }
 
   showError(_reason: ErrorReason | string) {

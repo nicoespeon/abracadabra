@@ -46,15 +46,9 @@ export type Modification = {
 
 export type Code = string;
 
-// TODO: use union string instead
-export enum Command {
-  RenameSymbol
-}
+export type Command = "rename symbol";
 
-export enum Result {
-  OK,
-  NotSupported
-}
+export type Result = "ok" | "not supported";
 
 export type Choice<T> = {
   value: T;

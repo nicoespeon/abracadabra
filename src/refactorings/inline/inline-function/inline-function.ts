@@ -76,17 +76,17 @@ function updateCode(
     code,
     createVisitorThat((path) => {
       const returnStatementsCount = countReturnStatementsIn(path);
-      hasManyReturns = returnStatementsCount === StatementsCount.Many;
+      hasManyReturns = returnStatementsCount === "many";
       if (hasManyReturns) return;
 
       replaceAllIdentifiersWithFunction(path);
 
       isAssignedWithoutReturn =
-        isFunctionAssigned && returnStatementsCount === StatementsCount.Zero;
+        isFunctionAssigned && returnStatementsCount === "zero";
       if (isAssignedWithoutReturn) return;
 
       isAssignedWithManyStatements =
-        isFunctionAssigned && countStatementsIn(path) === StatementsCount.Many;
+        isFunctionAssigned && countStatementsIn(path) === "many";
       if (isAssignedWithoutReturn) return;
 
       const { node } = path;
@@ -137,16 +137,13 @@ function createVisitorThat(
 }
 
 function countStatementsIn(path: t.NodePath): StatementsCount {
-  let result = StatementsCount.Zero;
+  let result: StatementsCount = "zero";
 
   path.traverse({
     Statement(path) {
       if (t.isBlockStatement(path)) return;
 
-      result =
-        result === StatementsCount.Zero
-          ? StatementsCount.One
-          : StatementsCount.Many;
+      result = result === "zero" ? "one" : "many";
     }
   });
 
@@ -154,18 +151,15 @@ function countStatementsIn(path: t.NodePath): StatementsCount {
 }
 
 function countReturnStatementsIn(path: t.NodePath): StatementsCount {
-  let result = StatementsCount.Zero;
+  let result: StatementsCount = "zero";
 
   path.traverse({
     ReturnStatement(path) {
-      result =
-        result === StatementsCount.Zero
-          ? StatementsCount.One
-          : StatementsCount.Many;
+      result = result === "zero" ? "one" : "many";
 
       // If return is in branched logic, then there is at least 2 returns.
       if (t.isInBranchedLogic(path)) {
-        result = StatementsCount.Many;
+        result = "many";
       }
     }
   });
@@ -173,11 +167,7 @@ function countReturnStatementsIn(path: t.NodePath): StatementsCount {
   return result;
 }
 
-enum StatementsCount {
-  Zero,
-  One,
-  Many
-}
+type StatementsCount = "zero" | "one" | "many";
 
 function replaceAllIdentifiersWithFunction(
   path: t.NodePath<t.FunctionDeclaration>

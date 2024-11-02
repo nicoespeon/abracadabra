@@ -3,10 +3,7 @@ import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import {
-  askReplacementStrategy,
-  ReplacementStrategy
-} from "../extract/replacement-strategy";
+import { askReplacementStrategy } from "../extract/replacement-strategy";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
 
 export async function extractGenericType(editor: Editor) {
@@ -22,10 +19,10 @@ export async function extractGenericType(editor: Editor) {
   }
 
   const choice = await askReplacementStrategy(otherOccurrences, editor);
-  if (choice === ReplacementStrategy.None) return;
+  if (choice === "none") return;
 
   const occurrences =
-    choice === ReplacementStrategy.AllOccurrences
+    choice === "all occurrences"
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
 

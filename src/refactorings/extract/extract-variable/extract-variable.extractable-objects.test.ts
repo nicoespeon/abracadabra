@@ -1,7 +1,6 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
-import { DestructureStrategy } from "./destructure-strategy";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Objects we can extract", () => {
@@ -293,11 +292,11 @@ if (startTime > 0) {
     expect(editor.askUserChoice).toHaveBeenCalledWith([
       {
         label: "Destructure => `const { baz } = foo.bar`",
-        value: DestructureStrategy.Destructure
+        value: "destructure"
       },
       {
         label: "Preserve => `const baz = foo.bar.baz`",
-        value: DestructureStrategy.Preserve
+        value: "preserve"
       }
     ]);
   });

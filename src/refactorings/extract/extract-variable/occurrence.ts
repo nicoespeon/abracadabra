@@ -3,7 +3,6 @@ import * as t from "../../../ast";
 import { Code, Editor, Modification } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
-import { DestructureStrategy } from "./destructure-strategy";
 import { Parts } from "./parts";
 import {
   MemberExpressionVariable,
@@ -237,14 +236,16 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
   }
 }
 
+type DestructureStrategy = "destructure" | "preserve";
+
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
-  private destructureStrategy = DestructureStrategy.Destructure;
+  private destructureStrategy: DestructureStrategy = "destructure";
 
   toVariableDeclaration(
     extractedCode: Code,
     allOccurrences: Occurrence[]
   ): Modification {
-    if (this.destructureStrategy === DestructureStrategy.Preserve) {
+    if (this.destructureStrategy === "preserve") {
       return super.toVariableDeclaration(extractedCode, allOccurrences);
     }
 
@@ -287,11 +288,11 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
     const choice = await editor.askUserChoice([
       {
         label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
-        value: DestructureStrategy.Destructure
+        value: "destructure" as const
       },
       {
         label: `Preserve => \`const ${this.variable.name} = ${this.parentObject}.${this.variable.name}\``,
-        value: DestructureStrategy.Preserve
+        value: "preserve" as const
       }
     ]);
 
@@ -305,7 +306,7 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   }
 
   get positionOnExtractedId(): Position {
-    if (this.destructureStrategy === DestructureStrategy.Preserve) {
+    if (this.destructureStrategy === "preserve") {
       return super.positionOnExtractedId;
     }
 

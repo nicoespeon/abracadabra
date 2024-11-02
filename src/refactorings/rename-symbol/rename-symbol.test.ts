@@ -1,5 +1,4 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Command, Result } from "../../editor/editor";
 import { renameSymbol } from "./rename-symbol";
 
 describe("Rename Symbol", () => {
@@ -9,13 +8,13 @@ describe("Rename Symbol", () => {
 
     await renameSymbol(editor);
 
-    expect(editor.delegate).toHaveBeenCalledWith(Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenCalledWith("rename symbol");
   });
 
   describe("rename not supported by editor", () => {
     it("should ask user for new name, using current one as default", async () => {
       const editor = new InMemoryEditor("const [cursor]hello = 'world'");
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput");
 
       await renameSymbol(editor);
@@ -25,7 +24,7 @@ describe("Rename Symbol", () => {
 
     it("should not ask user for new name if cursor isn't on an Identifier", async () => {
       const editor = new InMemoryEditor("const hello = 'w[cursor]orld'");
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput");
 
       await renameSymbol(editor);
@@ -35,7 +34,7 @@ describe("Rename Symbol", () => {
 
     it("renames identifier with user input", async () => {
       const editor = new InMemoryEditor("const [cursor]hello = 'world'");
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -45,7 +44,7 @@ describe("Rename Symbol", () => {
 
     it("doesn't rename if user returns no input", async () => {
       const editor = new InMemoryEditor("const [cursor]hello = 'world'");
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue(undefined);
 
       await renameSymbol(editor);
@@ -55,7 +54,7 @@ describe("Rename Symbol", () => {
 
     it("doesn't rename if user returns the same name", async () => {
       const editor = new InMemoryEditor("const [cursor]hello = 'world'");
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("hello");
 
       await renameSymbol(editor);
@@ -67,7 +66,7 @@ describe("Rename Symbol", () => {
       const editor = new InMemoryEditor(`const hello = 'world';
 console.log([cursor]hello);
 const goodMorning = \`Good morning \${hello}!\``);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -80,7 +79,7 @@ const goodMorning = \`Good morning \${aBrandNewName}!\``);
     it("renames destructured variable correctly (shorthand)", async () => {
       const editor = new InMemoryEditor(`const { value[cursor] } = { value: 2 };
 console.log(value);`);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -93,7 +92,7 @@ console.log(aBrandNewName);`);
       const editor =
         new InMemoryEditor(`const { value: somethingElse[cursor] } = { value: 2 };
 console.log(somethingElse);`);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -108,7 +107,7 @@ console.log(aBrandNewName);`);
       const editor =
         new InMemoryEditor(`const { value[cursor]: somethingElse } = { value: 2 };
 console.log(somethingElse);`);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -120,7 +119,7 @@ console.log(somethingElse);`);
     it("doesn't rename object property key", async () => {
       const editor = new InMemoryEditor(`const { value } = { value[cursor]: 2 };
 console.log(value);`);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -137,7 +136,7 @@ console.log(value);`);
 
 let hello = 'my friend';
 const goodMorning = \`Good morning \${hello}!\``);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -158,7 +157,7 @@ function sayHello() {
   const hello = 'world';
   console.log(hello);
 }`);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);
@@ -175,7 +174,7 @@ function sayHello() {
       const editor = new InMemoryEditor(`const hello = 'world';
 \t\tconsole.log([cursor]hello);
 \t\tconst goodMorning = \`Good morning \${hello}!\``);
-      jest.spyOn(editor, "delegate").mockResolvedValue(Result.NotSupported);
+      jest.spyOn(editor, "delegate").mockResolvedValue("not supported");
       jest.spyOn(editor, "askUserInput").mockResolvedValue("aBrandNewName");
 
       await renameSymbol(editor);

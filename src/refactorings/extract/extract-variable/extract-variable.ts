@@ -2,10 +2,7 @@ import * as t from "../../../ast";
 import { Code, Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { renameSymbol } from "../../rename-symbol/rename-symbol";
-import {
-  askReplacementStrategy,
-  ReplacementStrategy
-} from "../replacement-strategy";
+import { askReplacementStrategy } from "../replacement-strategy";
 import { createOccurrence, Occurrence } from "./occurrence";
 
 export async function extractVariable(editor: Editor) {
@@ -22,10 +19,10 @@ export async function extractVariable(editor: Editor) {
     otherOccurrences,
     editor
   );
-  if (replacementStrategy === ReplacementStrategy.None) return;
+  if (replacementStrategy === "none") return;
 
   const extractedOccurrences =
-    replacementStrategy === ReplacementStrategy.AllOccurrences
+    replacementStrategy === "all occurrences"
       ? [selectedOccurrence].concat(otherOccurrences)
       : [selectedOccurrence];
 

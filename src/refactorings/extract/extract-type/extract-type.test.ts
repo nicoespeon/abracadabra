@@ -1,7 +1,7 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-import { Code, Command, ErrorReason } from "../../../editor/editor";
-import { testEach } from "../../../tests-helpers";
+import { Code, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import { testEach } from "../../../tests-helpers";
 import { extractType } from "./extract-type";
 
 describe("Extract Type", () => {
@@ -236,7 +236,7 @@ type Context =
 
     await extractType(editor);
 
-    expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenNthCalledWith(1, "rename symbol");
     expect(editor.code).toEqual(`type Extracted = string;
 let hello: Extracted;`);
     expect(editor.selection).toStrictEqual(Selection.cursorAt(0, 5));
@@ -252,7 +252,7 @@ let hello: [start]{
 
     await extractType(editor);
 
-    expect(editor.delegate).toHaveBeenNthCalledWith(1, Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenNthCalledWith(1, "rename symbol");
     expect(editor.code).toEqual(`const hey = "ho";
 
 interface Extracted {

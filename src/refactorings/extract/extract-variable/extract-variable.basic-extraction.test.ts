@@ -1,5 +1,5 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-import { Command, ErrorReason } from "../../../editor/editor";
+import { ErrorReason } from "../../../editor/editor";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Basic extraction behaviour", () => {
@@ -28,7 +28,7 @@ console.log(hello);`);
     await extractVariable(editor);
 
     expect(editor.delegate).toHaveBeenCalledTimes(1);
-    expect(editor.delegate).toHaveBeenCalledWith(Command.RenameSymbol);
+    expect(editor.delegate).toHaveBeenCalledWith("rename symbol");
   });
 
   it("should extract with correct indentation", async () => {
