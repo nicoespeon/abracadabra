@@ -27,7 +27,6 @@ export interface Editor {
     choices: Choice<T>[],
     placeHolder?: string
   ): Promise<Choice<T> | undefined>;
-  moveCursorTo(position: Position): Promise<void>;
   highlightSourcesForCurrentFile(): Selection[];
   findHighlight(selection: Selection): Source | undefined;
   highlight(source: Source, bindings: Selection[]): void;

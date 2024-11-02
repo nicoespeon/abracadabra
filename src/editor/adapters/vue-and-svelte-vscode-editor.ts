@@ -65,10 +65,6 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
     );
   }
 
-  moveCursorTo(position: Position) {
-    return super.moveCursorTo(this.offsetPosition(position));
-  }
-
   private offsetEditorSelection(selection: Selection): Selection {
     const offsetLinesCount = this.toOffsetLinesCount(this.openingTagOffset);
 

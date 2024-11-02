@@ -1,6 +1,6 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
-import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 import { testEach } from "../../tests-helpers";
 import { extractInterface } from "./extract-interface";
 
@@ -331,10 +331,9 @@ interface Extracted {
   }
 }`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "moveCursorTo");
 
     await extractInterface(editor);
 
-    expect(editor.moveCursorTo).toHaveBeenCalledWith(new Position(10, 10));
+    expect(editor.selection).toEqual(Selection.cursorAt(10, 10));
   });
 });

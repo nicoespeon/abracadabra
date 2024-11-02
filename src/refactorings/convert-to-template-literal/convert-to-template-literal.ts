@@ -13,8 +13,7 @@ export async function convertToTemplateLiteral(editor: Editor) {
   }
 
   const newCode = updatedCode.code.replace(/\$\\{(\w*)}/g, "${$1}");
-  await editor.write(newCode);
-  await editor.moveCursorTo(updatedCode.newCursorPosition);
+  await editor.write(newCode, updatedCode.newCursorPosition);
 }
 
 function updateCode(

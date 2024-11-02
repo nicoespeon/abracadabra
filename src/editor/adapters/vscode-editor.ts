@@ -187,6 +187,11 @@ export class VSCodeEditor implements Editor {
     }
   }
 
+  private changeEditorSelection(selection: vscode.Selection) {
+    this.editor.selection = selection;
+    this.editorSelection = selection;
+  }
+
   async delegate(command: Command): Promise<Result> {
     await vscode.commands.executeCommand(toVSCodeCommand(command));
     return "ok";
@@ -211,16 +216,6 @@ export class VSCodeEditor implements Editor {
 
   async askUserInput(defaultValue?: string) {
     return await vscode.window.showInputBox({ value: defaultValue });
-  }
-
-  moveCursorTo(position: Position) {
-    this.changeEditorSelection(toVSCodeCursor(position));
-    return Promise.resolve();
-  }
-
-  private changeEditorSelection(selection: vscode.Selection) {
-    this.editor.selection = selection;
-    this.editorSelection = selection;
   }
 
   private get filePath(): string {

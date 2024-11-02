@@ -81,10 +81,6 @@ export class AttemptingEditor implements Editor {
     return this.editor.askUserInput(defaultValue);
   }
 
-  moveCursorTo(position: Position): Promise<void> {
-    return this.editor.moveCursorTo(position);
-  }
-
   highlightSourcesForCurrentFile(): Selection[] {
     return this.editor.highlightSourcesForCurrentFile();
   }

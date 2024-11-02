@@ -13,10 +13,7 @@ export async function extractInterface(editor: Editor) {
     return;
   }
 
-  await editor.write(updatedCode.code);
-
-  await editor.moveCursorTo(updatedCode.interfaceIdentifierPosition);
-
+  await editor.write(updatedCode.code, updatedCode.interfaceIdentifierPosition);
   await renameSymbol(editor);
 }
 
