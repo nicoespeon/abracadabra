@@ -11,6 +11,7 @@ import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
 import {
   RefactoringConfig,
+  RefactoringConfig__NEW,
   RefactoringWithActionProviderConfig,
   RefactoringWithActionProviderConfig__NEW
 } from "./refactorings";
@@ -57,12 +58,14 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
     languages: ["typescript", "typescriptreact"],
     withoutActionProvider: [],
+    withoutActionProvider__NEW: [],
     withActionProvider: [extractGenericType, extractInterface],
     withActionProvider__NEW: []
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
+    withoutActionProvider__NEW: [],
     withActionProvider: [wrapInJsxFrament, removeJsxFragment],
     withActionProvider__NEW: []
   },
@@ -75,12 +78,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       "vue",
       "svelte"
     ],
-    withoutActionProvider: [
-      extract,
-      moveStatementDown,
-      moveStatementUp,
-      renameSymbol
-    ],
+    withoutActionProvider: [extract, moveStatementDown, moveStatementUp],
+    withoutActionProvider__NEW: [renameSymbol],
     withActionProvider: [
       addNumericSeparator,
       changeSignature,
@@ -118,6 +117,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
 type ConfiguredRefactoring = {
   languages: string[];
   withoutActionProvider: RefactoringConfig[];
+  withoutActionProvider__NEW: RefactoringConfig__NEW[];
   withActionProvider: RefactoringWithActionProviderConfig[];
   withActionProvider__NEW: RefactoringWithActionProviderConfig__NEW[];
 };
@@ -146,7 +146,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
   const commands__NEW = Object.values(refactorings).flatMap(
-    ({ withActionProvider__NEW }) => withActionProvider__NEW
+    ({ withoutActionProvider__NEW, withActionProvider__NEW }) =>
+      withoutActionProvider__NEW.concat(withActionProvider__NEW)
   );
 
   commands__NEW.forEach(({ command }) => {

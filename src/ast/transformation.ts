@@ -13,7 +13,7 @@ export const traverseNode = t.traverse;
 export const traversePath = traverse;
 
 export { Binding, NodePath, Scope } from "@babel/traverse";
-export type { Visitor };
+export type { TraverseOptions, Visitor };
 
 export function transform(code: Code, options: TraverseOptions): Transformed {
   return transformAST(parse(code), options);

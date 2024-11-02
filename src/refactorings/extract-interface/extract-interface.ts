@@ -2,7 +2,7 @@ import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import { renameSymbol } from "../rename-symbol/rename-symbol";
+import { renameSymbol } from "../rename-symbol/rename-symbol-old";
 
 export async function extractInterface(editor: Editor) {
   const { code, selection } = editor;

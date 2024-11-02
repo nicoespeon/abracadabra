@@ -9,6 +9,13 @@ export interface RefactoringConfig {
   };
 }
 
+export interface RefactoringConfig__NEW {
+  command: {
+    key: string;
+    operation: Refactoring__NEW;
+  };
+}
+
 export interface RefactoringWithActionProviderConfig {
   command: {
     key: string;
