@@ -47,13 +47,6 @@ export interface RefactoringWithActionProvider__NEW {
 
 export type Operation__NEW = (state: RefactoringState) => EditorCommand;
 
-export type EditorCommand =
-  | { action: "do nothing" }
-  | { action: "show error"; reason: string }
-  | { action: "write"; code: Code }
-  | { action: "delegate"; command: Command }
-  | { action: "ask user"; value?: string };
-
 export type RefactoringState =
   | ({ state: "new" } & BaseRefactoringState)
   | ({ state: "command not supported" } & BaseRefactoringState)
@@ -63,3 +56,24 @@ export type RefactoringState =
     } & BaseRefactoringState);
 
 type BaseRefactoringState = { code: Code; selection: Selection };
+
+export type EditorCommand =
+  | { action: "do nothing" }
+  | { action: "show error"; reason: string }
+  | { action: "write"; code: Code }
+  | { action: "delegate"; command: Command }
+  | { action: "ask user"; value?: string };
+
+export const COMMANDS = {
+  showErrorDidNotFind: (element: string): EditorCommand => ({
+    action: "show error",
+    reason: `I didn't find ${element} from current selection 🤔`
+  }),
+  askUser: (value: string): EditorCommand => ({ action: "ask user", value }),
+  write: (code: Code): EditorCommand => ({ action: "write", code }),
+  delegate: (command: Command): EditorCommand => ({
+    action: "delegate",
+    command
+  }),
+  doNothing: (): EditorCommand => ({ action: "do nothing" })
+};

@@ -1,7 +1,6 @@
-import { didNotFind } from "../../editor/error-reason";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { EditorCommand, RefactoringState } from "../../types";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../types";
 
 export function splitMultipleDeclarations({
   code,
@@ -10,13 +9,12 @@ export function splitMultipleDeclarations({
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    return {
-      action: "show error",
-      reason: didNotFind("multiple variable declarations to split")
-    };
+    return COMMANDS.showErrorDidNotFind(
+      "multiple variable declarations to split"
+    );
   }
 
-  return { action: "write", code: updatedCode.code };
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
