@@ -148,8 +148,8 @@ function getOccurrenceLoc(
   const result = t.isSelectableObjectProperty(node)
     ? findObjectPropertyLoc(selection, node)
     : t.isJSXExpressionContainer(node)
-    ? node.expression.loc
-    : node.loc;
+      ? node.expression.loc
+      : node.loc;
   return result ?? null;
 }
 

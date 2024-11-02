@@ -35,8 +35,8 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const newParentIfAlternate = node.alternate
         ? t.blockStatement([buildNestedIfStatementFor(node.alternate)])
         : t.hasSiblingStatement(path) || parentAlternate
-        ? t.blockStatement([buildNestedIfStatementFor(t.emptyStatement())])
-        : null;
+          ? t.blockStatement([buildNestedIfStatementFor(t.emptyStatement())])
+          : null;
 
       parentIfPath.replaceWith(
         t.ifStatement(node.test, parentIf.consequent, newParentIfAlternate)

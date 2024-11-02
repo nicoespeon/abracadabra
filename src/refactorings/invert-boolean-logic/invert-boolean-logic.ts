@@ -119,8 +119,8 @@ export function getNegatedOperator(node: t.Node): NegatedOperator | null {
   return t.isLogicalExpression(node)
     ? getNegatedLogicalOperator(node.operator)
     : t.isBinaryExpression(node)
-    ? getNegatedBinaryOperator(node.operator)
-    : null;
+      ? getNegatedBinaryOperator(node.operator)
+      : null;
 }
 
 function isNegatable(

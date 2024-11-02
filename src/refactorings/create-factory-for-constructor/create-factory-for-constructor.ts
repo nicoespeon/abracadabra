@@ -30,10 +30,10 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           t.isObjectPattern(param)
             ? toObjectExpression(param)
             : t.isArrayPattern(param)
-            ? toArrayExpression(param)
-            : t.isRestElement(param)
-            ? toSpreadElement(param)
-            : param
+              ? toArrayExpression(param)
+              : t.isRestElement(param)
+                ? toSpreadElement(param)
+                : param
         )
         .filter(
           (
@@ -92,8 +92,8 @@ function assignmentToObjectExpression(
   const key = t.isArrayPattern(pattern.left)
     ? toArrayExpression(pattern.left)
     : t.isObjectPattern(pattern.left)
-    ? toObjectExpression(pattern.left)
-    : pattern.left;
+      ? toObjectExpression(pattern.left)
+      : pattern.left;
 
   return t.objectExpression([
     t.objectProperty(key, pattern.right, false, true)
@@ -105,14 +105,14 @@ function toArrayExpression(pattern: t.ArrayPattern): t.ArrayExpression {
     return t.isRestElement(element)
       ? toSpreadElement(element)
       : t.isArrayPattern(element)
-      ? toArrayExpression(element)
-      : t.isObjectPattern(element)
-      ? toObjectExpression(element)
-      : t.isAssignmentPattern(element)
-      ? assignmentToObjectExpression(element)
-      : t.isTSParameterProperty(element)
-      ? null
-      : element;
+        ? toArrayExpression(element)
+        : t.isObjectPattern(element)
+          ? toObjectExpression(element)
+          : t.isAssignmentPattern(element)
+            ? assignmentToObjectExpression(element)
+            : t.isTSParameterProperty(element)
+              ? null
+              : element;
   });
   return t.arrayExpression(elements);
 }
@@ -121,14 +121,14 @@ function toSpreadElement(rest: t.RestElement): t.SpreadElement {
   const argument = t.isArrayPattern(rest.argument)
     ? toArrayExpression(rest.argument)
     : t.isObjectPattern(rest.argument)
-    ? toObjectExpression(rest.argument)
-    : t.isTSParameterProperty(rest.argument)
-    ? t.isAssignmentPattern(rest.argument.parameter)
-      ? assignmentToObjectExpression(rest.argument.parameter)
-      : rest.argument.parameter
-    : t.isAssignmentPattern(rest.argument)
-    ? assignmentToObjectExpression(rest.argument)
-    : rest.argument;
+      ? toObjectExpression(rest.argument)
+      : t.isTSParameterProperty(rest.argument)
+        ? t.isAssignmentPattern(rest.argument.parameter)
+          ? assignmentToObjectExpression(rest.argument.parameter)
+          : rest.argument.parameter
+        : t.isAssignmentPattern(rest.argument)
+          ? assignmentToObjectExpression(rest.argument)
+          : rest.argument;
 
   if (t.isRestElement(argument)) {
     // This is a nested element, it shouldn't be valid.

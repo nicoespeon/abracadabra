@@ -240,8 +240,8 @@ class InlinableIdentifier implements InlinableCode {
         let code = shouldWrapInParenthesis
           ? `(${inlinedCode})`
           : shorthandKey
-          ? `${shorthandKey}: ${inlinedCode}`
-          : inlinedCode;
+            ? `${shorthandKey}: ${inlinedCode}`
+            : inlinedCode;
         let selection = Selection.fromAST(loc);
 
         if (t.isTemplateLiteral(parent) && t.isLiteral(this.init)) {
@@ -364,8 +364,8 @@ class InlinableJSXElementIdentifier extends InlinableIdentifier {
         code: shouldWrapInParenthesis
           ? `(${inlinedCode})`
           : shorthandKey
-          ? `${shorthandKey}: ${inlinedCode}`
-          : inlinedCode,
+            ? `${shorthandKey}: ${inlinedCode}`
+            : inlinedCode,
         selection:
           t.isJSXExpressionContainer(parent) &&
           !t.isJSXAttribute(grandParent) &&
