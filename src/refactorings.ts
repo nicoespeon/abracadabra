@@ -91,3 +91,56 @@ export const COMMANDS = {
   }),
   doNothing: (): EditorCommand => ({ action: "do nothing" })
 };
+
+export async function executeRefactoring(
+  refactor: Refactoring__NEW,
+  editor: Editor,
+  state: RefactoringState = {
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  }
+) {
+  const result = refactor(state);
+
+  switch (result.action) {
+    case "do nothing":
+      break;
+
+    case "show error":
+      editor.showError(result.reason);
+      break;
+
+    case "write":
+      await editor.write(result.code, result.newCursorPosition);
+      break;
+
+    case "delegate": {
+      const delegateResult = await editor.delegate(result.command);
+      if (delegateResult === "not supported") {
+        return executeRefactoring(refactor, editor, {
+          state: "command not supported",
+          code: state.code,
+          selection: state.selection
+        });
+      }
+      break;
+    }
+
+    case "ask user": {
+      const userInput = await editor.askUserInput(result.value);
+      return executeRefactoring(refactor, editor, {
+        state: "user response",
+        value: userInput,
+        code: state.code,
+        selection: state.selection
+      });
+    }
+
+    default: {
+      const exhaustiveCheck: never = result;
+      console.error(`Unhandled type: ${exhaustiveCheck}`);
+      break;
+    }
+  }
+}
