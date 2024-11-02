@@ -57,24 +57,6 @@ const y = 2;
     });
   });
 
-  function shouldSplitMultipleDeclarations({
-    code,
-    expected
-  }: {
-    code: Code;
-    expected: Code;
-  }) {
-    const editor = new InMemoryEditor(code);
-
-    const result = splitMultipleDeclarations({
-      state: "new",
-      code: editor.code,
-      selection: editor.selection
-    });
-
-    expect(result).toEqual({ action: "write", code: expected });
-  }
-
   it("should show an error message if refactoring can't be made", async () => {
     const editor = new InMemoryEditor(
       `// This is a comment, can't be refactored`
@@ -89,3 +71,21 @@ const y = 2;
     expect(result.action).toBe("show error");
   });
 });
+
+function shouldSplitMultipleDeclarations({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+
+  const result = splitMultipleDeclarations({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toEqual({ action: "write", code: expected });
+}
