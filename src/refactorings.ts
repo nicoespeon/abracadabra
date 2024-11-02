@@ -1,5 +1,6 @@
 import { NodePath, Visitor } from "./ast";
 import { Code, Command, Editor } from "./editor/editor";
+import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
 
 export interface RefactoringConfig {
@@ -67,7 +68,7 @@ type BaseRefactoringState = { code: Code; selection: Selection };
 export type EditorCommand =
   | { action: "do nothing" }
   | { action: "show error"; reason: string }
-  | { action: "write"; code: Code }
+  | { action: "write"; code: Code; newCursorPosition?: Position }
   | { action: "delegate"; command: Command }
   | { action: "ask user"; value?: string };
 
@@ -77,7 +78,11 @@ export const COMMANDS = {
     reason: `I didn't find ${element} from current selection 🤔`
   }),
   askUser: (value: string): EditorCommand => ({ action: "ask user", value }),
-  write: (code: Code): EditorCommand => ({ action: "write", code }),
+  write: (code: Code, newCursorPosition?: Position): EditorCommand => ({
+    action: "write",
+    code,
+    newCursorPosition
+  }),
   delegate: (command: Command): EditorCommand => ({
     action: "delegate",
     command

@@ -45,7 +45,7 @@ async function executeRefactoring(
       break;
 
     case "write":
-      await editor.write(result.code);
+      await editor.write(result.code, result.newCursorPosition);
       break;
 
     case "delegate": {
