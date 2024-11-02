@@ -55,13 +55,15 @@ export interface RefactoringWithActionProviderConfig__NEW {
 
 export type Refactoring__NEW = (state: RefactoringState) => EditorCommand;
 
-export type RefactoringState =
-  | ({ state: "new" } & BaseRefactoringState)
-  | ({ state: "command not supported" } & BaseRefactoringState)
-  | ({
+export type RefactoringState = (
+  | { state: "new" }
+  | { state: "command not supported" }
+  | {
       state: "user response";
       value: string | undefined;
-    } & BaseRefactoringState);
+    }
+) &
+  BaseRefactoringState;
 
 type BaseRefactoringState = { code: Code; selection: Selection };
 
