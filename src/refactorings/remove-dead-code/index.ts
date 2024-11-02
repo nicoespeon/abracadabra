@@ -1,6 +1,5 @@
-import { createVisitor, removeDeadCode } from "./remove-dead-code";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, removeDeadCode } from "./remove-dead-code";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

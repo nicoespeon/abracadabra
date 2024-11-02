@@ -1,7 +1,6 @@
-import { createVisitor, mergeIfStatements } from "./merge-if-statements";
-
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import * as t from "../../ast";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, mergeIfStatements } from "./merge-if-statements";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

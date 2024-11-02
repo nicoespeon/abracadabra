@@ -1,10 +1,9 @@
-import { Code, Command } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, Command } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
-import { extractGenericType } from "./extract-generic-type";
-import { ReplacementStrategy } from "../extract/replacement-strategy";
 import { Position } from "../../editor/position";
+import { ReplacementStrategy } from "../extract/replacement-strategy";
+import { extractGenericType } from "./extract-generic-type";
 
 describe("Extract Generic Type - Interface declaration", () => {
   testEach<{ code: Code; expected: Code }>(

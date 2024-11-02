@@ -2,7 +2,6 @@ import {
   createVisitor,
   mergeWithPreviousIfStatement
 } from "./merge-with-previous-if-statement";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

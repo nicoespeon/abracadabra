@@ -1,5 +1,4 @@
 import { testEach } from "../tests-helpers";
-
 import * as t from "./domain";
 import { areOpposite, areOppositeOperators } from "./identity";
 

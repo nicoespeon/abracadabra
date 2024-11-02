@@ -1,9 +1,8 @@
-import { Code } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { Code } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
-
-import { extractVariable } from "./extract-variable";
 import { DestructureStrategy } from "./destructure-strategy";
+import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Objects we can extract", () => {
   testEach<{

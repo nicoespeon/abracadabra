@@ -1,7 +1,6 @@
 import * as t from "../../../ast";
-import { Selection } from "../../../editor/selection";
 import { Modification } from "../../../editor/editor";
-
+import { Selection } from "../../../editor/selection";
 import { InlinableCode, InlinableObjectPattern } from "./find-inlinable-code";
 
 describe("InlinableObjectPattern", () => {

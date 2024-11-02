@@ -1,13 +1,13 @@
-import { Editor, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
-import { Position } from "../../editor/position";
+import { last } from "../../array";
 import * as t from "../../ast";
+import { Editor, ErrorReason } from "../../editor/editor";
+import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 import {
   askReplacementStrategy,
   ReplacementStrategy
 } from "../extract/replacement-strategy";
 import { renameSymbol } from "../rename-symbol/rename-symbol";
-import { last } from "../../array";
 
 export async function extractGenericType(editor: Editor) {
   const { code, selection } = editor;

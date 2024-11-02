@@ -1,8 +1,8 @@
+import * as t from "../../ast";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { testEach } from "../../tests-helpers";
-import * as t from "../../ast";
 import {
   convertToTemplateLiteral,
   createVisitor,

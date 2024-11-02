@@ -1,8 +1,8 @@
 import { minimatch } from "minimatch";
 import * as vscode from "vscode";
-
 import * as t from "./ast";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
+import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import { Editor } from "./editor/editor";
 import {
   RefactoringWithActionProviderConfig,
@@ -15,7 +15,6 @@ import {
   getMaxFileSizeKb,
   shouldShowInQuickFix
 } from "./vscode-configuration";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 
 type Refactoring =
   | RefactoringWithActionProviderConfig

@@ -1,6 +1,5 @@
-import { addNumericSeparator, createVisitor } from "./add-numeric-separator";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { addNumericSeparator, createVisitor } from "./add-numeric-separator";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

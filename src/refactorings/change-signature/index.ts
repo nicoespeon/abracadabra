@@ -1,6 +1,5 @@
-import { changeSignature, createVisitor } from "./change-signature";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { changeSignature, createVisitor } from "./change-signature";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

@@ -1,7 +1,6 @@
 import { assert } from "chai";
 import { afterEach, suite, test } from "mocha";
 import * as sinon from "sinon";
-
 import { CodeReference } from "./code-reference";
 import { AbsolutePath, Code, Editor, RelativePath } from "./editor";
 import { Position } from "./position";

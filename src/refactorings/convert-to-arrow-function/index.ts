@@ -2,7 +2,6 @@ import {
   convertToArrowFunction,
   createVisitor
 } from "./convert-to-arrow-function";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

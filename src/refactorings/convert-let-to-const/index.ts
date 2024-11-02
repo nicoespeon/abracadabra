@@ -1,6 +1,5 @@
-import { convertLetToConst, createVisitor } from "./convert-let-to-const";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { convertLetToConst, createVisitor } from "./convert-let-to-const";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

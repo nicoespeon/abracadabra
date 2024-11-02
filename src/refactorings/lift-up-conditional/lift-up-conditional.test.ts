@@ -1,7 +1,6 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { liftUpConditional } from "./lift-up-conditional";
 
 describe("Lift Up Conditional", () => {

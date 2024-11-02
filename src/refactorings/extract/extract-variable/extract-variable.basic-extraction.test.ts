@@ -1,6 +1,5 @@
-import { Command, ErrorReason } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-
+import { Command, ErrorReason } from "../../../editor/editor";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Basic extraction behaviour", () => {

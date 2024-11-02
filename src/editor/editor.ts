@@ -1,12 +1,12 @@
-import { Selection } from "./selection";
-import { Path } from "./path";
-import { Position } from "./position";
-import { ErrorReason } from "./error-reason";
 import { Source } from "../highlights/highlights";
 import { CodeReference } from "./code-reference";
+import { ErrorReason } from "./error-reason";
+import { Path } from "./path";
+import { Position } from "./position";
+import { Selection } from "./selection";
 
-export { AbsolutePath, RelativePath } from "./path";
 export { ErrorReason, toString as errorReasonToString } from "./error-reason";
+export { AbsolutePath, RelativePath } from "./path";
 
 export interface Editor {
   workspaceFiles(): Promise<Path[]>;
@@ -46,6 +46,7 @@ export type Modification = {
 
 export type Code = string;
 
+// TODO: use union string instead
 export enum Command {
   RenameSymbol
 }

@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-
 import { Code, Command, Modification, Result } from "../editor";
 import { Position } from "../position";
 import { Selection } from "../selection";

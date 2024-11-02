@@ -1,8 +1,7 @@
 import {
-  replaceBinaryWithAssignment,
-  createVisitor
+  createVisitor,
+  replaceBinaryWithAssignment
 } from "./replace-binary-with-assignment";
-
 import * as t from "../../ast";
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 

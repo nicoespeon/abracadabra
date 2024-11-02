@@ -1,6 +1,5 @@
-import { createVisitor, flipIfElse } from "./flip-if-else";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, flipIfElse } from "./flip-if-else";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

@@ -1,7 +1,7 @@
-import { Editor, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
+import { Selection } from "../../editor/selection";
 
 export async function toggleBraces(editor: Editor) {
   const { code, selection } = editor;

@@ -1,6 +1,6 @@
+import { NodePath, Visitor } from "./ast";
 import { Code, Command, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
-import { Visitor, NodePath } from "./ast";
 
 export interface RefactoringConfig {
   command: {

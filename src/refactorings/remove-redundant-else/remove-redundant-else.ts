@@ -1,7 +1,7 @@
-import { Editor, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import { last } from "../../array";
 import * as t from "../../ast";
+import { Editor, ErrorReason } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 
 export async function removeRedundantElse(editor: Editor) {
   const { code, selection } = editor;

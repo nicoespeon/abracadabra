@@ -2,7 +2,6 @@ import {
   createVisitor,
   splitDeclarationAndInitialization
 } from "./split-declaration-and-initialization";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

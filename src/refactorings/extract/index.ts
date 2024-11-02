@@ -1,11 +1,10 @@
-import { extractVariable } from "./extract-variable/extract-variable";
-import { extractType } from "./extract-type/extract-type";
-
-import { RefactoringConfig } from "../../refactorings";
 import { executeSafely } from "../../commands";
-import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
+import { ErrorReason } from "../../editor/editor";
+import { RefactoringConfig } from "../../refactorings";
+import { extractType } from "./extract-type/extract-type";
+import { extractVariable } from "./extract-variable/extract-variable";
 
 const config: RefactoringConfig = {
   command: {

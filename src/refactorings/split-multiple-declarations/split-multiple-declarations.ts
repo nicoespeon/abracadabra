@@ -1,5 +1,5 @@
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Selection } from "../../editor/selection";
 import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
 export function splitMultipleDeclarations({

@@ -1,6 +1,6 @@
-import { InMemoryEditor } from "./in-memory-editor";
 import { ErrorReason } from "../error-reason";
 import { AttemptingEditor } from "./attempting-editor";
+import { InMemoryEditor } from "./in-memory-editor";
 
 describe("AttemptingEditor", () => {
   const EXPECTED_REASON = ErrorReason.DidNotFindInlinableCode;

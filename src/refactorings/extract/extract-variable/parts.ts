@@ -1,6 +1,6 @@
 import { Code } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 
 export class Parts {
   constructor(

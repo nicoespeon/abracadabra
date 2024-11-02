@@ -1,6 +1,5 @@
-import { createVisitor, removeRedundantElse } from "./remove-redundant-else";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, removeRedundantElse } from "./remove-redundant-else";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

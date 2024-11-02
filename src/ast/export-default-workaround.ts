@@ -1,8 +1,7 @@
-import * as t from "@babel/types";
 import { NodePath } from "@babel/traverse";
-
-import { isSelectablePath } from "./selection";
+import * as t from "@babel/types";
 import { Selection } from "../editor/selection";
+import { isSelectablePath } from "./selection";
 
 /**
  * For some reason, default export declarations have no LOC.

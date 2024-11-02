@@ -1,7 +1,6 @@
-import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { convertSwitchToIfElse } from "./convert-switch-to-if-else";
 
 describe("Convert Switch To If Else", () => {

@@ -1,6 +1,5 @@
-import { createVisitor, removeJsxFragment } from "./remove-jsx-fragment";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, removeJsxFragment } from "./remove-jsx-fragment";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

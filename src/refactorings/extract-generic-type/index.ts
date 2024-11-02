@@ -1,6 +1,5 @@
-import { extractGenericType, createVisitor } from "./extract-generic-type";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, extractGenericType } from "./extract-generic-type";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

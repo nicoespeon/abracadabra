@@ -1,6 +1,6 @@
-import { Editor, Code, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 
 export async function invertBooleanLogic(editor: Editor) {
   const { code, selection } = editor;

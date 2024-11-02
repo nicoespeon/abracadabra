@@ -1,5 +1,5 @@
-import { Selection } from "./selection";
 import { Path } from "./path";
+import { Selection } from "./selection";
 
 export class CodeReference {
   constructor(

@@ -1,5 +1,5 @@
-import * as vscode from "vscode";
 import { match } from "ts-pattern";
+import * as vscode from "vscode";
 import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { getIgnoredFolders } from "../../vscode-configuration";

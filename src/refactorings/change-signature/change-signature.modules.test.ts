@@ -1,8 +1,8 @@
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code } from "../../editor/editor";
 import { AbsolutePath } from "../../editor/path";
 import { testEach } from "../../tests-helpers";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { changeSignature } from "./change-signature";
-import { Code } from "../../editor/editor";
 import { selectedPosition, swapBothArguments } from "./selected-position";
 
 type TestSample = {

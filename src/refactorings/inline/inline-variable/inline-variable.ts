@@ -1,13 +1,12 @@
-import { Editor, Code, ErrorReason } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
 import * as t from "../../../ast";
-
+import { Code, Editor, ErrorReason } from "../../../editor/editor";
+import { Selection } from "../../../editor/selection";
 import {
   findInlinableCode,
   InlinableCode,
-  SingleDeclaration,
+  InlinableTSTypeAlias,
   MultipleDeclarations,
-  InlinableTSTypeAlias
+  SingleDeclaration
 } from "./find-inlinable-code";
 
 export async function inlineVariable(editor: Editor) {

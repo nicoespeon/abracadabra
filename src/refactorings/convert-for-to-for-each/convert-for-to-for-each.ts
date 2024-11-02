@@ -1,5 +1,4 @@
 import { singular } from "pluralize";
-
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Editor, ErrorReason } from "../../editor/editor";

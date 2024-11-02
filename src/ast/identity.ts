@@ -1,6 +1,5 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-
 import { last } from "../array";
 import { Selection } from "../editor/selection";
 import { isSelectableNode, SelectablePath } from "./selection";

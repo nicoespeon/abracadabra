@@ -1,6 +1,5 @@
-import { Command, Code } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Command, Editor, ErrorReason, Result } from "../../editor/editor";
 
 export async function renameSymbol(editor: Editor) {
   // Editor built-in rename works fine => ok to delegate the work for now.

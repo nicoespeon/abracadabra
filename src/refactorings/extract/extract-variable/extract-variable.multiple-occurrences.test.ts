@@ -1,9 +1,8 @@
-import { Code } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-
-import { extractVariable } from "./extract-variable";
-import { ReplacementStrategy } from "../replacement-strategy";
+import { Code } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
+import { ReplacementStrategy } from "../replacement-strategy";
+import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Multiple occurrences", () => {
   it("should not ask the user if there is only one occurrence", async () => {

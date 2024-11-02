@@ -1,6 +1,5 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-
 import { assert } from "../assert";
 import { Position } from "../editor/position";
 import { Selection } from "../editor/selection";

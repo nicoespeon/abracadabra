@@ -1,8 +1,7 @@
+import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
-import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { testEach } from "../../../tests-helpers";
-
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - String Literals we can extract", () => {

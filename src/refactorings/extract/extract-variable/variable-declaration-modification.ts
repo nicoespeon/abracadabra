@@ -3,7 +3,6 @@ import * as t from "../../../ast";
 import { Code, Modification } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
-
 import { Occurrence } from "./occurrence";
 
 export class VariableDeclarationModification implements Modification {

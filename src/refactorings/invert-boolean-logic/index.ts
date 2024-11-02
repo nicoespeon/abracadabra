@@ -1,9 +1,8 @@
 import {
   createVisitor,
-  invertBooleanLogic,
-  getNegatedOperator
+  getNegatedOperator,
+  invertBooleanLogic
 } from "./invert-boolean-logic";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

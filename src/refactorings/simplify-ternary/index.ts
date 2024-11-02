@@ -1,6 +1,5 @@
-import { simplifyTernary, createVisitor } from "./simplify-ternary";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, simplifyTernary } from "./simplify-ternary";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

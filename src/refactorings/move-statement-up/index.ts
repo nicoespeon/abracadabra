@@ -1,6 +1,5 @@
-import { moveStatementUp } from "./move-statement-up";
-
 import { RefactoringConfig } from "../../refactorings";
+import { moveStatementUp } from "./move-statement-up";
 
 const config: RefactoringConfig = {
   command: {

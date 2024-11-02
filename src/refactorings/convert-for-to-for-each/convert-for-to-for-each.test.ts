@@ -1,9 +1,8 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
-
 import { Selection } from "../../editor/selection";
+import { testEach } from "../../tests-helpers";
 import { convertForToForEach, createVisitor } from "./convert-for-to-for-each";
 
 describe("Convert For To Foreach", () => {

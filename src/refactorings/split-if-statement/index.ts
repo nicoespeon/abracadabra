@@ -1,6 +1,5 @@
-import { createVisitor, splitIfStatement } from "./split-if-statement";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, splitIfStatement } from "./split-if-statement";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

@@ -1,7 +1,6 @@
-import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { createVisitor, toggleBraces } from "./toggle-braces";
 
 describe("Toggle Braces", () => {

@@ -1,8 +1,7 @@
 import {
-  createVisitor,
-  convertIfElseToTernary
+  convertIfElseToTernary,
+  createVisitor
 } from "./convert-if-else-to-ternary";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

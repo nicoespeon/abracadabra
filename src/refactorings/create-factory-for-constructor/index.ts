@@ -2,7 +2,6 @@ import {
   createFactoryForConstructor,
   createVisitor
 } from "./create-factory-for-constructor";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

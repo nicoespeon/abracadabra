@@ -1,7 +1,6 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
 import { testEach } from "../../../tests-helpers";
-
 import { inlineVariable } from "./inline-variable";
 
 describe("Inline Variable - Object Pattern", () => {

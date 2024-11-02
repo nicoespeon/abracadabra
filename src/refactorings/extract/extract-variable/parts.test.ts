@@ -1,7 +1,6 @@
 import { Parts } from "./parts";
-
-import { Selection } from "../../../editor/selection";
 import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 
 describe("Parts", () => {
   it("should identify different parts of a Code", () => {

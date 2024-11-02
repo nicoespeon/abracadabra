@@ -1,5 +1,4 @@
 import * as t from "@babel/types";
-
 import { toSwitch, VALID_OPERATORS } from "./switch";
 
 describe("AST Switch", () => {

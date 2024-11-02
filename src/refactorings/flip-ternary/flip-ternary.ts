@@ -1,7 +1,6 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
-
 import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
 export async function flipTernary(editor: Editor) {

@@ -1,8 +1,7 @@
 import {
-  createVisitor,
-  convertIfElseToSwitch
+  convertIfElseToSwitch,
+  createVisitor
 } from "./convert-if-else-to-switch";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {

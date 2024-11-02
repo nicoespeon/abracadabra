@@ -1,9 +1,8 @@
-import { Code } from "../../../editor/editor";
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-import { testEach } from "../../../tests-helpers";
-
-import { extractVariable } from "./extract-variable";
+import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import { testEach } from "../../../tests-helpers";
+import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - JSX we can extract", () => {
   testEach<{

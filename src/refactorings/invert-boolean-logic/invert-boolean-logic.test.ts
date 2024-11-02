@@ -1,10 +1,9 @@
+import * as t from "../../ast";
+import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import * as t from "../../ast";
 import { testEach } from "../../tests-helpers";
-
-import { invertBooleanLogic, createVisitor } from "./invert-boolean-logic";
+import { createVisitor, invertBooleanLogic } from "./invert-boolean-logic";
 
 describe("Invert Boolean Logic", () => {
   testEach<{ code: Code }>(

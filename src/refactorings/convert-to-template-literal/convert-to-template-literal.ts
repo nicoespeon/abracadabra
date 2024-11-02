@@ -1,7 +1,7 @@
+import * as t from "../../ast";
 import { Code, Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 
 export async function convertToTemplateLiteral(editor: Editor) {
   const { code, selection } = editor;

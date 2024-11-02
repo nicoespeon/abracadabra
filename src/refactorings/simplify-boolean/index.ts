@@ -1,6 +1,5 @@
-import { simplifyBoolean, createVisitor } from "./simplify-boolean";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { createVisitor, simplifyBoolean } from "./simplify-boolean";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

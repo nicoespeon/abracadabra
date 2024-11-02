@@ -1,7 +1,6 @@
-import { Code, ErrorReason } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
+import { Code, ErrorReason } from "../../editor/editor";
 import { testEach } from "../../tests-helpers";
-
 import { flipTernary } from "./flip-ternary";
 
 describe("Flip Ternary", () => {

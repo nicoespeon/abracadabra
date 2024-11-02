@@ -1,4 +1,4 @@
-import { Path, AbsolutePath, RelativePath } from "./path";
+import { AbsolutePath, Path, RelativePath } from "./path";
 
 describe("Path", () => {
   it("should trim the extension", () => {

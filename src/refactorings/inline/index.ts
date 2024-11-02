@@ -1,13 +1,13 @@
+import { executeSafely } from "../../commands";
+import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
+import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
+import { ErrorReason } from "../../editor/editor";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import { inlineFunction } from "./inline-function/inline-function";
 import {
   createVisitor as canInlineVariable,
   inlineVariable
 } from "./inline-variable/inline-variable";
-import { executeSafely } from "../../commands";
-import { ErrorReason } from "../../editor/editor";
-import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
-import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
 const config: RefactoringWithActionProviderConfig = {
   command: {

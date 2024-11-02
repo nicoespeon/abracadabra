@@ -1,5 +1,5 @@
+import { RefactoringConfig } from "../../refactorings";
 import { renameSymbol } from "./rename-symbol";
-import { RefactoringConfig__NEW } from "../../refactorings";
 
 const config: RefactoringConfig = {
   command: {

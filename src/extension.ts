@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-
 import { RefactoringActionProvider } from "./action-providers";
 import { createCommand, createCommand__NEW } from "./commands";
 import {
@@ -10,6 +9,11 @@ import {
 import refreshHighlights from "./highlights/refresh-highlights";
 import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
+import {
+  RefactoringConfig,
+  RefactoringWithActionProviderConfig,
+  RefactoringWithActionProviderConfig__NEW
+} from "./refactorings";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
@@ -21,6 +25,7 @@ import convertSwitchToIfElse from "./refactorings/convert-switch-to-if-else";
 import convertTernaryToIfElse from "./refactorings/convert-ternary-to-if-else";
 import convertToArrowFunction from "./refactorings/convert-to-arrow-function";
 import convertToTemplateLiteral from "./refactorings/convert-to-template-literal";
+import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
 import extract from "./refactorings/extract";
 import extractGenericType from "./refactorings/extract-generic-type";
@@ -47,12 +52,6 @@ import splitIfStatement from "./refactorings/split-if-statement";
 import splitMultipleDeclarations from "./refactorings/split-multiple-declarations";
 import toggleBraces from "./refactorings/toggle-braces";
 import wrapInJsxFrament from "./refactorings/wrap-in-jsx-fragment";
-import {
-  RefactoringConfig,
-  RefactoringWithActionProviderConfig,
-  RefactoringWithActionProviderConfig__NEW
-} from "./refactorings";
-import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {

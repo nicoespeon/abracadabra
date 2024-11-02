@@ -1,14 +1,12 @@
 import * as vscode from "vscode";
-
+import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
+import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import { Result } from "./editor/editor";
 import {
-  EditorCommand,
   Refactoring,
   Refactoring__NEW,
   RefactoringState
 } from "./refactorings";
-import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
-import { VSCodeEditor } from "./editor/adapters/vscode-editor";
-import { Result } from "./editor/editor";
 
 export function createCommand(execute: Refactoring) {
   return async (maybeEditor: VSCodeEditor | undefined) => {

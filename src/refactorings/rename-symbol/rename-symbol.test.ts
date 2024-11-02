@@ -1,6 +1,5 @@
-import { Command, Result } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-
+import { Command, Result } from "../../editor/editor";
 import { renameSymbol } from "./rename-symbol";
 
 describe("Rename Symbol", () => {

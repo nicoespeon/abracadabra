@@ -1,7 +1,7 @@
+import * as t from "../ast";
 import { InMemoryEditor } from "../editor/adapters/in-memory-editor";
 import { Code } from "../editor/editor";
 import { Selection } from "../editor/selection";
-import * as t from "../ast";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

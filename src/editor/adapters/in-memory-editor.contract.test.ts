@@ -1,10 +1,8 @@
 import * as assert from "assert";
 import { suite, test } from "mocha";
-
 import { createEditorContractTests } from "../editor-contract-test";
 import { Position } from "../position";
 import { Selection } from "../selection";
-
 import { InMemoryEditor } from "./in-memory-editor";
 
 suite("InMemory Editor", () => {

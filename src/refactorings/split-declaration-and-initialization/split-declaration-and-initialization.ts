@@ -1,6 +1,6 @@
+import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import * as t from "../../ast";
 
 export async function splitDeclarationAndInitialization(editor: Editor) {
   const { code, selection } = editor;

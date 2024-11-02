@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-
 import { VSCodeEditor } from "./vscode-editor";
 import { VueAndSvelteVSCodeEditor } from "./vue-and-svelte-vscode-editor";
 

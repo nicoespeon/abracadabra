@@ -1,14 +1,16 @@
 import { glob } from "glob";
 import { suite } from "mocha";
 import * as vscode from "vscode";
-
 import { createEditorContractTests } from "../editor-contract-test";
 import { RelativePath } from "../path";
 import { Position } from "../position";
 import { VSCodeEditor } from "./vscode-editor";
 
 class TestableVSCodeEditor extends VSCodeEditor {
-  constructor(editor: vscode.TextEditor, private workspaceUri: vscode.Uri) {
+  constructor(
+    editor: vscode.TextEditor,
+    private workspaceUri: vscode.Uri
+  ) {
     super(editor);
   }
 

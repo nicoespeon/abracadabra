@@ -1,23 +1,22 @@
-import { Code, Editor, Modification } from "../../../editor/editor";
-import { Selection } from "../../../editor/selection";
-import { Position } from "../../../editor/position";
+import { last } from "../../../array";
 import * as t from "../../../ast";
-
-import {
-  Variable,
-  StringLiteralVariable,
-  MemberExpressionVariable,
-  ShorthandVariable,
-  NewExpressionVariable
-} from "./variable";
-import { Parts } from "./parts";
+import { Code, Editor, Modification } from "../../../editor/editor";
+import { Position } from "../../../editor/position";
+import { Selection } from "../../../editor/selection";
 import { DestructureStrategy } from "./destructure-strategy";
+import { Parts } from "./parts";
+import {
+  MemberExpressionVariable,
+  NewExpressionVariable,
+  ShorthandVariable,
+  StringLiteralVariable,
+  Variable
+} from "./variable";
 import {
   DeclarationOnCommonAncestor,
   MergeDestructuredDeclaration,
   VariableDeclarationModification
 } from "./variable-declaration-modification";
-import { last } from "../../../array";
 
 export function createOccurrence(
   path: t.NodePath,

@@ -2,7 +2,6 @@ import { allButLast, last } from "../../array";
 import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-
 import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
 export async function flipIfElse(editor: Editor) {

@@ -1,8 +1,7 @@
 import {
-  createVisitor,
-  convertToTemplateLiteral
+  convertToTemplateLiteral,
+  createVisitor
 } from "./convert-to-template-literal";
-
 import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
 const config: RefactoringWithActionProviderConfig = {
