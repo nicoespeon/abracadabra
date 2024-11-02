@@ -66,7 +66,11 @@ const y = 2;
   }) {
     const editor = new InMemoryEditor(code);
 
-    const result = splitMultipleDeclarations(editor.code, editor.selection);
+    const result = splitMultipleDeclarations({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
     expect(result).toEqual({ action: "write", code: expected });
   }
@@ -76,10 +80,12 @@ const y = 2;
       `// This is a comment, can't be refactored`
     );
 
-    const result = splitMultipleDeclarations(editor.code, editor.selection);
+    const result = splitMultipleDeclarations({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
     expect(result.action).toBe("show error");
   });
 });
-
-// TODO: restrict feature to when the cursor is on the declaration only.

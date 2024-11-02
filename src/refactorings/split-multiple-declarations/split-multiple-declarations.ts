@@ -1,13 +1,12 @@
-import { Code } from "../../editor/editor";
 import { didNotFind } from "../../editor/error-reason";
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { OperationResult } from "../../types";
+import { EditorCommand, RefactoringState } from "../../types";
 
-export function splitMultipleDeclarations(
-  code: Code,
-  selection: Selection
-): OperationResult {
+export function splitMultipleDeclarations({
+  code,
+  selection
+}: RefactoringState): EditorCommand {
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {

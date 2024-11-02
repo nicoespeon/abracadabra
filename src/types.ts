@@ -1,6 +1,7 @@
-import { Code, Editor } from "./editor/editor";
+import { Code, Command, Editor } from "./editor/editor";
 import { Selection } from "./editor/selection";
 import { Visitor, NodePath } from "./ast";
+
 export interface Refactoring {
   command: {
     key: string;
@@ -44,11 +45,21 @@ export interface RefactoringWithActionProvider__NEW {
   };
 }
 
-export type Operation__NEW = (
-  code: Code,
-  selection: Selection
-) => OperationResult;
+export type Operation__NEW = (state: RefactoringState) => EditorCommand;
 
-export type OperationResult =
+export type EditorCommand =
+  | { action: "do nothing" }
   | { action: "show error"; reason: string }
-  | { action: "write"; code: Code };
+  | { action: "write"; code: Code }
+  | { action: "delegate"; command: Command }
+  | { action: "ask user"; value?: string };
+
+export type RefactoringState =
+  | ({ state: "new" } & BaseRefactoringState)
+  | ({ state: "command not supported" } & BaseRefactoringState)
+  | ({
+      state: "user response";
+      value: string | undefined;
+    } & BaseRefactoringState);
+
+type BaseRefactoringState = { code: Code; selection: Selection };

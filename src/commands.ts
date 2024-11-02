@@ -1,8 +1,14 @@
 import * as vscode from "vscode";
 
-import { Operation, Operation__NEW } from "./types";
+import {
+  EditorCommand,
+  Operation,
+  Operation__NEW,
+  RefactoringState
+} from "./types";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import { Result } from "./editor/editor";
 
 export function createCommand(execute: Operation) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
@@ -18,28 +24,61 @@ export function createCommand__NEW(execute: Operation__NEW) {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
 
-    await executeSafely(async () => {
-      const { code, selection } = editor;
-
-      const result = execute(code, selection);
-
-      switch (result.action) {
-        case "show error":
-          editor.showError(result.reason);
-          break;
-
-        case "write":
-          await editor.write(result.code);
-          break;
-
-        default: {
-          const exhaustiveCheck: never = result;
-          console.error(`Unhandled type: ${exhaustiveCheck}`);
-          break;
-        }
-      }
-    });
+    await executeSafely(() => executeRefactoring(execute, editor));
   };
+}
+
+async function executeRefactoring(
+  refactor: Operation__NEW,
+  editor: VSCodeEditor,
+  state: RefactoringState = {
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  }
+) {
+  const result = refactor(state);
+
+  switch (result.action) {
+    case "do nothing":
+      break;
+
+    case "show error":
+      editor.showError(result.reason);
+      break;
+
+    case "write":
+      await editor.write(result.code);
+      break;
+
+    case "delegate": {
+      const delegateResult = await editor.delegate(result.command);
+      if (delegateResult === Result.NotSupported) {
+        return executeRefactoring(refactor, editor, {
+          state: "command not supported",
+          code: state.code,
+          selection: state.selection
+        });
+      }
+      break;
+    }
+
+    case "ask user": {
+      const userInput = await editor.askUserInput(result.value);
+      return executeRefactoring(refactor, editor, {
+        state: "user response",
+        value: userInput,
+        code: state.code,
+        selection: state.selection
+      });
+    }
+
+    default: {
+      const exhaustiveCheck: never = result;
+      console.error(`Unhandled type: ${exhaustiveCheck}`);
+      break;
+    }
+  }
 }
 
 export async function executeSafely(
