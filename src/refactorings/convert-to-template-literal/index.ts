@@ -3,7 +3,7 @@ import {
   convertToTemplateLiteral
 } from "./convert-to-template-literal";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

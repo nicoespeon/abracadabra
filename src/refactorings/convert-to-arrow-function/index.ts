@@ -3,7 +3,7 @@ import {
   createVisitor
 } from "./convert-to-arrow-function";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

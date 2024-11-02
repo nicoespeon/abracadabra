@@ -1,4 +1,4 @@
-import { Refactoring } from "../../types";
+import { Refactoring } from "../../refactorings";
 import { toggleHighlight } from "./toggle-highlight";
 
 const config: Refactoring = {

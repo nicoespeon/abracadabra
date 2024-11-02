@@ -3,7 +3,7 @@ import {
   mergeWithPreviousIfStatement
 } from "./merge-with-previous-if-statement";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

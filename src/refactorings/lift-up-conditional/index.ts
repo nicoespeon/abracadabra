@@ -1,6 +1,6 @@
 import { createVisitor, liftUpConditional } from "./lift-up-conditional";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

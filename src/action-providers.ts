@@ -7,7 +7,7 @@ import { Editor } from "./editor/editor";
 import {
   RefactoringWithActionProvider,
   RefactoringWithActionProvider__NEW
-} from "./types";
+} from "./refactorings";
 import {
   getIgnoredFolders,
   getIgnoredPatterns,

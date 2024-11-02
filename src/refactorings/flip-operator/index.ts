@@ -1,6 +1,6 @@
 import { createVisitor, flipOperator } from "./flip-operator";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

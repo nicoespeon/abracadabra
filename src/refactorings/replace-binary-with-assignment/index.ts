@@ -4,7 +4,7 @@ import {
 } from "./replace-binary-with-assignment";
 
 import * as t from "../../ast";
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

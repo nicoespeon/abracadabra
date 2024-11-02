@@ -3,7 +3,7 @@ import {
   createVisitor
 } from "./create-factory-for-constructor";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

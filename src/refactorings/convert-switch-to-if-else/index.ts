@@ -3,7 +3,7 @@ import {
   createVisitor
 } from "./convert-switch-to-if-else";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

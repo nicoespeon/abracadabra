@@ -1,4 +1,4 @@
-import { Refactoring } from "../../types";
+import { Refactoring } from "../../refactorings";
 import { refreshHighlights } from "./refresh-highlights";
 
 const config: Refactoring = {

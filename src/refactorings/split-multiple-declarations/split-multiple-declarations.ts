@@ -1,6 +1,6 @@
 import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
-import { COMMANDS, EditorCommand, RefactoringState } from "../../types";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
 export function splitMultipleDeclarations({
   code,

@@ -5,7 +5,7 @@ import {
   Operation,
   Operation__NEW,
   RefactoringState
-} from "./types";
+} from "./refactorings";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import { Result } from "./editor/editor";

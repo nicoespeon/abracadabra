@@ -51,7 +51,7 @@ import {
   Refactoring,
   RefactoringWithActionProvider,
   RefactoringWithActionProvider__NEW
-} from "./types";
+} from "./refactorings";
 import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 
 const refactorings: { [key: string]: ConfiguredRefactoring } = {

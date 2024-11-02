@@ -3,7 +3,7 @@ import {
   splitDeclarationAndInitialization
 } from "./split-declaration-and-initialization";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

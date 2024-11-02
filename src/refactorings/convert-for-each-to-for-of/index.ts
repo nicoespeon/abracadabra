@@ -1,4 +1,4 @@
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 import {
   convertForEachToForOf,
   createVisitor

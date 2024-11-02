@@ -1,4 +1,4 @@
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 import { createVisitor, wrapInJsxFragment } from "./wrap-in-jsx-fragment";
 
 const config: RefactoringWithActionProvider = {

@@ -1,6 +1,6 @@
 import { extractInterface, createVisitor } from "./extract-interface";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

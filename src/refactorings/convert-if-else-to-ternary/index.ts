@@ -3,7 +3,7 @@ import {
   convertIfElseToTernary
 } from "./convert-if-else-to-ternary";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

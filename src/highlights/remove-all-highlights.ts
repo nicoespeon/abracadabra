@@ -1,4 +1,4 @@
-import { Refactoring } from "../types";
+import { Refactoring } from "../refactorings";
 
 const config: Refactoring = {
   command: {

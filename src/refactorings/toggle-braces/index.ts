@@ -1,6 +1,6 @@
 import { toggleBraces, createVisitor } from "./toggle-braces";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

@@ -3,7 +3,7 @@ import {
   convertIfElseToSwitch
 } from "./convert-if-else-to-switch";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

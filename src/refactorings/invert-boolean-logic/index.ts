@@ -4,7 +4,7 @@ import {
   getNegatedOperator
 } from "./invert-boolean-logic";
 
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 
 const config: RefactoringWithActionProvider = {
   command: {

@@ -2,7 +2,7 @@ import {
   splitMultipleDeclarations,
   createVisitor
 } from "./split-multiple-declarations";
-import { RefactoringWithActionProvider__NEW } from "../../types";
+import { RefactoringWithActionProvider__NEW } from "../../refactorings";
 
 const config: RefactoringWithActionProvider__NEW = {
   command: {

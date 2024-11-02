@@ -1,6 +1,6 @@
 import { moveStatementDown } from "./move-statement-down";
 
-import { Refactoring } from "../../types";
+import { Refactoring } from "../../refactorings";
 
 const config: Refactoring = {
   command: {

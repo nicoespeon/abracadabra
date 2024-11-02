@@ -1,7 +1,7 @@
 import { extractVariable } from "./extract-variable/extract-variable";
 import { extractType } from "./extract-type/extract-type";
 
-import { Refactoring } from "../../types";
+import { Refactoring } from "../../refactorings";
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";

@@ -6,7 +6,7 @@ import {
 import { executeSafely } from "../../commands";
 import { ErrorReason } from "../../editor/editor";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
-import { RefactoringWithActionProvider } from "../../types";
+import { RefactoringWithActionProvider } from "../../refactorings";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 
 const config: RefactoringWithActionProvider = {
