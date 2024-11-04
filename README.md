@@ -251,7 +251,7 @@ Building automated refactoring for JavaScript is not easy, and it takes time. Si
 If Abracadabra doesn't fit your need for something, here are the other extensions I recommend you check:
 
 - [JS CodeFormer](https://marketplace.visualstudio.com/items?itemName=cmstead.js-codeformer) which is built by [Chris Stead](https://twitter.com/cm_stead). Chris built the first JS refactorings extension in VS Code back in the days, so he knows his stuff 👍
-- [P42 JavaScript assistant](https://marketplace.visualstudio.com/items?itemName=p42ai.refactor) is a recent and impressive tool built by [Lars Grammel](https://twitter.com/lgrammel). I had the opportunity to chat with Lars and we really think alike. The main difference is that Lars is dedicated full-time into building this. It's not open-source, but it may solve the problem you have 😉
+- [P42 JavaScript assistant](https://marketplace.visualstudio.com/items?itemName=p42ai.refactor) is an impressive tool built by [Lars Grammel](https://twitter.com/lgrammel). It is not maintained anymore, but it may have refactorings that Abracadabra doesn't.
 - [JavaScript Booster](https://marketplace.visualstudio.com/items?itemName=sburg.vscode-javascript-booster) is a popular extension that mimics Webstorm's UX for refactoring—which was a source of inspiration for Abracadabra. Worth having a look.
 
 There are some things I think Abracadabra does better. Other things Abracadabra does worse. The goal with this extension is to provide automated refactorings that are easy to use and VS Code misses. If others are implementing them, I'm more than happy to recommend (and use) their tool!
