@@ -1,46 +1,18 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import { testEach } from "../../tests-helpers";
 import { extractInterface } from "./extract-interface";
 
 describe("Extract Interface", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should extract interface",
-    [
-      {
-        description: "class with public method",
-        code: `class Position {
-  constructor(name: string) {
-    this.name = name;
-  }
-
-  isEqualTo(position: Position): boolean {
-    return true;
-  }
-}`,
-        expected: `class Position implements Extracted {
-  constructor(name: string) {
-    this.name = name;
-  }
-
-  isEqualTo(position: Position): boolean {
-    return true;
-  }
-}
-
-interface Extracted {
-  isEqualTo(position: Position): boolean;
-}`
-      },
-      {
-        description: "inline type in param method",
-        code: `class Position {
+  it("inline type in param method", () => {
+    shouldExtractInterface({
+      code: `class Position {
   isEqualTo(position: {x: number, y: number}): boolean {
     return true;
   }
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   isEqualTo(position: {x: number, y: number}): boolean {
     return true;
   }
@@ -49,15 +21,17 @@ interface Extracted {
 interface Extracted {
   isEqualTo(position: {x: number, y: number}): boolean;
 }`
-      },
-      {
-        description: "method with optional params",
-        code: `class Position {
+    });
+  });
+
+  it("method with optional params", () => {
+    shouldExtractInterface({
+      code: `class Position {
   isEqualTo(position?: Position): boolean {
     return true;
   }
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   isEqualTo(position?: Position): boolean {
     return true;
   }
@@ -66,10 +40,12 @@ interface Extracted {
 interface Extracted {
   isEqualTo(position?: Position): boolean;
 }`
-      },
-      {
-        description: "class with private method",
-        code: `class Position {
+    });
+  });
+
+  it("class with private method", () => {
+    shouldExtractInterface({
+      code: `class Position {
   isEqualTo(position: Position): boolean {
     return true;
   }
@@ -77,7 +53,7 @@ interface Extracted {
   private doSomething(): void {}
   #doSomethingElse(): void {}
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   isEqualTo(position: Position): boolean {
     return true;
   }
@@ -89,17 +65,19 @@ interface Extracted {
 interface Extracted {
   isEqualTo(position: Position): boolean;
 }`
-      },
-      {
-        description: "class with public properties",
-        code: `class Position {
+    });
+  });
+
+  it("class with public properties", () => {
+    shouldExtractInterface({
+      code: `class Position {
   x: number;
   readonly y = 10;
   isValid = true;
   name = "point";
   someData = [];
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   x: number;
   readonly y = 10;
   isValid = true;
@@ -114,16 +92,18 @@ interface Extracted {
   name: string;
   someData: any;
 }`
-      },
-      {
-        description: "class with private or protected properties",
-        code: `class Position {
+    });
+  });
+
+  it("class with private or protected properties", () => {
+    shouldExtractInterface({
+      code: `class Position {
   x: number;
   private y = 10;
   #isValid = true;
   protected name: string;
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   x: number;
   private y = 10;
   #isValid = true;
@@ -133,10 +113,12 @@ interface Extracted {
 interface Extracted {
   x: number;
 }`
-      },
-      {
-        description: "properties auto-assigned in constructor",
-        code: `class Position {
+    });
+  });
+
+  it("properties auto-assigned in constructor", () => {
+    shouldExtractInterface({
+      code: `class Position {
   constructor(
     public name: string,
     public readonly isValid: boolean = true,
@@ -144,7 +126,7 @@ interface Extracted {
     public y = 0
   ) {}
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   constructor(
     public name: string,
     public readonly isValid: boolean = true,
@@ -158,10 +140,12 @@ interface Extracted {
   readonly isValid: boolean;
   y: number;
 }`
-      },
-      {
-        description: "selected class only",
-        code: `class Position {
+    });
+  });
+
+  it("selected class only", () => {
+    shouldExtractInterface({
+      code: `class Position {
   isEqualTo(position: Position): boolean {
     return true;
   }
@@ -172,7 +156,7 @@ interface Extracted {
     return true;
   }
 }`,
-        expected: `class Position {
+      expected: `class Position {
   isEqualTo(position: Position): boolean {
     return true;
   }
@@ -187,17 +171,19 @@ class AnotherPosition implements Extracted {
 interface Extracted {
   isEqualTo(position: Position): boolean;
 }`
-      },
-      {
-        description: "an exported class",
-        code: `export class Foo[cursor] {
+    });
+  });
+
+  it("an exported class", () => {
+    shouldExtractInterface({
+      code: `export class Foo[cursor] {
   constructor(readonly numbers: number[]) {}
 
   bar(): number {
     return this.numbers.length;
   }
 }`,
-        expected: `export class Foo implements Extracted {
+      expected: `export class Foo implements Extracted {
   constructor(readonly numbers: number[]) {}
 
   bar(): number {
@@ -209,17 +195,19 @@ interface Extracted {
   readonly numbers: number[];
   bar(): number;
 }`
-      },
-      {
-        description: "an exported class (default export)",
-        code: `export default class Foo[cursor] {
+    });
+  });
+
+  it("an exported class (default export)", () => {
+    shouldExtractInterface({
+      code: `export default class Foo[cursor] {
   constructor(readonly numbers: number[]) {}
 
   bar(): number {
     return this.numbers.length;
   }
 }`,
-        expected: `export default class Foo implements Extracted {
+      expected: `export default class Foo implements Extracted {
   constructor(readonly numbers: number[]) {}
 
   bar(): number {
@@ -231,23 +219,27 @@ interface Extracted {
   readonly numbers: number[];
   bar(): number;
 }`
-      },
-      {
-        description: "a generic class",
-        code: `class Foo<T extends string>[cursor] {
+    });
+  });
+
+  it("a generic class", () => {
+    shouldExtractInterface({
+      code: `class Foo<T extends string>[cursor] {
   constructor(readonly items: T[]) {}
 }`,
-        expected: `class Foo<T extends string> implements Extracted<T> {
+      expected: `class Foo<T extends string> implements Extracted<T> {
   constructor(readonly items: T[]) {}
 }
 
 interface Extracted<T extends string> {
   readonly items: T[];
 }`
-      },
-      {
-        description: "class that already implements interfaces",
-        code: `class Position implements Serializable, Configuration {
+    });
+  });
+
+  it("class that already implements interfaces", () => {
+    shouldExtractInterface({
+      code: `class Position implements Serializable, Configuration {
   constructor(name: string) {
     this.name = name;
   }
@@ -256,7 +248,7 @@ interface Extracted<T extends string> {
     return true;
   }
 }`,
-        expected: `class Position implements Serializable, Configuration, Extracted {
+      expected: `class Position implements Serializable, Configuration, Extracted {
   constructor(name: string) {
     this.name = name;
   }
@@ -269,10 +261,12 @@ interface Extracted<T extends string> {
 interface Extracted {
   isEqualTo(position: Position): boolean;
 }`
-      },
-      {
-        description: "class that lacks return types",
-        code: `class Position {
+    });
+  });
+
+  it("class that lacks return types", () => {
+    shouldExtractInterface({
+      code: `class Position {
   isEqualTo(position: Position) {
     return true;
   }
@@ -281,7 +275,7 @@ interface Extracted {
     return repository.fetch(this.id);
   }
 }`,
-        expected: `class Position implements Extracted {
+      expected: `class Position implements Extracted {
   isEqualTo(position: Position) {
     return true;
   }
@@ -297,30 +291,49 @@ interface Extracted {
   /* TODO: add the missing return type */
   fetch(): Promise<any>;
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await extractInterface(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
-    const code = `// This is a comment, can't be refactored`;
-    const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
-
-    await extractInterface(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindClassToExtractInterface
-    );
+    });
   });
 
-  it("should move cursor to extracted interface name", async () => {
+  it("class with public method", () => {
+    shouldExtractInterface({
+      code: `class Position {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}`,
+      expected: `class Position implements Extracted {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  isEqualTo(position: Position): boolean {
+    return true;
+  }
+}
+
+interface Extracted {
+  isEqualTo(position: Position): boolean;
+}`
+    });
+  });
+
+  it("should show an error message if refactoring can't be made", () => {
+    const code = `// This is a comment, can't be refactored`;
+
+    const result = extractInterface({
+      state: "new",
+      code,
+      selection: Selection.cursorAt(0, 0)
+    });
+
+    expect(result.action).toBe("show error");
+  });
+
+  it("should move cursor to extracted interface name", () => {
     const code = `class Position {
   constructor(name: string) {
     this.name = name;
@@ -330,10 +343,34 @@ interface Extracted {
     return true;
   }
 }`;
-    const editor = new InMemoryEditor(code);
 
-    await extractInterface(editor);
+    const result = extractInterface({
+      state: "new",
+      code,
+      selection: Selection.cursorAt(0, 0)
+    });
 
-    expect(editor.selection).toEqual(Selection.cursorAt(10, 10));
+    expect(result).toMatchObject({
+      action: "write",
+      newCursorPosition: new Position(10, 10)
+    });
   });
 });
+
+function shouldExtractInterface({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+
+  const result = extractInterface({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

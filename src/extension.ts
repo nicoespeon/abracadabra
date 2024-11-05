@@ -59,8 +59,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     languages: ["typescript", "typescriptreact"],
     withoutActionProvider: [],
     withoutActionProvider__NEW: [],
-    withActionProvider: [extractGenericType, extractInterface],
-    withActionProvider__NEW: []
+    withActionProvider: [extractGenericType],
+    withActionProvider__NEW: [extractInterface]
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],

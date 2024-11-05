@@ -1,20 +1,21 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import { renameSymbol } from "../rename-symbol/rename-symbol-old";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
+import { renameSymbol } from "../rename-symbol/rename-symbol";
 
-export async function extractInterface(editor: Editor) {
-  const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+export function extractInterface(state: RefactoringState): EditorCommand {
+  const updatedCode = updateCode(t.parse(state.code), state.selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindClassToExtractInterface);
-    return;
+    return COMMANDS.showErrorDidNotFind("a class to extract the interface");
   }
 
-  await editor.write(updatedCode.code, updatedCode.interfaceIdentifierPosition);
-  await renameSymbol(editor);
+  return COMMANDS.write(
+    updatedCode.code,
+    updatedCode.interfaceIdentifierPosition,
+    { thenRun: renameSymbol }
+  );
 }
 
 function updateCode(
