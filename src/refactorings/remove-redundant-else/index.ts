@@ -1,7 +1,7 @@
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import { createVisitor, removeRedundantElse } from "./remove-redundant-else";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "removeRedundantElse",
     operation: removeRedundantElse,

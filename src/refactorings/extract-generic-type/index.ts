@@ -1,7 +1,7 @@
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import { createVisitor, extractGenericType } from "./extract-generic-type";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "extractGenericType",
     operation: extractGenericType,

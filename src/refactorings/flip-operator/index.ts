@@ -1,7 +1,7 @@
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import { createVisitor, flipOperator } from "./flip-operator";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "flipOperator",
     operation: flipOperator,

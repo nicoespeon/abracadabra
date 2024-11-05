@@ -1,7 +1,7 @@
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import { createVisitor, toggleBraces } from "./toggle-braces";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "toggleBraces",
     operation: toggleBraces,

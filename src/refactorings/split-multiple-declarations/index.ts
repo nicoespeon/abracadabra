@@ -1,10 +1,10 @@
-import { RefactoringWithActionProviderConfig__NEW } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   createVisitor,
   splitMultipleDeclarations
 } from "./split-multiple-declarations";
 
-const config: RefactoringWithActionProviderConfig__NEW = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "splitMultipleDeclarations",
     operation: splitMultipleDeclarations,

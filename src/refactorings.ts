@@ -3,6 +3,13 @@ import { Code, Command, Editor } from "./editor/editor";
 import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
 
+export interface RefactoringConfig__DEPRECATED {
+  command: {
+    key: string;
+    operation: Refactoring__DEPRECATED;
+  };
+}
+
 export interface RefactoringConfig {
   command: {
     key: string;
@@ -10,12 +17,24 @@ export interface RefactoringConfig {
   };
 }
 
-export interface RefactoringConfig__NEW {
+export interface RefactoringWithActionProviderConfig__DEPRECATED {
   command: {
     key: string;
-    operation: Refactoring__NEW;
+    title: string;
+    operation: Refactoring__DEPRECATED;
+  };
+  actionProvider: {
+    message: string;
+    isPreferred?: boolean;
+    createVisitor: (
+      selection: Selection,
+      onMatch: (path: NodePath) => void
+    ) => Visitor;
+    updateMessage?: (path: NodePath) => string;
   };
 }
+
+export type Refactoring__DEPRECATED = (editor: Editor) => Promise<void>;
 
 export interface RefactoringWithActionProviderConfig {
   command: {
@@ -34,26 +53,7 @@ export interface RefactoringWithActionProviderConfig {
   };
 }
 
-export type Refactoring = (editor: Editor) => Promise<void>;
-
-export interface RefactoringWithActionProviderConfig__NEW {
-  command: {
-    key: string;
-    title: string;
-    operation: Refactoring__NEW;
-  };
-  actionProvider: {
-    message: string;
-    isPreferred?: boolean;
-    createVisitor: (
-      selection: Selection,
-      onMatch: (path: NodePath) => void
-    ) => Visitor;
-    updateMessage?: (path: NodePath) => string;
-  };
-}
-
-export type Refactoring__NEW = (state: RefactoringState) => EditorCommand;
+export type Refactoring = (state: RefactoringState) => EditorCommand;
 
 export type RefactoringState = (
   | { state: "new" }
@@ -76,7 +76,7 @@ export type EditorCommand = (
 ) &
   BaseEditorCommand;
 
-type BaseEditorCommand = { thenRun?: Refactoring__NEW };
+type BaseEditorCommand = { thenRun?: Refactoring };
 
 export const COMMANDS = {
   showErrorDidNotFind: (element: string): EditorCommand => ({
@@ -102,7 +102,7 @@ export const COMMANDS = {
 };
 
 export async function executeRefactoring(
-  refactor: Refactoring__NEW,
+  refactor: Refactoring,
   editor: Editor,
   state: RefactoringState = {
     state: "new",

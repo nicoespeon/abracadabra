@@ -1,8 +1,8 @@
 import * as t from "../../ast";
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import { createVisitor, mergeIfStatements } from "./merge-if-statements";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "mergeIfStatements",
     operation: mergeIfStatements,

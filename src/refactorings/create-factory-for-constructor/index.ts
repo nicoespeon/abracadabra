@@ -1,10 +1,10 @@
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import {
   createFactoryForConstructor,
   createVisitor
 } from "./create-factory-for-constructor";
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "createFactoryForConstructor",
     operation: createFactoryForConstructor,

@@ -1,10 +1,10 @@
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import {
   createVisitor,
   splitDeclarationAndInitialization
 } from "./split-declaration-and-initialization";
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "splitDeclarationAndInitialization",
     operation: splitDeclarationAndInitialization,

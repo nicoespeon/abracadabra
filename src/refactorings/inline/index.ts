@@ -2,14 +2,14 @@ import { executeSafely } from "../../commands";
 import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
 import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
 import { ErrorReason } from "../../editor/editor";
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import { inlineFunction } from "./inline-function/inline-function";
 import {
   createVisitor as canInlineVariable,
   inlineVariable
 } from "./inline-variable/inline-variable";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "inline",
     title: "Inline Variable/Function",

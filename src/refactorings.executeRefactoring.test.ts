@@ -1,11 +1,11 @@
 import { InMemoryEditor } from "./editor/adapters/in-memory-editor";
 import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
-import { executeRefactoring, Refactoring__NEW } from "./refactorings";
+import { executeRefactoring, Refactoring } from "./refactorings";
 
 describe("Execute Refactoring", () => {
   it("should not crash for 'do nothing'", async () => {
-    const fakeRefactoring: Refactoring__NEW = () => ({ action: "do nothing" });
+    const fakeRefactoring: Refactoring = () => ({ action: "do nothing" });
     const editor = new InMemoryEditor();
 
     await expect(
@@ -15,7 +15,7 @@ describe("Execute Refactoring", () => {
 
   it("should make editor show an error for 'show error'", async () => {
     const reason = "This is an error message";
-    const fakeRefactoring: Refactoring__NEW = () => ({
+    const fakeRefactoring: Refactoring = () => ({
       action: "show error",
       reason
     });
@@ -29,7 +29,7 @@ describe("Execute Refactoring", () => {
 
   it("should make the editor replace code with new content for 'write'", async () => {
     const code = "const hello = 'world'";
-    const fakeRefactoring: Refactoring__NEW = () => ({
+    const fakeRefactoring: Refactoring = () => ({
       action: "write",
       code
     });
@@ -41,7 +41,7 @@ describe("Execute Refactoring", () => {
   });
 
   it("should put cursor at given position for 'write'", async () => {
-    const fakeRefactoring: Refactoring__NEW = () => ({
+    const fakeRefactoring: Refactoring = () => ({
       action: "write",
       code: "const hello = 'world'",
       newCursorPosition: new Position(0, 5)
@@ -56,10 +56,10 @@ describe("Execute Refactoring", () => {
 
   it("should run given refactoring function if provided for 'write'", async () => {
     const code = "const hello = 'world'";
-    const followUpRefactoring: Refactoring__NEW = jest
+    const followUpRefactoring: Refactoring = jest
       .fn()
       .mockReturnValue({ action: "do nothing" });
-    const fakeRefactoring: Refactoring__NEW = () => ({
+    const fakeRefactoring: Refactoring = () => ({
       action: "write",
       code,
       newCursorPosition: new Position(0, 5),
@@ -77,7 +77,7 @@ describe("Execute Refactoring", () => {
   });
 
   it("should delegate given command to the editor for 'delegate'", async () => {
-    const fakeRefactoring: Refactoring__NEW = () => ({
+    const fakeRefactoring: Refactoring = () => ({
       action: "delegate",
       command: "rename symbol"
     });
@@ -90,7 +90,7 @@ describe("Execute Refactoring", () => {
   });
 
   it("should call refactoring back when command is not supported for 'delegate'", async () => {
-    const fakeRefactoring: Refactoring__NEW = jest.fn(() => ({
+    const fakeRefactoring: Refactoring = jest.fn(() => ({
       action: "delegate",
       command: "rename symbol"
     }));
@@ -108,10 +108,10 @@ describe("Execute Refactoring", () => {
   });
 
   it("should run given refactoring function if provided for 'delegate'", async () => {
-    const followUpRefactoring: Refactoring__NEW = jest
+    const followUpRefactoring: Refactoring = jest
       .fn()
       .mockReturnValue({ action: "do nothing" });
-    const fakeRefactoring: Refactoring__NEW = () => ({
+    const fakeRefactoring: Refactoring = () => ({
       action: "delegate",
       command: "rename symbol",
       thenRun: followUpRefactoring
@@ -128,10 +128,10 @@ describe("Execute Refactoring", () => {
   });
 
   it("should NOT run follow-up refactoring function if delegated method is not supported for 'delegate'", async () => {
-    const followUpRefactoring: Refactoring__NEW = jest
+    const followUpRefactoring: Refactoring = jest
       .fn()
       .mockReturnValue({ action: "do nothing" });
-    const fakeRefactoring: Refactoring__NEW = jest
+    const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
         action: "delegate",
@@ -148,7 +148,7 @@ describe("Execute Refactoring", () => {
   });
 
   it("should ask user for input for 'ask user'", async () => {
-    const fakeRefactoring: Refactoring__NEW = jest
+    const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
         action: "ask user",
@@ -164,7 +164,7 @@ describe("Execute Refactoring", () => {
   });
 
   it("should call refactoring back with user input for 'ask user'", async () => {
-    const fakeRefactoring: Refactoring__NEW = jest
+    const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
         action: "ask user",

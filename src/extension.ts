@@ -11,9 +11,9 @@ import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
 import {
   RefactoringConfig,
-  RefactoringConfig__NEW,
+  RefactoringConfig__DEPRECATED,
   RefactoringWithActionProviderConfig,
-  RefactoringWithActionProviderConfig__NEW
+  RefactoringWithActionProviderConfig__DEPRECATED
 } from "./refactorings";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
@@ -116,10 +116,10 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
 
 type ConfiguredRefactoring = {
   languages: string[];
-  withoutActionProvider: RefactoringConfig[];
-  withoutActionProvider__NEW: RefactoringConfig__NEW[];
-  withActionProvider: RefactoringWithActionProviderConfig[];
-  withActionProvider__NEW: RefactoringWithActionProviderConfig__NEW[];
+  withoutActionProvider: RefactoringConfig__DEPRECATED[];
+  withoutActionProvider__NEW: RefactoringConfig[];
+  withActionProvider: RefactoringWithActionProviderConfig__DEPRECATED[];
+  withActionProvider__NEW: RefactoringWithActionProviderConfig[];
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -171,8 +171,8 @@ export function activate(context: vscode.ExtensionContext) {
     },
     {} as {
       [language: string]: (
+        | RefactoringWithActionProviderConfig__DEPRECATED
         | RefactoringWithActionProviderConfig
-        | RefactoringWithActionProviderConfig__NEW
       )[];
     }
   );

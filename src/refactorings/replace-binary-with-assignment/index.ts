@@ -1,11 +1,11 @@
+import * as t from "../../ast";
+import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
 import {
   createVisitor,
   replaceBinaryWithAssignment
 } from "./replace-binary-with-assignment";
-import * as t from "../../ast";
-import { RefactoringWithActionProviderConfig } from "../../refactorings";
 
-const config: RefactoringWithActionProviderConfig = {
+const config: RefactoringWithActionProviderConfig__DEPRECATED = {
   command: {
     key: "replaceBinaryWithAssignment",
     operation: replaceBinaryWithAssignment,

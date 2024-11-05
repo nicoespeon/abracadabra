@@ -6,7 +6,7 @@ import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import { Editor } from "./editor/editor";
 import {
   RefactoringWithActionProviderConfig,
-  RefactoringWithActionProviderConfig__NEW
+  RefactoringWithActionProviderConfig__DEPRECATED
 } from "./refactorings";
 import {
   getIgnoredFolders,
@@ -17,8 +17,8 @@ import {
 } from "./vscode-configuration";
 
 type Refactoring =
-  | RefactoringWithActionProviderConfig
-  | RefactoringWithActionProviderConfig__NEW;
+  | RefactoringWithActionProviderConfig__DEPRECATED
+  | RefactoringWithActionProviderConfig;
 
 export class RefactoringActionProvider implements vscode.CodeActionProvider {
   constructor(private refactorings: Refactoring[]) {}

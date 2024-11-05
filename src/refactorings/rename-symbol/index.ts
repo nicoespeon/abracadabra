@@ -1,7 +1,7 @@
-import { RefactoringConfig__NEW } from "../../refactorings";
+import { RefactoringConfig } from "../../refactorings";
 import { renameSymbol } from "./rename-symbol";
 
-const config: RefactoringConfig__NEW = {
+const config: RefactoringConfig = {
   command: {
     key: "renameSymbol",
     operation: renameSymbol

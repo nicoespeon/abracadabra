@@ -4,10 +4,10 @@ import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import {
   executeRefactoring,
   Refactoring,
-  Refactoring__NEW
+  Refactoring__DEPRECATED
 } from "./refactorings";
 
-export function createCommand(execute: Refactoring) {
+export function createCommand(execute: Refactoring__DEPRECATED) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
@@ -16,7 +16,7 @@ export function createCommand(execute: Refactoring) {
   };
 }
 
-export function createCommand__NEW(execute: Refactoring__NEW) {
+export function createCommand__NEW(execute: Refactoring) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
