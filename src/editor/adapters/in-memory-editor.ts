@@ -30,7 +30,7 @@ export class InMemoryEditor implements Editor {
   private otherFiles = new Map<Path, Editor>();
   private userPositions: SelectedPosition[] | null = null;
 
-  constructor(code: Code, position: Position = new Position(0, 0)) {
+  constructor(code: Code = "", position: Position = new Position(0, 0)) {
     this.setCodeMatrix(code);
     this.setSelectionFromCursor(code, Selection.cursorAtPosition(position));
   }

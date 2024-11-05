@@ -3,7 +3,7 @@ import { renameSymbol } from "./rename-symbol";
 
 describe("Rename Symbol", () => {
   it("should delegate the work to the editor", () => {
-    const { code, selection } = new InMemoryEditor("");
+    const { code, selection } = new InMemoryEditor();
 
     const result = renameSymbol({
       state: "new",
