@@ -54,6 +54,28 @@ describe("Execute Refactoring", () => {
     expect(editor.selection).toEqual(Selection.cursorAt(0, 5));
   });
 
+  it("should run given refactoring function if provided for 'write'", async () => {
+    const code = "const hello = 'world'";
+    const followUpRefactoring: Refactoring__NEW = jest
+      .fn()
+      .mockReturnValue({ action: "do nothing" });
+    const fakeRefactoring: Refactoring__NEW = () => ({
+      action: "write",
+      code,
+      newCursorPosition: new Position(0, 5),
+      thenRun: followUpRefactoring
+    });
+    const editor = new InMemoryEditor("const some = '[cursor]code';");
+
+    await executeRefactoring(fakeRefactoring, editor);
+
+    expect(followUpRefactoring).toHaveBeenCalledWith({
+      state: "new",
+      code,
+      selection: Selection.cursorAt(0, 5)
+    });
+  });
+
   it("should delegate given command to the editor for 'delegate'", async () => {
     const fakeRefactoring: Refactoring__NEW = () => ({
       action: "delegate",
@@ -83,6 +105,46 @@ describe("Execute Refactoring", () => {
       code: "const hello = 'world'",
       selection: Selection.cursorAt(0, 11)
     });
+  });
+
+  it("should run given refactoring function if provided for 'delegate'", async () => {
+    const followUpRefactoring: Refactoring__NEW = jest
+      .fn()
+      .mockReturnValue({ action: "do nothing" });
+    const fakeRefactoring: Refactoring__NEW = () => ({
+      action: "delegate",
+      command: "rename symbol",
+      thenRun: followUpRefactoring
+    });
+    const editor = new InMemoryEditor("const hello[cursor] = 'world'");
+
+    await executeRefactoring(fakeRefactoring, editor);
+
+    expect(followUpRefactoring).toHaveBeenCalledWith({
+      state: "new",
+      code: "const hello = 'world'",
+      selection: Selection.cursorAt(0, 11)
+    });
+  });
+
+  it("should NOT run follow-up refactoring function if delegated method is not supported for 'delegate'", async () => {
+    const followUpRefactoring: Refactoring__NEW = jest
+      .fn()
+      .mockReturnValue({ action: "do nothing" });
+    const fakeRefactoring: Refactoring__NEW = jest
+      .fn()
+      .mockReturnValueOnce({
+        action: "delegate",
+        command: "rename symbol",
+        thenRun: followUpRefactoring
+      })
+      .mockReturnValue({ action: "do nothing" });
+    const editor = new InMemoryEditor("const hello[cursor] = 'world'");
+    jest.spyOn(editor, "delegate").mockResolvedValueOnce("not supported");
+
+    await executeRefactoring(fakeRefactoring, editor);
+
+    expect(followUpRefactoring).not.toHaveBeenCalled();
   });
 
   it("should ask user for input for 'ask user'", async () => {

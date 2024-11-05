@@ -67,12 +67,16 @@ export type RefactoringState = (
 
 type BaseRefactoringState = { code: Code; selection: Selection };
 
-export type EditorCommand =
+export type EditorCommand = (
   | { action: "do nothing" }
   | { action: "show error"; reason: string }
   | { action: "write"; code: Code; newCursorPosition?: Position }
   | { action: "delegate"; command: Command }
-  | { action: "ask user"; value?: string };
+  | { action: "ask user"; value?: string }
+) &
+  BaseEditorCommand;
+
+type BaseEditorCommand = { thenRun?: Refactoring__NEW };
 
 export const COMMANDS = {
   showErrorDidNotFind: (element: string): EditorCommand => ({
@@ -80,10 +84,15 @@ export const COMMANDS = {
     reason: `I didn't find ${element} from current selection 🤔`
   }),
   askUser: (value: string): EditorCommand => ({ action: "ask user", value }),
-  write: (code: Code, newCursorPosition?: Position): EditorCommand => ({
+  write: (
+    code: Code,
+    newCursorPosition?: Position,
+    options: BaseEditorCommand = {}
+  ): EditorCommand => ({
     action: "write",
     code,
-    newCursorPosition
+    newCursorPosition,
+    ...options
   }),
   delegate: (command: Command): EditorCommand => ({
     action: "delegate",
@@ -142,5 +151,9 @@ export async function executeRefactoring(
       console.error(`Unhandled type: ${exhaustiveCheck}`);
       break;
     }
+  }
+
+  if (result.thenRun) {
+    return executeRefactoring(result.thenRun, editor);
   }
 }
