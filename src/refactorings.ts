@@ -34,8 +34,6 @@ export interface RefactoringWithActionProviderConfig__DEPRECATED {
   };
 }
 
-export type Refactoring__DEPRECATED = (editor: Editor) => Promise<void>;
-
 export interface RefactoringWithActionProviderConfig {
   command: {
     key: string;
@@ -52,6 +50,18 @@ export interface RefactoringWithActionProviderConfig {
     updateMessage?: (path: NodePath) => string;
   };
 }
+
+/**
+ * We use to inject an instance of the Editor to the refactoring function,
+ * which was asynchronously performing some side-effects.
+ *
+ * The new version is a pure function that takes and return data instead.
+ *
+ * This will allow us to move the Refactoring computation elsewhere, like
+ * a dedicated language server. This should unblock more ambitious refactorings
+ * and improve the performance of the extension.
+ */
+export type Refactoring__DEPRECATED = (editor: Editor) => Promise<void>;
 
 export type Refactoring = (state: RefactoringState) => EditorCommand;
 
