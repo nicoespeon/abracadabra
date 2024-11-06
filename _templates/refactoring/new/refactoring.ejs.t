@@ -3,22 +3,20 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 ---
 <%
   camelName = h.changeCase.camel(name)
-  pascalErrorName = h.changeCase.pascalCase(errorReason.name)
+  noCaseErrorMessage = h.changeCase.noCase(errorReason.message)
 -%>
-import { Editor, ErrorReason } from "../../editor/editor";
-import { Selection } from "../../editor/selection";
 import * as t from "../../ast";
+import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function <%= camelName %>(editor: Editor) {
-  const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+export async function <%= camelName %>(state: RefactoringState): EditorCommand {
+  const updatedCode = updateCode(t.parse(state.code), state.selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.<%= pascalErrorName %>);
-    return;
+    return COMMANDS.showErrorDidNotFind("<%= noCaseErrorMessage %>");
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

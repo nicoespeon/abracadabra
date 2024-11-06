@@ -8,14 +8,13 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/index.ts
   sentenceName = h.changeCase.sentenceCase(name)
 -%>
 <% if (hasActionProvider){ -%>
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   <%= camelName %>,
   createVisitor
 } from "./<%= dashedName %>";
 
-import { RefactoringWithActionProvider } from "../../types";
-
-const config: RefactoringWithActionProvider = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "<%= camelName %>",
     operation: <%= camelName %>,
@@ -27,11 +26,10 @@ const config: RefactoringWithActionProvider = {
   }
 };
 <% } else { -%>
+import { RefactoringConfig } from "../../refactorings";
 import { <%= camelName %> } from "./<%= dashedName %>";
 
-import { Refactoring } from "../../types";
-
-const config: Refactoring = {
+const config: RefactoringConfig = {
   command: {
     key: "<%= camelName %>",
     operation: <%= camelName %>

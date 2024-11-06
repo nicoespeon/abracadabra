@@ -3,40 +3,49 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 ---
 <%
   camelName = h.changeCase.camel(name)
+  pascalCase = h.changeCase.pascalCase(name)
   dashedName = h.changeCase.param(name)
   titleName = h.changeCase.titleCase(name)
-  noCaseName = h.changeCase.noCase(name)
-
-  pascalErrorName = h.changeCase.pascalCase(errorReason.name)
 -%>
-import { ErrorReason, Code } from "../../editor/editor";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { testEach } from "../../tests-helpers";
-
+import { Code } from "../../editor/editor";
 import { <%= camelName %> } from "./<%= dashedName %>";
 
 describe("<%= titleName %>", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should <%= noCaseName %>",
-    [
-      // TODO: write successful test cases here
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+  it("TODO: scenario", () => {
+    should<%= pascalCase %>({
+      code: `TODO: fill`,
+      expected: `TODO: fill`
+    });
+  });
 
-      await <%= camelName %>(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
-    const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
 
-    await <%= camelName %>(editor);
+    const result = <%= camelName %>({
+      state: "new",
+      code,
+      selection: Selection.cursorAt(0, 0)
+    });
 
-    expect(editor.showError).toBeCalledWith(ErrorReason.<%= pascalErrorName %>);
+    expect(result.action).toBe("show error");
   });
 });
+
+function should<%= pascalCase %>({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+
+  const result = <%= camelName %>({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
