@@ -1,28 +1,28 @@
 import * as t from "../../ast";
-import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function moveStatementDown(editor: Editor) {
-  const { code, selection } = editor;
+export function moveStatementDown(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
+
   if (selection.isMultiLines) {
     // This should be implemented.
     // But it requires collecting all statements to move down to update the AST.
-    editor.showError(ErrorReason.CantMoveMultiLinesStatementDown);
-    return;
+    return COMMANDS.showErrorCantDo("move up a multi-lines selection yet");
   }
 
   const updatedCode = updateCode(code, selection);
 
   if (!updatedCode.hasCodeChanged) {
     // Don't bother the user with an error message for this.
-    if (updatedCode.isLastStatement) return;
+    if (updatedCode.isLastStatement) return COMMANDS.doNothing();
 
-    editor.showError(ErrorReason.CantMoveStatementDown);
-    return;
+    return COMMANDS.showErrorCantDo("move this statement down");
   }
 
-  await editor.write(updatedCode.code, updatedCode.newStatementPosition);
+  return COMMANDS.write(updatedCode.code, updatedCode.newStatementPosition);
 }
 
 function updateCode(

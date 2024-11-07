@@ -1,7 +1,7 @@
-import { RefactoringConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringConfig } from "../../refactorings";
 import { moveStatementDown } from "./move-statement-down";
 
-const config: RefactoringConfig__DEPRECATED = {
+const config: RefactoringConfig = {
   command: {
     key: "moveStatementDown",
     operation: moveStatementDown

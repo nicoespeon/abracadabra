@@ -1,68 +1,69 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { moveStatementDown } from "./move-statement-down";
 
 describe("Move Statement Down", () => {
-  testEach<{
-    code: Code;
-    expected: Code;
-  }>(
-    "should move statement down",
-    [
-      {
-        description: "single-line statement",
-        code: `console.log("I'm up");
+  it("single-line statement", () => {
+    shouldMoveStatementDown({
+      code: `console.log("I'm up");
 console.log("I'm down");`,
-        expected: `console.log("I'm down");
+      expected: `console.log("I'm down");
 [cursor]console.log("I'm up");`
-      },
-      {
-        description: "single-line statement moved below multi-lines statement",
-        code: `console.log("I'm up");
+    });
+  });
+
+  it("single-line statement moved below multi-lines statement", () => {
+    shouldMoveStatementDown({
+      code: `console.log("I'm up");
 
 if (isValid) {
   console.log("I'm down");
 }`,
-        expected: `if (isValid) {
+      expected: `if (isValid) {
   console.log("I'm down");
 }
 
 [cursor]console.log("I'm up");`
-      },
-      {
-        description: "multi-lines statement",
-        code: `if (isValid) {
+    });
+  });
+
+  it("multi-lines statement", () => {
+    shouldMoveStatementDown({
+      code: `if (isValid) {
   console.log("I'm up");
 }
 
 console.log("I'm down");`,
-        expected: `console.log("I'm down");
+      expected: `console.log("I'm down");
 
 [cursor]if (isValid) {
   console.log("I'm up");
 }`
-      },
-      {
-        description: "multi-lines statement moved below multi-lines statement",
-        code: `if (isValid) {
+    });
+  });
+
+  it("multi-lines statement moved below multi-lines statement", () => {
+    shouldMoveStatementDown({
+      code: `if (isValid) {
   console.log("I'm up");
 }
 
 function saySomething() {
   console.log("I'm down");
 }`,
-        expected: `function saySomething() {
+      expected: `function saySomething() {
   console.log("I'm down");
 }
 
 [cursor]if (isValid) {
   console.log("I'm up");
 }`
-      },
-      {
-        description: "statement inside a container",
-        code: `function doSomethingElse() {
+    });
+  });
+
+  it("statement inside a container", () => {
+    shouldMoveStatementDown({
+      code: `function doSomethingElse() {
   [cursor]const a = 1;
   const b = 2;
 
@@ -73,7 +74,7 @@ function saySomething() {
 }
 
 const hello = "world";`,
-        expected: `function doSomethingElse() {
+      expected: `function doSomethingElse() {
   const b = 2;
   [cursor]const a = 1;
 
@@ -84,10 +85,12 @@ const hello = "world";`,
 }
 
 const hello = "world";`
-      },
-      {
-        description: "statement inside a container, cursor at start of line",
-        code: `function doSomethingElse() {
+    });
+  });
+
+  it("statement inside a container, cursor at start of line", () => {
+    shouldMoveStatementDown({
+      code: `function doSomethingElse() {
 [cursor]  const a = 1;
   const b = 2;
 
@@ -98,7 +101,7 @@ const hello = "world";`
 }
 
 const hello = "world";`,
-        expected: `function doSomethingElse() {
+      expected: `function doSomethingElse() {
   const b = 2;
 [cursor]  const a = 1;
 
@@ -109,66 +112,75 @@ const hello = "world";`,
 }
 
 const hello = "world";`
-      },
-      {
-        description: "statement below is a function, without space in-between",
-        code: `console.log("First");
+    });
+  });
+
+  it("statement below is a function, without space in-between", () => {
+    shouldMoveStatementDown({
+      code: `console.log("First");
 function doSomething() {
   console.log("Second");
 }`,
-        expected: `function doSomething() {
+      expected: `function doSomething() {
   console.log("Second");
 }
 
 [cursor]console.log("First");`
-      },
-      {
-        description: "statement below is a function, with space in-between",
-        code: `console.log("First");
+    });
+  });
+
+  it("statement below is a function, with space in-between", () => {
+    shouldMoveStatementDown({
+      code: `console.log("First");
 
 function doSomething() {
   console.log("Second");
 }`,
-        expected: `function doSomething() {
+      expected: `function doSomething() {
   console.log("Second");
 }
 
 [cursor]console.log("First");`
-      },
-      {
-        description:
-          "statement below is a function, without space in-between + statement above",
-        code: `console.log("First");
+    });
+  });
+
+  it("statement below is a function, without space in-between + statement above", () => {
+    shouldMoveStatementDown({
+      code: `console.log("First");
 [cursor]console.log("Second");
 function doSomething() {
   console.log("Third");
 }`,
-        expected: `console.log("First");
+      expected: `console.log("First");
 
 function doSomething() {
   console.log("Third");
 }
 
 [cursor]console.log("Second");`
-      },
-      {
-        description: "array elements",
-        code: `const data = [
+    });
+  });
+
+  it("array elements", () => {
+    shouldMoveStatementDown({
+      code: `const data = [
   [cursor]"foo",
   "bar",
   "baz"
 ];
 console.log("Should not move");`,
-        expected: `const data = [
+      expected: `const data = [
   "bar",
   [cursor]"foo",
   "baz"
 ];
 console.log("Should not move");`
-      },
-      {
-        description: "objects in an array",
-        code: `console.log("Should not move");
+    });
+  });
+
+  it("objects in an array", () => {
+    shouldMoveStatementDown({
+      code: `console.log("Should not move");
 const data = [
   [cursor]{
     foo: "foo"
@@ -180,7 +192,7 @@ const data = [
     baz: "baz"
   }
 ];`,
-        expected: `console.log("Should not move");
+      expected: `console.log("Should not move");
 const data = [
   {
     bar: "bar"
@@ -192,105 +204,123 @@ const data = [
     baz: "baz"
   }
 ];`
-      },
-      {
-        description: "array elements, one-liner",
-        code: `const data = [[cursor]"foo", "bar", "baz"];
+    });
+  });
+
+  it("array elements, one-liner", () => {
+    shouldMoveStatementDown({
+      code: `const data = [[cursor]"foo", "bar", "baz"];
 console.log("Should move in this scenario");`,
-        expected: `console.log("Should move in this scenario");
+      expected: `console.log("Should move in this scenario");
 const data = [[cursor]"foo", "bar", "baz"];`
-      },
-      {
-        description: "object properties",
-        code: `const data = {
+    });
+  });
+
+  it("object properties", () => {
+    shouldMoveStatementDown({
+      code: `const data = {
   [cursor]foo: "foo",
   bar: "bar",
   baz: "baz"
 };
 console.log("Should not move");`,
-        expected: `const data = {
+      expected: `const data = {
   bar: "bar",
   [cursor]foo: "foo",
   baz: "baz"
 };
 console.log("Should not move");`
-      },
-      {
-        description: "object properties, cursor on closing bracket",
-        code: `const data = {[cursor]
+    });
+  });
+
+  it("object properties, cursor on closing bracket", () => {
+    shouldMoveStatementDown({
+      code: `const data = {[cursor]
   foo: "foo",
   bar: "bar",
   baz: "baz"
 };
 console.log("Should move");`,
-        expected: `console.log("Should move");
+      expected: `console.log("Should move");
 const data = {[cursor]
   foo: "foo",
   bar: "bar",
   baz: "baz"
 };`
-      },
-      {
-        description: "object properties, one-liner, cursor on first",
-        code: `const data = { f[cursor]oo: "foo", bar: "bar" };
+    });
+  });
+
+  it("object properties, one-liner, cursor on first", () => {
+    shouldMoveStatementDown({
+      code: `const data = { f[cursor]oo: "foo", bar: "bar" };
 console.log("Should move in this scenario");`,
-        expected: `console.log("Should move in this scenario");
+      expected: `console.log("Should move in this scenario");
 const data = { f[cursor]oo: "foo", bar: "bar" };`
-      },
-      {
-        description: "object properties, one-liner, cursor on second",
-        code: `const data = { foo: "foo", b[cursor]ar: "bar" };
+    });
+  });
+
+  it("object properties, one-liner, cursor on second", () => {
+    shouldMoveStatementDown({
+      code: `const data = { foo: "foo", b[cursor]ar: "bar" };
 console.log("Should move in this scenario");`,
-        expected: `console.log("Should move in this scenario");
+      expected: `console.log("Should move in this scenario");
 const data = { foo: "foo", b[cursor]ar: "bar" };`
-      },
-      {
-        description: "object properties, cursor after comma",
-        code: `const data = {
+    });
+  });
+
+  it("object properties, cursor after comma", () => {
+    shouldMoveStatementDown({
+      code: `const data = {
   foo: "foo",[cursor]
   bar: "bar",
   baz: "baz"
 };
 console.log("Should not move");`,
-        expected: `const data = {
+      expected: `const data = {
   bar: "bar",
   foo: "foo",[cursor]
   baz: "baz"
 };
 console.log("Should not move");`
-      },
-      {
-        description: "object property, respecting trailing commas",
-        code: `const data = {
+    });
+  });
+
+  it("object property, respecting trailing commas", () => {
+    shouldMoveStatementDown({
+      code: `const data = {
   foo: "foo",
   [cursor]bar: "bar",
   baz: "baz"
 };`,
-        expected: `const data = {
+      expected: `const data = {
   foo: "foo",
   baz: "baz",
   [cursor]bar: "bar"
 };`
-      },
-      {
-        description: "object method",
-        code: `const data = {
+    });
+  });
+
+  it("object method", () => {
+    shouldMoveStatementDown({
+      code: `const data = {
   [cursor]foo() {
     return "foo";
   },
   bar: "bar"
 };`,
-        expected: `const data = {
+      expected: `const data = {
   bar: "bar",
 
   [cursor]foo() {
     return "foo";
   }
 };`
-      },
-      {
-        description: "class method",
-        code: `class Node {
+    });
+  });
+
+  it("class method", () => {
+    shouldMoveStatementDown({
+      code: `class Node {
   [cursor]getName() {
     return "foo";
   }
@@ -299,7 +329,7 @@ console.log("Should not move");`
     return 1;
   }
 }`,
-        expected: `class Node {
+      expected: `class Node {
   getSize() {
     return 1;
   }
@@ -308,27 +338,31 @@ console.log("Should not move");`
     return "foo";
   }
 }`
-      },
-      {
-        description: "class property",
-        code: `class Node {
+    });
+  });
+
+  it("class property", () => {
+    shouldMoveStatementDown({
+      code: `class Node {
   [cursor]name = "foo"
 
   getSize() {
     return 1;
   }
 }`,
-        expected: `class Node {
+      expected: `class Node {
   getSize() {
     return 1;
   }
 
   [cursor]name = "foo";
 }`
-      },
-      {
-        description: "class method without space between methods",
-        code: `class Node {
+    });
+  });
+
+  it("class method without space between methods", () => {
+    shouldMoveStatementDown({
+      code: `class Node {
   [cursor]getName() {
     return "foo";
   }
@@ -336,7 +370,7 @@ console.log("Should not move");`
     return 1;
   }
 }`,
-        expected: `class Node {
+      expected: `class Node {
   getSize() {
     return 1;
   }
@@ -344,10 +378,12 @@ console.log("Should not move");`
     return "foo";
   }
 }`
-      },
-      {
-        description: "object method without space between methods",
-        code: `const node = {
+    });
+  });
+
+  it("object method without space between methods", () => {
+    shouldMoveStatementDown({
+      code: `const node = {
   [cursor]getName() {
     return "foo";
   },
@@ -355,7 +391,7 @@ console.log("Should not move");`
     return 1;
   }
 }`,
-        expected: `const node = {
+      expected: `const node = {
   getSize() {
     return 1;
   },
@@ -363,10 +399,12 @@ console.log("Should not move");`
     return "foo";
   }
 }`
-      },
-      {
-        description: "three functions with comments",
-        code: `// Helpers
+    });
+  });
+
+  it("three functions with comments", () => {
+    shouldMoveStatementDown({
+      code: `// Helpers
 // And stuff…
 [cursor]function sayHello() {
   console.log("Hello")
@@ -383,7 +421,7 @@ function sayBye() {
 function sayByeBye() {
   console.log("ByeBye")
 }`,
-        expected: `/**
+      expected: `/**
  * Say bye to people
  */
 // Farewell, friends
@@ -400,40 +438,46 @@ function sayBye() {
 function sayByeBye() {
   console.log("ByeBye")
 }`
-      },
-      {
-        description: "JSX statements",
-        code: `function App() {
+    });
+  });
+
+  it("JSX statements", () => {
+    shouldMoveStatementDown({
+      code: `function App() {
   return <>
     [cursor]<p>How are you?</p>
     <h1>Hello!</h1>
   </>;
 }`,
-        expected: `function App() {
+      expected: `function App() {
   return <>
     <h1>Hello!</h1>
     [cursor]<p>How are you?</p>
   </>;
 }`
-      },
-      {
-        description: "JSX expressions",
-        code: `function App() {
+    });
+  });
+
+  it("JSX expressions", () => {
+    shouldMoveStatementDown({
+      code: `function App() {
   return <>
     [cursor]{howAreYou}
     <h1>Hello!</h1>
   </>;
 }`,
-        expected: `function App() {
+      expected: `function App() {
   return <>
     <h1>Hello!</h1>
     [cursor]{howAreYou}
   </>;
 }`
-      },
-      {
-        description: "JSX attributes",
-        code: `const Component = (...inputProps) => (
+    });
+  });
+
+  it("JSX attributes", () => {
+    shouldMoveStatementDown({
+      code: `const Component = (...inputProps) => (
   <input
     [cursor]tw="w-full py-1 text-lg border border-none rounded"
     css={{
@@ -442,7 +486,7 @@ function sayByeBye() {
     }}
   />
 )`,
-        expected: `const Component = (...inputProps) => (
+      expected: `const Component = (...inputProps) => (
   <input
     css={{
       color: darkred,
@@ -451,32 +495,22 @@ function sayByeBye() {
     [cursor]tw="w-full py-1 text-lg border border-none rounded"
   />
 )`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await moveStatementDown(editor);
-
-      const { code: expectedCode, position: expectedPosition } =
-        new InMemoryEditor(expected);
-      expect(editor.code).toBe(expectedCode);
-      expect(editor.position).toStrictEqual(expectedPosition);
-    }
-  );
+    });
+  });
 
   it("should do nothing, nor show an error message if selected statement is at the bottom of the file", async () => {
     const code = `console.log(
   "nothing below this statement"
 )`;
     const editor = new InMemoryEditor(code);
-    const originalCode = editor.code;
-    jest.spyOn(editor, "showError");
 
-    await moveStatementDown(editor);
+    const result = moveStatementDown({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    expect(editor.code).toBe(originalCode);
-    expect(editor.showError).not.toHaveBeenCalled();
+    expect(result.action).toBe("do nothing");
   });
 
   it("should not move the parent node if the selected child node can't be moved", async () => {
@@ -496,11 +530,14 @@ class Path {
   }
 }`;
     const editor = new InMemoryEditor(code);
-    const originalCode = editor.code;
 
-    await moveStatementDown(editor);
+    const result = moveStatementDown({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    expect(editor.code).toBe(originalCode);
+    expect(result.action).toBe("do nothing");
   });
 
   it("should show an error message for multi-lines selections", async () => {
@@ -508,12 +545,37 @@ class Path {
 [start]console.log("Second");
 [end]console.log("Third")`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
 
-    await moveStatementDown(editor);
+    const result = moveStatementDown({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.CantMoveMultiLinesStatementDown
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldMoveStatementDown({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+
+  const result = moveStatementDown({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  const { code: expectedCode, selection: expectedSelection } =
+    new InMemoryEditor(expected);
+  expect(result).toEqual({
+    action: "write",
+    code: expectedCode,
+    newCursorPosition: expectedSelection.start
+  });
+}
