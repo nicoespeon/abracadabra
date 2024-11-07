@@ -35,8 +35,6 @@ export enum ErrorReason {
   DidNotFindIfStatementsToMerge,
   DidNotFindDeclarationToSplit,
   DidNotFindStringToConvert,
-  CantMoveStatementUp,
-  CantMoveMultiLinesStatementUp,
   CantMoveStatementDown,
   CantMoveMultiLinesStatementDown,
   CantInlineExportedVariables,
@@ -158,12 +156,6 @@ export function toString(reason: ErrorReason): string {
 
     case ErrorReason.DidNotFindStringToConvert:
       return didNotFind("a string to convert into template literal");
-
-    case ErrorReason.CantMoveStatementUp:
-      return cantDoIt("move this statement up");
-
-    case ErrorReason.CantMoveMultiLinesStatementUp:
-      return cantDoIt("move up a multi-lines selection yet");
 
     case ErrorReason.CantMoveStatementDown:
       return cantDoIt("move this statement down");
