@@ -3676,7 +3676,6 @@ __metadata:
     chai: "npm:4.3.10"
     esbuild: "npm:0.24.0"
     eslint: "npm:9.9.1"
-    eslint-config-prettier: "npm:9.1.0"
     glob: "npm:11.0.0"
     globals: "npm:15.12.0"
     husky: "npm:9.0.11"
@@ -5975,17 +5974,6 @@ __metadata:
     escodegen: bin/escodegen.js
     esgenerate: bin/esgenerate.js
   checksum: 10c0/7d9834841db85d7cce2026c18da56c803564ca18bd6c1e81934cc08329ac4d366fac8b571e8708a81e21143f3dada56a4e34c9a9904c8b066f13abe8d9869871
-  languageName: node
-  linkType: hard
-
-"eslint-config-prettier@npm:9.1.0":
-  version: 9.1.0
-  resolution: "eslint-config-prettier@npm:9.1.0"
-  peerDependencies:
-    eslint: ">=7.0.0"
-  bin:
-    eslint-config-prettier: bin/cli.js
-  checksum: 10c0/6d332694b36bc9ac6fdb18d3ca2f6ac42afa2ad61f0493e89226950a7091e38981b66bac2b47ba39d15b73fff2cd32c78b850a9cf9eed9ca9a96bfb2f3a2f10d
   languageName: node
   linkType: hard
 
