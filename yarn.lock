@@ -3345,10 +3345,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.93.0":
-  version: 1.93.0
-  resolution: "@types/vscode@npm:1.93.0"
-  checksum: 10c0/5b62f6a333e21ba1687b93270489dcaf84a7474085b1bc440431508ff3bd0aebadd238812ddaa7e66a95417bb8d01c7b7ce5b6d8968bda5ac8f2fc7919366f9f
+"@types/vscode@npm:1.95.0":
+  version: 1.95.0
+  resolution: "@types/vscode@npm:1.95.0"
+  checksum: 10c0/4ecfa717b6ea33b2dba267b3cc10383e75c2f787f753af3a6565675b3e2c86f810f36edb699a0516fbfd1afb524209c0a4bad9d2a6e0234274031a24c1910c98
   languageName: node
   linkType: hard
 
@@ -3669,14 +3669,13 @@ __metadata:
     "@types/node": "npm:22.7.4"
     "@types/pluralize": "npm:0.0.33"
     "@types/sinon": "npm:17.0.2"
-    "@types/vscode": "npm:1.93.0"
+    "@types/vscode": "npm:1.95.0"
     "@vscode/test-electron": "npm:2.4.1"
     all-contributors-cli: "npm:6.26.1"
     babel-jest: "npm:29.7.0"
     chai: "npm:4.3.10"
     esbuild: "npm:0.24.0"
     eslint: "npm:9.9.1"
-    eslint-config-prettier: "npm:9.1.0"
     glob: "npm:11.0.0"
     globals: "npm:15.12.0"
     husky: "npm:9.0.11"
@@ -5975,17 +5974,6 @@ __metadata:
     escodegen: bin/escodegen.js
     esgenerate: bin/esgenerate.js
   checksum: 10c0/7d9834841db85d7cce2026c18da56c803564ca18bd6c1e81934cc08329ac4d366fac8b571e8708a81e21143f3dada56a4e34c9a9904c8b066f13abe8d9869871
-  languageName: node
-  linkType: hard
-
-"eslint-config-prettier@npm:9.1.0":
-  version: 9.1.0
-  resolution: "eslint-config-prettier@npm:9.1.0"
-  peerDependencies:
-    eslint: ">=7.0.0"
-  bin:
-    eslint-config-prettier: bin/cli.js
-  checksum: 10c0/6d332694b36bc9ac6fdb18d3ca2f6ac42afa2ad61f0493e89226950a7091e38981b66bac2b47ba39d15b73fff2cd32c78b850a9cf9eed9ca9a96bfb2f3a2f10d
   languageName: node
   linkType: hard
 
