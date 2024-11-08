@@ -13,7 +13,7 @@ export function createChangeSignatureWebviewTemplate(
     `;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const changeSignatureTemplate = require("./change-signature.html");
 
   return changeSignatureTemplate.replace(
