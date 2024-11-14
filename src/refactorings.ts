@@ -93,7 +93,7 @@ export const COMMANDS = {
     action: "show error",
     reason: `I didn't find ${element} from current selection 🤔`
   }),
-  showErrorCantDo: (action: string): EditorCommand => ({
+  showErrorICant: (action: string): EditorCommand => ({
     action: "show error",
     reason: `I'm sorry, I can't ${action} 😅`
   }),

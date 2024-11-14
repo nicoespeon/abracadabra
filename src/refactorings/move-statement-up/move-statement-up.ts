@@ -10,7 +10,7 @@ export function moveStatementUp(state: RefactoringState): EditorCommand {
   if (selection.isMultiLines) {
     // This should be implemented.
     // But it requires collecting all statements to move up to update the AST.
-    return COMMANDS.showErrorCantDo("move up a multi-lines selection yet");
+    return COMMANDS.showErrorICant("move up a multi-lines selection yet");
   }
 
   const updatedCode = updateCode(code, selection);
@@ -19,7 +19,7 @@ export function moveStatementUp(state: RefactoringState): EditorCommand {
     // Don't bother the user with an error message for this.
     if (updatedCode.isFirstStatement) return COMMANDS.doNothing();
 
-    return COMMANDS.showErrorCantDo("move this statement up");
+    return COMMANDS.showErrorICant("move this statement up");
   }
 
   return COMMANDS.write(updatedCode.code, updatedCode.newStatementPosition);
