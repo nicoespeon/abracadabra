@@ -76,6 +76,49 @@ describe("Execute Refactoring", () => {
     });
   });
 
+  it("should make the editor return the code at given selection, then execute modifications for 'read then write'", async () => {
+    const editor = new InMemoryEditor("const hello = [start]'world'[end]");
+    const fakeRefactoring: Refactoring = () => ({
+      action: "read then write",
+      readSelection: editor.selection,
+      getModifications: (readCode) => [
+        {
+          code: `let world = ${readCode};`,
+          selection: Selection.fromPositions(
+            new Position(0, 0),
+            new Position(0, 21)
+          )
+        },
+        {
+          code: `\nconst anotherOne = ${readCode};`,
+          selection: Selection.cursorAt(0, 21)
+        }
+      ]
+    });
+
+    await executeRefactoring(fakeRefactoring, editor);
+
+    expect(editor.code).toBe(`let world = 'world';
+const anotherOne = 'world';`);
+  });
+
+  it("should put cursor at given position for 'read then write'", async () => {
+    const editor = new InMemoryEditor("const hello = [start]'world'[end]");
+    const fakeRefactoring: Refactoring = () => ({
+      action: "read then write",
+      readSelection: editor.selection,
+      getModifications: () => [],
+      newCursorPosition: new Position(0, 5)
+    });
+    expect(editor.selection).toEqual(
+      Selection.fromPositions(new Position(0, 14), new Position(0, 21))
+    );
+
+    await executeRefactoring(fakeRefactoring, editor);
+
+    expect(editor.selection).toEqual(Selection.cursorAt(0, 5));
+  });
+
   it("should delegate given command to the editor for 'delegate'", async () => {
     const fakeRefactoring: Refactoring = () => ({
       action: "delegate",

@@ -1,5 +1,5 @@
 import { NodePath, Visitor } from "./ast";
-import { Code, Command, Editor } from "./editor/editor";
+import { Code, Command, Editor, Modification } from "./editor/editor";
 import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
 
@@ -81,6 +81,12 @@ export type EditorCommand = (
   | { action: "do nothing" }
   | { action: "show error"; reason: string }
   | { action: "write"; code: Code; newCursorPosition?: Position }
+  | {
+      action: "read then write";
+      readSelection: Selection;
+      getModifications: (code: Code) => Modification[];
+      newCursorPosition?: Position;
+    }
   | { action: "delegate"; command: Command }
   | { action: "ask user"; value?: string }
 ) &
@@ -107,6 +113,16 @@ export const COMMANDS = {
     code,
     newCursorPosition,
     ...options
+  }),
+  readThenWrite: (
+    readSelection: Selection,
+    getModifications: (code: Code) => Modification[],
+    newCursorPosition?: Position
+  ): EditorCommand => ({
+    action: "read then write",
+    readSelection,
+    getModifications,
+    newCursorPosition
   }),
   delegate: (command: Command): EditorCommand => ({
     action: "delegate",
@@ -137,6 +153,15 @@ export async function executeRefactoring(
     case "write":
       await editor.write(result.code, result.newCursorPosition);
       break;
+
+    case "read then write": {
+      await editor.readThenWrite(
+        result.readSelection,
+        result.getModifications,
+        result.newCursorPosition
+      );
+      break;
+    }
 
     case "delegate": {
       const delegateResult = await editor.delegate(result.command);
