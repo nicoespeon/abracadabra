@@ -13,29 +13,102 @@ export function moveStatementUp(state: RefactoringState): EditorCommand {
     return COMMANDS.showErrorICant("move up a multi-lines selection yet");
   }
 
-  const updatedCode = updateCode(code, selection);
+  const result = findStatement(code, selection);
 
-  if (!updatedCode.hasCodeChanged) {
-    // Don't bother the user with an error message for this.
-    if (updatedCode.isFirstStatement) return COMMANDS.doNothing();
-
+  if (result.status === "not found") {
     return COMMANDS.showErrorICant("move this statement up");
   }
 
-  return COMMANDS.write(updatedCode.code, updatedCode.newStatementPosition);
+  if (result.status === "first statement") {
+    return COMMANDS.doNothing();
+  }
+
+  const newLinesCountBetweenStatements =
+    result.selection.start.line - result.previousStatementSelection.end.line;
+
+  const areOnSameLine = result.selection.isSameLineThan(
+    result.previousStatementSelection
+  );
+
+  return COMMANDS.readThenWrite(
+    result.selection,
+    (code) => {
+      const shouldSwapTrailingComma =
+        result.shouldSwapTrailingComma && !code.endsWith(",");
+
+      const indentation =
+        newLinesCountBetweenStatements > 0
+          ? "\n".repeat(newLinesCountBetweenStatements) + result.indentation
+          : areOnSameLine
+            ? " "
+            : "";
+
+      const insertSelectedStatementAbove = {
+        code: code + (shouldSwapTrailingComma ? "," : "") + indentation,
+        selection: Selection.cursorAtPosition(
+          result.previousStatementSelection.start
+        )
+      };
+
+      const statementToRemoveSelection =
+        newLinesCountBetweenStatements > 0
+          ? Selection.fromPositions(
+              result.selection.start
+                .removeLines(newLinesCountBetweenStatements)
+                .putAtEndOfLine(),
+              result.selection.end
+            )
+          : areOnSameLine
+            ? Selection.fromPositions(
+                result.selection.start,
+                result.selection.end.addCharacters(1)
+              )
+            : Selection.fromPositions(
+                result.selection.start,
+                result.selection.end
+              );
+      const removeSelectedStatementFromBelow = {
+        code: "",
+        selection: statementToRemoveSelection
+      };
+
+      const maybeRemoveTrailingComma = shouldSwapTrailingComma
+        ? [
+            {
+              code: "",
+              selection: Selection.fromPositions(
+                result.previousStatementSelection.end,
+                result.previousStatementSelection.end.addCharacters(1)
+              )
+            }
+          ]
+        : [];
+
+      return [
+        insertSelectedStatementAbove,
+        removeSelectedStatementFromBelow
+      ].concat(maybeRemoveTrailingComma);
+    },
+    areOnSameLine
+      ? result.previousStatementSelection.start
+      : result.newCursorPosition
+  );
 }
 
-function updateCode(
-  code: Code,
-  selection: Selection
-): t.Transformed & {
-  isFirstStatement: boolean;
-  newStatementPosition: Position;
-} {
-  let isFirstStatement = false;
-  let newStatementPosition = selection.start;
+function findStatement(code: Code, selection: Selection) {
+  let result = { status: "not found" } as
+    | {
+        status: "found";
+        selection: Selection;
+        previousStatementSelection: Selection;
+        indentation: string;
+        shouldSwapTrailingComma: boolean;
+        newCursorPosition: Position;
+      }
+    | { status: "not found" }
+    | { status: "first statement" };
 
-  const result = t.transform(code, {
+  t.parseAndTraverseCode(code, {
     Statement: visitPath,
     ObjectExpression: visitPath,
     ObjectProperty: visitPath,
@@ -49,71 +122,103 @@ function updateCode(
     JSXExpressionContainer: visitPath
   });
 
-  return { ...result, isFirstStatement, newStatementPosition };
+  return result;
 
   function visitPath(path: t.NodePath) {
     if (!matchesSelection(path, selection)) return;
+    if (!t.isSelectableNode(path.node)) return;
     // Since we visit nodes from parent to children, first check
     // if a child would match the selection closer.
     if (hasChildWhichMatchesSelection(path, selection)) return;
     if (typeof path.key !== "number") return;
+    if (!path.container) return;
 
     if (path.key === 0) {
-      isFirstStatement = true;
+      result = { status: "first statement" };
       return;
     }
 
     let pathAbove = getSelectablePathAbove(path);
-
     if (pathAbove?.isJSXText()) {
       if (pathAbove.node.value.trim() === "") {
         pathAbove = getSelectablePathAbove(path, path.key - 1);
       }
     }
-
     if (!pathAbove) return;
 
-    newStatementPosition = Position.fromAST(
-      pathAbove.node.loc.start
-    ).putAtSameCharacter(selection.start);
+    const container = ([] as t.Node[]).concat(path.container);
+    const isLastStatement = path.key >= container.length - 1;
+    const nodeSelection = Selection.fromAST(path.node.loc);
+    const isOnSameLineThanParent =
+      t.isSelectableNode(path.parent) &&
+      Selection.fromAST(path.parent.loc).end.line <= nodeSelection.end.line;
+    const pathBelow = path.getSibling(path.key + 1);
+    const isOnSameLineThanPathBelow =
+      t.isSelectableNode(pathBelow.node) &&
+      Selection.fromAST(pathBelow.node.loc).start.line <=
+        nodeSelection.end.line;
+    const canExtendSelectionToEndOfLine =
+      !isOnSameLineThanParent && !isOnSameLineThanPathBelow;
 
-    // If `path` is an object method, recast creates new lines when moved.
-    // Adapt the new statement position accordingly.
-    if (path.isObjectMethod() && typeof path.key === "number") {
-      const extracted = path.getSibling(path.key - 1);
+    const statementSelectionWithoutComments = canExtendSelectionToEndOfLine
+      ? Selection.fromPositions(
+          nodeSelection.start,
+          nodeSelection.end
+        ).extendToEndOfLine()
+      : Selection.fromPositions(nodeSelection.start, nodeSelection.end);
+    const statementSelection = maybeExtendSelectionToComment(
+      path,
+      statementSelectionWithoutComments
+    );
 
-      if (
-        pathAbove.isObjectProperty() &&
-        !Position.hasSpaceBetweenPaths(path, extracted)
-      ) {
-        newStatementPosition = newStatementPosition.putAtNextLine();
-      }
-    }
+    const indentationLevel = statementSelection.start.character;
+    const indentationChar = t.isUsingTabs(pathAbove.node) ? "\t" : " ";
+    const indentation = indentationChar.repeat(indentationLevel);
 
-    if (hasComments(path)) {
-      path.node.leadingComments.forEach((comment) => {
-        if (!comment.loc) return;
-        const { height } = Selection.fromAST(comment.loc);
-        newStatementPosition = newStatementPosition.addLines(height + 1);
-      });
-    }
-
-    if (hasComments(pathAbove)) {
-      pathAbove.node.leadingComments.forEach((comment) => {
-        if (!comment.loc) return;
-        const { height } = Selection.fromAST(comment.loc);
-        newStatementPosition = newStatementPosition.removeLines(height + 1);
-      });
-    }
-
-    // Preserve the `loc` of the above path & reset the one of the moved node.
-    // Use `path.node` intead of `node` or TS won't build. I don't know why.
-    const newNodeAbove = { ...path.node, loc: pathAbove.node.loc };
-    const newNode = { ...pathAbove.node, loc: null };
-    pathAbove.replaceWith(newNodeAbove);
-    path.replaceWith(newNode);
+    result = {
+      status: "found",
+      previousStatementSelection: maybeExtendSelectionToComment(
+        pathAbove,
+        Selection.fromAST(pathAbove.node.loc)
+      ),
+      selection: statementSelection,
+      indentation,
+      shouldSwapTrailingComma:
+        (t.isObjectProperty(path.node) ||
+          t.isObjectMethod(path.node) ||
+          t.isObjectExpression(path.node)) &&
+        isLastStatement,
+      newCursorPosition: Position.fromAST(pathAbove.node.loc.start)
+        .putAtSameCharacter(selection.start)
+        .addLines(commentsHeight(path, statementSelectionWithoutComments))
+    };
     path.stop();
   }
+}
+
+function commentsHeight(path: t.NodePath, selection: Selection): number {
+  const firstCommentLoc = getNodeFirstCommentLoc(path);
+  if (!firstCommentLoc) return 0;
+
+  const height =
+    selection.start.line - Position.fromAST(firstCommentLoc.start).line - 1;
+  return Math.max(height, 0);
+}
+
+function maybeExtendSelectionToComment(
+  path: t.NodePath<t.Node>,
+  selection: Selection
+): Selection {
+  const firstCommentLoc = getNodeFirstCommentLoc(path);
+
+  return firstCommentLoc
+    ? selection.extendStartToStartOf(Selection.fromAST(firstCommentLoc))
+    : selection;
+}
+
+function getNodeFirstCommentLoc(path: t.NodePath<t.Node>) {
+  const commentLocs = path.node.leadingComments?.map((node) => node.loc) ?? [];
+  return commentLocs[0];
 }
 
 function getSelectablePathAbove(
@@ -129,12 +234,6 @@ function getSelectablePathAbove(
 
   const pathAbove = path.getSibling(pathAboveKey);
   return t.isSelectablePath(pathAbove) ? pathAbove : undefined;
-}
-
-function hasComments<T extends t.NodePath>(
-  path: T
-): path is T & { node: { leadingComments: t.Comment[] } } {
-  return !!path.node.leadingComments && path.node.leadingComments.length > 0;
 }
 
 function hasChildWhichMatchesSelection(

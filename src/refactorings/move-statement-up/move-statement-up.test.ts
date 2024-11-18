@@ -3,8 +3,8 @@ import { Code } from "../../editor/editor";
 import { moveStatementUp } from "./move-statement-up";
 
 describe("Move Statement Up", () => {
-  it("single-line statement", () => {
-    shouldMoveStatementUp({
+  it("single-line statement", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("I'm up");
 [cursor]console.log("I'm down");`,
       expected: `[cursor]console.log("I'm down");
@@ -12,8 +12,8 @@ console.log("I'm up");`
     });
   });
 
-  it("multi-lines statement", () => {
-    shouldMoveStatementUp({
+  it("multi-lines statement", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("I'm up");
 
 [cursor]if (isValid) {
@@ -27,8 +27,8 @@ console.log("I'm up");`
     });
   });
 
-  it("single-line statement moved above multi-lines statement", () => {
-    shouldMoveStatementUp({
+  it("single-line statement moved above multi-lines statement", async () => {
+    await shouldMoveStatementUp({
       code: `if (isValid) {
   console.log("I'm up");
 }
@@ -42,8 +42,8 @@ if (isValid) {
     });
   });
 
-  it("multi-lines statement moved above multi-lines statement", () => {
-    shouldMoveStatementUp({
+  it("multi-lines statement moved above multi-lines statement", async () => {
+    await shouldMoveStatementUp({
       code: `if (isValid) {
   console.log("I'm up");
 }
@@ -61,8 +61,8 @@ if (isValid) {
     });
   });
 
-  it("statement inside a container", () => {
-    shouldMoveStatementUp({
+  it("statement inside a container", async () => {
+    await shouldMoveStatementUp({
       code: `const hello = "world";
 
 function doSomethingElse() {
@@ -88,8 +88,8 @@ function doSomethingElse() {
     });
   });
 
-  it("statement inside a container, cursor on object property", () => {
-    shouldMoveStatementUp({
+  it("statement inside a container, cursor on object property", async () => {
+    await shouldMoveStatementUp({
       code: `const hello = "world";
 
 function doSomethingElse() {
@@ -115,8 +115,8 @@ function doSomethingElse() {
     });
   });
 
-  it("statement inside a container, cursor at start of line", () => {
-    shouldMoveStatementUp({
+  it("statement inside a container, cursor at start of line", async () => {
+    await shouldMoveStatementUp({
       code: `const hello = "world";
 
 function doSomethingElse() {
@@ -142,8 +142,8 @@ function doSomethingElse() {
     });
   });
 
-  it("array elements", () => {
-    shouldMoveStatementUp({
+  it("array elements", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should not move");
 const data = [
   "foo",
@@ -159,8 +159,8 @@ const data = [
     });
   });
 
-  it("objects in an array", () => {
-    shouldMoveStatementUp({
+  it("objects in an array", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should not move");
 const data = [
   {
@@ -188,8 +188,8 @@ const data = [
     });
   });
 
-  it("object properties", () => {
-    shouldMoveStatementUp({
+  it("object properties", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should not move");
 const data = {
   foo: "foo",
@@ -205,8 +205,8 @@ const data = {
     });
   });
 
-  it("array elements, one-liner", () => {
-    shouldMoveStatementUp({
+  it("array elements, one-liner", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should move in this scenario");
 const data = ["foo", [cursor]"bar", "baz"];`,
       expected: `const data = ["foo", [cursor]"bar", "baz"];
@@ -214,8 +214,8 @@ console.log("Should move in this scenario");`
     });
   });
 
-  it("object properties, one-liner", () => {
-    shouldMoveStatementUp({
+  it("object properties, one-liner", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should move in this scenario");
 const data = { f[cursor]oo: "foo", bar: "bar" };`,
       expected: `const data = { f[cursor]oo: "foo", bar: "bar" };
@@ -223,8 +223,8 @@ console.log("Should move in this scenario");`
     });
   });
 
-  it("object properties, one-liner, cursor on second", () => {
-    shouldMoveStatementUp({
+  it("object properties, one-liner, cursor on second", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should move in this scenario");
 const data = { foo: "foo", b[cursor]ar: "bar" };`,
       expected: `const data = { foo: "foo", b[cursor]ar: "bar" };
@@ -232,8 +232,8 @@ console.log("Should move in this scenario");`
     });
   });
 
-  it("object properties, cursor after comma", () => {
-    shouldMoveStatementUp({
+  it("object properties, cursor after comma", async () => {
+    await shouldMoveStatementUp({
       code: `console.log("Should not move");
 const data = {
   foo: "foo",
@@ -249,8 +249,8 @@ const data = {
     });
   });
 
-  it("object property, respecting trailing commas", () => {
-    shouldMoveStatementUp({
+  it("object property, respecting auto-trailing commas", async () => {
+    await shouldMoveStatementUp({
       code: `const data = {
   foo: "foo",
   bar: "bar",
@@ -264,8 +264,30 @@ const data = {
     });
   });
 
-  it("object method", () => {
-    shouldMoveStatementUp({
+  it("object property, respecting always-trailing commas", async () => {
+    await shouldMoveStatementUp({
+      code: `const data = {
+  foo: "foo",
+  bar: "bar",
+  [cursor]baz: "baz",
+};`,
+      expected: `const data = {
+  foo: "foo",
+  [cursor]baz: "baz",
+  bar: "bar",
+};`
+    });
+  });
+
+  it("object property, elements on the same line", async () => {
+    await shouldMoveStatementUp({
+      code: `const data = { foo: "foo", [cursor]bar: "bar" };`,
+      expected: `const data = { [cursor]bar: "bar", foo: "foo" };`
+    });
+  });
+
+  it("object method", async () => {
+    await shouldMoveStatementUp({
       code: `const data = {
   foo: "foo",
   baz: "baz",
@@ -275,18 +297,16 @@ const data = {
 };`,
       expected: `const data = {
   foo: "foo",
-
   [cursor]bar() {
     return "bar";
   },
-
   baz: "baz"
 };`
     });
   });
 
-  it("class method", () => {
-    shouldMoveStatementUp({
+  it("class method", async () => {
+    await shouldMoveStatementUp({
       code: `class Node {
   getName() {
     return "foo";
@@ -308,8 +328,8 @@ const data = {
     });
   });
 
-  it("class property", () => {
-    shouldMoveStatementUp({
+  it("class property", async () => {
+    await shouldMoveStatementUp({
       code: `class Node {
   name = "foo"
 
@@ -322,13 +342,13 @@ const data = {
     return 1;
   }
 
-  name = "foo";
+  name = "foo"
 }`
     });
   });
 
-  it("class method without space between methods", () => {
-    shouldMoveStatementUp({
+  it("class method without space between methods", async () => {
+    await shouldMoveStatementUp({
       code: `class Node {
   getName() {
     return "foo";
@@ -348,8 +368,8 @@ const data = {
     });
   });
 
-  it("object method without space between methods", () => {
-    shouldMoveStatementUp({
+  it("object method without space between methods", async () => {
+    await shouldMoveStatementUp({
       code: `const node = {
   getName() {
     return "foo";
@@ -369,8 +389,8 @@ const data = {
     });
   });
 
-  it("three functions, cursor on the middle one", () => {
-    shouldMoveStatementUp({
+  it("three functions, cursor on the middle one", async () => {
+    await shouldMoveStatementUp({
       code: `function sayHello() {
   console.log("Hello")
 }
@@ -396,8 +416,8 @@ function sayByeBye() {
     });
   });
 
-  it("three functions with comments", () => {
-    shouldMoveStatementUp({
+  it("three functions with comments", async () => {
+    await shouldMoveStatementUp({
       code: `// Helpers
 function sayHello() {
   console.log("Hello")
@@ -433,8 +453,8 @@ function sayByeBye() {
     });
   });
 
-  it("JSX statements", () => {
-    shouldMoveStatementUp({
+  it("JSX statements", async () => {
+    await shouldMoveStatementUp({
       code: `function App() {
   return <>
     <p>How are you?</p>
@@ -450,8 +470,8 @@ function sayByeBye() {
     });
   });
 
-  it("JSX expressions", () => {
-    shouldMoveStatementUp({
+  it("JSX expressions", async () => {
+    await shouldMoveStatementUp({
       code: `function App() {
   return <>
     <p>How are you?</p>
@@ -467,8 +487,8 @@ function sayByeBye() {
     });
   });
 
-  it("JSX attributes", () => {
-    shouldMoveStatementUp({
+  it("JSX attributes", async () => {
+    await shouldMoveStatementUp({
       code: `const Component = (...inputProps) => (
   <input
     css={{
@@ -565,7 +585,7 @@ class Path {
   });
 });
 
-function shouldMoveStatementUp({
+async function shouldMoveStatementUp({
   code,
   expected
 }: {
@@ -580,11 +600,16 @@ function shouldMoveStatementUp({
     selection: editor.selection
   });
 
+  if (result.action !== "read then write") {
+    return fail(`Expected 'read then write' action, but got ${result.action}`);
+  }
+  await editor.readThenWrite(
+    result.readSelection,
+    result.getModifications,
+    result.newCursorPosition
+  );
   const { code: expectedCode, selection: expectedSelection } =
     new InMemoryEditor(expected);
-  expect(result).toEqual({
-    action: "write",
-    code: expectedCode,
-    newCursorPosition: expectedSelection.start
-  });
+  expect(editor.code).toBe(expectedCode);
+  expect(editor.selection).toEqual(expectedSelection);
 }
