@@ -135,10 +135,13 @@ export class InMemoryEditor implements Editor {
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position
+    newCursorPosition?: Position | Selection
   ): Promise<void> {
     if (newCursorPosition) {
-      this._selection = Selection.cursorAtPosition(newCursorPosition);
+      this._selection =
+        newCursorPosition instanceof Position
+          ? Selection.cursorAtPosition(newCursorPosition)
+          : newCursorPosition;
     }
     const { start, end } = selection;
 

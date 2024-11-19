@@ -158,7 +158,7 @@ export class VSCodeEditor implements Editor {
   async readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position
+    newCursorPosition?: Position | Selection
   ): Promise<void> {
     const startPosition = toVSCodePosition(selection.start);
     const endPosition = toVSCodePosition(selection.end);
@@ -183,7 +183,11 @@ export class VSCodeEditor implements Editor {
     await vscode.workspace.applyEdit(edit);
 
     if (newCursorPosition) {
-      this.changeEditorSelection(toVSCodeCursor(newCursorPosition));
+      this.changeEditorSelection(
+        newCursorPosition instanceof Position
+          ? toVSCodeCursor(newCursorPosition)
+          : toVSCodeSelection(newCursorPosition)
+      );
     }
   }
 

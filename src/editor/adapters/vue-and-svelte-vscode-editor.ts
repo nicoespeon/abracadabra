@@ -49,7 +49,7 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
   async readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position
+    newCursorPosition?: Position | Selection
   ): Promise<void> {
     const getOffsetModifications = (code: Code) => {
       return getModifications(code).map(({ code, selection }) => ({
@@ -61,7 +61,10 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
     return super.readThenWrite(
       this.offsetSelection(selection),
       getOffsetModifications,
-      newCursorPosition && this.offsetPosition(newCursorPosition)
+      newCursorPosition &&
+        (newCursorPosition instanceof Position
+          ? this.offsetPosition(newCursorPosition)
+          : this.offsetSelection(newCursorPosition))
     );
   }
 

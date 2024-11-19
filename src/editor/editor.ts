@@ -18,7 +18,7 @@ export interface Editor {
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position
+    newCursorPosition?: Position | Selection
   ): Promise<void>;
   delegate(command: Command): Promise<Result>;
   showError(reason: ErrorReason | string): Promise<void>;

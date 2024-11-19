@@ -48,7 +48,7 @@ export class AttemptingEditor implements Editor {
   readThenWrite(
     selection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position
+    newCursorPosition?: Position | Selection
   ): Promise<void> {
     return this.editor.readThenWrite(
       selection,

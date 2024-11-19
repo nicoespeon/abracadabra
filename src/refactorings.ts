@@ -85,7 +85,7 @@ export type EditorCommand = (
       action: "read then write";
       readSelection: Selection;
       getModifications: (code: Code) => Modification[];
-      newCursorPosition?: Position;
+      newCursorPosition?: Position | Selection;
     }
   | { action: "delegate"; command: Command }
   | { action: "ask user"; value?: string }
@@ -117,7 +117,7 @@ export const COMMANDS = {
   readThenWrite: (
     readSelection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position
+    newCursorPosition?: Position | Selection
   ): EditorCommand => ({
     action: "read then write",
     readSelection,
