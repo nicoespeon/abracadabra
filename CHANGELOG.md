@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- "Move Statements" refactorings now preserve the original style better. They used to update the AST and regenerate the code from it, but that was messing up with formatting quite often. Now we use the AST to determine the code to swap, but read the exact code from the editor so that should preserve the original style!
+
 ## [9.4.8]
 
 ### Fixed
