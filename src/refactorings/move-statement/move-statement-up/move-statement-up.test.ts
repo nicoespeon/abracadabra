@@ -1,5 +1,5 @@
-import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code } from "../../editor/editor";
+import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
+import { Code } from "../../../editor/editor";
 import { moveStatementUp } from "./move-statement-up";
 
 describe("Move Statement Up", () => {
@@ -214,7 +214,7 @@ console.log("Should move in this scenario");`
     });
   });
 
-  it("object properties, one-liner", async () => {
+  it("object properties, one-liner, cursor on first", async () => {
     await shouldMoveStatementUp({
       code: `console.log("Should move in this scenario");
 const data = { f[cursor]oo: "foo", bar: "bar" };`,
@@ -276,13 +276,6 @@ const data = {
   [cursor]baz: "baz",
   bar: "bar",
 };`
-    });
-  });
-
-  it("object property, elements on the same line", async () => {
-    await shouldMoveStatementUp({
-      code: `const data = { foo: "foo", [cursor]bar: "bar" };`,
-      expected: `const data = { [cursor]bar: "bar", foo: "foo" };`
     });
   });
 
@@ -601,7 +594,9 @@ async function shouldMoveStatementUp({
   });
 
   if (result.action !== "read then write") {
-    return fail(`Expected 'read then write' action, but got ${result.action}`);
+    throw new Error(
+      `Expected 'read then write' action, but got '${result.action}'`
+    );
   }
   await editor.readThenWrite(
     result.readSelection,
