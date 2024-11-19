@@ -73,6 +73,27 @@ export class Selection {
     return this.start.isEqualTo(this.end);
   }
 
+  splitPerLine(): Selection[] {
+    if (!this.isMultiLines) return [this];
+
+    const result = [] as Selection[];
+
+    result.push(
+      Selection.fromPositions(this.start, this.start.putAtEndOfLine())
+    );
+    for (let i = this.start.line + 1; i < this.end.line; i++) {
+      result.push(
+        Selection.fromPositions(
+          new Position(i, 0).putAtStartOfLine(),
+          new Position(i, 0).putAtEndOfLine()
+        )
+      );
+    }
+    result.push(Selection.fromPositions(this.end.putAtStartOfLine(), this.end));
+
+    return result;
+  }
+
   extendToCode(code: Code): Selection {
     const codeMatrix = code.split("\n");
     const codeHeight = Math.max(codeMatrix.length - 1, 0);

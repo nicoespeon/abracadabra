@@ -1,3 +1,4 @@
+import { Position } from "./position";
 import { Selection } from "./selection";
 
 describe("Selection", () => {
@@ -279,6 +280,46 @@ describe("Selection", () => {
       const result = selection.overlapsWith(other);
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe("split per line", () => {
+    it("should return an entry per line covered with selection (2 lines)", () => {
+      const selection = new Selection([0, 10], [1, 2]);
+
+      const result = selection.splitPerLine();
+
+      expect(result).toEqual([
+        Selection.fromPositions(
+          new Position(0, 10),
+          new Position(0, 0).putAtEndOfLine()
+        ),
+        new Selection([1, 0], [1, 2])
+      ]);
+    });
+
+    it("should return an entry per line covered with selection (3+ lines)", () => {
+      const selection = new Selection([0, 10], [2, 2]);
+
+      const result = selection.splitPerLine();
+
+      expect(result).toEqual([
+        Selection.fromPositions(
+          new Position(0, 10),
+          new Position(0, 0).putAtEndOfLine()
+        ),
+        Selection.fromPositions(
+          new Position(1, 0),
+          new Position(1, 0).putAtEndOfLine()
+        ),
+        new Selection([2, 0], [2, 2])
+      ]);
+    });
+
+    it("should return given selection in a list if not multi-lines", () => {
+      const selection = new Selection([2, 12], [2, 24]);
+
+      expect(selection.splitPerLine()).toEqual([selection]);
     });
   });
 });
