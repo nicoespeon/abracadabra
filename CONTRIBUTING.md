@@ -112,17 +112,14 @@ There a few conventions that we'd like to keep consistent and are not automatica
 
 ### Structure of TS files
 
-We structure TS files like this:
+As a general rule, we prefer to have **what is exposed appear before what is private**. We like to read the high-level concepts before the implementation details. Like this:
 
 ```ts
-// 1. Imports from external libs
 import { parse } from "@babel/parser";
-
-// 2. Imports from local files
 import { Selection } from "./selection";
 import { Position } from "./position";
 
-// 3. Rest of the code, starting with high-level concepts
+// Starts with exported, high-level concepts
 export function statementWithBraces(node: t.Statement): t.Statement {
   return isBlockStatement(node) ? node : blockStatement([node]);
 }
@@ -130,8 +127,6 @@ export function statementWithBraces(node: t.Statement): t.Statement {
 function isBlockStatement() {}
 function blockStatement() {}
 ```
-
-As a general rule, we prefer to have **what is exposed appear before what is private**. We like to read the high-level concepts before the implementation details.
 
 ## Debug locally
 
