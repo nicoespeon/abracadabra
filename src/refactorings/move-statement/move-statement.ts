@@ -243,10 +243,7 @@ export function getSelectablePathBelow(
     : pathBelow;
 }
 
-export function attemptToMovePathStatementUp(
-  path: t.SelectablePath<t.Node>,
-  selection: Selection
-) {
+export function attemptToMovePathStatementUp(path: t.SelectablePath<t.Node>) {
   if (typeof path.key !== "number") return;
   if (!path.container) return;
 
@@ -289,14 +286,11 @@ export function attemptToMovePathStatementUp(
       (t.isObjectProperty(path.node) ||
         t.isObjectMethod(path.node) ||
         t.isObjectExpression(path.node)) &&
-      isLastStatement,
-    newCursorPosition: aboveStatementNoCommentSelection.start
-      .putAtSameCharacter(selection.start)
-      .addLines(commentsHeight(path, Selection.fromAST(path.node.loc)))
+      isLastStatement
   };
 }
 
-function commentsHeight(path: t.NodePath, selection: Selection): number {
+export function commentsHeight(path: t.NodePath, selection: Selection): number {
   const firstCommentLoc = getNodeFirstCommentLoc(path);
   if (!firstCommentLoc) return 0;
 

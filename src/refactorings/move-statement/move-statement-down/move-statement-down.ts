@@ -14,21 +14,21 @@ export function moveStatementDown(state: RefactoringState): EditorCommand {
       return { status: "out-of-bound statement" };
     }
 
-    const attemptResult = attemptToMovePathStatementUp(pathBelow, selection);
-    if (!attemptResult) return { status: "not found" };
+    const result = attemptToMovePathStatementUp(pathBelow);
+    if (!result) return { status: "not found" };
 
-    if (attemptResult === "first statement") {
+    if (result === "first statement") {
       return { status: "out-of-bound statement" };
     }
 
-    const statementSelection = Selection.fromAST(path.node.loc);
-    const nextStatementSelection = Selection.fromAST(pathBelow.node.loc);
+    const pathAboveSelection = Selection.fromAST(path.node.loc);
+    const pathBelowSelection = Selection.fromAST(pathBelow.node.loc);
     const statementsHeightDiff =
-      nextStatementSelection.height - statementSelection.height;
+      pathBelowSelection.height - pathAboveSelection.height;
 
     return {
       status: "found",
-      ...attemptResult,
+      ...result,
       newCursorPosition: Position.fromAST(pathBelow.node.loc.start)
         .putAtSameCharacter(selection.start)
         .addLines(statementsHeightDiff)
