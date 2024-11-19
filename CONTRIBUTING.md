@@ -108,6 +108,8 @@ You will also need to add the new refactoring to the lists in `package.json` and
 
 Style formatting is managed by [Prettier][prettier]. It runs as a pre-commit hook, so you shouldn't have to worry about it 👐
 
+We also run [ESLint](eslint) as a pre-commit hook with the `--fix` flag, meaning that it should take care of little things that can be auto-fixed. If it prevents you from committing, check the error message. It's likely that you have left something that requires your attention, like an unused statement.
+
 There a few conventions that we'd like to keep consistent and are not automatically enforced yet.
 
 ### Structure of TS files
@@ -192,6 +194,7 @@ That's it. [A GitHub Action](https://github.com/nicoespeon/abracadabra/actions) 
 
 [jest]: https://jestjs.io/
 [typescript]: https://www.typescriptlang.org/
+[eslint]: eslint.org
 [prettier]: https://prettier.io
 [ast-explorer]: https://astexplorer.net/
 [adrs-pattern]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
