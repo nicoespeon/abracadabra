@@ -25,19 +25,11 @@ export function createConfig(reportErrorsAs = "error") {
       languageOptions: {
         ecmaVersion: 13,
         sourceType: "module",
-        // parser: tseslint.parser,
-        // parserOptions: {
-        //   projectService: true,
-        //   tsconfigRootDir: import.meta.dirname
-        // },
         globals: {
           ...globals.node,
           ...globals.jest
         }
       },
-      //   plugins: {
-      //     "@typescript-eslint": tseslint.plugin
-      //   },
       rules: {
         eqeqeq: [errorLevel, "smart"],
         radix: errorLevel,
