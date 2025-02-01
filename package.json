@@ -102,7 +102,7 @@
     "pretty-quick": "4.0.0",
     "sinon": "19.0.2",
     "tsup": "8.1.0",
-    "typescript": "5.5.4",
+    "typescript": "5.7.3",
     "typescript-eslint": "8.13.0",
     "vsce": "2.15.0"
   },
