@@ -3820,7 +3820,7 @@ __metadata:
     esbuild: "npm:0.24.0"
     eslint: "npm:9.17.0"
     glob: "npm:11.0.0"
-    globals: "npm:15.12.0"
+    globals: "npm:15.14.0"
     husky: "npm:9.1.7"
     hygen: "npm:6.2.11"
     jest: "npm:29.7.0"
@@ -6901,10 +6901,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:15.12.0":
-  version: 15.12.0
-  resolution: "globals@npm:15.12.0"
-  checksum: 10c0/f34e0a1845b694f45188331742af9f488b07ba7440a06e9d2039fce0386fbbfc24afdbb9846ebdccd4092d03644e43081c49eb27b30f4b88e43af156e1c1dc34
+"globals@npm:15.14.0":
+  version: 15.14.0
+  resolution: "globals@npm:15.14.0"
+  checksum: 10c0/039deb8648bd373b7940c15df9f96ab7508fe92b31bbd39cbd1c1a740bd26db12457aa3e5d211553b234f30e9b1db2fee3683012f543a01a6942c9062857facb
   languageName: node
   linkType: hard
 
