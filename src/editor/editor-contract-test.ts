@@ -417,7 +417,7 @@ add(1, 2);
     // Path seems to be fixed by the test runner.
     // Not ideal but it works for now.
     const filePath = new AbsolutePath(
-      `${__dirname}/adapters/vscode-editor-tests/abracadabra-vscode-tests.ts`
+      `${__dirname}/vscode-editor-tests/abracadabra-vscode-tests.ts`
     );
     await editor.writeIn(filePath, code);
     const codeReferences = await editor.getSelectionReferences(

@@ -16,9 +16,14 @@ export async function run(): Promise<void> {
 
   files.forEach((file) => mocha.addFile(path.resolve(testsRoot, file)));
 
-  mocha.run((failures) => {
+  const runner = mocha.run((failures) => {
     if (failures > 0) {
       throw new Error(`${failures} tests failed.`);
     }
+  });
+
+  // Keep process alive until it's over
+  return new Promise((resolve) => {
+    runner.on("end", resolve);
   });
 }
