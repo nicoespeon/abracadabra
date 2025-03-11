@@ -109,7 +109,7 @@
   "dependencies": {
     "@babel/parser": "7.26.9",
     "@babel/traverse": "7.25.6",
-    "@babel/types": "7.20.7",
+    "@babel/types": "7.26.10",
     "minimatch": "10.0.1",
     "pluralize": "8.0.0",
     "recast": "0.23.9",
