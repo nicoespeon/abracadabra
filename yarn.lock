@@ -3770,9 +3770,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^3.1.0":
-  version: 3.1.1
-  resolution: "@vscode/vsce@npm:3.1.1"
+"@vscode/vsce@npm:^3.2.1":
+  version: 3.2.2
+  resolution: "@vscode/vsce@npm:3.2.2"
   dependencies:
     "@azure/identity": "npm:^4.1.0"
     "@vscode/vsce-sign": "npm:^2.0.0"
@@ -3780,7 +3780,7 @@ __metadata:
     chalk: "npm:^2.4.2"
     cheerio: "npm:^1.0.0-rc.9"
     cockatiel: "npm:^3.1.2"
-    commander: "npm:^6.2.1"
+    commander: "npm:^12.1.0"
     form-data: "npm:^4.0.0"
     glob: "npm:^11.0.0"
     hosted-git-info: "npm:^4.0.2"
@@ -3804,7 +3804,7 @@ __metadata:
       optional: true
   bin:
     vsce: vsce
-  checksum: 10c0/f583457bf1f7e51f0d79c45895e47f559dab1fcdc192e7053df96e6891743112ed4d0fa29830774ba04fabe55da7f262c1805fe35ceca93b04b965b2935c8e3e
+  checksum: 10c0/83dfa3701503757bdf26d2d5c941e779baf7376d073250b08e9fe68178260cd7ec68eea0ce4f4679a07ba42dbdb4c2e0d699ac266c7aa9187a10aed075e8c528
   languageName: node
   linkType: hard
 
@@ -3862,7 +3862,7 @@ __metadata:
     minimatch: "npm:10.0.1"
     mocha: "npm:10.7.0"
     node-stdlib-browser: "npm:1.3.0"
-    ovsx: "npm:0.9.5"
+    ovsx: "npm:0.10.1"
     pluralize: "npm:8.0.0"
     prettier: "npm:3.5.3"
     prettier-plugin-organize-imports: "npm:4.1.0"
@@ -5150,6 +5150,13 @@ __metadata:
   version: 2.17.1
   resolution: "commander@npm:2.17.1"
   checksum: 10c0/b10453ca205d5a794c5e639dbc54bf4eaec61a204d56693b8082e9000744df13a47840f7d10ae2fc6fc046e2d71bb7c67987dff5b77f862064e187cf88beac3f
+  languageName: node
+  linkType: hard
+
+"commander@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "commander@npm:12.1.0"
+  checksum: 10c0/6e1996680c083b3b897bfc1cfe1c58dfbcd9842fd43e1aaf8a795fbc237f65efcc860a3ef457b318e73f29a4f4a28f6403c3d653d021d960e4632dd45bde54a9
   languageName: node
   linkType: hard
 
@@ -9981,20 +9988,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ovsx@npm:0.9.5":
-  version: 0.9.5
-  resolution: "ovsx@npm:0.9.5"
+"ovsx@npm:0.10.1":
+  version: 0.10.1
+  resolution: "ovsx@npm:0.10.1"
   dependencies:
-    "@vscode/vsce": "npm:^3.1.0"
+    "@vscode/vsce": "npm:^3.2.1"
     commander: "npm:^6.2.1"
     follow-redirects: "npm:^1.14.6"
     is-ci: "npm:^2.0.0"
     leven: "npm:^3.1.0"
     semver: "npm:^7.6.0"
     tmp: "npm:^0.2.3"
+    yauzl: "npm:^3.1.3"
   bin:
     ovsx: lib/ovsx
-  checksum: 10c0/27b8522dc5c883dc41c3fd53839e37ed390ff26f95150ed32d28070206240f51bd3eb4a12ae3cd528ef7573418fc825ffb33ff703da5d178be28304ba241c37b
+  checksum: 10c0/23fbadbdc76cfbf53dfa7be7254f00b42cb3c3af58f30383362b34ae3f318c2df5f5015637310351d90d01b50bd3f3acb1e303de0587a6cb28f154e699257a4c
   languageName: node
   linkType: hard
 
@@ -13017,6 +13025,16 @@ __metadata:
     buffer-crc32: "npm:~0.2.3"
     fd-slicer: "npm:~1.1.0"
   checksum: 10c0/f265002af7541b9ec3589a27f5fb8f11cf348b53cc15e2751272e3c062cd73f3e715bc72d43257de71bbaecae446c3f1b14af7559e8ab0261625375541816422
+  languageName: node
+  linkType: hard
+
+"yauzl@npm:^3.1.3":
+  version: 3.2.0
+  resolution: "yauzl@npm:3.2.0"
+  dependencies:
+    buffer-crc32: "npm:~0.2.3"
+    pend: "npm:~1.2.0"
+  checksum: 10c0/7b40b3dc46b95761a2a764391d257a11f494d365875af73a1b48fe16d4bd103dd178612e60168d12a0e59a8ba4f6411a15a5e8871d5a5f78255d6cc1ce39ee62
   languageName: node
   linkType: hard
 
