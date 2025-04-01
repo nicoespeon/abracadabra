@@ -3530,12 +3530,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.10.3":
-  version: 22.10.3
-  resolution: "@types/node@npm:22.10.3"
+"@types/node@npm:22.13.16":
+  version: 22.13.16
+  resolution: "@types/node@npm:22.13.16"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/0471a73c8672c803b1f2b912c2c466d00a217186933e8ff38ec7779b4a3f88a0eea3b513a59f2abf9de17cc8bbca688a3c6643c6513ac8dd1c3e45d25fab93b1
+  checksum: 10c0/06a33975e0a55d84841e584544cf943cd31d1bea31152a1fd755391540f57059fee9257b3342ad6e424b316c67166df707087fcf6f95d95dd05a9cd9ccd7d99b
   languageName: node
   linkType: hard
 
@@ -3900,7 +3900,7 @@ __metadata:
     "@types/jest": "npm:29.5.14"
     "@types/jsdom": "npm:21.1.7"
     "@types/mocha": "npm:10.0.7"
-    "@types/node": "npm:22.10.3"
+    "@types/node": "npm:22.13.16"
     "@types/pluralize": "npm:0.0.33"
     "@types/sinon": "npm:17.0.2"
     "@types/vscode": "npm:1.93.0"
