@@ -9,7 +9,7 @@ import * as t from "../../ast";
 import { Selection } from "../../editor/selection";
 import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function <%= camelName %>(state: RefactoringState): EditorCommand {
+export function <%= camelName %>(state: RefactoringState): EditorCommand {
   const updatedCode = updateCode(t.parse(state.code), state.selection);
 
   if (!updatedCode.hasCodeChanged) {
