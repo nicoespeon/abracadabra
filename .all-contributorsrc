@@ -642,6 +642,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "zoodogood",
+      "name": "zoodogood",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52154209?v=4",
+      "profile": "https://github.com/zoodogood",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
