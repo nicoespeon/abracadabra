@@ -286,8 +286,10 @@ class InlinableIdentifier implements InlinableCode {
         ) {
           return;
         }
+
         if (
           t.isMemberExpression(parent.node) &&
+          !parent.node.computed &&
           parent.node.property === node
         ) {
           return;

@@ -329,6 +329,28 @@ const bar = async () => {
     }
   );
 
+  it("member expression property", async () => {
+    await shouldInlineVariable({
+      code: `const wor[cursor]ld = props.data.id;
+sayHelloTo(usersData[world]);`,
+      expected: `sayHelloTo(usersData[props.data.id]);`
+    });
+  });
+
+  async function shouldInlineVariable({
+    code,
+    expected
+  }: {
+    code: Code;
+    expected: Code;
+  }) {
+    const editor = new InMemoryEditor(code);
+
+    await inlineVariable(editor);
+
+    expect(editor.code).toBe(expected);
+  }
+
   describe("preserve parenthesis around inlined expression", () => {
     it("should do this for binary expressions", async () => {
       const code = `const someValue[cursor] = a + b
