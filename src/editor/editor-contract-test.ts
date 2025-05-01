@@ -1,5 +1,4 @@
-import { assert } from "chai";
-import { afterEach, suite, test } from "mocha";
+import { afterEach, before, suite, test } from "mocha";
 import * as sinon from "sinon";
 import { CodeReference } from "./code-reference";
 import { AbsolutePath, Code, Editor, RelativePath } from "./editor";
@@ -24,6 +23,14 @@ export function createEditorContractTests(
   createEditorOn: (code: Code, position?: Position) => Promise<Editor>,
   cleanUp: () => Promise<void> = async () => {}
 ) {
+  let assert: Chai.AssertStatic;
+
+  before(async function () {
+    // Dynamically import chai because it's ESM-only
+    const chai = await import("chai");
+    assert = chai.assert;
+  });
+
   afterEach(cleanUp);
 
   suite("write", () => {
