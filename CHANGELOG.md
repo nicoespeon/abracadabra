@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.9]
+
 ### Fixed
 
 - "Inline Variable" was not working for references that were computed, such as `aList[varToInline]`. These are resolved properly and correctly replaced now.
@@ -1998,7 +2000,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.8...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.9...HEAD
+[9.4.9]: https://github.com/nicoespeon/abracadabra/compare/9.4.8...9.4.9
 [9.4.8]: https://github.com/nicoespeon/abracadabra/compare/9.4.7...9.4.8
 [9.4.7]: https://github.com/nicoespeon/abracadabra/compare/9.4.6...9.4.7
 [9.4.6]: https://github.com/nicoespeon/abracadabra/compare/9.4.5...9.4.6
