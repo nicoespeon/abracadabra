@@ -320,13 +320,7 @@ const bar = async () => {
 };`
       }
     ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await inlineVariable(editor);
-
-      expect(editor.code).toBe(expected);
-    }
+    shouldInlineVariable
   );
 
   it("member expression property", async () => {
