@@ -262,25 +262,35 @@ if (startTime > 0) {
 }`
       }
     ],
-    async ({ code, expected, shouldPreserve }) => {
-      const editor = new InMemoryEditor(code);
-      jest
-        .spyOn(editor, "askUserChoice")
-        .mockImplementation(([destructure, preserve]) =>
-          Promise.resolve(shouldPreserve ? preserve : destructure)
-        );
-
-      await extractVariable(editor);
-
-      const { code: expectedCode, selection: expectedSelection } =
-        new InMemoryEditor(expected);
-
-      expect(editor.code).toBe(expectedCode);
-      if (!expectedSelection.isCursorAtTopOfDocument) {
-        expect(editor.selection).toStrictEqual(expectedSelection);
-      }
-    }
+    shouldExtractVariable
   );
+
+  async function shouldExtractVariable({
+    code,
+    expected,
+    shouldPreserve
+  }: {
+    code: Code;
+    expected: Code;
+    shouldPreserve?: boolean;
+  }) {
+    const editor = new InMemoryEditor(code);
+    jest
+      .spyOn(editor, "askUserChoice")
+      .mockImplementation(([destructure, preserve]) =>
+        Promise.resolve(shouldPreserve ? preserve : destructure)
+      );
+
+    await extractVariable(editor);
+
+    const { code: expectedCode, selection: expectedSelection } =
+      new InMemoryEditor(expected);
+
+    expect(editor.code).toBe(expectedCode);
+    if (!expectedSelection.isCursorAtTopOfDocument) {
+      expect(editor.selection).toStrictEqual(expectedSelection);
+    }
+  }
 
   it("should ask if user wants to destructure or not", async () => {
     const code = `console.log(foo.bar.b[cursor]az)`;
