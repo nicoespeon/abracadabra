@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- "Extract Variable" now combines destructured property with existing ones from Member Expressions, not just Identifiers. To put it simply, if you have `const { x } = some.object;` and you extract `some.object.y`, it will combine them to become `const { x, y } = some.object;`
+
 ## [9.4.9]
 
 ### Fixed

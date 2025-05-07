@@ -231,7 +231,7 @@ if (startTime > 0) {
     shouldExtractVariable
   );
 
-  it("a property to destructure from an existing assignment", async () => {
+  it("combines destructured properties from an existing assignment (Identifier)", async () => {
     await shouldExtractVariable({
       code: `const { x } = obj;
 function someScope() {
@@ -248,7 +248,24 @@ function test() {
     });
   });
 
-  it("a property to destructure, existing assignment in different scope", async () => {
+  it("combines destructured properties from an existing assignment (MemberExpression)", async () => {
+    await shouldExtractVariable({
+      code: `const { x } = req.query;
+function someScope() {
+  function test() {
+    return x + req.query.y[cursor] * x;
+  }
+}`,
+      expected: `const { x, y } = req.query;
+function someScope() {
+  function test() {
+    return x + [cursor]y * x;
+  }
+}`
+    });
+  });
+
+  it("do not combine destructured properties if existing assignment is in a different scope", async () => {
     await shouldExtractVariable({
       code: `{
   const { x } = obj;

@@ -81,7 +81,8 @@ export function findFirstExistingDeclaration(
         (path): path is NodePath<DestructuredVariableDeclarator> =>
           path.isVariableDeclarator() &&
           path.get("id").isObjectPattern() &&
-          path.get("init").isIdentifier()
+          (path.get("init").isIdentifier() ||
+            path.get("init").isMemberExpression())
       )
       .filter((path) => areEquivalent(expressionPath.node, path.node.init));
 
