@@ -198,21 +198,6 @@ assert.isTrue(
 console.log(baz);`
       },
       {
-        description: "a property to destructure from an existing assignment",
-        code: `const { x } = obj;
-function someScope() {
-  function test() {
-    return x + obj.y[cursor] * x;
-  }
-}`,
-        expected: `const { x, y } = obj;
-function someScope() {
-  function test() {
-    return x + [cursor]y * x;
-  }
-}`
-      },
-      {
         description:
           "a property to destructure from an existing assignment, but user decides to preserve",
         code: `function test() {
@@ -224,25 +209,6 @@ function someScope() {
   const { x } = obj;
   const y = obj.y;
   return x + [cursor]y * x;
-}`
-      },
-      {
-        description:
-          "a property to destructure, existing assignment in different scope",
-        code: `{
-  const { x } = obj;
-  console.log(x);
-}
-function test() {
-  return obj.y[cursor];
-}`,
-        expected: `{
-  const { x } = obj;
-  console.log(x);
-}
-function test() {
-  const { y } = obj;
-  return [cursor]y;
 }`
       },
       {
@@ -264,6 +230,45 @@ if (startTime > 0) {
     ],
     shouldExtractVariable
   );
+
+  it("a property to destructure from an existing assignment", async () => {
+    await shouldExtractVariable({
+      code: `const { x } = obj;
+function someScope() {
+function test() {
+  return x + obj.y[cursor] * x;
+}
+}`,
+      expected: `const { x, y } = obj;
+function someScope() {
+function test() {
+  return x + [cursor]y * x;
+}
+}`
+    });
+  });
+
+  it("a property to destructure, existing assignment in different scope", async () => {
+    await shouldExtractVariable({
+      code: `{
+  const { x } = obj;
+  console.log(x);
+}
+
+function test() {
+  return obj.y[cursor];
+}`,
+      expected: `{
+  const { x } = obj;
+  console.log(x);
+}
+
+function test() {
+  const { y } = obj;
+  return [cursor]y;
+}`
+    });
+  });
 
   async function shouldExtractVariable({
     code,
