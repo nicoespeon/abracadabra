@@ -28,7 +28,7 @@ export async function refreshHighlights(editor: Editor): Promise<void> {
   });
 
   highlights.forEach(({ source, bindings }) => {
-    editor.removeHighlight(source);
-    editor.highlight(source, bindings);
+    const decoration = editor.removeHighlight(source);
+    editor.highlight(source, bindings, decoration);
   });
 }

@@ -234,17 +234,22 @@ export class VSCodeEditor implements Editor {
     return highlightsRepository.findHighlightsSource(this.filePath, selection);
   }
 
-  highlight(source: Source, bindings: Selection[]): void {
-    const decoration = highlightsRepository.saveAndIncrement(
+  highlight(
+    source: Source,
+    bindings: Selection[],
+    decoration?: Decoration
+  ): void {
+    const nextDecoration = highlightsRepository.saveAndIncrement(
       this.filePath,
       source,
-      bindings
+      bindings,
+      decoration
     );
 
     const selections = [source, ...bindings];
-    const vscodeDecoration = this.toVSCodeDecoration(decoration);
+    const vscodeDecoration = this.toVSCodeDecoration(nextDecoration);
     this.editor.setDecorations(vscodeDecoration, selections.map(toVSCodeRange));
-    vscodeDecorations.set(decoration, vscodeDecoration);
+    vscodeDecorations.set(nextDecoration, vscodeDecoration);
   }
 
   private toVSCodeDecoration(
@@ -270,12 +275,14 @@ export class VSCodeEditor implements Editor {
     });
   }
 
-  removeHighlight(source: Source): void {
+  removeHighlight(source: Source): Decoration | undefined {
     const decoration = highlightsRepository.decorationOf(this.filePath, source);
-    if (decoration === undefined) return;
+    if (decoration !== undefined) {
+      this.disposeDecoration(decoration);
+      highlightsRepository.removeHighlightsOfFile(this.filePath, source);
+    }
 
-    this.disposeDecoration(decoration);
-    highlightsRepository.removeHighlightsOfFile(this.filePath, source);
+    return decoration;
   }
 
   private disposeDecoration(decoration: Decoration): void {

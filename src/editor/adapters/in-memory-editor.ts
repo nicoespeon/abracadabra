@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Source } from "../../highlights/highlights";
+import { Decoration, Source } from "../../highlights/highlights";
 import { HighlightsRepository } from "../../highlights/highlights-repository";
 import { CodeReference } from "../code-reference";
 import {
@@ -335,12 +335,29 @@ export class InMemoryEditor implements Editor {
     );
   }
 
-  highlight(source: Source, bindings: Selection[]): void {
-    this.highlightsRepository.saveAndIncrement(this.filePath, source, bindings);
+  highlight(
+    source: Source,
+    bindings: Selection[],
+    decoration?: Decoration
+  ): void {
+    this.highlightsRepository.saveAndIncrement(
+      this.filePath,
+      source,
+      bindings,
+      decoration
+    );
   }
 
-  removeHighlight(source: Source): void {
-    this.highlightsRepository.removeHighlightsOfFile(this.filePath, source);
+  removeHighlight(source: Source): Decoration | undefined {
+    const decoration = this.highlightsRepository.decorationOf(
+      this.filePath,
+      source
+    );
+    if (decoration !== undefined) {
+      this.highlightsRepository.removeHighlightsOfFile(this.filePath, source);
+    }
+
+    return decoration;
   }
 
   removeAllHighlights(): void {

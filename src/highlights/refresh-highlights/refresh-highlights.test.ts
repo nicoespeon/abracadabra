@@ -14,7 +14,7 @@ console.log("test");`);
     await editor.insert(", someVariable", new Position(1, 18));
     await refreshHighlights(editor);
 
-    expect(editor.highlightedCode).toBe(`const [h2]someVariable[/h2] = 123;
-console.log("test", [h2]someVariable[/h2]);`);
+    expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
+console.log("test", [h1]someVariable[/h1]);`);
   });
 });

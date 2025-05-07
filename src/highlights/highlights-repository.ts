@@ -56,14 +56,16 @@ export class HighlightsRepository {
   saveAndIncrement(
     filePath: FilePath,
     source: Source,
-    bindings: Selection[]
+    bindings: Selection[],
+    decoration?: Decoration
   ): Decoration {
-    const decoration = this.nextDecoration;
+    if (decoration === undefined) {
+      decoration = this.nextDecoration;
+      this.nextDecoration++;
+    }
     const existingHighlights = this.get(filePath) ?? new Highlights();
     existingHighlights.set(source, bindings, decoration);
     this.set(filePath, existingHighlights);
-
-    this.nextDecoration++;
 
     return decoration;
   }

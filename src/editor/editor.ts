@@ -1,4 +1,4 @@
-import { Source } from "../highlights/highlights";
+import { Decoration, Source } from "../highlights/highlights";
 import { CodeReference } from "./code-reference";
 import { ErrorReason } from "./error-reason";
 import { Path } from "./path";
@@ -29,8 +29,12 @@ export interface Editor {
   ): Promise<Choice<T> | undefined>;
   highlightSourcesForCurrentFile(): Selection[];
   findHighlight(selection: Selection): Source | undefined;
-  highlight(source: Source, bindings: Selection[]): void;
-  removeHighlight(source: Source): void;
+  highlight(
+    source: Source,
+    bindings: Selection[],
+    decoration?: Decoration
+  ): void;
+  removeHighlight(source: Source): Decoration | undefined;
   removeAllHighlights(): void;
   getSelectionReferences(selection: Selection): Promise<CodeReference[]>;
   askForPositions(
