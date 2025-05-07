@@ -1,27 +1,43 @@
 import * as vscode from "vscode";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
+import { refreshHighlights } from "./highlights/refresh-highlights/refresh-highlights";
 import {
   executeRefactoring,
   Refactoring,
   Refactoring__DEPRECATED
 } from "./refactorings";
 
-export function createCommand(execute: Refactoring__DEPRECATED) {
+type Options = { refreshHighlights: boolean };
+
+export function createCommand(
+  execute: Refactoring__DEPRECATED,
+  options: Options
+) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
 
-    await executeSafely(() => execute(editor));
+    await executeSafely(async () => {
+      await execute(editor);
+      if (options.refreshHighlights) {
+        await refreshHighlights(editor);
+      }
+    });
   };
 }
 
-export function createCommand__NEW(execute: Refactoring) {
+export function createCommand__NEW(execute: Refactoring, options: Options) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
 
-    await executeSafely(() => executeRefactoring(execute, editor));
+    await executeSafely(async () => {
+      await executeRefactoring(execute, editor);
+      if (options.refreshHighlights) {
+        await refreshHighlights(editor);
+      }
+    });
   };
 }
 

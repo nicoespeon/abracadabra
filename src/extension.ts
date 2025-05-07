@@ -133,21 +133,30 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  [toggleHighlight, refreshHighlights, removeAllHighlights].forEach(
+    ({ command }) => {
+      context.subscriptions.push(
+        vscode.commands.registerCommand(
+          `abracadabra.${command.key}`,
+          createCommand(command.operation, { refreshHighlights: false })
+        )
+      );
+    }
+  );
+
   const commands = Object.values(refactorings).flatMap(
     ({ withoutActionProvider, withActionProvider }) =>
       withoutActionProvider.concat(withActionProvider)
   );
 
-  commands
-    .concat([toggleHighlight, refreshHighlights, removeAllHighlights])
-    .forEach(({ command }) => {
-      context.subscriptions.push(
-        vscode.commands.registerCommand(
-          `abracadabra.${command.key}`,
-          createCommand(command.operation)
-        )
-      );
-    });
+  commands.forEach(({ command }) => {
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        `abracadabra.${command.key}`,
+        createCommand(command.operation, { refreshHighlights: true })
+      )
+    );
+  });
 
   const commands__NEW = Object.values(refactorings).flatMap(
     ({ withoutActionProvider__NEW, withActionProvider__NEW }) =>
@@ -158,7 +167,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
-        createCommand__NEW(command.operation)
+        createCommand__NEW(command.operation, { refreshHighlights: true })
       )
     );
   });
