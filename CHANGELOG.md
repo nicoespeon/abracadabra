@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "Extract Variable" now combines destructured property with existing ones from Member Expressions, not just Identifiers. To put it simply, if you have `const { x } = some.object;` and you extract `some.object.y`, it will combine them to become `const { x, y } = some.object;`
 - Highlights are refreshed after a refactoring has been executed. So if you highlight some Identifier and then refactor the code (e.g. Extract Variable), the resulting code will be highlighted accordingly. Very convenient when performing [Peel and Slice refactorings](https://understandlegacycode.com/blog/another-way-of-refactoring-untested-code/#peel--slice).
+- Toggling braces in JSX components was adding unnecessary braces, sometimes. This is not the case anymore.
 
 ## [9.4.9]
 

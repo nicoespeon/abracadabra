@@ -35,12 +35,14 @@ describe("Remove JSX Fragment", () => {
     <><p>[cursor]I'm just a paragraph</p></>
   </div>
 </>);`,
-        expected: `return (<>
-  <div>
-    <h2>I'm a heading</h2>
-    <p>I'm just a paragraph</p>
-  </div>
-</>);`
+        expected: `return (
+  <>
+    <div>
+      <h2>I'm a heading</h2>
+      <p>I'm just a paragraph</p>
+    </div>
+  </>
+);`
       }
     ],
     async ({ code, expected }) => {
