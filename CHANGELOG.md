@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.0] - 2025-05-09 - Whistle While You Work 🛠️
+
 ### Fixed
 
 - Abracadabra was messing up the shebang line when executing refactorings, unless you were using `#!/usr/bin/env node`. This is now fixed for any shebang line. Also, it won't mess up formatting if your code happens to have a shebang-looking line elsewhere (e.g., in a comment). Thanks @datenreisender for catching that 👍
@@ -2010,7 +2012,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.4.9...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.5.0...HEAD
+[9.5.0]: https://github.com/nicoespeon/abracadabra/compare/9.4.9...9.5.0
 [9.4.9]: https://github.com/nicoespeon/abracadabra/compare/9.4.8...9.4.9
 [9.4.8]: https://github.com/nicoespeon/abracadabra/compare/9.4.7...9.4.8
 [9.4.7]: https://github.com/nicoespeon/abracadabra/compare/9.4.6...9.4.7
