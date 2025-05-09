@@ -208,7 +208,7 @@ export function transformCopy<T extends t.Node>(
 
   // Cast the type because `insertAfter()` return type is `any`.
   const temporaryCopiedPath = scopePath.insertAfter(
-    t.cloneDeep(node)
+    t.cloneNode(node)
   )[0] as NodePath<T>;
 
   temporaryCopiedPath.traverse({

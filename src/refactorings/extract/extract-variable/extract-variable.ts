@@ -114,6 +114,7 @@ function findOtherOccurrences(
       if (!t.isSelectableNode(occurrence.path.node)) return;
       if (
         parentPath.isAssignmentExpression() &&
+        t.isLVal(node) &&
         parentPath.node.left === node
       ) {
         return;
