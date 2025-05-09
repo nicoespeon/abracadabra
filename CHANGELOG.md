@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Abracadabra was messing up the shebang line when executing refactorings, unless you were using `#!/usr/bin/env node`. This is now fixed for any shebang line. Also, it won't mess up formatting if your code happens to have a shebang-looking line elsewhere (e.g., in a comment). Thanks @datenreisender for catching that 👍
+
 ### Changed
 
 - "Extract Variable" now combines destructured property with existing ones from Member Expressions, not just Identifiers. To put it simply, if you have `const { x } = some.object;` and you extract `some.object.y`, it will combine them to become `const { x, y } = some.object;`

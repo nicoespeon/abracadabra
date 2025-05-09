@@ -21,20 +21,30 @@ export function transform(code: Code, options: TraverseOptions): Transformed {
 
 export function transformAST(ast: AST, options: TraverseOptions): Transformed {
   const code = print(ast);
-  const newCode = fixShebang(print(traverseAST(ast, options)));
+
+  const transformedAST = traverseAST(ast, options);
+  const transformedCode = print(transformedAST);
+  const hasCodeChanged =
+    standardizeEOL(transformedCode) !== standardizeEOL(code);
+
+  // Recast doesn't handle shebangs well: https://github.com/benjamn/recast/issues/376
+  // Babel parses it, but Recast messes up the printed code by omitting spaces
+  // So we end up with `#!/usr/bin/env nodeconsole.log("Hello World!")`
+  // Thus, we need to re-add the space manually.
+  const firstToken = transformedAST.tokens?.[0] ?? {};
+  const startsWithShebang = firstToken.type?.label?.startsWith("#!");
+  const newCode =
+    startsWithShebang && hasCodeChanged
+      ? transformedCode.replace(
+          `#!${firstToken.value}`,
+          `#!${firstToken.value}\n\n`
+        )
+      : transformedCode;
 
   return {
     code: isUsingTabs(ast) ? indentWithTabs(newCode) : newCode,
-    hasCodeChanged: standardizeEOL(newCode) !== standardizeEOL(code)
+    hasCodeChanged
   };
-}
-
-// Recast doesn't handle shebangs well: https://github.com/benjamn/recast/issues/376
-// Babel parses it, but Recast messes up the printed code by omitting spaces
-function fixShebang(newCode: Code): Code {
-  // eslint-disable-next-line no-useless-escape
-  const [, shebang] = newCode.match(/(#![\/\w+]+ node)\w/) || [];
-  return shebang ? newCode.replace(shebang, `${shebang}\n\n`) : newCode;
 }
 
 export function isUsingTabs(ast: AST | t.Node): boolean {

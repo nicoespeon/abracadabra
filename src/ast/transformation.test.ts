@@ -92,6 +92,29 @@ function test() {}`;
 const hello = "world";`);
     });
 
+    it("should preserve interpreter directive (shebang with options)", () => {
+      const code = `#!/usr/bin/env deno --test
+
+function test() {}`;
+
+      const { code: result } = transform(code, {
+        FunctionDeclaration(path) {
+          path.replaceWith(
+            t.variableDeclaration("const", [
+              t.variableDeclarator(
+                t.identifier("hello"),
+                t.stringLiteral("world")
+              )
+            ])
+          );
+        }
+      });
+
+      expect(result).toBe(`#!/usr/bin/env deno --test
+
+const hello = "world";`);
+    });
+
     it("should preserve interpreter directive (shebang) when no transformation is made", () => {
       const code = `#!/usr/bin/env node
 
