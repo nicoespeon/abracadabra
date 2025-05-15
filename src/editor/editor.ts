@@ -20,7 +20,7 @@ export interface Editor {
     getModifications: (code: Code) => Modification[],
     newCursorPosition?: Position | Selection
   ): Promise<void>;
-  delegate(command: Command): Promise<Result>;
+  delegate(command: Command, selection?: Selection): Promise<Result>;
   showError(reason: ErrorReason | string): Promise<void>;
   askUserInput(defaultValue?: string): Promise<string | undefined>;
   askUserChoice<T>(

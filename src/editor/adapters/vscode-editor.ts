@@ -196,7 +196,11 @@ export class VSCodeEditor implements Editor {
     this.editorSelection = selection;
   }
 
-  async delegate(command: Command): Promise<Result> {
+  async delegate(command: Command, selection?: Selection): Promise<Result> {
+    if (selection) {
+      this.changeEditorSelection(toVSCodeSelection(selection));
+    }
+
     const { command: vscodeCommand, args = [] } = toVSCodeCommandArgs(command);
     await vscode.commands.executeCommand(vscodeCommand, ...args);
     return "ok";

@@ -87,7 +87,7 @@ export type EditorCommand = (
       getModifications: (code: Code) => Modification[];
       newCursorPosition?: Position | Selection;
     }
-  | { action: "delegate"; command: Command }
+  | { action: "delegate"; command: Command; selection?: Selection }
   | { action: "ask user"; value?: string }
 ) &
   BaseEditorCommand;
@@ -124,9 +124,10 @@ export const COMMANDS = {
     getModifications,
     newCursorPosition
   }),
-  delegate: (command: Command): EditorCommand => ({
+  delegate: (command: Command, selection?: Selection): EditorCommand => ({
     action: "delegate",
-    command
+    command,
+    selection
   }),
   doNothing: (): EditorCommand => ({ action: "do nothing" })
 };
@@ -164,7 +165,10 @@ export async function executeRefactoring(
     }
 
     case "delegate": {
-      const delegateResult = await editor.delegate(result.command);
+      const delegateResult = await editor.delegate(
+        result.command,
+        result.selection
+      );
       if (delegateResult === "not supported") {
         return executeRefactoring(refactor, editor, {
           state: "command not supported",

@@ -57,8 +57,8 @@ export class AttemptingEditor implements Editor {
     );
   }
 
-  delegate(command: Command) {
-    return this.editor.delegate(command);
+  delegate(command: Command, selection?: Selection) {
+    return this.editor.delegate(command, selection);
   }
 
   async showError(reason: ErrorReason | string) {

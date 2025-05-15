@@ -129,7 +129,7 @@ const anotherOne = 'world';`);
 
     await executeRefactoring(fakeRefactoring, editor);
 
-    expect(editor.delegate).toHaveBeenCalledWith("rename symbol");
+    expect(editor.delegate).toHaveBeenCalledWith("rename symbol", undefined);
   });
 
   it("should call refactoring back when command is not supported for 'delegate'", async () => {
