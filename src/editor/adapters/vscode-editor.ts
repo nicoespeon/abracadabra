@@ -488,5 +488,14 @@ function toVSCodeCommandArgs(command: Command): {
   // You can also try these out from `keybindings.json`
   return match(command)
     .with("rename symbol", () => ({ command: "editor.action.rename" }))
+    .with("extract function", () => ({
+      command: "editor.action.codeAction",
+      args: [
+        {
+          kind: "refactor.extract.function",
+          apply: "ifSingle"
+        }
+      ]
+    }))
     .exhaustive();
 }

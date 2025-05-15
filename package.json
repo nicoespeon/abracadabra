@@ -191,6 +191,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.extractFunction",
+        "title": "Extract Function",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.extractGenericType",
         "title": "Extract Generic Type",
         "category": "Abracadabra"
@@ -359,6 +364,12 @@
         "command": "abracadabra.extract",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "abracadabra.extractFunction",
+        "key": "ctrl+alt+m",
+        "mac": "cmd+alt+m",
         "when": "editorTextFocus"
       },
       {
@@ -890,6 +901,30 @@
         },
         {
           "command": "abracadabra.extract",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.extractFunction",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.extractFunction",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.extractFunction",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extractFunction",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extractFunction",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.extractFunction",
           "when": "editorLangId == svelte"
         },
         {

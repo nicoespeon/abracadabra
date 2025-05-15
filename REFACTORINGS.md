@@ -18,6 +18,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Rename Symbol](#rename-symbol)
   1. [Extract Variable](#extract-variable)
   1. [Extract Type](#extract-type)
+  1. [Extract Function](#extract-function)
   1. [Inline Variable](#inline-variable)
   1. [Inline Function](#inline-function)
   1. [Change Signature](#change-signature)
@@ -110,6 +111,22 @@ It will also handle multiple occurrences.
 This does exactly the same as Extract Variable, but for types!
 
 ![][demo-extract-type]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Extract Function
+
+| Keybinding       | On Mac  |
+| :--------------- | :------ |
+| `Ctrl + Alt + M` | `⌥ ⌘ M` |
+
+Extracting functions is a core refactoring move to create abstractions.
+
+Like "Rename Symbol", VS Code already does this refactoring very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
+
+Abracadabra just assigns it a convenient keybinding and will execute the refactoring right away if there is a single possible option. Otherwise, it will prompt you to select the right option.
+
+![][demo-extract-function]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -564,6 +581,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 
 [demo-command-palette]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/command-palette.png?raw=true
 [demo-extract-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-type.gif?raw=true
+[demo-extract-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-function.gif?raw=true
 [demo-extract-variable]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable.gif?raw=true
 [demo-extract-variable-partial]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-partial.gif?raw=true
 [demo-extract-variable-multiple-occurrences]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-variable-multiple-occurrences.gif?raw=true

@@ -29,6 +29,7 @@ import convertToTemplateLiteral from "./refactorings/convert-to-template-literal
 import { isInsertingVariableInStringLiteral } from "./refactorings/convert-to-template-literal/convert-to-template-literal";
 import createFactoryForConstructor from "./refactorings/create-factory-for-constructor";
 import extract from "./refactorings/extract";
+import extractFunction from "./refactorings/extract-function";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import flipIfElse from "./refactorings/flip-if-else";
@@ -80,6 +81,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withoutActionProvider: [extract],
     withoutActionProvider__NEW: [
+      extractFunction,
       renameSymbol,
       moveStatementUp,
       moveStatementDown

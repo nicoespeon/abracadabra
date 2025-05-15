@@ -25,6 +25,7 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
   async delegate(command: Command): Promise<Result> {
     return match(command)
       .with("rename symbol", () => "not supported" as const)
+      .with("extract function", () => "not supported" as const)
       .exhaustive();
   }
 

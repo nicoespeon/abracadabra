@@ -49,7 +49,7 @@ export type Modification = {
 
 export type Code = string;
 
-export type Command = "rename symbol";
+export type Command = "rename symbol" | "extract function";
 
 export type Result = "ok" | "not supported";
 

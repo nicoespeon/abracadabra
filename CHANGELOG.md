@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Extract Function". It's merely a proxy to VS Code "Extract Function" refactoring. But it assigns a keybinding (`Ctrl + Alt + M` / `⌥ ⌘ M` on MacOS) for discoverability. It also transforms the code right away if there is a single possible extraction.
+
 ## [9.5.0] - 2025-05-09 - Whistle While You Work 🛠️
 
 ### Fixed
