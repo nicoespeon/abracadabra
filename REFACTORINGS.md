@@ -124,7 +124,9 @@ Extracting functions is a core refactoring move to create abstractions.
 
 Like "Rename Symbol", VS Code already does this refactoring very well. That's why this refactoring is merely an alias. It delegates the work to VS Code.
 
-Abracadabra just assigns it a convenient keybinding and will execute the refactoring right away if there is a single possible option. Otherwise, it will prompt you to select the right option.
+Abracadabra assigns it a convenient keybinding and will execute the refactoring right away if there is a single possible option. Otherwise, it will prompt you to select the right option.
+
+If you have a partial selection, it will also expand it to the closest statement you can extract. So you don't have to _precisely_ select the statement you want to extract.
 
 ![][demo-extract-function]
 

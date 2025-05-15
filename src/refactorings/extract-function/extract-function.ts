@@ -1,3 +1,5 @@
+import * as t from "../../ast";
+import { Selection } from "../../editor/selection";
 import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
 export function extractFunction(state: RefactoringState): EditorCommand {
@@ -5,6 +7,65 @@ export function extractFunction(state: RefactoringState): EditorCommand {
     return COMMANDS.showErrorDidNotFind("code to be extracted");
   }
 
+  const { code, selection } = state;
+  const updatedSelection = expandSelectionToClosestStatement(code, selection);
+
   // Editor built-in extraction works fine => ok to delegate the work for now.
-  return COMMANDS.delegate("extract function");
+  return updatedSelection.isEqualTo(selection)
+    ? COMMANDS.delegate("extract function")
+    : COMMANDS.delegate("extract function", updatedSelection);
+}
+
+function expandSelectionToClosestStatement(
+  code: string,
+  selection: Selection
+): Selection {
+  let result = selection;
+
+  t.traverseAST(
+    t.parse(code),
+    createVisitor(
+      selection,
+      (path) => (result = Selection.fromAST(path.node.loc))
+    )
+  );
+
+  return result;
+}
+
+function createVisitor(
+  selection: Selection,
+  onMatch: (path: t.SelectablePath) => void
+): t.TraverseOptions {
+  return {
+    enter(path) {
+      if (!t.isStatement(path)) return;
+      if (!selection.isInsidePath(path)) return;
+
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
+      onMatch(path);
+    }
+  };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    enter(childPath) {
+      if (!t.isStatement(childPath)) return;
+      if (!selection.isInsidePath(childPath)) return;
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
