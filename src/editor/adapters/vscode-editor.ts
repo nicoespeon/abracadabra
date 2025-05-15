@@ -480,11 +480,7 @@ function toVSCodePosition(position: Position): vscode.Position {
 }
 
 function toVSCodeCommand(command: Command): string {
-  switch (command) {
-    case "rename symbol":
-      return "editor.action.rename";
-
-    default:
-      return "";
-  }
+  return match(command)
+    .with("rename symbol", () => "editor.action.rename")
+    .exhaustive();
 }

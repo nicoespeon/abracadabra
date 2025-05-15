@@ -1,3 +1,4 @@
+import { match } from "ts-pattern";
 import * as vscode from "vscode";
 import { Code, Command, Modification, Result } from "../editor";
 import { Position } from "../position";
@@ -22,11 +23,9 @@ export class VueAndSvelteVSCodeEditor extends VSCodeEditor {
   }
 
   async delegate(command: Command): Promise<Result> {
-    if (command === "rename symbol") {
-      return "not supported";
-    }
-
-    return super.delegate(command);
+    return match(command)
+      .with("rename symbol", () => "not supported" as const)
+      .exhaustive();
   }
 
   async write(code: Code, newCursorPosition?: Position): Promise<void> {
