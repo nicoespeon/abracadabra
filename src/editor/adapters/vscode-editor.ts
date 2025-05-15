@@ -197,7 +197,8 @@ export class VSCodeEditor implements Editor {
   }
 
   async delegate(command: Command): Promise<Result> {
-    await vscode.commands.executeCommand(toVSCodeCommand(command));
+    const { command: vscodeCommand, args = [] } = toVSCodeCommandArgs(command);
+    await vscode.commands.executeCommand(vscodeCommand, ...args);
     return "ok";
   }
 
@@ -479,8 +480,13 @@ function toVSCodePosition(position: Position): vscode.Position {
   return new vscode.Position(position.line, position.character);
 }
 
-function toVSCodeCommand(command: Command): string {
+function toVSCodeCommandArgs(command: Command): {
+  command: string;
+  args?: unknown[];
+} {
+  // https://code.visualstudio.com/api/references/commands
+  // You can also try these out from `keybindings.json`
   return match(command)
-    .with("rename symbol", () => "editor.action.rename")
+    .with("rename symbol", () => ({ command: "editor.action.rename" }))
     .exhaustive();
 }
