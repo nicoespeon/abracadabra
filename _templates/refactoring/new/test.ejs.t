@@ -9,6 +9,7 @@ to: src/refactorings/<%= h.changeCase.param(name) %>/<%= h.changeCase.param(name
 -%>
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code } from "../../editor/editor";
+import { Selection } from "../../editor/selection";
 import { <%= camelName %> } from "./<%= dashedName %>";
 
 describe("<%= titleName %>", () => {
