@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[New Refactoring]** "Extract Function". It's merely a proxy to VS Code "Extract Function" refactoring. But it assigns a keybinding (`Ctrl + Alt + M` / `⌥ ⌘ M` on MacOS) for discoverability. It also transforms the code right away if there is a single possible extraction. Finally, it will expand the selection to the closest statement you can extract. So you don't have to _precisely_ select the statement you intend to extract.
 
+![][demo-extract-function]
+
 ## [9.5.0] - 2025-05-09 - Whistle While You Work 🛠️
 
 ### Fixed
@@ -2146,6 +2148,7 @@ function doSomething(someData) {
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-generic-type.gif?raw=true
 [demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-switch-to-if-else.gif?raw=true
 [demo-destructure-object]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/destructure-object.gif?raw=true
+[demo-extract-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-function.gif?raw=true
 
 <!-- Links -->
 
