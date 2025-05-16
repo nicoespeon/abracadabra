@@ -73,7 +73,10 @@ export function getAssignedStatement(
   return { ...firstChild, expression };
 }
 
-export function getStatements(statement: t.Statement): t.Statement[] {
+export function getStatements(
+  statement: t.Statement | null | undefined
+): t.Statement[] {
+  if (!statement) return [];
   return t.isBlockStatement(statement) ? statement.body : [statement];
 }
 
@@ -89,7 +92,7 @@ export function getPathsBelow(
     .filter((path): path is NodePath<t.Statement> => t.isStatement(path));
 }
 
-export function isEmpty(statement: t.Statement): boolean {
+export function isEmpty(statement: t.Statement | null | undefined): boolean {
   const statements = getStatements(statement).filter(
     (child) => child !== statement
   );
