@@ -193,6 +193,9 @@ export function areEquivalent(
       areAllEqual(nodeA.arguments, nodeB.arguments)
     );
   }
+  if (t.isExpressionStatement(nodeA) && t.isExpressionStatement(nodeB)) {
+    return areEquivalent(nodeA.expression, nodeB.expression);
+  }
 
   // Binary & Logical Expressions
   if (
