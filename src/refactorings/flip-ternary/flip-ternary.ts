@@ -23,7 +23,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const elseBranch = node.alternate;
       node.consequent = elseBranch;
       node.alternate = ifBranch;
-      node.test = getNegatedIfTest(node.test);
+      node.test = t.getNegatedIfTest(node.test);
     })
   );
 }
@@ -62,27 +62,4 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
-}
-
-function getNegatedIfTest(
-  test: t.ConditionalExpression["test"]
-): t.ConditionalExpression["test"] {
-  // Simplify double-negations
-  if (t.isUnaryExpression(test)) {
-    return test.argument;
-  }
-
-  // Simplify simple binary expressions
-  // E.g. `a > b` => `a <= b` instead of `!(a > b)`
-  if (
-    t.isBinaryExpression(test) &&
-    !["instanceof", "in"].includes(test.operator)
-  ) {
-    return {
-      ...test,
-      operator: t.getNegatedBinaryOperator(test.operator)
-    };
-  }
-
-  return t.unaryExpression("!", test, true);
 }
