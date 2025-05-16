@@ -241,6 +241,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.moveLastStatementOutOfIfElse",
+        "title": "Move Last Statement Out Of If/Else",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.moveStatementDown",
         "title": "Move Statement Down",
         "category": "Abracadabra"
@@ -523,6 +528,11 @@
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
         "abracadabra.mergeWithPreviousIfStatement.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
+        "abracadabra.moveLastStatementOutOfIfElse.showInQuickFix": {
           "type": "boolean",
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
@@ -1125,6 +1135,30 @@
         },
         {
           "command": "abracadabra.mergeWithPreviousIfStatement",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.moveLastStatementOutOfIfElse",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.moveLastStatementOutOfIfElse",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.moveLastStatementOutOfIfElse",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.moveLastStatementOutOfIfElse",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.moveLastStatementOutOfIfElse",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.moveLastStatementOutOfIfElse",
           "when": "editorLangId == svelte"
         },
         {

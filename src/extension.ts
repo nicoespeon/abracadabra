@@ -40,6 +40,7 @@ import invertBooleanLogic from "./refactorings/invert-boolean-logic";
 import liftUpConditional from "./refactorings/lift-up-conditional";
 import mergeIfStatements from "./refactorings/merge-if-statements";
 import mergeWithPreviousIfStatement from "./refactorings/merge-with-previous-if-statement";
+import moveLastStatementOutOfIfElse from "./refactorings/move-last-statement-out-of-if-else";
 import moveStatementDown from "./refactorings/move-statement/move-statement-down";
 import moveStatementUp from "./refactorings/move-statement/move-statement-up";
 import removeDeadCode from "./refactorings/remove-dead-code";
@@ -116,7 +117,10 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       splitIfStatement,
       toggleBraces
     ],
-    withActionProvider__NEW: [splitMultipleDeclarations]
+    withActionProvider__NEW: [
+      moveLastStatementOutOfIfElse,
+      splitMultipleDeclarations
+    ]
   }
 };
 

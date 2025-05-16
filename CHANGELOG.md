@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ![][demo-extract-function]
 
+- **[New Refactoring]** "Move Last Statement out of If/Else". Sometimes you have duplicated code at the end of an if/else statement. This refactoring will pull it out and simplify the code accordingly.
+
+![][demo-move-last-statement-out-of-if-else]
+
 ## [9.5.0] - 2025-05-09 - Whistle While You Work 🛠️
 
 ### Fixed
@@ -2148,6 +2152,7 @@ function doSomething(someData) {
 [demo-extract-generic-type]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-generic-type.gif?raw=true
 [demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-switch-to-if-else.gif?raw=true
 [demo-destructure-object]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/destructure-object.gif?raw=true
+[demo-move-last-statement-out-of-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-last-statement-out-of-if-else.gif?raw=true
 [demo-extract-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-function.gif?raw=true
 
 <!-- Links -->

@@ -39,6 +39,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Split If Statement](#split-if-statement)
   1. [Merge If Statements](#merge-if-statements)
   1. [Merge With Previous If Statement](#merge-with-previous-if-statement)
+  1. [Move Last Statement out of If/Else](#move-last-statement-out-of-ifelse)
   1. [Lift Up Conditional](#lift-up-conditional)
 - Moving Features:
   1. [Remove Dead Code](#remove-dead-code)
@@ -362,6 +363,16 @@ If you want to merge 2 consecutive if statements, it will resolve the dead code 
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Move Last Statement out of If/Else
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+If both branches of an if/else statement have the same last statement, this refactoring will move it out and simplify the code.
+
+![][demo-move-last-statement-out-of-if-else]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Lift Up Conditional
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -618,6 +629,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-lift-up-conditional]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/lift-up-conditional.gif?raw=true
 [demo-merge-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-with-previous-if-statement.gif?raw=true
 [demo-merge-if-with-previous-if-statement]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/merge-if-with-previous-if-statement.gif?raw=true
+[demo-move-last-statement-out-of-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-last-statement-out-of-if-else.gif?raw=true
 [demo-convert-for-to-for-each]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-to-for-each.gif?raw=true
 [demo-convert-for-each-to-for-of]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-for-each-to-for-of.gif?raw=true
 [demo-create-factory-for-constructor]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/create-factory-for-constructor.gif?raw=true
