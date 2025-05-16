@@ -2024,7 +2024,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.5.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.6.0...HEAD
+[9.6.0]: https://github.com/nicoespeon/abracadabra/compare/9.5.0...9.6.0
 [9.5.0]: https://github.com/nicoespeon/abracadabra/compare/9.4.9...9.5.0
 [9.4.9]: https://github.com/nicoespeon/abracadabra/compare/9.4.8...9.4.9
 [9.4.8]: https://github.com/nicoespeon/abracadabra/compare/9.4.7...9.4.8
