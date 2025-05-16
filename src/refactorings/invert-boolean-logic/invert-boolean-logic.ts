@@ -119,7 +119,7 @@ export function getNegatedOperator(node: t.Node): NegatedOperator | null {
   return t.isLogicalExpression(node)
     ? getNegatedLogicalOperator(node.operator)
     : t.isBinaryExpression(node)
-      ? getNegatedBinaryOperator(node.operator)
+      ? t.getNegatedBinaryOperator(node.operator)
       : null;
 }
 
@@ -196,7 +196,7 @@ function negateBranch(node: t.Expression): t.Expression {
   }
 
   if (t.isBinaryExpression(node)) {
-    return { ...node, operator: getNegatedBinaryOperator(node.operator) };
+    return { ...node, operator: t.getNegatedBinaryOperator(node.operator) };
   }
 
   if (t.isLogicalExpression(node)) {
@@ -218,31 +218,6 @@ function getNegatedLogicalOperator(
       return "&&";
     case "&&":
       return "||";
-    default:
-      return operator;
-  }
-}
-
-export function getNegatedBinaryOperator(
-  operator: t.BinaryExpression["operator"]
-): t.BinaryExpression["operator"] {
-  switch (operator) {
-    case "==":
-      return "!=";
-    case "!=":
-      return "==";
-    case "===":
-      return "!==";
-    case "!==":
-      return "===";
-    case ">":
-      return "<=";
-    case ">=":
-      return "<";
-    case "<":
-      return ">=";
-    case "<=":
-      return ">";
     default:
       return operator;
   }

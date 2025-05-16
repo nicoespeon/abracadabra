@@ -2,7 +2,6 @@ import { allButLast, last } from "../../array";
 import * as t from "../../ast";
 import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { getNegatedBinaryOperator } from "../invert-boolean-logic/invert-boolean-logic";
 
 export async function flipIfElse(editor: Editor) {
   const { code, selection } = editor;
@@ -140,7 +139,7 @@ function getNegatedIfTest(test: t.IfStatement["test"]): t.IfStatement["test"] {
   // Simplify simple binary expressions
   // E.g. `a > b` => `a <= b` instead of `!(a > b)`
   if (t.isBinaryExpression(test)) {
-    const negatedOperator = getNegatedBinaryOperator(test.operator);
+    const negatedOperator = t.getNegatedBinaryOperator(test.operator);
 
     // Some operators can't be negated => negate the whole expression
     if (negatedOperator === test.operator) {
