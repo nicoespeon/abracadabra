@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- "Extract Function" now correctly expands the selection when multiple statements of a block statement are selected. It used to include the wrapping braces, preventing the refactoring.
+
 ## [9.6.0] - 2025-05-16 - I Just Can’t Wait to Extract 🦁
 
 ### Added

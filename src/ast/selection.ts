@@ -32,7 +32,9 @@ export function isSelectablePath<T extends t.Node>(
   return !!path.node.loc;
 }
 
-export function isSelectableNode(node: t.Node | null): node is SelectableNode {
+export function isSelectableNode(
+  node: t.Node | null | undefined
+): node is SelectableNode {
   return !!node && !!node.loc;
 }
 

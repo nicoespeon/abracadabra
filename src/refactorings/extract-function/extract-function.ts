@@ -1,4 +1,6 @@
+import { first, last } from "../../array";
 import * as t from "../../ast";
+import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
 import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
@@ -24,10 +26,22 @@ function expandSelectionToClosestStatement(
 
   t.traverseAST(
     t.parse(code),
-    createVisitor(
-      selection,
-      (path) => (result = Selection.fromAST(path.node.loc))
-    )
+    createVisitor(selection, (path) => {
+      if (t.isBlockStatement(path.node)) {
+        const firstStatementInBody = first(path.node.body);
+        if (!t.isSelectableNode(firstStatementInBody)) return;
+
+        const lastStatementInBody = last(path.node.body);
+        if (!t.isSelectableNode(lastStatementInBody)) return;
+
+        result = Selection.fromPositions(
+          Position.fromAST(firstStatementInBody.loc.start),
+          Position.fromAST(lastStatementInBody.loc.end)
+        );
+      } else {
+        result = Selection.fromAST(path.node.loc);
+      }
+    })
   );
 
   return result;

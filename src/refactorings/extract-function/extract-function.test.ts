@@ -79,6 +79,41 @@ describe("Extract Function", () => {
     });
   });
 
+  it("should expand selection if it selects multiple statements", () => {
+    const { code, selection } =
+      new InMemoryEditor(`async function bookRoom(customerId, date) {
+  const custo[start]mer = await findCustomer(customerId);
+  if (!customer) {
+    throw new Error("Customer not found");
+  }
+
+  // … implementation details
+  logger.[end]debug("Room was booked");
+}`);
+
+    const result = extractFunction({
+      state: "new",
+      code,
+      selection
+    });
+
+    const { selection: expectedSelection } =
+      new InMemoryEditor(`async function bookRoom(customerId, date) {
+  [start]const customer = await findCustomer(customerId);
+  if (!customer) {
+    throw new Error("Customer not found");
+  }
+
+  // … implementation details
+  logger.debug("Room was booked");[end]
+}`);
+    expect(result).toEqual({
+      action: "delegate",
+      command: "extract function",
+      selection: expectedSelection
+    });
+  });
+
   it("should show an error if the editor does not support the refactoring", () => {
     const { code, selection } = new InMemoryEditor();
 
