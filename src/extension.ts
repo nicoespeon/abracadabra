@@ -19,6 +19,7 @@ import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
+import convertGuardToIf from "./refactorings/convert-guard-to-if";
 import convertIfElseToSwitch from "./refactorings/convert-if-else-to-switch";
 import convertIfElseToTernary from "./refactorings/convert-if-else-to-ternary";
 import convertLetToConst from "./refactorings/convert-let-to-const";
@@ -118,6 +119,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       toggleBraces
     ],
     withActionProvider__NEW: [
+      convertGuardToIf,
       moveLastStatementOutOfIfElse,
       splitMultipleDeclarations
     ]

@@ -151,6 +151,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.convertGuardToIf",
+        "title": "Convert Guard to If",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.convertIfElseToTernary",
         "title": "Convert If/Else to Ternary",
         "category": "Abracadabra"
