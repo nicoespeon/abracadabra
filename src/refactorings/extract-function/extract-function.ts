@@ -28,15 +28,19 @@ function expandSelectionToClosestStatement(
     t.parse(code),
     createVisitor(selection, (path) => {
       if (t.isBlockStatement(path.node)) {
-        const firstStatementInBody = first(path.node.body);
-        if (!t.isSelectableNode(firstStatementInBody)) return;
+        const selectedStatements = path.node.body.filter(
+          (statement): statement is t.Selectable<t.Statement> =>
+            t.isSelectableNode(statement) &&
+            selection.overlapsWithNode(statement)
+        );
 
-        const lastStatementInBody = last(path.node.body);
-        if (!t.isSelectableNode(lastStatementInBody)) return;
+        const firstSelectedStatement = first(selectedStatements);
+        const lastSelectedStatement = last(selectedStatements);
+        if (!firstSelectedStatement || !lastSelectedStatement) return;
 
         result = Selection.fromPositions(
-          Position.fromAST(firstStatementInBody.loc.start),
-          Position.fromAST(lastStatementInBody.loc.end)
+          Position.fromAST(firstSelectedStatement.loc.start),
+          Position.fromAST(lastSelectedStatement.loc.end)
         );
       } else {
         result = Selection.fromAST(path.node.loc);

@@ -262,6 +262,12 @@ export class Selection {
     );
   }
 
+  overlapsWithNode(node: t.SelectableNode): boolean {
+    if (!node.loc) return false;
+    const nodeSelection = Selection.fromAST(node.loc);
+    return this.overlapsWith(nodeSelection);
+  }
+
   touches(selection: Selection): boolean {
     return (
       this.overlapsWith(selection) ||

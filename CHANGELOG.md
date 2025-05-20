@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Handles more scenario where "Extract Function" would run on partially selected statements. It used to expand to the closest parent statement, which might have included siblings you didn't mean to extract. Now it only expands to the closest list of statements that overlap with the selection—that's better!
+
 ## [9.6.1]
 
 ### Fixed
