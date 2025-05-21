@@ -457,6 +457,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.convertGuardToIf.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.convertIfElseToTernary.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -724,6 +729,30 @@
         },
         {
           "command": "abracadabra.convertFunctionDeclarationToArrowFunction",
+          "when": "editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.convertGuardToIf",
+          "when": "editorLangId == javascript"
+        },
+        {
+          "command": "abracadabra.convertGuardToIf",
+          "when": "editorLangId == javascriptreact"
+        },
+        {
+          "command": "abracadabra.convertGuardToIf",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.convertGuardToIf",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.convertGuardToIf",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.convertGuardToIf",
           "when": "editorLangId == svelte"
         },
         {
