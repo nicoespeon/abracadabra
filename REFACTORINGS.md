@@ -288,7 +288,7 @@ Flips the left and right side of an operator. Very handy to introduce [Yoda Cond
 
 Converts a guard into a proper if statement. Convenient when you need to add more logic in the branch.
 
-![][demo-guard-to-if]
+![][demo-convert-guard-to-if]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
