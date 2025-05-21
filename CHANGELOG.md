@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.7.0] - 2025-05-20 - If You Believe in Ifs 🌠
+
 ### Added
 
 - **[New Refactoring]** "Convert Guard to If" that turns one-liners like `condition && doThis()` into a proper if-statement like `if (condition) { doThis(); }`. Thanks to @tomasossa for this one 🎉
@@ -2040,7 +2042,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.6.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.7.0...HEAD
+[9.7.0]: https://github.com/nicoespeon/abracadabra/compare/9.6.1...9.7.0
 [9.6.1]: https://github.com/nicoespeon/abracadabra/compare/9.6.0...9.6.1
 [9.6.0]: https://github.com/nicoespeon/abracadabra/compare/9.5.0...9.6.0
 [9.5.0]: https://github.com/nicoespeon/abracadabra/compare/9.4.9...9.5.0
