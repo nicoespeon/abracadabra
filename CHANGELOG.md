@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Convert Guard to If" that turns one-liners like `condition && doThis()` into a proper if-statement like `if (condition) { doThis(); }`. Thanks to @tomasossa for this one 🎉
+
+![][demo-convert-guard-to-if]
+
 ### Fixed
 
 - Handles more scenario where "Extract Function" would run on partially selected statements. It used to expand to the closest parent statement, which might have included siblings you didn't mean to extract. Now it only expands to the closest list of statements that overlap with the selection—that's better!
@@ -2168,6 +2174,7 @@ function doSomething(someData) {
 [demo-destructure-object]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/destructure-object.gif?raw=true
 [demo-move-last-statement-out-of-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-last-statement-out-of-if-else.gif?raw=true
 [demo-extract-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-function.gif?raw=true
+[demo-convert-guard-to-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-guard-to-if.gif?raw=true
 
 <!-- Links -->
 

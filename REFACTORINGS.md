@@ -32,6 +32,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Flip If/Else](#flip-ifelse)
   1. [Flip Ternary](#flip-ternary)
   1. [Flip Operator](#flip-operator)
+  1. [Convert Guard to If](#convert-guard-to-if)
   1. [Convert If/Else to Ternary](#convert-ifelse-to-ternary)
   1. [Convert Ternary to If/Else](#convert-ternary-to-ifelse)
   1. [Convert If/Else to Switch](#convert-ifelse-to-switch)
@@ -278,6 +279,16 @@ Flips a ternary statement. It's really similar to _Flip If/Else_ refactoring.
 Flips the left and right side of an operator. Very handy to introduce [Yoda Conditions](https://en.wikipedia.org/wiki/Yoda_conditions) in the code.
 
 ![][demo-flip-operator]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
+### Convert Guard to If
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Converts a guard into a proper if statement. Convenient when you need to add more logic in the branch.
+
+![][demo-guard-to-if]
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
@@ -610,6 +621,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-flip-operator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/flip-operator.gif?raw=true
 [demo-add-numeric-separator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/add-numeric-separator.gif?raw=true
 [demo-convert-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-arrow-function.gif?raw=true
+[demo-convert-guard-to-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-guard-to-if.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-ternary-to-if-else.gif?raw=true
 [demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-switch.gif?raw=true
