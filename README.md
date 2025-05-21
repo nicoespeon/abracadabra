@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-68-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-69-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -233,6 +233,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center" valign="top" width="14.28%"><a href="https://marabesi.com"><img src="https://avatars.githubusercontent.com/u/2129872?v=4?s=100" width="100px;" alt="Matheus Marabesi"/><br /><sub><b>Matheus Marabesi</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Amarabesi" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/zoodogood"><img src="https://avatars.githubusercontent.com/u/52154209?v=4?s=100" width="100px;" alt="zoodogood"/><br /><sub><b>zoodogood</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Azoodogood" title="Bug reports">🐛</a> <a href="https://github.com/nicoespeon/abracadabra/commits?author=zoodogood" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/datenreisender"><img src="https://avatars.githubusercontent.com/u/260705?v=4?s=100" width="100px;" alt="Marko Schulz"/><br /><sub><b>Marko Schulz</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Adatenreisender" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tomasossa"><img src="https://avatars.githubusercontent.com/u/56371274?v=4?s=100" width="100px;" alt="Tomás Ossa"/><br /><sub><b>Tomás Ossa</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=tomasossa" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
