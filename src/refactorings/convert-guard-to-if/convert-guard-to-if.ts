@@ -38,7 +38,7 @@ export function createVisitor(
   return {
     LogicalExpression(path) {
       if (!selection.isInsidePath(path)) return;
-
+      if (t.isReturnStatement(path.parent)) return;
       if (!isGuardForCallback(path)) return;
 
       onMatch(path);
