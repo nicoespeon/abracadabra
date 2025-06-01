@@ -6,8 +6,6 @@ updates:
       interval: monthly
       time: "10:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - nicoespeon
     ignore:
       - dependency-name: "@types/babel__traverse"
         versions:
