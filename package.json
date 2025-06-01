@@ -94,7 +94,7 @@
     "jest-html-loader": "1.0.0",
     "jsdom": "25.0.1",
     "lint-staged": "15.5.1",
-    "mocha": "10.7.0",
+    "mocha": "11.5.0",
     "node-stdlib-browser": "1.3.0",
     "ovsx": "0.10.1",
     "prettier": "3.5.3",
