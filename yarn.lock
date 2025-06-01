@@ -3780,10 +3780,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.99.1":
-  version: 1.99.1
-  resolution: "@types/vscode@npm:1.99.1"
-  checksum: 10c0/b9500609293650ad213e4c7a6df123d65c3396cd09acb48b5165b0b5938163ac801b1faf4b3de20aa8abbfa5e988321bbd2c6e2c303062b2f00548b750fa8b5d
+"@types/vscode@npm:1.100.0":
+  version: 1.100.0
+  resolution: "@types/vscode@npm:1.100.0"
+  checksum: 10c0/9c9111a4582a1e3f49c7c7a376dde4c9f484db08d2c3aff4889e1768e11cb07254ec10b250e432761a81ddaf93fc7c6e7bbae966cf0970d5baf806084e457cf4
   languageName: node
   linkType: hard
 
@@ -4122,7 +4122,7 @@ __metadata:
     "@types/node": "npm:22.15.29"
     "@types/pluralize": "npm:0.0.33"
     "@types/sinon": "npm:17.0.2"
-    "@types/vscode": "npm:1.99.1"
+    "@types/vscode": "npm:1.100.0"
     "@vscode/test-electron": "npm:2.5.2"
     all-contributors-cli: "npm:6.26.1"
     babel-jest: "npm:29.7.0"
