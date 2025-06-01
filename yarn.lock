@@ -3888,7 +3888,7 @@ __metadata:
     minimatch: "npm:10.0.1"
     mocha: "npm:10.7.0"
     node-stdlib-browser: "npm:1.3.0"
-    ovsx: "npm:0.10.1"
+    ovsx: "npm:0.10.2"
     pluralize: "npm:8.0.0"
     prettier: "npm:3.5.3"
     prettier-plugin-organize-imports: "npm:4.1.0"
@@ -10011,9 +10011,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ovsx@npm:0.10.1":
-  version: 0.10.1
-  resolution: "ovsx@npm:0.10.1"
+"ovsx@npm:0.10.2":
+  version: 0.10.2
+  resolution: "ovsx@npm:0.10.2"
   dependencies:
     "@vscode/vsce": "npm:^3.2.1"
     commander: "npm:^6.2.1"
@@ -10025,7 +10025,7 @@ __metadata:
     yauzl: "npm:^3.1.3"
   bin:
     ovsx: lib/ovsx
-  checksum: 10c0/23fbadbdc76cfbf53dfa7be7254f00b42cb3c3af58f30383362b34ae3f318c2df5f5015637310351d90d01b50bd3f3acb1e303de0587a6cb28f154e699257a4c
+  checksum: 10c0/d1a23a2cb7eb60be2381b5300a421fbce343845a5ebb60cd8032e8e19faab81d5ff7c905e6767a1e005bbbe27dbfa3e47e10840c7767a63e30a02f572f554600
   languageName: node
   linkType: hard
 
