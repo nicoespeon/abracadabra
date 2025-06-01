@@ -3367,12 +3367,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai@npm:5.2.1":
-  version: 5.2.1
-  resolution: "@types/chai@npm:5.2.1"
+"@types/chai@npm:5.2.2":
+  version: 5.2.2
+  resolution: "@types/chai@npm:5.2.2"
   dependencies:
     "@types/deep-eql": "npm:*"
-  checksum: 10c0/f8a03c9f8450b7ab8df11f658c4194be17a6316b870490d5ffaf5289a3c0c0591ed6291b2d6551e181887c3eed89d0490744b3e569d9b23cf611b05f93e775b6
+  checksum: 10c0/49282bf0e8246800ebb36f17256f97bd3a8c4fb31f92ad3c0eaa7623518d7e87f1eaad4ad206960fcaf7175854bdff4cb167e4fe96811e0081b4ada83dd533ec
   languageName: node
   linkType: hard
 
@@ -3875,7 +3875,7 @@ __metadata:
     "@eslint/eslintrc": "npm:3.3.0"
     "@eslint/js": "npm:9.28.0"
     "@types/babel__traverse": "npm:7.20.6"
-    "@types/chai": "npm:5.2.1"
+    "@types/chai": "npm:5.2.2"
     "@types/glob": "npm:8.1.0"
     "@types/jest": "npm:29.5.14"
     "@types/jsdom": "npm:21.1.7"
