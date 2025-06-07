@@ -55,9 +55,13 @@ export async function executeSafely(
       return;
     }
 
-    vscode.window.showErrorMessage(
-      `😅 I'm sorry, something went wrong: ${error.message}`
-    );
-    console.error(error);
+    const message = `😅 I'm sorry, something went wrong: ${error.message}`;
+
+    const detailedError = `${message}\n\n${JSON.stringify(error, null, 2)}\n`;
+    vscode.window
+      .createOutputChannel("Abracadabra", { log: true })
+      .error(detailedError);
+
+    await vscode.window.showErrorMessage(message);
   }
 }

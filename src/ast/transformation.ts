@@ -119,10 +119,17 @@ export function parse(code: Code): AST {
         tabWidth: 1
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : error;
-      throw new Error(
-        `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${message}`
-      );
+      if (!(error instanceof Error)) {
+        throw new Error(
+          `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${error}`
+        );
+      }
+
+      const originalMessage = error.message;
+      error.message = `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${originalMessage}`;
+      // @ts-expect-error - It's OK, we mutate the error for simplicity
+      error.sourceCode = code;
+      throw error;
     }
   }
 }
