@@ -11,7 +11,10 @@ export async function changeSignature(editor: Editor) {
   const { fixedSelection, params } = getParams(code, selection);
 
   if (!params) {
-    editor.showError(ErrorReason.CantChangeSignature);
+    editor.showError(
+      ErrorReason.CantChangeSignature,
+      new Error("missing params")
+    );
     return;
   }
 
@@ -53,7 +56,7 @@ export async function changeSignature(editor: Editor) {
         transformed
       });
     } catch (error) {
-      editor.showError(ErrorReason.CantChangeSignature);
+      editor.showError(ErrorReason.CantChangeSignature, error);
       return;
     }
   }

@@ -339,7 +339,8 @@ describe("Change Signature", () => {
     await changeSignature(editor);
 
     expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.CantChangeSignature
+      ErrorReason.CantChangeSignature,
+      expect.anything()
     );
   });
 
