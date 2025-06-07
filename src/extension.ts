@@ -33,6 +33,7 @@ import extract from "./refactorings/extract";
 import extractFunction from "./refactorings/extract-function";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
+import extractParameter from "./refactorings/extract-parameter";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipOperator from "./refactorings/flip-operator";
 import flipTernary from "./refactorings/flip-ternary";
@@ -119,6 +120,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       toggleBraces
     ],
     withActionProvider__NEW: [
+      extractParameter,
       convertGuardToIf,
       moveLastStatementOutOfIfElse,
       splitMultipleDeclarations
