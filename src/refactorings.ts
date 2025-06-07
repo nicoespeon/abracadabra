@@ -79,7 +79,7 @@ type BaseRefactoringState = { code: Code; selection: Selection };
 
 export type EditorCommand = (
   | { action: "do nothing" }
-  | { action: "show error"; reason: string }
+  | { action: "show error"; reason: string; details?: unknown }
   | { action: "write"; code: Code; newCursorPosition?: Position }
   | {
       action: "read then write";
@@ -148,7 +148,7 @@ export async function executeRefactoring(
       break;
 
     case "show error":
-      editor.showError(result.reason);
+      editor.showError(result.reason, result.details);
       break;
 
     case "write":

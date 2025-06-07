@@ -17,14 +17,17 @@ describe("Execute Refactoring", () => {
     const reason = "This is an error message";
     const fakeRefactoring: Refactoring = () => ({
       action: "show error",
-      reason
+      reason,
+      details: { trace: "Some trace" }
     });
     const editor = new InMemoryEditor();
     jest.spyOn(editor, "showError");
 
     await executeRefactoring(fakeRefactoring, editor);
 
-    expect(editor.showError).toHaveBeenCalledWith(reason);
+    expect(editor.showError).toHaveBeenCalledWith(reason, {
+      trace: "Some trace"
+    });
   });
 
   it("should make the editor replace code with new content for 'write'", async () => {

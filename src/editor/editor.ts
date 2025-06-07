@@ -21,7 +21,7 @@ export interface Editor {
     newCursorPosition?: Position | Selection
   ): Promise<void>;
   delegate(command: Command, selection?: Selection): Promise<Result>;
-  showError(reason: ErrorReason | string): Promise<void>;
+  showError(reason: ErrorReason | string, details?: unknown): Promise<void>;
   askUserInput(defaultValue?: string): Promise<string | undefined>;
   askUserChoice<T>(
     choices: Choice<T>[],

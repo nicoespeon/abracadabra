@@ -61,13 +61,13 @@ export class AttemptingEditor implements Editor {
     return this.editor.delegate(command, selection);
   }
 
-  async showError(reason: ErrorReason | string) {
+  async showError(reason: ErrorReason | string, details?: unknown) {
     if (reason === this.expectedReason) {
       this.attemptSucceeded = false;
       return Promise.resolve();
     }
 
-    await this.editor.showError(reason);
+    await this.editor.showError(reason, details);
   }
 
   askUserChoice<T>(

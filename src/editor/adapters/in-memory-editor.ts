@@ -201,7 +201,7 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve("ok");
   }
 
-  showError(_reason: ErrorReason | string) {
+  showError(_reason: ErrorReason | string, _details?: unknown) {
     return Promise.resolve();
   }
 

@@ -206,9 +206,17 @@ export class VSCodeEditor implements Editor {
     return "ok";
   }
 
-  async showError(reason: ErrorReason | string) {
+  async showError(reason: ErrorReason | string, details?: unknown) {
     const message =
       typeof reason === "string" ? reason : errorReasonToString(reason);
+
+    if (details) {
+      const detailedError = `${message}\n${details}\n\n${JSON.stringify(details, null, 2)}\n`;
+      vscode.window
+        .createOutputChannel("Abracadabra", { log: true })
+        .error(detailedError);
+    }
+
     await vscode.window.showErrorMessage(message);
   }
 

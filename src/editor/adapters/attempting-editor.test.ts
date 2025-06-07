@@ -33,11 +33,12 @@ describe("AttemptingEditor", () => {
       const editor = new InMemoryEditor("// irrelevant");
       jest.spyOn(editor, "showError");
       const attemptingEditor = new AttemptingEditor(editor, EXPECTED_REASON);
+      const details = { trace: "Some trace" };
 
-      attemptingEditor.showError(ANY_OTHER_REASON);
+      attemptingEditor.showError(ANY_OTHER_REASON, details);
 
       expect(editor.showError).toHaveBeenCalledTimes(1);
-      expect(editor.showError).toHaveBeenCalledWith(ANY_OTHER_REASON);
+      expect(editor.showError).toHaveBeenCalledWith(ANY_OTHER_REASON, details);
     });
 
     it("should say attempt succeeded", async () => {
