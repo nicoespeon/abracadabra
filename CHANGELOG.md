@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Abracadabra error logs are now sent to the VS Code "Output" tab, in a dedicated channel. It also contains more details, so it's easier to debug issues. Thanks @ackvf for [raising this one](https://github.com/nicoespeon/abracadabra/discussions/1176)!
+
 ## [9.7.0] - 2025-05-20 - If You Believe in Ifs 🌠
 
 ### Added
