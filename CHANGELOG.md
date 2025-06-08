@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.0] - 2025-06-08 - I’ve Got a Log 🍳
+
 ### Added
 
 - Abracadabra error logs are now sent to the VS Code "Output" tab, in a dedicated channel. It also contains more details, so it's easier to debug issues. Thanks @ackvf for [raising this one](https://github.com/nicoespeon/abracadabra/discussions/1176)!
@@ -2046,7 +2048,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.7.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.8.0...HEAD
+[9.8.0]: https://github.com/nicoespeon/abracadabra/compare/9.7.0...9.8.0
 [9.7.0]: https://github.com/nicoespeon/abracadabra/compare/9.6.1...9.7.0
 [9.6.1]: https://github.com/nicoespeon/abracadabra/compare/9.6.0...9.6.1
 [9.6.0]: https://github.com/nicoespeon/abracadabra/compare/9.5.0...9.6.0
