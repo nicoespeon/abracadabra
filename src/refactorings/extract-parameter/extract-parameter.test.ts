@@ -17,7 +17,7 @@ describe("Extract Parameter", () => {
   });
 
   it("should show an error message if refactoring can't be made", () => {
-    const code = `// This is a comment, can't be refactored`;
+    const code = `const name = "World";`;
 
     const result = extractParameter({
       state: "new",
