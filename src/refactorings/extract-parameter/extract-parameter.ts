@@ -16,7 +16,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, functionPath) => {
-      const variableDeclaration = path.node.declarations[0];
+      const variableDeclaration = path.node;
       const assignmentPattern = t.assignmentPattern(
         // @ts-expect-error - Let's fix this type issue!
         variableDeclaration.id,
@@ -31,23 +31,23 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 export function createVisitor(
   selection: Selection,
   onMatch: (
-    path: t.NodePath<t.VariableDeclaration>,
+    path: t.NodePath<t.VariableDeclarator>,
     functionPath: t.NodePath<
       t.FunctionDeclaration | t.FunctionExpression | t.ArrowFunctionExpression
     >
   ) => void
 ): t.Visitor {
   return {
-    VariableDeclaration: (path) => {
+    VariableDeclarator: (path) => {
       if (!selection.isInsidePath(path)) return;
       if (
-        !path.parentPath.parentPath?.isFunctionDeclaration() &&
-        !path.parentPath.parentPath?.isFunctionExpression() &&
-        !path.parentPath.parentPath?.isArrowFunctionExpression()
+        !path.parentPath.parentPath?.parentPath?.isFunctionDeclaration() &&
+        !path.parentPath.parentPath?.parentPath?.isFunctionExpression() &&
+        !path.parentPath.parentPath?.parentPath?.isArrowFunctionExpression()
       )
         return;
 
-      onMatch(path, path.parentPath.parentPath);
+      onMatch(path, path.parentPath.parentPath.parentPath);
     }
   };
 }
