@@ -31,7 +31,9 @@ export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.VariableDeclaration>,
-    functionPath: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
+    functionPath: t.NodePath<
+      t.FunctionDeclaration | t.FunctionExpression | t.ArrowFunctionExpression
+    >
   ) => void
 ): t.Visitor {
   return {
@@ -39,7 +41,8 @@ export function createVisitor(
       if (!selection.isInsidePath(path)) return;
       if (
         !path.parentPath.parentPath?.isFunctionDeclaration() &&
-        !path.parentPath.parentPath?.isFunctionExpression()
+        !path.parentPath.parentPath?.isFunctionExpression() &&
+        !path.parentPath.parentPath?.isArrowFunctionExpression()
       )
         return;
 

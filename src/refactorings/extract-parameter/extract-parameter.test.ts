@@ -29,6 +29,18 @@ describe("Extract Parameter", () => {
 }`
       });
     });
+
+    it("arrow function", () => {
+      shouldExtractParameter({
+        code: `const sayHello = () => {
+  const name[cursor] = "World";
+  const lastName = "Doe";
+}`,
+        expected: `const sayHello = (name = "World") => {
+  const lastName = "Doe";
+}`
+      });
+    });
   });
 
   it("should show an error message if refactoring can't be made", () => {
