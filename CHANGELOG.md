@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Abracadabra shortcuts would attempt to trigger a refactoring, regardless of the language of the file. These are now restricted to JS/TS files, just like Command Palette and Quick Fixes suggestions. Thanks @PetrusAsikainen for reporting this one!
+
 ## [9.8.0] - 2025-06-08 - I’ve Got a Log 🍳
 
 ### Added

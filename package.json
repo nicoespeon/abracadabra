@@ -350,53 +350,53 @@
       {
         "command": "abracadabra.renameSymbol",
         "key": "f2",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.toggleHighlight",
         "key": "ctrl+alt+h",
         "mac": "ctrl+h",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.refreshHighlights",
         "key": "shift+alt+h",
         "mac": "ctrl+alt+h",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.removeAllHighlights",
         "key": "shift+ctrl+alt+h",
         "mac": "shift+ctrl+h",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.extract",
         "key": "ctrl+alt+v",
         "mac": "cmd+alt+v",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.extractFunction",
         "key": "ctrl+alt+m",
         "mac": "cmd+alt+m",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.inline",
         "key": "ctrl+alt+n",
         "mac": "cmd+alt+n",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.moveStatementDown",
         "key": "alt+shift+d",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       },
       {
         "command": "abracadabra.moveStatementUp",
         "key": "alt+shift+u",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && (editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte)"
       }
     ],
     "configuration": {
