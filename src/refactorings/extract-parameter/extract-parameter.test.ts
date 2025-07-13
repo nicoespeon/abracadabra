@@ -41,6 +41,18 @@ describe("Extract Parameter", () => {
 }`
       });
     });
+
+    it("array deconstruction", () => {
+      shouldExtractParameter({
+        code: `const sayHello = () => {
+  const [first, ...rest][cursor] = ["Hello", "World"];
+  const lastName = "Doe";
+}`,
+        expected: `const sayHello = ([first, ...rest] = ["Hello", "World"]) => {
+  const lastName = "Doe";
+}`
+      });
+    });
   });
 
   it("should show an error message if refactoring can't be made", () => {
