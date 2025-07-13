@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.1]
+
 ### Fixed
 
 - Abracadabra shortcuts would attempt to trigger a refactoring, regardless of the language of the file. These are now restricted to JS/TS files, just like Command Palette and Quick Fixes suggestions. Thanks @PetrusAsikainen for reporting this one!
@@ -2052,7 +2054,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.8.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.8.1...HEAD
+[9.8.1]: https://github.com/nicoespeon/abracadabra/compare/9.8.0...9.8.1
 [9.8.0]: https://github.com/nicoespeon/abracadabra/compare/9.7.0...9.8.0
 [9.7.0]: https://github.com/nicoespeon/abracadabra/compare/9.6.1...9.7.0
 [9.6.1]: https://github.com/nicoespeon/abracadabra/compare/9.6.0...9.6.1
