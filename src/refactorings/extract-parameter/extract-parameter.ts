@@ -16,10 +16,11 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
     createVisitor(selection, (path, functionPath) => {
+      const variableDeclaration = path.node.declarations[0];
       const assignmentPattern = t.assignmentPattern(
         // @ts-expect-error - Let's fix this type issue!
-        path.node.declarations[0].id,
-        path.node.declarations[0].init
+        variableDeclaration.id,
+        variableDeclaration.init
       );
       functionPath.node.params.push(assignmentPattern);
       path.remove();
