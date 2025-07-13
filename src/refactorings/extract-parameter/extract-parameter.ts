@@ -31,13 +31,17 @@ export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.VariableDeclaration>,
-    functionPath: t.NodePath<t.FunctionDeclaration>
+    functionPath: t.NodePath<t.FunctionDeclaration | t.FunctionExpression>
   ) => void
 ): t.Visitor {
   return {
     VariableDeclaration: (path) => {
       if (!selection.isInsidePath(path)) return;
-      if (!path.parentPath.parentPath?.isFunctionDeclaration()) return;
+      if (
+        !path.parentPath.parentPath?.isFunctionDeclaration() &&
+        !path.parentPath.parentPath?.isFunctionExpression()
+      )
+        return;
 
       onMatch(path, path.parentPath.parentPath);
     }
