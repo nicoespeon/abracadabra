@@ -55,16 +55,18 @@ describe("Extract Parameter", () => {
     });
   });
 
-  it("should show an error message if refactoring can't be made", () => {
-    const code = `const name = "World";`;
+  describe("should show an error message if refactoring can't be made", () => {
+    it("variable declaration outside of a function", () => {
+      const code = `const name = "World";`;
 
-    const result = extractParameter({
-      state: "new",
-      code,
-      selection: Selection.cursorAt(0, 0)
+      const result = extractParameter({
+        state: "new",
+        code,
+        selection: Selection.cursorAt(0, 0)
+      });
+
+      expect(result.action).toBe("show error");
     });
-
-    expect(result.action).toBe("show error");
   });
 });
 
