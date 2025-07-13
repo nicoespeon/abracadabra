@@ -67,6 +67,20 @@ describe("Extract Parameter", () => {
 
       expect(result.action).toBe("show error");
     });
+
+    it("let without assignation", () => {
+      const code = `const sayHello = () => {
+  let name;
+}`;
+
+      const result = extractParameter({
+        state: "new",
+        code,
+        selection: Selection.cursorAt(1, 9)
+      });
+
+      expect(result.action).toBe("show error");
+    });
   });
 });
 

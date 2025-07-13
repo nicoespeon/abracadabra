@@ -46,6 +46,7 @@ export function createVisitor(
         !path.parentPath.parentPath?.parentPath?.isArrowFunctionExpression()
       )
         return;
+      if (path.node.init === null) return;
 
       onMatch(path, path.parentPath.parentPath.parentPath);
     }
