@@ -53,6 +53,34 @@ describe("Extract Parameter", () => {
 }`
       });
     });
+
+    it("nested function", () => {
+      shouldExtractParameter({
+        code: `function main() {
+  function sayHello() {
+    const name[cursor] = "World";
+    const lastName = "Doe";
+  }
+}`,
+        expected: `function main() {
+  function sayHello(name = "World") {
+    const lastName = "Doe";
+  }
+}`
+      });
+    });
+
+    it("function with existing parameters", () => {
+      shouldExtractParameter({
+        code: `function sayHello(pronoun) {
+  const name[cursor] = "World";
+  const lastName = "Doe";
+}`,
+        expected: `function sayHello(pronoun, name = "World") {
+  const lastName = "Doe";
+}`
+      });
+    });
   });
 
   describe("should show an error message if refactoring can't be made", () => {
