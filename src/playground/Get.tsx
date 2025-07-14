@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Source: https://github.com/contiamo/restful-react/blob/master/src/Get.tsx
 import { DebounceSettings } from "lodash";
 import debounce from "lodash/debounce";

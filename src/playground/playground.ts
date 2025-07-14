@@ -1,6 +1,8 @@
-// @ts-ignore
+/* eslint-disable */
+
+// @ts-expect-error - It's a playground file
 import express from "express";
-// @ts-ignore
+// @ts-expect-error - It's a playground file
 import mysql from "mysql2/promise";
 
 async function createApp({ port }: { port: number } = { port: 3306 }) {

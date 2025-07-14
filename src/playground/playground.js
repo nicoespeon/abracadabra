@@ -1,3 +1,4 @@
+/* eslint-disable */
 exports = typeof window !== "undefined" && window !== null ? window : global;
 
 exports.Game = function () {
