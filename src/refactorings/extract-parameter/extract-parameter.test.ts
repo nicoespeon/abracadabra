@@ -81,6 +81,22 @@ describe("Extract Parameter", () => {
 }`
       });
     });
+
+    it("object method", () => {
+      shouldExtractParameter({
+        code: `const obj = {
+  sayHello() {
+    const name[cursor] = "World";
+    const lastName = "Doe";
+  }
+}`,
+        expected: `const obj = {
+  sayHello(name = "World") {
+    const lastName = "Doe";
+  }
+}`
+      });
+    });
   });
 
   describe("should show an error message if refactoring can't be made", () => {

@@ -35,7 +35,10 @@ export function createVisitor(
   onMatch: (
     path: t.NodePath<t.VariableDeclarator>,
     functionPath: t.NodePath<
-      t.FunctionDeclaration | t.FunctionExpression | t.ArrowFunctionExpression
+      | t.FunctionDeclaration
+      | t.FunctionExpression
+      | t.ArrowFunctionExpression
+      | t.ObjectMethod
     >
   ) => void
 ): t.Visitor {
@@ -48,7 +51,8 @@ export function createVisitor(
       if (
         !functionPath?.isFunctionDeclaration() &&
         !functionPath?.isFunctionExpression() &&
-        !functionPath?.isArrowFunctionExpression()
+        !functionPath?.isArrowFunctionExpression() &&
+        !functionPath?.isObjectMethod()
       ) {
         return;
       }
