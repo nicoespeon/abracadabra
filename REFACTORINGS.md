@@ -48,6 +48,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Split Declaration and Initialization](#split-declaration-and-initialization)
   1. [Split Multiple Declarations](#split-multiple-declarations)
   1. [Convert let to const](#convert-let-to-const)
+  1. [Extract Parameter](#extract-parameter)
 - Working around the syntax:
   1. [Add Numeric Separator](#add-numeric-separator)
   1. [Convert to Arrow Function](#convert-to-arrow-function)
@@ -438,6 +439,14 @@ Converts the declaration of a variable that is a `let` to a `const` if it's not 
 
 ![][demo-convert-let-to-const]
 
+### Extract Parameter
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Converts the variable declaration into a parameter of the function. It preserves the assignment.
+
+![][demo-extract-parameter]
+
 [⬆️ Go to Table of Contents](#table-of-contents)
 
 ## Working around the syntax
@@ -626,6 +635,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-ternary-to-if-else.gif?raw=true
 [demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-switch.gif?raw=true
 [demo-convert-let-to-const]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-let-to-const.gif?raw=true
+[demo-extract-parameter]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-parameter.gif?raw=true
 [demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-switch-to-if-else.gif?raw=true
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-statement-down.gif?raw=true

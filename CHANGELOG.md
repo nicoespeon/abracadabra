@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Extract Parameter" which converts a variable declaration into a function parameter. Thank you @pinage404 for finishing this one!
+
+![][demo-extract-parameter]
+
 ## [9.8.1]
 
 ### Fixed
@@ -2192,6 +2198,7 @@ function doSomething(someData) {
 [demo-move-last-statement-out-of-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-last-statement-out-of-if-else.gif?raw=true
 [demo-extract-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-function.gif?raw=true
 [demo-convert-guard-to-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-guard-to-if.gif?raw=true
+[demo-extract-parameter]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-parameter.gif?raw=true
 
 <!-- Links -->
 
