@@ -679,6 +679,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "pinage404",
+      "name": "pinage404",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6325757?v=4",
+      "profile": "https://wheretofind.me/@pinage404",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
