@@ -70,6 +70,22 @@ describe("Extract Parameter", () => {
       });
     });
 
+    it("nested arrow function", () => {
+      shouldExtractParameter({
+        code: `const main = () => {
+  const sayHello = () => {
+    const name[cursor] = "World";
+    const lastName = "Doe";
+  }
+}`,
+        expected: `const main = () => {
+  const sayHello = (name = "World") => {
+    const lastName = "Doe";
+  }
+}`
+      });
+    });
+
     it("function with existing parameters", () => {
       shouldExtractParameter({
         code: `function sayHello(pronoun) {

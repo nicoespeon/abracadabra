@@ -75,6 +75,10 @@ export function createVisitor(
         return;
       }
 
+      // Since we visit nodes from parent to children, first check
+      // if a child would match the selection closer.
+      if (hasChildWhichMatchesSelection(path, selection)) return;
+
       onMatch(
         path,
         functionPath,
@@ -83,4 +87,47 @@ export function createVisitor(
       );
     }
   };
+}
+
+function hasChildWhichMatchesSelection(
+  path: t.NodePath,
+  selection: Selection
+): boolean {
+  let result = false;
+
+  path.traverse({
+    VariableDeclarator(childPath) {
+      if (!selection.isInsidePath(childPath)) return;
+
+      const functionPath = childPath.parentPath.parentPath?.parentPath;
+      if (
+        !functionPath?.isFunctionDeclaration() &&
+        !functionPath?.isFunctionExpression() &&
+        !functionPath?.isArrowFunctionExpression() &&
+        !functionPath?.isObjectMethod() &&
+        !functionPath?.isClassMethod() &&
+        !functionPath?.isClassPrivateMethod()
+      ) {
+        return;
+      }
+
+      // Make type explicit, otherwise TS struggles to narrow the `id` type.
+      const variableDeclarator: t.VariableDeclarator = childPath.node;
+      if (
+        t.isRestElement(variableDeclarator.id) ||
+        t.isAssignmentPattern(variableDeclarator.id) ||
+        t.isTSParameterProperty(variableDeclarator.id)
+      ) {
+        return;
+      }
+      if (!variableDeclarator.init) {
+        return;
+      }
+
+      result = true;
+      childPath.stop();
+    }
+  });
+
+  return result;
 }
