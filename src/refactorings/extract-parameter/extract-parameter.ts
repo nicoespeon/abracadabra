@@ -15,19 +15,18 @@ export function extractParameter(state: RefactoringState): EditorCommand {
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
   return t.transformAST(
     ast,
-    createVisitor(selection, (path, functionPath) => {
-      const variableDeclaration = path.node;
-      const assignmentPattern = t.assignmentPattern(
-        // VariableDeclarator[id] includes AssignmentPattern, RestElement and TSParameterProperty which are not included in AssignmentPattern[left]
-        // AssignmentPattern[left] includes a subset of VariableDeclarator[id]
-        // @ts-expect-error - i don't know how to remove this TS error
-        variableDeclaration.id,
-        variableDeclaration.init
-      );
-      functionPath.node.params.push(assignmentPattern);
-      path.remove();
-      path.stop();
-    })
+    createVisitor(
+      selection,
+      (path, functionPath, assignmentId, assignmentInit) => {
+        const assignmentPattern = t.assignmentPattern(
+          assignmentId,
+          assignmentInit
+        );
+        functionPath.node.params.push(assignmentPattern);
+        path.remove();
+        path.stop();
+      }
+    )
   );
 }
 
@@ -42,13 +41,14 @@ export function createVisitor(
       | t.ObjectMethod
       | t.ClassMethod
       | t.ClassPrivateMethod
-    >
+    >,
+    assignmentId: Parameters<typeof t.assignmentPattern>[0],
+    assignmentInit: t.Expression
   ) => void
 ): t.Visitor {
   return {
     VariableDeclarator: (path) => {
       if (!selection.isInsidePath(path)) return;
-      if (path.node.init === null) return;
 
       const functionPath = path.parentPath.parentPath?.parentPath;
       if (
@@ -62,7 +62,25 @@ export function createVisitor(
         return;
       }
 
-      onMatch(path, functionPath);
+      // Make type explicit, otherwise TS struggles to narrow the `id` type.
+      const variableDeclarator: t.VariableDeclarator = path.node;
+      if (
+        t.isRestElement(variableDeclarator.id) ||
+        t.isAssignmentPattern(variableDeclarator.id) ||
+        t.isTSParameterProperty(variableDeclarator.id)
+      ) {
+        return;
+      }
+      if (!variableDeclarator.init) {
+        return;
+      }
+
+      onMatch(
+        path,
+        functionPath,
+        variableDeclarator.id,
+        variableDeclarator.init
+      );
     }
   };
 }
