@@ -97,6 +97,38 @@ describe("Extract Parameter", () => {
 }`
       });
     });
+
+    it("class method", () => {
+      shouldExtractParameter({
+        code: `class SomeClass {
+  public sayHello() {
+    const name[cursor] = "World";
+    const lastName = "Doe";
+  }
+}`,
+        expected: `class SomeClass {
+  public sayHello(name = "World") {
+    const lastName = "Doe";
+  }
+}`
+      });
+    });
+
+    it("class method (private)", () => {
+      shouldExtractParameter({
+        code: `class SomeClass {
+  #sayHello() {
+    const name[cursor] = "World";
+    const lastName = "Doe";
+  }
+}`,
+        expected: `class SomeClass {
+  #sayHello(name = "World") {
+    const lastName = "Doe";
+  }
+}`
+      });
+    });
   });
 
   describe("should show an error message if refactoring can't be made", () => {

@@ -39,6 +39,8 @@ export function createVisitor(
       | t.FunctionExpression
       | t.ArrowFunctionExpression
       | t.ObjectMethod
+      | t.ClassMethod
+      | t.ClassPrivateMethod
     >
   ) => void
 ): t.Visitor {
@@ -52,7 +54,9 @@ export function createVisitor(
         !functionPath?.isFunctionDeclaration() &&
         !functionPath?.isFunctionExpression() &&
         !functionPath?.isArrowFunctionExpression() &&
-        !functionPath?.isObjectMethod()
+        !functionPath?.isObjectMethod() &&
+        !functionPath?.isClassMethod() &&
+        !functionPath?.isClassPrivateMethod()
       ) {
         return;
       }
