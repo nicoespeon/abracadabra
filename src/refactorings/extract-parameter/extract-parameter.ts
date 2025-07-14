@@ -26,6 +26,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       );
       functionPath.node.params.push(assignmentPattern);
       path.remove();
+      path.stop();
     })
   );
 }
