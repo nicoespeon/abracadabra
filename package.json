@@ -211,6 +211,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.extractParameter",
+        "title": "Extract Parameter",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.flipIfElse",
         "title": "Flip If/Else",
         "category": "Abracadabra"
@@ -507,6 +512,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.extractParameter.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.flipIfElse.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -678,6 +688,22 @@
         {
           "command": "abracadabra.extractInterface",
           "when": "editorLangId == typescript || editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extractParameter",
+          "when": "editorLangId == typescript"
+        },
+        {
+          "command": "abracadabra.extractParameter",
+          "when": "editorLangId == typescriptreact"
+        },
+        {
+          "command": "abracadabra.extractParameter",
+          "when": "editorLangId == vue"
+        },
+        {
+          "command": "abracadabra.extractParameter",
+          "when": "editorLangId == svelte"
         },
         {
           "command": "abracadabra.flipIfElse",
