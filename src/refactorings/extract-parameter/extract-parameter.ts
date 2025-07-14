@@ -42,15 +42,18 @@ export function createVisitor(
   return {
     VariableDeclarator: (path) => {
       if (!selection.isInsidePath(path)) return;
-      if (
-        !path.parentPath.parentPath?.parentPath?.isFunctionDeclaration() &&
-        !path.parentPath.parentPath?.parentPath?.isFunctionExpression() &&
-        !path.parentPath.parentPath?.parentPath?.isArrowFunctionExpression()
-      )
-        return;
       if (path.node.init === null) return;
 
-      onMatch(path, path.parentPath.parentPath.parentPath);
+      const functionPath = path.parentPath.parentPath?.parentPath;
+      if (
+        !functionPath?.isFunctionDeclaration() &&
+        !functionPath?.isFunctionExpression() &&
+        !functionPath?.isArrowFunctionExpression()
+      ) {
+        return;
+      }
+
+      onMatch(path, functionPath);
     }
   };
 }
