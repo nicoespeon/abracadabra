@@ -691,19 +691,7 @@
         },
         {
           "command": "abracadabra.extractParameter",
-          "when": "editorLangId == typescript"
-        },
-        {
-          "command": "abracadabra.extractParameter",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "abracadabra.extractParameter",
-          "when": "editorLangId == vue"
-        },
-        {
-          "command": "abracadabra.extractParameter",
-          "when": "editorLangId == svelte"
+          "when": "editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte"
         },
         {
           "command": "abracadabra.flipIfElse",
