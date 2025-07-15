@@ -2,6 +2,15 @@ import * as t from "../../ast";
 import { Selection } from "../../editor/selection";
 import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
+type IsFunction = t.NodePath<
+  | t.FunctionDeclaration
+  | t.FunctionExpression
+  | t.ArrowFunctionExpression
+  | t.ObjectMethod
+  | t.ClassMethod
+  | t.ClassPrivateMethod
+>;
+
 export function extractParameter(state: RefactoringState): EditorCommand {
   const updatedCode = updateCode(t.parse(state.code), state.selection);
 
@@ -34,14 +43,7 @@ export function createVisitor(
   selection: Selection,
   onMatch: (
     path: t.NodePath<t.VariableDeclarator>,
-    functionPath: t.NodePath<
-      | t.FunctionDeclaration
-      | t.FunctionExpression
-      | t.ArrowFunctionExpression
-      | t.ObjectMethod
-      | t.ClassMethod
-      | t.ClassPrivateMethod
-    >,
+    functionPath: IsFunction,
     assignmentId: Parameters<typeof t.assignmentPattern>[0],
     assignmentInit: t.Expression
   ) => void
@@ -51,14 +53,7 @@ export function createVisitor(
       if (!selection.isInsidePath(path)) return;
 
       const functionPath = path.parentPath.parentPath?.parentPath;
-      if (
-        !functionPath?.isFunctionDeclaration() &&
-        !functionPath?.isFunctionExpression() &&
-        !functionPath?.isArrowFunctionExpression() &&
-        !functionPath?.isObjectMethod() &&
-        !functionPath?.isClassMethod() &&
-        !functionPath?.isClassPrivateMethod()
-      ) {
+      if (!isFunction(functionPath)) {
         return;
       }
 
@@ -100,14 +95,7 @@ function hasChildWhichMatchesSelection(
       if (!selection.isInsidePath(childPath)) return;
 
       const functionPath = childPath.parentPath.parentPath?.parentPath;
-      if (
-        !functionPath?.isFunctionDeclaration() &&
-        !functionPath?.isFunctionExpression() &&
-        !functionPath?.isArrowFunctionExpression() &&
-        !functionPath?.isObjectMethod() &&
-        !functionPath?.isClassMethod() &&
-        !functionPath?.isClassPrivateMethod()
-      ) {
+      if (!isFunction(functionPath)) {
         return;
       }
 
@@ -130,4 +118,18 @@ function hasChildWhichMatchesSelection(
   });
 
   return result;
+}
+
+function isFunction(
+  functionPath: t.NodePath<unknown> | null | undefined
+): functionPath is IsFunction {
+  return (
+    !!functionPath &&
+    (functionPath.isFunctionDeclaration() ||
+      functionPath.isFunctionExpression() ||
+      functionPath.isArrowFunctionExpression() ||
+      functionPath.isObjectMethod() ||
+      functionPath.isClassMethod() ||
+      functionPath.isClassPrivateMethod())
+  );
 }
