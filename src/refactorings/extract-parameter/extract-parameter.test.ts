@@ -145,6 +145,26 @@ describe("Extract Parameter", () => {
 }`
       });
     });
+
+    it("with type declaration", () => {
+      shouldExtractParameter({
+        code: `enum Foo {
+  BAR,
+  TUX,
+}
+const sayHello = function() {
+  const name[cursor]: Foo = Foo.BAR;
+  const lastName = "Doe";
+}`,
+        expected: `enum Foo {
+  BAR,
+  TUX,
+}
+const sayHello = function(name: Foo = Foo.BAR) {
+  const lastName = "Doe";
+}`
+      });
+    });
   });
 
   describe("should show an error message if refactoring can't be made", () => {
