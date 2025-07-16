@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.9.0] - 2025-07-16 - For the First Time as a Param 🧊
+
 ### Added
 
 - **[New Refactoring]** "Extract Parameter" which converts a variable declaration into a function parameter. Thank you @pinage404 for finishing this one!
@@ -2060,7 +2062,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.8.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.9.0...HEAD
+[9.9.0]: https://github.com/nicoespeon/abracadabra/compare/9.8.1...9.9.0
 [9.8.1]: https://github.com/nicoespeon/abracadabra/compare/9.8.0...9.8.1
 [9.8.0]: https://github.com/nicoespeon/abracadabra/compare/9.7.0...9.8.0
 [9.7.0]: https://github.com/nicoespeon/abracadabra/compare/9.6.1...9.7.0
