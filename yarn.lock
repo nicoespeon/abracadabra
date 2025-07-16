@@ -784,13 +784,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-string-parser@npm:^7.21.5, @babel/helper-string-parser@npm:^7.27.1":
-  version: 7.27.1
-  resolution: "@babel/helper-string-parser@npm:7.27.1"
-  checksum: 10c0/8bda3448e07b5583727c103560bcf9c4c24b3c1051a4c516d4050ef69df37bb9a4734a585fe12725b8c2763de0a265aa1e909b485a4e3270b7cfd3e4dbe4b602
-  languageName: node
-  linkType: hard
-
 "@babel/helper-string-parser@npm:^7.23.4":
   version: 7.23.4
   resolution: "@babel/helper-string-parser@npm:7.23.4"
@@ -809,6 +802,13 @@ __metadata:
   version: 7.25.9
   resolution: "@babel/helper-string-parser@npm:7.25.9"
   checksum: 10c0/7244b45d8e65f6b4338a6a68a8556f2cb161b782343e97281a5f2b9b93e420cad0d9f5773a59d79f61d0c448913d06f6a2358a87f2e203cf112e3c5b53522ee6
+  languageName: node
+  linkType: hard
+
+"@babel/helper-string-parser@npm:^7.27.1":
+  version: 7.27.1
+  resolution: "@babel/helper-string-parser@npm:7.27.1"
+  checksum: 10c0/8bda3448e07b5583727c103560bcf9c4c24b3c1051a4c516d4050ef69df37bb9a4734a585fe12725b8c2763de0a265aa1e909b485a4e3270b7cfd3e4dbe4b602
   languageName: node
   linkType: hard
 
@@ -2119,14 +2119,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:7.21.5":
-  version: 7.21.5
-  resolution: "@babel/types@npm:7.21.5"
+"@babel/types@npm:7.28.0":
+  version: 7.28.0
+  resolution: "@babel/types@npm:7.28.0"
   dependencies:
-    "@babel/helper-string-parser": "npm:^7.21.5"
-    "@babel/helper-validator-identifier": "npm:^7.19.1"
-    to-fast-properties: "npm:^2.0.0"
-  checksum: 10c0/23c943aa2c0d11b798e9298b55b1993da8b386504aac2f781a49b4bbf2cf2ad5e1003409241578574e421c999ff7a3aab2cf30ad3581d33eb9053d82b9e20408
+    "@babel/helper-string-parser": "npm:^7.27.1"
+    "@babel/helper-validator-identifier": "npm:^7.27.1"
+  checksum: 10c0/7ca8521bf5e2d2ed4db31176efaaf94463a6b7a4d16dcc60e34e963b3596c2ecadb85457bebed13a9ee9a5829ef5f515d05b55a991b6a8f3b835451843482e39
   languageName: node
   linkType: hard
 
@@ -4299,7 +4298,7 @@ __metadata:
     "@babel/preset-env": "npm:7.27.1"
     "@babel/preset-typescript": "npm:7.26.0"
     "@babel/traverse": "npm:7.27.1"
-    "@babel/types": "npm:7.21.5"
+    "@babel/types": "npm:7.28.0"
     "@eslint/eslintrc": "npm:3.3.0"
     "@eslint/js": "npm:9.30.1"
     "@types/babel__traverse": "npm:7.20.6"
