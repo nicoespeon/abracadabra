@@ -78,7 +78,7 @@
     "@types/node": "24.0.8",
     "@types/pluralize": "0.0.33",
     "@types/sinon": "17.0.2",
-    "@types/vscode": "1.100.0",
+    "@types/vscode": "1.102.0",
     "@vscode/test-electron": "2.5.2",
     "all-contributors-cli": "6.26.1",
     "babel-jest": "30.0.5",
