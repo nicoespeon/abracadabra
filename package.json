@@ -99,7 +99,7 @@
     "ovsx": "0.10.5",
     "prettier": "3.6.2",
     "prettier-plugin-organize-imports": "4.1.0",
-    "pretty-quick": "4.1.1",
+    "pretty-quick": "4.2.2",
     "sinon": "20.0.0",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
