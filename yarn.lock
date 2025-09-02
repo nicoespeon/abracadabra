@@ -4034,10 +4034,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:10.0.7":
-  version: 10.0.7
-  resolution: "@types/mocha@npm:10.0.7"
-  checksum: 10c0/48a2df4dd02b6e66a11129dca6a23cf0cc3995faf8525286eb851043685bd8b7444780f4bb29a1c42df7559ed63294e5308bfce3a6b862ad2e0359cb21c21329
+"@types/mocha@npm:10.0.10":
+  version: 10.0.10
+  resolution: "@types/mocha@npm:10.0.10"
+  checksum: 10c0/d2b8c48138cde6923493e42b38e839695eb42edd04629abe480a8f34c0e3f50dd82a55832c2e8d2b6e6f9e4deb492d7d733e600fbbdd5a0ceccbcfc6844ff9d5
   languageName: node
   linkType: hard
 
@@ -4460,7 +4460,7 @@ __metadata:
     "@types/glob": "npm:9.0.0"
     "@types/jest": "npm:29.5.14"
     "@types/jsdom": "npm:21.1.7"
-    "@types/mocha": "npm:10.0.7"
+    "@types/mocha": "npm:10.0.10"
     "@types/node": "npm:24.0.8"
     "@types/pluralize": "npm:0.0.33"
     "@types/sinon": "npm:17.0.2"
