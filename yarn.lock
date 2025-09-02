@@ -2763,24 +2763,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@eslint/eslintrc@npm:3.3.0"
-  dependencies:
-    ajv: "npm:^6.12.4"
-    debug: "npm:^4.3.2"
-    espree: "npm:^10.0.1"
-    globals: "npm:^14.0.0"
-    ignore: "npm:^5.2.0"
-    import-fresh: "npm:^3.2.1"
-    js-yaml: "npm:^4.1.0"
-    minimatch: "npm:^3.1.2"
-    strip-json-comments: "npm:^3.1.1"
-  checksum: 10c0/215de990231b31e2fe6458f225d8cea0f5c781d3ecb0b7920703501f8cd21b3101fc5ef2f0d4f9a38865d36647b983e0e8ce8bf12fd2bcdd227fc48a5b1a43be
-  languageName: node
-  linkType: hard
-
-"@eslint/eslintrc@npm:^3.3.1":
+"@eslint/eslintrc@npm:3.3.1, @eslint/eslintrc@npm:^3.3.1":
   version: 3.3.1
   resolution: "@eslint/eslintrc@npm:3.3.1"
   dependencies:
@@ -4453,7 +4436,7 @@ __metadata:
     "@babel/preset-typescript": "npm:7.27.1"
     "@babel/traverse": "npm:7.27.1"
     "@babel/types": "npm:7.21.5"
-    "@eslint/eslintrc": "npm:3.3.0"
+    "@eslint/eslintrc": "npm:3.3.1"
     "@eslint/js": "npm:9.30.1"
     "@types/babel__traverse": "npm:7.20.6"
     "@types/chai": "npm:5.2.2"
