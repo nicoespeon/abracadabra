@@ -4453,7 +4453,7 @@ __metadata:
     jsdom: "npm:26.1.0"
     lint-staged: "npm:16.1.5"
     minimatch: "npm:10.0.3"
-    mocha: "npm:11.7.1"
+    mocha: "npm:11.7.3"
     node-stdlib-browser: "npm:1.3.1"
     ovsx: "npm:0.10.5"
     pluralize: "npm:8.0.0"
@@ -10074,9 +10074,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:11.7.1":
-  version: 11.7.1
-  resolution: "mocha@npm:11.7.1"
+"mocha@npm:11.7.3":
+  version: 11.7.3
+  resolution: "mocha@npm:11.7.3"
   dependencies:
     browser-stdout: "npm:^1.3.1"
     chokidar: "npm:^4.0.1"
@@ -10101,7 +10101,7 @@ __metadata:
   bin:
     _mocha: bin/_mocha
     mocha: bin/mocha.js
-  checksum: 10c0/63817742cb265035bdb7796be90f4e8f3c53400d22e41c03310a65eee99baca653fa28992b04ec349bfe2b61857658610996850c0ddacf0a2aac13b755b1132d
+  checksum: 10c0/55fea83c510cae7715daa6b61a8141e95ce76a19d0c369721bedcd4d5fca3d7b6caf7f993e35dd2efa96c5a0ec1c9103bfbe4930cb6ab13d923e2ff7d9281e59
   languageName: node
   linkType: hard
 
