@@ -95,7 +95,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertForToForEach,
       convertIfElseToSwitch,
       convertIfElseToTernary,
-      convertLetToConst,
       convertSwitchToIfElse,
       convertTernaryToIfElse,
       convertToArrowFunction,
@@ -120,6 +119,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withActionProvider__NEW: [
       addNumericSeparator,
+      convertLetToConst,
       extractParameter,
       convertGuardToIf,
       moveLastStatementOutOfIfElse,
