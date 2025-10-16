@@ -91,7 +91,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withActionProvider: [
       changeSignature,
-      flipOperator,
       inline,
       liftUpConditional,
       mergeIfStatements,
@@ -119,6 +118,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertToTemplateLiteral,
       createFactoryForConstructor,
       flipIfElse,
+      flipOperator,
       flipTernary,
       extractParameter,
       convertGuardToIf,

@@ -1,90 +1,89 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { flipOperator } from "./flip-operator";
 
 describe("Flip Operator", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should flip operator",
-    [
-      {
-        description: "loose equality",
-        code: "a ==[cursor] b",
-        expected: "b == a"
-      },
-      {
-        description: "strict equality",
-        code: "a ===[cursor] b",
-        expected: "b === a"
-      },
-      {
-        description: "loose inequality",
-        code: "a !=[cursor] b",
-        expected: "b != a"
-      },
-      {
-        description: "strict inequality",
-        code: "a !==[cursor] b",
-        expected: "b !== a"
-      },
-      {
-        description: "greather than",
-        code: "a >[cursor] b",
-        expected: "b < a"
-      },
-      {
-        description: "lower than",
-        code: "a <[cursor] b",
-        expected: "b > a"
-      },
-      {
-        description: "greater or equal",
-        code: "a >=[cursor] b",
-        expected: "b <= a"
-      },
-      {
-        description: "lower or equal",
-        code: "a <=[cursor] b",
-        expected: "b >= a"
-      },
-      {
-        description: "logical and",
-        code: "a &&[cursor] b",
-        expected: "b && a"
-      },
-      {
-        description: "logical or",
-        code: "a ||[cursor] b",
-        expected: "b || a"
-      },
-      {
-        description: "nested logical or, cursor on nested",
+  describe("should flip operator", () => {
+    it("loose equality", () => {
+      shouldFlipOperator({ code: "a ==[cursor] b", expected: "b == a" });
+    });
+
+    it("strict equality", () => {
+      shouldFlipOperator({ code: "a ===[cursor] b", expected: "b === a" });
+    });
+
+    it("loose inequality", () => {
+      shouldFlipOperator({ code: "a !=[cursor] b", expected: "b != a" });
+    });
+
+    it("strict inequality", () => {
+      shouldFlipOperator({ code: "a !==[cursor] b", expected: "b !== a" });
+    });
+
+    it("greather than", () => {
+      shouldFlipOperator({ code: "a >[cursor] b", expected: "b < a" });
+    });
+
+    it("lower than", () => {
+      shouldFlipOperator({ code: "a <[cursor] b", expected: "b > a" });
+    });
+
+    it("greater or equal", () => {
+      shouldFlipOperator({ code: "a >=[cursor] b", expected: "b <= a" });
+    });
+
+    it("lower or equal", () => {
+      shouldFlipOperator({ code: "a <=[cursor] b", expected: "b >= a" });
+    });
+
+    it("logical and", () => {
+      shouldFlipOperator({ code: "a &&[cursor] b", expected: "b && a" });
+    });
+
+    it("logical or", () => {
+      shouldFlipOperator({ code: "a ||[cursor] b", expected: "b || a" });
+    });
+
+    it("nested logical or, cursor on nested", () => {
+      shouldFlipOperator({
         code: "a && (b ||[cursor] c)",
         expected: "a && (c || b)"
-      },
-      {
-        description: "nested logical or, cursor on wrapper",
+      });
+    });
+
+    it("nested logical or, cursor on wrapper", () => {
+      shouldFlipOperator({
         code: "a [cursor]&& (b || c)",
         expected: "(b || c) && (a)"
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await flipOperator(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const editor = new InMemoryEditor(`a in[cursor] b`);
-    jest.spyOn(editor, "showError");
+    const result = flipOperator({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await flipOperator(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindOperatorToFlip
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldFlipOperator({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = flipOperator({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
