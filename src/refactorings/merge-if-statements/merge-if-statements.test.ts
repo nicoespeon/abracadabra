@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { createVisitor, mergeIfStatements } from "./merge-if-statements";
 
 describe("Merge If Statements", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should merge if statements",
-    [
-      {
-        description: "basic scenario",
+  describe("should merge if statements", () => {
+    it("basic scenario", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -17,18 +14,22 @@ describe("Merge If Statements", () => {
         expected: `if (isValid && isCorrect) {
   doSomething();
 }`
-      },
-      {
-        description: "without block statements",
+      });
+    });
+
+    it("without block statements", () => {
+      shouldMergeIfStatements({
         code: `if (isValid)
   if (isCorrect)
     doSomething();`,
         expected: `if (isValid && isCorrect) {
   doSomething();
 }`
-      },
-      {
-        description: "nested if statements, cursor on wrapper",
+      });
+    });
+
+    it("nested if statements, cursor on wrapper", () => {
+      shouldMergeIfStatements({
         code: `if ([cursor]isValid) {
   if (isCorrect) {
     if (shouldDoSomething) {
@@ -41,9 +42,11 @@ describe("Merge If Statements", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "nested if statements, cursor on nested",
+      });
+    });
+
+    it("nested if statements, cursor on nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if ([cursor]isCorrect) {
     if (shouldDoSomething) {
@@ -56,9 +59,11 @@ describe("Merge If Statements", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "nested if statements, cursor on deepest nested",
+      });
+    });
+
+    it("nested if statements, cursor on deepest nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     if ([cursor]shouldDoSomething) {
@@ -71,10 +76,11 @@ describe("Merge If Statements", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description:
-          "nested if statements, cursor on nested, deepest nested has an alternate node",
+      });
+    });
+
+    it("nested if statements, cursor on nested, deepest nested has an alternate node", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     if ([cursor]shouldDoSomething) {
@@ -91,9 +97,11 @@ describe("Merge If Statements", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "nested if statement in else, cursor on nested",
+      });
+    });
+
+    it("nested if statement in else, cursor on nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -106,9 +114,11 @@ describe("Merge If Statements", () => {
 } else if (isCorrect) {
   doAnotherThing();
 }`
-      },
-      {
-        description: "nested if-else statement in else, cursor on nested",
+      });
+    });
+
+    it("nested if-else statement in else, cursor on nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -125,10 +135,11 @@ describe("Merge If Statements", () => {
 } else {
   doNothing();
 }`
-      },
-      {
-        description:
-          "nested if-else statements in else, cursor on deepest nested",
+      });
+    });
+
+    it("nested if-else statements in else, cursor on deepest nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -153,9 +164,11 @@ describe("Merge If Statements", () => {
     logSomething();
   }
 }`
-      },
-      {
-        description: "nested if statements in else, cursor on deepest nested",
+      });
+    });
+
+    it("nested if statements in else, cursor on deepest nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -176,9 +189,11 @@ describe("Merge If Statements", () => {
 } else {
   doNothing();
 }`
-      },
-      {
-        description: "nested if statements in if & else, cursor on wrapper",
+      });
+    });
+
+    it("nested if statements in if & else, cursor on wrapper", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -195,9 +210,11 @@ describe("Merge If Statements", () => {
 } else if (shouldDoSomething) {
   doAnotherThing();
 }`
-      },
-      {
-        description: "nested if statements in if & else, cursor on alternate",
+      });
+    });
+
+    it("nested if statements in if & else, cursor on alternate", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -214,9 +231,11 @@ describe("Merge If Statements", () => {
 } else if (shouldDoSomething) {
   doAnotherThing();
 }`
-      },
-      {
-        description: "nested if statements in else, cursor on deepest nested",
+      });
+    });
+
+    it("nested if statements in else, cursor on deepest nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -233,10 +252,11 @@ describe("Merge If Statements", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description:
-          "nested if-else statements in if, cursor on deepest nested",
+      });
+    });
+
+    it("nested if-else statements in if, cursor on deepest nested", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   if (shouldDoSomething) {
     doSomething();
@@ -253,9 +273,11 @@ describe("Merge If Statements", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "nested if in else-if statement",
+      });
+    });
+
+    it("nested if in else-if statement", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else if (shouldDoSomething) {
@@ -268,9 +290,11 @@ describe("Merge If Statements", () => {
 } else if (shouldDoSomething && isCorrect) {
   doAnotherThing();
 }`
-      },
-      {
-        description: "nested else-if in else statement",
+      });
+    });
+
+    it("nested else-if in else statement", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -287,9 +311,11 @@ describe("Merge If Statements", () => {
 } else if (isCorrect) {
   doAnotherThing();
 }`
-      },
-      {
-        description: "deeply nested if, cursor on intermediate if",
+      });
+    });
+
+    it("deeply nested if, cursor on intermediate if", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -310,9 +336,11 @@ describe("Merge If Statements", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "deeply nested if, cursor on intermediate else",
+      });
+    });
+
+    it("deeply nested if, cursor on intermediate else", () => {
+      shouldMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -333,9 +361,11 @@ describe("Merge If Statements", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "consecutive ones with same return (merge with previous)",
+      });
+    });
+
+    it("consecutive ones with same return (merge with previous)", () => {
+      shouldMergeIfStatements({
         code: `function disabilityAmount(anEmployee) {
   if (anEmployee.seniority < 2) return 0;
   [cursor]if (anEmployee.monthsDisabled > 12) {
@@ -349,9 +379,11 @@ describe("Merge If Statements", () => {
 
   return 100;
 }`
-      },
-      {
-        description: "consecutive ones with same return (merge with next)",
+      });
+    });
+
+    it("consecutive ones with same return (merge with next)", () => {
+      shouldMergeIfStatements({
         code: `function disabilityAmount(anEmployee) {
   [cursor]if (anEmployee.seniority < 2) return 0;
   if (anEmployee.monthsDisabled > 12) {
@@ -367,9 +399,11 @@ describe("Merge If Statements", () => {
 
   return 100;
 }`
-      },
-      {
-        description: "consecutive ones with same return, but no braces",
+      });
+    });
+
+    it("consecutive ones with same return, but no braces", () => {
+      shouldMergeIfStatements({
         code: `function disabilityAmount(anEmployee) {
   if (!isValid)[cursor]
     return 0;
@@ -384,9 +418,11 @@ describe("Merge If Statements", () => {
 
   return 100;
 }`
-      },
-      {
-        description: "consecutive ones without returned value (guard clauses)",
+      });
+    });
+
+    it("consecutive ones without returned value (guard clauses)", () => {
+      shouldMergeIfStatements({
         code: `function disabilityAmount(anEmployee) {
   if (!isValid)[cursor]
     return;
@@ -401,22 +437,13 @@ describe("Merge If Statements", () => {
 
   return 100;
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await mergeIfStatements(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not merge if statements",
-    [
-      {
-        description: "nested if has an alternate node",
+  describe("should not merge if statements", () => {
+    it("nested if has an alternate node", () => {
+      shouldNotMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -424,9 +451,11 @@ describe("Merge If Statements", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "wrapping if has an alternate node",
+      });
+    });
+
+    it("wrapping if has an alternate node", () => {
+      shouldNotMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -434,9 +463,11 @@ describe("Merge If Statements", () => {
 } else {
   doAnotherThing();
 }`
-      },
-      {
-        description: "nested if has a sibling node",
+      });
+    });
+
+    it("nested if has a sibling node", () => {
+      shouldNotMergeIfStatements({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -444,9 +475,11 @@ describe("Merge If Statements", () => {
 
   doAnotherThing();
 }`
-      },
-      {
-        description: "nested if in alternate has a sibling node",
+      });
+    });
+
+    it("nested if in alternate has a sibling node", () => {
+      shouldNotMergeIfStatements({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -456,9 +489,11 @@ describe("Merge If Statements", () => {
 
   doAnotherThing();
 }`
-      },
-      {
-        description: "consecutive ones with different return, but no braces",
+      });
+    });
+
+    it("consecutive ones with different return, but no braces", () => {
+      shouldNotMergeIfStatements({
         code: `function disabilityAmount(anEmployee) {
   if (!isValid)[cursor]
     return 0;
@@ -467,28 +502,20 @@ describe("Merge If Statements", () => {
 
   return 100;
 }`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+      });
+    });
+  });
 
-      await mergeIfStatements(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should throw an error if there is nothing to merge", async () => {
+  it("should throw an error if there is nothing to merge", () => {
     const code = `if ([cursor]isValid) {}`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = mergeIfStatements({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await mergeIfStatements(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindIfStatementsToMerge
-    );
+    expect(result.action).toBe("show error");
   });
 
   it("should not match a guard clause", async () => {
@@ -512,3 +539,31 @@ describe("Merge If Statements", () => {
     await expect(createVisitor).not.toMatchEditor(editor);
   });
 });
+
+function shouldMergeIfStatements({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = mergeIfStatements({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotMergeIfStatements({ code }: { code: Code }) {
+  const editor = new InMemoryEditor(code);
+  const result = mergeIfStatements({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}
