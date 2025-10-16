@@ -96,7 +96,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       mergeIfStatements,
       mergeWithPreviousIfStatement,
       removeDeadCode,
-      removeRedundantElse,
       simplifyBoolean,
       splitDeclarationAndInitialization,
       toggleBraces
@@ -120,6 +119,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertGuardToIf,
       invertBooleanLogic,
       moveLastStatementOutOfIfElse,
+      removeRedundantElse,
       replaceBinaryWithAssignment,
       simplifyTernary,
       splitIfStatement,
