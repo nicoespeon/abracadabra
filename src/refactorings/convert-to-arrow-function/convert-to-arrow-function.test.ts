@@ -1,66 +1,79 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { convertToArrowFunction } from "./convert-to-arrow-function";
 
 describe("Convert To Arrow Function", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should convert function declaration to arrow function",
-    [
-      {
-        description: "non-generic",
+  describe("should convert function declaration to arrow function", () => {
+    it("non-generic", () => {
+      shouldConvertToArrowFunction({
         code: `function fn(a: string): number { return 1; }`,
         expected: `const fn = (a: string): number => { return 1; };`
-      },
-      {
-        description: "non-generic async",
+      });
+    });
+
+    it("non-generic async", () => {
+      shouldConvertToArrowFunction({
         code: `async function fn(a: string): number { return 1; }`,
         expected: `const fn = async (a: string): number => { return 1; };`
-      },
-      {
-        description: "generic",
+      });
+    });
+
+    it("generic", () => {
+      shouldConvertToArrowFunction({
         code: `function fn<T>(t: T): T { return t; }`,
         expected: `const fn = <T>(t: T): T => { return t; };`
-      },
-      {
-        description: "generic async",
+      });
+    });
+
+    it("generic async", () => {
+      shouldConvertToArrowFunction({
         code: `async function fn<T>(t: T): T { return t; }`,
         expected: `const fn = async <T>(t: T): T => { return t; };`
-      },
-      {
-        description: "preserves leading comment",
+      });
+    });
+
+    it("preserves leading comment", () => {
+      shouldConvertToArrowFunction({
         code: `// This is a comment.
 
 [cursor]function test() {}`,
         expected: `// This is a comment.
 
 const test = () => {};`
-      },
-      {
-        description: "preserves inner comment",
+      });
+    });
+
+    it("preserves inner comment", () => {
+      shouldConvertToArrowFunction({
         code: `function test() {
   // This is a comment.
 }`,
         expected: `const test = () => {
   // This is a comment.
 };`
-      },
-      {
-        description: "preserves trailing comment",
+      });
+    });
+
+    it("preserves trailing comment", () => {
+      shouldConvertToArrowFunction({
         code: `function test() {} // This is a comment.`,
         expected: `const test = () => {}; // This is a comment.`
-      },
-      {
-        description: "with an interpreter directive",
+      });
+    });
+
+    it("with an interpreter directive", () => {
+      shouldConvertToArrowFunction({
         code: `#!/usr/bin/env node
 
 [cursor]function test() {}`,
         expected: `#!/usr/bin/env node
 
 const test = () => {};`
-      },
-      {
-        description: "nested, cursor on outer function",
+      });
+    });
+
+    it("nested, cursor on outer function", () => {
+      shouldConvertToArrowFunction({
         code: `function outer[cursor]() {
   function inner() {
     return null
@@ -71,9 +84,11 @@ const test = () => {};`
     return null
   }
 };`
-      },
-      {
-        description: "nested, cursor on inner function",
+      });
+    });
+
+    it("nested, cursor on inner function", () => {
+      shouldConvertToArrowFunction({
         code: `function outer() {
   function [cursor]inner() {
     return null
@@ -84,18 +99,22 @@ const test = () => {};`
     return null
   };
 }`
-      },
-      {
-        description: "with reference after declaration",
+      });
+    });
+
+    it("with reference after declaration", () => {
+      shouldConvertToArrowFunction({
         code: `function [cursor]doSomething() {}
 
 doSomething();`,
         expected: `const doSomething = () => {};
 
 doSomething();`
-      },
-      {
-        description: "with imported type referenced in another function",
+      });
+    });
+
+    it("with imported type referenced in another function", () => {
+      shouldConvertToArrowFunction({
         code: `import { Input } from "./types";
 
 function checkAnswer(input: Input) {}
@@ -106,18 +125,22 @@ function [cursor]doNothing() {}`,
 function checkAnswer(input: Input) {}
 
 const doNothing = () => {};`
-      },
-      {
-        description: "an exported function expression",
+      });
+    });
+
+    it("an exported function expression", () => {
+      shouldConvertToArrowFunction({
         code: `export function [cursor]sayHello(name: string) {
   console.log(\`Well, hello here \${name} 👋\`);
 }`,
         expected: `export const sayHello = (name: string) => {
   console.log(\`Well, hello here \${name} 👋\`);
 };`
-      },
-      {
-        description: "a default exported function expression",
+      });
+    });
+
+    it("a default exported function expression", () => {
+      shouldConvertToArrowFunction({
         code: `export default function [cursor]sayHello(name: string) {
   console.log(\`Well, hello here \${name} 👋\`);
 }`,
@@ -126,15 +149,18 @@ const doNothing = () => {};`
 };
 
 export default sayHello;`
-      },
-      {
-        description:
-          "a function expression that's an argument to a call expression",
+      });
+    });
+
+    it("a function expression that's an argument to a call expression", () => {
+      shouldConvertToArrowFunction({
         code: `doThis(function[cursor] () {});`,
         expected: `doThis(() => {});`
-      },
-      {
-        description: "function declarations above, but no reference",
+      });
+    });
+
+    it("function declarations above, but no reference", () => {
+      shouldConvertToArrowFunction({
         code: `function say(message) {
   logger.log(">", message);
 }
@@ -157,9 +183,11 @@ function sayGoodMorning() {
 const sum = x => {
   return x + 1;
 };`
-      },
-      {
-        description: "reference that's above function, but deferred",
+      });
+    });
+
+    it("reference that's above function, but deferred", () => {
+      shouldConvertToArrowFunction({
         code: `function main() {
   for (const [id, path] of scripts) {
     document.querySelector(id).addEventListener('click', () => run(path));
@@ -174,10 +202,11 @@ const sum = x => {
 
   const run = path => {};
 }`
-      },
-      {
-        description:
-          "reference that's above function, but deferred (object method)",
+      });
+    });
+
+    it("reference that's above function, but deferred (object method)", () => {
+      shouldConvertToArrowFunction({
         code: `const obj = {
   runOnId(id, path) {
     document.querySelector(id).addEventListener('click', () => run(path));
@@ -192,10 +221,11 @@ function run[cursor](path) {}`,
 };
 
 const run = path => {};`
-      },
-      {
-        description:
-          "reference that's above function, but deferred (class method)",
+      });
+    });
+
+    it("reference that's above function, but deferred (class method)", () => {
+      shouldConvertToArrowFunction({
         code: `class Something {
   runOnId(id, path) {
     document.querySelector(id).addEventListener('click', () => run(path));
@@ -210,53 +240,67 @@ function run[cursor](path) {}`,
 }
 
 const run = path => {};`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await convertToArrowFunction(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if there's a reference before declaration", async () => {
+  it("should show an error message if there's a reference before declaration", () => {
     const code = `doSomething();
 
 function [cursor]doSomething() {}`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertToArrowFunction({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await convertToArrowFunction(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore
-    );
+    expect(result.action).toBe("show error");
   });
 
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertToArrowFunction({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await convertToArrowFunction(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindFunctionDeclarationToConvert
-    );
+    expect(result.action).toBe("show error");
   });
 
-  it("should not refactor if cursor is inside function body", async () => {
-    const code = `function dontConvertMe() {
+  it("should not refactor if cursor is inside function body", () => {
+    shouldNotConvert(`function dontConvertMe() {
   // Some code[cursor]
-}`;
-    const editor = new InMemoryEditor(code);
-
-    await convertToArrowFunction(editor);
-
-    expect(editor.code).toBe(`function dontConvertMe() {
-  // Some code
 }`);
   });
 });
+
+function shouldConvertToArrowFunction({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = convertToArrowFunction({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotConvert(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = convertToArrowFunction({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}
