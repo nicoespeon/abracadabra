@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { convertIfElseToTernary } from "./convert-if-else-to-ternary";
 
 describe("Convert If/Else to Ternary", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should convert if/else to ternary",
-    [
-      {
-        description: "with a return value",
+  describe("should convert if/else to ternary", () => {
+    it("with a return value", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     return "early";
@@ -19,9 +16,11 @@ describe("Convert If/Else to Ternary", () => {
         expected: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
-      },
-      {
-        description: "with an assignment",
+      });
+    });
+
+    it("with an assignment", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   let mode;
   if ([cursor]daysInAdvance > 10) {
@@ -36,18 +35,22 @@ describe("Convert If/Else to Ternary", () => {
   mode = daysInAdvance > 10 ? "early" : "normal";
   return \`reserve-\${mode}\`;
 }`
-      },
-      {
-        description: "with an assignment of a member expression",
+      });
+    });
+
+    it("with an assignment of a member expression", () => {
+      shouldConvertIfElseToTernary({
         code: `if (isJSXText(node)) {
   result.parseExtractedCode = (code) => "JSX: " + code;
 } else {
   result.parseExtractedCode = (code) => code;
 }`,
         expected: `result.parseExtractedCode = isJSXText(node) ? (code) => "JSX: " + code : (code) => code;`
-      },
-      {
-        description: "with a return value and dead code after",
+      });
+    });
+
+    it("with a return value and dead code after", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     return "early";
@@ -59,9 +62,11 @@ describe("Convert If/Else to Ternary", () => {
         expected: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
-      },
-      {
-        description: "with an assignment of a different operator",
+      });
+    });
+
+    it("with an assignment of a different operator", () => {
+      shouldConvertIfElseToTernary({
         code: `function getTotalFees(daysInAdvance) {
   let fees = 10;
   if ([cursor]daysInAdvance > 10) {
@@ -76,9 +81,11 @@ describe("Convert If/Else to Ternary", () => {
   fees += daysInAdvance > 10 ? 2 : 6;
   return fees;
 }`
-      },
-      {
-        description: "nested, cursor on nested",
+      });
+    });
+
+    it("nested, cursor on nested", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     if[cursor] (isVIP) {
@@ -97,9 +104,11 @@ describe("Convert If/Else to Ternary", () => {
     return "normal";
   }
 }`
-      },
-      {
-        description: "implicit else clause",
+      });
+    });
+
+    it("implicit else clause", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   if (daysInAdvance > 10) {
     re[cursor]turn "early";
@@ -110,9 +119,11 @@ describe("Convert If/Else to Ternary", () => {
         expected: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : "normal";
 }`
-      },
-      {
-        description: "preserve comments before and after condition",
+      });
+    });
+
+    it("preserve comments before and after condition", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   // leading comment
   if ([cursor]daysInAdvance > 10) {
@@ -127,9 +138,11 @@ describe("Convert If/Else to Ternary", () => {
   return daysInAdvance > 10 ? "early" : "normal";
   // trailing comment
 }`
-      },
-      {
-        description: "preserve comments for returned values",
+      });
+    });
+
+    it("preserve comments for returned values", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     // Early scenario.
@@ -144,9 +157,11 @@ describe("Convert If/Else to Ternary", () => {
   // Normal scenario.
   return daysInAdvance > 10 ? "early" : "normal";
 }`
-      },
-      {
-        description: "preserve comments for assigned values",
+      });
+    });
+
+    it("preserve comments for assigned values", () => {
+      shouldConvertIfElseToTernary({
         code: `function reservationMode(daysInAdvance) {
   let mode;
   if ([cursor]daysInAdvance > 10) {
@@ -167,23 +182,13 @@ describe("Convert If/Else to Ternary", () => {
 
   return \`reserve-\${mode}\`;
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await convertIfElseToTernary(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not convert if/else to ternary when",
-    [
-      {
-        description: "there is an `else if` branch",
-        code: `function reservationMode(daysInAdvance) {
+  describe("should not convert if/else to ternary when", () => {
+    it("there is an `else if` branch", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     return "early";
   } else if (daysInAdvance > 5) {
@@ -191,24 +196,22 @@ describe("Convert If/Else to Ternary", () => {
   } else {
     return "late";
   }
-}`
-      },
-      {
-        description:
-          "there are other expressions in if branch (return statement)",
-        code: `function reservationMode(daysInAdvance) {
+}`);
+    });
+
+    it("there are other expressions in if branch (return statement)", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     console.log("debug");
     return "early";
   } else {
     return "normal";
   }
-}`
-      },
-      {
-        description:
-          "there are other expressions in if branch (assignment expression)",
-        code: `function reservationMode(daysInAdvance) {
+}`);
+    });
+
+    it("there are other expressions in if branch (assignment expression)", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   let [cursor]mode;
   if (daysInAdvance > 10) {
     mode = "early";
@@ -217,11 +220,11 @@ describe("Convert If/Else to Ternary", () => {
     mode = "normal";
   }
   return \`reserve-\${mode}\`;
-}`
-      },
-      {
-        description: "many variables are assigned",
-        code: `function reservationMode(daysInAdvance) {
+}`);
+    });
+
+    it("many variables are assigned", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   let mode, urgency;
   if ([cursor]daysInAdvance > 10) {
     mode = "early";
@@ -231,11 +234,11 @@ describe("Convert If/Else to Ternary", () => {
     urgency = "high";
   }
   return \`reserve-\${mode}-\${urgency}\`;
-}`
-      },
-      {
-        description: "assigned variables identifiers are different",
-        code: `function reservationMode(daysInAdvance) {
+}`);
+    });
+
+    it("assigned variables identifiers are different", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   let mode, urgency;
   if ([cursor]daysInAdvance > 10) {
     mode = "early";
@@ -243,11 +246,11 @@ describe("Convert If/Else to Ternary", () => {
     urgency = "high";
   }
   return \`reserve-\${mode}\`;
-}`
-      },
-      {
-        description: "assigned variables operators are different",
-        code: `function getTotalFees(daysInAdvance) {
+}`);
+    });
+
+    it("assigned variables operators are different", () => {
+      shouldNotConvert(`function getTotalFees(daysInAdvance) {
   let fees = 10;
   if ([cursor]daysInAdvance > 10) {
     fees -= 2;
@@ -255,22 +258,22 @@ describe("Convert If/Else to Ternary", () => {
     fees += 6;
   }
   return fees;
-}`
-      },
-      {
-        description: "there is no obvious implicit else branch",
-        code: `function reservationMode(daysInAdvance) {
+}`);
+    });
+
+    it("there is no obvious implicit else branch", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     return "early";
   }
 
   console.log("logging some stuff");
   return "normal";
-}`
-      },
-      {
-        description: "there is a nested if statement inside",
-        code: `function reservationMode(daysInAdvance) {
+}`);
+    });
+
+    it("there is a nested if statement inside", () => {
+      shouldNotConvert(`function reservationMode(daysInAdvance) {
   if ([cursor]daysInAdvance > 10) {
     if (isVIP) {
       return "vip";
@@ -280,29 +283,47 @@ describe("Convert If/Else to Ternary", () => {
   } else {
     return "normal";
   }
-}`
-      }
-    ],
+}`);
+    });
+  });
 
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
-
-      await convertIfElseToTernary(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should show an error message if selection has no valid if/else to convert", async () => {
+  it("should show an error message if selection has no valid if/else to convert", () => {
     const code = `console.log("no if/else")`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertIfElseToTernary({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await convertIfElseToTernary(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindIfElseToConvert
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldConvertIfElseToTernary({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = convertIfElseToTernary({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotConvert(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = convertIfElseToTernary({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}
