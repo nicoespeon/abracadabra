@@ -1,19 +1,21 @@
 import * as t from "../../ast";
-import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function convertToTemplateLiteral(editor: Editor) {
-  const { code, selection } = editor;
+export function convertToTemplateLiteral(
+  state: RefactoringState
+): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindStringToConvert);
-    return;
+    return COMMANDS.showErrorDidNotFind("string to convert");
   }
 
   const newCode = updatedCode.code.replace(/\$\\{(\w*)}/g, "${$1}");
-  await editor.write(newCode, updatedCode.newCursorPosition);
+  return COMMANDS.write(newCode, updatedCode.newCursorPosition);
 }
 
 function updateCode(
