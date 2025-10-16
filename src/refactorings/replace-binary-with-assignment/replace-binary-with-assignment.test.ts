@@ -1,187 +1,223 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { replaceBinaryWithAssignment } from "./replace-binary-with-assignment";
 
 describe("Replace Binary With Assignment Expression", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should replace binary with assignment expression",
-    [
-      {
-        description: "addition",
+  describe("should replace binary with assignment expression", () => {
+    it("addition", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total + 1;`,
         expected: `total += 1;`
-      },
-      {
-        description: "addition (identifier on the right)",
+      });
+    });
+
+    it("addition (identifier on the right)", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = 1 + total;`,
         expected: `total += 1;`
-      },
-      {
-        description: "addition with itself",
+      });
+    });
+
+    it("addition with itself", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total + total;`,
         expected: `total += total;`
-      },
-      {
-        description: "addition with update expression",
+      });
+    });
+
+    it("addition with update expression", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total + ++total;`,
         expected: `total += ++total;`
-      },
-      {
-        description: "substraction",
+      });
+    });
+
+    it("substraction", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total - 1;`,
         expected: `total -= 1;`
-      },
-      {
-        description: "division",
+      });
+    });
+
+    it("division", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total / 1;`,
         expected: `total /= 1;`
-      },
-      {
-        description: "multiplication",
+      });
+    });
+
+    it("multiplication", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total * 1;`,
         expected: `total *= 1;`
-      },
-      {
-        description: "modulus",
+      });
+    });
+
+    it("modulus", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total % 1;`,
         expected: `total %= 1;`
-      },
-      {
-        description: "power",
+      });
+    });
+
+    it("power", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total ** 1;`,
         expected: `total **= 1;`
-      },
-      {
-        description: "left-shift",
+      });
+    });
+
+    it("left-shift", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total << 1;`,
         expected: `total <<= 1;`
-      },
-      {
-        description: "right-shift",
+      });
+    });
+
+    it("right-shift", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total >> 1;`,
         expected: `total >>= 1;`
-      },
-      {
-        description: "unsigned right-shift",
+      });
+    });
+
+    it("unsigned right-shift", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total >>> 1;`,
         expected: `total >>>= 1;`
-      },
-      {
-        description: "binary bitwise operator (&)",
+      });
+    });
+
+    it("binary bitwise operator (&)", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total & 1;`,
         expected: `total &= 1;`
-      },
-      {
-        description: "binary bitwise operator (|)",
+      });
+    });
+
+    it("binary bitwise operator (|)", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total | 1;`,
         expected: `total |= 1;`
-      },
-      {
-        description: "binary bitwise operator (^)",
+      });
+    });
+
+    it("binary bitwise operator (^)", () => {
+      shouldReplaceBinaryWithAssignment({
         code: `total = total ^ 1;`,
         expected: `total ^= 1;`
-      },
-      {
-        description: "only selected expression",
-        code: `total = total + 1;
+      });
+    });
+
+    it("only selected expression", () => {
+      shouldReplaceBinaryWithAssignment({
+        code: `total[cursor] = total + 1;
 fees = fees + 10;`,
         expected: `total += 1;
 fees = fees + 10;`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await replaceBinaryWithAssignment(editor);
+  describe("should not replace binary with assignment expression", () => {
+    it("addition with another identifier", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = fees + 10;`);
+    });
 
-      expect(editor.code).toBe(expected);
-    }
-  );
+    it("addition with itself and other things", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total + total + 10;`);
+    });
 
-  testEach<{ code: Code }>(
-    "should not replace binary with assignment expression",
-    [
-      {
-        description: "addition with another identifier",
-        code: `total = fees + 10;`
-      },
-      {
-        description: "addition with itself and other things",
-        code: `total = total + total + 10;`
-      },
-      {
-        description: "addition with double update expressions",
-        code: `total = ++total + ++total;`
-      },
-      {
-        description: "less-than",
-        code: `total = total < 10;`
-      },
-      {
-        description: "less-than-or-equal",
-        code: `total = total <= 10;`
-      },
-      {
-        description: "greater-than",
-        code: `total = total > 10;`
-      },
-      {
-        description: "greater-than-or-equal",
-        code: `total = total >= 10;`
-      },
-      {
-        description: "equal",
-        code: `total = total == 10;`
-      },
-      {
-        description: "not equal",
-        code: `total = total != 10;`
-      },
-      {
-        description: "strict equal",
-        code: `total = total === 10;`
-      },
-      {
-        description: "not strict equal",
-        code: `total = total !== 10;`
-      },
-      {
-        description: "instanceof",
-        code: `total = total instanceof Number;`
-      },
-      {
-        description: "in",
-        code: `total = total in [10, 20];`
-      },
-      {
-        description: "array pattern",
-        code: `[total] = total + 1;`
-      },
-      {
-        description: "substraction (identifier on the right)",
-        code: `total = 1 - total;`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+    it("addition with double update expressions", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = ++total + ++total;`);
+    });
 
-      await replaceBinaryWithAssignment(editor);
+    it("less-than", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total < 10;`);
+    });
 
-      expect(editor.code).toBe(originalCode);
-    }
-  );
+    it("less-than-or-equal", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total <= 10;`);
+    });
 
-  it("should show an error message if refactoring can't be made", async () => {
+    it("greater-than", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total > 10;`);
+    });
+
+    it("greater-than-or-equal", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total >= 10;`);
+    });
+
+    it("equal", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total == 10;`);
+    });
+
+    it("not equal", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total != 10;`);
+    });
+
+    it("strict equal", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total === 10;`);
+    });
+
+    it("not strict equal", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total !== 10;`);
+    });
+
+    it("instanceof", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total instanceof Number;`);
+    });
+
+    it("in", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = total in [10, 20];`);
+    });
+
+    it("array pattern", () => {
+      shouldNotReplaceBinaryWithAssignment(`[total] = total + 1;`);
+    });
+
+    it("substraction (identifier on the right)", () => {
+      shouldNotReplaceBinaryWithAssignment(`total = 1 - total;`);
+    });
+  });
+
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = replaceBinaryWithAssignment({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await replaceBinaryWithAssignment(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindBinaryExpression
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldReplaceBinaryWithAssignment({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = replaceBinaryWithAssignment({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotReplaceBinaryWithAssignment(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = replaceBinaryWithAssignment({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}
