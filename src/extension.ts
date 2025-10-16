@@ -95,7 +95,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       mergeIfStatements,
       mergeWithPreviousIfStatement,
       removeDeadCode,
-      splitDeclarationAndInitialization,
       toggleBraces
     ],
     withActionProvider__NEW: [
@@ -122,6 +121,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       replaceBinaryWithAssignment,
       simplifyBoolean,
       simplifyTernary,
+      splitDeclarationAndInitialization,
       splitIfStatement,
       splitMultipleDeclarations
     ]
