@@ -1,27 +1,26 @@
 import { allButLast, last } from "../../array";
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function flipIfElse(editor: Editor) {
-  const { code, selection } = editor;
+export function flipIfElse(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindIfElseToFlip);
-    return;
+    return COMMANDS.showErrorDidNotFind("if/else to flip");
   }
 
-  await editor.write(
-    updatedCode.code
-      // Recast doesn't format empty block statement as expected
-      // Until it's fixed, parse this pattern manually
-      // https://github.com/benjamn/recast/issues/612
-      .replace(/\)\n\s*{} else {/, ") {} else {")
-      // Created guard clause puts the return on the next line
-      // Make it one-line so it's easier to read
-      .replace(/(if\s+\(.*\))\n\s*return/, "$1 return")
-  );
+  const transformedCode = updatedCode.code
+    // Recast doesn't format empty block statement as expected
+    // Until it's fixed, parse this pattern manually
+    // https://github.com/benjamn/recast/issues/612
+    .replace(/\)\n\s*{} else {/, ") {} else {")
+    // Created guard clause puts the return on the next line
+    // Make it one-line so it's easier to read
+    .replace(/(if\s+\(.*\))\n\s*return/, "$1 return");
+
+  return COMMANDS.write(transformedCode);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

@@ -100,7 +100,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertToArrowFunction,
       convertToTemplateLiteral,
       createFactoryForConstructor,
-      flipIfElse,
       flipTernary,
       flipOperator,
       inline,
@@ -120,6 +119,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withActionProvider__NEW: [
       addNumericSeparator,
       convertLetToConst,
+      flipIfElse,
       extractParameter,
       convertGuardToIf,
       moveLastStatementOutOfIfElse,

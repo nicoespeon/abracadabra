@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { flipIfElse } from "./flip-if-else";
 
 describe("Flip If/Else", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should flip if and else branch",
-    [
-      {
-        description: "basic scenario",
+  describe("should flip if and else branch", () => {
+    it("basic scenario", () => {
+      shouldFlipIfElse({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -19,9 +16,11 @@ describe("Flip If/Else", () => {
 } else {
   doSomething();
 }`
-      },
-      {
-        description: "no else branch",
+      });
+    });
+
+    it("no else branch", () => {
+      shouldFlipIfElse({
         code: `if (isValid) {
   doSomething();
 }
@@ -32,10 +31,11 @@ doSomethingElse();`,
 }
 
 doSomethingElse();`
-      },
-      {
-        description:
-          "no else branch and no other statement after (turn into guard clause)",
+      });
+    });
+
+    it("no else branch and no other statement after (turn into guard clause)", () => {
+      shouldFlipIfElse({
         code: `doSomethingFirst();
 
 [cursor]if (isValid) {
@@ -45,9 +45,11 @@ doSomethingElse();`
 
 if (!isValid) return;
 doSomething();`
-      },
-      {
-        description: "an already flipped if statement",
+      });
+    });
+
+    it("an already flipped if statement", () => {
+      shouldFlipIfElse({
         code: `if (!isValid) {
   doAnotherThing();
 } else {
@@ -58,9 +60,11 @@ doSomething();`
 } else {
   doAnotherThing();
 }`
-      },
-      {
-        description: "an if statement with a binary expression",
+      });
+    });
+
+    it("an if statement with a binary expression", () => {
+      shouldFlipIfElse({
         code: `if (a > b) {
   doAnotherThing();
 } else {
@@ -71,167 +75,78 @@ doSomething();`
 } else {
   doAnotherThing();
 }`
-      },
-      {
-        description: "an if statement with else-ifs",
+      });
+    });
+
+    it("an if statement with else-ifs", () => {
+      shouldFlipIfElse({
         code: `if (a > b) {
   doSomething();
 } else if (a === 10) {
   doSomethingWith(a);
-} else if (b === 10) {
-  doSomethingWith(b);
 } else {
-  doNothing();
+  doAnotherThing();
 }`,
         expected: `if (a <= b) {
   if (a === 10) {
     doSomethingWith(a);
-  } else if (b === 10) {
-    doSomethingWith(b);
   } else {
-    doNothing();
+    doAnotherThing();
   }
 } else {
   doSomething();
 }`
-      },
-      {
-        description: "nested, cursor on wrapper",
+      });
+    });
+
+    it("nested, cursor on wrapper", () => {
+      shouldFlipIfElse({
         code: `if (isValid) {
-  if (isVIP) {
-    doSomethingForVIP();
-  } else {
+  if (isCorrect) {
     doSomething();
+  } else {
+    doAnotherThing();
   }
 } else {
-  doAnotherThing();
+  doSomethingElse();
 }`,
         expected: `if (!isValid) {
-  doAnotherThing();
+  doSomethingElse();
 } else {
-  if (isVIP) {
-    doSomethingForVIP();
-  } else {
+  if (isCorrect) {
     doSomething();
+  } else {
+    doAnotherThing();
   }
 }`
-      },
-      {
-        description: "nested, cursor on nested",
+      });
+    });
+
+    it("nested, cursor on nested", () => {
+      shouldFlipIfElse({
         code: `if (isValid) {
-  [cursor]if (isVIP) {
-    doSomethingForVIP();
+  if (is[cursor]Correct) {
+    doSomething();
+  } else {
+    doAnotherThing();
+  }
+} else {
+  doSomethingElse();
+}`,
+        expected: `if (isValid) {
+  if (!isCorrect) {
+    doAnotherThing();
   } else {
     doSomething();
   }
 } else {
-  doAnotherThing();
-}`,
-        expected: `if (isValid) {
-  if (!isVIP) {
-    doSomething();
-  } else {
-    doSomethingForVIP();
-  }
-} else {
-  doAnotherThing();
-}`
-      },
-      {
-        description: "guard clause",
-        code: `if (!isValid) return;
-
-doSomething();
-doSomethingElse();`,
-        expected: `if (isValid) {
-  doSomething();
   doSomethingElse();
 }`
-      },
-      {
-        description: "guard clause with block statement",
-        code: `if (!isValid) {
-  return;
-}
+      });
+    });
 
-doSomething();
-doSomethingElse();`,
-        expected: `if (isValid) {
-  doSomething();
-  doSomethingElse();
-}`
-      },
-      {
-        description: "guard clause with other statements in block",
-        code: `if (!isValid) {
-  console.log("Hello");
-  return;
-}
-
-doSomething();
-doSomethingElse();`,
-        expected: `if (isValid) {
-  doSomething();
-  doSomethingElse();
-} else {
-  console.log("Hello");
-}`
-      },
-      {
-        description: "guard clause with other statements above",
-        code: `console.log("Hello");
-if (!isValid) re[cursor]turn;
-
-doSomething();
-doSomethingElse();`,
-        expected: `console.log("Hello");
-if (isValid) {
-  doSomething();
-  doSomethingElse();
-}`
-      },
-      {
-        description: "guard clause with returned value",
-        code: `if (!isValid) return null;
-
-doSomething();
-doSomethingElse();`,
-        expected: `if (isValid) {
-  doSomething();
-  doSomethingElse();
-} else {
-  return null;
-}`
-      },
-      {
-        description: "guard clause with returned value in block",
-        code: `if (!isValid) {
-  return null;
-}
-
-doSomething();
-doSomethingElse();`,
-        expected: `if (isValid) {
-  doSomething();
-  doSomethingElse();
-} else {
-  return null;
-}`
-      },
-      {
-        description: "guard clause in a loop",
-        code: `for (let index = 0; index < 5; index++) {
-  if (index > 2) [cursor]console.log(index);
-}`,
-        expected: `for (let index = 0; index < 5; index++) {
-  if (index <= 2) {
-    continue;
-  }
-  console.log(index);
-}`
-      },
-      {
-        description: "if-else with return statements",
+    it("if-else with return statements", () => {
+      shouldFlipIfElse({
         code: `if (!isValid) {
   return doSomething();
 } else {
@@ -242,22 +157,26 @@ doSomethingElse();`,
 } else {
   return doSomething();
 }`
-      },
-      {
-        description: "instanceof",
-        code: `if (data instanceof Item) {
-  doSomething();
+      });
+    });
+
+    it("with instanceof operator", () => {
+      shouldFlipIfElse({
+        code: `if (day instanceof Morning) {
+  sayGoodMorning();
 } else {
-  doAnotherThing();
+  sayHello();
 }`,
-        expected: `if (!(data instanceof Item)) {
-  doAnotherThing();
+        expected: `if (!(day instanceof Morning)) {
+  sayHello();
 } else {
-  doSomething();
+  sayGoodMorning();
 }`
-      },
-      {
-        description: "preserve parentheses",
+      });
+    });
+
+    it("preserve parentheses", () => {
+      shouldFlipIfElse({
         code: `if (false && (false || true)) {
   console.log('true');
 } else {
@@ -268,9 +187,11 @@ doSomethingElse();`,
 } else {
   console.log('true');
 }`
-      },
-      {
-        description: "don't mess up return statements when not using ';'",
+      });
+    });
+
+    it("don't mess up return statements when not using ';'", () => {
+      shouldFlipIfElse({
         code: `const obj = {
   m1() {
     const result = Math.random()
@@ -297,26 +218,139 @@ doSomethingElse();`,
     }
   },
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await flipIfElse(editor);
+  describe("should flip guard clause", () => {
+    it("basic scenario", () => {
+      shouldFlipIfElse({
+        code: `if (!isValid) return;
 
-      expect(editor.code).toBe(expected);
-    }
-  );
+doSomething();
+doSomethingElse();`,
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
+      });
+    });
 
-  it("should show an error message if selection has no if statement", async () => {
-    const code = `console.log("no if statement")`;
+    it("with block statement", () => {
+      shouldFlipIfElse({
+        code: `if (!isValid) {
+  return;
+}
+
+doSomething();
+doSomethingElse();`,
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
+      });
+    });
+
+    it("with other statements in block", () => {
+      shouldFlipIfElse({
+        code: `if (!isValid) {
+  console.log("Hello");
+  return;
+}
+
+doSomething();
+doSomethingElse();`,
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  console.log("Hello");
+}`
+      });
+    });
+
+    it("with other statements above", () => {
+      shouldFlipIfElse({
+        code: `console.log("Hello");
+if (!isValid) re[cursor]turn;
+
+doSomething();
+doSomethingElse();`,
+        expected: `console.log("Hello");
+if (isValid) {
+  doSomething();
+  doSomethingElse();
+}`
+      });
+    });
+
+    it("with a return value", () => {
+      shouldFlipIfElse({
+        code: `if (!isValid) return null;
+
+doSomething();
+doSomethingElse();`,
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  return null;
+}`
+      });
+    });
+
+    it("with a return value in block", () => {
+      shouldFlipIfElse({
+        code: `if (!isValid) {
+  return null;
+}
+
+doSomething();
+doSomethingElse();`,
+        expected: `if (isValid) {
+  doSomething();
+  doSomethingElse();
+} else {
+  return null;
+}`
+      });
+    });
+
+    it("in a loop", () => {
+      shouldFlipIfElse({
+        code: `for (let index = 0; index < 5; index++) {
+  if (index > 2) [cursor]console.log(index);
+}`,
+        expected: `for (let index = 0; index < 5; index++) {
+  if (index <= 2) {
+    continue;
+  }
+  console.log(index);
+}`
+      });
+    });
+  });
+
+  it("should show an error message if refactoring can't be made", () => {
+    const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = flipIfElse({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await flipIfElse(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindIfElseToFlip
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldFlipIfElse({ code, expected }: { code: Code; expected: Code }) {
+  const editor = new InMemoryEditor(code);
+  const result = flipIfElse({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
