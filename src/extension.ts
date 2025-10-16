@@ -99,7 +99,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       removeRedundantElse,
       simplifyBoolean,
       splitDeclarationAndInitialization,
-      splitIfStatement,
       toggleBraces
     ],
     withActionProvider__NEW: [
@@ -123,6 +122,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       moveLastStatementOutOfIfElse,
       replaceBinaryWithAssignment,
       simplifyTernary,
+      splitIfStatement,
       splitMultipleDeclarations
     ]
   }

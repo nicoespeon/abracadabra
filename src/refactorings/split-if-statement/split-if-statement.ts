@@ -1,17 +1,16 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function splitIfStatement(editor: Editor) {
-  const { code, selection } = editor;
+export function splitIfStatement(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindIfStatementToSplit);
-    return;
+    return COMMANDS.showErrorDidNotFind("if statement to split");
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
