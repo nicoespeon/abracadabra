@@ -70,8 +70,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
     withoutActionProvider__NEW: [],
-    withActionProvider: [wrapInJsxFrament, removeJsxFragment],
-    withActionProvider__NEW: []
+    withActionProvider: [removeJsxFragment],
+    withActionProvider__NEW: [wrapInJsxFrament]
   },
   allLanguages: {
     languages: [
