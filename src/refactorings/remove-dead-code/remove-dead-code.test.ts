@@ -1,22 +1,21 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { removeDeadCode } from "./remove-dead-code";
 
 describe("Remove Dead Code", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should remove dead code",
-    [
-      {
-        description: "if(false)",
+  describe("should remove dead code", () => {
+    it("if(false)", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 [cursor]if (false) {
   console.log("I'm dead");
 }`,
         expected: `console.log("I'm alive");`
-      },
-      {
-        description: "if(false) with else",
+      });
+    });
+
+    it("if(false) with else", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 [cursor]if (false) {
   console.log("I'm dead");
@@ -25,9 +24,11 @@ describe("Remove Dead Code", () => {
 }`,
         expected: `console.log("I'm alive");
 console.log("I'm alive too");`
-      },
-      {
-        description: "if(false) with else-if",
+      });
+    });
+
+    it("if(false) with else-if", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 [cursor]if (false) {
   console.log("I'm dead");
@@ -42,18 +43,22 @@ if (isValid) {
 } else {
   console.log("I'm not valid");
 }`
-      },
-      {
-        description: "if(true)",
+      });
+    });
+
+    it("if(true)", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 [cursor]if (true) {
   console.log("I'm alive too");
 }`,
         expected: `console.log("I'm alive");
 console.log("I'm alive too");`
-      },
-      {
-        description: "if(true) with else",
+      });
+    });
+
+    it("if(true) with else", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 [cursor]if (true) {
   console.log("I'm alive too");
@@ -62,9 +67,11 @@ console.log("I'm alive too");`
 }`,
         expected: `console.log("I'm alive");
 console.log("I'm alive too");`
-      },
-      {
-        description: "if(true) with else-if",
+      });
+    });
+
+    it("if(true) with else-if", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 [cursor]if (true) {
   console.log("I'm alive too");
@@ -75,9 +82,11 @@ console.log("I'm alive too");`
 }`,
         expected: `console.log("I'm alive");
 console.log("I'm alive too");`
-      },
-      {
-        description: "selected code only",
+      });
+    });
+
+    it("selected code only", () => {
+      shouldRemoveDeadCode({
         code: `console.log("I'm alive");
 if (false) {
   console.log("I'm dead");
@@ -89,9 +98,11 @@ if (false) {
 if (false) {
   console.log("I'm dead");
 }`
-      },
-      {
-        description: "nested ifs with opposite tests",
+      });
+    });
+
+    it("nested ifs with opposite tests", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
@@ -106,9 +117,11 @@ if (false) {
         expected: `if (item.name === "Aged Brie") {
   item.quality += 1;
 }`
-      },
-      {
-        description: "nested ifs with identical tests",
+      });
+    });
+
+    it("nested ifs with identical tests", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
@@ -129,9 +142,11 @@ if (false) {
     item.quality -= 1;
   }
 }`
-      },
-      {
-        description: "nested if-elses with opposite tests",
+      });
+    });
+
+    it("nested if-elses with opposite tests", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
@@ -153,9 +168,11 @@ if (false) {
   item.quality -= 2;
   item.sellIn -= 1;
 }`
-      },
-      {
-        description: "nested if-elses with identical tests",
+      });
+    });
+
+    it("nested if-elses with identical tests", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
@@ -178,9 +195,11 @@ if (false) {
     item.quality -= 1;
   }
 }`
-      },
-      {
-        description: "nested if-elses, != operator on wrapper",
+      });
+    });
+
+    it("nested if-elses, != operator on wrapper", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name != "Aged Brie") {
   item.quality += 1;
 
@@ -207,9 +226,11 @@ if (false) {
 
   item.quality += 3;
 }`
-      },
-      {
-        description: "else branch",
+      });
+    });
+
+    it("else branch", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
@@ -238,14 +259,18 @@ if (false) {
 
   item.quality += 2;
 }`
-      },
-      {
-        description: "empty if",
+      });
+    });
+
+    it("empty if", () => {
+      shouldRemoveDeadCode({
         code: `if (item.quality > 40) {}`,
         expected: ``
-      },
-      {
-        description: "empty nested ifs",
+      });
+    });
+
+    it("empty nested ifs", () => {
+      shouldRemoveDeadCode({
         code: `if (item.name === "Aged Brie") {
   item.quality += 1;
 
@@ -274,31 +299,24 @@ if (false) {
     item.quality -= 1;
   }
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await removeDeadCode(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not remove code",
-    [
-      {
-        description: "test variable is re-assigned",
+  describe("should not remove code", () => {
+    it("test variable is re-assigned", () => {
+      shouldNotRemoveCode({
         code: `if (item.quality > 50) {
   item.quality += 1;
   if (item.quality > 50) {
     console.log("High quality");
   }
 }`
-      },
-      {
-        description: "test variable is re-assigned, else branch",
+      });
+    });
+
+    it("test variable is re-assigned, else branch", () => {
+      shouldNotRemoveCode({
         code: `if (item.quality > 50) {
 } else {
   item.quality += 1;
@@ -306,31 +324,53 @@ if (false) {
     console.log("High quality");
   }
 }`
-      },
-      {
-        description: "if statement without braces",
+      });
+    });
+
+    it("if statement without braces", () => {
+      shouldNotRemoveCode({
         code: `if (minusResult === 1) score = '[cursor]Advantage player1';`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+      });
+    });
+  });
 
-      await removeDeadCode(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = removeDeadCode({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await removeDeadCode(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindDeadCode
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldRemoveDeadCode({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = removeDeadCode({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotRemoveCode({ code }: { code: Code }) {
+  const editor = new InMemoryEditor(code);
+  const result = removeDeadCode({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}

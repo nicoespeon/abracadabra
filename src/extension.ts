@@ -93,7 +93,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       changeSignature,
       inline,
       mergeWithPreviousIfStatement,
-      removeDeadCode,
       toggleBraces
     ],
     withActionProvider__NEW: [
@@ -117,6 +116,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       liftUpConditional,
       mergeIfStatements,
       moveLastStatementOutOfIfElse,
+      removeDeadCode,
       removeRedundantElse,
       replaceBinaryWithAssignment,
       simplifyBoolean,

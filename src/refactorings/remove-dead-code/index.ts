@@ -1,7 +1,7 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import { createVisitor, removeDeadCode } from "./remove-dead-code";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "removeDeadCode",
     operation: removeDeadCode,
