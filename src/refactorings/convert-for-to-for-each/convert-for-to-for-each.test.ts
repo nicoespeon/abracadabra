@@ -1,25 +1,24 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { testEach } from "../../tests-helpers";
 import { convertForToForEach, createVisitor } from "./convert-for-to-for-each";
 
 describe("Convert For To Foreach", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should convert for to forEach",
-    [
-      {
-        description: "basic for-loop",
+  describe("should convert for to forEach", () => {
+    it("basic for-loop", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 }`,
         expected: `items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "without introducing a blank line",
+      });
+    });
+
+    it("without introducing a blank line", () => {
+      shouldConvertForToForEach({
         code: `const items = ["Hello"];
 [cursor]for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
@@ -28,9 +27,11 @@ describe("Convert For To Foreach", () => {
 items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "for-loop with member expressions we can't replace",
+      });
+    });
+
+    it("for-loop with member expressions we can't replace", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
   console.log(items[3]);
@@ -39,9 +40,11 @@ items.forEach(item => {
   console.log(item);
   console.log(items[3]);
 });`
-      },
-      {
-        description: "selected for-loop only",
+      });
+    });
+
+    it("selected for-loop only", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 }
@@ -56,9 +59,11 @@ items.forEach(item => {
 items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "nested for-loop, cursor on wrapper",
+      });
+    });
+
+    it("nested for-loop, cursor on wrapper", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
@@ -73,9 +78,11 @@ items.forEach(item => {
     console.log(items[j]);
   }
 });`
-      },
-      {
-        description: "nested for-loop, cursor on nested",
+      });
+    });
+
+    it("nested for-loop, cursor on nested", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
@@ -90,10 +97,11 @@ items.forEach(item => {
     console.log(item);
   });
 }`
-      },
-      {
-        description:
-          "nested for-loop, cursor on nested, nested would be invalid forEach",
+      });
+    });
+
+    it("nested for-loop, cursor on nested, nested would be invalid forEach", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 
@@ -108,26 +116,32 @@ items.forEach(item => {
     console.log(items[j]);
   }
 });`
-      },
-      {
-        description: "for-loop without block statement",
+      });
+    });
+
+    it("for-loop without block statement", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++)
   console.log(items[i]);`,
         expected: `items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "for-loop with array identifier that is singular",
+      });
+    });
+
+    it("for-loop with array identifier that is singular", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < myArray.length; i++) {
   console.log(myArray[i]);
 }`,
         expected: `myArray.forEach(myArrayItem => {
   console.log(myArrayItem);
 });`
-      },
-      {
-        description: "for-loop with array re-assignment",
+      });
+    });
+
+    it("for-loop with array re-assignment", () => {
+      shouldConvertForToForEach({
         code: `const myArray = [1, 2, 3];
 
 [cursor]for (let i = 0; i < myArray.length; i++) {
@@ -138,9 +152,11 @@ items.forEach(item => {
 myArray.forEach((myArrayItem, i) => {
   myArray[i] = myArrayItem.toString();
 });`
-      },
-      {
-        description: "accessor referenced inside the body",
+      });
+    });
+
+    it("accessor referenced inside the body", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
   console.log(i);
@@ -149,45 +165,55 @@ myArray.forEach((myArrayItem, i) => {
   console.log(item);
   console.log(i);
 });`
-      },
-      {
-        description: "lesser or equal",
+      });
+    });
+
+    it("lesser or equal", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i <= items.length - 1; i++) {
   console.log(items[i]);
 }`,
         expected: `items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "decrementing accessor",
+      });
+    });
+
+    it("decrementing accessor", () => {
+      shouldConvertForToForEach({
         code: `for (let i = items.length - 1; i >= 0; i--) {
   console.log(items[i]);
 }`,
         expected: `items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "decrementing accessor, strict greater than",
+      });
+    });
+
+    it("decrementing accessor, strict greater than", () => {
+      shouldConvertForToForEach({
         code: `for (let i = items.length - 1; i > -1; i--) {
   console.log(items[i]);
 }`,
         expected: `items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "list is a member expression itself",
+      });
+    });
+
+    it("list is a member expression itself", () => {
+      shouldConvertForToForEach({
         code: `for (let i = 0; i < this.data[0].items.length; i++) {
   console.log(this.data[0].items[i]);
 }`,
         expected: `this.data[0].items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "for-of",
+      });
+    });
+
+    it("for-of", () => {
+      shouldConvertForToForEach({
         code: `const items = ['foo', 'bar', 'baz'];
 
 [cursor]for (const val of items) {
@@ -198,9 +224,11 @@ myArray.forEach((myArrayItem, i) => {
 items.forEach(val => {
   console.log(val);
 });`
-      },
-      {
-        description: "selected for-of only",
+      });
+    });
+
+    it("selected for-of only", () => {
+      shouldConvertForToForEach({
         code: `const items = ['foo', 'bar', 'baz'];
 
 for (const val of items) {
@@ -219,9 +247,11 @@ for (const val of items) {
 items.forEach(val => {
   console.log(val);
 });`
-      },
-      {
-        description: "for-of, with object destructuring",
+      });
+    });
+
+    it("for-of, with object destructuring", () => {
+      shouldConvertForToForEach({
         code: `const items = [{name: 'joe', age: 40}, {name: 'danielle', age: 25}, {name: 'jane', age: 50}];
 
 [cursor]for (const {name, age} of items) {
@@ -232,9 +262,11 @@ items.forEach(val => {
 items.forEach(({name, age}) => {
   console.log(name, age);
 });`
-      },
-      {
-        description: "for-of, with array destructuring",
+      });
+    });
+
+    it("for-of, with array destructuring", () => {
+      shouldConvertForToForEach({
         code: `const items = [[0, 1], [1, 2], [2, 3]];
 
 [cursor]for (const [one, two] of items) {
@@ -245,9 +277,11 @@ items.forEach(({name, age}) => {
 items.forEach(([one, two]) => {
   console.log(one, two);
 });`
-      },
-      {
-        description: "for-of, without block statement",
+      });
+    });
+
+    it("for-of, without block statement", () => {
+      shouldConvertForToForEach({
         code: `const items = ['foo', 'bar', 'baz'];
 
 [cursor]for (const item of items)
@@ -257,26 +291,32 @@ items.forEach(([one, two]) => {
 items.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "for-of, inline",
+      });
+    });
+
+    it("for-of, inline", () => {
+      shouldConvertForToForEach({
         code: `for (const item of ['foo', 'bar', 'baz'])
   console.log(item);`,
         expected: `['foo', 'bar', 'baz'].forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "for-of, with member expression on the right",
+      });
+    });
+
+    it("for-of, with member expression on the right", () => {
+      shouldConvertForToForEach({
         code: `for (const item of foo.bar) {
   console.log(item);
 }`,
         expected: `foo.bar.forEach(item => {
   console.log(item);
 });`
-      },
-      {
-        description: "nested for-of, cursor on nested",
+      });
+    });
+
+    it("nested for-of, cursor on nested", () => {
+      shouldConvertForToForEach({
         code: `const items = ['foo', 'bar', 'baz'];
 
 for (const x of items) {
@@ -291,9 +331,11 @@ for (const x of items) {
     console.log(x * y);
   });
 }`
-      },
-      {
-        description: "preserves comments",
+      });
+    });
+
+    it("preserves comments", () => {
+      shouldConvertForToForEach({
         code: `// leading comment
 [cursor]for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
@@ -304,86 +346,67 @@ items.forEach(item => {
   console.log(item);
 });
 // trailing comment`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await convertForToForEach(editor);
+  describe("should not convert", () => {
+    it("standard for-loop", () => {
+      shouldNotConvert(`for (let i = 0; i < 10; i++) {
+  console.log(items[i]);
+}`);
+    });
 
-      expect(editor.code).toBe(expected);
-    }
-  );
+    it("not using the list length to iterate", () => {
+      shouldNotConvert(`for (let i = 0; i < items.count; i++) {
+  console.log(items[i]);
+}`);
+    });
 
-  testEach<{ code: Code }>(
-    "should not convert",
-    [
-      {
-        description: "standard for-loop",
-        code: `for (let i = 0; i < 10; i++) {
+    it("for-loop with init not starting at 0", () => {
+      shouldNotConvert(`for (let i = 1; i < items.length; i++) {
   console.log(items[i]);
-}`
-      },
-      {
-        description: "not using the list length to iterate",
-        code: `for (let i = 0; i < items.count; i++) {
-  console.log(items[i]);
-}`
-      },
-      {
-        description: "for-loop with init not starting at 0",
-        code: `for (let i = 1; i < items.length; i++) {
-  console.log(items[i]);
-}`
-      },
-      {
-        description: "for-of but a string",
-        code: `const str = 'abcde';
+}`);
+    });
+
+    it("for-of but a string", () => {
+      shouldNotConvert(`const str = 'abcde';
   for (let character of str) {
   console.log(character);
-}`
-      },
-      {
-        description: "for-of but an inline string",
-        code: `for (let character of 'abcde') {
+}`);
+    });
+
+    it("for-of but an inline string", () => {
+      shouldNotConvert(`for (let character of 'abcde') {
   console.log(character);
-}`
-      },
-      // 👇 These patterns could be converted (they support forEach) but are not implemented yet.
-      {
-        description: "for-of but a map",
-        code: `const map = new Map();
+}`);
+    });
+
+    // 👇 These patterns could be converted (they support forEach) but are not implemented yet.
+    it("for-of but a map", () => {
+      shouldNotConvert(`const map = new Map();
 map.set('Me', {text: 'hello'});
 for (let entry of map) {
   console.log(entry);
-}`
-      },
-      {
-        description: "for-of but a set",
-        code: `const set = new Set();
+}`);
+    });
+
+    it("for-of but a set", () => {
+      shouldNotConvert(`const set = new Set();
 set.add('Me');
 for (let entry of set) {
   console.log(entry);
-}`
-      },
-      {
-        description: "for-of but a set",
-        code: `const typedArray = new Int8Array(8);
+}`);
+    });
+
+    it("for-of but a typed array", () => {
+      shouldNotConvert(`const typedArray = new Int8Array(8);
 typedArray[0] = 32;
 for (let entry of typedArray) {
   console.log(entry);
-}`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
-
-      await convertForToForEach(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
+}`);
+    });
+  });
 
   it("should call onMatch for a matching for-loop", async () => {
     const code = `for (let i = 0; i < items.length; i++) {
@@ -405,15 +428,43 @@ for (let entry of typedArray) {
     expect(onMatch).toHaveBeenCalled();
   });
 
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertForToForEach({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await convertForToForEach(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindForLoopToConvert
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldConvertForToForEach({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = convertForToForEach({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotConvert(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = convertForToForEach({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}

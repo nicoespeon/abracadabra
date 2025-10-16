@@ -91,7 +91,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     ],
     withActionProvider: [
       changeSignature,
-      convertForToForEach,
       convertIfElseToSwitch,
       convertIfElseToTernary,
       convertSwitchToIfElse,
@@ -117,6 +116,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withActionProvider__NEW: [
       addNumericSeparator,
       convertForEachToForOf,
+      convertForToForEach,
       convertLetToConst,
       flipIfElse,
       flipTernary,
