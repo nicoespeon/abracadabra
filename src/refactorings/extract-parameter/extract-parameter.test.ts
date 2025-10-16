@@ -1,4 +1,3 @@
-import { describe } from "node:test";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
