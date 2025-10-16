@@ -1,18 +1,18 @@
 import * as t from "../../ast";
-import { Code, Editor, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function invertBooleanLogic(editor: Editor) {
-  const { code, selection } = editor;
+export function invertBooleanLogic(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const expression = findNegatableExpression(t.parse(code), selection);
 
   if (!expression) {
-    editor.showError(ErrorReason.DidNotFindInvertableBooleanLogic);
-    return;
+    return COMMANDS.showErrorDidNotFind("invertable boolean logic");
   }
 
   const expressionSelection = Selection.fromAST(expression.loc);
-  await editor.readThenWrite(expressionSelection, (code) => [
+  return COMMANDS.readThenWrite(expressionSelection, (code) => [
     {
       code: updateCode(code),
       selection: expressionSelection

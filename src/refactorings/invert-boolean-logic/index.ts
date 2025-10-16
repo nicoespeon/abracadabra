@@ -1,11 +1,11 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   createVisitor,
   getNegatedOperator,
   invertBooleanLogic
 } from "./invert-boolean-logic";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "invertBooleanLogic",
     operation: invertBooleanLogic,
