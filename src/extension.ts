@@ -90,7 +90,6 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       moveStatementDown
     ],
     withActionProvider: [
-      addNumericSeparator,
       changeSignature,
       convertForEachToForOf,
       convertForToForEach,
@@ -120,6 +119,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       toggleBraces
     ],
     withActionProvider__NEW: [
+      addNumericSeparator,
       extractParameter,
       convertGuardToIf,
       moveLastStatementOutOfIfElse,
