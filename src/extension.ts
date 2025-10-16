@@ -89,12 +89,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       moveStatementUp,
       moveStatementDown
     ],
-    withActionProvider: [
-      changeSignature,
-      inline,
-      mergeWithPreviousIfStatement,
-      toggleBraces
-    ],
+    withActionProvider: [changeSignature, inline, toggleBraces],
     withActionProvider__NEW: [
       addNumericSeparator,
       convertForEachToForOf,
@@ -115,6 +110,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       invertBooleanLogic,
       liftUpConditional,
       mergeIfStatements,
+      mergeWithPreviousIfStatement,
       moveLastStatementOutOfIfElse,
       removeDeadCode,
       removeRedundantElse,

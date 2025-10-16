@@ -1,10 +1,10 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   createVisitor,
   mergeWithPreviousIfStatement
 } from "./merge-with-previous-if-statement";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "mergeWithPreviousIfStatement",
     operation: mergeWithPreviousIfStatement,
