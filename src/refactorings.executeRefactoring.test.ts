@@ -197,7 +197,7 @@ const anotherOne = 'world';`);
     const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
-        action: "ask user",
+        action: "ask user input",
         value: "hello"
       })
       .mockReturnValue({ action: "do nothing" });
@@ -213,7 +213,7 @@ const anotherOne = 'world';`);
     const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
-        action: "ask user",
+        action: "ask user input",
         value: "hello"
       })
       .mockReturnValue({ action: "do nothing" });
@@ -224,7 +224,7 @@ const anotherOne = 'world';`);
 
     expect(fakeRefactoring).toHaveBeenCalledTimes(2);
     expect(fakeRefactoring).toHaveBeenLastCalledWith({
-      state: "user response",
+      state: "user input response",
       value: "newName",
       code: "const hello = 'world'",
       selection: Selection.cursorAt(0, 5)

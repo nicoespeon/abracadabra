@@ -10,10 +10,10 @@ export function renameSymbol(state: RefactoringState): EditorCommand {
     const path = findPath(code, selection);
     if (!path) return COMMANDS.showErrorDidNotFind("an identifier to rename");
 
-    return COMMANDS.askUser(path.node.name);
+    return COMMANDS.askUserInput(path.node.name);
   }
 
-  if (state.state === "user response") {
+  if (state.state === "user input response") {
     const newName = state.value;
     if (!newName) return COMMANDS.doNothing();
 

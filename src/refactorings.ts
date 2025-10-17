@@ -69,7 +69,7 @@ export type RefactoringState = (
   | { state: "new" }
   | { state: "command not supported" }
   | {
-      state: "user response";
+      state: "user input response";
       value: string | undefined;
     }
 ) &
@@ -88,7 +88,7 @@ export type EditorCommand = (
       newCursorPosition?: Position | Selection;
     }
   | { action: "delegate"; command: Command; selection?: Selection }
-  | { action: "ask user"; value?: string }
+  | { action: "ask user input"; value?: string }
 ) &
   BaseEditorCommand;
 
@@ -103,7 +103,10 @@ export const COMMANDS = {
     action: "show error",
     reason: `I'm sorry, I can't ${action} 😅`
   }),
-  askUser: (value: string): EditorCommand => ({ action: "ask user", value }),
+  askUserInput: (value: string): EditorCommand => ({
+    action: "ask user input",
+    value
+  }),
   write: (
     code: Code,
     newCursorPosition?: Position,
@@ -179,10 +182,10 @@ export async function executeRefactoring(
       break;
     }
 
-    case "ask user": {
+    case "ask user input": {
       const userInput = await editor.askUserInput(result.value);
       return executeRefactoring(refactor, editor, {
-        state: "user response",
+        state: "user input response",
         value: userInput,
         code: state.code,
         selection: state.selection

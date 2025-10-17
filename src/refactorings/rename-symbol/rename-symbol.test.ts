@@ -29,7 +29,7 @@ describe("Rename Symbol", () => {
         selection
       });
 
-      expect(result).toEqual({ action: "ask user", value: "hello" });
+      expect(result).toEqual({ action: "ask user input", value: "hello" });
     });
 
     it("should not ask user for new name if cursor isn't on an Identifier", () => {
@@ -52,7 +52,7 @@ describe("Rename Symbol", () => {
       );
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -70,7 +70,7 @@ describe("Rename Symbol", () => {
       );
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         code,
         selection,
         value: undefined
@@ -85,7 +85,7 @@ describe("Rename Symbol", () => {
       );
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         code,
         selection,
         value: "hello"
@@ -100,7 +100,7 @@ console.log([cursor]hello);
 const goodMorning = \`Good morning \${hello}!\``);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -120,7 +120,7 @@ const goodMorning = \`Good morning \${aBrandNewName}!\``
 console.log(value);`);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -139,7 +139,7 @@ console.log(aBrandNewName);`
 console.log(somethingElse);`);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -160,7 +160,7 @@ console.log(aBrandNewName);`
 console.log(somethingElse);`);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -175,7 +175,7 @@ console.log(somethingElse);`);
 console.log(value);`);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -194,7 +194,7 @@ let hello = 'my friend';
 const goodMorning = \`Good morning \${hello}!\``);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -222,7 +222,7 @@ function sayHello() {
 }`);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
@@ -245,7 +245,7 @@ function sayHello() {
 \t\tconst goodMorning = \`Good morning \${hello}!\``);
 
       const result = renameSymbol({
-        state: "user response",
+        state: "user input response",
         value: "aBrandNewName",
         code,
         selection
