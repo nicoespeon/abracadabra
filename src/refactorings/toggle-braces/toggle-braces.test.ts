@@ -1,28 +1,29 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
-import { createVisitor, toggleBraces } from "./toggle-braces";
+import { Code } from "../../editor/editor";
+import { toggleBraces } from "./toggle-braces";
 
 describe("Toggle Braces", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should add braces to",
-    [
-      {
-        description: "if statement",
+  describe("should add braces to", () => {
+    it("if statement", () => {
+      shouldToggleBraces({
         code: "if (!isValid) ret[cursor]urn;",
         expected: `if (!isValid) {
   return;
 }`
-      },
-      {
-        description: "if statement, cursor on if",
+      });
+    });
+
+    it("if statement, cursor on if", () => {
+      shouldToggleBraces({
         code: "[cursor]if (!isValid) return;",
         expected: `if (!isValid) {
   return;
 }`
-      },
-      {
-        description: "if-else scenario, selecting if",
+      });
+    });
+
+    it("if-else scenario, selecting if", () => {
+      shouldToggleBraces({
         code: `if (isValid)
   d[cursor]oSomething();
 else
@@ -31,9 +32,11 @@ else
   doSomething();
 } else
   doAnotherThing();`
-      },
-      {
-        description: "if-else scenario, selecting else",
+      });
+    });
+
+    it("if-else scenario, selecting else", () => {
+      shouldToggleBraces({
         code: `if (isValid)
   doSomething();
 else
@@ -43,9 +46,11 @@ else
 else {
   doAnotherThing();
 }`
-      },
-      {
-        description: "if-else scenario, cursor on else",
+      });
+    });
+
+    it("if-else scenario, cursor on else", () => {
+      shouldToggleBraces({
         code: `if (isValid)
   doSomething();
 [cursor]else
@@ -55,9 +60,11 @@ else {
 else {
   doAnotherThing();
 }`
-      },
-      {
-        description: "many if statements, 2nd one selected",
+      });
+    });
+
+    it("many if statements, 2nd one selected", () => {
+      shouldToggleBraces({
         code: `if (isProd) logEvent();
 
 if (isValid)
@@ -70,9 +77,11 @@ if (isValid) {
   doSomething();
 } else
   doAnotherThing();`
-      },
-      {
-        description: "nested if statements, cursor on nested",
+      });
+    });
+
+    it("nested if statements, cursor on nested", () => {
+      shouldToggleBraces({
         code: `if (isProd)
   if (isValid)
     [cursor]doSomething();`,
@@ -80,9 +89,11 @@ if (isValid) {
   if (isValid) {
     doSomething();
   }`
-      },
-      {
-        description: "multiple statements after if",
+      });
+    });
+
+    it("multiple statements after if", () => {
+      shouldToggleBraces({
         code: `if (isValid)
   [cursor]doSomething();
   doAnotherThing();`,
@@ -90,29 +101,39 @@ if (isValid) {
   doSomething();
 }
   doAnotherThing();`
-      },
-      {
-        description: "JSX attribute",
+      });
+    });
+
+    it("JSX attribute", () => {
+      shouldToggleBraces({
         code: `<TestComponent testProp=[cursor]"test" />`,
         expected: `<TestComponent testProp={"test"} />`
-      },
-      {
-        description: "cursor on the JSX identifier",
+      });
+    });
+
+    it("cursor on the JSX identifier", () => {
+      shouldToggleBraces({
         code: `<TestComponent te[cursor]stProp="test" />`,
         expected: `<TestComponent testProp={"test"} />`
-      },
-      {
-        description: "with multiple jsx attributes selecting the first one",
+      });
+    });
+
+    it("with multiple jsx attributes selecting the first one", () => {
+      shouldToggleBraces({
         code: `<TestComponent firstProp="firs[cursor]t" secondProp="second" />`,
         expected: `<TestComponent firstProp={"first"} secondProp="second" />`
-      },
-      {
-        description: "with multiple jsx attributes selecting the second one",
+      });
+    });
+
+    it("with multiple jsx attributes selecting the second one", () => {
+      shouldToggleBraces({
         code: `<TestComponent firstProp="first" secondProp="s[cursor]econd" />`,
         expected: `<TestComponent firstProp="first" secondProp={"second"} />`
-      },
-      {
-        description: "JSX attribute in a function component",
+      });
+    });
+
+    it("JSX attribute in a function component", () => {
+      shouldToggleBraces({
         code: `function TestComponent() {
   return (
     <section>
@@ -127,31 +148,38 @@ if (isValid) {
     </section>
   );
 }`
-      },
-      {
-        description: "arrow function",
+      });
+    });
+
+    it("arrow function", () => {
+      shouldToggleBraces({
         code: `const sayHello = [cursor]() => "Hello!";`,
         expected: `const sayHello = () => {
   return "Hello!";
 };`
-      },
-      {
-        description: "nested arrow function, cursor on wrapper",
+      });
+    });
+
+    it("nested arrow function, cursor on wrapper", () => {
+      shouldToggleBraces({
         code: `const createSayHello = [cursor]() => () => "Hello!";`,
         expected: `const createSayHello = () => {
   return () => "Hello!";
 };`
-      },
-      {
-        description: "nested arrow function, cursor on nested",
+      });
+    });
+
+    it("nested arrow function, cursor on nested", () => {
+      shouldToggleBraces({
         code: `const createSayHello = () => [cursor]() => "Hello!";`,
         expected: `const createSayHello = () => () => {
   return "Hello!";
 };`
-      },
-      {
-        description:
-          "JSX attribute nested in an if-statement, nested in an arrow function",
+      });
+    });
+
+    it("JSX attribute nested in an if-statement, nested in an arrow function", () => {
+      shouldToggleBraces({
         code: `const render = (isValid) => {
   if (isValid)
     return <SayHello name="[cursor]John" />;
@@ -164,23 +192,29 @@ if (isValid) {
 
   return <SayBye />;
 }`
-      },
-      {
-        description: "for statement",
+      });
+    });
+
+    it("for statement", () => {
+      shouldToggleBraces({
         code: "for (let i = 0; i < 5; i++) cons[cursor]ole.log(i);",
         expected: `for (let i = 0; i < 5; i++) {
   console.log(i);
 }`
-      },
-      {
-        description: "for statement, cursor on for",
+      });
+    });
+
+    it("for statement, cursor on for", () => {
+      shouldToggleBraces({
         code: "[cursor]for (let i = 0; i < 5; i++) console.log(i);",
         expected: `for (let i = 0; i < 5; i++) {
   console.log(i);
 }`
-      },
-      {
-        description: "nested for statement, cursor on nested",
+      });
+    });
+
+    it("nested for statement, cursor on nested", () => {
+      shouldToggleBraces({
         code: `for (let i = 0; i < 3; i++) {
   for (let j = 0; j < 4; j++) {[cursor]
     console.log(i * j);
@@ -190,66 +224,69 @@ if (isValid) {
   for (let j = 0; j < 4; j++)
     console.log(i * j);
 }`
-      },
-      {
-        description: "while statement",
+      });
+    });
+
+    it("while statement", () => {
+      shouldToggleBraces({
         code: `while (true) cons[cursor]ole.log("Hello");`,
         expected: `while (true) {
   console.log("Hello");
 }`
-      },
-      {
-        description: "while statement, cursor on while",
+      });
+    });
+
+    it("while statement, cursor on while", () => {
+      shouldToggleBraces({
         code: `[cursor]while (true) console.log("Hello");`,
         expected: `while (true) {
   console.log("Hello");
 }`
-      },
-      {
-        description: "do while statement",
+      });
+    });
+
+    it("do while statement", () => {
+      shouldToggleBraces({
         code: `do cons[cursor]ole.log("Hello"); while (true);`,
         expected: `do {
   console.log("Hello");
 } while (true);`
-      },
-      {
-        description: "do while statement, cursor on do",
+      });
+    });
+
+    it("do while statement, cursor on do", () => {
+      shouldToggleBraces({
         code: `[cursor]do console.log("Hello"); while (true);`,
         expected: `do {
   console.log("Hello");
 } while (true);`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await toggleBraces(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code; expected: Code }>(
-    "remove braces from",
-    [
-      {
-        description: "an if statement",
+  describe("remove braces from", () => {
+    it("an if statement", () => {
+      shouldToggleBraces({
         code: `if (!isValid) {[cursor]
   return;
 }`,
         expected: `if (!isValid)
   return;`
-      },
-      {
-        description: "an if statement, cursor on if",
+      });
+    });
+
+    it("an if statement, cursor on if", () => {
+      shouldToggleBraces({
         code: `[cursor]if (!isValid) {
   return;
 }`,
         expected: `if (!isValid)
   return;`
-      },
-      {
-        description: "if-else scenario, selecting if",
+      });
+    });
+
+    it("if-else scenario, selecting if", () => {
+      shouldToggleBraces({
         code: `if (isValid) {
   d[cursor]oSomething();
 } else
@@ -258,9 +295,11 @@ if (isValid) {
   doSomething();
 else
   doAnotherThing();`
-      },
-      {
-        description: "if-else scenario, selecting else",
+      });
+    });
+
+    it("if-else scenario, selecting else", () => {
+      shouldToggleBraces({
         code: `if (isValid)
   doSomething();
 else {
@@ -270,9 +309,11 @@ else {
   doSomething();
 else
   doAnotherThing();`
-      },
-      {
-        description: "if-else scenario, cursor on else",
+      });
+    });
+
+    it("if-else scenario, cursor on else", () => {
+      shouldToggleBraces({
         code: `if (isValid)
   doSomething();
 [cursor]else {
@@ -282,9 +323,11 @@ else
   doSomething();
 else
   doAnotherThing();`
-      },
-      {
-        description: "many if statements, 2nd one selected",
+      });
+    });
+
+    it("many if statements, 2nd one selected", () => {
+      shouldToggleBraces({
         code: `if (isProd) logEvent();
 
 if (isValid) {
@@ -297,9 +340,11 @@ if (isValid)
   doSomething();
 else
   doAnotherThing();`
-      },
-      {
-        description: "nested if statements, cursor on nested",
+      });
+    });
+
+    it("nested if statements, cursor on nested", () => {
+      shouldToggleBraces({
         code: `if (isProd)
 i[cursor]f (isValid) {
   doSomething();
@@ -307,9 +352,11 @@ i[cursor]f (isValid) {
         expected: `if (isProd)
 if (isValid)
   doSomething();`
-      },
-      {
-        description: "multiple statements after if",
+      });
+    });
+
+    it("multiple statements after if", () => {
+      shouldToggleBraces({
         code: `if (isValid) {
   [cursor]doSomething();
 }
@@ -317,9 +364,11 @@ doAnotherThing();`,
         expected: `if (isValid)
   doSomething();
 doAnotherThing();`
-      },
-      {
-        description: "nested if statements, only wrapper can be refactored",
+      });
+    });
+
+    it("nested if statements, only wrapper can be refactored", () => {
+      shouldToggleBraces({
         code: `if (isValid) {
   if (isMorning) {
     [cursor]doSomething();
@@ -330,16 +379,20 @@ doAnotherThing();`
   doSomething();
   return doSomethingElse();
 }`
-      },
-      {
-        description: "an arrow function",
+      });
+    });
+
+    it("an arrow function", () => {
+      shouldToggleBraces({
         code: `const sayHello = () => {
   [cursor]return "Hello!";
 };`,
         expected: `const sayHello = () => "Hello!";`
-      },
-      {
-        description: "nested arrow function, cursor on wrapper",
+      });
+    });
+
+    it("nested arrow function, cursor on wrapper", () => {
+      shouldToggleBraces({
         code: `const createSayHello = () => {
   [cursor]return () => {
     return "Hello!";
@@ -348,9 +401,11 @@ doAnotherThing();`
         expected: `const createSayHello = () => () => {
   return "Hello!";
 };`
-      },
-      {
-        description: "nested arrow function, cursor on nested",
+      });
+    });
+
+    it("nested arrow function, cursor on nested", () => {
+      shouldToggleBraces({
         code: `const createSayHello = () => {
   return () => {
     [cursor]return "Hello!";
@@ -359,29 +414,39 @@ doAnotherThing();`
         expected: `const createSayHello = () => {
   return () => "Hello!";
 };`
-      },
-      {
-        description: "a JSX attribute",
+      });
+    });
+
+    it("a JSX attribute", () => {
+      shouldToggleBraces({
         code: `<TestComponent testProp=[cursor]{"test"} />`,
         expected: `<TestComponent testProp="test" />`
-      },
-      {
-        description: "a JSX attribute with single quote",
+      });
+    });
+
+    it("a JSX attribute with single quote", () => {
+      shouldToggleBraces({
         code: `<TestComponent testProp=[cursor]{'test'} />`,
         expected: `<TestComponent testProp="test" />`
-      },
-      {
-        description: "multiple JSX attributes, cursor on first attribute",
+      });
+    });
+
+    it("multiple JSX attributes, cursor on first attribute", () => {
+      shouldToggleBraces({
         code: `<TestComponent firstProp={'[cursor]test'} secondProp={'test'} />`,
         expected: `<TestComponent firstProp="test" secondProp={'test'} />`
-      },
-      {
-        description: "multiple JSX attributes, cursor on second attribute",
+      });
+    });
+
+    it("multiple JSX attributes, cursor on second attribute", () => {
+      shouldToggleBraces({
         code: `<TestComponent firstProp={'test'} secondProp={'t[cursor]est'} />`,
         expected: `<TestComponent firstProp={'test'} secondProp="test" />`
-      },
-      {
-        description: "a JSX attribute in a function component",
+      });
+    });
+
+    it("a JSX attribute in a function component", () => {
+      shouldToggleBraces({
         code: `function TestComponent() {
   return (
     <section>
@@ -396,117 +461,136 @@ doAnotherThing();`
     </section>
   );
 }`
-      },
-      {
-        description: "a for statement",
+      });
+    });
+
+    it("a for statement", () => {
+      shouldToggleBraces({
         code: `for (let i = 0; i < 5; i++) { cons[cursor]ole.log(i); }`,
         expected: `for (let i = 0; i < 5; i++)
   console.log(i);`
-      },
-      {
-        description: "a for statement, cursor on for",
+      });
+    });
+
+    it("a for statement, cursor on for", () => {
+      shouldToggleBraces({
         code: `[cursor]for (let i = 0; i < 5; i++) { console.log(i); }`,
         expected: `for (let i = 0; i < 5; i++)
   console.log(i);`
-      },
-      {
-        description: "a while statement",
+      });
+    });
+
+    it("a while statement", () => {
+      shouldToggleBraces({
         code: `while (true) { cons[cursor]ole.log("Hello"); }`,
         expected: `while (true)
   console.log("Hello");`
-      },
-      {
-        description: "a while statement, cursor on while",
+      });
+    });
+
+    it("a while statement, cursor on while", () => {
+      shouldToggleBraces({
         code: `[cursor]while (true) { console.log("Hello"); }`,
         expected: `while (true)
   console.log("Hello");`
-      },
-      {
-        description: "a do while statement",
+      });
+    });
+
+    it("a do while statement", () => {
+      shouldToggleBraces({
         code: `do { cons[cursor]ole.log("Hello"); } while (true);`,
         expected: `do
   console.log("Hello");
 while (true);`
-      },
-      {
-        description: "a do while statement, cursor on do",
+      });
+    });
+
+    it("a do while statement, cursor on do", () => {
+      shouldToggleBraces({
         code: `[cursor]do { console.log("Hello"); } while (true);`,
         expected: `do
   console.log("Hello");
 while (true);`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await toggleBraces(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not apply to",
-    [
-      {
-        description: "block with multiple statements, selection on if",
-        code: `if (!isValid) {[cursor]
+  describe("should not apply to", () => {
+    it("block with multiple statements, selection on if", () => {
+      shouldNotToggleBraces(
+        `if (!isValid) {[cursor]
   doSomething();
   return;
 }`
-      },
-      {
-        description: "block with multiple statements, selection on else",
-        code: `if (!isValid) {
+      );
+    });
+
+    it("block with multiple statements, selection on else", () => {
+      shouldNotToggleBraces(
+        `if (!isValid) {
   doSomething();
 } el[cursor]se {
   doSomethingElse();
   return;
 }`
-      },
-      {
-        description: "an arrow function that returns nothing",
-        code: `const sayHello = () => {
+      );
+    });
+
+    it("an arrow function that returns nothing", () => {
+      shouldNotToggleBraces(
+        `const sayHello = () => {
   [cursor]return;
 }`
-      },
-      {
-        description: "an arrow function that has no return",
-        code: `const sayHello = () => {
+      );
+    });
+
+    it("an arrow function that has no return", () => {
+      shouldNotToggleBraces(
+        `const sayHello = () => {
   [cursor]console.log("Hello!");
 }`
-      },
-      {
-        description: "an arrow function with multiple statements",
-        code: `const sayHello = () => {
+      );
+    });
+
+    it("an arrow function with multiple statements", () => {
+      shouldNotToggleBraces(
+        `const sayHello = () => {
   [cursor]const hello = "Hello!";
   return hello;
 }`
-      },
-      {
-        description:
-          "an arrow function with statements after return (dead code)",
-        code: `const sayHello = () => {
+      );
+    });
+
+    it("an arrow function with statements after return (dead code)", () => {
+      shouldNotToggleBraces(
+        `const sayHello = () => {
   [cursor]return "Hello!";
   console.log("Some dead code");
 }`
-      },
-      {
-        description: "JSX expression that is a function",
-        code: `<TestComponent testProp=[cursor]{function() { /* should not be replaced */ }} />`
-      },
-      {
-        description: "JSX epxression that is an arrow function",
-        code: `<TestComponent testProp=[cursor]{() => { /* should not be replaced */ }} />`
-      },
-      {
-        description: "JSX expression that is an object",
-        code: `<TestComponent testProp=[cursor]{{ should: 'not', be: 'replaced' }} />`
-      },
-      {
-        description:
-          "string expression not in JSX attribute should not be replaced",
-        code: `function TestComponent() {
+      );
+    });
+
+    it("JSX expression that is a function", () => {
+      shouldNotToggleBraces(
+        `<TestComponent testProp=[cursor]{function() { /* should not be replaced */ }} />`
+      );
+    });
+
+    it("JSX epxression that is an arrow function", () => {
+      shouldNotToggleBraces(
+        `<TestComponent testProp=[cursor]{() => { /* should not be replaced */ }} />`
+      );
+    });
+
+    it("JSX expression that is an object", () => {
+      shouldNotToggleBraces(
+        `<TestComponent testProp=[cursor]{{ should: 'not', be: 'replaced' }} />`
+      );
+    });
+
+    it("string expression not in JSX attribute should not be replaced", () => {
+      shouldNotToggleBraces(
+        `function TestComponent() {
   return (
     [cursor]<section>
       {'test'}
@@ -514,52 +598,77 @@ while (true);`
     </section>
   );
 }`
-      },
-      {
-        description: "an empty for statement",
-        code: `for (let i = 0; i < 5; i++) { }`
-      },
-      {
-        description: "a for statement with multiple statements",
-        code: `for (let i = 0; i < 5; i++) { console.log("Hello"); console.log("World"); }`
-      },
-      {
-        description: "an empty while statement",
-        code: `while (true) { }`
-      },
-      {
-        description: "a while statement with multiple statements",
-        code: `while (true) { console.log("Hello"); console.log("World"); }`
-      },
-      {
-        description: "an empty do while statement",
-        code: `do { } while (true);`
-      },
-      {
-        description: "a do while statement with multiple statements",
-        code: `do { console.log("Hello"); console.log("World"); } while (true);`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+      );
+    });
 
-      await toggleBraces(editor);
+    it("an empty for statement", () => {
+      shouldNotToggleBraces(`for (let i = 0; i < 5; i++) { }`);
+    });
 
-      expect(editor.code).toBe(originalCode);
-      await expect(createVisitor).not.toMatchEditor(editor);
-    }
-  );
+    it("a for statement with multiple statements", () => {
+      shouldNotToggleBraces(
+        `for (let i = 0; i < 5; i++) { console.log("Hello"); console.log("World"); }`
+      );
+    });
 
-  it("should show an error message if refactoring can't be made", async () => {
+    it("an empty while statement", () => {
+      shouldNotToggleBraces(`while (true) { }`);
+    });
+
+    it("a while statement with multiple statements", () => {
+      shouldNotToggleBraces(
+        `while (true) { console.log("Hello"); console.log("World"); }`
+      );
+    });
+
+    it("an empty do while statement", () => {
+      shouldNotToggleBraces(`do { } while (true);`);
+    });
+
+    it("a do while statement with multiple statements", () => {
+      shouldNotToggleBraces(
+        `do { console.log("Hello"); console.log("World"); } while (true);`
+      );
+    });
+  });
+
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = toggleBraces({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await toggleBraces(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindStatementToToggleBraces
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldToggleBraces({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = toggleBraces({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotToggleBraces(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = toggleBraces({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  expect(result.action).toBe("show error");
+}
