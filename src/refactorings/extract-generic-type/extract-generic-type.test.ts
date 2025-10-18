@@ -1,27 +1,28 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { ErrorReason } from "../../editor/editor";
 import { extractGenericType } from "./extract-generic-type";
 
 describe("Extract Generic Type", () => {
-  it("should not extract generic type if not in a valid pattern", async () => {
+  it("should not extract generic type if not in a valid pattern", () => {
     const code = `let message: str[cursor]ing = "Hello"`;
     const editor = new InMemoryEditor(code);
-    const originalCode = editor.code;
+    const result = extractGenericType({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await extractGenericType(editor);
-
-    expect(editor.code).toBe(originalCode);
+    expect(result.action).toBe("show error");
   });
 
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = extractGenericType({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await extractGenericType(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindExtractableCode
-    );
+    expect(result.action).toBe("show error");
   });
 });

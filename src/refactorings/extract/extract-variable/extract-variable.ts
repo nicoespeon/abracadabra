@@ -2,7 +2,7 @@ import * as t from "../../../ast";
 import { Code, Editor, ErrorReason } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
 import { renameSymbol } from "../../rename-symbol/rename-symbol-old";
-import { askReplacementStrategy } from "../replacement-strategy";
+import { askReplacementStrategy__OLD } from "../replacement-strategy";
 import { createOccurrence, Occurrence } from "./occurrence";
 
 export async function extractVariable(editor: Editor) {
@@ -15,7 +15,7 @@ export async function extractVariable(editor: Editor) {
     return;
   }
 
-  const replacementStrategy = await askReplacementStrategy(
+  const replacementStrategy = await askReplacementStrategy__OLD(
     otherOccurrences,
     editor
   );

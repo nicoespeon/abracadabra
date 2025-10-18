@@ -1,5 +1,5 @@
 import { NodePath, Visitor } from "./ast";
-import { Code, Command, Editor, Modification } from "./editor/editor";
+import { Choice, Code, Command, Editor, Modification } from "./editor/editor";
 import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
 
@@ -65,34 +65,47 @@ export type Refactoring__DEPRECATED = (editor: Editor) => Promise<void>;
 
 export type Refactoring = (state: RefactoringState) => EditorCommand;
 
-export type RefactoringState = (
-  | { state: "new" }
-  | { state: "command not supported" }
-  | {
-      state: "user input response";
-      value: string | undefined;
-    }
-) &
-  BaseRefactoringState;
+export type RefactoringState = BaseRefactoringState &
+  (
+    | { state: "new" }
+    | { state: "command not supported" }
+    | {
+        state: "user input response";
+        value: string | undefined;
+      }
+    | UserChoiceResponseState
+  );
 
 type BaseRefactoringState = { code: Code; selection: Selection };
 
-export type EditorCommand = (
-  | { action: "do nothing" }
-  | { action: "show error"; reason: string; details?: unknown }
-  | { action: "write"; code: Code; newCursorPosition?: Position }
-  | {
-      action: "read then write";
-      readSelection: Selection;
-      getModifications: (code: Code) => Modification[];
-      newCursorPosition?: Position | Selection;
-    }
-  | { action: "delegate"; command: Command; selection?: Selection }
-  | { action: "ask user input"; value?: string }
-) &
-  BaseEditorCommand;
+type UserChoiceResponseState<T = unknown> = {
+  state: "user choice response";
+  choice: Choice<T> | undefined;
+};
+
+export type EditorCommand = BaseEditorCommand &
+  (
+    | { action: "do nothing" }
+    | { action: "show error"; reason: string; details?: unknown }
+    | { action: "write"; code: Code; newCursorPosition?: Position }
+    | {
+        action: "read then write";
+        readSelection: Selection;
+        getModifications: (code: Code) => Modification[];
+        newCursorPosition?: Position | Selection;
+      }
+    | { action: "delegate"; command: Command; selection?: Selection }
+    | { action: "ask user input"; value?: string }
+    | AskUserChoiceCommand
+  );
 
 type BaseEditorCommand = { thenRun?: Refactoring };
+
+type AskUserChoiceCommand<T = unknown> = {
+  action: "ask user choice";
+  choices: Choice<T>[];
+  placeHolder?: string;
+};
 
 export const COMMANDS = {
   showErrorDidNotFind: (element: string): EditorCommand => ({
@@ -106,6 +119,14 @@ export const COMMANDS = {
   askUserInput: (value: string): EditorCommand => ({
     action: "ask user input",
     value
+  }),
+  askUserChoice: <T>(
+    choices: Choice<T>[],
+    placeHolder?: string
+  ): EditorCommand => ({
+    action: "ask user choice",
+    choices,
+    placeHolder
   }),
   write: (
     code: Code,
@@ -187,6 +208,19 @@ export async function executeRefactoring(
       return executeRefactoring(refactor, editor, {
         state: "user input response",
         value: userInput,
+        code: state.code,
+        selection: state.selection
+      });
+    }
+
+    case "ask user choice": {
+      const choice = await editor.askUserChoice(
+        result.choices,
+        result.placeHolder
+      );
+      return executeRefactoring(refactor, editor, {
+        state: "user choice response",
+        choice,
         code: state.code,
         selection: state.selection
       });

@@ -1,36 +1,36 @@
 import { last } from "../../array";
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, RefactoringState } from "../../refactorings";
 import { askReplacementStrategy } from "../extract/replacement-strategy";
-import { renameSymbol } from "../rename-symbol/rename-symbol-old";
-
-export async function extractGenericType(editor: Editor) {
-  const { code, selection } = editor;
+import { renameSymbol } from "../rename-symbol/rename-symbol";
+export function extractGenericType(state: RefactoringState) {
+  const { code, selection } = state;
   const ast = t.parse(code);
 
   const { selected: selectedOccurrence, others: otherOccurrences } =
     findAllOccurrences(ast, selection);
 
   if (!selectedOccurrence) {
-    editor.showError(ErrorReason.DidNotFindExtractableCode);
-    return;
+    return COMMANDS.showErrorDidNotFind("extractable code");
   }
 
-  const choice = await askReplacementStrategy(otherOccurrences, editor);
-  if (choice === "none") return;
+  return askReplacementStrategy(otherOccurrences, state, (strategy) => {
+    if (strategy === "none") return COMMANDS.doNothing();
 
-  const occurrences =
-    choice === "all occurrences"
-      ? [selectedOccurrence].concat(otherOccurrences)
-      : [selectedOccurrence];
+    const occurrences =
+      strategy === "all occurrences"
+        ? [selectedOccurrence].concat(otherOccurrences)
+        : [selectedOccurrence];
 
-  occurrences.forEach((occurrence) => occurrence.transform());
+    occurrences.forEach((occurrence) => occurrence.transform());
 
-  const anyOccurrence = occurrences[0];
-  await editor.write(t.print(ast), anyOccurrence.symbolPosition);
-  await renameSymbol(editor);
+    const anyOccurrence = occurrences[0];
+    return COMMANDS.write(t.print(ast), anyOccurrence.symbolPosition, {
+      thenRun: renameSymbol
+    });
+  });
 }
 
 function findAllOccurrences(ast: t.AST, selection: Selection): AllOccurrences {
