@@ -8,7 +8,9 @@ export class Path {
     return this._value.trim();
   }
 
-  equals(otherValue: string): boolean {
+  equals(pathOrValue: Path | string): boolean {
+    const otherValue =
+      typeof pathOrValue === "string" ? pathOrValue : pathOrValue.value;
     return this.value === otherValue;
   }
 
