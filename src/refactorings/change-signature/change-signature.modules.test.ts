@@ -1,617 +1,409 @@
+import { assert } from "../../assert";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code } from "../../editor/editor";
+import { Code, SelectedPosition } from "../../editor/editor";
 import { AbsolutePath } from "../../editor/path";
-import { testEach } from "../../tests-helpers";
 import { changeSignature } from "./change-signature";
 import { selectedPosition, swapBothArguments } from "./selected-position";
 
-type TestSample = {
-  code: Code;
-  path: AbsolutePath;
-};
-
 describe("Change Signature: Modules", () => {
-  const addModule = new AbsolutePath("/temp/add.ts");
-  const anotherModule = new AbsolutePath("/temp/anotherModule");
-
-  testEach<{
-    setup: {
-      currentFile: TestSample;
-      otherFiles: TestSample[];
-    };
-    expected: {
-      currentFile: TestSample;
-      otherFiles: TestSample[];
-    };
-  }>(
-    "should change signature of function with a reference in modules",
-    [
-      {
-        description: "that import the function",
-        setup: {
-          currentFile: {
-            code: `export function [cursor]add(a, b) {
-              return a + b;
-            }`,
-            path: new AbsolutePath("/temp/module.ts")
-          },
-          otherFiles: [
-            {
-              code: `import {add} from './module';
-                add(1, 2)
-              `,
-              path: addModule
-            },
-            {
-              code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-              path: anotherModule
-            }
-          ]
+  describe("should change signature of function with a reference in modules", () => {
+    it("that import a function", async () => {
+      await shouldChangeSignature([
+        {
+          path: new AbsolutePath("/temp/module.ts"),
+          code: `export function [cursor]add(a, b) {
+  return a + b;
+}`,
+          expected: `export function add(b, a) {
+  return a + b;
+}`
         },
-        expected: {
-          currentFile: {
-            code: `export function add(b, a) {
-              return a + b;
-            }`,
-            path: new AbsolutePath("/temp/module.ts")
-          },
-          otherFiles: [
-            {
-              code: `import {add} from './module';
-                add(2, 1)
-              `,
-              path: addModule
-            },
-            {
-              code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(b, a);
-                }
-              `,
-              path: anotherModule
-            }
-          ]
-        }
-      },
-      {
-        description: "that import arrow function",
-        setup: {
-          currentFile: {
-            code: `export const add = [cursor](a, b) => {
-              return a + b;
-            }`,
-            path: new AbsolutePath("/temp/module.ts")
-          },
-          otherFiles: [
-            {
-              code: `import {add} from './module';
-                add(1, 2)
-              `,
-              path: addModule
-            },
-            {
-              code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-              path: anotherModule
-            }
-          ]
+        {
+          path: new AbsolutePath("/temp/add.ts"),
+          code: `import {add} from './module';
+add(1, 2)`,
+          expected: `import {add} from './module';
+add(2, 1)`
         },
-        expected: {
-          currentFile: {
-            code: `export const add = (b, a) => {
-              return a + b;
-            }`,
-            path: new AbsolutePath("/temp/module.ts")
-          },
-          otherFiles: [
-            {
-              code: `import {add} from './module';
-                add(2, 1)
-              `,
-              path: addModule
-            },
-            {
-              code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(b, a);
-                }
-              `,
-              path: anotherModule
-            }
-          ]
+        {
+          path: new AbsolutePath("/temp/anotherModule"),
+          code: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b);
+}`,
+          expected: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(b, a);
+}`
         }
-      },
-      {
-        description: "that import a class and use a method",
-        setup: {
-          currentFile: {
-            code: `export class Maths {
-                [cursor]add(a, b) {
-                  return a + b;
-                }
-              }`,
-            path: new AbsolutePath("/temp/module.ts")
-          },
-          otherFiles: [
-            {
-              code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(1, 2);
-              `,
-              path: addModule
-            },
-            {
-              code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(a, b);
-                }
-              `,
-              path: anotherModule
-            }
-          ]
+      ]);
+    });
+
+    it("that import an arrow function", async () => {
+      await shouldChangeSignature([
+        {
+          path: new AbsolutePath("/temp/module.ts"),
+          code: `export const add = [cursor](a, b) => {
+  return a + b;
+}`,
+          expected: `export const add = (b, a) => {
+  return a + b;
+}`
         },
-        expected: {
-          currentFile: {
-            code: `export class Maths {
-                add(b, a) {
-                  return a + b;
-                }
-              }`,
-            path: new AbsolutePath("/temp/module.ts")
-          },
-          otherFiles: [
-            {
-              code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(2, 1);
-              `,
-              path: addModule
-            },
-            {
-              code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(b, a);
-                }
-              `,
-              path: anotherModule
-            }
-          ]
+        {
+          path: new AbsolutePath("/temp/add.ts"),
+          code: `import {add} from './module';
+add(1, 2)`,
+          expected: `import {add} from './module';
+add(2, 1)`
+        },
+        {
+          path: new AbsolutePath("/temp/anotherModule"),
+          code: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b);
+}`,
+          expected: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(b, a);
+}`
         }
-      }
-    ],
-    async ({ setup, expected }) => {
-      const editor = new InMemoryEditor(setup.currentFile.code);
-      await editor.writeIn(setup.currentFile.path, editor.code);
-      editor.replyWithPositions(swapBothArguments());
-      await saveOtherFiles(setup, editor);
+      ]);
+    });
 
-      await changeSignature(editor);
-
-      const result = await editor.codeOf(setup.currentFile.path);
-      expect(result).toBe(expected.currentFile.code);
-      await validateOutput(expected, editor);
-    }
-  );
+    it("that import a class and use a method", async () => {
+      await shouldChangeSignature([
+        {
+          path: new AbsolutePath("/temp/module.ts"),
+          code: `export class Maths {
+  [cursor]add(a, b) {
+    return a + b;
+  }
+}`,
+          expected: `export class Maths {
+  add(b, a) {
+    return a + b;
+  }
+}`
+        },
+        {
+          path: new AbsolutePath("/temp/add.ts"),
+          code: `import {Maths} from './module';
+const maths = new Maths();
+maths.add(1, 2);`,
+          expected: `import {Maths} from './module';
+const maths = new Maths();
+maths.add(2, 1);`
+        },
+        {
+          path: new AbsolutePath("/temp/anotherModule"),
+          code: `import {Maths} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  const maths = new Maths();
+  return maths.add(a, b);
+}`,
+          expected: `import {Maths} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  const maths = new Maths();
+  return maths.add(b, a);
+}`
+        }
+      ]);
+    });
+  });
 
   describe("Adding parameter", () => {
-    testEach<{
-      setup: {
-        currentFile: TestSample;
-        otherFiles: TestSample[];
-      };
-      expected: {
-        currentFile: TestSample;
-        otherFiles: TestSample[];
-      };
-    }>(
-      "should change signature of function with a reference in modules changing order and adding new one",
-      [
-        {
-          description: "that import the function",
-          setup: {
-            currentFile: {
+    describe("should change signature of function with a reference in modules adding new one", () => {
+      it("that import a function", async () => {
+        await shouldChangeSignature(
+          [
+            {
+              path: new AbsolutePath("/temp/module.ts"),
               code: `export function [cursor]add(a, b) {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+  return a + b;
+}`,
+              expected: `export function add(a, b, newParameter) {
+  return a + b;
+}`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1, 2)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export function add(b, a, newParameter) {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+            {
+              path: new AbsolutePath("/temp/add.ts"),
+              code: `import {add} from './module';
+add(1, 2)`,
+              expected: `import {add} from './module';
+add(1, 2, 100)`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(2, 1, 100)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(b, a, 100);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        },
-        {
-          description: "that import arrow function",
-          setup: {
-            currentFile: {
+            {
+              path: new AbsolutePath("/temp/anotherModule"),
+              code: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b);
+}`,
+              expected: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b, 100);
+}`
+            }
+          ],
+          [
+            selectedPosition(0, 0),
+            selectedPosition(1, 1),
+            selectedPosition(-1, 2, "newParameter", "100")
+          ]
+        );
+      });
+
+      it("that import an arrow function", async () => {
+        await shouldChangeSignature(
+          [
+            {
+              path: new AbsolutePath("/temp/module.ts"),
               code: `export const add = [cursor](a, b) => {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+  return a + b;
+}`,
+              expected: `export const add = (a, b, newParameter) => {
+  return a + b;
+}`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1, 2)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
+            {
+              path: new AbsolutePath("/temp/add.ts"),
+              code: `import {add} from './module';
+add(1, 2)`,
+              expected: `import {add} from './module';
+add(1, 2, 100)`
+            },
+            {
+              path: new AbsolutePath("/temp/anotherModule"),
+              code: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b);
+}`,
+              expected: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b, 100);
+}`
+            }
+          ],
+          [
+            selectedPosition(0, 0),
+            selectedPosition(1, 1),
+            selectedPosition(-1, 2, "newParameter", "100")
+          ]
+        );
+      });
+    });
+
+    it("that import a class and use a method", async () => {
+      await shouldChangeSignature(
+        [
+          {
+            path: new AbsolutePath("/temp/module.ts"),
+            code: `export class Maths {
+  [cursor]add(a, b) {
+    return a + b;
+  }
+}`,
+            expected: `export class Maths {
+  add(a, b, newParameter) {
+    return a + b;
+  }
+}`
           },
-          expected: {
-            currentFile: {
-              code: `export const add = (b, a, newParameter) => {
-              return a + b;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(2, 1, 100)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(b, a, 100);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        },
-        {
-          description: "that import a class and use a method",
-          setup: {
-            currentFile: {
-              code: `export class Maths {
-                [cursor]add(a, b) {
-                  return a + b;
-                }
-              }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(1, 2);
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
+          {
+            path: new AbsolutePath("/temp/add.ts"),
+            code: `import {Maths} from './module';
+const maths = new Maths();
+maths.add(1, 2);`,
+            expected: `import {Maths} from './module';
+const maths = new Maths();
+maths.add(1, 2, 100);`
           },
-          expected: {
-            currentFile: {
-              code: `export class Maths {
-                add(b, a, newParameter) {
-                  return a + b;
-                }
-              }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(2, 1, 100);
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(b, a, 100);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
+          {
+            path: new AbsolutePath("/temp/anotherModule"),
+            code: `import {Maths} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  const maths = new Maths();
+  return maths.add(a, b);
+}`,
+            expected: `import {Maths} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  const maths = new Maths();
+  return maths.add(a, b, 100);
+}`
           }
-        }
-      ],
-      async ({ setup, expected }) => {
-        const editor = new InMemoryEditor(setup.currentFile.code);
-        await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.replyWithPositions([
-          selectedPosition(0, 1),
-          selectedPosition(1, 0),
+        ],
+        [
+          selectedPosition(0, 0),
+          selectedPosition(1, 1),
           selectedPosition(-1, 2, "newParameter", "100")
-        ]);
-        await saveOtherFiles(setup, editor);
-
-        await changeSignature(editor);
-
-        const result = await editor.codeOf(setup.currentFile.path);
-        expect(result).toBe(expected.currentFile.code);
-        await validateOutput(expected, editor);
-      }
-    );
+        ]
+      );
+    });
   });
 
   describe("Removing parameter", () => {
-    testEach<{
-      setup: {
-        currentFile: TestSample;
-        otherFiles: TestSample[];
-      };
-      expected: {
-        currentFile: TestSample;
-        otherFiles: TestSample[];
-      };
-    }>(
-      "should change signature of function with a reference in modules",
-      [
-        {
-          description: "that import the function",
-          setup: {
-            currentFile: {
+    describe("should change signature of function with a reference in modules removing one", () => {
+      it("that import a function", async () => {
+        await shouldChangeSignature(
+          [
+            {
+              path: new AbsolutePath("/temp/module.ts"),
               code: `export function [cursor]add(a, b) {
-              return a;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+  return a;
+}`,
+              expected: `export function add(a) {
+  return a;
+}`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1, 2)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export function add(a) {
-              return a;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+            {
+              path: new AbsolutePath("/temp/add.ts"),
+              code: `import {add} from './module';
+add(1, 2)`,
+              expected: `import {add} from './module';
+add(1)`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        },
-        {
-          description: "that import arrow function",
-          setup: {
-            currentFile: {
+            {
+              path: new AbsolutePath("/temp/anotherModule"),
+              code: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b);
+}`,
+              expected: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a);
+}`
+            }
+          ],
+          [selectedPosition(0, 0), selectedPosition(1, -1)]
+        );
+      });
+
+      it("that import an arrow function", async () => {
+        await shouldChangeSignature(
+          [
+            {
+              path: new AbsolutePath("/temp/module.ts"),
               code: `export const add = [cursor](a, b) => {
-              return a;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+  return a;
+}`,
+              expected: `export const add = a => {
+  return a;
+}`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1, 2)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export const add = a => {
-              return a;
-            }`,
-              path: new AbsolutePath("/temp/module.ts")
+            {
+              path: new AbsolutePath("/temp/add.ts"),
+              code: `import {add} from './module';
+add(1, 2)`,
+              expected: `import {add} from './module';
+add(1)`
             },
-            otherFiles: [
-              {
-                code: `import {add} from './module';
-                add(1)
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  return add(a);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        },
-        {
-          description: "that import a class and use a method",
-          setup: {
-            currentFile: {
-              code: `export class Maths {
-                [cursor]add(a) {
-                  return a;
-                }
-              }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(1, 2);
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(a, b);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          },
-          expected: {
-            currentFile: {
-              code: `export class Maths {
-                add(a) {
-                  return a;
-                }
-              }`,
-              path: new AbsolutePath("/temp/module.ts")
-            },
-            otherFiles: [
-              {
-                code: `import {Maths} from './module';
-                const maths = new Maths();
-                maths.add(1);
-              `,
-                path: addModule
-              },
-              {
-                code: `import {add} from './anotherModule';
-                export const calculateAdd = (a, b) => {
-                  const maths = new Maths();
-                  return maths.add(a);
-                }
-              `,
-                path: anotherModule
-              }
-            ]
-          }
-        }
-      ],
-      async ({ setup, expected }) => {
-        const editor = new InMemoryEditor(setup.currentFile.code);
-        await editor.writeIn(setup.currentFile.path, editor.code);
-        editor.replyWithPositions([
-          selectedPosition(0, 0),
-          selectedPosition(1, -1)
-        ]);
-        await saveOtherFiles(setup, editor);
+            {
+              path: new AbsolutePath("/temp/anotherModule"),
+              code: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a, b);
+}`,
+              expected: `import {add} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  return add(a);
+}`
+            }
+          ],
+          [selectedPosition(0, 0), selectedPosition(1, -1)]
+        );
+      });
 
-        await changeSignature(editor);
-
-        const result = await editor.codeOf(setup.currentFile.path);
-        expect(result).toBe(expected.currentFile.code);
-        await validateOutput(expected, editor);
-      }
-    );
+      it("that import a class and use a method", async () => {
+        await shouldChangeSignature(
+          [
+            {
+              path: new AbsolutePath("/temp/module.ts"),
+              code: `export class Maths {
+  [cursor]add(a, b) {
+    return a;
+  }
+}`,
+              expected: `export class Maths {
+  add(a) {
+    return a;
+  }
+}`
+            },
+            {
+              path: new AbsolutePath("/temp/add.ts"),
+              code: `import {Maths} from './module';
+const maths = new Maths();
+maths.add(1, 2);`,
+              expected: `import {Maths} from './module';
+const maths = new Maths();
+maths.add(1);`
+            },
+            {
+              path: new AbsolutePath("/temp/anotherModule"),
+              code: `import {Maths} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  const maths = new Maths();
+  return maths.add(a, b);
+}`,
+              expected: `import {Maths} from './anotherModule';
+export const calculateAdd = (a, b) => {
+  const maths = new Maths();
+  return maths.add(a);
+}`
+            }
+          ],
+          [selectedPosition(0, 0), selectedPosition(1, -1)]
+        );
+      });
+    });
   });
 });
 
-function validateOutput(
-  expected: { currentFile: TestSample; otherFiles: TestSample[] },
-  editor: InMemoryEditor
+async function shouldChangeSignature(
+  files: { path: AbsolutePath; code: Code; expected: Code }[],
+  newPositions: SelectedPosition[] = swapBothArguments()
 ) {
-  const promises = expected.otherFiles.map(async (file) => {
-    const result = await editor.codeOf(file.path);
-    expect(result).toBe(file.code);
+  const currentFile = files[0];
+
+  const editor = new InMemoryEditor(currentFile.code);
+  await Promise.all(
+    files.map(async (file) => {
+      await editor.writeIn(file.path, file.code);
+    })
+  );
+
+  let result = changeSignature({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+  assert(
+    result.action === "ask change signature positions",
+    `Expected 'ask change signature positions' action, but got '${result.action}'`
+  );
+
+  const references = await editor.getSelectionReferences(result.fixedSelection);
+  const referencesWithCode = references.map((reference) => {
+    const file = files.find(({ path }) => path.equals(reference.path));
+    const editor = new InMemoryEditor(file?.code ?? "");
+    return {
+      ...reference,
+      code: editor.code
+    };
+  });
+  result = changeSignature({
+    state: "with change signature positions",
+    code: editor.code,
+    selection: editor.selection,
+    positions: newPositions,
+    references: referencesWithCode
   });
 
-  return Promise.all(promises);
-}
-
-function saveOtherFiles(
-  setup: {
-    currentFile: TestSample;
-    otherFiles: TestSample[];
-  },
-  editor: InMemoryEditor
-) {
-  const promises = setup.otherFiles.map(async (file) => {
-    await editor.writeIn(file.path, file.code);
+  expect(result).toMatchObject({
+    action: "write all",
+    updates: files.map((file) => ({
+      path: file.path,
+      code: file.expected
+    }))
   });
-
-  return Promise.all(promises);
 }

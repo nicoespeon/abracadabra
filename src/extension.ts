@@ -89,9 +89,9 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       moveStatementUp,
       moveStatementDown
     ],
-    withActionProvider: [changeSignature, inline],
+    withActionProvider: [inline],
     withActionProvider__NEW: [
-      toggleBraces,
+      changeSignature,
       addNumericSeparator,
       convertForEachToForOf,
       convertForToForEach,
@@ -120,7 +120,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       simplifyTernary,
       splitDeclarationAndInitialization,
       splitIfStatement,
-      splitMultipleDeclarations
+      splitMultipleDeclarations,
+      toggleBraces
     ]
   }
 };

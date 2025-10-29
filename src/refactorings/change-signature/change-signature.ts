@@ -1,71 +1,49 @@
 import * as t from "../../ast";
 import { isSelectablePath, parse } from "../../ast";
 import { isFunctionDeclarationOrArrowFunction } from "../../ast/identity";
-import { Editor, ErrorReason, SelectedPosition } from "../../editor/editor";
+import { Code, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function changeSignature(editor: Editor) {
-  const { code, selection } = editor;
+export function changeSignature(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const { fixedSelection, params } = getParams(code, selection);
 
   if (!params) {
-    editor.showError(
-      ErrorReason.CantChangeSignature,
-      new Error("missing params")
+    return COMMANDS.showErrorICant(
+      "change function signature (missing params)"
     );
-    return;
   }
 
-  const newPositions = await editor.askForPositions(params);
-  const references = await editor.getSelectionReferences(fixedSelection);
+  if (state.state !== "with change signature positions") {
+    return COMMANDS.askForPositions(params, fixedSelection);
+  }
 
-  const filesContent = await Promise.all(
-    references.map(async (reference) => {
-      const content = await editor.codeOf(reference.path);
-      return {
-        code: content,
-        path: reference.path,
-        selection: reference.selection
-      };
-    })
-  );
+  const updates: Record<string, { path: Path; code: Code }> = {};
 
-  const alreadyTransformed: Record<string, string> = {};
-  const result: {
-    path: Path;
-    transformed: t.Transformed;
-  }[] = [];
-
-  for (const x of filesContent) {
+  for (const reference of state.references) {
     const codeToTransform =
-      alreadyTransformed[x.path.value] || (x.code as string);
+      updates[reference.path.value]?.code ?? reference.code;
 
     try {
       const transformed = updateCode(
         t.parse(codeToTransform),
-        x.selection,
-        newPositions
+        reference.selection,
+        state.positions
       );
 
-      alreadyTransformed[x.path.value] = `${transformed.code}`;
-
-      result.push({
-        path: x.path,
-        transformed
-      });
+      updates[reference.path.value] = {
+        path: reference.path,
+        code: transformed.code
+      };
     } catch (error) {
-      editor.showError(ErrorReason.CantChangeSignature, error);
-      return;
+      return COMMANDS.showErrorICant("change function signature", error);
     }
   }
 
-  await Promise.all(
-    result.map(async (result) => {
-      await editor.writeIn(result.path, alreadyTransformed[result.path.value]);
-    })
-  );
+  return COMMANDS.writeAll(Object.values(updates));
 }
 
 function getParams(
