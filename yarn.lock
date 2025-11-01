@@ -2800,10 +2800,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.36.0":
-  version: 9.36.0
-  resolution: "@eslint/js@npm:9.36.0"
-  checksum: 10c0/e3f6fb7d6f117d79615574f7bef4f238bcfed6ece0465d28226c3a75d2b6fac9cc189121e8673562796ca8ccea2bf9861715ee5cf4a3dbef87d17811c0dac22c
+"@eslint/js@npm:9.39.0":
+  version: 9.39.0
+  resolution: "@eslint/js@npm:9.39.0"
+  checksum: 10c0/f0ac65784932f1a5d3b9c0db12eb1ff9dcb480dbd03da1045e5da820bd97a35875fb7790f1fbe652763270b1327b770c79a9ba0396e2ad91fbd97822493e67eb
   languageName: node
   linkType: hard
 
@@ -4547,7 +4547,7 @@ __metadata:
     "@babel/traverse": "npm:7.27.1"
     "@babel/types": "npm:7.21.5"
     "@eslint/eslintrc": "npm:3.3.1"
-    "@eslint/js": "npm:9.36.0"
+    "@eslint/js": "npm:9.39.0"
     "@types/babel__traverse": "npm:7.20.6"
     "@types/chai": "npm:5.2.2"
     "@types/glob": "npm:9.0.0"
