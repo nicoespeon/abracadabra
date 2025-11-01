@@ -64,7 +64,7 @@
     "deploy:ovsx": "ovsx publish --no-dependencies"
   },
   "devDependencies": {
-    "@babel/core": "7.26.10",
+    "@babel/core": "7.28.5",
     "@babel/preset-env": "7.28.5",
     "@babel/preset-typescript": "7.27.1",
     "@eslint/eslintrc": "3.3.1",
