@@ -175,12 +175,14 @@ export const COMMANDS = {
   readThenWrite: (
     readSelection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position | Selection
+    newCursorPosition?: Position | Selection,
+    options: BaseEditorCommand = {}
   ): EditorCommand => ({
     action: "read then write",
     readSelection,
     getModifications,
-    newCursorPosition
+    newCursorPosition,
+    ...options
   }),
   delegate: (command: Command, selection?: Selection): EditorCommand => ({
     action: "delegate",
