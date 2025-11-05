@@ -78,24 +78,31 @@ export type RefactoringState = BaseRefactoringState &
   (
     | { state: "new" }
     | { state: "command not supported" }
+    | { state: "with user responses"; responses: UserResponse[] }
+  );
+
+type BaseRefactoringState = { code: Code; selection: Selection };
+
+export type UserResponse = BaseUserResponse &
+  (
     | {
-        state: "user input response";
+        type: "input";
         value: string | undefined;
       }
-    | UserChoiceResponseState
+    | UserResponseChoice
     | {
-        state: "with change signature positions";
+        type: "new positions";
         positions: SelectedPosition[];
         references: (CodeReference & { code: Code })[];
       }
   );
 
-type BaseRefactoringState = { code: Code; selection: Selection };
-
-type UserChoiceResponseState<T = unknown> = {
-  state: "user choice response";
-  choice: Choice<T> | undefined;
+type UserResponseChoice<T = unknown> = {
+  type: "choice";
+  value: Choice<T> | undefined;
 };
+
+type BaseUserResponse = { id: string };
 
 export type EditorCommand = BaseEditorCommand &
   (
@@ -110,10 +117,11 @@ export type EditorCommand = BaseEditorCommand &
         newCursorPosition?: Position | Selection;
       }
     | { action: "delegate"; command: Command; selection?: Selection }
-    | { action: "ask user input"; value?: string }
+    | { action: "ask user input"; id: string; value?: string }
     | AskUserChoiceCommand
     | {
         action: "ask change signature positions";
+        id: string;
         positions: SelectedPosition[];
         fixedSelection: Selection;
       }
@@ -123,6 +131,7 @@ type BaseEditorCommand = { thenRun?: Refactoring };
 
 type AskUserChoiceCommand<T = unknown> = {
   action: "ask user choice";
+  id: string;
   choices: Choice<T>[];
   placeHolder?: string;
 };
@@ -138,23 +147,28 @@ export const COMMANDS = {
     reason: `I'm sorry, I can't ${action} 😅`,
     details
   }),
-  askUserInput: (value: string): EditorCommand => ({
+  askUserInput: (value: string, id: string = "user-input"): EditorCommand => ({
     action: "ask user input",
+    id,
     value
   }),
   askUserChoice: <T>(
     choices: Choice<T>[],
-    placeHolder?: string
+    placeHolder?: string,
+    id: string = "user-choice"
   ): EditorCommand => ({
     action: "ask user choice",
+    id,
     choices,
     placeHolder
   }),
   askForPositions: (
     positions: SelectedPosition[],
-    fixedSelection: Selection
+    fixedSelection: Selection,
+    id: string = "change-signature-positions"
   ): EditorCommand => ({
     action: "ask change signature positions",
+    id,
     positions,
     fixedSelection
   }),
@@ -191,6 +205,49 @@ export const COMMANDS = {
   }),
   doNothing: (): EditorCommand => ({ action: "do nothing" })
 };
+
+export function getUserInput(
+  state: RefactoringState,
+  id: string = "user-input"
+): string | undefined {
+  if (state.state !== "with user responses") return undefined;
+  const response = state.responses.find(
+    (r) => r.id === id && r.type === "input"
+  );
+  return response?.type === "input" ? response.value : undefined;
+}
+
+export function getUserChoice<T = unknown>(
+  state: RefactoringState,
+  id: string = "user-choice"
+): Choice<T> | undefined {
+  if (state.state !== "with user responses") return undefined;
+  const response = state.responses.find(
+    (r) => r.id === id && r.type === "choice"
+  );
+  return response?.type === "choice"
+    ? (response.value as Choice<T> | undefined)
+    : undefined;
+}
+
+export function getNewPositions(
+  state: RefactoringState,
+  id: string = "change-signature-positions"
+):
+  | {
+      positions: SelectedPosition[];
+      references: (CodeReference & { code: Code })[];
+    }
+  | undefined {
+  if (state.state !== "with user responses") return undefined;
+  const response = state.responses.find(
+    (r) => r.id === id && r.type === "new positions"
+  );
+  if (response?.type === "new positions") {
+    return { positions: response.positions, references: response.references };
+  }
+  return undefined;
+}
 
 export async function executeRefactoring(
   refactor: Refactoring,
@@ -247,9 +304,16 @@ export async function executeRefactoring(
 
     case "ask user input": {
       const userInput = await editor.askUserInput(result.value);
+      const existingResponses =
+        state.state === "with user responses" ? state.responses : [];
+      const newResponse: UserResponse = {
+        id: result.id,
+        type: "input",
+        value: userInput
+      };
       return executeRefactoring(refactor, editor, {
-        state: "user input response",
-        value: userInput,
+        state: "with user responses",
+        responses: [...existingResponses, newResponse],
         code: state.code,
         selection: state.selection
       });
@@ -260,9 +324,16 @@ export async function executeRefactoring(
         result.choices,
         result.placeHolder
       );
+      const existingResponses =
+        state.state === "with user responses" ? state.responses : [];
+      const newResponse: UserResponse = {
+        id: result.id,
+        type: "choice",
+        value: choice
+      };
       return executeRefactoring(refactor, editor, {
-        state: "user choice response",
-        choice,
+        state: "with user responses",
+        responses: [...existingResponses, newResponse],
         code: state.code,
         selection: state.selection
       });
@@ -284,10 +355,17 @@ export async function executeRefactoring(
         })
       );
 
-      return executeRefactoring(refactor, editor, {
-        state: "with change signature positions",
+      const existingResponses =
+        state.state === "with user responses" ? state.responses : [];
+      const newResponse: UserResponse = {
+        id: result.id,
+        type: "new positions",
         positions,
-        references: referencesWithCode,
+        references: referencesWithCode
+      };
+      return executeRefactoring(refactor, editor, {
+        state: "with user responses",
+        responses: [...existingResponses, newResponse],
         code: state.code,
         selection: state.selection
       });

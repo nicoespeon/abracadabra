@@ -5,7 +5,12 @@ import { Code, SelectedPosition } from "../../editor/editor";
 import { Path } from "../../editor/path";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
-import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState,
+  getNewPositions
+} from "../../refactorings";
 
 export function changeSignature(state: RefactoringState): EditorCommand {
   const { code, selection } = state;
@@ -17,13 +22,14 @@ export function changeSignature(state: RefactoringState): EditorCommand {
     );
   }
 
-  if (state.state !== "with change signature positions") {
+  const positionsData = getNewPositions(state);
+  if (!positionsData) {
     return COMMANDS.askForPositions(params, fixedSelection);
   }
 
   const updates: Record<string, { path: Path; code: Code }> = {};
 
-  for (const reference of state.references) {
+  for (const reference of positionsData.references) {
     const codeToTransform =
       updates[reference.path.value]?.code ?? reference.code;
 
@@ -31,7 +37,7 @@ export function changeSignature(state: RefactoringState): EditorCommand {
       const transformed = updateCode(
         t.parse(codeToTransform),
         reference.selection,
-        state.positions
+        positionsData.positions
       );
 
       updates[reference.path.value] = {

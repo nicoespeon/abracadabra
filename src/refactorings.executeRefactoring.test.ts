@@ -214,6 +214,7 @@ const anotherOne = 'world';`);
       .fn()
       .mockReturnValueOnce({
         action: "ask user input",
+        id: "user-input",
         value: "hello"
       })
       .mockReturnValue({ action: "do nothing" });
@@ -224,8 +225,8 @@ const anotherOne = 'world';`);
 
     expect(fakeRefactoring).toHaveBeenCalledTimes(2);
     expect(fakeRefactoring).toHaveBeenLastCalledWith({
-      state: "user input response",
-      value: "newName",
+      state: "with user responses",
+      responses: [{ id: "user-input", type: "input", value: "newName" }],
       code: "const hello = 'world'",
       selection: Selection.cursorAt(0, 5)
     });

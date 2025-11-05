@@ -1,5 +1,10 @@
 import { Editor } from "../../editor/editor";
-import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState,
+  getUserChoice
+} from "../../refactorings";
 
 export function askReplacementStrategy(
   otherOccurrences: unknown[],
@@ -11,9 +16,10 @@ export function askReplacementStrategy(
     return callback("selected occurrence" as const);
   }
 
-  if (state.state === "user choice response") {
-    const strategy = isReplacementStrategy(state.choice?.value)
-      ? state.choice.value
+  if (state.state === "with user responses") {
+    const choice = getUserChoice<ReplacementStrategy>(state);
+    const strategy = isReplacementStrategy(choice?.value)
+      ? choice.value
       : "none";
     return callback(strategy);
   }

@@ -684,14 +684,20 @@ aFn(0, 1);`;
       result.fixedSelection
     );
     result = changeSignature({
-      state: "with change signature positions",
+      state: "with user responses",
       code: editor.code,
       selection: editor.selection,
-      positions: swapBothArguments(),
-      references: references.map((reference) => ({
-        ...reference,
-        code: editor.code
-      }))
+      responses: [
+        {
+          id: "change-signature-positions",
+          type: "new positions",
+          positions: swapBothArguments(),
+          references: references.map((reference) => ({
+            ...reference,
+            code: editor.code
+          }))
+        }
+      ]
     });
 
     expect(result.action).toBe("show error");
@@ -723,14 +729,20 @@ async function shouldChangeSignature({
 
   const references = await editor.getSelectionReferences(result.fixedSelection);
   result = changeSignature({
-    state: "with change signature positions",
+    state: "with user responses",
     code: editor.code,
     selection: editor.selection,
-    positions: newPositions,
-    references: references.map((reference) => ({
-      ...reference,
-      code: editor.code
-    }))
+    responses: [
+      {
+        id: "change-signature-positions",
+        type: "new positions",
+        positions: newPositions,
+        references: references.map((reference) => ({
+          ...reference,
+          code: editor.code
+        }))
+      }
+    ]
   });
 
   expect(result).toMatchObject({

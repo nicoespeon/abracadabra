@@ -392,11 +392,17 @@ async function shouldChangeSignature(
     };
   });
   result = changeSignature({
-    state: "with change signature positions",
+    state: "with user responses",
     code: editor.code,
     selection: editor.selection,
-    positions: newPositions,
-    references: referencesWithCode
+    responses: [
+      {
+        id: "change-signature-positions",
+        type: "new positions",
+        positions: newPositions,
+        references: referencesWithCode
+      }
+    ]
   });
 
   expect(result).toMatchObject({

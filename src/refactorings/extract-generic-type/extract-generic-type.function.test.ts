@@ -67,8 +67,10 @@ describe("Extract Generic Type - Function declaration", () => {
         "Should have a choice for selected occurrence"
       );
       result = extractGenericType({
-        state: "user choice response",
-        choice: selectedOccurrenceChoice,
+        state: "with user responses",
+        responses: [
+          { id: "user-choice", type: "choice", value: selectedOccurrenceChoice }
+        ],
         code: editor.code,
         selection: editor.selection
       });
@@ -97,8 +99,10 @@ describe("Extract Generic Type - Function declaration", () => {
       );
       assert(allOccurrencesChoice, "Should have a choice for all occurrences");
       result = extractGenericType({
-        state: "user choice response",
-        choice: allOccurrencesChoice,
+        state: "with user responses",
+        responses: [
+          { id: "user-choice", type: "choice", value: allOccurrencesChoice }
+        ],
         code: editor.code,
         selection: editor.selection
       });
@@ -127,8 +131,10 @@ describe("Extract Generic Type - Function declaration", () => {
       );
       assert(allOccurrencesChoice, "Should have a choice for all occurrences");
       result = extractGenericType({
-        state: "user choice response",
-        choice: allOccurrencesChoice,
+        state: "with user responses",
+        responses: [
+          { id: "user-choice", type: "choice", value: allOccurrencesChoice }
+        ],
         code: editor.code,
         selection: editor.selection
       });
@@ -158,8 +164,10 @@ describe("Extract Generic Type - Function declaration", () => {
       );
       assert(allOccurrencesChoice, "Should have a choice for all occurrences");
       result = extractGenericType({
-        state: "user choice response",
-        choice: allOccurrencesChoice,
+        state: "with user responses",
+        responses: [
+          { id: "user-choice", type: "choice", value: allOccurrencesChoice }
+        ],
         code: editor.code,
         selection: editor.selection
       });
