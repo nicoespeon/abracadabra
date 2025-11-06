@@ -1,132 +1,160 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../../editor/editor";
+import { Code } from "../../../editor/editor";
+import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
-import { testEach } from "../../../tests-helpers";
 import { extractType } from "./extract-type";
 
 describe("Extract Type", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should extract type",
-    [
-      {
-        description: "basic scenario",
+  describe("should extract type", () => {
+    it("basic scenario", () => {
+      shouldExtractType({
         code: `let something: number[cursor];`,
         expected: `type Extracted = number;
 let something: Extracted;`
-      },
-      {
-        description: "selected type only",
+      });
+    });
+
+    it("selected type only", () => {
+      shouldExtractType({
         code: `let something: number[cursor];
 let somethingElse: string;`,
         expected: `type Extracted = number;
 let something: Extracted;
 let somethingElse: string;`
-      },
-      {
-        description: "create interface if extracted type is an object",
+      });
+    });
+
+    it("create interface if extracted type is an object", () => {
+      shouldExtractType({
         code: `let something: [start]{ hello: string; }[end];`,
         expected: `interface Extracted {
   hello: string;
 }
 
 let something: Extracted;`
-      },
-      {
-        description: "with comment above",
+      });
+    });
+
+    it("with comment above", () => {
+      shouldExtractType({
         code: `// Hello there!
 let something: number[cursor];`,
         expected: `type [cursor]Extracted = number;
 // Hello there!
 let something: Extracted;`
-      },
-      {
-        description: "closest scope from (A | B)",
+      });
+    });
+
+    it("closest scope from (A | B)", () => {
+      shouldExtractType({
         code: `let something: boolean | number[cursor] | string;`,
         expected: `type [cursor]Extracted = number;
 let something: boolean | Extracted | string;`
-      },
-      {
-        description: "closest scope from (A & B)",
+      });
+    });
+
+    it("closest scope from (A & B)", () => {
+      shouldExtractType({
         code: `let something: Hello[cursor] & World;`,
         expected: `type [cursor]Extracted = Hello;
 let something: Extracted & World;`
-      },
-      {
-        description: "closest scope from (A & B | C)",
+      });
+    });
+
+    it("closest scope from (A & B | C)", () => {
+      shouldExtractType({
         code: `let something: Hello[start] & World[end] | boolean;`,
         expected: `type [cursor]Extracted = Hello & World;
 let something: Extracted | boolean;`
-      },
-      {
-        description: "nested type",
+      });
+    });
+
+    it("nested type", () => {
+      shouldExtractType({
         code: `let something: { response: { data: string[cursor]; } };`,
         expected: `type [cursor]Extracted = string;
 let something: { response: { data: Extracted; } };`
-      },
-      {
-        description: "nested interface",
+      });
+    });
+
+    it("nested interface", () => {
+      shouldExtractType({
         code: `let something: { response: [start]{ data: string[end]; } };`,
         expected: `interface [cursor]Extracted {
   data: string;
 }
 
 let something: { response: Extracted };`
-      },
-      {
-        description: "as expression",
+      });
+    });
+
+    it("as expression", () => {
+      shouldExtractType({
         code: `console.log(person as [cursor]{ name: string });`,
         expected: `interface [cursor]Extracted {
   name: string;
 }
 
 console.log(person as Extracted);`
-      },
-      {
-        description: "type parameter of a call expression",
+      });
+    });
+
+    it("type parameter of a call expression", () => {
+      shouldExtractType({
         code: `doSomething<[cursor]string, number>(someVariable);`,
         expected: `type [cursor]Extracted = string;
 doSomething<Extracted, number>(someVariable);`
-      },
-      {
-        description:
-          "nested type parameter of a call expression (cursor on nested)",
+      });
+    });
+
+    it("nested type parameter of a call expression (cursor on nested)", () => {
+      shouldExtractType({
         code: `doSomething<Array<[cursor]string>>(someVariable);`,
         expected: `type [cursor]Extracted = string;
 doSomething<Array<Extracted>>(someVariable);`
-      },
-      {
-        description:
-          "nested type parameter of a call expression (cursor on parent)",
+      });
+    });
+
+    it("nested type parameter of a call expression (cursor on parent)", () => {
+      shouldExtractType({
         code: `doSomething<[cursor]Array<string>>(someVariable);`,
         expected: `type [cursor]Extracted = Array<string>;
 doSomething<Extracted>(someVariable);`
-      },
-      {
-        description: "TS type query",
+      });
+    });
+
+    it("TS type query", () => {
+      shouldExtractType({
         code: `type Context = ContextFrom<typeof [cursor]someMachineModel>;`,
         expected: `type [cursor]Extracted = typeof someMachineModel;
 type Context = ContextFrom<Extracted>;`
-      },
-      {
-        description: "TS union type",
+      });
+    });
+
+    it("TS union type", () => {
+      shouldExtractType({
         code: `const someMachine = createMachine<
   C<typeof someModel>,
   M<typeof commonModel> [cursor]| M<typeof someModel>
 >()`,
         expected: `type [cursor]Extracted = M<typeof commonModel> | M<typeof someModel>;
 const someMachine = createMachine<C<typeof someModel>, Extracted>()`
-      },
-      {
-        description: "TS intersection type",
+      });
+    });
+
+    it("TS intersection type", () => {
+      shouldExtractType({
         code: `const someMachine = createMachine<
   C<typeof someModel>,
   M<typeof commonModel> [cursor]& M<typeof someModel>
 >()`,
         expected: `type [cursor]Extracted = M<typeof commonModel> & M<typeof someModel>;
 const someMachine = createMachine<C<typeof someModel>, Extracted>()`
-      },
-      {
-        description: "object type using commas",
+      });
+    });
+
+    it("object type using commas", () => {
+      shouldExtractType({
         code: `function doSomething(options: { first: number, second: boolean, third: string }[cursor]) {}`,
         expected: `interface Extracted {
   first: number;
@@ -135,9 +163,11 @@ const someMachine = createMachine<C<typeof someModel>, Extracted>()`
 }
 
 function doSomething(options: Extracted) {}`
-      },
-      {
-        description: "type literal",
+      });
+    });
+
+    it("type literal", () => {
+      shouldExtractType({
         code: `type Context = {[cursor]
   state: "reading";
   value: string
@@ -148,9 +178,11 @@ function doSomething(options: Extracted) {}`
 };
 
 type Context = Extracted;`
-      },
-      {
-        description: "type literal in a union type",
+      });
+    });
+
+    it("type literal in a union type", () => {
+      shouldExtractType({
         code: `type Context =
   | { value: string }
   | {[cursor]
@@ -164,10 +196,11 @@ type Context = Extracted;`
 
 type Context =
   { value: string } | Extracted;`
-      },
-      {
-        description:
-          "type literal in a union type (infer name from first string literal)",
+      });
+    });
+
+    it("type literal in a union type (infer name from first string literal)", () => {
+      shouldExtractType({
         code: `type Context =
   | { state: "reading"; value: string }
   | {[cursor]
@@ -183,84 +216,101 @@ type Context =
 
 type Context =
   { state: "reading"; value: string } | IsEditingContext;`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await extractType(editor);
-
-      const { code: expectedCode, selection: expectedSelection } =
-        new InMemoryEditor(expected);
-
-      expect(editor.code).toBe(expectedCode);
-      if (!expectedSelection.isCursorAtTopOfDocument) {
-        expect(editor.selection).toStrictEqual(expectedSelection);
-      }
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not extract",
-    [
-      {
-        description: "left side of an as expression",
-        code: `console.log(person[cursor] as { name: string });`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
-
-      await extractType(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
-    const code = `// This is a comment, can't be refactored`;
-    const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
-
-    await extractType(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindTypeToExtract
-    );
+      });
+    });
   });
 
-  it("should rename identifier (type)", async () => {
+  describe("should not extract", () => {
+    it("should show an error message if refactoring can't be made", () => {
+      const code = `// This is a comment, can't be refactored`;
+      const editor = new InMemoryEditor(code);
+      const result = extractType({
+        state: "new",
+        code: editor.code,
+        selection: editor.selection
+      });
+
+      expect(result.action).toBe("show error");
+    });
+
+    it("left side of an as expression", () => {
+      const code = `console.log(person[cursor] as { name: string });`;
+      const editor = new InMemoryEditor(code);
+
+      const result = extractType({
+        state: "new",
+        code: editor.code,
+        selection: editor.selection
+      });
+
+      expect(result.action).toBe("show error");
+    });
+  });
+
+  it("should rename identifier (type)", () => {
     const editor = new InMemoryEditor(`let hello: stri[cursor]ng;`);
-    jest.spyOn(editor, "delegate");
+    const result = extractType({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await extractType(editor);
-
-    expect(editor.delegate).toHaveBeenNthCalledWith(1, "rename symbol");
-    expect(editor.code).toEqual(`type Extracted = string;
-let hello: Extracted;`);
-    expect(editor.selection).toStrictEqual(Selection.cursorAt(0, 5));
+    expect(result).toMatchObject({
+      action: "write",
+      code: `type Extracted = string;
+let hello: Extracted;`,
+      newCursorPosition: Selection.cursorAt(0, 5).start,
+      thenRun: expect.any(Function)
+    });
   });
 
-  it("should rename identifier (interface)", async () => {
+  it("should rename identifier (interface)", () => {
     const editor = new InMemoryEditor(`const hey = "ho";
 let hello: [start]{
   world: string;
   morning: boolean;
 }[end];`);
-    jest.spyOn(editor, "delegate");
+    const result = extractType({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection
+    });
 
-    await extractType(editor);
-
-    expect(editor.delegate).toHaveBeenNthCalledWith(1, "rename symbol");
-    expect(editor.code).toEqual(`const hey = "ho";
+    expect(result).toMatchObject({
+      action: "write",
+      code: `const hey = "ho";
 
 interface Extracted {
   world: string;
   morning: boolean;
 }
 
-let hello: Extracted;`);
-    expect(editor.selection).toStrictEqual(Selection.cursorAt(2, 10));
+let hello: Extracted;`,
+      newCursorPosition: new Position(2, 10),
+      thenRun: expect.any(Function)
+    });
   });
 });
+
+function shouldExtractType({ code, expected }: { code: Code; expected: Code }) {
+  const editor = new InMemoryEditor(code);
+  const result = extractType({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  const { code: expectedCode, selection: expectedSelection } =
+    new InMemoryEditor(expected);
+
+  expect(result).toMatchObject({
+    action: "write",
+    code: expectedCode
+  });
+
+  if (!expectedSelection.isCursorAtTopOfDocument) {
+    expect(result).toMatchObject({
+      newCursorPosition: expectedSelection.start
+    });
+  }
+}

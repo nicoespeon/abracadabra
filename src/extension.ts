@@ -82,8 +82,9 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       "vue",
       "svelte"
     ],
-    withoutActionProvider: [extract],
+    withoutActionProvider: [],
     withoutActionProvider__NEW: [
+      extract,
       extractFunction,
       renameSymbol,
       moveStatementUp,

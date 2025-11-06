@@ -87,7 +87,7 @@ export type UserResponse = BaseUserResponse &
   (
     | {
         type: "input";
-        value: string | undefined;
+        value: string;
       }
     | UserResponseChoice
     | {
@@ -99,7 +99,7 @@ export type UserResponse = BaseUserResponse &
 
 type UserResponseChoice<T = unknown> = {
   type: "choice";
-  value: Choice<T> | undefined;
+  value: Choice<T>;
 };
 
 type BaseUserResponse = { id: string };
@@ -304,6 +304,9 @@ export async function executeRefactoring(
 
     case "ask user input": {
       const userInput = await editor.askUserInput(result.value);
+      // If user cancelled, stop here.
+      if (!userInput) return;
+
       const existingResponses =
         state.state === "with user responses" ? state.responses : [];
       const newResponse: UserResponse = {
@@ -324,6 +327,9 @@ export async function executeRefactoring(
         result.choices,
         result.placeHolder
       );
+      // If user cancelled, stop here.
+      if (!choice) return;
+
       const existingResponses =
         state.state === "with user responses" ? state.responses : [];
       const newResponse: UserResponse = {

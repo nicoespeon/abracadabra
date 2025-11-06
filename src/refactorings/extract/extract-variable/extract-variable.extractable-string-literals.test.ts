@@ -1,63 +1,67 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
-import { Position } from "../../../editor/position";
-import { testEach } from "../../../tests-helpers";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - String Literals we can extract", () => {
-  testEach<{
-    code: Code;
-    expected: Code | { code: Code; position: Position };
-  }>(
-    "should extract",
-    [
-      {
-        description: "a string",
+  describe("should extract", () => {
+    it("a string", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]"Hello!");`,
         expected: `const hello = "Hello!";
 console.log(hello);`
-      },
-      {
-        description: "a string that starts with a number",
+      });
+    });
+
+    it("a string that starts with a number", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]"2019-01-01");`,
         expected: `const extracted = "2019-01-01";
 console.log(extracted);`
-      },
-      {
-        description: "an empty string",
+      });
+    });
+
+    it("an empty string", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]"");`,
         expected: `const extracted = "";
 console.log(extracted);`
-      },
-      {
-        description: "a 1-char string",
+      });
+    });
+
+    it("a 1-char string", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]"T");`,
         expected: `const extracted = "T";
 console.log(extracted);`
-      },
-      {
-        description: "a string being a keyword",
+      });
+    });
+
+    it("a string being a keyword", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]"const");`,
         expected: `const extracted = "const";
 console.log(extracted);`
-      },
-      {
-        description: "a string without chars inside",
+      });
+    });
+
+    it("a string without chars inside", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]"===");`,
         expected: `const extracted = "===";
 console.log(extracted);`
-      },
-      {
-        description: "a selected part of a string literal",
+      });
+    });
+
+    it("a selected part of a string literal", async () => {
+      await shouldExtractVariable({
         code: "console.log('Hello [start]world[end]! How are you doing?');",
-        expected: {
-          code: `const world = "world";
-console.log(\`Hello \${world}! How are you doing?\`);`,
-          position: new Position(1, 21)
-        }
-      },
-      {
-        description: "a selected part of a string literal in a JSX Attribute",
+        expected: `const world = "world";
+console.log(\`Hello \${world}! How are you doing?\`);`
+      });
+    });
+
+    it("a selected part of a string literal in a JSX Attribute", async () => {
+      await shouldExtractVariable({
         code: `function Hello() {
   return <World name="[start]John[end] Doe" />
 }`,
@@ -65,10 +69,11 @@ console.log(\`Hello \${world}! How are you doing?\`);`,
   const john = "John";
   return <World name={\`$\{john} Doe\`} />
 }`
-      },
-      {
-        description:
-          "a selected part of a string literal in a JSX Expression Container",
+      });
+    });
+
+    it("a selected part of a string literal in a JSX Expression Container", async () => {
+      await shouldExtractVariable({
         code: `function Hello() {
   return <World name={"[start]John[end] Doe"} />
 }`,
@@ -76,15 +81,19 @@ console.log(\`Hello \${world}! How are you doing?\`);`,
   const john = "John";
   return <World name={\`$\{john} Doe\`} />
 }`
-      },
-      {
-        description: "a selected string literal (selection over string bounds)",
+      });
+    });
+
+    it("a selected string literal (selection over string bounds)", async () => {
+      await shouldExtractVariable({
         code: "console.log([start]'Hello world! [end]How are you doing?');",
         expected: `const extracted = 'Hello world! How are you doing?';
 console.log(extracted);`
-      },
-      {
-        description: "a string that would shadow existing variable",
+      });
+    });
+
+    it("a string that would shadow existing variable", async () => {
+      await shouldExtractVariable({
         code: `function brokenScenario(extracted, hello) {
   console.log("hello[cursor]", extracted, hello);
 }`,
@@ -92,19 +101,44 @@ console.log(extracted);`
   const extracted1 = "hello";
   console.log(extracted1, extracted, hello);
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await extractVariable(editor);
-
-      if (typeof expected === "object") {
-        expect(editor.code).toBe(expected.code);
-        expect(editor.position).toStrictEqual(expected.position);
-      } else {
-        expect(editor.code).toBe(expected);
-      }
-    }
-  );
+      });
+    });
+  });
 });
+
+async function shouldExtractVariable({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = extractVariable({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  if (result.action !== "read then write") {
+    throw new Error(`Expected "read then write" but got "${result.action}"`);
+  }
+
+  const { code: expectedCode, selection: expectedSelection } =
+    new InMemoryEditor(expected);
+
+  const testEditor = new InMemoryEditor(editor.code);
+  await testEditor.readThenWrite(
+    result.readSelection,
+    result.getModifications,
+    result.newCursorPosition
+  );
+
+  expect(testEditor.code).toBe(expectedCode);
+
+  if (!expectedSelection.isCursorAtTopOfDocument) {
+    expect(result).toMatchObject({
+      newCursorPosition: expectedSelection.start
+    });
+  }
+}

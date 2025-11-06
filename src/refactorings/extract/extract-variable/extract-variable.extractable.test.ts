@@ -1,47 +1,51 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
-import { testEach } from "../../../tests-helpers";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Patterns we can extract", () => {
-  testEach<{
-    code: Code;
-    expected: Code;
-  }>(
-    "should extract",
-    [
-      {
-        description: "a number",
+  describe("should extract", () => {
+    it("a number", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]12.5);`,
         expected: `const extracted = 12.5;
 console.log(extracted);`
-      },
-      {
-        description: "a boolean",
+      });
+    });
+
+    it("a boolean", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]false);`,
         expected: `const extracted = false;
 console.log(extracted);`
-      },
-      {
-        description: "null",
+      });
+    });
+
+    it("null", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]null);`,
         expected: `const extracted = null;
 console.log(extracted);`
-      },
-      {
-        description: "undefined",
+      });
+    });
+
+    it("undefined", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]undefined);`,
         expected: `const extracted = undefined;
 console.log(extracted);`
-      },
-      {
-        description: "an array",
+      });
+    });
+
+    it("an array", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor][1, 2, 'three', [true, null]]);`,
         expected: `const extracted = [1, 2, 'three', [true, null]];
 console.log(extracted);`
-      },
-      {
-        description: "an array (multi-lines)",
+      });
+    });
+
+    it("an array (multi-lines)", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor][
   1,
   'Two',
@@ -53,9 +57,11 @@ console.log(extracted);`
   [true, null]
 ];
 console.log(extracted);`
-      },
-      {
-        description: "a named function",
+      });
+    });
+
+    it("a named function", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]function sayHello() {
   return "Hello!";
 });`,
@@ -63,21 +69,27 @@ console.log(extracted);`
   return "Hello!";
 };
 console.log(extracted);`
-      },
-      {
-        description: "an arrow function",
+      });
+    });
+
+    it("an arrow function", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]() => "Hello!");`,
         expected: `const extracted = () => "Hello!";
 console.log(extracted);`
-      },
-      {
-        description: "a function call",
+      });
+    });
+
+    it("a function call", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]sayHello("World"));`,
         expected: `const extracted = sayHello("World");
 console.log(extracted);`
-      },
-      {
-        description: "the correct variable when we have many",
+      });
+    });
+
+    it("the correct variable when we have many", async () => {
+      await shouldExtractVariable({
         code: `console.log("Hello");
 console.log("the", [cursor]"World!", "Alright.");
 console.log("How are you doing?");`,
@@ -85,9 +97,11 @@ console.log("How are you doing?");`,
 const world = "World!";
 console.log("the", world, "Alright.");
 console.log("How are you doing?");`
-      },
-      {
-        description: "an element in a multi-lines array",
+      });
+    });
+
+    it("an element in a multi-lines array", async () => {
+      await shouldExtractVariable({
         code: `const SUPPORTED_LANGUAGES = [
   "javascript",
   [cursor]"javascriptreact",
@@ -101,9 +115,11 @@ const SUPPORTED_LANGUAGES = [
   "typescript",
   "typescriptreact"
 ];`
-      },
-      {
-        description: "an element nested in a multi-lines array",
+      });
+    });
+
+    it("an element nested in a multi-lines array", async () => {
+      await shouldExtractVariable({
         code: `console.log([
   1,
   [
@@ -121,21 +137,27 @@ console.log([
     }
   ]
 ]);`
-      },
-      {
-        description: "a spread variable",
+      });
+    });
+
+    it("a spread variable", async () => {
+      await shouldExtractVariable({
         code: `console.log({ ...foo.b[cursor]ar });`,
         expected: `const { bar } = foo;
 console.log({ ...bar });`
-      },
-      {
-        description: "a spread variable, cursor on spread",
+      });
+    });
+
+    it("a spread variable, cursor on spread", async () => {
+      await shouldExtractVariable({
         code: `console.log({ ..[cursor].foo.bar });`,
         expected: `const extracted = { ...foo.bar };
 console.log(extracted);`
-      },
-      {
-        description: "a spread function result",
+      });
+    });
+
+    it("a spread function result", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   ...getInl[cursor]inableCode(declaration),
   id: "name"
@@ -145,48 +167,59 @@ console.log({
   ...extracted,
   id: "name"
 });`
-      },
-      {
-        description:
-          "a valid path when cursor is on a part of member expression",
+      });
+    });
+
+    it("a valid path when cursor is on a part of member expression", async () => {
+      await shouldExtractVariable({
         code: `console.log(path.[cursor]node.name);`,
         expected: `const { node } = path;
 console.log(node.name);`
-      },
-      {
-        description:
-          "a valid path when cursor is on the first parent of the member expression",
+      });
+    });
+
+    it("a valid path when cursor is on the first parent of the member expression", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]path.node.name);`,
         expected: `const extracted = path;
 console.log(extracted.node.name);`
-      },
-      {
-        description:
-          "a member expression when property name is not in camel case",
+      });
+    });
+
+    it("a member expression when property name is not in camel case", async () => {
+      await shouldExtractVariable({
         code: `console.log(path.[cursor]some_node.name);`,
         expected: `const { some_node } = path;
 console.log(some_node.name);`
-      },
-      {
-        description: "a member expression when property name is too long",
+      });
+    });
+
+    it("a member expression when property name is too long", async () => {
+      await shouldExtractVariable({
         code: `console.log(path.[cursor]somethingVeryVeryVeryLongThatWontFit.name);`,
         expected: `const { somethingVeryVeryVeryLongThatWontFit } = path;
 console.log(somethingVeryVeryVeryLongThatWontFit.name);`
-      },
-      {
-        description: "member expression with computed value",
+      });
+    });
+
+    it("member expression with computed value", async () => {
+      await shouldExtractVariable({
         code: `console.log(this.items[[cursor]i].name);`,
         expected: `const extracted = this.items[i];
 console.log(extracted.name);`
-      },
-      {
-        description: "member expression in a for..of statement",
+      });
+    });
+
+    it("member expression in a for..of statement", async () => {
+      await shouldExtractVariable({
         code: `for (const el of foo.bar.[cursor]list) {}`,
         expected: `const { list } = foo.bar;
 for (const el of list) {}`
-      },
-      {
-        description: "a return value of a function",
+      });
+    });
+
+    it("a return value of a function", async () => {
+      await shouldExtractVariable({
         code: `function getMessage() {
   return [cursor]"Hello!";
 }`,
@@ -194,15 +227,19 @@ for (const el of list) {}`
   const hello = "Hello!";
   return hello;
 }`
-      },
-      {
-        description: "an assigned variable",
+      });
+    });
+
+    it("an assigned variable", async () => {
+      await shouldExtractVariable({
         code: `const message = [cursor]"Hello!";`,
         expected: `const hello = "Hello!";
 const message = hello;`
-      },
-      {
-        description: "a class property assignment",
+      });
+    });
+
+    it("a class property assignment", async () => {
+      await shouldExtractVariable({
         code: `class Logger {
   message = [cursor]"Hello!";
 }`,
@@ -210,9 +247,11 @@ const message = hello;`
 class Logger {
   message = hello;
 }`
-      },
-      {
-        description: "a computed class property",
+      });
+    });
+
+    it("a computed class property", async () => {
+      await shouldExtractVariable({
         code: `class Logger {
   [[cursor]key] = "value";
 }`,
@@ -220,21 +259,27 @@ class Logger {
 class Logger {
   [extracted] = "value";
 }`
-      },
-      {
-        description: "an if statement (whole statement)",
-        code: "if ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
+      });
+    });
+
+    it("an if statement (whole statement)", async () => {
+      await shouldExtractVariable({
+        code: `if ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();`,
         expected: `const extracted = parents.length > 0 && type === 'refactor';
 if (extracted) doSomething();`
-      },
-      {
-        description: "an if statement (part of it)",
-        code: "if ([start]parents.length > 0[end] && type === 'refactor') doSomething();",
+      });
+    });
+
+    it("an if statement (part of it)", async () => {
+      await shouldExtractVariable({
+        code: `if ([start]parents.length > 0[end] && type === 'refactor') doSomething();`,
         expected: `const extracted = parents.length > 0;
 if (extracted && type === 'refactor') doSomething();`
-      },
-      {
-        description: "a multi-lines if statement (whole statement)",
+      });
+    });
+
+    it("a multi-lines if statement (whole statement)", async () => {
+      await shouldExtractVariable({
         code: `if (
   [start]parents.length > 0 &&
   type === 'refactor'[end]
@@ -244,9 +289,11 @@ if (extracted && type === 'refactor') doSomething();`
 if (
   extracted
 ) doSomething();`
-      },
-      {
-        description: "a multi-lines if statement (part of it)",
+      });
+    });
+
+    it("a multi-lines if statement (part of it)", async () => {
+      await shouldExtractVariable({
         code: `if (
   parents.length > 0 &&
   [start]type === 'refactor'[end]
@@ -256,9 +303,11 @@ if (
   parents.length > 0 &&
   extracted
 ) doSomething();`
-      },
-      {
-        description: "if statement, cursor on else clause",
+      });
+    });
+
+    it("if statement, cursor on else clause", async () => {
+      await shouldExtractVariable({
         code: `if (isMorning) {
   sayGoodMorning();
 } else if ([cursor]isAfternoon) {
@@ -270,15 +319,19 @@ if (isMorning) {
 } else if (extracted) {
   sayHello();
 }`
-      },
-      {
-        description: "a while statement",
-        code: "while ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();",
+      });
+    });
+
+    it("a while statement", async () => {
+      await shouldExtractVariable({
+        code: `while ([start]parents.length > 0 && type === 'refactor'[end]) doSomething();`,
         expected: `const extracted = parents.length > 0 && type === 'refactor';
 while (extracted) doSomething();`
-      },
-      {
-        description: "a case statement",
+      });
+    });
+
+    it("a case statement", async () => {
+      await shouldExtractVariable({
         code: `switch (text) {
   case [cursor]"Hello!":
   default:
@@ -290,9 +343,11 @@ switch (text) {
   default:
     break;
 }`
-      },
-      {
-        description: "an unamed function parameter when cursor is inside",
+      });
+    });
+
+    it("an unamed function parameter when cursor is inside", async () => {
+      await shouldExtractVariable({
         code: `console.log(function () {
 [cursor]  return "Hello!";
 });`,
@@ -300,9 +355,11 @@ switch (text) {
   return "Hello!";
 };
 console.log(extracted);`
-      },
-      {
-        description: "an exported variable declaration",
+      });
+    });
+
+    it("an exported variable declaration", async () => {
+      await shouldExtractVariable({
         code: `export const something = {
   foo: "b[cursor]ar"
 };`,
@@ -310,33 +367,43 @@ console.log(extracted);`
 export const something = {
   foo
 };`
-      },
-      {
-        description: "a default export",
+      });
+    });
+
+    it("a default export", async () => {
+      await shouldExtractVariable({
         code: `export default "s[cursor]omething";`,
         expected: `const something = "something";
 export default something;`
-      },
-      {
-        description: "a default export (without trailing semicolon)",
+      });
+    });
+
+    it("a default export (without trailing semicolon)", async () => {
+      await shouldExtractVariable({
         code: `export default "s[cursor]omething"`,
         expected: `const something = "something";
 export default something`
-      },
-      {
-        description: "a default export (with spaces after semicolon)",
+      });
+    });
+
+    it("a default export (with spaces after semicolon)", async () => {
+      await shouldExtractVariable({
         code: `export default "s[cursor]omething";   `,
         expected: `const something = "something";
 export default something;   `
-      },
-      {
-        description: "a default export (with comment after semicolon)",
+      });
+    });
+
+    it("a default export (with comment after semicolon)", async () => {
+      await shouldExtractVariable({
         code: `export default "s[cursor]omething"; // Do something`,
         expected: `const something = "something";
 export default something; // Do something`
-      },
-      {
-        description: "a default export (multiple lines)",
+      });
+    });
+
+    it("a default export (multiple lines)", async () => {
+      await shouldExtractVariable({
         code: `export default {[cursor]
   tryTo: "extract me"
 };`,
@@ -344,18 +411,21 @@ export default something; // Do something`
   tryTo: "extract me"
 };
 export default extracted;`
-      },
-      {
-        description:
-          "a default export (with statement after that has no semicolon)",
+      });
+    });
+
+    it("a default export (with statement after that has no semicolon)", async () => {
+      await shouldExtractVariable({
         code: `export default "[cursor]something";
 console.log("done")`,
         expected: `const something = "something";
 export default something;
 console.log("done")`
-      },
-      {
-        description: "a value inside an arrow function",
+      });
+    });
+
+    it("a value inside an arrow function", async () => {
+      await shouldExtractVariable({
         code: `() => (
   console.log("H[cursor]ello")
 )`,
@@ -363,9 +433,11 @@ console.log("done")`
 () => (
   console.log(hello)
 )`
-      },
-      {
-        description: "a multi-lines ternary",
+      });
+    });
+
+    it("a multi-lines ternary", async () => {
+      await shouldExtractVariable({
         code: `function getText() {
   return isValid
     ? "y[cursor]es"
@@ -377,9 +449,11 @@ console.log("done")`
     ? yes
     : "no";
 }`
-      },
-      {
-        description: "a multi-lines unary expression",
+      });
+    });
+
+    it("a multi-lines unary expression", async () => {
+      await shouldExtractVariable({
         code: `if (
   !(threshold > 1[cursor]0 || isPaused)
 ) {
@@ -391,27 +465,35 @@ if (
 ) {
   console.log("Ship it");
 }`
-      },
-      {
-        description: "a class instantiation (cursor on new expression)",
+      });
+    });
+
+    it("a class instantiation (cursor on new expression)", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]new Card("jack"));`,
         expected: `const card = new Card("jack");
 console.log(card);`
-      },
-      {
-        description: "a class instantiation (cursor on class identifier)",
+      });
+    });
+
+    it("a class instantiation (cursor on class identifier)", async () => {
+      await shouldExtractVariable({
         code: `console.log(new [cursor]Card("jack"));`,
         expected: `const card = new Card("jack");
 console.log(card);`
-      },
-      {
-        description: "a thrown error",
+      });
+    });
+
+    it("a thrown error", async () => {
+      await shouldExtractVariable({
         code: `throw new Er[cursor]ror("It failed");`,
         expected: `const error = new Error("It failed");
 throw error;`
-      },
-      {
-        description: "a call expression parameter (multi-lines)",
+      });
+    });
+
+    it("a call expression parameter (multi-lines)", async () => {
+      await shouldExtractVariable({
         code: `createIfStatement(
   parentPath.node.op[cursor]erator,
   parentPath.node.left,
@@ -423,9 +505,11 @@ createIfStatement(
   parentPath.node.left,
   node.consequent
 );`
-      },
-      {
-        description: "a conditional expression (multi-lines)",
+      });
+    });
+
+    it("a conditional expression (multi-lines)", async () => {
+      await shouldExtractVariable({
         code: `const type = !!(
   path.node.loc.l[cursor]ength > 0
 ) ? "with-loc"
@@ -435,9 +519,11 @@ const type = !!(
   length > 0
 ) ? "with-loc"
   : "without-loc";`
-      },
-      {
-        description: "a value in a new Expression",
+      });
+    });
+
+    it("a value in a new Expression", async () => {
+      await shouldExtractVariable({
         code: `new Author(
   [cursor]"name"
 );`,
@@ -445,9 +531,11 @@ const type = !!(
 new Author(
   name
 );`
-      },
-      {
-        description: "a value in an Array argument of a function",
+      });
+    });
+
+    it("a value in an Array argument of a function", async () => {
+      await shouldExtractVariable({
         code: `doSomething([
   [cursor]getValueOf("name")
 ]);`,
@@ -455,9 +543,11 @@ new Author(
 doSomething([
   extracted
 ]);`
-      },
-      {
-        description: "a new Expression in an Array argument of a function",
+      });
+    });
+
+    it("a new Expression in an Array argument of a function", async () => {
+      await shouldExtractVariable({
         code: `doSomething([
   [cursor]new Author("Eliott")
 ]);`,
@@ -465,9 +555,11 @@ doSomething([
 doSomething([
   author
 ]);`
-      },
-      {
-        description: "a value in a binary expression",
+      });
+    });
+
+    it("a value in a binary expression", async () => {
+      await shouldExtractVariable({
         code: `console.log(
   currentValue >
   [cursor]10
@@ -477,9 +569,11 @@ console.log(
   currentValue >
   extracted
 );`
-      },
-      {
-        description: "an arrow function (cursor on params)",
+      });
+    });
+
+    it("an arrow function (cursor on params)", async () => {
+      await shouldExtractVariable({
         code: `const sayHello = (na[cursor]me) => {
   console.log(name);
 };`,
@@ -487,15 +581,19 @@ console.log(
   console.log(name);
 };
 const sayHello = extracted;`
-      },
-      {
-        description: "a for statement",
+      });
+    });
+
+    it("a for statement", async () => {
+      await shouldExtractVariable({
         code: `for (var i = 0; i < this.it[cursor]ems.length; i++) {}`,
         expected: `const { items } = this;
 for (var i = 0; i < items.length; i++) {}`
-      },
-      {
-        description: "with tabs",
+      });
+    });
+
+    it("with tabs", async () => {
+      await shouldExtractVariable({
         code: `function test() {
 	const myVar = {
 		someArray: [{ somethingNested: 42 }]
@@ -509,9 +607,11 @@ for (var i = 0; i < items.length; i++) {}`
 	const { someArray } = myVar;
 	console.log(someArray[0].somethingNested);
 }`
-      },
-      {
-        description: "cursor on return keyword",
+      });
+    });
+
+    it("cursor on return keyword", async () => {
+      await shouldExtractVariable({
         code: `function addNumbers(arr: number[]): number {
   ret[cursor]urn arr.reduce((sum, current) => sum + current, 0);
 }`,
@@ -519,9 +619,11 @@ for (var i = 0; i < items.length; i++) {}`
   const extracted = arr.reduce((sum, current) => sum + current, 0);
   return extracted;
 }`
-      },
-      {
-        description: "whole return statement selected, including semicolon",
+      });
+    });
+
+    it("whole return statement selected, including semicolon", async () => {
+      await shouldExtractVariable({
         code: `function addNumbers(arr: number[]): number {
   [start]return arr.reduce((sum, current) => sum + current, 0);[end]
 }`,
@@ -529,9 +631,11 @@ for (var i = 0; i < items.length; i++) {}`
   const extracted = arr.reduce((sum, current) => sum + current, 0);
   return extracted;
 }`
-      },
-      {
-        description: "expression bound to a variable",
+      });
+    });
+
+    it("expression bound to a variable", async () => {
+      await shouldExtractVariable({
         code: `const a = 1;
 console.log(a);
 console.log([start]a + 1[end]);
@@ -541,9 +645,11 @@ const extracted = a + 1;
 console.log(a);
 console.log(extracted);
 console.log(extracted);`
-      },
-      {
-        description: "expression bound to a variable, nested in statements",
+      });
+    });
+
+    it("expression bound to a variable, nested in statements", async () => {
+      await shouldExtractVariable({
         code: `function updateQuality() {
   for (var i = 0; i < items.length; i++) {
     if ([start]items[i][end].name != "SULFURAS") {
@@ -553,7 +659,6 @@ console.log(extracted);`
 
   return items;
 }`,
-        // The declared variable isn't indented, but at least it doesn't mess up with the next line (if statement).
         expected: `function updateQuality() {
   for (var i = 0; i < items.length; i++) {
 const extracted = items[i];
@@ -564,14 +669,63 @@ const extracted = items[i];
 
   return items;
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await extractVariable(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
+      });
+    });
+  });
 });
+
+async function shouldExtractVariable({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  let result = extractVariable({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection
+  });
+
+  const responses: Array<{ id: string; type: "choice"; value: any }> = [];
+
+  while (result.action === "ask user choice") {
+    const choice = result.choices[0];
+
+    responses.push({
+      id: result.id,
+      type: "choice",
+      value: choice
+    });
+
+    result = extractVariable({
+      state: "with user responses",
+      responses,
+      code: editor.code,
+      selection: editor.selection
+    });
+  }
+
+  if (result.action !== "read then write") {
+    throw new Error(`Expected "read then write" but got "${result.action}"`);
+  }
+
+  const { code: expectedCode, selection: expectedSelection } =
+    new InMemoryEditor(expected);
+
+  const testEditor = new InMemoryEditor(editor.code);
+  await testEditor.readThenWrite(
+    result.readSelection,
+    result.getModifications,
+    result.newCursorPosition
+  );
+
+  expect(testEditor.code).toBe(expectedCode);
+
+  if (!expectedSelection.isCursorAtTopOfDocument) {
+    expect(result).toMatchObject({
+      newCursorPosition: expectedSelection.start
+    });
+  }
+}
