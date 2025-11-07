@@ -4,7 +4,7 @@ Date: 2019-07-14
 
 ## Status
 
-Accepted
+Superceded by [16. Remove custom testeach](0016-remove-custom-testeach.md)
 
 ## Context
 
