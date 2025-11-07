@@ -638,7 +638,8 @@ while (true);`
     const result = toggleBraces({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -656,7 +657,8 @@ function shouldToggleBraces({
   const result = toggleBraces({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });
@@ -667,7 +669,8 @@ function shouldNotToggleBraces(code: Code) {
   const result = toggleBraces({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

@@ -340,7 +340,8 @@ if (false) {
     const result = removeDeadCode({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -358,7 +359,8 @@ function shouldRemoveDeadCode({
   const result = removeDeadCode({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });
@@ -369,7 +371,8 @@ function shouldNotRemoveCode({ code }: { code: Code }) {
   const result = removeDeadCode({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

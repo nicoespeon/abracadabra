@@ -51,7 +51,8 @@ function shouldNotExtract({ code }: { code: Code }) {
   const result = extractVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

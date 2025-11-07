@@ -322,7 +322,8 @@ function test() {
     const result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -346,7 +347,8 @@ function test() {
     const result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).not.toBe("ask user choice");
@@ -358,7 +360,8 @@ function test() {
     const result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).not.toBe("ask user choice");
@@ -414,7 +417,8 @@ async function shouldExtractVariable({
   let result = extractVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   const responses: Array<{ id: string; type: "choice"; value: any }> = [];
@@ -462,7 +466,8 @@ async function shouldExtractVariable({
       state: "with user responses",
       responses,
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
   }
 

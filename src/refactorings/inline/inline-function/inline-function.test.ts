@@ -676,7 +676,8 @@ export { sayHello }`);
     const result = inlineFunction({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -704,7 +705,8 @@ async function shouldInlineFunction({
   const result = inlineFunction({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "write") {
@@ -725,7 +727,8 @@ function shouldNotInlineFunction({
   const result = inlineFunction({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "show error") {

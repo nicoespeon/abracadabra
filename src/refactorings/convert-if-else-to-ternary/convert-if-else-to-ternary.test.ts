@@ -293,7 +293,8 @@ describe("Convert If/Else to Ternary", () => {
     const result = convertIfElseToTernary({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -311,7 +312,8 @@ function shouldConvertIfElseToTernary({
   const result = convertIfElseToTernary({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });
@@ -322,7 +324,8 @@ function shouldNotConvert(code: Code) {
   const result = convertIfElseToTernary({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

@@ -227,7 +227,8 @@ type Context =
       const result = extractType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -240,7 +241,8 @@ type Context =
       const result = extractType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -252,7 +254,8 @@ type Context =
     const result = extractType({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -273,7 +276,8 @@ let hello: [start]{
     const result = extractType({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -297,7 +301,8 @@ function shouldExtractType({ code, expected }: { code: Code; expected: Code }) {
   const result = extractType({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   const { code: expectedCode, selection: expectedSelection } =

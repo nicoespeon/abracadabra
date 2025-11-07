@@ -10,7 +10,8 @@ describe("Extract Variable - Multiple occurrences", () => {
     const result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).not.toBe("ask user choice");
@@ -24,7 +25,8 @@ sendMessage("Hello");`;
     const result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -50,7 +52,8 @@ sendMessage("Hello");`;
     let result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     // User cancels
@@ -58,7 +61,8 @@ sendMessage("Hello");`;
       state: "with user responses",
       responses: [],
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("do nothing");
@@ -459,7 +463,8 @@ async function shouldExtractVariable({
   let result = extractVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   const responses: Array<{ id: string; type: "choice"; value: any }> = [];
@@ -479,7 +484,8 @@ async function shouldExtractVariable({
       state: "with user responses",
       responses,
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
   }
 

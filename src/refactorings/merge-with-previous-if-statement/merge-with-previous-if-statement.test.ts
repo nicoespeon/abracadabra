@@ -466,7 +466,8 @@ function shouldNotMerge({ code }: { code: Code }) {
   const result = mergeWithPreviousIfStatement({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

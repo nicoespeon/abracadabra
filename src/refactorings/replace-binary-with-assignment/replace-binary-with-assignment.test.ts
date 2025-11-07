@@ -187,7 +187,8 @@ fees = fees + 10;`
     const result = replaceBinaryWithAssignment({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -205,7 +206,8 @@ function shouldReplaceBinaryWithAssignment({
   const result = replaceBinaryWithAssignment({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });
@@ -216,7 +218,8 @@ function shouldNotReplaceBinaryWithAssignment(code: Code) {
   const result = replaceBinaryWithAssignment({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

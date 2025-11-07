@@ -503,7 +503,8 @@ function sayByeBye() {
     const result = moveStatementDown({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("do nothing");
@@ -530,7 +531,8 @@ class Path {
     const result = moveStatementDown({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("do nothing");
@@ -545,7 +547,8 @@ class Path {
     const result = moveStatementDown({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -564,7 +567,8 @@ async function shouldMoveStatementDown({
   const result = moveStatementDown({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "read then write") {

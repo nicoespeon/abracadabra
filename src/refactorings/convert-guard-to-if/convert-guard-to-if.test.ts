@@ -50,7 +50,8 @@ function shouldConvertGuardToIf({
   const result = convertGuardToIf({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });
@@ -62,7 +63,8 @@ function shouldNotConvert(code: Code) {
   const result = convertGuardToIf({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

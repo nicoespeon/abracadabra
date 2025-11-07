@@ -98,7 +98,8 @@ someVariable = 'newValue';`);
     const result = convertLetToConst({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -130,7 +131,8 @@ function shouldConvertLetToConst({
   const result = convertLetToConst({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });
@@ -141,7 +143,8 @@ function shouldNotConvert(code: string) {
   const result = convertLetToConst({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result.action).toBe("show error");

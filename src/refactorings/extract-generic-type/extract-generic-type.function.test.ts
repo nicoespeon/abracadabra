@@ -52,7 +52,8 @@ describe("Extract Generic Type - Function declaration", () => {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -72,7 +73,8 @@ describe("Extract Generic Type - Function declaration", () => {
           { id: "user-choice", type: "choice", value: selectedOccurrenceChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -87,7 +89,8 @@ describe("Extract Generic Type - Function declaration", () => {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -104,7 +107,8 @@ describe("Extract Generic Type - Function declaration", () => {
           { id: "user-choice", type: "choice", value: allOccurrencesChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -119,7 +123,8 @@ describe("Extract Generic Type - Function declaration", () => {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -136,7 +141,8 @@ describe("Extract Generic Type - Function declaration", () => {
           { id: "user-choice", type: "choice", value: allOccurrencesChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -152,7 +158,8 @@ describe("Extract Generic Type - Function declaration", () => {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -169,7 +176,8 @@ describe("Extract Generic Type - Function declaration", () => {
           { id: "user-choice", type: "choice", value: allOccurrencesChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -193,7 +201,8 @@ function shouldExtractGenericType({
   const result = extractGenericType({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   const expectedEditor = new InMemoryEditor(expected);

@@ -8,7 +8,8 @@ describe("Extract Generic Type", () => {
     const result = extractGenericType({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -20,7 +21,8 @@ describe("Extract Generic Type", () => {
     const result = extractGenericType({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");

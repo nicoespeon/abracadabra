@@ -199,7 +199,8 @@ describe("Invert Boolean Logic", () => {
     const result = invertBooleanLogic({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -211,7 +212,8 @@ describe("Invert Boolean Logic", () => {
     const result = invertBooleanLogic({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -299,7 +301,8 @@ async function shouldInvertBooleanLogic({
   const result = invertBooleanLogic({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "read then write") {

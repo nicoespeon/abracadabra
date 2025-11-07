@@ -165,7 +165,8 @@ describe("Extract Generic Type - Interface", () => {
       const result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -193,7 +194,8 @@ describe("Extract Generic Type - Interface", () => {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -213,7 +215,8 @@ describe("Extract Generic Type - Interface", () => {
           { id: "user-choice", type: "choice", value: selectedOccurrenceChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -236,7 +239,8 @@ describe("Extract Generic Type - Interface", () => {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -253,7 +257,8 @@ describe("Extract Generic Type - Interface", () => {
           { id: "user-choice", type: "choice", value: allOccurrencesChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -280,7 +285,8 @@ interface Occurrence {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -297,7 +303,8 @@ interface Occurrence {
           { id: "user-choice", type: "choice", value: allOccurrencesChoice }
         ],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -324,7 +331,8 @@ interface Occurrence {
       let result = extractGenericType({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       assert(
@@ -333,9 +341,10 @@ interface Occurrence {
       );
       result = extractGenericType({
         state: "with user responses",
-        responses: [{ id: "user-choice", type: "choice", value: undefined }],
+        responses: [],
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("do nothing");
@@ -356,7 +365,8 @@ function shouldExtractGenericType({
   let result = extractGenericType({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action === "ask user choice") {
@@ -374,7 +384,8 @@ function shouldExtractGenericType({
         { id: "user-choice", type: "choice", value: selectedOccurrenceChoice }
       ],
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
   }
 

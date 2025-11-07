@@ -207,7 +207,8 @@ describe("Split If Statement", () => {
     const result = splitIfStatement({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -219,7 +220,8 @@ describe("Split If Statement", () => {
     const result = splitIfStatement({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -237,7 +239,8 @@ function shouldSplitIfStatement({
   const result = splitIfStatement({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

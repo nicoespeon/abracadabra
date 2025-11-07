@@ -8,7 +8,8 @@ describe("Rename Symbol", () => {
     const result = renameSymbol({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     expect(result).toEqual({
@@ -26,7 +27,8 @@ describe("Rename Symbol", () => {
       const result = renameSymbol({
         state: "command not supported",
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toMatchObject({
@@ -43,7 +45,8 @@ describe("Rename Symbol", () => {
       const result = renameSymbol({
         state: "command not supported",
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -60,7 +63,8 @@ describe("Rename Symbol", () => {
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -76,9 +80,10 @@ describe("Rename Symbol", () => {
 
       const result = renameSymbol({
         state: "with user responses",
-        responses: [{ id: "user-input", type: "input", value: undefined }],
+        responses: [{ id: "user-input", type: "input", value: "" }],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({ action: "do nothing" });
@@ -93,7 +98,8 @@ describe("Rename Symbol", () => {
         state: "with user responses",
         responses: [{ id: "user-input", type: "input", value: "hello" }],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -110,7 +116,8 @@ const goodMorning = \`Good morning \${hello}!\``);
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -132,7 +139,8 @@ console.log(value);`);
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -153,7 +161,8 @@ console.log(somethingElse);`);
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -176,7 +185,8 @@ console.log(somethingElse);`);
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -193,7 +203,8 @@ console.log(value);`);
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -214,7 +225,8 @@ const goodMorning = \`Good morning \${hello}!\``);
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -244,7 +256,8 @@ function sayHello() {
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -269,7 +282,8 @@ function sayHello() {
           { id: "user-input", type: "input", value: "aBrandNewName" }
         ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({

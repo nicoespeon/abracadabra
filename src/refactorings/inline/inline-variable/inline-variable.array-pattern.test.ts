@@ -182,7 +182,8 @@ async function shouldInlineVariable({
   const result = inlineVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "read then write") {
@@ -209,7 +210,8 @@ function shouldNotInlineVariable({
   const result = inlineVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "show error") {

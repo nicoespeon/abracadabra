@@ -334,7 +334,8 @@ if (args.forcelink) {
     const result = convertTernaryToIfElse({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -346,7 +347,8 @@ if (args.forcelink) {
     const result = convertTernaryToIfElse({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -364,7 +366,8 @@ function shouldConvertTernaryToIfElse({
   const result = convertTernaryToIfElse({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

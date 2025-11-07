@@ -61,7 +61,8 @@ describe("Flip Ternary", () => {
     const result = flipTernary({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -73,7 +74,8 @@ function shouldFlipTernary({ code, expected }: { code: Code; expected: Code }) {
   const result = flipTernary({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

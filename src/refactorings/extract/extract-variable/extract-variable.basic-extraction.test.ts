@@ -24,7 +24,8 @@ console.log(hello);`
     const result = extractVariable({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -67,7 +68,8 @@ console.log(hello);`
       const result = extractVariable({
         state: "new",
         code: editor.code,
-        selection: editor.selection
+        selection: editor.selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -86,7 +88,8 @@ async function shouldExtractVariable({
   const result = extractVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   if (result.action !== "read then write") {

@@ -8,7 +8,8 @@ describe("Extract Function", () => {
     const result = extractFunction({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     expect(result).toEqual({
@@ -30,7 +31,8 @@ describe("Extract Function", () => {
     const result = extractFunction({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     const { selection: expectedSelection } =
@@ -61,7 +63,8 @@ describe("Extract Function", () => {
     const result = extractFunction({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     const { selection: expectedSelection } =
@@ -94,7 +97,8 @@ describe("Extract Function", () => {
     const result = extractFunction({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     const { selection: expectedSelection } =
@@ -128,7 +132,8 @@ describe("Extract Function", () => {
     const result = extractFunction({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     const { selection: expectedSelection } =
@@ -153,7 +158,8 @@ describe("Extract Function", () => {
     const result = extractFunction({
       state: "command not supported",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     expect(result).toEqual({

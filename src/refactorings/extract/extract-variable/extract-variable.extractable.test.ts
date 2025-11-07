@@ -685,7 +685,8 @@ async function shouldExtractVariable({
   let result = extractVariable({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   const responses: Array<{ id: string; type: "choice"; value: any }> = [];
@@ -703,7 +704,8 @@ async function shouldExtractVariable({
       state: "with user responses",
       responses,
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
   }
 

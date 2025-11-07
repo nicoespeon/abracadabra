@@ -375,7 +375,8 @@ async function shouldChangeSignature(
   let result = changeSignature({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
   assert(
     result.action === "ask change signature positions",
@@ -395,6 +396,7 @@ async function shouldChangeSignature(
     state: "with user responses",
     code: editor.code,
     selection: editor.selection,
+    highlightSources: [],
     responses: [
       {
         id: "change-signature-positions",
