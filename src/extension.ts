@@ -11,9 +11,7 @@ import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
 import {
   RefactoringConfig,
-  RefactoringConfig__DEPRECATED,
-  RefactoringWithActionProviderConfig,
-  RefactoringWithActionProviderConfig__DEPRECATED
+  RefactoringWithActionProviderConfig
 } from "./refactorings";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
@@ -62,16 +60,12 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
     languages: ["typescript", "typescriptreact"],
     withoutActionProvider: [],
-    withoutActionProvider__NEW: [],
-    withActionProvider: [],
-    withActionProvider__NEW: [extractGenericType, extractInterface]
+    withActionProvider: [extractGenericType, extractInterface]
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
-    withoutActionProvider__NEW: [],
-    withActionProvider: [],
-    withActionProvider__NEW: [wrapInJsxFrament, removeJsxFragment]
+    withActionProvider: [wrapInJsxFrament, removeJsxFragment]
   },
   allLanguages: {
     languages: [
@@ -82,16 +76,14 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       "vue",
       "svelte"
     ],
-    withoutActionProvider: [],
-    withoutActionProvider__NEW: [
+    withoutActionProvider: [
       extract,
       extractFunction,
       renameSymbol,
       moveStatementUp,
       moveStatementDown
     ],
-    withActionProvider: [inline],
-    withActionProvider__NEW: [
+    withActionProvider: [
       changeSignature,
       addNumericSeparator,
       convertForEachToForOf,
@@ -110,6 +102,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       extractParameter,
       convertGuardToIf,
       invertBooleanLogic,
+      inline,
       liftUpConditional,
       mergeIfStatements,
       mergeWithPreviousIfStatement,
@@ -129,10 +122,8 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
 
 type ConfiguredRefactoring = {
   languages: string[];
-  withoutActionProvider: RefactoringConfig__DEPRECATED[];
-  withoutActionProvider__NEW: RefactoringConfig[];
-  withActionProvider: RefactoringWithActionProviderConfig__DEPRECATED[];
-  withActionProvider__NEW: RefactoringWithActionProviderConfig[];
+  withoutActionProvider: RefactoringConfig[];
+  withActionProvider: RefactoringWithActionProviderConfig[];
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -162,40 +153,22 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
-        createCommand(command.operation, { refreshHighlights: true })
-      )
-    );
-  });
-
-  const commands__NEW = Object.values(refactorings).flatMap(
-    ({ withoutActionProvider__NEW, withActionProvider__NEW }) =>
-      withoutActionProvider__NEW.concat(withActionProvider__NEW)
-  );
-
-  commands__NEW.forEach(({ command }) => {
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        `abracadabra.${command.key}`,
         createCommand__NEW(command.operation, { refreshHighlights: true })
       )
     );
   });
 
   const withActionProviderPerLanguage = Object.values(refactorings).reduce(
-    (memo, { languages, withActionProvider, withActionProvider__NEW }) => {
+    (memo, { languages, withActionProvider }) => {
       languages.forEach((language) => {
         if (!memo[language]) memo[language] = [];
         memo[language].push(...withActionProvider);
-        memo[language].push(...withActionProvider__NEW);
       });
 
       return memo;
     },
     {} as {
-      [language: string]: (
-        | RefactoringWithActionProviderConfig__DEPRECATED
-        | RefactoringWithActionProviderConfig
-      )[];
+      [language: string]: RefactoringWithActionProviderConfig[];
     }
   );
 

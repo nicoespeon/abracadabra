@@ -1,6 +1,11 @@
 import * as t from "../../../ast";
-import { Code, Editor, ErrorReason } from "../../../editor/editor";
+import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState
+} from "../../../refactorings";
 import {
   findInlinableCode,
   InlinableCode,
@@ -9,31 +14,27 @@ import {
   SingleDeclaration
 } from "./find-inlinable-code";
 
-export async function inlineVariable(editor: Editor) {
-  const { code, selection } = editor;
+export function inlineVariable(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const inlinableCode = findInlinableCodeInAST(code, selection);
 
   if (!inlinableCode) {
-    editor.showError(ErrorReason.DidNotFindInlinableCode);
-    return;
+    return COMMANDS.showErrorDidNotFind("inlinable code");
   }
 
   if (inlinableCode.isRedeclared) {
-    editor.showError(ErrorReason.CantInlineRedeclaredVariables);
-    return;
+    return COMMANDS.showErrorICant("inline redeclared variables");
   }
 
   if (inlinableCode.isExported) {
-    editor.showError(ErrorReason.CantInlineExportedVariables);
-    return;
+    return COMMANDS.showErrorICant("inline exported variables");
   }
 
   if (!inlinableCode.hasIdentifiersToUpdate) {
-    editor.showError(ErrorReason.DidNotFindInlinableCodeIdentifiers);
-    return;
+    return COMMANDS.showErrorDidNotFind("identifiers to inline");
   }
 
-  await editor.readThenWrite(inlinableCode.valueSelection, (inlinedCode) => {
+  return COMMANDS.readThenWrite(inlinableCode.valueSelection, (inlinedCode) => {
     return [
       // Replace all identifiers with inlined code
       ...inlinableCode.updateIdentifiersWith(inlinedCode),

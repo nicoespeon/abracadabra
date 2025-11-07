@@ -1,15 +1,15 @@
-import { executeSafely } from "../../commands";
-import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
-import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
-import { ErrorReason } from "../../editor/editor";
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import {
+  EditorCommand,
+  RefactoringState,
+  RefactoringWithActionProviderConfig
+} from "../../refactorings";
 import { inlineFunction } from "./inline-function/inline-function";
 import {
   createVisitor as canInlineVariable,
   inlineVariable
 } from "./inline-variable/inline-variable";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "inline",
     title: "Inline Variable/Function",
@@ -24,20 +24,7 @@ const config: RefactoringWithActionProviderConfig__DEPRECATED = {
 
 export default config;
 
-async function inline() {
-  const vscodeEditor = createVSCodeEditor();
-  if (!vscodeEditor) return;
-
-  const attemptingEditor = new AttemptingEditor(
-    vscodeEditor,
-    ErrorReason.DidNotFindInlinableCode
-  );
-
-  await executeSafely(async () => {
-    await inlineVariable(attemptingEditor);
-
-    if (!attemptingEditor.attemptSucceeded) {
-      await inlineFunction(vscodeEditor);
-    }
-  });
+function inline(state: RefactoringState): EditorCommand {
+  const result = inlineVariable(state);
+  return result.action === "show error" ? inlineFunction(state) : result;
 }

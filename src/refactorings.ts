@@ -127,7 +127,7 @@ export type EditorCommand = BaseEditorCommand &
       }
   );
 
-type BaseEditorCommand = { thenRun?: Refactoring };
+type BaseEditorCommand = { thenRun?: Refactoring; errorMessage?: string };
 
 type AskUserChoiceCommand<T = unknown> = {
   action: "ask user choice";
@@ -269,6 +269,10 @@ export async function executeRefactoring(
       break;
 
     case "write":
+      if (result.errorMessage) {
+        await editor.showError(result.errorMessage);
+      }
+
       await editor.write(result.code, result.newCursorPosition);
       break;
 
