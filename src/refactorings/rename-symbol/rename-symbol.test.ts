@@ -8,7 +8,8 @@ describe("Rename Symbol", () => {
     const result = renameSymbol({
       state: "new",
       code,
-      selection
+      selection,
+      highlightSources: []
     });
 
     expect(result).toEqual({
@@ -26,10 +27,14 @@ describe("Rename Symbol", () => {
       const result = renameSymbol({
         state: "command not supported",
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
-      expect(result).toEqual({ action: "ask user", value: "hello" });
+      expect(result).toMatchObject({
+        action: "ask user input",
+        value: "hello"
+      });
     });
 
     it("should not ask user for new name if cursor isn't on an Identifier", () => {
@@ -40,7 +45,8 @@ describe("Rename Symbol", () => {
       const result = renameSymbol({
         state: "command not supported",
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -52,10 +58,13 @@ describe("Rename Symbol", () => {
       );
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -70,10 +79,11 @@ describe("Rename Symbol", () => {
       );
 
       const result = renameSymbol({
-        state: "user response",
+        state: "with user responses",
+        responses: [{ id: "user-input", type: "input", value: "" }],
         code,
         selection,
-        value: undefined
+        highlightSources: []
       });
 
       expect(result).toEqual({ action: "do nothing" });
@@ -85,10 +95,11 @@ describe("Rename Symbol", () => {
       );
 
       const result = renameSymbol({
-        state: "user response",
+        state: "with user responses",
+        responses: [{ id: "user-input", type: "input", value: "hello" }],
         code,
         selection,
-        value: "hello"
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -100,10 +111,13 @@ console.log([cursor]hello);
 const goodMorning = \`Good morning \${hello}!\``);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -120,10 +134,13 @@ const goodMorning = \`Good morning \${aBrandNewName}!\``
 console.log(value);`);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -139,10 +156,13 @@ console.log(aBrandNewName);`
 console.log(somethingElse);`);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -160,10 +180,13 @@ console.log(aBrandNewName);`
 console.log(somethingElse);`);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -175,10 +198,13 @@ console.log(somethingElse);`);
 console.log(value);`);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -194,10 +220,13 @@ let hello = 'my friend';
 const goodMorning = \`Good morning \${hello}!\``);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -222,10 +251,13 @@ function sayHello() {
 }`);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({
@@ -245,10 +277,13 @@ function sayHello() {
 \t\tconst goodMorning = \`Good morning \${hello}!\``);
 
       const result = renameSymbol({
-        state: "user response",
-        value: "aBrandNewName",
+        state: "with user responses",
+        responses: [
+          { id: "user-input", type: "input", value: "aBrandNewName" }
+        ],
         code,
-        selection
+        selection,
+        highlightSources: []
       });
 
       expect(result).toEqual({

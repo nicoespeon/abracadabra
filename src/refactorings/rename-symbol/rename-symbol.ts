@@ -1,7 +1,12 @@
 import * as t from "../../ast";
 import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState,
+  getUserInput
+} from "../../refactorings";
 
 export function renameSymbol(state: RefactoringState): EditorCommand {
   const { code, selection } = state;
@@ -10,11 +15,11 @@ export function renameSymbol(state: RefactoringState): EditorCommand {
     const path = findPath(code, selection);
     if (!path) return COMMANDS.showErrorDidNotFind("an identifier to rename");
 
-    return COMMANDS.askUser(path.node.name);
+    return COMMANDS.askUserInput(path.node.name);
   }
 
-  if (state.state === "user response") {
-    const newName = state.value;
+  if (state.state === "with user responses") {
+    const newName = getUserInput(state);
     if (!newName) return COMMANDS.doNothing();
 
     const { code: newCode, hasCodeChanged } = doRenameSymbol(

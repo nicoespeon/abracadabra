@@ -65,7 +65,8 @@ const y = 2;
     const result = splitMultipleDeclarations({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -84,7 +85,8 @@ function shouldSplitMultipleDeclarations({
   const result = splitMultipleDeclarations({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toEqual({ action: "write", code: expected });

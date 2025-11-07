@@ -1,4 +1,3 @@
-import { describe } from "node:test";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
@@ -174,7 +173,8 @@ const sayHello = function(name: Foo = Foo.BAR) {
       const result = extractParameter({
         state: "new",
         code,
-        selection: Selection.cursorAt(0, 0)
+        selection: Selection.cursorAt(0, 0),
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -188,7 +188,8 @@ const sayHello = function(name: Foo = Foo.BAR) {
       const result = extractParameter({
         state: "new",
         code,
-        selection: Selection.cursorAt(1, 9)
+        selection: Selection.cursorAt(1, 9),
+        highlightSources: []
       });
 
       expect(result.action).toBe("show error");
@@ -208,7 +209,8 @@ function shouldExtractParameter({
   const result = extractParameter({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

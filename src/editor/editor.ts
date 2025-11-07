@@ -1,11 +1,9 @@
 import { Decoration, Source } from "../highlights/highlights";
 import { CodeReference } from "./code-reference";
-import { ErrorReason } from "./error-reason";
 import { Path } from "./path";
 import { Position } from "./position";
 import { Selection } from "./selection";
 
-export { ErrorReason, toString as errorReasonToString } from "./error-reason";
 export { AbsolutePath, RelativePath } from "./path";
 
 export interface Editor {
@@ -21,7 +19,7 @@ export interface Editor {
     newCursorPosition?: Position | Selection
   ): Promise<void>;
   delegate(command: Command, selection?: Selection): Promise<Result>;
-  showError(reason: ErrorReason | string, details?: unknown): Promise<void>;
+  showError(reason: string, details?: unknown): Promise<void>;
   askUserInput(defaultValue?: string): Promise<string | undefined>;
   askUserChoice<T>(
     choices: Choice<T>[],

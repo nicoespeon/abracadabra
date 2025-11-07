@@ -1,7 +1,7 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import { addNumericSeparator, createVisitor } from "./add-numeric-separator";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "addNumericSeparator",
     operation: addNumericSeparator,

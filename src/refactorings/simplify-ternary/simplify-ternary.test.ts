@@ -1,66 +1,87 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { simplifyTernary } from "./simplify-ternary";
 
 describe("Simplify Ternary", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should simplify ternary",
-    [
-      {
-        description: "true ? a : b === a",
+  describe("should simplify ternary", () => {
+    it("true ? a : b === a", () => {
+      shouldSimplifyTernary({
         code: `const x = t[cursor]rue ? a : b;`,
         expected: `const x = a;`
-      },
-      {
-        description: "false ? a : b === a",
+      });
+    });
+
+    it("false ? a : b === a", () => {
+      shouldSimplifyTernary({
         code: `const x = f[cursor]alse ? a : b;`,
         expected: `const x = b;`
-      },
-      {
-        description: "a ? true : false === Boolean(a)",
+      });
+    });
+
+    it("a ? true : false === Boolean(a)", () => {
+      shouldSimplifyTernary({
         code: `const x = a[cursor] ? true : false;`,
         expected: `const x = Boolean(a);`
-      },
-      {
-        description: "a ? false : true === !a",
+      });
+    });
+
+    it("a ? false : true === !a", () => {
+      shouldSimplifyTernary({
         code: `const x = a[cursor] ? false : true;`,
         expected: `const x = !a;`
-      },
-      {
-        description: "a ? true : true === true",
+      });
+    });
+
+    it("a ? true : true === true", () => {
+      shouldSimplifyTernary({
         code: `const x = a[cursor] ? true : true;`,
         expected: `const x = true;`
-      },
-      {
-        description: "a ? false : false === false",
+      });
+    });
+
+    it("a ? false : false === false", () => {
+      shouldSimplifyTernary({
         code: `const x = a[cursor] ? false : false;`,
         expected: `const x = false;`
-      },
-      {
-        description: "a ? a : b === a || b",
+      });
+    });
+
+    it("a ? a : b === a || b", () => {
+      shouldSimplifyTernary({
         code: `const x = a[cursor] ? a : b;`,
         expected: `const x = a || b;`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await simplifyTernary(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = simplifyTernary({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await simplifyTernary(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindTernaryToSimplify
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldSimplifyTernary({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = simplifyTernary({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

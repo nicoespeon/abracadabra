@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { convertTernaryToIfElse } from "./convert-ternary-to-if-else";
 
 describe("Convert Ternary to If/Else", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should convert ternary to if/else",
-    [
-      {
-        description: "return statement",
+  describe("should convert ternary to if/else", () => {
+    it("return statement", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInA[cursor]dvance > 10 ? "early" : "normal";
 }`,
@@ -19,9 +16,11 @@ describe("Convert Ternary to If/Else", () => {
     return "normal";
   }
 }`
-      },
-      {
-        description: "preserves comments for return",
+      });
+    });
+
+    it("preserves comments for return", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   // leading comment
   return daysInA[cursor]dvance > 10 ? "early" : "normal";
@@ -36,9 +35,11 @@ describe("Convert Ternary to If/Else", () => {
   }
   // trailing comment
 }`
-      },
-      {
-        description: "assignment expression",
+      });
+    });
+
+    it("assignment expression", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   let mode;
   mode = daysInA[cursor]dvance > 10 ? "early" : "normal";
@@ -55,9 +56,11 @@ describe("Convert Ternary to If/Else", () => {
 
   return mode;
 }`
-      },
-      {
-        description: "assignment expression with different operator",
+      });
+    });
+
+    it("assignment expression with different operator", () => {
+      shouldConvertTernaryToIfElse({
         code: `function getTotal(daysInAdvance) {
   let total = 10;
   total += daysI[cursor]nAdvance > 10 ? 2 : 5;
@@ -74,9 +77,11 @@ describe("Convert Ternary to If/Else", () => {
 
   return total;
 }`
-      },
-      {
-        description: "preserves comments for assignment expression",
+      });
+    });
+
+    it("preserves comments for assignment expression", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   let mode;
   // leading comment
@@ -97,9 +102,11 @@ describe("Convert Ternary to If/Else", () => {
   // trailing comment
   return mode;
 }`
-      },
-      {
-        description: "variable declaration",
+      });
+    });
+
+    it("variable declaration", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   const mode = d[cursor]aysInAdvance > 10 ? "early" : "normal";
   return mode;
@@ -115,9 +122,11 @@ describe("Convert Ternary to If/Else", () => {
 
   return mode;
 }`
-      },
-      {
-        description: "preserves comments for variable declaration",
+      });
+    });
+
+    it("preserves comments for variable declaration", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   // leading comment
   const mode = d[cursor]aysInAdvance > 10 ? "early" : "normal";
@@ -137,9 +146,11 @@ describe("Convert Ternary to If/Else", () => {
   // trailing comment
   return mode;
 }`
-      },
-      {
-        description: "whole ternary selected",
+      });
+    });
+
+    it("whole ternary selected", () => {
+      shouldConvertTernaryToIfElse({
         code: `[start]let publishesNeedingLink = args.forcelink ? page.directives : page.findPublishesLackingLinkInPage();[end]`,
         expected: `let publishesNeedingLink;
 
@@ -148,9 +159,11 @@ if (args.forcelink) {
 } else {
   publishesNeedingLink = page.findPublishesLackingLinkInPage();
 }`
-      },
-      {
-        description: "nested ternary, cursor on wrapping ternary",
+      });
+    });
+
+    it("nested ternary, cursor on wrapping ternary", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInA[cursor]dvance > 10 ? "early" : isVIP ? "vip" : "normal";
 }`,
@@ -161,10 +174,11 @@ if (args.forcelink) {
     return isVIP ? "vip" : "normal";
   }
 }`
-      },
-      {
-        description:
-          "nested ternary on consequent branch, cursor on nested ternary",
+      });
+    });
+
+    it("nested ternary on consequent branch, cursor on nested ternary", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isV[cursor]IP ? "vip" : "normal" : "early";
 }`,
@@ -175,10 +189,11 @@ if (args.forcelink) {
     return daysInAdvance <= 10 ? "normal" : "early";
   }
 }`
-      },
-      {
-        description:
-          "nested ternary on alternate branch, cursor on nested ternary",
+      });
+    });
+
+    it("nested ternary on alternate branch, cursor on nested ternary", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance > 10 ? "early" : isVI[cursor]P ? "vip" : "normal";
 }`,
@@ -189,10 +204,11 @@ if (args.forcelink) {
     return daysInAdvance > 10 ? "early" : "normal";
   }
 }`
-      },
-      {
-        description:
-          "nested ternary on both branches, cursor on consequent nested ternary",
+      });
+    });
+
+    it("nested ternary on both branches, cursor on consequent nested ternary", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isV[cursor]IP ? "vip" : "normal" : isEarly ? "early" : "unknown";
 }`,
@@ -203,10 +219,11 @@ if (args.forcelink) {
     return daysInAdvance <= 10 ? "normal" : isEarly ? "early" : "unknown";
   }
 }`
-      },
-      {
-        description:
-          "nested ternary on both branches, cursor on alternate nested ternary",
+      });
+    });
+
+    it("nested ternary on both branches, cursor on alternate nested ternary", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : is[cursor]Early ? "early" : "unknown";
 }`,
@@ -217,9 +234,11 @@ if (args.forcelink) {
     return daysInAdvance <= 10 ? isVIP ? "vip" : "normal" : "unknown";
   }
 }`
-      },
-      {
-        description: "deeply nested ternary, cursor on nested ternary",
+      });
+    });
+
+    it("deeply nested ternary, cursor on nested ternary", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   return daysInAdvance <= 10 ? isVIP ? "vip" : isN[cursor]ormal ? "normal" : "unknown" :"early";
 }`,
@@ -230,9 +249,11 @@ if (args.forcelink) {
     return daysInAdvance <= 10 ? isVIP ? "vip" : "unknown" : "early";
   }
 }`
-      },
-      {
-        description: "deeply nested ternary, assignment expression",
+      });
+    });
+
+    it("deeply nested ternary, assignment expression", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   let mode;
   mode = daysInAdvance <= 10 ? isVIP ? "vip" : isNo[cursor]rmal ? "normal" : "unknown" :"early";
@@ -249,9 +270,11 @@ if (args.forcelink) {
 
   return mode;
 }`
-      },
-      {
-        description: "deeply nested ternary, variable declaration",
+      });
+    });
+
+    it("deeply nested ternary, variable declaration", () => {
+      shouldConvertTernaryToIfElse({
         code: `function reservationMode(daysInAdvance) {
   const mode = daysInAdvance <= 10 ? isVIP ? "vip" : isN[cursor]ormal ? "normal" : "unknown" :"early";
   return mode;
@@ -267,9 +290,11 @@ if (args.forcelink) {
 
   return mode;
 }`
-      },
-      {
-        description: "a ternary that is not returned",
+      });
+    });
+
+    it("a ternary that is not returned", () => {
+      shouldConvertTernaryToIfElse({
         code: `function doSomething(isValid) {
   [cursor]isValid ? doThis() : doThat();
 }`,
@@ -280,9 +305,11 @@ if (args.forcelink) {
     doThat();
   }
 }`
-      },
-      {
-        description: "preserves comments for ternary that is not returned",
+      });
+    });
+
+    it("preserves comments for ternary that is not returned", () => {
+      shouldConvertTernaryToIfElse({
         code: `function doSomething(isValid) {
   // leading comment
   [cursor]isValid ? doThis() : doThat();
@@ -297,38 +324,51 @@ if (args.forcelink) {
   }
   // trailing comment
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await convertTernaryToIfElse(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if selection has no valid ternary to convert", async () => {
+  it("should show an error message if selection has no valid ternary to convert", () => {
     const code = `console.log("no ternary")`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertTernaryToIfElse({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await convertTernaryToIfElse(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindTernaryToConvert
-    );
+    expect(result.action).toBe("show error");
   });
 
-  it("should not convert ternary in variable declaration if there are other declarations", async () => {
+  it("should not convert ternary in variable declaration if there are other declarations", () => {
     const code = `let links = args.forceLink[cursor] ? [] : null, isValid = args.forceLink ? true : false`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertTernaryToIfElse({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await convertTernaryToIfElse(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.CantConvertTernaryWithOtherDeclarations
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldConvertTernaryToIfElse({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = convertTernaryToIfElse({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

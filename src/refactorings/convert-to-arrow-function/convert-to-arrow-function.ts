@@ -1,27 +1,27 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function convertToArrowFunction(editor: Editor) {
-  const { code, selection } = editor;
+export function convertToArrowFunction(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const { updatedCode, hasReferenceBefore } = updateCode(
     t.parse(code),
     selection
   );
 
   if (hasReferenceBefore) {
-    editor.showError(
-      ErrorReason.CantConvertFunctionDeclarationBecauseUsedBefore
-    );
-    return;
+    return {
+      action: "show error",
+      reason: "Can't convert function declaration because it's used before",
+      details: "CantConvertFunctionDeclarationBecauseUsedBefore"
+    };
   }
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindFunctionDeclarationToConvert);
-    return;
+    return COMMANDS.showErrorDidNotFind("function declaration to convert");
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(

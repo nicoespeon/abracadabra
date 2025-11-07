@@ -1,10 +1,10 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   convertToArrowFunction,
   createVisitor
 } from "./convert-to-arrow-function";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "convertFunctionDeclarationToArrowFunction",
     operation: convertToArrowFunction,

@@ -1,8 +1,7 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
+import { Code } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
-import { testEach } from "../../tests-helpers";
 import {
   convertToTemplateLiteral,
   createVisitor,
@@ -10,26 +9,10 @@ import {
 } from "./convert-to-template-literal";
 
 describe("Convert To Template Literal", () => {
-  testEach<{ code: Code; selection?: Selection }>(
-    "should not show refactoring",
-    [
-      {
-        description: "on an import statement using double quotes",
-        code: `import MyComponent from "./MyComponent";`,
-        selection: Selection.cursorAt(0, 27)
-      },
-      {
-        description: "on an import statement using sinle quotes",
-        code: `import MyComponent from './MyComponent';`,
-        selection: Selection.cursorAt(0, 27)
-      },
-      {
-        description: "on a concatenation (handled by VS Code)",
-        code: `const name = "Jane" + 1;`,
-        selection: Selection.cursorAt(0, 17)
-      }
-    ],
-    ({ code, selection = Selection.cursorAt(0, 13) }) => {
+  describe("should not show refactoring", () => {
+    it("on an import statement using double quotes", () => {
+      const code = `import MyComponent from "./MyComponent";`;
+      const selection = Selection.cursorAt(0, 27);
       const ast = t.parse(code);
       let canConvert = false;
       t.traverseAST(
@@ -38,46 +21,82 @@ describe("Convert To Template Literal", () => {
       );
 
       expect(canConvert).toBeFalsy();
-    }
-  );
+    });
 
-  testEach<{ code: Code; expected: Code }>(
-    "should convert to template literal",
-    [
-      {
-        description: "a simple string",
+    it("on an import statement using sinle quotes", () => {
+      const code = `import MyComponent from './MyComponent';`;
+      const selection = Selection.cursorAt(0, 27);
+      const ast = t.parse(code);
+      let canConvert = false;
+      t.traverseAST(
+        ast,
+        createVisitor(selection, () => (canConvert = true))
+      );
+
+      expect(canConvert).toBeFalsy();
+    });
+
+    it("on a concatenation (handled by VS Code)", () => {
+      const code = `const name = "Jane" + 1;`;
+      const selection = Selection.cursorAt(0, 17);
+      const ast = t.parse(code);
+      let canConvert = false;
+      t.traverseAST(
+        ast,
+        createVisitor(selection, () => (canConvert = true))
+      );
+
+      expect(canConvert).toBeFalsy();
+    });
+  });
+
+  describe("should convert to template literal", () => {
+    it("a simple string", () => {
+      shouldConvertToTemplateLiteral({
         code: `const name = [cursor]"Jane";`,
         expected: "const name = `Jane`;"
-      },
-      {
-        description: "only selected string",
+      });
+    });
+
+    it("only selected string", () => {
+      shouldConvertToTemplateLiteral({
         code: `const name = [cursor]"Jane";
 const lastName = "Doe";`,
         expected: `const name = \`Jane\`;
 const lastName = "Doe";`
-      },
-      {
-        description: "JSX attribute without braces",
+      });
+    });
+
+    it("JSX attribute without braces", () => {
+      shouldConvertToTemplateLiteral({
         code: `<TestComponent testProp="t[cursor]est" />`,
         expected: `<TestComponent testProp={\`test\`} />`
-      },
-      {
-        description: "string literal with backticks",
+      });
+    });
+
+    it("string literal with backticks", () => {
+      shouldConvertToTemplateLiteral({
         code: "const a = 'Hello[cursor] `you`'",
         expected: "const a = `Hello \\`you\\``"
-      },
-      {
-        description: "string literal with ${value}",
+      });
+    });
+
+    it("string literal with ${value}", () => {
+      shouldConvertToTemplateLiteral({
         code: "const a = 'Hello[cursor] ${you} ${me2}'",
         expected: "const a = `Hello ${you} ${me2}`"
-      },
-      {
-        description: "string literal with empty ${}",
+      });
+    });
+
+    it("string literal with empty ${}", () => {
+      shouldConvertToTemplateLiteral({
         code: "const a = 'Hello[cursor] ${}'",
         expected: "const a = `Hello ${}`"
-      },
-      {
-        description: "preserves comments",
+      });
+    });
+
+    it("preserves comments", () => {
+      shouldConvertToTemplateLiteral({
         code: `const name =
   // leading comment
   [cursor]"Jane"
@@ -88,71 +107,60 @@ const lastName = "Doe";`
   \`Jane\`
   // trailing comment
   ;`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await convertToTemplateLiteral(editor);
+  describe("should not convert", () => {
+    it("other binary expression operators", () => {
+      shouldNotConvert(`const name = "[cursor]Jane-" - 12 + "Doe";`);
+    });
 
-      expect(editor.code).toBe(expected);
-    }
-  );
+    it("binary expression without string", () => {
+      shouldNotConvert("const total = [cursor]price + 10 + 20;");
+    });
 
-  testEach<{ code: Code; selection?: Selection }>(
-    "should not convert",
-    [
-      {
-        description: "other binary expression operators",
-        code: `const name = "[cursor]Jane-" - 12 + "Doe";`
-      },
-      {
-        description: "binary expression without string",
-        code: "const total = [cursor]price + 10 + 20;"
-      },
-      {
-        description: "concatenation (handled by VS Code)",
-        code: `const name = "[cursor]Jane-" + 1;`
-      },
-      {
-        description: "import statement",
-        code: `import MyCompo[cursor]nent from "./MyComponent"`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+    it("concatenation (handled by VS Code)", () => {
+      shouldNotConvert(`const name = "[cursor]Jane-" + 1;`);
+    });
 
-      await convertToTemplateLiteral(editor);
+    it("import statement", () => {
+      shouldNotConvert(`import MyCompo[cursor]nent from "./MyComponent"`);
+    });
+  });
 
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should preserve cursor position when it converts a JSX prop", async () => {
+  it("should preserve cursor position when it converts a JSX prop", () => {
     const editor = new InMemoryEditor(
       `<TestComponent testProp="t[cursor]est" />`
     );
-
-    await convertToTemplateLiteral(editor);
+    const result = convertToTemplateLiteral({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
     const expectedEditor = new InMemoryEditor(
       `<TestComponent testProp={\`t[cursor]est\`} />`
     );
-    expect(editor.code).toBe(expectedEditor.code);
-    expect(editor.selection).toEqual(expectedEditor.selection);
+    expect(result).toMatchObject({
+      action: "write",
+      code: expectedEditor.code,
+      newCursorPosition: expectedEditor.selection.start
+    });
   });
 
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertToTemplateLiteral({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await convertToTemplateLiteral(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindStringToConvert
-    );
+    expect(result.action).toBe("show error");
   });
 
   describe("isInsertingVariableInStringLiteral", () => {
@@ -210,3 +218,33 @@ const lastName = "Doe";`
     });
   });
 });
+
+function shouldConvertToTemplateLiteral({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = convertToTemplateLiteral({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotConvert(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = convertToTemplateLiteral({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result.action).toBe("show error");
+}

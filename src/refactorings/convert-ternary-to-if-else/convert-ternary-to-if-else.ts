@@ -1,22 +1,24 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function convertTernaryToIfElse(editor: Editor) {
-  const { code, selection } = editor;
+export function convertTernaryToIfElse(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindTernaryToConvert);
-    return;
+    return COMMANDS.showErrorDidNotFind("ternary to convert");
   }
 
   if (updatedCode.otherVariablesDeclared) {
-    editor.showError(ErrorReason.CantConvertTernaryWithOtherDeclarations);
-    return;
+    return {
+      action: "show error",
+      reason: "Can't convert ternary with other declarations",
+      details: "CantConvertTernaryWithOtherDeclarations"
+    };
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(

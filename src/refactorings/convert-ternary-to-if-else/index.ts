@@ -1,10 +1,10 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   convertTernaryToIfElse,
   createVisitor
 } from "./convert-ternary-to-if-else";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "convertTernaryToIfElse",
     operation: convertTernaryToIfElse,

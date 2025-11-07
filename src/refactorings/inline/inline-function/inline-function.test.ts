@@ -1,23 +1,22 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../../editor/editor";
-import { testEach } from "../../../tests-helpers";
+import { Code } from "../../../editor/editor";
 import { inlineFunction } from "./inline-function";
 
 describe("Inline Function", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should inline function",
-    [
-      {
-        description: "function with 1 call expression",
+  describe("should inline function", () => {
+    it("function with 1 call expression", async () => {
+      await shouldInlineFunction({
         code: `function sayHello() {
   console.log("Hello!");
 }
 
 sayHello();`,
         expected: `console.log("Hello!");`
-      },
-      {
-        description: "only the selected function",
+      });
+    });
+
+    it("only the selected function", async () => {
+      await shouldInlineFunction({
         code: `function sayHello() {
   console.log("Hello!");
 }
@@ -34,9 +33,11 @@ sayHi();`,
 
 console.log("Hello!");
 sayHi();`
-      },
-      {
-        description: "function with multiple call expressions",
+      });
+    });
+
+    it("function with multiple call expressions", async () => {
+      await shouldInlineFunction({
         code: `function sayHello() {
   console.log("Hello!");
 }
@@ -53,9 +54,11 @@ sayHello();`,
 }
 
 console.log("Hello!");`
-      },
-      {
-        description: "nested functions, cursor on nested",
+      });
+    });
+
+    it("nested functions, cursor on nested", async () => {
+      await shouldInlineFunction({
         code: `function doSomething() {
   function say[cursor]Hello() {
     console.log("Hello!");
@@ -70,9 +73,11 @@ doSomething();`,
 }
 
 doSomething();`
-      },
-      {
-        description: "only call expressions in scope",
+      });
+    });
+
+    it("only call expressions in scope", async () => {
+      await shouldInlineFunction({
         code: `function doSomething() {
   if (isValid) {
     logger("is valid");
@@ -101,9 +106,11 @@ function sayHelloToJane() {
   sayHello();
   console.log("Jane");
 }`
-      },
-      {
-        description: "function with top-level if statement",
+      });
+    });
+
+    it("function with top-level if statement", async () => {
+      await shouldInlineFunction({
         code: `let isMorning = true;
 
 [cursor]function sayHello() {
@@ -122,9 +129,11 @@ if (isMorning) {
 } else {
   console.log("Hello World!");
 }`
-      },
-      {
-        description: "function with params",
+      });
+    });
+
+    it("function with params", async () => {
+      await shouldInlineFunction({
         code: `function sayHello(firstName, lastName, isMorning) {
   if (isMorning) {
     console.log("Good morning ", firstName);
@@ -145,54 +154,66 @@ if (true) {
 } else {
   console.log(\`Hello \${"John"}, \${"Smith"}!\`);
 }`
-      },
-      {
-        description: "function with unused params",
+      });
+    });
+
+    it("function with unused params", async () => {
+      await shouldInlineFunction({
         code: `function sayHello(firstName, lastName) {
   console.log("Hello", firstName, lastName);
 }
 
 sayHello("Jane");`,
         expected: `console.log("Hello", "Jane", undefined);`
-      },
-      {
-        description: "function with array pattern in params",
+      });
+    });
+
+    it("function with array pattern in params", async () => {
+      await shouldInlineFunction({
         code: `function doSomething([name]) {
   console.log(name);
 }
 
 doSomething(["Jane", "Doe"]);`,
         expected: `console.log("Jane");`
-      },
-      {
-        description: "function with array pattern in params (recursive)",
+      });
+    });
+
+    it("function with array pattern in params (recursive)", async () => {
+      await shouldInlineFunction({
         code: `function doSomething([[name]]) {
   console.log(name);
 }
 
 doSomething([["Jane"], "Doe"]);`,
         expected: `console.log("Jane");`
-      },
-      {
-        description: "function with array pattern in params (nth element)",
+      });
+    });
+
+    it("function with array pattern in params (nth element)", async () => {
+      await shouldInlineFunction({
         code: `function doSomething([[_, name]]) {
   console.log(name);
 }
 
 doSomething([[30, "Jane"], "Doe"]);`,
         expected: `console.log("Jane");`
-      },
-      {
-        description: "function with object pattern in params",
+      });
+    });
+
+    it("function with object pattern in params", async () => {
+      await shouldInlineFunction({
         code: `function doSomething({ name }) {
   console.log(name);
 }
 
 doSomething({ name: "Jane", age: 30 });`,
         expected: `console.log("Jane");`
-      },
-      {
-        description: "function with object pattern in params (rest element)",
+      });
+    });
+
+    it("function with object pattern in params (rest element)", async () => {
+      await shouldInlineFunction({
         code: `function doSomething({ name, ...others }) {
   console.log(others);
 }
@@ -201,9 +222,11 @@ doSomething({ name: "Jane", age: 30 });`,
         expected: `console.log({
   age: 30
 });`
-      },
-      {
-        description: "function with combination of patterns",
+      });
+    });
+
+    it("function with combination of patterns", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name, { identities: [ { lastName } ] }) {
   console.log(lastName);
 }
@@ -215,54 +238,66 @@ doSomething("Jane", {
   ]
 });`,
         expected: `console.log("Doe");`
-      },
-      {
-        description: "function with rest element in params",
+      });
+    });
+
+    it("function with rest element in params", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name, ...others) {
   console.log(others);
 }
 
 doSomething("Jane", "Doe", 30);`,
         expected: `console.log(["Doe", 30]);`
-      },
-      {
-        description: "function with rest element in params (array pattern)",
+      });
+    });
+
+    it("function with rest element in params (array pattern)", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name, ...[lastName]) {
   console.log(lastName);
 }
 
 doSomething("Jane", "Doe", 30);`,
         expected: `console.log("Doe");`
-      },
-      {
-        description: "function with typed params",
+      });
+    });
+
+    it("function with typed params", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name: string) {
   console.log(name);
 }
 
 doSomething("Jane");`,
         expected: `console.log("Jane");`
-      },
-      {
-        description: "function with assignment pattern",
+      });
+    });
+
+    it("function with assignment pattern", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name = "John") {
   console.log(name);
 }
 
 doSomething("Jane");`,
         expected: `console.log("Jane");`
-      },
-      {
-        description: "function with assignment pattern (fallback on default)",
+      });
+    });
+
+    it("function with assignment pattern (fallback on default)", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name, lastName = "Smith") {
   console.log(lastName);
 }
 
 doSomething("Jane");`,
         expected: `console.log("Smith");`
-      },
-      {
-        description: "call expression with identifier",
+      });
+    });
+
+    it("call expression with identifier", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name, lastName) {
   console.log(name, lastName);
 }
@@ -271,9 +306,11 @@ const firstName = "Jane";
 doSomething(firstName, "Smith");`,
         expected: `const firstName = "Jane";
 console.log(firstName, "Smith");`
-      },
-      {
-        description: "function assigned to a variable declaration",
+      });
+    });
+
+    it("function assigned to a variable declaration", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name, lastName) {
   console.log(name, lastName);
 }
@@ -282,9 +319,11 @@ const sayHi = doSomething;`,
         expected: `const sayHi = function(name, lastName) {
   console.log(name, lastName);
 };`
-      },
-      {
-        description: "limit to non-shadowed bindings",
+      });
+    });
+
+    it("limit to non-shadowed bindings", async () => {
+      await shouldInlineFunction({
         code: `function doSomething(name) {
   console.log(name);
 }
@@ -307,9 +346,11 @@ function doAnotherThing() {
 
   doSomething("Jane");
 }`
-      },
-      {
-        description: "in a variable declaration",
+      });
+    });
+
+    it("in a variable declaration", async () => {
+      await shouldInlineFunction({
         code: `function getFirstName(name) {
   return name.split(" ")[0];
 }
@@ -322,9 +363,11 @@ function sayHello(name) {
   const firstName = name.split(" ")[0];
   console.log("Hello", firstName);
 }`
-      },
-      {
-        description: "in a variable declaration (multiple declarations)",
+      });
+    });
+
+    it("in a variable declaration (multiple declarations)", async () => {
+      await shouldInlineFunction({
         code: `function getFirstName(name) {
   return name.split(" ")[0];
 }
@@ -337,9 +380,11 @@ function sayHello(name) {
   const a = 1, firstName = name.split(" ")[0];
   console.log("Hello", firstName);
 }`
-      },
-      {
-        description: "in an assignment expression",
+      });
+    });
+
+    it("in an assignment expression", async () => {
+      await shouldInlineFunction({
         code: `function getFirstName(name) {
   return name.split(" ")[0];
 }
@@ -354,27 +399,33 @@ function sayHello(name) {
   firstName = name.split(" ")[0];
   console.log("Hello", firstName);
 }`
-      },
-      {
-        description: "in a conditional expression",
+      });
+    });
+
+    it("in a conditional expression", async () => {
+      await shouldInlineFunction({
         code: `function getFirstName() {
   return "Smith";
 }
 
 const firstName = hasName ? getFirstName() : null;`,
         expected: `const firstName = hasName ? "Smith" : null;`
-      },
-      {
-        description: "in a call expression",
+      });
+    });
+
+    it("in a call expression", async () => {
+      await shouldInlineFunction({
         code: `function getFirstName() {
   return "Smith";
 }
 
 console.log(getFirstName());`,
         expected: `console.log("Smith");`
-      },
-      {
-        description: "in a return statement",
+      });
+    });
+
+    it("in a return statement", async () => {
+      await shouldInlineFunction({
         code: `function sayHello() {
   console.log("Hello");
 }
@@ -387,9 +438,11 @@ function createSayHello() {
     console.log("Hello");
   };
 }`
-      },
-      {
-        description: "in an arrow function expression",
+      });
+    });
+
+    it("in an arrow function expression", async () => {
+      await shouldInlineFunction({
         code: `function sayHello(name) {
   console.log(\`Hello \${name}\`);
 }
@@ -400,9 +453,11 @@ function sayHelloToJohn() {
         expected: `function sayHelloToJohn() {
   return () => console.log(\`Hello \${"John"}\`);
 }`
-      },
-      {
-        description: "function with comments",
+      });
+    });
+
+    it("function with comments", async () => {
+      await shouldInlineFunction({
         code: `function sayHello() {
   // Say hello to the user.
   console.log("Hello!");
@@ -431,15 +486,19 @@ if (isCorrect) {
  * Log some data
  */
 logData(); // => logged`
-      },
-      {
-        description: "call expression is returned by another function",
+      });
+    });
+
+    it("call expression is returned by another function", async () => {
+      await shouldInlineFunction({
         code: `function [cursor]foo(x) { return (x * 2) + x + 3; }
 function bar(x) { return foo(x) + 10; }`,
         expected: `function bar(x) { return (x * 2) + x + 3 + 10; }`
-      },
-      {
-        description: "async function",
+      });
+    });
+
+    it("async function", async () => {
+      await shouldInlineFunction({
         code: `async function callerAsync() {
   await smallFunctionAsync();
 }
@@ -450,10 +509,11 @@ async function [cursor]smallFunctionAsync() {
         expected: `async function callerAsync() {
   await someOtherDelegate();
 }`
-      },
-      {
-        description:
-          "function with param set to an object attribute with the same name",
+      });
+    });
+
+    it("function with param set to an object attribute with the same name", async () => {
+      await shouldInlineFunction({
         code: `async function [cursor]someFunction(foo) {
   console.log({ foo: foo })
 }
@@ -470,9 +530,11 @@ function anotherFunction() {
     }
   });
 }`
-      },
-      {
-        description: "function with param being a member expression",
+      });
+    });
+
+    it("function with param being a member expression", async () => {
+      await shouldInlineFunction({
         code: `export function callingFunction() {
   const args = { foo: "bar" };
   myFunction(args.foo);
@@ -491,36 +553,31 @@ function [cursor]myFunction(foo: string) {
     foo: args.foo
   });
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await inlineFunction(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code; expectedError: ErrorReason }>(
-    "should show an error message",
-    [
-      {
-        description: "cursor is not on a function",
+  describe("should show an error message", () => {
+    it("cursor is not on a function", () => {
+      shouldNotInlineFunction({
         code: `const hello = "Hello"`,
-        expectedError: ErrorReason.DidNotFindInlinableCode
-      },
-      {
-        description: "cursor is not on function word or id",
+        expectedError: "a function to inline"
+      });
+    });
+
+    it("cursor is not on function word or id", () => {
+      shouldNotInlineFunction({
         code: `function sayHello([cursor]name) {
   console.log("Hello!", name);
 }
 
 sayHello("Jane");`,
-        expectedError: ErrorReason.DidNotFindInlinableCode
-      },
-      {
-        description: "function has no reference in scope",
+        expectedError: "a function to inline"
+      });
+    });
+
+    it("function has no reference in scope", () => {
+      shouldNotInlineFunction({
         code: `function limitedScope() {
   if (isValid) {
     [cursor]function doSomething(name) {
@@ -531,10 +588,12 @@ sayHello("Jane");`,
 
 // Not in scope.
 doSomething();`,
-        expectedError: ErrorReason.DidNotFindInlinableCode
-      },
-      {
-        description: "function has multiple return statements",
+        expectedError: "a function to inline"
+      });
+    });
+
+    it("function has multiple return statements", () => {
+      shouldNotInlineFunction({
         code: `function getFirstName(name) {
   if (!name) return "unknown";
   return name.split(" ")[0];
@@ -544,10 +603,12 @@ function sayHello(name) {
   const firstName = getFirstName(name);
   console.log("Hello", firstName);
 }`,
-        expectedError: ErrorReason.CantInlineFunctionWithMultipleReturns
-      },
-      {
-        description: "function has implicit return statements",
+        expectedError: "inline a function with multiple returns"
+      });
+    });
+
+    it("function has implicit return statements", () => {
+      shouldNotInlineFunction({
         code: `function getFirstName(name) {
   if (!name) {
     return "unknown";
@@ -558,11 +619,12 @@ function sayHello(name) {
   const firstName = getFirstName(name);
   console.log("Hello", firstName);
 }`,
-        expectedError: ErrorReason.CantInlineFunctionWithMultipleReturns
-      },
-      {
-        description:
-          "function is assigned to variable but has no return statement",
+        expectedError: "inline a function with multiple returns"
+      });
+    });
+
+    it("function is assigned to variable but has no return statement", () => {
+      shouldNotInlineFunction({
         code: `function getFirstName(name) {
   console.log(name);
 }
@@ -571,11 +633,12 @@ function sayHello(name) {
   const firstName = getFirstName(name);
   console.log("Hello", firstName);
 }`,
-        expectedError: ErrorReason.CantInlineAssignedFunctionWithoutReturn
-      },
-      {
-        description:
-          "function is assigned to expression but has no return statement",
+        expectedError: "inline an assigned function without return"
+      });
+    });
+
+    it("function is assigned to expression but has no return statement", () => {
+      shouldNotInlineFunction({
         code: `function getFirstName(name) {
   console.log(name);
 }
@@ -585,62 +648,92 @@ function sayHello(name) {
   firstName = getFirstName(name);
   console.log("Hello", firstName);
 }`,
-        expectedError: ErrorReason.CantInlineAssignedFunctionWithoutReturn
-      },
-      {
-        description: "function is assigned and has many statements",
+        expectedError: "inline an assigned function without return"
+      });
+    });
+
+    it("function is assigned and has many statements", () => {
+      shouldNotInlineFunction({
         code: `function getFirstName() {
   console.log("Here's a side effect");
   return "Smith";
 }
 
 const firstName = hasName ? getFirstName() : null;`,
-        expectedError: ErrorReason.CantInlineAssignedFunctionWithManyStatements
-      }
-    ],
-    async ({ code, expectedError }) => {
-      const editor = new InMemoryEditor(code);
-      jest.spyOn(editor, "showError");
+        expectedError: "inline an assigned function with many statements"
+      });
+    });
+  });
 
-      await inlineFunction(editor);
-
-      expect(editor.showError).toHaveBeenCalledWith(expectedError);
-    }
-  );
-
-  describe("function is exported", () => {
-    const code = `function sayHello(name) {
+  it("should not remove the function if exported and show an error message along the update", async () => {
+    const editor = new InMemoryEditor(`function sayHello(name) {
   console.log(name);
 }
 
 sayHello("John");
 
-export { sayHello }`;
+export { sayHello }`);
+    const result = inlineFunction({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    it("should not remove the function", async () => {
-      const editor = new InMemoryEditor(code);
-
-      await inlineFunction(editor);
-
-      const expectedCode = `function sayHello(name) {
+    expect(result).toMatchObject({
+      action: "write",
+      code: `function sayHello(name) {
   console.log(name);
 }
 
 console.log("John");
 
-export { sayHello }`;
-      expect(editor.code).toBe(expectedCode);
-    });
-
-    it("should show an error message to explain", async () => {
-      const editor = new InMemoryEditor(code);
-      jest.spyOn(editor, "showError");
-
-      await inlineFunction(editor);
-
-      expect(editor.showError).toHaveBeenCalledWith(
-        ErrorReason.CantRemoveExportedFunction
-      );
+export { sayHello }`,
+      errorMessage: "I'm sorry, I can't remove an exported function."
     });
   });
 });
+
+async function shouldInlineFunction({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = inlineFunction({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  if (result.action !== "write") {
+    throw new Error(`Expected "write" but got "${result.action}"`);
+  }
+
+  expect(result.code).toBe(expected);
+}
+
+function shouldNotInlineFunction({
+  code,
+  expectedError
+}: {
+  code: Code;
+  expectedError: string;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = inlineFunction({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  if (result.action !== "show error") {
+    throw new Error(`Expected "show error" but got "${result.action}"`);
+  }
+
+  expect(result.reason).toContain(expectedError);
+}

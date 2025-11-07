@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { mergeWithPreviousIfStatement } from "./merge-with-previous-if-statement";
 
 describe("Merge With Previous If Statement", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should merge with previous if statement",
-    [
-      {
-        description: "basic statement",
+  describe("should merge with previous if statement", () => {
+    it("basic statement", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 }
@@ -19,9 +16,11 @@ describe("Merge With Previous If Statement", () => {
 
   doSomethingElse();
 }`
-      },
-      {
-        description: "selected statement only",
+      });
+    });
+
+    it("selected statement only", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isCorrect) {
   doAnotherThing();
 }
@@ -44,9 +43,11 @@ if (isValid) {
 
   doSomethingElse();
 }`
-      },
-      {
-        description: "nested statement",
+      });
+    });
+
+    it("nested statement", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isCorrect) {
   doAnotherThing();
 }
@@ -69,9 +70,11 @@ if (isValid) {
     doSomethingElse();
   }
 }`
-      },
-      {
-        description: "nested statement, nested doesn't match",
+      });
+    });
+
+    it("nested statement, nested doesn't match", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isCorrect) {
   doAnotherThing();
 }
@@ -94,9 +97,11 @@ if (isValid) {
     }
   }
 }`
-      },
-      {
-        description: "if has no block statement",
+      });
+    });
+
+    it("if has no block statement", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) doSomething();
 
 [cursor]doSomethingElse();`,
@@ -105,9 +110,11 @@ if (isValid) {
 
   doSomethingElse();
 }`
-      },
-      {
-        description: "merge with if-else",
+      });
+    });
+
+    it("merge with if-else", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -124,9 +131,11 @@ if (isValid) {
 
   doSomethingElse();
 }`
-      },
-      {
-        description: "merge with if-elseif-else",
+      });
+    });
+
+    it("merge with if-elseif-else", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -149,9 +158,11 @@ if (isValid) {
 
   doSomethingElse();
 }`
-      },
-      {
-        description: "merge 2 simple if statements, different tests",
+      });
+    });
+
+    it("merge 2 simple if statements, different tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 }
@@ -166,9 +177,11 @@ if (isValid) {
     doSomethingElse();
   }
 }`
-      },
-      {
-        description: "merge 2 simple if statements, same tests",
+      });
+    });
+
+    it("merge 2 simple if statements, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 }
@@ -180,9 +193,11 @@ if (isValid) {
   doSomething();
   doSomethingElse();
 }`
-      },
-      {
-        description: "merge 2 simple if statements, same complex tests",
+      });
+    });
+
+    it("merge 2 simple if statements, same complex tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (name === "John" && age > 10) {
   doSomething();
 }
@@ -194,9 +209,11 @@ if (isValid) {
   doSomething();
   doSomethingElse();
 }`
-      },
-      {
-        description: "merge simple if statement with if-else, same tests",
+      });
+    });
+
+    it("merge simple if statement with if-else, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -212,9 +229,11 @@ if (isValid) {
 } else {
   doAnotherThing();
 }`
-      },
-      {
-        description: "merge if-else with if-else, same tests",
+      });
+    });
+
+    it("merge if-else with if-else, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else {
@@ -233,9 +252,11 @@ if (isValid) {
   doAnotherThing();
   sayHello();
 }`
-      },
-      {
-        description: "merge if-else with if, same tests",
+      });
+    });
+
+    it("merge if-else with if, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 }
@@ -251,9 +272,11 @@ if (isValid) {
 } else {
   sayHello();
 }`
-      },
-      {
-        description: "merge if-else with if-elseif-else, same tests",
+      });
+    });
+
+    it("merge if-else with if-elseif-else, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -277,9 +300,11 @@ if (isValid) {
   doNothing();
   sayHello();
 }`
-      },
-      {
-        description: "merge if-elseif-else with if-elseif-else, same tests",
+      });
+    });
+
+    it("merge if-elseif-else with if-elseif-else, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -305,10 +330,11 @@ if (isValid) {
   doNothing();
   sayGoodbye();
 }`
-      },
-      {
-        description:
-          "merge if-elseif-else with if-elseif-else, different tests",
+      });
+    });
+
+    it("merge if-elseif-else with if-elseif-else, different tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 } else if (isCorrect) {
@@ -342,9 +368,11 @@ if (isValid) {
     sayGoodbye();
   }
 }`
-      },
-      {
-        description: "merge if-elseif-else with if, same tests",
+      });
+    });
+
+    it("merge if-elseif-else with if, same tests", () => {
+      shouldMergeWithPreviousIfStatement({
         code: `if (isValid) {
   doSomething();
 }
@@ -364,65 +392,83 @@ if (isValid) {
 } else {
   sayGoodbye();
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await mergeWithPreviousIfStatement(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not merge",
-    [
-      {
-        description: "previous statement is not an if",
+  describe("should not merge", () => {
+    it("previous statement is not an if", () => {
+      shouldNotMerge({
         code: `while (isValid) {
   doSomething();
 }
 
 [cursor]doSomethingElse();`
-      },
-      {
-        description: "has no statement before",
+      });
+    });
+
+    it("has no statement before", () => {
+      shouldNotMerge({
         code: `doSomethingElse();
 
 if (isValid) {
   doSomething();
 }`
-      },
-      {
-        description: "if statement is 2 nodes above",
+      });
+    });
+
+    it("if statement is 2 nodes above", () => {
+      shouldNotMerge({
         code: `if (isValid) {
   doSomething();
 }
 
 doSomethingElse();
 [cursor]doAnotherThing();`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+      });
+    });
+  });
 
-      await mergeWithPreviousIfStatement(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = mergeWithPreviousIfStatement({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await mergeWithPreviousIfStatement(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindStatementToMerge
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldMergeWithPreviousIfStatement({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = mergeWithPreviousIfStatement({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotMerge({ code }: { code: Code }) {
+  const editor = new InMemoryEditor(code);
+  const result = mergeWithPreviousIfStatement({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result.action).toBe("show error");
+}

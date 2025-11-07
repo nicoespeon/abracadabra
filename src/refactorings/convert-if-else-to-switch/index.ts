@@ -1,10 +1,10 @@
-import { RefactoringWithActionProviderConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringWithActionProviderConfig } from "../../refactorings";
 import {
   convertIfElseToSwitch,
   createVisitor
 } from "./convert-if-else-to-switch";
 
-const config: RefactoringWithActionProviderConfig__DEPRECATED = {
+const config: RefactoringWithActionProviderConfig = {
   command: {
     key: "convertIfElseToSwitch",
     operation: convertIfElseToSwitch,

@@ -1,24 +1,19 @@
 import { InMemoryEditor } from "../../../editor/adapters/in-memory-editor";
 import { Code } from "../../../editor/editor";
-import { testEach } from "../../../tests-helpers";
 import { extractVariable } from "./extract-variable";
 
 describe("Extract Variable - Objects we can extract", () => {
-  testEach<{
-    code: Code;
-    expected: Code;
-    shouldPreserve?: boolean;
-  }>(
-    "should extract",
-    [
-      {
-        description: "an object",
+  describe("should extract", () => {
+    it("an object", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]{ one: 1, foo: true, hello: 'World!' });`,
         expected: `const extracted = { one: 1, foo: true, hello: 'World!' };
 console.log(extracted);`
-      },
-      {
-        description: "an object (multi-lines)",
+      });
+    });
+
+    it("an object (multi-lines)", async () => {
+      await shouldExtractVariable({
         code: `console.log([cursor]{
   one: 1,
   foo: true,
@@ -30,9 +25,11 @@ console.log(extracted);`
   hello: 'World!'
 };
 console.log(extracted);`
-      },
-      {
-        description: "a multi-lines object when cursor is inside",
+      });
+    });
+
+    it("a multi-lines object when cursor is inside", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   one: 1,
   f[cursor]oo: true,
@@ -44,9 +41,11 @@ console.log(extracted);`
   hello: 'World!'
 };
 console.log(extracted);`
-      },
-      {
-        description: "an element nested in a multi-lines object",
+      });
+    });
+
+    it("an element nested in a multi-lines object", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   one: 1,
   foo: {
@@ -60,9 +59,11 @@ console.log({
     bar
   }
 });`
-      },
-      {
-        description: "an object property value (not the last one)",
+      });
+    });
+
+    it("an object property value (not the last one)", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   hello: [cursor]"World",
   goodbye: "my old friend"
@@ -72,9 +73,11 @@ console.log({
   hello[cursor],
   goodbye: "my old friend"
 });`
-      },
-      {
-        description: "an object property value which key is not in camel case",
+      });
+    });
+
+    it("an object property value which key is not in camel case", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   hello_world: "[cursor]World",
   goodbye: "my old friend"
@@ -84,9 +87,11 @@ console.log({
   hello_world,
   goodbye: "my old friend"
 });`
-      },
-      {
-        description: "an object property value which key is too long",
+      });
+    });
+
+    it("an object property value which key is too long", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   somethingVeryVeryVeryLong: doSo[cursor]mething()
 });`,
@@ -94,9 +99,11 @@ console.log({
 console.log({
   somethingVeryVeryVeryLong
 });`
-      },
-      {
-        description: "an object property value which key is a keyword",
+      });
+    });
+
+    it("an object property value which key is a keyword", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   const: doS[cursor]omething()
 });`,
@@ -104,9 +111,11 @@ console.log({
 console.log({
   const: extracted
 });`
-      },
-      {
-        description: "an object property value which key is a string",
+      });
+    });
+
+    it("an object property value which key is a string", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   "hello.world": d[cursor]oSomething()
 });`,
@@ -114,10 +123,11 @@ console.log({
 console.log({
   "hello.world": extracted
 });`
-      },
-      {
-        description:
-          "an element nested in a multi-lines object that is assigned to a variable",
+      });
+    });
+
+    it("an element nested in a multi-lines object that is assigned to a variable", async () => {
+      await shouldExtractVariable({
         code: `const a = {
   one: 1,
   foo: {
@@ -131,27 +141,35 @@ const a = {
     bar
   }
 };`
-      },
-      {
-        description: "the whole object when cursor is on its property",
+      });
+    });
+
+    it("the whole object when cursor is on its property", async () => {
+      await shouldExtractVariable({
         code: `console.log({ fo[cursor]o: "bar", one: true });`,
         expected: `const extracted = { foo: "bar", one: true };
 console.log(extracted);`
-      },
-      {
-        description: "a computed object property",
+      });
+    });
+
+    it("a computed object property", async () => {
+      await shouldExtractVariable({
         code: `const a = { [[cursor]key]: "value" };`,
         expected: `const extracted = key;
 const a = { [extracted]: "value" };`
-      },
-      {
-        description: "a computed object property value when cursor is on value",
+      });
+    });
+
+    it("a computed object property value when cursor is on value", async () => {
+      await shouldExtractVariable({
         code: `const a = { [key]: [cursor]"value" };`,
         expected: `const extracted = "value";
 const a = { [key]: extracted };`
-      },
-      {
-        description: "the whole object when cursor is on a method declaration",
+      });
+    });
+
+    it("the whole object when cursor is on a method declaration", async () => {
+      await shouldExtractVariable({
         code: `console.log({
   [cursor]getFoo() {
     return "bar";
@@ -163,16 +181,19 @@ const a = { [key]: extracted };`
   }
 };
 console.log(extracted);`
-      },
-      {
-        description:
-          "the nested object when cursor is on nested object property",
+      });
+    });
+
+    it("the nested object when cursor is on nested object property", async () => {
+      await shouldExtractVariable({
         code: `console.log({ foo: { [cursor]bar: true } });`,
         expected: `const foo = { bar: true };
 console.log({ foo });`
-      },
-      {
-        description: "an object returned from arrow function",
+      });
+    });
+
+    it("an object returned from arrow function", async () => {
+      await shouldExtractVariable({
         code: `const something = () => ({
   foo: "b[cursor]ar"
 });`,
@@ -180,9 +201,11 @@ console.log({ foo });`
 const something = () => ({
   foo
 });`
-      },
-      {
-        description: "an object from a nested call expression",
+      });
+    });
+
+    it("an object from a nested call expression", async () => {
+      await shouldExtractVariable({
         code: `assert.isTrue(
   getError({ co[cursor]ntext: ["value"] })
 );`,
@@ -190,16 +213,19 @@ const something = () => ({
 assert.isTrue(
   getError(extracted)
 );`
-      },
-      {
-        description: "a property to destructure",
+      });
+    });
+
+    it("a property to destructure", async () => {
+      await shouldExtractVariable({
         code: `console.log(foo.bar.b[cursor]az);`,
         expected: `const { baz } = foo.bar;
 console.log(baz);`
-      },
-      {
-        description:
-          "a property to destructure from an existing assignment, but user decides to preserve",
+      });
+    });
+
+    it("a property to destructure from an existing assignment, but user decides to preserve", async () => {
+      await shouldExtractVariable({
         code: `function test() {
   const { x } = obj;
   return x + obj.y[cursor] * x;
@@ -210,15 +236,19 @@ console.log(baz);`
   const y = obj.y;
   return x + [cursor]y * x;
 }`
-      },
-      {
-        description: "a property using optional chaining",
+      });
+    });
+
+    it("a property using optional chaining", async () => {
+      await shouldExtractVariable({
         code: `if (currentUser?.startTime[cursor] > 0) {}`,
         expected: `const startTime = currentUser?.startTime;
 if (startTime > 0) {}`
-      },
-      {
-        description: "a property using optional chaining, multiple occurrences",
+      });
+    });
+
+    it("a property using optional chaining, multiple occurrences", async () => {
+      await shouldExtractVariable({
         code: `if (currentUser?.startTime[cursor] > 0) {
   console.log(currentUser?.startTime);
 }`,
@@ -226,10 +256,9 @@ if (startTime > 0) {}`
 if (startTime > 0) {
   console.log(startTime);
 }`
-      }
-    ],
-    shouldExtractVariable
-  );
+      });
+    });
+  });
 
   it("combines destructured properties from an existing assignment (Identifier)", async () => {
     await shouldExtractVariable({
@@ -287,123 +316,180 @@ function test() {
     });
   });
 
-  async function shouldExtractVariable({
-    code,
-    expected,
-    shouldPreserve
-  }: {
-    code: Code;
-    expected: Code;
-    shouldPreserve?: boolean;
-  }) {
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUserChoice")
-      .mockImplementation(([destructure, preserve]) =>
-        Promise.resolve(shouldPreserve ? preserve : destructure)
-      );
-
-    await extractVariable(editor);
-
-    const { code: expectedCode, selection: expectedSelection } =
-      new InMemoryEditor(expected);
-
-    expect(editor.code).toBe(expectedCode);
-    if (!expectedSelection.isCursorAtTopOfDocument) {
-      expect(editor.selection).toStrictEqual(expectedSelection);
-    }
-  }
-
-  it("should ask if user wants to destructure or not", async () => {
+  it("should ask if user wants to destructure or not", () => {
     const code = `console.log(foo.bar.b[cursor]az)`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUserChoice");
+    const result = extractVariable({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await extractVariable(editor);
-
-    expect(editor.askUserChoice).toHaveBeenCalledWith([
-      {
-        label: "Destructure => `const { baz } = foo.bar`",
-        value: "destructure"
-      },
-      {
-        label: "Preserve => `const baz = foo.bar.baz`",
-        value: "preserve"
-      }
-    ]);
+    expect(result).toMatchObject({
+      action: "ask user choice",
+      choices: [
+        {
+          label: "Destructure => `const { baz } = foo.bar`",
+          value: "destructure"
+        },
+        {
+          label: "Preserve => `const baz = foo.bar.baz`",
+          value: "preserve"
+        }
+      ]
+    });
   });
 
-  it("should not ask to destructure computed member expressions", async () => {
+  it("should not ask to destructure computed member expressions", () => {
     const code = `console.log([start]foo.bar.children[0][end].selection)`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUserChoice");
+    const result = extractVariable({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await extractVariable(editor);
-
-    expect(editor.askUserChoice).not.toHaveBeenCalled();
+    expect(result.action).not.toBe("ask user choice");
   });
 
-  it("should not ask if user wants to destructure if it can't be", async () => {
+  it("should not ask if user wants to destructure if it can't be", () => {
     const code = `console.log([cursor]"hello")`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "askUserChoice");
+    const result = extractVariable({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await extractVariable(editor);
-
-    expect(editor.askUserChoice).not.toHaveBeenCalled();
+    expect(result.action).not.toBe("ask user choice");
   });
 
   it("should preserve member expression if user says so", async () => {
-    const code = `console.log(foo.bar.b[cursor]az);`;
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUserChoice")
-      .mockImplementation(([, preserve]) => Promise.resolve(preserve));
-
-    await extractVariable(editor);
-
-    expect(editor.code).toBe(`const baz = foo.bar.baz;
-console.log(baz);`);
+    await shouldExtractVariable({
+      code: `console.log(foo.bar.b[cursor]az);`,
+      expected: `const baz = foo.bar.baz;
+console.log(baz);`,
+      shouldPreserve: true
+    });
   });
 
   it("should rename the correct identifier for multiple occurrences on the same line", async () => {
-    const code = `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`;
-    const editor = new InMemoryEditor(code);
-
-    await extractVariable(editor);
-
-    const expected = new InMemoryEditor(`const { response } = data;
-console.log(response.code, [cursor]response.user.id, response.user.name);`);
-    expect(editor.code).toBe(expected.code);
-    expect(editor.selection).toStrictEqual(expected.selection);
+    await shouldExtractVariable({
+      code: `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`,
+      expected: `const { response } = data;
+console.log(response.code, [cursor]response.user.id, response.user.name);`
+    });
   });
 
   it("should rename the correct identifier for multiple occurrences on the same line (only one occurrence extracted)", async () => {
-    const code = `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`;
-    const editor = new InMemoryEditor(code);
-    jest
-      .spyOn(editor, "askUserChoice")
-      .mockImplementation(([, singleOccurrence]) =>
-        Promise.resolve(singleOccurrence)
-      );
-
-    await extractVariable(editor);
-
-    const expected = new InMemoryEditor(`const response = data.response;
-console.log(data.response.code, [cursor]response.user.id, data.response.user.name);`);
-    expect(editor.code).toBe(expected.code);
-    expect(editor.selection).toStrictEqual(expected.selection);
+    await shouldExtractVariable({
+      code: `console.log(data.response.code, data.response[cursor].user.id, data.response.user.name);`,
+      expected: `const response = data.response;
+console.log(data.response.code, [cursor]response.user.id, data.response.user.name);`,
+      shouldExtractSingleOccurrence: true
+    });
   });
 
   it("should rename the correct identifier if it's also re-assigned", async () => {
-    const code = `query.lang = query.lang[cursor] ? "yes" : "nope";`;
-    const editor = new InMemoryEditor(code);
-
-    await extractVariable(editor);
-
-    const expected = new InMemoryEditor(`const { lang } = query;
-query.lang = [cursor]lang ? "yes" : "nope";`);
-    expect(editor.code).toBe(expected.code);
-    expect(editor.selection).toStrictEqual(expected.selection);
+    await shouldExtractVariable({
+      code: `query.lang = query.lang[cursor] ? "yes" : "nope";`,
+      expected: `const { lang } = query;
+query.lang = [cursor]lang ? "yes" : "nope";`
+    });
   });
 });
+
+async function shouldExtractVariable({
+  code,
+  expected,
+  shouldPreserve,
+  shouldExtractSingleOccurrence
+}: {
+  code: Code;
+  expected: Code;
+  shouldPreserve?: boolean;
+  shouldExtractSingleOccurrence?: boolean;
+}) {
+  const editor = new InMemoryEditor(code);
+  let result = extractVariable({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  const responses: Array<{ id: string; type: "choice"; value: any }> = [];
+
+  // Handle multiple user choices (replacement strategy, then modification details)
+  while (result.action === "ask user choice") {
+    let choice;
+
+    if (result.id === "user-choice") {
+      choice = shouldExtractSingleOccurrence
+        ? result.choices.find((c) => c.value === "selected occurrence")
+        : result.choices[0];
+    } else if (result.id === "modification-details") {
+      if (shouldPreserve !== undefined) {
+        choice = shouldPreserve
+          ? result.choices.find((c) => c.value === "preserve")
+          : result.choices.find((c) => c.value === "destructure");
+      } else {
+        const hasReplacementStrategyResponse = responses.some(
+          (r) => r.id === "user-choice"
+        );
+        const shouldDefaultToPreserve =
+          shouldExtractSingleOccurrence && hasReplacementStrategyResponse;
+        choice = shouldDefaultToPreserve
+          ? result.choices.find((c) => c.value === "preserve")
+          : result.choices[0];
+      }
+    } else {
+      throw new Error(`Unexpected choice id: ${result.id}`);
+    }
+
+    if (!choice) {
+      throw new Error(
+        `Could not find choice for id "${result.id}". Available choices: ${JSON.stringify(result.choices)}. shouldExtractSingleOccurrence: ${shouldExtractSingleOccurrence}, shouldPreserve: ${shouldPreserve}`
+      );
+    }
+
+    responses.push({
+      id: result.id,
+      type: "choice",
+      value: choice
+    });
+
+    result = extractVariable({
+      state: "with user responses",
+      responses,
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
+  }
+
+  if (result.action !== "read then write") {
+    throw new Error(`Expected "read then write" but got "${result.action}"`);
+  }
+
+  const { code: expectedCode, selection: expectedSelection } =
+    new InMemoryEditor(expected);
+
+  const testEditor = new InMemoryEditor(editor.code);
+  await testEditor.readThenWrite(
+    result.readSelection,
+    result.getModifications,
+    result.newCursorPosition
+  );
+
+  expect(testEditor.code).toBe(expectedCode);
+
+  if (!expectedSelection.isCursorAtTopOfDocument) {
+    expect(result).toMatchObject({
+      newCursorPosition: expectedSelection.start
+    });
+  }
+}

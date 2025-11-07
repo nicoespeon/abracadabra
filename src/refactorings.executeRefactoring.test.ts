@@ -75,7 +75,8 @@ describe("Execute Refactoring", () => {
     expect(followUpRefactoring).toHaveBeenCalledWith({
       state: "new",
       code,
-      selection: Selection.cursorAt(0, 5)
+      selection: Selection.cursorAt(0, 5),
+      highlightSources: []
     });
   });
 
@@ -149,7 +150,8 @@ const anotherOne = 'world';`);
     expect(fakeRefactoring).toHaveBeenLastCalledWith({
       state: "command not supported",
       code: "const hello = 'world'",
-      selection: Selection.cursorAt(0, 11)
+      selection: Selection.cursorAt(0, 11),
+      highlightSources: []
     });
   });
 
@@ -169,7 +171,8 @@ const anotherOne = 'world';`);
     expect(followUpRefactoring).toHaveBeenCalledWith({
       state: "new",
       code: "const hello = 'world'",
-      selection: Selection.cursorAt(0, 11)
+      selection: Selection.cursorAt(0, 11),
+      highlightSources: []
     });
   });
 
@@ -197,7 +200,7 @@ const anotherOne = 'world';`);
     const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
-        action: "ask user",
+        action: "ask user input",
         value: "hello"
       })
       .mockReturnValue({ action: "do nothing" });
@@ -213,7 +216,8 @@ const anotherOne = 'world';`);
     const fakeRefactoring: Refactoring = jest
       .fn()
       .mockReturnValueOnce({
-        action: "ask user",
+        action: "ask user input",
+        id: "user-input",
         value: "hello"
       })
       .mockReturnValue({ action: "do nothing" });
@@ -224,10 +228,11 @@ const anotherOne = 'world';`);
 
     expect(fakeRefactoring).toHaveBeenCalledTimes(2);
     expect(fakeRefactoring).toHaveBeenLastCalledWith({
-      state: "user response",
-      value: "newName",
+      state: "with user responses",
+      responses: [{ id: "user-input", type: "input", value: "newName" }],
       code: "const hello = 'world'",
-      selection: Selection.cursorAt(0, 5)
+      selection: Selection.cursorAt(0, 5),
+      highlightSources: []
     });
   });
 });

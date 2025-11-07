@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { RefactoringActionProvider } from "./action-providers";
-import { createCommand, createCommand__NEW } from "./commands";
+import { createCommand } from "./commands";
 import {
   VSCodeEditor,
   createSelectionFromVSCode,
@@ -11,9 +11,7 @@ import removeAllHighlights from "./highlights/remove-all-highlights";
 import toggleHighlight from "./highlights/toggle-highlight";
 import {
   RefactoringConfig,
-  RefactoringConfig__DEPRECATED,
-  RefactoringWithActionProviderConfig,
-  RefactoringWithActionProviderConfig__DEPRECATED
+  RefactoringWithActionProviderConfig
 } from "./refactorings";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
@@ -62,16 +60,12 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
   typescriptOnly: {
     languages: ["typescript", "typescriptreact"],
     withoutActionProvider: [],
-    withoutActionProvider__NEW: [],
-    withActionProvider: [extractGenericType],
-    withActionProvider__NEW: [extractInterface]
+    withActionProvider: [extractGenericType, extractInterface]
   },
   reactOnly: {
     languages: ["javascriptreact", "typescriptreact"],
     withoutActionProvider: [],
-    withoutActionProvider__NEW: [],
-    withActionProvider: [wrapInJsxFrament, removeJsxFragment],
-    withActionProvider__NEW: []
+    withActionProvider: [wrapInJsxFrament, removeJsxFragment]
   },
   allLanguages: {
     languages: [
@@ -82,16 +76,16 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       "vue",
       "svelte"
     ],
-    withoutActionProvider: [extract],
-    withoutActionProvider__NEW: [
+    withoutActionProvider: [
+      extract,
       extractFunction,
       renameSymbol,
       moveStatementUp,
       moveStatementDown
     ],
     withActionProvider: [
-      addNumericSeparator,
       changeSignature,
+      addNumericSeparator,
       convertForEachToForOf,
       convertForToForEach,
       convertIfElseToSwitch,
@@ -103,13 +97,16 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertToTemplateLiteral,
       createFactoryForConstructor,
       flipIfElse,
-      flipTernary,
       flipOperator,
+      flipTernary,
+      extractParameter,
+      convertGuardToIf,
+      invertBooleanLogic,
       inline,
       liftUpConditional,
       mergeIfStatements,
       mergeWithPreviousIfStatement,
-      invertBooleanLogic,
+      moveLastStatementOutOfIfElse,
       removeDeadCode,
       removeRedundantElse,
       replaceBinaryWithAssignment,
@@ -117,23 +114,16 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       simplifyTernary,
       splitDeclarationAndInitialization,
       splitIfStatement,
+      splitMultipleDeclarations,
       toggleBraces
-    ],
-    withActionProvider__NEW: [
-      extractParameter,
-      convertGuardToIf,
-      moveLastStatementOutOfIfElse,
-      splitMultipleDeclarations
     ]
   }
 };
 
 type ConfiguredRefactoring = {
   languages: string[];
-  withoutActionProvider: RefactoringConfig__DEPRECATED[];
-  withoutActionProvider__NEW: RefactoringConfig[];
-  withActionProvider: RefactoringWithActionProviderConfig__DEPRECATED[];
-  withActionProvider__NEW: RefactoringWithActionProviderConfig[];
+  withoutActionProvider: RefactoringConfig[];
+  withActionProvider: RefactoringWithActionProviderConfig[];
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -143,7 +133,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  [toggleHighlight, refreshHighlights, removeAllHighlights].forEach(
+  [toggleHighlight, removeAllHighlights, refreshHighlights].forEach(
     ({ command }) => {
       context.subscriptions.push(
         vscode.commands.registerCommand(
@@ -168,35 +158,17 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  const commands__NEW = Object.values(refactorings).flatMap(
-    ({ withoutActionProvider__NEW, withActionProvider__NEW }) =>
-      withoutActionProvider__NEW.concat(withActionProvider__NEW)
-  );
-
-  commands__NEW.forEach(({ command }) => {
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        `abracadabra.${command.key}`,
-        createCommand__NEW(command.operation, { refreshHighlights: true })
-      )
-    );
-  });
-
   const withActionProviderPerLanguage = Object.values(refactorings).reduce(
-    (memo, { languages, withActionProvider, withActionProvider__NEW }) => {
+    (memo, { languages, withActionProvider }) => {
       languages.forEach((language) => {
         if (!memo[language]) memo[language] = [];
         memo[language].push(...withActionProvider);
-        memo[language].push(...withActionProvider__NEW);
       });
 
       return memo;
     },
     {} as {
-      [language: string]: (
-        | RefactoringWithActionProviderConfig__DEPRECATED
-        | RefactoringWithActionProviderConfig
-      )[];
+      [language: string]: RefactoringWithActionProviderConfig[];
     }
   );
 

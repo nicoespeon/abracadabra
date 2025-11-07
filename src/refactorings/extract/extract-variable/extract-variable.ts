@@ -1,48 +1,53 @@
 import * as t from "../../../ast";
-import { Code, Editor, ErrorReason } from "../../../editor/editor";
+import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
-import { renameSymbol } from "../../rename-symbol/rename-symbol-old";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState
+} from "../../../refactorings";
+import { renameSymbol } from "../../rename-symbol/rename-symbol";
 import { askReplacementStrategy } from "../replacement-strategy";
 import { createOccurrence, Occurrence } from "./occurrence";
 
-export async function extractVariable(editor: Editor) {
-  const { code, selection } = editor;
+export function extractVariable(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const { selected: selectedOccurrence, others: otherOccurrences } =
     findAllOccurrences(code, selection);
 
   if (!selectedOccurrence) {
-    editor.showError(ErrorReason.DidNotFindExtractableCode);
-    return;
+    return COMMANDS.showErrorDidNotFind("a valid code to extract");
   }
 
-  const replacementStrategy = await askReplacementStrategy(
-    otherOccurrences,
-    editor
-  );
-  if (replacementStrategy === "none") return;
+  return askReplacementStrategy(otherOccurrences, state, (strategy) => {
+    if (strategy === "none") return COMMANDS.doNothing();
 
-  const extractedOccurrences =
-    replacementStrategy === "all occurrences"
-      ? [selectedOccurrence].concat(otherOccurrences)
-      : [selectedOccurrence];
+    const extractedOccurrences =
+      strategy === "all occurrences"
+        ? [selectedOccurrence].concat(otherOccurrences)
+        : [selectedOccurrence];
 
-  await selectedOccurrence.askModificationDetails(editor);
+    // Ask for modification details if needed (e.g., destructure vs preserve)
+    const modificationDetailsCommand =
+      selectedOccurrence.askModificationDetails(state);
+    if (modificationDetailsCommand) {
+      return modificationDetailsCommand;
+    }
 
-  await editor.readThenWrite(
-    selectedOccurrence.selection,
-    (extractedCode) => [
-      selectedOccurrence.toVariableDeclaration(
-        extractedCode,
-        extractedOccurrences
-      ),
-      // Replace extracted code with new variable.
-      ...extractedOccurrences.map((occurrence) => occurrence.modification)
-    ],
-    selectedOccurrence.cursorOnIdentifier(extractedOccurrences)
-  );
-
-  // Extracted symbol is located at `selection` => just trigger a rename.
-  await renameSymbol(editor);
+    return COMMANDS.readThenWrite(
+      selectedOccurrence.selection,
+      (extractedCode) => [
+        selectedOccurrence.toVariableDeclaration(
+          extractedCode,
+          extractedOccurrences
+        ),
+        // Replace extracted code with new variable.
+        ...extractedOccurrences.map((occurrence) => occurrence.modification)
+      ],
+      selectedOccurrence.cursorOnIdentifier(extractedOccurrences),
+      { thenRun: renameSymbol }
+    );
+  });
 }
 
 function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {

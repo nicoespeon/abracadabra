@@ -7,7 +7,6 @@ import {
   Code,
   Command,
   Editor,
-  ErrorReason,
   Modification,
   Result,
   SelectedPosition
@@ -201,7 +200,7 @@ export class InMemoryEditor implements Editor {
     return Promise.resolve("ok");
   }
 
-  showError(_reason: ErrorReason | string, _details?: unknown) {
+  showError(_reason: string, _details?: unknown) {
     return Promise.resolve();
   }
 

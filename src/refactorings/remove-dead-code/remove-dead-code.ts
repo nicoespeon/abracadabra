@@ -1,17 +1,18 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function removeDeadCode(editor: Editor) {
-  const { code, selection } = editor;
+export function removeDeadCode(state: RefactoringState): EditorCommand {
+  if (state.state !== "new") return COMMANDS.doNothing();
+
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindDeadCode);
-    return;
+    return COMMANDS.showErrorDidNotFind("dead code");
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

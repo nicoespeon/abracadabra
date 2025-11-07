@@ -1,12 +1,12 @@
-import { executeSafely } from "../../commands";
-import { AttemptingEditor } from "../../editor/adapters/attempting-editor";
-import { createVSCodeEditor } from "../../editor/adapters/create-vscode-editor";
-import { ErrorReason } from "../../editor/editor";
-import { RefactoringConfig__DEPRECATED } from "../../refactorings";
+import {
+  EditorCommand,
+  RefactoringConfig,
+  RefactoringState
+} from "../../refactorings";
 import { extractType } from "./extract-type/extract-type";
 import { extractVariable } from "./extract-variable/extract-variable";
 
-const config: RefactoringConfig__DEPRECATED = {
+const config: RefactoringConfig = {
   command: {
     key: "extract",
     operation: extract
@@ -15,20 +15,7 @@ const config: RefactoringConfig__DEPRECATED = {
 
 export default config;
 
-async function extract() {
-  const vscodeEditor = createVSCodeEditor();
-  if (!vscodeEditor) return;
-
-  const attemptingEditor = new AttemptingEditor(
-    vscodeEditor,
-    ErrorReason.DidNotFindTypeToExtract
-  );
-
-  await executeSafely(async () => {
-    await extractType(attemptingEditor);
-
-    if (!attemptingEditor.attemptSucceeded) {
-      await extractVariable(vscodeEditor);
-    }
-  });
+function extract(state: RefactoringState): EditorCommand {
+  const result = extractType(state);
+  return result.action === "show error" ? extractVariable(state) : result;
 }

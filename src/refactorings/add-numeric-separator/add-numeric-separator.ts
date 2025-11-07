@@ -1,17 +1,15 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function addNumericSeparator(editor: Editor) {
-  const { code, selection } = editor;
-  const updatedCode = updateCode(t.parse(code), selection);
+export function addNumericSeparator(state: RefactoringState): EditorCommand {
+  const updatedCode = updateCode(t.parse(state.code), state.selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindNumericLiteral);
-    return;
+    return COMMANDS.showErrorDidNotFind("a numeric literal");
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

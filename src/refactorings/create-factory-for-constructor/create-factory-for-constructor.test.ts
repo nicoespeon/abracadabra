@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { createFactoryForConstructor } from "./create-factory-for-constructor";
 
 describe("Create Factory For Constructor", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should create factory for constructor",
-    [
-      {
-        description: "simple constructor, no parameter",
+  describe("should create factory for constructor", () => {
+    it("simple constructor, no parameter", () => {
+      shouldCreateFactory({
         code: `class Employee {
   constructor () {}
 }`,
@@ -19,9 +16,11 @@ describe("Create Factory For Constructor", () => {
 function createEmployee() {
   return new Employee();
 }`
-      },
-      {
-        description: "constructor with simple parameters",
+      });
+    });
+
+    it("constructor with simple parameters", () => {
+      shouldCreateFactory({
         code: `class Employee {
   constructor (name, typeCode) {
     this.name = name;
@@ -38,9 +37,11 @@ function createEmployee() {
 function createEmployee(name, typeCode) {
   return new Employee(name, typeCode);
 }`
-      },
-      {
-        description: "constructor with complicated parameters",
+      });
+    });
+
+    it("constructor with complicated parameters", () => {
+      shouldCreateFactory({
         code: `class Employee {
   constructor (private name, readonly typeCode, { age }, [one], ...others) {
     this.age = age;
@@ -57,9 +58,11 @@ function createEmployee(name, typeCode, { age }, [one], ...others) {
     age
   }, [one], ...others);
 }`
-      },
-      {
-        description: "constructor with typed parameters",
+      });
+    });
+
+    it("constructor with typed parameters", () => {
+      shouldCreateFactory({
         code: `class Employee {
   constructor (name: string, private typeCode: string) {
     this.name = name;
@@ -74,9 +77,11 @@ function createEmployee(name, typeCode, { age }, [one], ...others) {
 function createEmployee(name: string, typeCode: string) {
   return new Employee(name, typeCode);
 }`
-      },
-      {
-        description: "exported class",
+      });
+    });
+
+    it("exported class", () => {
+      shouldCreateFactory({
         code: `export class Employee {[cursor]
   constructor () {}
 }`,
@@ -87,9 +92,11 @@ function createEmployee(name: string, typeCode: string) {
 export function createEmployee() {
   return new Employee();
 }`
-      },
-      {
-        description: "exported class, cursor on export",
+      });
+    });
+
+    it("exported class, cursor on export", () => {
+      shouldCreateFactory({
         code: `ex[cursor]port class Employee {
   constructor () {}
 }`,
@@ -100,24 +107,38 @@ export function createEmployee() {
 export function createEmployee() {
   return new Employee();
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await createFactoryForConstructor(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = createFactoryForConstructor({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await createFactoryForConstructor(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(ErrorReason.DidNotFindClass);
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldCreateFactory({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = createFactoryForConstructor({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

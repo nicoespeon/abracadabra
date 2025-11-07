@@ -1,8 +1,14 @@
 import { last } from "../../../array";
 import * as t from "../../../ast";
-import { Code, Editor, Modification } from "../../../editor/editor";
+import { Code, Modification } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
+import {
+  COMMANDS,
+  EditorCommand,
+  getUserChoice,
+  RefactoringState
+} from "../../../refactorings";
 import { Parts } from "./parts";
 import {
   MemberExpressionVariable,
@@ -196,8 +202,8 @@ export class Occurrence<T extends t.Node = t.Node> {
     };
   }
 
-  askModificationDetails(_editor: Editor): Promise<void> {
-    return Promise.resolve();
+  askModificationDetails(_state: RefactoringState): EditorCommand | null {
+    return null;
   }
 }
 
@@ -236,6 +242,10 @@ class ShorthandOccurrence extends Occurrence<t.ObjectProperty> {
 }
 
 type DestructureStrategy = "destructure" | "preserve";
+
+function isDestructureStrategy(value: any): value is DestructureStrategy {
+  return value === "destructure" || value === "preserve";
+}
 
 class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
   private destructureStrategy: DestructureStrategy = "destructure";
@@ -283,20 +293,33 @@ class MemberExpressionOccurrence extends Occurrence<t.MemberExpression> {
     );
   }
 
-  async askModificationDetails(editor: Editor) {
-    const choice = await editor.askUserChoice([
-      {
-        label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
-        value: "destructure" as const
-      },
-      {
-        label: `Preserve => \`const ${this.variable.name} = ${this.parentObject}.${this.variable.name}\``,
-        value: "preserve" as const
-      }
-    ]);
+  askModificationDetails(state: RefactoringState): EditorCommand | null {
+    const choiceId = "modification-details";
+    const choice = getUserChoice<DestructureStrategy>(state, choiceId);
 
-    if (choice) {
-      this.destructureStrategy = choice.value;
+    if (!choice) {
+      return COMMANDS.askUserChoice<DestructureStrategy>(
+        [
+          {
+            label: `Destructure => \`const { ${this.variable.name} } = ${this.parentObject}\``,
+            value: "destructure" as const
+          },
+          {
+            label: `Preserve => \`const ${this.variable.name} = ${this.parentObject}.${this.variable.name}\``,
+            value: "preserve" as const
+          }
+        ],
+        undefined,
+        choiceId
+      );
+    }
+
+    const strategy = choice.value;
+    if (isDestructureStrategy(strategy)) {
+      this.destructureStrategy = strategy;
+      return null;
+    } else {
+      return COMMANDS.doNothing();
     }
   }
 

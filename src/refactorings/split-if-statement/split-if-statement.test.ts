@@ -1,14 +1,10 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
 import { splitIfStatement } from "./split-if-statement";
 
 describe("Split If Statement", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should split if statement",
-    [
-      {
-        description: "with && logical expression",
+  describe("should split if statement", () => {
+    it("with && logical expression", () => {
+      shouldSplitIfStatement({
         code: `if (isValid && isCorrect) {
   doSomething();
 }`,
@@ -17,9 +13,11 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "|| logical expression",
+      });
+    });
+
+    it("|| logical expression", () => {
+      shouldSplitIfStatement({
         code: `if (isValid || isCorrect) {
   doSomething();
 }`,
@@ -28,9 +26,11 @@ describe("Split If Statement", () => {
 } else if (isCorrect) {
   doSomething();
 }`
-      },
-      {
-        description: "multiple parts of logical expression",
+      });
+    });
+
+    it("multiple parts of logical expression", () => {
+      shouldSplitIfStatement({
         code: `if (isValid && isCorrect && shouldDoSomething) {
   doSomething();
 }`,
@@ -39,9 +39,11 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "composed logical expressions",
+      });
+    });
+
+    it("composed logical expressions", () => {
+      shouldSplitIfStatement({
         code: `if (isValid && (isCorrect || shouldDoSomething)) {
   doSomething();
 }`,
@@ -50,9 +52,11 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "nested ifs, cursor on wrapper",
+      });
+    });
+
+    it("nested ifs, cursor on wrapper", () => {
+      shouldSplitIfStatement({
         code: `if ([cursor]isValid && size > 10) {
   if (isCorrect || shouldDoSomething) {
     doSomething();
@@ -65,9 +69,11 @@ describe("Split If Statement", () => {
     }
   }
 }`
-      },
-      {
-        description: "nested ifs, cursor on nested",
+      });
+    });
+
+    it("nested ifs, cursor on nested", () => {
+      shouldSplitIfStatement({
         code: `if (isValid && size > 10) {
   if (isCorrect || shouldDoSomething) {
     [cursor]doSomething();
@@ -80,9 +86,11 @@ describe("Split If Statement", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "if/elseif/else pattern, && logical expression",
+      });
+    });
+
+    it("if/elseif/else pattern, && logical expression", () => {
+      shouldSplitIfStatement({
         code: `if (isValid && isCorrect) {
   doSomething();
 } else if (isSelected) {
@@ -103,9 +111,11 @@ describe("Split If Statement", () => {
 } else {
   doNothing();
 }`
-      },
-      {
-        description: "if/elseif/else pattern, || logical expression",
+      });
+    });
+
+    it("if/elseif/else pattern, || logical expression", () => {
+      shouldSplitIfStatement({
         code: `if (isValid || isCorrect) {
   doSomething();
 } else if (isSelected) {
@@ -122,9 +132,11 @@ describe("Split If Statement", () => {
 } else {
   doNothing();
 }`
-      },
-      {
-        description: "logical expression in elseif, cursor outside of elseif",
+      });
+    });
+
+    it("logical expression in elseif, cursor outside of elseif", () => {
+      shouldSplitIfStatement({
         code: `if (isValid || isCorrect) {
 [cursor]  doSomething();
 } else if (isSelected && shouldDoAnotherThing) {
@@ -141,9 +153,11 @@ describe("Split If Statement", () => {
 } else {
   doNothing();
 }`
-      },
-      {
-        description: "logical expression in elseif, cursor in elseif",
+      });
+    });
+
+    it("logical expression in elseif, cursor in elseif", () => {
+      shouldSplitIfStatement({
         code: `if (isValid || isCorrect) {
   doSomething();
 } else if (isSelected && shouldDoAnotherThing) {
@@ -162,9 +176,11 @@ describe("Split If Statement", () => {
 } else {
   doNothing();
 }`
-      },
-      {
-        description: "logical expression in elseif, n-th elseif",
+      });
+    });
+
+    it("logical expression in elseif, n-th elseif", () => {
+      shouldSplitIfStatement({
         code: `if (isValid || isCorrect) {
   doSomething();
 } else if (isSelected && shouldDoAnotherThing) {
@@ -181,38 +197,51 @@ describe("Split If Statement", () => {
     doNothing();
   }
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await splitIfStatement(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should throw an error if logical expression can't be split", async () => {
+  it("should throw an error if logical expression can't be split", () => {
     const code = `if ([cursor]isValid) {}`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = splitIfStatement({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await splitIfStatement(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindIfStatementToSplit
-    );
+    expect(result.action).toBe("show error");
   });
 
-  it("should throw an error if logical expression is not in if statement", async () => {
+  it("should throw an error if logical expression is not in if statement", () => {
     const code = `const isValid = size > 10 &[cursor]& isRequired;`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = splitIfStatement({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await splitIfStatement(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindIfStatementToSplit
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldSplitIfStatement({
+  code,
+  expected
+}: {
+  code: string;
+  expected: string;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = splitIfStatement({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

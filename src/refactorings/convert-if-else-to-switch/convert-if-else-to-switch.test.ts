@@ -1,17 +1,14 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { convertIfElseToSwitch } from "./convert-if-else-to-switch";
 
 // Compact indentation of generated switch statement is due to recast behaviour:
 // https://github.com/benjamn/recast/issues/180
 
 describe("Convert If/Else to Switch", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should convert if/else to switch",
-    [
-      {
-        description: "simple conditional, strict equality",
+  describe("should convert if/else to switch", () => {
+    it("simple conditional, strict equality", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   sayHelloToJane();
 } else if (name === "John") {
@@ -30,9 +27,11 @@ default:
   sayHello();
   break;
 }`
-      },
-      {
-        description: "simple conditional, loose equality",
+      });
+    });
+
+    it("simple conditional, loose equality", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name == "Jane") {
   sayHelloToJane();
 } else if (name == "John") {
@@ -51,9 +50,11 @@ default:
   sayHello();
   break;
 }`
-      },
-      {
-        description: "simple conditional, mix of strict & loose equality",
+      });
+    });
+
+    it("simple conditional, mix of strict & loose equality", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name == "Jane") {
   sayHelloToJane();
 } else if (name === "John") {
@@ -72,9 +73,11 @@ default:
   sayHello();
   break;
 }`
-      },
-      {
-        description: "simple conditional, inverted discriminant & test",
+      });
+    });
+
+    it("simple conditional, inverted discriminant & test", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   sayHelloToJane();
 } else if ("John" === name) {
@@ -93,9 +96,11 @@ default:
   sayHello();
   break;
 }`
-      },
-      {
-        description: "convert the selected if-else only",
+      });
+    });
+
+    it("convert the selected if-else only", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   sayHelloToJane();
 } else {
@@ -121,9 +126,11 @@ if (name === "John") {
 } else {
   sayHello();
 }`
-      },
-      {
-        description: "nested if-else, cursor on wrapper",
+      });
+    });
+
+    it("nested if-else, cursor on wrapper", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   if (name === "John") {
     sayHelloToJohn();
@@ -145,9 +152,11 @@ default:
   sayHello();
   break;
 }`
-      },
-      {
-        description: "nested if-else, cursor on nested",
+      });
+    });
+
+    it("nested if-else, cursor on nested", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   [cursor]if (name === "John") {
     sayHelloToJohn();
@@ -169,9 +178,11 @@ default:
 } else {
   sayHello();
 }`
-      },
-      {
-        description: "without final else",
+      });
+    });
+
+    it("without final else", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   sayHelloToJane();
 } else if (name === "John") {
@@ -185,9 +196,11 @@ case "John":
   sayHelloToJohn();
   break;
 }`
-      },
-      {
-        description: "with return statements",
+      });
+    });
+
+    it("with return statements", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (name === "Jane") {
   return sayHelloToJane();
 } else if (name === "John") {
@@ -203,9 +216,11 @@ case "John":
 default:
   return sayHello();
 }`
-      },
-      {
-        description: "with member expression as discriminant",
+      });
+    });
+
+    it("with member expression as discriminant", () => {
+      shouldConvertIfElseToSwitch({
         code: `if (item.name === "Jane") {
   return sayHelloToJane();
 } else if (item.name === "John") {
@@ -221,9 +236,11 @@ case "John":
 default:
   return sayHello();
 }`
-      },
-      {
-        description: "preserves comments",
+      });
+    });
+
+    it("preserves comments", () => {
+      shouldConvertIfElseToSwitch({
         code: `// leading comment
 [cursor]if (name === "Jane") {
   sayHelloToJane();
@@ -246,90 +263,102 @@ default:
   break;
 }
 // trailing comment`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await convertIfElseToSwitch(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not convert",
-    [
-      {
-        description: "different discriminants",
-        code: `if (name === "Jane") {
+  describe("should not convert", () => {
+    it("different discriminants", () => {
+      shouldNotConvert(`if (name === "Jane") {
   sayHelloToJane();
 } else if (surname === "John") {
   sayHelloToJohn();
 } else {
   sayHello();
-}`
-      },
-      {
-        description: "invalid operators",
-        code: `if (name >= "Jane") {
+}`);
+    });
+
+    it("invalid operators", () => {
+      shouldNotConvert(`if (name >= "Jane") {
   sayHelloToJane();
 } else if (name >= "John") {
   sayHelloToJohn();
 } else {
   sayHello();
-}`
-      },
-      {
-        description: "different operators",
-        code: `if (name !== "Jane") {
+}`);
+    });
+
+    it("different operators", () => {
+      shouldNotConvert(`if (name !== "Jane") {
   sayHelloToJane();
 } else if (name === "John") {
   sayHelloToJohn();
 } else {
   sayHello();
-}`
-      },
-      {
-        description: "unary expressions",
-        code: `if (!(name === "Jane")) {
+}`);
+    });
+
+    it("unary expressions", () => {
+      shouldNotConvert(`if (!(name === "Jane")) {
   sayHelloToJane();
 } else if (!(name === "John")) {
   sayHelloToJohn();
 } else {
   sayHello();
-}`
-      },
-      {
-        description: "logical expressions",
-        code: `if (name === "Jane" && age > 10) {
+}`);
+    });
+
+    it("logical expressions", () => {
+      shouldNotConvert(`if (name === "Jane" && age > 10) {
   sayHelloToJane();
 } else if (name === "John") {
   sayHelloToJohn();
 } else {
   sayHello();
-}`
-      }
-    ],
-    async ({ code }) => {
-      const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+}`);
+    });
+  });
 
-      await convertIfElseToSwitch(editor);
-
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = convertIfElseToSwitch({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await convertIfElseToSwitch(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindIfElseToConvert
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldConvertIfElseToSwitch({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = convertIfElseToSwitch({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotConvert(code: Code) {
+  const editor = new InMemoryEditor(code);
+  const result = convertIfElseToSwitch({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result.action).toBe("show error");
+}

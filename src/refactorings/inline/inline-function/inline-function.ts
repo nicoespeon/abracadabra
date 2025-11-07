@@ -1,39 +1,43 @@
 import * as t from "../../../ast";
-import { Code, Editor, ErrorReason } from "../../../editor/editor";
+import { Code } from "../../../editor/editor";
 import { Selection } from "../../../editor/selection";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState
+} from "../../../refactorings";
 import { findExportedIdNames } from "../find-exported-id-names";
 import { findParamMatchingId } from "./find-param-matching-id";
 
-export async function inlineFunction(editor: Editor) {
-  const { code, selection } = editor;
+export function inlineFunction(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(code, selection);
 
   if (updatedCode.hasManyReturns) {
-    editor.showError(ErrorReason.CantInlineFunctionWithMultipleReturns);
-    return;
+    return COMMANDS.showErrorICant("inline a function with multiple returns");
   }
 
   if (updatedCode.isAssignedWithoutReturn) {
-    editor.showError(ErrorReason.CantInlineAssignedFunctionWithoutReturn);
-    return;
+    return COMMANDS.showErrorICant(
+      "inline an assigned function without return"
+    );
   }
 
   if (updatedCode.isAssignedWithManyStatements) {
-    editor.showError(ErrorReason.CantInlineAssignedFunctionWithManyStatements);
-    return;
+    return COMMANDS.showErrorICant(
+      "inline an assigned function with many statements"
+    );
   }
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindInlinableCode);
-    return;
+    return COMMANDS.showErrorDidNotFind("a function to inline");
   }
 
-  if (updatedCode.isExported) {
-    editor.showError(ErrorReason.CantRemoveExportedFunction);
-    // We don't return because we still want to update the code.
-  }
-
-  await editor.write(updatedCode.code);
+  return updatedCode.isExported
+    ? COMMANDS.write(updatedCode.code, undefined, {
+        errorMessage: "I'm sorry, I can't remove an exported function."
+      })
+    : COMMANDS.write(updatedCode.code);
 }
 
 // This global variable is set later in the flow.

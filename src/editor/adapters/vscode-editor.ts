@@ -11,8 +11,6 @@ import {
   CodeChange,
   Command,
   Editor,
-  ErrorReason,
-  errorReasonToString,
   Modification,
   Result,
   SelectedPosition
@@ -206,18 +204,15 @@ export class VSCodeEditor implements Editor {
     return "ok";
   }
 
-  async showError(reason: ErrorReason | string, details?: unknown) {
-    const message =
-      typeof reason === "string" ? reason : errorReasonToString(reason);
-
+  async showError(reason: string, details?: unknown) {
     if (details) {
-      const detailedError = `${message}\n${details}\n\n${JSON.stringify(details, null, 2)}\n`;
+      const detailedError = `${reason}\n${details}\n\n${JSON.stringify(details, null, 2)}\n`;
       vscode.window
         .createOutputChannel("Abracadabra", { log: true })
         .error(detailedError);
     }
 
-    await vscode.window.showErrorMessage(message);
+    await vscode.window.showErrorMessage(reason);
   }
 
   async askUserChoice<T>(choices: Choice<T>[], placeHolder?: string) {

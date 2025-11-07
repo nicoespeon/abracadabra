@@ -1,17 +1,16 @@
 import { singular } from "pluralize";
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function convertForToForEach(editor: Editor) {
-  const { code, selection } = editor;
+export function convertForToForEach(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindForLoopToConvert);
-    return;
+    return COMMANDS.showErrorDidNotFind("for-loop to convert");
   }
 
   // Recast would add an empty line before the transformed node.
@@ -21,7 +20,7 @@ export async function convertForToForEach(editor: Editor) {
     inMemoryEditor.removeLine(updatedCode.forLoopStartLine);
   }
 
-  await editor.write(inMemoryEditor.code);
+  return COMMANDS.write(inMemoryEditor.code);
 }
 
 function updateCode(

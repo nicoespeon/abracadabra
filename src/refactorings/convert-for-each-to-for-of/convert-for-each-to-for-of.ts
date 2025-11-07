@@ -1,19 +1,18 @@
 import * as t from "../../ast";
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function convertForEachToForOf(editor: Editor) {
-  const { code, selection } = editor;
+export function convertForEachToForOf(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const { transformed: updatedCode, forEachStartLine } = updateCode(
     t.parse(code),
     selection
   );
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindForEachToConvertToForOf);
-    return;
+    return COMMANDS.showErrorDidNotFind("forEach to convert to for-of");
   }
 
   // Recast would add an empty line before the transformed node.
@@ -23,7 +22,7 @@ export async function convertForEachToForOf(editor: Editor) {
     inMemoryEditor.removeLine(forEachStartLine);
   }
 
-  await editor.write(inMemoryEditor.code);
+  return COMMANDS.write(inMemoryEditor.code);
 }
 
 function updateCode(

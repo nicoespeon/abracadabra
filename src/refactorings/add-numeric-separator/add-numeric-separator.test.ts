@@ -1,61 +1,75 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { addNumericSeparator } from "./add-numeric-separator";
 
 describe("Add Numeric Separator", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should add numeric separator",
-    [
-      {
-        description: "to distinct each group",
-        code: `console.log([cursor]1234567890)`,
-        expected: `console.log(1_234_567_890)`
-      },
-      {
-        description: "to the selected number only",
-        code: `console.log([cursor]1234567890);
-console.log(1234567890);`,
-        expected: `console.log(1_234_567_890);
-console.log(1234567890);`
-      },
-      {
-        description: "to the decimal part only",
-        code: `console.log([cursor]1234567890.9876);`,
-        expected: `console.log(1_234_567_890.9876);`
-      },
-      {
-        description: "to a negative numeric literal",
-        code: `console.log(-123456[cursor]7890.9876);`,
-        expected: `console.log(-1_234_567_890.9876);`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
-
-      await addNumericSeparator(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should not change a number that has less than 3 chars", async () => {
-    const editor = new InMemoryEditor(`console.log([cursor]123)`);
-
-    await addNumericSeparator(editor);
-
-    expect(editor.code).toBe(`console.log(123)`);
+  it("should add numeric separator to distinct each group", () => {
+    shouldAddNumericSeparator({
+      code: `console.log([cursor]1234567890)`,
+      expected: `console.log(1_234_567_890)`
+    });
   });
 
-  it("should show an error message if refactoring can't be made", async () => {
-    const code = `// This is a comment, can't be refactored`;
-    const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+  it("should add numeric separator to the selected number only", () => {
+    shouldAddNumericSeparator({
+      code: `console.log([cursor]1234567890);
+console.log(1234567890);`,
+      expected: `console.log(1_234_567_890);
+console.log(1234567890);`
+    });
+  });
 
-    await addNumericSeparator(editor);
+  it("should add numeric separator to the decimal part only", () => {
+    shouldAddNumericSeparator({
+      code: `console.log([cursor]1234567890.9876);`,
+      expected: `console.log(1_234_567_890.9876);`
+    });
+  });
 
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindNumericLiteral
-    );
+  it("should add numeric separator to a negative numeric literal", () => {
+    shouldAddNumericSeparator({
+      code: `console.log(-123456[cursor]7890.9876);`,
+      expected: `console.log(-1_234_567_890.9876);`
+    });
+  });
+
+  it("should not change a number that has less than 3 chars", () => {
+    shouldNotConvert(`console.log([cursor]123)`);
+  });
+
+  it("should show an error message if refactoring can't be made", () => {
+    shouldNotConvert(`// This is a comment, can't be refactored`);
   });
 });
+
+function shouldAddNumericSeparator({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+
+  const result = addNumericSeparator({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}
+
+function shouldNotConvert(code: Code) {
+  const editor = new InMemoryEditor(code);
+
+  const result = addNumericSeparator({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result.action).toBe("show error");
+}

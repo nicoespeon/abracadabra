@@ -1,4 +1,3 @@
-import { testEach } from "../tests-helpers";
 import * as t from "./domain";
 import { areOpposite, areOppositeOperators } from "./identity";
 
@@ -18,133 +17,106 @@ describe("Identity - Are opposite expressions", () => {
     const john = t.stringLiteral("John");
     const martin = t.stringLiteral("Martin");
 
-    testEach<{ testA: t.BinaryExpression; testB: t.BinaryExpression }>(
-      "should return true",
-      [
-        {
-          description: "same operator & left, but different right",
-          testA: t.binaryExpression("===", name, john),
-          testB: t.binaryExpression("===", name, martin)
-        },
-        {
-          description: "same left & right, but opposite operators",
-          testA: t.binaryExpression("===", name, john),
-          testB: t.binaryExpression("!==", name, john)
-        },
-        {
-          description: "left is a member expression",
-          testA: t.binaryExpression("===", itemName, john),
-          testB: t.binaryExpression("!==", itemName, john)
-        },
-        {
-          description: "== operator",
-          testA: t.binaryExpression("==", name, john),
-          testB: t.binaryExpression("==", name, martin)
-        }
-      ],
-      ({ testA, testB }) => {
-        expect(areOpposite(testA, testB)).toBe(true);
-      }
-    );
+    describe("should return true", () => {
+      it("same operator & left, but different right", () => {
+        const testA = t.binaryExpression("===", name, john);
+        const testB = t.binaryExpression("===", name, martin);
 
-    testEach<{ testA: t.BinaryExpression; testB: t.BinaryExpression }>(
-      "should return false",
-      [
-        {
-          description: "identical expressions",
-          testA: t.binaryExpression("===", name, john),
-          testB: t.binaryExpression("===", name, john)
-        },
-        {
-          description: "different left",
-          testA: t.binaryExpression("===", name, john),
-          testB: t.binaryExpression("===", t.identifier("lastName"), john)
-        },
-        {
-          description: "different (non-opposite) operators",
-          testA: t.binaryExpression("===", name, john),
-          testB: t.binaryExpression(">", name, john)
-        },
-        {
-          description: "different right, but !== operator",
-          testA: t.binaryExpression("!==", name, john),
-          testB: t.binaryExpression("!==", name, martin)
-        }
-      ],
-      ({ testA, testB }) => {
+        expect(areOpposite(testA, testB)).toBe(true);
+      });
+
+      it("same left & right, but opposite operators", () => {
+        const testA = t.binaryExpression("===", name, john);
+        const testB = t.binaryExpression("!==", name, john);
+
+        expect(areOpposite(testA, testB)).toBe(true);
+      });
+
+      it("left is a member expression", () => {
+        const testA = t.binaryExpression("===", itemName, john);
+        const testB = t.binaryExpression("!==", itemName, john);
+
+        expect(areOpposite(testA, testB)).toBe(true);
+      });
+
+      it("== operator", () => {
+        const testA = t.binaryExpression("==", name, john);
+        const testB = t.binaryExpression("==", name, martin);
+
+        expect(areOpposite(testA, testB)).toBe(true);
+      });
+    });
+
+    describe("should return false", () => {
+      it("identical expressions", () => {
+        const testA = t.binaryExpression("===", name, john);
+        const testB = t.binaryExpression("===", name, john);
+
         expect(areOpposite(testA, testB)).toBe(false);
-      }
-    );
+      });
+
+      it("different left", () => {
+        const testA = t.binaryExpression("===", name, john);
+        const testB = t.binaryExpression("===", t.identifier("lastName"), john);
+
+        expect(areOpposite(testA, testB)).toBe(false);
+      });
+
+      it("different (non-opposite) operators", () => {
+        const testA = t.binaryExpression("===", name, john);
+        const testB = t.binaryExpression(">", name, john);
+
+        expect(areOpposite(testA, testB)).toBe(false);
+      });
+
+      it("different right, but !== operator", () => {
+        const testA = t.binaryExpression("!==", name, john);
+        const testB = t.binaryExpression("!==", name, martin);
+
+        expect(areOpposite(testA, testB)).toBe(false);
+      });
+    });
   });
 });
 
 describe("Identity - Are opposite operators", () => {
-  testEach<{
-    operatorA: t.BinaryExpression["operator"];
-    operatorB: t.BinaryExpression["operator"];
-  }>(
-    "should return false",
-    [
-      {
-        description: "identical operators",
-        operatorA: "===",
-        operatorB: "==="
-      },
-      {
-        description: "non-opposite operators",
-        operatorA: "===",
-        operatorB: ">"
-      },
-      {
-        description: "similar operators",
-        operatorA: "===",
-        operatorB: "=="
-      }
-    ],
-    async ({ operatorA, operatorB }) => {
-      expect(areOppositeOperators(operatorA, operatorB)).toBe(false);
-    }
-  );
+  describe("should return false", () => {
+    it("identical operators", () => {
+      expect(areOppositeOperators("===", "===")).toBe(false);
+    });
 
-  testEach<{
-    operatorA: t.BinaryExpression["operator"];
-    operatorB: t.BinaryExpression["operator"];
-  }>(
-    "should return true",
-    [
-      {
-        description: "=== and !==",
-        operatorA: "===",
-        operatorB: "!=="
-      },
-      {
-        description: "reverse order",
-        operatorA: "!==",
-        operatorB: "==="
-      },
-      {
-        description: "== and !=",
-        operatorA: "==",
-        operatorB: "!="
-      },
-      {
-        description: "> and <=",
-        operatorA: ">",
-        operatorB: "<="
-      },
-      {
-        description: "> and <",
-        operatorA: ">",
-        operatorB: "<"
-      },
-      {
-        description: ">= and <",
-        operatorA: ">=",
-        operatorB: "<"
-      }
-    ],
-    async ({ operatorA, operatorB }) => {
-      expect(areOppositeOperators(operatorA, operatorB)).toBe(true);
-    }
-  );
+    it("non-opposite operators", () => {
+      expect(areOppositeOperators("===", ">")).toBe(false);
+    });
+
+    it("similar operators", () => {
+      expect(areOppositeOperators("===", "==")).toBe(false);
+    });
+  });
+
+  describe("should return true", () => {
+    it("=== and !==", () => {
+      expect(areOppositeOperators("===", "!==")).toBe(true);
+    });
+
+    it("reverse order", () => {
+      expect(areOppositeOperators("!==", "===")).toBe(true);
+    });
+
+    it("== and !=", () => {
+      expect(areOppositeOperators("==", "!=")).toBe(true);
+    });
+
+    it("> and <=", () => {
+      expect(areOppositeOperators(">", "<=")).toBe(true);
+    });
+
+    it("> and <", () => {
+      expect(areOppositeOperators(">", "<")).toBe(true);
+    });
+
+    it(">= and <", () => {
+      expect(areOppositeOperators(">=", "<")).toBe(true);
+    });
+  });
 });

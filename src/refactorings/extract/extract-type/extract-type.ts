@@ -1,26 +1,33 @@
 import * as t from "../../../ast";
-import { Editor, ErrorReason } from "../../../editor/editor";
 import { Position } from "../../../editor/position";
 import { Selection } from "../../../editor/selection";
+import {
+  COMMANDS,
+  EditorCommand,
+  RefactoringState
+} from "../../../refactorings";
+import { renameSymbol } from "../../rename-symbol/rename-symbol";
 import { pascalCase } from "../changeCase";
 
-export async function extractType(editor: Editor) {
-  const { code, selection } = editor;
+export function extractType(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindTypeToExtract);
-    return;
+    return COMMANDS.showErrorDidNotFind("a type to extract");
   }
 
-  // When we create interfaces it generates a double `;` by mistake
-  await editor.write(
-    updatedCode.code.replace(/;;/gm, ";"),
+  const sanitizedCode = updatedCode.code
+    // When we create interfaces it generates a double `;` by mistake
+    .replace(/;;/gm, ";");
+
+  return COMMANDS.write(
+    sanitizedCode,
     updatedCode.newNodePosition
       .putAtStartOfLine()
-      .goToNextNthWordInCode(2, updatedCode.code)
+      .goToNextNthWordInCode(2, sanitizedCode),
+    { thenRun: renameSymbol }
   );
-  await editor.delegate("rename symbol");
 }
 
 function updateCode(

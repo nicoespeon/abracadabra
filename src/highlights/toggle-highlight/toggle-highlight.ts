@@ -1,9 +1,9 @@
 import * as t from "../../ast";
-import { Editor } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function toggleHighlight(editor: Editor): Promise<void> {
-  const { code, selection } = editor;
+export function toggleHighlight(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
 
   let result: { source: Selection; bindings: Selection[] } | undefined;
   t.parseAndTraverseCode(code, {
@@ -20,12 +20,9 @@ export async function toggleHighlight(editor: Editor): Promise<void> {
     }
   });
 
-  if (!result) return;
-
-  const existingHighlight = editor.findHighlight(result.source);
-  if (existingHighlight) {
-    editor.removeHighlight(existingHighlight);
-  } else {
-    editor.highlight(result.source, result.bindings);
+  if (!result) {
+    return COMMANDS.doNothing();
   }
+
+  return COMMANDS.toggleHighlight(result.source, result.bindings);
 }

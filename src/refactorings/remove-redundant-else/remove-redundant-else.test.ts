@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { removeRedundantElse } from "./remove-redundant-else";
 
 describe("Remove Redundant Else", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should remove redundant else",
-    [
-      {
-        description: "basic scenario",
+  describe("should remove redundant else", () => {
+    it("basic scenario", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   console.log("Start working");
 
@@ -35,9 +32,11 @@ describe("Remove Redundant Else", () => {
 
   doSomeFinalThing();
 }`
-      },
-      {
-        description: "basic scenario with tabs",
+      });
+    });
+
+    it("basic scenario with tabs", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
 \t[start]if (!isValid) {
 \t\tshowWarning();
@@ -53,9 +52,11 @@ describe("Remove Redundant Else", () => {
 \t}
 \tdoSomething();
 }`
-      },
-      {
-        description: "only the selected one",
+      });
+    });
+
+    it("only the selected one", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   i[start]f (!isValid) {
     showWarning();
@@ -88,9 +89,11 @@ describe("Remove Redundant Else", () => {
     showMessage();
   }
 }`
-      },
-      {
-        description: "when cursor is inside",
+      });
+    });
+
+    it("when cursor is inside", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (!isValid) {
     showWarning();
@@ -108,9 +111,11 @@ describe("Remove Redundant Else", () => {
   doSomething();
   doAnotherThing();
 }`
-      },
-      {
-        description: "with throw expression",
+      });
+    });
+
+    it("with throw expression", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (!isValid) {
     throw new Error("Oh no!");
@@ -126,9 +131,11 @@ describe("Remove Redundant Else", () => {
   doSomething();
   doAnotherThing();
 }`
-      },
-      {
-        description: "with else if",
+      });
+    });
+
+    it("with else if", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (!isValid) {
     [cursor]throw new Error("Oh no!");
@@ -148,9 +155,11 @@ describe("Remove Redundant Else", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "nested, cursor on wrapper",
+      });
+    });
+
+    it("nested, cursor on wrapper", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   [cursor]if (!isValid) {
     if (shouldShowWarning) {
@@ -176,9 +185,11 @@ describe("Remove Redundant Else", () => {
   }
   doSomething();
 }`
-      },
-      {
-        description: "nested, cursor on nested",
+      });
+    });
+
+    it("nested, cursor on nested", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (!isValid) {
     [cursor]if (shouldShowWarning) {
@@ -204,10 +215,11 @@ describe("Remove Redundant Else", () => {
     doSomething();
   }
 }`
-      },
+      });
+    });
 
-      {
-        description: "invalid nested, cursor on nested",
+    it("invalid nested, cursor on nested", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (!isValid) {
     [cursor]if (shouldShowWarning) {
@@ -227,9 +239,11 @@ describe("Remove Redundant Else", () => {
   }
   doSomething();
 }`
-      },
-      {
-        description: "if has no braces",
+      });
+    });
+
+    it("if has no braces", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (!isValid)[cursor]
     return;
@@ -242,9 +256,11 @@ describe("Remove Redundant Else", () => {
   if (isMorning)
     return;
 }`
-      },
-      {
-        description: "if has no sibling next (guard clause)",
+      });
+    });
+
+    it("if has no sibling next (guard clause)", () => {
+      shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {
   if (age < 6) {[cursor]
     sendResponse(FREE_LIFT);
@@ -265,18 +281,11 @@ describe("Remove Redundant Else", () => {
     sendResponse(basePrice);
   }
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await removeRedundantElse(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  it("should show an error message if selection has no redundant else", async () => {
+  it("should show an error message if selection has no redundant else", () => {
     const code = `[start]if (!isValid) {
   showWarning();
 } else {
@@ -286,12 +295,31 @@ describe("Remove Redundant Else", () => {
 
 console.log("some text");`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = removeRedundantElse({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await removeRedundantElse(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindRedundantElse
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldRemoveRedundantElse({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = removeRedundantElse({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

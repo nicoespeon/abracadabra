@@ -1,36 +1,22 @@
 import { NodePath, Visitor } from "./ast";
-import { Code, Command, Editor, Modification } from "./editor/editor";
+import { CodeReference } from "./editor/code-reference";
+import {
+  Choice,
+  Code,
+  Command,
+  Editor,
+  Modification,
+  SelectedPosition
+} from "./editor/editor";
+import { Path } from "./editor/path";
 import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
-
-export interface RefactoringConfig__DEPRECATED {
-  command: {
-    key: string;
-    operation: Refactoring__DEPRECATED;
-  };
-}
+import { Decoration, Source } from "./highlights/highlights";
 
 export interface RefactoringConfig {
   command: {
     key: string;
     operation: Refactoring;
-  };
-}
-
-export interface RefactoringWithActionProviderConfig__DEPRECATED {
-  command: {
-    key: string;
-    title: string;
-    operation: Refactoring__DEPRECATED;
-  };
-  actionProvider: {
-    message: string;
-    isPreferred?: boolean;
-    createVisitor: (
-      selection: Selection,
-      onMatch: (path: NodePath) => void
-    ) => Visitor;
-    updateMessage?: (path: NodePath) => string;
   };
 }
 
@@ -51,59 +37,124 @@ export interface RefactoringWithActionProviderConfig {
   };
 }
 
-/**
- * We use to inject an instance of the Editor to the refactoring function,
- * which was asynchronously performing some side-effects.
- *
- * The new version is a pure function that takes and return data instead.
- *
- * This will allow us to move the Refactoring computation elsewhere, like
- * a dedicated language server. This should unblock more ambitious refactorings
- * and improve the performance of the extension.
- */
-export type Refactoring__DEPRECATED = (editor: Editor) => Promise<void>;
-
 export type Refactoring = (state: RefactoringState) => EditorCommand;
 
-export type RefactoringState = (
-  | { state: "new" }
-  | { state: "command not supported" }
-  | {
-      state: "user response";
-      value: string | undefined;
-    }
-) &
-  BaseRefactoringState;
+export type RefactoringState = BaseRefactoringState &
+  (
+    | { state: "new" }
+    | { state: "command not supported" }
+    | { state: "with user responses"; responses: UserResponse[] }
+  );
 
-type BaseRefactoringState = { code: Code; selection: Selection };
+type BaseRefactoringState = {
+  code: Code;
+  selection: Selection;
+  highlightSources: Selection[];
+};
 
-export type EditorCommand = (
-  | { action: "do nothing" }
-  | { action: "show error"; reason: string; details?: unknown }
-  | { action: "write"; code: Code; newCursorPosition?: Position }
-  | {
-      action: "read then write";
-      readSelection: Selection;
-      getModifications: (code: Code) => Modification[];
-      newCursorPosition?: Position | Selection;
-    }
-  | { action: "delegate"; command: Command; selection?: Selection }
-  | { action: "ask user"; value?: string }
-) &
-  BaseEditorCommand;
+export type UserResponse = BaseUserResponse &
+  (
+    | {
+        type: "input";
+        value: string;
+      }
+    | UserResponseChoice
+    | {
+        type: "new positions";
+        positions: SelectedPosition[];
+        references: (CodeReference & { code: Code })[];
+      }
+  );
 
-type BaseEditorCommand = { thenRun?: Refactoring };
+type UserResponseChoice<T = unknown> = {
+  type: "choice";
+  value: Choice<T>;
+};
+
+type BaseUserResponse = { id: string };
+
+export type EditorCommand = BaseEditorCommand &
+  (
+    | { action: "do nothing" }
+    | { action: "show error"; reason: string; details?: unknown }
+    | { action: "write"; code: Code; newCursorPosition?: Position }
+    | { action: "write all"; updates: { path: Path; code: Code }[] }
+    | {
+        action: "read then write";
+        readSelection: Selection;
+        getModifications: (code: Code) => Modification[];
+        newCursorPosition?: Position | Selection;
+      }
+    | { action: "delegate"; command: Command; selection?: Selection }
+    | { action: "ask user input"; id: string; value?: string }
+    | AskUserChoiceCommand
+    | {
+        action: "ask change signature positions";
+        id: string;
+        positions: SelectedPosition[];
+        fixedSelection: Selection;
+      }
+    | {
+        action: "toggle highlight";
+        source: Source;
+        bindings: Selection[];
+      }
+    | {
+        action: "refresh highlights";
+        highlights: {
+          source: Source;
+          bindings: Selection[];
+          decoration?: Decoration;
+        }[];
+      }
+    | { action: "remove all highlights" }
+  );
+
+type BaseEditorCommand = { thenRun?: Refactoring; errorMessage?: string };
+
+type AskUserChoiceCommand<T = unknown> = {
+  action: "ask user choice";
+  id: string;
+  choices: Choice<T>[];
+  placeHolder?: string;
+};
 
 export const COMMANDS = {
-  showErrorDidNotFind: (element: string): EditorCommand => ({
+  showErrorDidNotFind: (element: string, details?: unknown): EditorCommand => ({
     action: "show error",
-    reason: `I didn't find ${element} from current selection 🤔`
+    reason: `I didn't find ${element} from current selection 🤔`,
+    details
   }),
-  showErrorICant: (action: string): EditorCommand => ({
+  showErrorICant: (action: string, details?: unknown): EditorCommand => ({
     action: "show error",
-    reason: `I'm sorry, I can't ${action} 😅`
+    reason: `I'm sorry, I can't ${action} 😅`,
+    details
   }),
-  askUser: (value: string): EditorCommand => ({ action: "ask user", value }),
+  askUserInput: (value: string, id: string = "user-input"): EditorCommand => ({
+    action: "ask user input",
+    id,
+    value
+  }),
+  askUserChoice: <T>(
+    choices: Choice<T>[],
+    placeHolder?: string,
+    id: string = "user-choice"
+  ): EditorCommand => ({
+    action: "ask user choice",
+    id,
+    choices,
+    placeHolder
+  }),
+  askForPositions: (
+    positions: SelectedPosition[],
+    fixedSelection: Selection,
+    id: string = "change-signature-positions"
+  ): EditorCommand => ({
+    action: "ask change signature positions",
+    id,
+    positions,
+    fixedSelection
+  }),
   write: (
     code: Code,
     newCursorPosition?: Position,
@@ -114,23 +165,90 @@ export const COMMANDS = {
     newCursorPosition,
     ...options
   }),
+  writeAll: (updates: { path: Path; code: Code }[]): EditorCommand => ({
+    action: "write all",
+    updates
+  }),
   readThenWrite: (
     readSelection: Selection,
     getModifications: (code: Code) => Modification[],
-    newCursorPosition?: Position | Selection
+    newCursorPosition?: Position | Selection,
+    options: BaseEditorCommand = {}
   ): EditorCommand => ({
     action: "read then write",
     readSelection,
     getModifications,
-    newCursorPosition
+    newCursorPosition,
+    ...options
   }),
   delegate: (command: Command, selection?: Selection): EditorCommand => ({
     action: "delegate",
     command,
     selection
   }),
-  doNothing: (): EditorCommand => ({ action: "do nothing" })
+  doNothing: (): EditorCommand => ({ action: "do nothing" }),
+  toggleHighlight: (source: Source, bindings: Selection[]): EditorCommand => ({
+    action: "toggle highlight",
+    source,
+    bindings
+  }),
+  refreshHighlights: (
+    highlights: {
+      source: Source;
+      bindings: Selection[];
+      decoration?: Decoration;
+    }[]
+  ): EditorCommand => ({
+    action: "refresh highlights",
+    highlights
+  }),
+  removeAllHighlights: (): EditorCommand => ({
+    action: "remove all highlights"
+  })
 };
+
+export function getUserInput(
+  state: RefactoringState,
+  id: string = "user-input"
+): string | undefined {
+  if (state.state !== "with user responses") return undefined;
+  const response = state.responses.find(
+    (r) => r.id === id && r.type === "input"
+  );
+  return response?.type === "input" ? response.value : undefined;
+}
+
+export function getUserChoice<T = unknown>(
+  state: RefactoringState,
+  id: string = "user-choice"
+): Choice<T> | undefined {
+  if (state.state !== "with user responses") return undefined;
+  const response = state.responses.find(
+    (r) => r.id === id && r.type === "choice"
+  );
+  return response?.type === "choice"
+    ? (response.value as Choice<T> | undefined)
+    : undefined;
+}
+
+export function getNewPositions(
+  state: RefactoringState,
+  id: string = "change-signature-positions"
+):
+  | {
+      positions: SelectedPosition[];
+      references: (CodeReference & { code: Code })[];
+    }
+  | undefined {
+  if (state.state !== "with user responses") return undefined;
+  const response = state.responses.find(
+    (r) => r.id === id && r.type === "new positions"
+  );
+  if (response?.type === "new positions") {
+    return { positions: response.positions, references: response.references };
+  }
+  return undefined;
+}
 
 export async function executeRefactoring(
   refactor: Refactoring,
@@ -138,7 +256,8 @@ export async function executeRefactoring(
   state: RefactoringState = {
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: editor.highlightSourcesForCurrentFile()
   }
 ) {
   const result = refactor(state);
@@ -152,7 +271,17 @@ export async function executeRefactoring(
       break;
 
     case "write":
+      if (result.errorMessage) {
+        await editor.showError(result.errorMessage);
+      }
+
       await editor.write(result.code, result.newCursorPosition);
+      break;
+
+    case "write all":
+      await Promise.all(
+        result.updates.map(({ path, code }) => editor.writeIn(path, code))
+      );
       break;
 
     case "read then write": {
@@ -173,20 +302,112 @@ export async function executeRefactoring(
         return executeRefactoring(refactor, editor, {
           state: "command not supported",
           code: state.code,
-          selection: state.selection
+          selection: state.selection,
+          highlightSources: state.highlightSources
         });
       }
       break;
     }
 
-    case "ask user": {
+    case "ask user input": {
       const userInput = await editor.askUserInput(result.value);
+      // If user cancelled, stop here.
+      if (!userInput) return;
+
+      const existingResponses =
+        state.state === "with user responses" ? state.responses : [];
+      const newResponse: UserResponse = {
+        id: result.id,
+        type: "input",
+        value: userInput
+      };
       return executeRefactoring(refactor, editor, {
-        state: "user response",
-        value: userInput,
+        state: "with user responses",
+        responses: [...existingResponses, newResponse],
         code: state.code,
-        selection: state.selection
+        selection: state.selection,
+        highlightSources: state.highlightSources
       });
+    }
+
+    case "ask user choice": {
+      const choice = await editor.askUserChoice(
+        result.choices,
+        result.placeHolder
+      );
+      // If user cancelled, stop here.
+      if (!choice) return;
+
+      const existingResponses =
+        state.state === "with user responses" ? state.responses : [];
+      const newResponse: UserResponse = {
+        id: result.id,
+        type: "choice",
+        value: choice
+      };
+      return executeRefactoring(refactor, editor, {
+        state: "with user responses",
+        responses: [...existingResponses, newResponse],
+        code: state.code,
+        selection: state.selection,
+        highlightSources: state.highlightSources
+      });
+    }
+
+    case "ask change signature positions": {
+      const positions = await editor.askForPositions(result.positions);
+      const references = await editor.getSelectionReferences(
+        result.fixedSelection
+      );
+      const referencesWithCode = await Promise.all(
+        references.map(async (reference) => {
+          const content = await editor.codeOf(reference.path);
+          return {
+            code: content,
+            path: reference.path,
+            selection: reference.selection
+          };
+        })
+      );
+
+      const existingResponses =
+        state.state === "with user responses" ? state.responses : [];
+      const newResponse: UserResponse = {
+        id: result.id,
+        type: "new positions",
+        positions,
+        references: referencesWithCode
+      };
+      return executeRefactoring(refactor, editor, {
+        state: "with user responses",
+        responses: [...existingResponses, newResponse],
+        code: state.code,
+        selection: state.selection,
+        highlightSources: state.highlightSources
+      });
+    }
+
+    case "toggle highlight": {
+      const existingHighlight = editor.findHighlight(result.source);
+      if (existingHighlight) {
+        editor.removeHighlight(existingHighlight);
+      } else {
+        editor.highlight(result.source, result.bindings);
+      }
+      break;
+    }
+
+    case "refresh highlights": {
+      result.highlights.forEach(({ source, bindings, decoration }) => {
+        const existingDecoration = editor.removeHighlight(source);
+        editor.highlight(source, bindings, decoration ?? existingDecoration);
+      });
+      break;
+    }
+
+    case "remove all highlights": {
+      editor.removeAllHighlights();
+      break;
     }
 
     default: {

@@ -1,14 +1,11 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
-import { Code, ErrorReason } from "../../editor/editor";
-import { testEach } from "../../tests-helpers";
+import { Code } from "../../editor/editor";
 import { liftUpConditional } from "./lift-up-conditional";
 
 describe("Lift Up Conditional", () => {
-  testEach<{ code: Code; expected: Code }>(
-    "should lift up conditional",
-    [
-      {
-        description: "simple if nested in another if",
+  describe("should lift up conditional", () => {
+    it("simple if nested in another if", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   [cursor]if (isCorrect) {
     doSomething();
@@ -19,9 +16,11 @@ describe("Lift Up Conditional", () => {
     doSomething();
   }
 }`
-      },
-      {
-        description: "simple if nested in another if with else",
+      });
+    });
+
+    it("simple if nested in another if with else", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   [cursor]if (isCorrect) {
     doSomething();
@@ -41,9 +40,11 @@ describe("Lift Up Conditional", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "if-else nested in a simple if",
+      });
+    });
+
+    it("if-else nested in a simple if", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   [cursor]if (isCorrect) {
     doSomething();
@@ -60,9 +61,11 @@ describe("Lift Up Conditional", () => {
     doAnotherThing();
   }
 }`
-      },
-      {
-        description: "if-else nested in another if-else",
+      });
+    });
+
+    it("if-else nested in another if-else", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   [cursor]if (isCorrect) {
     doSomething();
@@ -85,9 +88,11 @@ describe("Lift Up Conditional", () => {
     doNothing();
   }
 }`
-      },
-      {
-        description: "deeply nested if, cursor on intermediate if",
+      });
+    });
+
+    it("deeply nested if, cursor on intermediate if", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   [cursor]if (isCorrect) {
     if (shouldDoSomething) {
@@ -102,9 +107,11 @@ describe("Lift Up Conditional", () => {
     }
   }
 }`
-      },
-      {
-        description: "deeply nested if, cursor on deepest if",
+      });
+    });
+
+    it("deeply nested if, cursor on deepest if", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   if (isCorrect) {
     [cursor]if (shouldDoSomething) {
@@ -119,9 +126,11 @@ describe("Lift Up Conditional", () => {
     }
   }
 }`
-      },
-      {
-        description: "selected if only",
+      });
+    });
+
+    it("selected if only", () => {
+      shouldLiftUpConditional({
         code: `if (isValid) {
   if (isCorrect) {
     doSomething();
@@ -144,9 +153,11 @@ if (canLog) {
     logData();
   }
 }`
-      },
-      {
-        description: "simple if nested with sibling statements",
+      });
+    });
+
+    it("simple if nested with sibling statements", () => {
+      shouldLiftUpConditional({
         code: `if (isCorrect) {
   doSomething();
 
@@ -171,9 +182,11 @@ if (canLog) {
     logData();
   }
 }`
-      },
-      {
-        description: "if-else nested with sibling statements",
+      });
+    });
+
+    it("if-else nested with sibling statements", () => {
+      shouldLiftUpConditional({
         code: `if (isCorrect) {
   doSomething();
 
@@ -202,10 +215,11 @@ if (canLog) {
     logData();
   }
 }`
-      },
-      {
-        description:
-          "if-else nested in another if-else, with sibling statements",
+      });
+    });
+
+    it("if-else nested in another if-else, with sibling statements", () => {
+      shouldLiftUpConditional({
         code: `if (isCorrect) {
   doSomething();
 
@@ -240,52 +254,61 @@ if (canLog) {
     doAnotherThing();
   }
 }`
-      }
-    ],
-    async ({ code, expected }) => {
-      const editor = new InMemoryEditor(code);
+      });
+    });
+  });
 
-      await liftUpConditional(editor);
-
-      expect(editor.code).toBe(expected);
-    }
-  );
-
-  testEach<{ code: Code }>(
-    "should not lift up",
-    [
-      // We don't handle scenarios where nested if is in the else node.
-      // This would be an improvement: handle if & if-else nested in else node.
-      {
-        description: "simple if in else",
-        code: `if (isCorrect) {
+  describe("should not lift up", () => {
+    // We don't handle scenarios where nested if is in the else node.
+    // This would be an improvement: handle if & if-else nested in else node.
+    it("simple if in else", () => {
+      const code = `if (isCorrect) {
   doSomething();
 } else {
   [cursor]if (isValid) {
     doSomethingElse();
   }
-}`
-      }
-    ],
-    async ({ code }) => {
+}`;
       const editor = new InMemoryEditor(code);
-      const originalCode = editor.code;
+      const result = liftUpConditional({
+        state: "new",
+        code: editor.code,
+        selection: editor.selection,
+        highlightSources: []
+      });
 
-      await liftUpConditional(editor);
+      expect(result.action).toBe("show error");
+    });
+  });
 
-      expect(editor.code).toBe(originalCode);
-    }
-  );
-
-  it("should show an error message if refactoring can't be made", async () => {
+  it("should show an error message if refactoring can't be made", () => {
     const code = `// This is a comment, can't be refactored`;
     const editor = new InMemoryEditor(code);
-    jest.spyOn(editor, "showError");
+    const result = liftUpConditional({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
 
-    await liftUpConditional(editor);
-
-    expect(editor.showError).toHaveBeenCalledWith(
-      ErrorReason.DidNotFindNestedIf
-    );
+    expect(result.action).toBe("show error");
   });
 });
+
+function shouldLiftUpConditional({
+  code,
+  expected
+}: {
+  code: Code;
+  expected: Code;
+}) {
+  const editor = new InMemoryEditor(code);
+  const result = liftUpConditional({
+    state: "new",
+    code: editor.code,
+    selection: editor.selection,
+    highlightSources: []
+  });
+
+  expect(result).toMatchObject({ action: "write", code: expected });
+}

@@ -1,18 +1,17 @@
 import * as t from "../../ast";
-import { Editor, ErrorReason } from "../../editor/editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function toggleBraces(editor: Editor) {
-  const { code, selection } = editor;
+export function toggleBraces(state: RefactoringState): EditorCommand {
+  const { code, selection } = state;
   const updatedCode = updateCode(t.parse(code), selection);
 
   if (!updatedCode.hasCodeChanged) {
-    editor.showError(ErrorReason.DidNotFindStatementToToggleBraces);
-    return;
+    return COMMANDS.showErrorDidNotFind("statement to toggle braces");
   }
 
-  await editor.write(updatedCode.code);
+  return COMMANDS.write(updatedCode.code);
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {

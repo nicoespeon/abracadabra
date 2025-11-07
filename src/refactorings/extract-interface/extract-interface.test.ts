@@ -327,7 +327,8 @@ interface Extracted {
     const result = extractInterface({
       state: "new",
       code,
-      selection: Selection.cursorAt(0, 0)
+      selection: Selection.cursorAt(0, 0),
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -347,7 +348,8 @@ interface Extracted {
     const result = extractInterface({
       state: "new",
       code,
-      selection: Selection.cursorAt(0, 0)
+      selection: Selection.cursorAt(0, 0),
+      highlightSources: []
     });
 
     expect(result).toMatchObject({
@@ -369,7 +371,8 @@ function shouldExtractInterface({
   const result = extractInterface({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

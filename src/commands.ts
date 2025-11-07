@@ -2,32 +2,11 @@ import * as vscode from "vscode";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import { refreshHighlights } from "./highlights/refresh-highlights/refresh-highlights";
-import {
-  executeRefactoring,
-  Refactoring,
-  Refactoring__DEPRECATED
-} from "./refactorings";
+import { executeRefactoring, Refactoring } from "./refactorings";
 
 type Options = { refreshHighlights: boolean };
 
-export function createCommand(
-  execute: Refactoring__DEPRECATED,
-  options: Options
-) {
-  return async (maybeEditor: VSCodeEditor | undefined) => {
-    const editor = maybeEditor ?? createVSCodeEditor();
-    if (!editor) return;
-
-    await executeSafely(async () => {
-      await execute(editor);
-      if (options.refreshHighlights) {
-        await refreshHighlights(editor);
-      }
-    });
-  };
-}
-
-export function createCommand__NEW(execute: Refactoring, options: Options) {
+export function createCommand(execute: Refactoring, options: Options) {
   return async (maybeEditor: VSCodeEditor | undefined) => {
     const editor = maybeEditor ?? createVSCodeEditor();
     if (!editor) return;
@@ -35,15 +14,13 @@ export function createCommand__NEW(execute: Refactoring, options: Options) {
     await executeSafely(async () => {
       await executeRefactoring(execute, editor);
       if (options.refreshHighlights) {
-        await refreshHighlights(editor);
+        await executeRefactoring(refreshHighlights, editor);
       }
     });
   };
 }
 
-export async function executeSafely(
-  command: () => Promise<any>
-): Promise<void> {
+async function executeSafely(command: () => Promise<any>): Promise<void> {
   try {
     await command();
   } catch (error) {
