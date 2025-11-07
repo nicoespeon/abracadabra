@@ -4,10 +4,7 @@ import * as t from "./ast";
 import { createVSCodeEditor } from "./editor/adapters/create-vscode-editor";
 import { VSCodeEditor } from "./editor/adapters/vscode-editor";
 import { Editor } from "./editor/editor";
-import {
-  RefactoringWithActionProviderConfig,
-  RefactoringWithActionProviderConfig__DEPRECATED
-} from "./refactorings";
+import { RefactoringWithActionProviderConfig } from "./refactorings";
 import {
   getIgnoredFolders,
   getIgnoredPatterns,
@@ -16,12 +13,8 @@ import {
   shouldShowInQuickFix
 } from "./vscode-configuration";
 
-type Refactoring =
-  | RefactoringWithActionProviderConfig__DEPRECATED
-  | RefactoringWithActionProviderConfig;
-
 export class RefactoringActionProvider implements vscode.CodeActionProvider {
-  constructor(private refactorings: Refactoring[]) {}
+  constructor(private refactorings: RefactoringWithActionProviderConfig[]) {}
 
   async provideCodeActions(document: vscode.TextDocument) {
     const NO_ACTION: vscode.CodeAction[] = [];
@@ -60,8 +53,11 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
   private findApplicableRefactorings({
     code,
     selection
-  }: Editor): Refactoring[] {
-    const applicableRefactorings = new Map<string, Refactoring>();
+  }: Editor): RefactoringWithActionProviderConfig[] {
+    const applicableRefactorings = new Map<
+      string,
+      RefactoringWithActionProviderConfig
+    >();
 
     const refactoringsToCheck = this.refactorings.filter(
       ({ command: { key } }) => shouldShowInQuickFix(key)
@@ -134,7 +130,10 @@ export class RefactoringActionProvider implements vscode.CodeActionProvider {
     return matchingType ? visitor[matchingType] : null;
   }
 
-  private buildCodeActionFor(refactoring: Refactoring, editor: VSCodeEditor) {
+  private buildCodeActionFor(
+    refactoring: RefactoringWithActionProviderConfig,
+    editor: VSCodeEditor
+  ) {
     const action = new vscode.CodeAction(
       `${refactoring.actionProvider.message} ✨`,
       vscode.CodeActionKind.RefactorRewrite

@@ -117,7 +117,8 @@ export function createEmployee() {
     const result = createFactoryForConstructor({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -135,7 +136,8 @@ function shouldCreateFactory({
   const result = createFactoryForConstructor({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

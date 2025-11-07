@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { RefactoringActionProvider } from "./action-providers";
-import { createCommand, createCommand__NEW } from "./commands";
+import { createCommand } from "./commands";
 import {
   VSCodeEditor,
   createSelectionFromVSCode,
@@ -133,7 +133,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  [toggleHighlight, refreshHighlights, removeAllHighlights].forEach(
+  [toggleHighlight, removeAllHighlights, refreshHighlights].forEach(
     ({ command }) => {
       context.subscriptions.push(
         vscode.commands.registerCommand(
@@ -153,7 +153,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         `abracadabra.${command.key}`,
-        createCommand__NEW(command.operation, { refreshHighlights: true })
+        createCommand(command.operation, { refreshHighlights: true })
       )
     );
   });

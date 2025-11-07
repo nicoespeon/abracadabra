@@ -1,7 +1,7 @@
-import { RefactoringConfig__DEPRECATED } from "../../refactorings";
+import { RefactoringConfig } from "../../refactorings";
 import { toggleHighlight } from "./toggle-highlight";
 
-const config: RefactoringConfig__DEPRECATED = {
+const config: RefactoringConfig = {
   command: {
     key: "toggleHighlight",
     operation: toggleHighlight

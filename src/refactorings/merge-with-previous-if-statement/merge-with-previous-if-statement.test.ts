@@ -435,7 +435,8 @@ doSomethingElse();
     const result = mergeWithPreviousIfStatement({
       state: "new",
       code: editor.code,
-      selection: editor.selection
+      selection: editor.selection,
+      highlightSources: []
     });
 
     expect(result.action).toBe("show error");
@@ -453,7 +454,8 @@ function shouldMergeWithPreviousIfStatement({
   const result = mergeWithPreviousIfStatement({
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: []
   });
 
   expect(result).toMatchObject({ action: "write", code: expected });

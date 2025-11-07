@@ -75,7 +75,8 @@ describe("Execute Refactoring", () => {
     expect(followUpRefactoring).toHaveBeenCalledWith({
       state: "new",
       code,
-      selection: Selection.cursorAt(0, 5)
+      selection: Selection.cursorAt(0, 5),
+      highlightSources: []
     });
   });
 
@@ -149,7 +150,8 @@ const anotherOne = 'world';`);
     expect(fakeRefactoring).toHaveBeenLastCalledWith({
       state: "command not supported",
       code: "const hello = 'world'",
-      selection: Selection.cursorAt(0, 11)
+      selection: Selection.cursorAt(0, 11),
+      highlightSources: []
     });
   });
 
@@ -169,7 +171,8 @@ const anotherOne = 'world';`);
     expect(followUpRefactoring).toHaveBeenCalledWith({
       state: "new",
       code: "const hello = 'world'",
-      selection: Selection.cursorAt(0, 11)
+      selection: Selection.cursorAt(0, 11),
+      highlightSources: []
     });
   });
 
@@ -228,7 +231,8 @@ const anotherOne = 'world';`);
       state: "with user responses",
       responses: [{ id: "user-input", type: "input", value: "newName" }],
       code: "const hello = 'world'",
-      selection: Selection.cursorAt(0, 5)
+      selection: Selection.cursorAt(0, 5),
+      highlightSources: []
     });
   });
 });

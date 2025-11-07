@@ -11,35 +11,12 @@ import {
 import { Path } from "./editor/path";
 import { Position } from "./editor/position";
 import { Selection } from "./editor/selection";
-
-export interface RefactoringConfig__DEPRECATED {
-  command: {
-    key: string;
-    operation: Refactoring__DEPRECATED;
-  };
-}
+import { Decoration, Source } from "./highlights/highlights";
 
 export interface RefactoringConfig {
   command: {
     key: string;
     operation: Refactoring;
-  };
-}
-
-export interface RefactoringWithActionProviderConfig__DEPRECATED {
-  command: {
-    key: string;
-    title: string;
-    operation: Refactoring__DEPRECATED;
-  };
-  actionProvider: {
-    message: string;
-    isPreferred?: boolean;
-    createVisitor: (
-      selection: Selection,
-      onMatch: (path: NodePath) => void
-    ) => Visitor;
-    updateMessage?: (path: NodePath) => string;
   };
 }
 
@@ -60,18 +37,6 @@ export interface RefactoringWithActionProviderConfig {
   };
 }
 
-/**
- * We use to inject an instance of the Editor to the refactoring function,
- * which was asynchronously performing some side-effects.
- *
- * The new version is a pure function that takes and return data instead.
- *
- * This will allow us to move the Refactoring computation elsewhere, like
- * a dedicated language server. This should unblock more ambitious refactorings
- * and improve the performance of the extension.
- */
-export type Refactoring__DEPRECATED = (editor: Editor) => Promise<void>;
-
 export type Refactoring = (state: RefactoringState) => EditorCommand;
 
 export type RefactoringState = BaseRefactoringState &
@@ -81,7 +46,11 @@ export type RefactoringState = BaseRefactoringState &
     | { state: "with user responses"; responses: UserResponse[] }
   );
 
-type BaseRefactoringState = { code: Code; selection: Selection };
+type BaseRefactoringState = {
+  code: Code;
+  selection: Selection;
+  highlightSources: Selection[];
+};
 
 export type UserResponse = BaseUserResponse &
   (
@@ -125,6 +94,20 @@ export type EditorCommand = BaseEditorCommand &
         positions: SelectedPosition[];
         fixedSelection: Selection;
       }
+    | {
+        action: "toggle highlight";
+        source: Source;
+        bindings: Selection[];
+      }
+    | {
+        action: "refresh highlights";
+        highlights: {
+          source: Source;
+          bindings: Selection[];
+          decoration?: Decoration;
+        }[];
+      }
+    | { action: "remove all highlights" }
   );
 
 type BaseEditorCommand = { thenRun?: Refactoring; errorMessage?: string };
@@ -203,7 +186,25 @@ export const COMMANDS = {
     command,
     selection
   }),
-  doNothing: (): EditorCommand => ({ action: "do nothing" })
+  doNothing: (): EditorCommand => ({ action: "do nothing" }),
+  toggleHighlight: (source: Source, bindings: Selection[]): EditorCommand => ({
+    action: "toggle highlight",
+    source,
+    bindings
+  }),
+  refreshHighlights: (
+    highlights: {
+      source: Source;
+      bindings: Selection[];
+      decoration?: Decoration;
+    }[]
+  ): EditorCommand => ({
+    action: "refresh highlights",
+    highlights
+  }),
+  removeAllHighlights: (): EditorCommand => ({
+    action: "remove all highlights"
+  })
 };
 
 export function getUserInput(
@@ -255,7 +256,8 @@ export async function executeRefactoring(
   state: RefactoringState = {
     state: "new",
     code: editor.code,
-    selection: editor.selection
+    selection: editor.selection,
+    highlightSources: editor.highlightSourcesForCurrentFile()
   }
 ) {
   const result = refactor(state);
@@ -300,7 +302,8 @@ export async function executeRefactoring(
         return executeRefactoring(refactor, editor, {
           state: "command not supported",
           code: state.code,
-          selection: state.selection
+          selection: state.selection,
+          highlightSources: state.highlightSources
         });
       }
       break;
@@ -322,7 +325,8 @@ export async function executeRefactoring(
         state: "with user responses",
         responses: [...existingResponses, newResponse],
         code: state.code,
-        selection: state.selection
+        selection: state.selection,
+        highlightSources: state.highlightSources
       });
     }
 
@@ -345,7 +349,8 @@ export async function executeRefactoring(
         state: "with user responses",
         responses: [...existingResponses, newResponse],
         code: state.code,
-        selection: state.selection
+        selection: state.selection,
+        highlightSources: state.highlightSources
       });
     }
 
@@ -377,8 +382,32 @@ export async function executeRefactoring(
         state: "with user responses",
         responses: [...existingResponses, newResponse],
         code: state.code,
-        selection: state.selection
+        selection: state.selection,
+        highlightSources: state.highlightSources
       });
+    }
+
+    case "toggle highlight": {
+      const existingHighlight = editor.findHighlight(result.source);
+      if (existingHighlight) {
+        editor.removeHighlight(existingHighlight);
+      } else {
+        editor.highlight(result.source, result.bindings);
+      }
+      break;
+    }
+
+    case "refresh highlights": {
+      result.highlights.forEach(({ source, bindings, decoration }) => {
+        const existingDecoration = editor.removeHighlight(source);
+        editor.highlight(source, bindings, decoration ?? existingDecoration);
+      });
+      break;
+    }
+
+    case "remove all highlights": {
+      editor.removeAllHighlights();
+      break;
     }
 
     default: {

@@ -1,9 +1,9 @@
-import { RefactoringConfig__DEPRECATED } from "../refactorings";
+import { COMMANDS, RefactoringConfig } from "../refactorings";
 
-const config: RefactoringConfig__DEPRECATED = {
+const config: RefactoringConfig = {
   command: {
     key: "removeAllHighlights",
-    operation: async (editor) => editor.removeAllHighlights()
+    operation: () => COMMANDS.removeAllHighlights()
   }
 };
 

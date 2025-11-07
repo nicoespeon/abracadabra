@@ -1,19 +1,22 @@
 import * as t from "../../ast";
-import { Editor } from "../../editor/editor";
 import { Selection } from "../../editor/selection";
+import { Decoration } from "../../highlights/highlights";
+import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
-export async function refreshHighlights(editor: Editor): Promise<void> {
-  const { code } = editor;
+export function refreshHighlights(state: RefactoringState): EditorCommand {
+  const { code, highlightSources } = state;
 
-  const sources = editor.highlightSourcesForCurrentFile();
-
-  const highlights: { source: Selection; bindings: Selection[] }[] = [];
+  const highlights: {
+    source: Selection;
+    bindings: Selection[];
+    decoration?: Decoration;
+  }[] = [];
 
   t.parseAndTraverseCode(code, {
     Identifier(path) {
       if (!t.isSelectablePath(path)) return;
 
-      const match = sources.find((source) =>
+      const match = highlightSources.find((source) =>
         source.isEqualTo(Selection.fromAST(path.node.loc))
       );
       if (!match) return;
@@ -27,8 +30,5 @@ export async function refreshHighlights(editor: Editor): Promise<void> {
     }
   });
 
-  highlights.forEach(({ source, bindings }) => {
-    const decoration = editor.removeHighlight(source);
-    editor.highlight(source, bindings, decoration);
-  });
+  return COMMANDS.refreshHighlights(highlights);
 }

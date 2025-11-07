@@ -1,6 +1,7 @@
 import { InMemoryEditor } from "../../editor/adapters/in-memory-editor";
 import { Position } from "../../editor/position";
 import { Selection } from "../../editor/selection";
+import { executeRefactoring } from "../../refactorings";
 import removeAllHighlightsConfig from "../remove-all-highlights";
 import { toggleHighlight } from "./toggle-highlight";
 
@@ -10,7 +11,7 @@ describe("Toggle Highlight", () => {
   it("should add highlight around a single identifier", async () => {
     const editor = new InMemoryEditor("const someVariable[cursor] = 123");
 
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe("const [h1]someVariable[/h1] = 123");
   });
@@ -18,8 +19,8 @@ describe("Toggle Highlight", () => {
   it("should toggle highlight off", async () => {
     const editor = new InMemoryEditor("const someVariable[cursor] = 123");
 
-    await toggleHighlight(editor);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe("const someVariable = 123");
   });
@@ -35,7 +36,7 @@ function doSomething() {
 
 console.log(someVariable);`);
 
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe(`
 function doSomething() {
@@ -57,7 +58,7 @@ function doSomething(req) {
   console.log(liftPassCost, liftPassType);
 }`);
 
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe(`
 function doSomething([h1]req[/h1]) {
@@ -81,7 +82,7 @@ if (isValid) {
   }
 }`);
 
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe(`
 let [h1]cost[/h1];
@@ -101,9 +102,9 @@ if (isValid) {
 const someVariable[cursor] = 123;
 const otherVariable = 456`);
 
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe(`
 const [h1]someVariable[/h1] = 123;
@@ -115,11 +116,11 @@ const [h2]otherVariable[/h2] = 456`);
 const someVariable[cursor] = 123;
 const otherVariable = 456`);
 
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(1, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     expect(editor.highlightedCode).toBe(`
 const someVariable = 123;
@@ -130,11 +131,11 @@ const [h2]otherVariable[/h2] = 456`);
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;
 const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
-    await removeAllHighlights(editor);
+    await executeRefactoring(removeAllHighlights, editor);
 
     expect(editor.highlightedCode).toBe(`
 const someVariable = 123;
@@ -145,9 +146,9 @@ const otherVariable = 456;`);
     const editor = new InMemoryEditor(`
 const someVariable[cursor] = 123;
 const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.insert(`const anotherVariable = 789;`, new Position(3, 0));
 
@@ -162,9 +163,9 @@ const anotherVariable = 789;`);
 const someVariable[cursor] = 123;
 const otherVariable = 456;
 const anotherVariable = 789;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.delete(new Selection([3, 0], [4, 0]));
 
@@ -176,9 +177,9 @@ const [h2]otherVariable[/h2] = 456;`);
   it("should adapt the highlights if we insert code before them", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(1, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.insert(`/* hey */`, new Position(1, 0));
 
@@ -189,9 +190,9 @@ const otherVariable = 456;`);
   it("should adapt the highlights if we insert code before them (with indentation)", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
     const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(1, 10));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.insert(`/* hey */`, new Position(1, 2));
 
@@ -203,9 +204,9 @@ const otherVariable = 456;`);
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 
 const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.insert(
       `/* hey */
@@ -224,9 +225,9 @@ const [h2]otherVariable[/h2] = 456;`);
   it("should adapt the highlights if we insert lines of code before them (inserted code would end at same line than highlight starts)", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(1, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.insert(
       `
@@ -243,9 +244,9 @@ const [h2]otherVariable[/h2] = 456;`);
     const editor = new InMemoryEditor(`/* hey */
 const someVariable[cursor] = 123;
 const otherVariable = 456;`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     editor.moveCursorTo(new Position(2, 6));
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.delete(new Selection([0, 0], [1, 0]));
 
@@ -256,7 +257,7 @@ const [h2]otherVariable[/h2] = 456;`);
   it("should remove highlight if we rename a binding that's not the source", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 console.log(someVariable);`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     expect(editor.highlightedCode).toBe(`const [h1]someVariable[/h1] = 123;
 console.log([h1]someVariable[/h1]);`);
 
@@ -269,7 +270,7 @@ console.log(someVaria);`);
   it("should remove highlight if we delete a binding", async () => {
     const editor = new InMemoryEditor(`const req[cursor] = { type: "val" };
 console.log(req.type);`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
     expect(editor.highlightedCode).toBe(`const [h1]req[/h1] = { type: "val" };
 console.log([h1]req[/h1].type);`);
 
@@ -282,7 +283,7 @@ console.log(type);`);
   it("should remove all highlights if we rename the source", async () => {
     const editor = new InMemoryEditor(`const someVariable[cursor] = 123;
 console.log(someVariable);`);
-    await toggleHighlight(editor);
+    await executeRefactoring(toggleHighlight, editor);
 
     await editor.delete(new Selection([0, 15], [0, 18]));
 
