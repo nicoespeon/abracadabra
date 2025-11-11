@@ -80,6 +80,7 @@
     "@types/sinon": "17.0.2",
     "@types/vscode": "1.105.0",
     "@vscode/test-electron": "2.5.2",
+    "@vscode/vsce": "3.7.0",
     "all-contributors-cli": "6.26.1",
     "babel-jest": "30.2.0",
     "chai": "6.2.0",
@@ -103,8 +104,7 @@
     "sinon": "21.0.0",
     "tsup": "8.5.0",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.41.0",
-    "vsce": "2.15.0"
+    "typescript-eslint": "8.41.0"
   },
   "dependencies": {
     "@babel/parser": "7.28.3",
