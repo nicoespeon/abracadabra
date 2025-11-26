@@ -12,7 +12,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
-[![CodeScene Code Health](https://codescene.io/projects/54478/status-badges/code-health)](https://codescene.io/projects/54478) ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
+[![CodeScene Average Code Health](https://codescene.io/projects/72569/status-badges/average-code-health)](https://codescene.io/projects/72569) ![](https://img.shields.io/badge/it%27s-magic-purple.svg)
 
 With Abracadabra, **you can quickly and safely refactor existing code in VS Code**.
 
