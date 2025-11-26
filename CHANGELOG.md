@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- When you type `${}` in a string literal, Abracadabra can automatically convert it into a template literal. But the code is technically invalid until you type the variable name. Thus, Abracadabra was reporting an error message every time you do so. Since this is intended, we silenced that. No more noise!
+
 ## [9.9.0] - 2025-07-16 - For the First Time as a Param 🧊
 
 ### Added
@@ -722,7 +726,6 @@ Fixed an issue with CI so we can deploy. No user-facing change.
 ### Removed (= Breaking)
 
 - All add/remove braces refactorings that have been merged into "Toggle Braces":
-
   1. Add Braces to If Statement
   2. Add Braces to Arrow Function Expression
   3. Add Braces to JSX Attribute
@@ -1107,7 +1110,6 @@ const test = () => {};
 ### Changed
 
 - "Move Statements" UX got some love with 3 great improvements:
-
   1. The editor scrolls only when it's necessary
   2. It doesn't move the parent node unexpectedly!
   3. Cursor ends up more often at the expected position

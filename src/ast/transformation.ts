@@ -125,6 +125,30 @@ export function parse(code: Code): AST {
         );
       }
 
+      // Silence a specific scenario when we create a template literal.
+      // `Some text ${}` can't be parsed because `${}` is invalid.
+      // But this is expected, it's temporary. Don't throw in this case.
+      if (
+        "loc" in error &&
+        typeof error.loc === "object" &&
+        error.loc !== null &&
+        "line" in error.loc &&
+        typeof error.loc.line === "number" &&
+        "column" in error.loc &&
+        typeof error.loc.column === "number"
+      ) {
+        const { line, column } = error.loc;
+        const codeMatrix = code.split("\n");
+        const lineWithError = codeMatrix[line - 1];
+        const charactersAroundError = lineWithError.slice(
+          column - 2,
+          column + 1
+        );
+        if (charactersAroundError === "${}") {
+          error.name = "Canceled";
+        }
+      }
+
       const originalMessage = error.message;
       error.message = `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${originalMessage}`;
       // @ts-expect-error - It's OK, we mutate the error for simplicity
