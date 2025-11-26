@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.9.1]
+
 ### Fixed
 
 - When you type `${}` in a string literal, Abracadabra can automatically convert it into a template literal. But the code is technically invalid until you type the variable name. Thus, Abracadabra was reporting an error message every time you do so. Since this is intended, we silenced that. No more noise!
@@ -2064,7 +2066,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.9.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.9.1...HEAD
+[9.9.1]: https://github.com/nicoespeon/abracadabra/compare/9.9.0...9.9.1
 [9.9.0]: https://github.com/nicoespeon/abracadabra/compare/9.8.1...9.9.0
 [9.8.1]: https://github.com/nicoespeon/abracadabra/compare/9.8.0...9.8.1
 [9.8.0]: https://github.com/nicoespeon/abracadabra/compare/9.7.0...9.8.0
