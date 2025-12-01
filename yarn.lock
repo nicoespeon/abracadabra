@@ -4218,12 +4218,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinon@npm:17.0.2":
-  version: 17.0.2
-  resolution: "@types/sinon@npm:17.0.2"
+"@types/sinon@npm:21.0.0":
+  version: 21.0.0
+  resolution: "@types/sinon@npm:21.0.0"
   dependencies:
     "@types/sinonjs__fake-timers": "npm:*"
-  checksum: 10c0/0794a7c2ebdef397f510db0ccbfa242d4ae52db88f0f0e23e087f569e8ff76b6466680d96209b511acc0f3c08bb70dac6e51c0c2a4f62dfd1faf34f6cb308498
+  checksum: 10c0/276d610b5f975eba875c207075d031389d9321d407ff2210106301471893e1198fe83798c507b241620f498735806ab729aaca59b51a340d31875e5d61e18d3a
   languageName: node
   linkType: hard
 
@@ -4770,7 +4770,7 @@ __metadata:
     "@types/mocha": "npm:10.0.7"
     "@types/node": "npm:24.3.0"
     "@types/pluralize": "npm:0.0.33"
-    "@types/sinon": "npm:17.0.2"
+    "@types/sinon": "npm:21.0.0"
     "@types/vscode": "npm:1.105.0"
     "@vscode/test-electron": "npm:2.5.2"
     "@vscode/vsce": "npm:3.7.0"
