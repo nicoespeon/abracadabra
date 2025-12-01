@@ -4085,6 +4085,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/glob@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@types/glob@npm:9.0.0"
+  dependencies:
+    glob: "npm:*"
+  checksum: 10c0/60c859d875d761dee1f5f20ad87153364f75a06b43e68023a235b1dc09b6603a7118232995ddf1f7385e3c80eefe74b2cf3ca21e7751d39c80cb8c76e7bb0ebb
+  languageName: node
+  linkType: hard
+
 "@types/istanbul-lib-coverage@npm:*, @types/istanbul-lib-coverage@npm:^2.0.1":
   version: 2.0.1
   resolution: "@types/istanbul-lib-coverage@npm:2.0.1"
@@ -4755,6 +4764,7 @@ __metadata:
     "@eslint/js": "npm:9.39.0"
     "@types/babel__traverse": "npm:7.20.6"
     "@types/chai": "npm:5.2.2"
+    "@types/glob": "npm:9.0.0"
     "@types/jest": "npm:30.0.0"
     "@types/jsdom": "npm:27.0.0"
     "@types/mocha": "npm:10.0.7"
@@ -4768,6 +4778,7 @@ __metadata:
     chai: "npm:6.2.0"
     esbuild: "npm:0.25.11"
     eslint: "npm:9.34.0"
+    glob: "npm:13.0.0"
     globals: "npm:16.3.0"
     husky: "npm:9.1.7"
     hygen: "npm:6.2.11"
@@ -7855,6 +7866,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"glob@npm:*, glob@npm:13.0.0":
+  version: 13.0.0
+  resolution: "glob@npm:13.0.0"
+  dependencies:
+    minimatch: "npm:^10.1.1"
+    minipass: "npm:^7.1.2"
+    path-scurry: "npm:^2.0.0"
+  checksum: 10c0/8e2f5821f3f7c312dd102e23a15b80c79e0837a9872784293ba2e15ec73b3f3749a49a42a31bfcb4e52c84820a474e92331c2eebf18819d20308f5c33876630a
+  languageName: node
+  linkType: hard
+
 "glob@npm:^10.2.2, glob@npm:^10.3.10, glob@npm:^10.4.5":
   version: 10.4.5
   resolution: "glob@npm:10.4.5"
@@ -10319,7 +10341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:10.1.1":
+"minimatch@npm:10.1.1, minimatch@npm:^10.1.1":
   version: 10.1.1
   resolution: "minimatch@npm:10.1.1"
   dependencies:
