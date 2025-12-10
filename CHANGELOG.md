@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.10.0] - 2025-12-10 - I'm a Believer 🦅
+
 ### Changed
 
 - Extracting an object property _value_ would not detect similar values in the scope. Now it does! Thanks @SelrahcD for reporting this one! ([#1269](https://github.com/nicoespeon/abracadabra/issues/1269))
@@ -2082,7 +2084,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.9.1...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.10.0...HEAD
+[9.10.0]: https://github.com/nicoespeon/abracadabra/compare/9.9.1...9.10.0
 [9.9.1]: https://github.com/nicoespeon/abracadabra/compare/9.9.0...9.9.1
 [9.9.0]: https://github.com/nicoespeon/abracadabra/compare/9.8.1...9.9.0
 [9.8.1]: https://github.com/nicoespeon/abracadabra/compare/9.8.0...9.8.1
