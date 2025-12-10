@@ -688,6 +688,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "SelrahcD",
+      "name": "Charles Desneuf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1864786?v=4",
+      "profile": "http://www.charlesdesneuf.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
