@@ -75,14 +75,16 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
       }
 
       if (!t.isSelectablePath(path)) return;
-      if (!isExtractableContext(path.parent)) return;
+      if (!isExtractableContext(path.parent, selection)) return;
       if (!isExtractable(path)) return;
       if (isClassIdentifier(path)) return;
 
       const loc = getOccurrenceLoc(path.node, selection);
       if (!loc) return;
 
-      result.selected = createOccurrence(path, loc, selection);
+      result.selected = createOccurrence(path, loc, selection, {
+        isMainOccurrence: true
+      });
     }
   });
 
@@ -132,14 +134,21 @@ function findOtherOccurrences(
       if (pathSelection.isEqualTo(occurrence.selection)) return;
 
       if (t.areEquivalent(path.node, occurrence.path.node)) {
-        result.push(createOccurrence(path, node.loc, selection));
+        result.push(
+          createOccurrence(path, node.loc, selection, {
+            isMainOccurrence: false
+          })
+        );
       }
     }
   };
 
   const scopePath = occurrence.path.getFunctionParent();
-  if (scopePath) scopePath.traverse(visitor);
-  else t.parseAndTraverseCode(code, visitor);
+  if (scopePath) {
+    scopePath.traverse(visitor);
+  } else {
+    t.parseAndTraverseCode(code, visitor);
+  }
 
   return result;
 }
@@ -168,7 +177,7 @@ function findObjectPropertyLoc(
   return null;
 }
 
-function isExtractableContext(node: t.Node): boolean {
+function isExtractableContext(node: t.Node, selection: Selection): boolean {
   return (
     (t.isExpression(node) && !t.isArrowFunctionExpression(node)) ||
     t.isReturnStatement(node) ||
@@ -182,7 +191,8 @@ function isExtractableContext(node: t.Node): boolean {
     t.isSpreadElement(node) ||
     t.isThrowStatement(node) ||
     t.isExportDeclaration(node) ||
-    t.isForOfStatement(node)
+    t.isForOfStatement(node) ||
+    (t.isObjectProperty(node) && selection.isInsideNode(node.value))
   );
 }
 

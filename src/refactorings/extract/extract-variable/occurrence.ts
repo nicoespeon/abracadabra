@@ -26,13 +26,26 @@ import {
 export function createOccurrence(
   path: t.NodePath,
   loc: t.SourceLocation,
-  selection: Selection
+  selection: Selection,
+  options: { isMainOccurrence: boolean }
 ): Occurrence {
-  if (t.canBeShorthand(path)) {
+  if (options.isMainOccurrence && t.canBeShorthand(path)) {
     const variable = new ShorthandVariable(path);
 
     if (variable.isValid) {
       return new ShorthandOccurrence(path, loc, variable);
+    }
+  }
+
+  if (
+    options.isMainOccurrence &&
+    path.parentPath &&
+    t.canBeShorthand(path.parentPath)
+  ) {
+    const variable = new ShorthandVariable(path.parentPath);
+
+    if (variable.isValid) {
+      return new ShorthandOccurrence(path.parentPath, loc, variable);
     }
   }
 
@@ -63,7 +76,7 @@ export function createOccurrence(
       if (!selection.isEmpty && selection.isStrictlyInsidePath(path)) {
         if (path.parentPath.isJSXExpressionContainer()) {
           path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
-          return createOccurrence(path, loc, selection);
+          return createOccurrence(path, loc, selection, options);
         }
 
         path.replaceWith(
@@ -74,7 +87,8 @@ export function createOccurrence(
           // @ts-expect-error
           path.get("expression"),
           loc,
-          selection
+          selection,
+          options
         );
       }
 
@@ -87,7 +101,7 @@ export function createOccurrence(
 
     if (!selection.isEmpty && selection.isStrictlyInsidePath(path)) {
       path.replaceWith(t.convertStringToTemplateLiteral(path, loc));
-      return createOccurrence(path, loc, selection);
+      return createOccurrence(path, loc, selection, options);
     }
 
     return new Occurrence(

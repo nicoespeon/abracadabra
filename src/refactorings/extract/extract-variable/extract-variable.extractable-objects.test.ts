@@ -163,8 +163,8 @@ const a = { [extracted]: "value" };`
     it("a computed object property value when cursor is on value", async () => {
       await shouldExtractVariable({
         code: `const a = { [key]: [cursor]"value" };`,
-        expected: `const extracted = "value";
-const a = { [key]: extracted };`
+        expected: `const value = "value";
+const a = { [key]: value };`
       });
     });
 
@@ -398,6 +398,49 @@ console.log(data.response.code, [cursor]response.user.id, data.response.user.nam
       code: `query.lang = query.lang[cursor] ? "yes" : "nope";`,
       expected: `const { lang } = query;
 query.lang = [cursor]lang ? "yes" : "nope";`
+    });
+  });
+
+  it("should detect multiple occurrences when extracting a value from an object", () => {
+    const code = `const userConfig = {
+  apiBaseUrl: 'https://api.example.com',
+  apiTimeout: 30000[cursor],
+  dbTimeout: 30000,
+  cacheTimeout: 30000,
+};
+
+const apiTimeout = 30000;`;
+
+    const editor = new InMemoryEditor(code);
+    const result = extractVariable({
+      state: "new",
+      code: editor.code,
+      selection: editor.selection,
+      highlightSources: []
+    });
+
+    expect(result.action).toBe("ask user choice");
+  });
+
+  it("should extract multiple occurrences when extracting a value from an object", async () => {
+    await shouldExtractVariable({
+      code: `const userConfig = {
+  apiBaseUrl: 'https://api.example.com',
+  apiTimeout: 30000[cursor],
+  dbTimeout: 30000,
+  cacheTimeout: 30000,
+};
+
+const apiTimeout = 30000;`,
+      expected: `const extracted = 30000;
+const userConfig = {
+  apiBaseUrl: 'https://api.example.com',
+  apiTimeout: extracted,
+  dbTimeout: extracted,
+  cacheTimeout: extracted,
+};
+
+const apiTimeout = extracted;`
     });
   });
 });

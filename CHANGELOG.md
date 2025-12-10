@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Extracting an object property _value_ would not detect similar values in the scope. Now it does! Thanks @SelrahcD for reporting this one! ([#1269](https://github.com/nicoespeon/abracadabra/issues/1269))
+
+```ts
+const userConfig = {
+  apiBaseUrl: "https://api.example.com",
+  // 👇 Extracting this `30000` now detects all 4 occurrences!
+  apiTimeout: 30000,
+  dbTimeout: 30000,
+  cacheTimeout: 30000
+};
+
+const apiTimeout = 30000;
+```
+
 ## [9.9.1]
 
 ### Fixed
