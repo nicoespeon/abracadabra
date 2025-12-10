@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-71-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-72-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -238,6 +238,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://wheretofind.me/@pinage404"><img src="https://avatars.githubusercontent.com/u/6325757?v=4?s=100" width="100px;" alt="pinage404"/><br /><sub><b>pinage404</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=pinage404" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.charlesdesneuf.com"><img src="https://avatars.githubusercontent.com/u/1864786?v=4?s=100" width="100px;" alt="Charles Desneuf"/><br /><sub><b>Charles Desneuf</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3ASelrahcD" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
