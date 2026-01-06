@@ -283,6 +283,32 @@ describe("Remove Redundant Else", () => {
 }`
       });
     });
+
+    it("if has nested branches that all exit (guard clause, no return)", () => {
+      shouldRemoveRedundantElse({
+        code: `function doSomethingIfValid() {
+  if[cursor] (g.fragile) {
+    if (g.weightKg <= 2.0) {
+      return 'REINDEER-EXPRESS';
+    } else {
+      return 'SLED';
+    }
+  } else {
+    return 'SLED';
+  }
+}`,
+        expected: `function doSomethingIfValid() {
+  if (g.fragile) {
+    if (g.weightKg <= 2.0) {
+      return 'REINDEER-EXPRESS';
+    } else {
+      return 'SLED';
+    }
+  }
+  return 'SLED';
+}`
+      });
+    });
   });
 
   it("should show an error message if selection has no redundant else", () => {

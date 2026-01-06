@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Improve "Remove Redundant Else" so it does not add an unnecessary `return` statement when all nested branches of the if-statement exit.
+
 ## [9.10.0] - 2025-12-10 - I'm a Believer 🦅
 
 ### Changed

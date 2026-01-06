@@ -91,7 +91,25 @@ function hasChildWhichMatchesSelection(
 function hasExitStatement(node: t.IfStatement["consequent"]): boolean {
   const lastStatement = last(t.getStatements(node));
 
-  return (
-    t.isReturnStatement(lastStatement) || t.isThrowStatement(lastStatement)
-  );
+  if (t.isReturnStatement(lastStatement) || t.isThrowStatement(lastStatement)) {
+    return true;
+  }
+
+  if (t.isIfStatement(lastStatement)) {
+    return allBranchesExit(lastStatement);
+  }
+
+  return false;
+}
+
+function allBranchesExit(node: t.IfStatement): boolean {
+  const ifBranchExits = hasExitStatement(node.consequent);
+  if (!ifBranchExits) return false;
+
+  const elseBranch = node.alternate;
+  if (!elseBranch) return false;
+
+  return t.isIfStatement(elseBranch)
+    ? allBranchesExit(elseBranch)
+    : hasExitStatement(elseBranch);
 }
