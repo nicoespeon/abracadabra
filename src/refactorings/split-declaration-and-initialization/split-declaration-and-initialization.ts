@@ -28,20 +28,33 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
           kind,
           declarations.flatMap(({ id }) => createVariableDeclarators(id))
         ),
-        ...declarations.filter(isDeclarationInitialized).map(({ id, init }) => {
-          if (t.isIdentifier(id) && id.typeAnnotation) {
-            // Create identifier without type annotation
-            id = t.identifier(id.name);
-          }
+        ...declarations
+          .filter(isDeclarationInitialized)
+          .filter(
+            (d): d is VariableDeclaratorWithLValAndExpression =>
+              t.isLVal(d.id) && t.isExpression(d.init)
+          )
+          .map(({ id, init }) => {
+            if (t.isIdentifier(id) && id.typeAnnotation) {
+              // Create identifier without type annotation
+              id = t.identifier(id.name);
+            }
 
-          return t.expressionStatement(t.assignmentExpression("=", id, init));
-        })
+            return t.expressionStatement(t.assignmentExpression("=", id, init));
+          })
       ]);
     })
   );
 }
 
-function createVariableDeclarators(leftValue: t.LVal): t.VariableDeclarator[] {
+type VariableDeclaratorWithLValAndExpression = t.VariableDeclarator & {
+  id: t.LVal;
+  init: t.Expression;
+};
+
+function createVariableDeclarators(
+  leftValue: t.LVal | t.VoidPattern
+): t.VariableDeclarator[] {
   const identifiers = t.isObjectPattern(leftValue)
     ? objectPatternLVals(leftValue)
     : [leftValue];
@@ -54,7 +67,7 @@ function objectPatternLVals(objectPattern: t.ObjectPattern): t.LVal[] {
     .map((property) => {
       return t.isRestElement(property) ? property.argument : property.key;
     })
-    .filter((lval): lval is t.LVal => t.isLVal(lval));
+    .filter((lval) => t.isLVal(lval));
 }
 
 export function createVisitor(

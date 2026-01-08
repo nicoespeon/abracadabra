@@ -89,7 +89,7 @@ export function getPathsBelow(
 ): NodePath<t.Statement>[] {
   return path
     .getAllNextSiblings()
-    .filter((path): path is NodePath<t.Statement> => t.isStatement(path));
+    .filter((path): path is NodePath<t.Statement> => t.isStatement(path.node));
 }
 
 export function isEmpty(statement: t.Statement | null | undefined): boolean {

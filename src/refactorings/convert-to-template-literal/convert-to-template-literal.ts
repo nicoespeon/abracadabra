@@ -35,7 +35,7 @@ function updateCode(
         []
       );
 
-      if (t.isJSXAttribute(path.parentPath)) {
+      if (t.isJSXAttribute(path.parentPath?.node)) {
         // Case of <MyComponent prop="test" /> => <MyComponent prop={`test`} />
         path.replaceWith(t.jsxExpressionContainer(templateLiteral));
         newCursorPosition = newCursorPosition.addCharacters(1);
@@ -59,10 +59,10 @@ export function createVisitor(
       if (!selection.isInsidePath(path)) return;
 
       // In that case, VS Code will handle it.
-      if (t.isBinaryExpression(path.parentPath)) return;
+      if (t.isBinaryExpression(path.parentPath?.node)) return;
 
       // If we are inside of an import statement, dont show refactoring
-      if (t.isImportDeclaration(path.parentPath)) return;
+      if (t.isImportDeclaration(path.parentPath?.node)) return;
 
       onMatch(path);
     }

@@ -183,7 +183,7 @@ function hasChildWhichMatchesSelection(
   }
 
   function isBlockStatementDirectChild(childPath: t.NodePath): boolean {
-    return childPath.parentPath === path && t.isBlockStatement(childPath);
+    return childPath.parentPath === path && t.isBlockStatement(childPath.node);
   }
 }
 

@@ -145,7 +145,7 @@ function countStatementsIn(path: t.NodePath): StatementsCount {
 
   path.traverse({
     Statement(path) {
-      if (t.isBlockStatement(path)) return;
+      if (t.isBlockStatement(path.node)) return;
 
       result = result === "zero" ? "one" : "many";
     }
@@ -211,17 +211,17 @@ function replaceAllIdentifiersInPath(
 
     let scopePath = path.findParent(
       (parentPath) =>
-        t.isVariableDeclarator(parentPath) ||
-        t.isAssignmentExpression(parentPath) ||
-        t.isAwaitExpression(parentPath) ||
-        (t.isCallExpression(parentPath) &&
-          !t.isAwaitExpression(parentPath.parentPath))
+        t.isVariableDeclarator(parentPath.node) ||
+        t.isAssignmentExpression(parentPath.node) ||
+        t.isAwaitExpression(parentPath.node) ||
+        (t.isCallExpression(parentPath.node) &&
+          !t.isAwaitExpression(parentPath.parentPath?.node))
     );
 
     // Set the global variable, as we know if it's assigned.
     isFunctionAssigned = Boolean(scopePath);
 
-    if (t.isAwaitExpression(scopePath)) {
+    if (t.isAwaitExpression(scopePath?.node)) {
       isFunctionAssigned = false;
       scopePath = scopePath.parentPath;
     }

@@ -68,10 +68,10 @@ function findAllOccurrences(code: Code, selection: Selection): AllOccurrences {
       if (path.isReturnStatement()) {
         const argumentPath = path.get("argument");
         if (Array.isArray(argumentPath)) return;
-        if (argumentPath.node === null) return;
+        if (!argumentPath.node) return;
 
         // Expand selection to `return`, but extract the returned value.
-        path = argumentPath;
+        path = argumentPath as t.NodePath<t.Node>;
       }
 
       if (!t.isSelectablePath(path)) return;
@@ -203,13 +203,13 @@ function isExtractable(path: t.NodePath): boolean {
     !t.isVariableDeclarationIdentifier(path) &&
     !t.isFunctionCallIdentifier(path) &&
     !t.isJSXPartialElement(path) &&
-    !t.isTemplateElement(path) &&
-    !t.isBlockStatement(path) &&
-    !t.isSpreadElement(path) &&
-    !t.isTSTypeAnnotation(path) &&
-    !t.isJSXIdentifier(path) &&
-    !t.isTSTypeParameterInstantiation(path) &&
+    !t.isTemplateElement(path.node) &&
+    !t.isBlockStatement(path.node) &&
+    !t.isSpreadElement(path.node) &&
+    !t.isTSTypeAnnotation(path.node) &&
+    !t.isJSXIdentifier(path.node) &&
+    !t.isTSTypeParameterInstantiation(path.node) &&
     // Don't extract object method because we don't handle `this`.
-    !t.isObjectMethod(path)
+    !t.isObjectMethod(path.node)
   );
 }

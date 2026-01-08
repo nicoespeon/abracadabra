@@ -8,12 +8,12 @@ export function isClassPropertyIdentifier(path: NodePath): boolean {
   return (
     t.isClassProperty(path.parent) &&
     !path.parent.computed &&
-    t.isIdentifier(path)
+    t.isIdentifier(path.node)
   );
 }
 
 export function isVariableDeclarationIdentifier(path: NodePath): boolean {
-  return t.isVariableDeclarator(path.parent) && t.isIdentifier(path);
+  return t.isVariableDeclarator(path.parent) && t.isIdentifier(path.node);
 }
 
 export function isFunctionDeclarationOrArrowFunction(
@@ -27,14 +27,14 @@ export function isFunctionCallIdentifier(path: NodePath): boolean {
 }
 
 export function isJSXPartialElement(path: NodePath): boolean {
-  return t.isJSXOpeningElement(path) || t.isJSXClosingElement(path);
+  return t.isJSXOpeningElement(path.node) || t.isJSXClosingElement(path.node);
 }
 
 export function isPropertyOfMemberExpression(path: NodePath): boolean {
   return (
     (t.isMemberExpression(path.parent) ||
       t.isOptionalMemberExpression(path.parent)) &&
-    t.isIdentifier(path) &&
+    t.isIdentifier(path.node) &&
     !areEquivalent(path.node, path.parent.object)
   );
 }
@@ -52,7 +52,7 @@ export function areAllObjectProperties(
 }
 
 export function isUndefinedLiteral(
-  node: object | null | undefined,
+  node: t.Node | null | undefined,
   opts?: object | null
 ): node is t.Identifier {
   return t.isIdentifier(node, opts) && node.name === "undefined";
@@ -312,16 +312,16 @@ export function isTemplateExpression(node: t.Node): node is TemplateExpression {
 type TemplateExpression = t.Identifier | t.CallExpression | t.MemberExpression;
 
 export function isInBranchedLogic(path: NodePath<t.ReturnStatement>) {
-  return path.getAncestry().some((path) => t.isIfStatement(path));
+  return path.getAncestry().some((path) => t.isIfStatement(path.node));
 }
 
 export function isInAlternate(path: NodePath<t.IfStatement>): boolean {
   const { parentPath } = path;
 
-  return t.isBlockStatement(parentPath)
+  return t.isBlockStatement(parentPath?.node)
     ? t.isIfStatement(parentPath.parent) &&
         parentPath.parent.alternate === path.parent
-    : t.isIfStatement(parentPath.node) &&
+    : t.isIfStatement(parentPath?.node) &&
         parentPath.node.alternate === path.node;
 }
 

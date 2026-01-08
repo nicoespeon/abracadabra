@@ -97,8 +97,8 @@ export function createVisitor(
 function findParentInterfaceDeclaration(
   path: t.SelectablePath<t.TSTypeAnnotation>
 ): InterfaceDeclaration | null {
-  const declaration = path.findParent(
-    t.isTSInterfaceDeclaration
+  const declaration = path.findParent((p) =>
+    t.isTSInterfaceDeclaration(p.node)
   ) as t.NodePath<t.TSInterfaceDeclaration>;
   return declaration ? new InterfaceDeclaration(declaration) : null;
 }
@@ -106,8 +106,8 @@ function findParentInterfaceDeclaration(
 function findParentFunctionDeclaration(
   path: t.SelectablePath<t.TSTypeAnnotation>
 ): FunctionDeclaration | null {
-  const declaration = path.findParent(
-    t.isFunctionDeclaration
+  const declaration = path.findParent((p) =>
+    t.isFunctionDeclaration(p.node)
   ) as t.NodePath<t.FunctionDeclaration>;
   return declaration ? new FunctionDeclaration(declaration) : null;
 }

@@ -8,26 +8,26 @@ import { isSelectablePath, SelectablePath } from "./selection";
 export function findScopePath(path: NodePath<t.Node | null>): NodePath | null {
   return path.findParent(
     (parentPath) =>
-      t.isExpressionStatement(parentPath) ||
-      (t.isVariableDeclaration(parentPath) &&
-        !t.isExportDeclaration(parentPath.parentPath)) ||
-      t.isReturnStatement(parentPath) ||
-      t.isClassDeclaration(parentPath) ||
-      (t.isIfStatement(parentPath) &&
-        !t.isIfStatement(parentPath.parentPath)) ||
-      t.isWhileStatement(parentPath) ||
-      t.isSwitchStatement(parentPath) ||
-      t.isExportDeclaration(parentPath) ||
-      t.isForStatement(parentPath) ||
-      t.isForOfStatement(parentPath) ||
-      t.isThrowStatement(parentPath)
+      t.isExpressionStatement(parentPath.node) ||
+      (t.isVariableDeclaration(parentPath.node) &&
+        !t.isExportDeclaration(parentPath.parentPath?.node)) ||
+      t.isReturnStatement(parentPath.node) ||
+      t.isClassDeclaration(parentPath.node) ||
+      (t.isIfStatement(parentPath.node) &&
+        !t.isIfStatement(parentPath.parentPath?.node)) ||
+      t.isWhileStatement(parentPath.node) ||
+      t.isSwitchStatement(parentPath.node) ||
+      t.isExportDeclaration(parentPath.node) ||
+      t.isForStatement(parentPath.node) ||
+      t.isForOfStatement(parentPath.node) ||
+      t.isThrowStatement(parentPath.node)
   );
 }
 
 export function findParentIfPath(
   path: NodePath<t.Node | null>
 ): NodePath<t.IfStatement> | undefined {
-  return path.findParent((parentPath) => t.isIfStatement(parentPath)) as
+  return path.findParent((parentPath) => t.isIfStatement(parentPath.node)) as
     | NodePath<t.IfStatement>
     | undefined;
 }
@@ -159,7 +159,7 @@ export function selectableReferencesInScope(
   });
 
   return referencePaths
-    .filter((path) => t.isIdentifier(path))
+    .filter((path) => t.isIdentifier(path.node))
     .filter((path) => isSelectablePath(path));
 }
 

@@ -62,7 +62,8 @@ export function createVisitor(
       if (
         t.isRestElement(variableDeclarator.id) ||
         t.isAssignmentPattern(variableDeclarator.id) ||
-        t.isTSParameterProperty(variableDeclarator.id)
+        t.isTSParameterProperty(variableDeclarator.id) ||
+        t.isVoidPattern(variableDeclarator.id)
       ) {
         return;
       }

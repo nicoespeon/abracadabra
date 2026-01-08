@@ -43,6 +43,7 @@ function updateCode(
 
       if (t.isAssignmentExpression(parentPath.node)) {
         const { operator, left } = parentPath.node;
+        if (!t.isLVal(left)) return;
 
         // AssignmentExpression is contained in an ExpressionStatement
         // => replace parentPath's parent path
@@ -63,6 +64,7 @@ function updateCode(
       if (isAssignedToVariable(path)) {
         const { parentPath } = path;
         const id = parentPath.node.id;
+        if (!t.isLVal(id)) return;
 
         const otherDeclarations = [
           ...parentPath.getAllNextSiblings(),
