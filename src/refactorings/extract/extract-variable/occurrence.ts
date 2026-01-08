@@ -84,7 +84,6 @@ export function createOccurrence(
         );
 
         return createOccurrence(
-          // @ts-expect-error
           path.get("expression"),
           loc,
           selection,

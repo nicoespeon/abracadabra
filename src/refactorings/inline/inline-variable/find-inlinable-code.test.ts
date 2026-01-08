@@ -91,8 +91,10 @@ class FakeInlinable implements InlinableCode {
 
 function createInlinableObjectPattern(child: InlinableCode, initName: string) {
   const ANY_LOC: t.SourceLocation = {
-    start: { line: 0, column: 0 },
-    end: { line: 0, column: 0 }
+    start: { line: 0, column: 0, index: 0 },
+    end: { line: 0, column: 0, index: 0 },
+    filename: "",
+    identifierName: null
   };
   const ANY_PROPERTY = t.objectProperty(t.identifier(""), t.identifier(""));
   const ANY_SELECTABLE_PROPERTY: t.SelectableObjectProperty = {

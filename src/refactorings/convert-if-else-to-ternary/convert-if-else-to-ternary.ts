@@ -105,7 +105,7 @@ class ImplicitReturnedTernaryMatcher extends NoopMatcher {
     this.path = path;
 
     const nextSibling = this.path.getAllNextSiblings()[0];
-    if (t.isReturnStatement(nextSibling)) {
+    if (t.isReturnStatement(nextSibling?.node)) {
       this.implicitReturnPath = nextSibling as t.NodePath<t.ReturnStatement>;
     }
   }

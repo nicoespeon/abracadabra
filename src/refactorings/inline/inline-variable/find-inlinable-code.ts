@@ -137,7 +137,7 @@ function wrapInTopLevelPattern(
 ): InlinableCode | null {
   if (!child) return child;
 
-  const isTopLevelObjectPattern = t.isVariableDeclarator(declaration);
+  const isTopLevelObjectPattern = t.isVariableDeclarator(declaration as t.Node);
 
   return isTopLevelObjectPattern
     ? new InlinableTopLevelPattern(child, loc)
@@ -278,7 +278,7 @@ class InlinableIdentifier implements InlinableCode {
 
         const parent = last(ancestors);
         if (!parent) return;
-        if (t.isFunctionDeclaration(parent)) return;
+        if (t.isFunctionDeclaration(parent.node)) return;
         if (
           t.isObjectProperty(parent.node) &&
           parent.node.key === node &&

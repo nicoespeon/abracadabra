@@ -21,6 +21,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
     createVisitor(selection, (path) => {
       const constructor = getConstructor(path);
       if (!constructor) return;
+      if (!path.node.id) return;
 
       const functionParams = constructor.params.map((param) =>
         t.isTSParameterProperty(param) ? param.parameter : param
@@ -111,7 +112,7 @@ function toArrayExpression(pattern: t.ArrayPattern): t.ArrayExpression {
           ? toObjectExpression(element)
           : t.isAssignmentPattern(element)
             ? assignmentToObjectExpression(element)
-            : t.isTSParameterProperty(element)
+            : t.isTSParameterProperty(element) || t.isVoidPattern(element)
               ? null
               : element;
   });
@@ -123,13 +124,9 @@ function toSpreadElement(rest: t.RestElement): t.SpreadElement {
     ? toArrayExpression(rest.argument)
     : t.isObjectPattern(rest.argument)
       ? toObjectExpression(rest.argument)
-      : t.isTSParameterProperty(rest.argument)
-        ? t.isAssignmentPattern(rest.argument.parameter)
-          ? assignmentToObjectExpression(rest.argument.parameter)
-          : rest.argument.parameter
-        : t.isAssignmentPattern(rest.argument)
-          ? assignmentToObjectExpression(rest.argument)
-          : rest.argument;
+      : t.isAssignmentPattern(rest.argument)
+        ? assignmentToObjectExpression(rest.argument)
+        : rest.argument;
 
   if (t.isRestElement(argument)) {
     // This is a nested element, it shouldn't be valid.

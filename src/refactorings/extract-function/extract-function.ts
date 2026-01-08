@@ -57,7 +57,7 @@ function createVisitor(
 ): t.TraverseOptions {
   return {
     enter(path) {
-      if (!t.isStatement(path)) return;
+      if (!t.isStatement(path.node)) return;
       if (!selection.isInsidePath(path)) return;
 
       // Since we visit nodes from parent to children, first check
@@ -77,7 +77,7 @@ function hasChildWhichMatchesSelection(
 
   path.traverse({
     enter(childPath) {
-      if (!t.isStatement(childPath)) return;
+      if (!t.isStatement(childPath.node)) return;
       if (!selection.isInsidePath(childPath)) return;
 
       result = true;

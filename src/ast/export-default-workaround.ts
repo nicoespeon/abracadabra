@@ -32,13 +32,14 @@ export function getExportDefaultDeclarationLoc(
   } catch {}
 
   return {
+    ...path.node.loc,
     start: {
-      line: path.node.loc.start.line,
+      ...path.node.loc.start,
       // Offset with `export default ` that is 15 chars
       column: path.node.loc.start.column + 15
     },
     end: {
-      line: path.node.loc.end.line,
+      ...path.node.loc.end,
       column: hasTrailingSemicolon
         ? path.node.loc.end.column - 1
         : path.node.loc.end.column
