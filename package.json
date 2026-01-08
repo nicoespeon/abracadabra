@@ -68,7 +68,7 @@
     "@babel/preset-typescript": "7.28.5",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.2",
-    "@types/babel__traverse": "7.20.6",
+    "@types/babel__traverse": "7.28.0",
     "@types/chai": "5.2.2",
     "@types/glob": "9.0.0",
     "@types/jest": "30.0.0",
@@ -107,7 +107,7 @@
   "dependencies": {
     "@babel/parser": "7.28.5",
     "@babel/traverse": "7.27.1",
-    "@babel/types": "7.21.5",
+    "@babel/types": "7.28.5",
     "minimatch": "10.1.1",
     "pluralize": "8.0.0",
     "recast": "0.23.11",
