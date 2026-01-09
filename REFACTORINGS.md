@@ -53,6 +53,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Add Numeric Separator](#add-numeric-separator)
   1. [Convert to Arrow Function](#convert-to-arrow-function)
   1. [Toggle Braces](#toggle-braces)
+  1. [Convert Comment to JSDoc](#convert-comment-to-jsdoc)
   1. [Convert to Template Literal](#convert-to-template-literal)
   1. [Replace Binary with Assignment](#replace-binary-with-assignment)
   1. [Convert For-Loop to ForEach](#convert-for-loop-to-foreach)
@@ -490,6 +491,16 @@ It works on:
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Convert Comment to JSDoc
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Converts a comment into a JSDoc comment. This is convenient when you want to document a function or a variable and there already are single-line comments.
+
+![][demo-convert-comment-to-jsdoc]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ### Convert to Template Literal
 
 > 💡 Available as Quick Fix (`Alt ↵`)
@@ -631,6 +642,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-add-numeric-separator]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/add-numeric-separator.gif?raw=true
 [demo-convert-to-arrow-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-to-arrow-function.gif?raw=true
 [demo-convert-guard-to-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-guard-to-if.gif?raw=true
+[demo-convert-comment-to-jsdoc]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-comment-to-jsdoc.gif?raw=true
 [demo-convert-if-else-to-ternary]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-ternary.gif?raw=true
 [demo-convert-ternary-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-ternary-to-if-else.gif?raw=true
 [demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-switch.gif?raw=true

@@ -15,6 +15,7 @@ import {
 } from "./refactorings";
 import addNumericSeparator from "./refactorings/add-numeric-separator";
 import changeSignature from "./refactorings/change-signature";
+import convertCommentToJSDoc from "./refactorings/convert-comment-to-jsdoc";
 import convertForEachToForOf from "./refactorings/convert-for-each-to-for-of";
 import convertForToForEach from "./refactorings/convert-for-to-for-each";
 import convertGuardToIf from "./refactorings/convert-guard-to-if";
@@ -86,6 +87,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
     withActionProvider: [
       changeSignature,
       addNumericSeparator,
+      convertCommentToJSDoc,
       convertForEachToForOf,
       convertForToForEach,
       convertIfElseToSwitch,
