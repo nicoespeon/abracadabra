@@ -12,11 +12,11 @@ describe("Convert Comment to JSDoc", () => {
       shouldConvert({
         code: `interface Props {
   // some comment[cursor]
-  a: number;
+  a: number
 }`,
         expected: `interface Props {
   /** some comment */
-  a: number;
+  a: number
 }`
       });
     });
@@ -43,11 +43,11 @@ const a = 1;`
       shouldConvert({
         code: `interface Props {
   //   comment with extra spaces[cursor]
-  a: number;
+  a: number
 }`,
         expected: `interface Props {
   /**   comment with extra spaces */
-  a: number;
+  a: number
 }`
       });
     });
@@ -59,14 +59,14 @@ const a = 1;`
         code: `interface Props {
   // comment line 1[cursor]
   // comment line 2
-  a: number;
+  a: number
 }`,
         expected: `interface Props {
   /**
    * comment line 1
    * comment line 2
    */
-  a: number;
+  a: number
 }`
       });
     });
@@ -76,14 +76,14 @@ const a = 1;`
         code: `interface Props {
   // comment line 1
   // comment line 2[cursor]
-  a: number;
+  a: number
 }`,
         expected: `interface Props {
   /**
    * comment line 1
    * comment line 2
    */
-  a: number;
+  a: number
 }`
       });
     });
@@ -127,7 +127,7 @@ const add = (a, b) => {}`,
         expected: `/**
  * add two number
  */
-const add = (a, b) => {}`
+const add = (a, b) => {};`
       });
     });
 

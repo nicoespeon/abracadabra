@@ -3,167 +3,27 @@ import { Selection } from "../../editor/selection";
 import { COMMANDS, EditorCommand, RefactoringState } from "../../refactorings";
 
 export function convertCommentToJSDoc(state: RefactoringState): EditorCommand {
-  const { code, selection } = state;
-  const result = findAndConvertComment(code, selection);
+  const updatedCode = updateCode(t.parse(state.code), state.selection);
 
-  if (!result) {
+  if (!updatedCode.hasCodeChanged) {
     return COMMANDS.showErrorDidNotFind("a single-line comment to convert");
   }
 
-  return COMMANDS.write(result);
+  return COMMANDS.write(updatedCode.code);
 }
 
-function findAndConvertComment(
-  code: string,
-  selection: Selection
-): string | null {
-  const lines = code.split("\n");
-  const cursorLine = selection.start.line;
-
-  const commentInfo = findCommentBlockAtLine(lines, cursorLine);
-  if (!commentInfo) return null;
-
-  const { startLine, endLine, comments, indentation } = commentInfo;
-
-  if (!hasCodeFollowingComment(lines, endLine)) return null;
-  if (isInlineComment(lines, startLine)) return null;
-
-  const nextCodeLine = findNextCodeLine(lines, endLine);
-  const followedByFunction =
-    nextCodeLine !== null && isFollowedByFunction(lines, nextCodeLine);
-  const jsDoc = createJSDoc(comments, indentation, followedByFunction);
-  const newLines = [
-    ...lines.slice(0, startLine),
-    jsDoc,
-    ...lines.slice(endLine + 1)
-  ];
-
-  return newLines.join("\n");
-}
-
-interface CommentBlock {
-  startLine: number;
-  endLine: number;
-  comments: string[];
-  indentation: string;
-}
-
-function findCommentBlockAtLine(
-  lines: string[],
-  cursorLine: number
-): CommentBlock | null {
-  const currentLine = lines[cursorLine];
-  if (!currentLine || !isSingleLineComment(currentLine)) return null;
-
-  const indentation = getIndentation(currentLine);
-  let startLine = cursorLine;
-  let endLine = cursorLine;
-
-  while (
-    startLine > 0 &&
-    isSingleLineCommentWithIndent(lines[startLine - 1], indentation)
-  ) {
-    startLine--;
-  }
-
-  while (
-    endLine < lines.length - 1 &&
-    isSingleLineCommentWithIndent(lines[endLine + 1], indentation)
-  ) {
-    endLine++;
-  }
-
-  const comments = [];
-  for (let i = startLine; i <= endLine; i++) {
-    comments.push(extractCommentText(lines[i]));
-  }
-
-  return { startLine, endLine, comments, indentation };
-}
-
-function isSingleLineComment(line: string): boolean {
-  return /^\s*\/\//.test(line);
-}
-
-function isSingleLineCommentWithIndent(
-  line: string,
-  indentation: string
-): boolean {
-  if (!isSingleLineComment(line)) return false;
-  return getIndentation(line) === indentation;
-}
-
-function getIndentation(line: string): string {
-  const match = line.match(/^(\s*)/);
-  return match ? match[1] : "";
-}
-
-function extractCommentText(line: string): string {
-  const match = line.match(/^\s*\/\/\s?(.*)/);
-  return match ? match[1] : "";
-}
-
-function hasCodeFollowingComment(lines: string[], endLine: number): boolean {
-  for (let i = endLine + 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (line && !isSingleLineComment(lines[i])) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function isInlineComment(lines: string[], line: number): boolean {
-  const lineContent = lines[line];
-  const beforeComment = lineContent.substring(0, lineContent.indexOf("//"));
-  return beforeComment.trim().length > 0;
-}
-
-function findNextCodeLine(lines: string[], afterLine: number): number | null {
-  for (let i = afterLine + 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (line && !isSingleLineComment(lines[i])) {
-      return i;
-    }
-  }
-  return null;
-}
-
-function isFollowedByFunction(lines: string[], lineIndex: number): boolean {
-  const line = lines[lineIndex].trim();
-  const functionPatterns = [
-    /^(async\s+)?function\s/,
-    /^(export\s+)?(async\s+)?function\s/,
-    /^(const|let|var)\s+\w+\s*=\s*(async\s+)?\(/,
-    /^(const|let|var)\s+\w+\s*=\s*(async\s+)?\w+\s*=>/,
-    /^\w+\s*\([^)]*\)\s*\{/,
-    /^(async\s+)?\w+\s*\([^)]*\)\s*\{/
-  ];
-
-  return functionPatterns.some((pattern) => pattern.test(line));
-}
-
-function createJSDoc(
-  comments: string[],
-  indentation: string,
-  forceMultiLine: boolean = false
-): string {
-  if (comments.length === 1 && !forceMultiLine) {
-    return `${indentation}/** ${comments[0]} */`;
-  }
-
-  const lines = [
-    `${indentation}/**`,
-    ...comments.map((comment) => `${indentation} * ${comment}`),
-    `${indentation} */`
-  ];
-
-  return lines.join("\n");
+function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  return t.transformAST(
+    ast,
+    createVisitor(selection, (path, comments) => {
+      convertCommentsToJSDoc(path, comments);
+    })
+  );
 }
 
 export function createVisitor(
   selection: Selection,
-  onMatch: (path: t.NodePath) => void
+  onMatch: (path: t.NodePath, comments: t.CommentLine[]) => void
 ): t.Visitor {
   let hasMatched = false;
 
@@ -175,23 +35,161 @@ export function createVisitor(
       if (!leadingComments || leadingComments.length === 0) return;
 
       const singleLineComments = leadingComments.filter(
-        (comment) => comment.type === "CommentLine"
+        (comment): comment is t.CommentLine => comment.type === "CommentLine"
       );
       if (singleLineComments.length === 0) return;
 
-      const firstComment = singleLineComments[0];
-      const lastComment = singleLineComments[singleLineComments.length - 1];
-
-      if (!firstComment.loc || !lastComment.loc) return;
-
-      const commentStartLine = firstComment.loc.start.line - 1;
-      const commentEndLine = lastComment.loc.end.line - 1;
-      const cursorLine = selection.start.line;
-
-      if (cursorLine < commentStartLine || cursorLine > commentEndLine) return;
+      const consecutiveComments = findConsecutiveComments(
+        singleLineComments,
+        selection
+      );
+      if (consecutiveComments.length === 0) return;
 
       hasMatched = true;
-      onMatch(path);
+      onMatch(path, consecutiveComments);
     }
   };
+}
+
+function convertCommentsToJSDoc(
+  path: t.NodePath,
+  comments: t.CommentLine[]
+): void {
+  const commentTexts = comments.map((c) => c.value.replace(/^\s/, ""));
+  const useMultiLineFormat =
+    comments.length > 1 || isFollowedByFunction(path.node);
+
+  const jsDocValue = useMultiLineFormat
+    ? createMultiLineJSDocValue(commentTexts)
+    : `* ${commentTexts[0]} `;
+
+  const jsDocComment: t.CommentBlock = {
+    type: "CommentBlock",
+    value: jsDocValue
+  };
+
+  removeComments(path.node, comments);
+  addJSDocComment(path.node, jsDocComment);
+}
+
+function createMultiLineJSDocValue(commentTexts: string[]): string {
+  const lines = commentTexts.map((text) => ` * ${text}`);
+  return `*\n${lines.join("\n")}\n `;
+}
+
+function removeComments(node: t.Node, commentsToRemove: t.CommentLine[]): void {
+  if (!node.leadingComments) return;
+
+  const commentsToRemoveSet = new Set(commentsToRemove);
+  node.leadingComments = node.leadingComments.filter(
+    (c) => !commentsToRemoveSet.has(c as t.CommentLine)
+  );
+
+  // @ts-expect-error Recast uses a custom `comments` attribute
+  if (node.comments) {
+    // @ts-expect-error Recast uses a custom `comments` attribute
+    node.comments = node.comments.filter(
+      (c: t.Comment) => !commentsToRemoveSet.has(c as t.CommentLine)
+    );
+  }
+}
+
+function addJSDocComment(node: t.Node, jsDocComment: t.CommentBlock): void {
+  if (!node.leadingComments) {
+    node.leadingComments = [];
+  }
+  node.leadingComments.unshift(jsDocComment);
+
+  // @ts-expect-error Recast uses a custom `comments` attribute
+  if (!node.comments) {
+    // @ts-expect-error Recast uses a custom `comments` attribute
+    node.comments = [];
+  }
+  // @ts-expect-error Recast uses a custom `comments` attribute
+  node.comments.unshift({ ...jsDocComment, leading: true });
+}
+
+function isFollowedByFunction(node: t.Node): boolean {
+  if (t.isFunctionDeclaration(node)) return true;
+  if (t.isClassMethod(node)) return true;
+  if (t.isTSDeclareMethod(node)) return true;
+  if (t.isObjectMethod(node)) return true;
+
+  if (t.isVariableDeclaration(node)) {
+    const declarator = node.declarations[0];
+    if (declarator && t.isVariableDeclarator(declarator)) {
+      const init = declarator.init;
+      return t.isArrowFunctionExpression(init) || t.isFunctionExpression(init);
+    }
+  }
+
+  if (t.isExpressionStatement(node)) {
+    const expr = node.expression;
+    if (t.isAssignmentExpression(expr)) {
+      return (
+        t.isArrowFunctionExpression(expr.right) ||
+        t.isFunctionExpression(expr.right)
+      );
+    }
+  }
+
+  return false;
+}
+
+function findConsecutiveComments(
+  comments: t.CommentLine[],
+  selection: Selection
+): t.CommentLine[] {
+  const cursorLine = selection.start.line;
+
+  const sortedComments = [...comments].sort((a, b) => {
+    const lineA = a.loc?.start.line ?? 0;
+    const lineB = b.loc?.start.line ?? 0;
+    return lineA - lineB;
+  });
+
+  const groups = groupConsecutiveComments(sortedComments);
+
+  for (const group of groups) {
+    const firstComment = group[0];
+    const lastComment = group[group.length - 1];
+
+    if (!firstComment.loc || !lastComment.loc) continue;
+
+    const startLine = firstComment.loc.start.line - 1;
+    const endLine = lastComment.loc.end.line - 1;
+
+    if (cursorLine >= startLine && cursorLine <= endLine) {
+      return group;
+    }
+  }
+
+  return [];
+}
+
+function groupConsecutiveComments(
+  comments: t.CommentLine[]
+): t.CommentLine[][] {
+  if (comments.length === 0) return [];
+
+  const groups: t.CommentLine[][] = [];
+  let currentGroup: t.CommentLine[] = [comments[0]];
+
+  for (let i = 1; i < comments.length; i++) {
+    const prevComment = comments[i - 1];
+    const currComment = comments[i];
+
+    const prevLine = prevComment.loc?.end.line ?? 0;
+    const currLine = currComment.loc?.start.line ?? 0;
+
+    if (currLine === prevLine + 1) {
+      currentGroup.push(currComment);
+    } else {
+      groups.push(currentGroup);
+      currentGroup = [currComment];
+    }
+  }
+
+  groups.push(currentGroup);
+  return groups;
 }
