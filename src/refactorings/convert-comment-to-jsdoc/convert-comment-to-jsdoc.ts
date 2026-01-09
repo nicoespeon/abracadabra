@@ -34,9 +34,11 @@ export function createVisitor(
       const leadingComments = path.node.leadingComments;
       if (!leadingComments || leadingComments.length === 0) return;
 
-      const singleLineComments = leadingComments.filter(
-        (comment): comment is t.CommentLine => comment.type === "CommentLine"
-      );
+      const singleLineComments = leadingComments
+        .filter(
+          (comment): comment is t.CommentLine => comment.type === "CommentLine"
+        )
+        .filter((comment) => !isInlineComment(comment, path));
       if (singleLineComments.length === 0) return;
 
       const consecutiveComments = findConsecutiveComments(
@@ -134,6 +136,26 @@ function isFollowedByFunction(node: t.Node): boolean {
   }
 
   return false;
+}
+
+function isInlineComment(comment: t.CommentLine, path: t.NodePath): boolean {
+  if (!comment.loc) return false;
+
+  const commentLine = comment.loc.start.line;
+  const commentColumn = comment.loc.start.column;
+
+  const prevSibling = path.getPrevSibling();
+  if (prevSibling.node && prevSibling.node.loc) {
+    const prevEndLine = prevSibling.node.loc.end.line;
+    if (prevEndLine === commentLine) {
+      return true;
+    }
+  }
+
+  if (commentColumn === 0) return false;
+
+  const nodeStartColumn = path.node.loc?.start.column ?? 0;
+  return commentColumn > nodeStartColumn;
 }
 
 function findConsecutiveComments(

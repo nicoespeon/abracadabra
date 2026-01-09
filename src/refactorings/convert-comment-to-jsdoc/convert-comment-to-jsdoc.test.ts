@@ -203,6 +203,13 @@ const a = 1;`
         code: `const a = 1; // inline comment[cursor]`
       });
     });
+
+    it("should not convert an inline comment, even if there is a following node", () => {
+      shouldShowError({
+        code: `const a = 1; // inline comment[cursor]
+const b = 2;`
+      });
+    });
   });
 });
 
