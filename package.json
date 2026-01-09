@@ -134,6 +134,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.convertCommentToJSDoc",
+        "title": "Convert Comment to JSDoc",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.convertForToForEach",
         "title": "Convert For-Loop to ForEach",
         "category": "Abracadabra"
@@ -445,6 +450,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.convertCommentToJSDoc.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.convertForToForEach.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -625,6 +635,10 @@
         },
         {
           "command": "abracadabra.changeSignature",
+          "when": "editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.convertCommentToJSDoc",
           "when": "editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte"
         },
         {
