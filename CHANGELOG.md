@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[New Refactoring]** "Convert Comment to JSDoc" to turn single-line comments into JSDoc ones faster.
+
+![][demo-convert-comment-to-jsdoc]
+
 - Improve "Remove Redundant Else" so it does not add an unnecessary `return` statement when all nested branches of the if-statement exit.
 
 ## [9.10.0] - 2025-12-10 - I'm a Believer 🦅
@@ -2230,6 +2234,7 @@ function doSomething(someData) {
 [demo-extract-function]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-function.gif?raw=true
 [demo-convert-guard-to-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-guard-to-if.gif?raw=true
 [demo-extract-parameter]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-parameter.gif?raw=true
+[demo-convert-comment-to-jsdoc]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-comment-to-jsdoc.gif?raw=true
 
 <!-- Links -->
 
