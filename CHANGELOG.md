@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.11.0] - 2026-01-23 - I'll Make a JSDoc Out of You ⚔️
+
 ### Added
 
 - **[New Refactoring]** "Convert Comment to JSDoc" to turn single-line comments into JSDoc ones faster.
@@ -2092,7 +2094,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.10.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.11.0...HEAD
+[9.11.0]: https://github.com/nicoespeon/abracadabra/compare/9.10.1...9.11.0
 [9.10.0]: https://github.com/nicoespeon/abracadabra/compare/9.9.1...9.10.0
 [9.9.1]: https://github.com/nicoespeon/abracadabra/compare/9.9.0...9.9.1
 [9.9.0]: https://github.com/nicoespeon/abracadabra/compare/9.8.1...9.9.0
