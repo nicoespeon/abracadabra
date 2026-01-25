@@ -20,7 +20,7 @@ export function extractToInstanceProperty(
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
-  const isTypeScript = detectTypeScript(ast);
+  const isTypeScript = t.isTypeScriptCode(ast);
 
   return t.transformAST(
     ast,
@@ -34,7 +34,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const tsTypeAnnotation =
         typeAnnotation && t.isTSTypeAnnotation(typeAnnotation)
           ? typeAnnotation
-          : inferTypeAnnotation(declaration.init);
+          : t.inferTypeAnnotation(declaration.init);
 
       if (isTypeScript) {
         addClassPropertyTS(classPath, variableName, tsTypeAnnotation);
@@ -46,35 +46,6 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       replaceReferencesInMethod(methodPath, variableName);
     })
   );
-}
-
-function detectTypeScript(ast: t.AST): boolean {
-  let hasTypeScriptSyntax = false;
-
-  t.traverseAST(ast, {
-    TSTypeAnnotation() {
-      hasTypeScriptSyntax = true;
-    },
-    TSInterfaceDeclaration() {
-      hasTypeScriptSyntax = true;
-    },
-    TSTypeAliasDeclaration() {
-      hasTypeScriptSyntax = true;
-    },
-    TSAsExpression() {
-      hasTypeScriptSyntax = true;
-    },
-    TSEnumDeclaration() {
-      hasTypeScriptSyntax = true;
-    },
-    ClassProperty(path) {
-      if (path.node.accessibility) {
-        hasTypeScriptSyntax = true;
-      }
-    }
-  });
-
-  return hasTypeScriptSyntax;
 }
 
 function addClassPropertyTS(
@@ -165,100 +136,6 @@ function isMethodLikeProperty(node: t.Node): boolean {
     (t.isArrowFunctionExpression(node.value) ||
       t.isFunctionExpression(node.value))
   );
-}
-
-function inferTypeAnnotation(init: t.Expression): t.TSTypeAnnotation | null {
-  const inferredType = inferTypeFromExpression(init);
-  if (!inferredType) return null;
-
-  return t.tsTypeAnnotation(inferredType);
-}
-
-function inferTypeFromExpression(expr: t.Expression): t.TSType | null {
-  if (t.isNumericLiteral(expr)) {
-    return t.tsNumberKeyword();
-  }
-
-  if (t.isStringLiteral(expr) || t.isTemplateLiteral(expr)) {
-    return t.tsStringKeyword();
-  }
-
-  if (t.isBooleanLiteral(expr)) {
-    return t.tsBooleanKeyword();
-  }
-
-  if (t.isArrayExpression(expr)) {
-    if (expr.elements.length === 0) {
-      return t.tsArrayType(t.tsUnknownKeyword());
-    }
-
-    const firstElement = expr.elements[0];
-    if (firstElement && t.isExpression(firstElement)) {
-      const elementType = inferTypeFromExpression(firstElement);
-      if (elementType) {
-        return t.tsArrayType(elementType);
-      }
-    }
-
-    return t.tsArrayType(t.tsUnknownKeyword());
-  }
-
-  if (t.isBinaryExpression(expr)) {
-    const arithmeticOperators = [
-      "*",
-      "/",
-      "-",
-      "%",
-      "**",
-      "<<",
-      ">>",
-      ">>>",
-      "&",
-      "|",
-      "^"
-    ];
-    if (arithmeticOperators.includes(expr.operator)) {
-      return t.tsNumberKeyword();
-    }
-
-    if (expr.operator === "+") {
-      const leftType = t.isExpression(expr.left)
-        ? inferTypeFromExpression(expr.left)
-        : null;
-      const rightType = inferTypeFromExpression(expr.right);
-
-      if (
-        (leftType && t.isTSStringKeyword(leftType)) ||
-        (rightType && t.isTSStringKeyword(rightType))
-      ) {
-        return t.tsStringKeyword();
-      }
-
-      return t.tsNumberKeyword();
-    }
-  }
-
-  if (t.isUnaryExpression(expr)) {
-    if (expr.operator === "!" || expr.operator === "delete") {
-      return t.tsBooleanKeyword();
-    }
-    if (
-      expr.operator === "-" ||
-      expr.operator === "+" ||
-      expr.operator === "~"
-    ) {
-      return t.tsNumberKeyword();
-    }
-    if (expr.operator === "typeof") {
-      return t.tsStringKeyword();
-    }
-  }
-
-  if (t.isObjectExpression(expr)) {
-    return t.tsObjectKeyword();
-  }
-
-  return null;
 }
 
 function createPropertyType(
