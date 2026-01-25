@@ -3,7 +3,224 @@ import { Code } from "../../editor/editor";
 import { extractToInstanceProperty } from "./extract-to-instance-property";
 
 describe("Extract to Instance Property", () => {
-  describe("should extract a variable to an instance property", () => {
+  describe("TypeScript (uses class property declaration)", () => {
+    it("with explicit type annotation", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  constructor() {}
+
+  method() {
+    [cursor]let size: number = 42;
+  }
+}`,
+        expected: `class Thing {
+  private size: number | null = null;
+  constructor() {}
+
+  method() {
+    this.size = 42;
+  }
+}`
+      });
+    });
+
+    it("with non-primitive, explicit type annotation", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  method() {
+    [cursor]let items: string[] = [];
+  }
+}`,
+        expected: `class Thing {
+  private items: string[] | null = null;
+  method() {
+    this.items = [];
+  }
+}`
+      });
+    });
+
+    it("detects TypeScript when class has private property", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private name = "test";
+
+  method() {
+    [cursor]let size = 42;
+  }
+}`,
+        expected: `class Thing {
+  private name = "test";
+
+  private size: number | null = null;
+
+  method() {
+    this.size = 42;
+  }
+}`
+      });
+    });
+
+    it("detects TypeScript from interface in file", () => {
+      shouldExtractToInstanceProperty({
+        code: `interface Config {
+  value: number;
+}
+
+class Thing {
+  method() {
+    [cursor]let size = 42;
+  }
+}`,
+        expected: `interface Config {
+  value: number;
+}
+
+class Thing {
+  private size: number | null = null;
+  method() {
+    this.size = 42;
+  }
+}`
+      });
+    });
+
+    it("replaces all references in method", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private other: string = "";
+
+  method() {
+    [cursor]let size = 42;
+    console.log(size);
+    return size * 2;
+  }
+}`,
+        expected: `class Thing {
+  private other: string = "";
+
+  private size: number | null = null;
+
+  method() {
+    this.size = 42;
+    console.log(this.size);
+    return this.size * 2;
+  }
+}`
+      });
+    });
+
+    it("infers number type from arithmetic expression", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private x: number = 0;
+
+  method() {
+    let a = 10;
+    let b = 10;
+    [cursor]let size = a * b;
+  }
+}`,
+        expected: `class Thing {
+  private x: number = 0;
+
+  private size: number | null = null;
+
+  method() {
+    let a = 10;
+    let b = 10;
+    this.size = a * b;
+  }
+}`
+      });
+    });
+
+    it("infers string type from string literal", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private x: number = 0;
+
+  method() {
+    [cursor]let name = "hello";
+  }
+}`,
+        expected: `class Thing {
+  private x: number = 0;
+
+  private name: string | null = null;
+
+  method() {
+    this.name = "hello";
+  }
+}`
+      });
+    });
+
+    it("infers boolean type from boolean literal", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private x: number = 0;
+
+  method() {
+    [cursor]let active = true;
+  }
+}`,
+        expected: `class Thing {
+  private x: number = 0;
+
+  private active: boolean | null = null;
+
+  method() {
+    this.active = true;
+  }
+}`
+      });
+    });
+
+    it("infers array type from array literal", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private x: number = 0;
+
+  method() {
+    [cursor]let items = [1, 2, 3];
+  }
+}`,
+        expected: `class Thing {
+  private x: number = 0;
+
+  private items: number[] | null = null;
+
+  method() {
+    this.items = [1, 2, 3];
+  }
+}`
+      });
+    });
+
+    it("uses no type when type cannot be inferred", () => {
+      shouldExtractToInstanceProperty({
+        code: `class Thing {
+  private x: number = 0;
+
+  method() {
+    [cursor]let result = someFunction();
+  }
+}`,
+        expected: `class Thing {
+  private x: number = 0;
+
+  private result = null;
+
+  method() {
+    this.result = someFunction();
+  }
+}`
+      });
+    });
+  });
+
+  describe("JavaScript (uses constructor initialization)", () => {
     it("basic case with existing constructor", () => {
       shouldExtractToInstanceProperty({
         code: `class Thing {
@@ -90,51 +307,6 @@ describe("Extract to Instance Property", () => {
 
   method() {
     this.value = 42;
-  }
-}`
-      });
-    });
-
-    it("preserves initialization expression", () => {
-      shouldExtractToInstanceProperty({
-        code: `class Calculator {
-  constructor() {
-    this.base = 10;
-  }
-
-  compute() {
-    [cursor]let result = this.base * 2 + someFunction();
-  }
-}`,
-        expected: `class Calculator {
-  constructor() {
-    this.base = 10;
-    this.result = null;
-  }
-
-  compute() {
-    this.result = this.base * 2 + someFunction();
-  }
-}`
-      });
-    });
-
-    it("with TypeScript type annotation", () => {
-      shouldExtractToInstanceProperty({
-        code: `class Thing {
-  constructor() {}
-
-  method() {
-    [cursor]let size: number = 42;
-  }
-}`,
-        expected: `class Thing {
-  constructor() {
-    this.size = null;
-  }
-
-  method() {
-    this.size = 42;
   }
 }`
       });

@@ -20,6 +20,8 @@ export function extractToInstanceProperty(
 }
 
 function updateCode(ast: t.AST, selection: Selection): t.Transformed {
+  const isTypeScript = detectTypeScript(ast);
+
   return t.transformAST(
     ast,
     createVisitor(selection, (path, classPath, methodPath) => {
@@ -28,20 +30,89 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       if (!declaration.init) return;
 
       const variableName = declaration.id.name;
+      const typeAnnotation = declaration.id.typeAnnotation;
+      const tsTypeAnnotation =
+        typeAnnotation && t.isTSTypeAnnotation(typeAnnotation)
+          ? typeAnnotation
+          : inferTypeAnnotation(declaration.init);
 
-      addPropertyToConstructor(classPath, variableName);
+      if (isTypeScript) {
+        addClassPropertyTS(classPath, variableName, tsTypeAnnotation);
+      } else {
+        addPropertyToConstructorJS(classPath, variableName);
+      }
+
       replaceDeclarationWithAssignment(path, variableName, declaration.init);
       replaceReferencesInMethod(methodPath, variableName);
     })
   );
 }
 
-function addPropertyToConstructor(
+function detectTypeScript(ast: t.AST): boolean {
+  let hasTypeScriptSyntax = false;
+
+  t.traverseAST(ast, {
+    TSTypeAnnotation() {
+      hasTypeScriptSyntax = true;
+    },
+    TSInterfaceDeclaration() {
+      hasTypeScriptSyntax = true;
+    },
+    TSTypeAliasDeclaration() {
+      hasTypeScriptSyntax = true;
+    },
+    TSAsExpression() {
+      hasTypeScriptSyntax = true;
+    },
+    TSEnumDeclaration() {
+      hasTypeScriptSyntax = true;
+    },
+    ClassProperty(path) {
+      if (path.node.accessibility) {
+        hasTypeScriptSyntax = true;
+      }
+    }
+  });
+
+  return hasTypeScriptSyntax;
+}
+
+function addClassPropertyTS(
+  classPath: t.NodePath<t.ClassDeclaration | t.ClassExpression>,
+  variableName: string,
+  typeAnnotation: t.TSTypeAnnotation | null
+) {
+  const propertyType = createPropertyType(typeAnnotation);
+
+  const classProperty = t.classProperty(
+    t.identifier(variableName),
+    t.nullLiteral(),
+    propertyType,
+    [],
+    false,
+    false
+  );
+  classProperty.accessibility = "private";
+
+  const classBody = classPath.get("body");
+  const existingDataProperties = classBody.node.body.filter(
+    (member) => t.isClassProperty(member) && !isMethodLikeProperty(member)
+  );
+
+  if (existingDataProperties.length > 0) {
+    const lastPropertyIndex = classBody.node.body.lastIndexOf(
+      existingDataProperties[existingDataProperties.length - 1]
+    );
+    classBody.node.body.splice(lastPropertyIndex + 1, 0, classProperty);
+  } else {
+    classBody.unshiftContainer("body", classProperty);
+  }
+}
+
+function addPropertyToConstructorJS(
   classPath: t.NodePath<t.ClassDeclaration | t.ClassExpression>,
   variableName: string
 ) {
-  const constructorMethod = findConstructor(classPath);
-
   const propertyAssignment = t.expressionStatement(
     t.assignmentExpression(
       "=",
@@ -49,6 +120,8 @@ function addPropertyToConstructor(
       t.nullLiteral()
     )
   );
+
+  const constructorMethod = findConstructor(classPath);
 
   if (constructorMethod) {
     const body = constructorMethod.get("body") as t.NodePath<t.BlockStatement>;
@@ -84,6 +157,122 @@ function findConstructor(
   });
 
   return result;
+}
+
+function isMethodLikeProperty(node: t.Node): boolean {
+  return (
+    t.isClassProperty(node) &&
+    (t.isArrowFunctionExpression(node.value) ||
+      t.isFunctionExpression(node.value))
+  );
+}
+
+function inferTypeAnnotation(init: t.Expression): t.TSTypeAnnotation | null {
+  const inferredType = inferTypeFromExpression(init);
+  if (!inferredType) return null;
+
+  return t.tsTypeAnnotation(inferredType);
+}
+
+function inferTypeFromExpression(expr: t.Expression): t.TSType | null {
+  if (t.isNumericLiteral(expr)) {
+    return t.tsNumberKeyword();
+  }
+
+  if (t.isStringLiteral(expr) || t.isTemplateLiteral(expr)) {
+    return t.tsStringKeyword();
+  }
+
+  if (t.isBooleanLiteral(expr)) {
+    return t.tsBooleanKeyword();
+  }
+
+  if (t.isArrayExpression(expr)) {
+    if (expr.elements.length === 0) {
+      return t.tsArrayType(t.tsUnknownKeyword());
+    }
+
+    const firstElement = expr.elements[0];
+    if (firstElement && t.isExpression(firstElement)) {
+      const elementType = inferTypeFromExpression(firstElement);
+      if (elementType) {
+        return t.tsArrayType(elementType);
+      }
+    }
+
+    return t.tsArrayType(t.tsUnknownKeyword());
+  }
+
+  if (t.isBinaryExpression(expr)) {
+    const arithmeticOperators = [
+      "*",
+      "/",
+      "-",
+      "%",
+      "**",
+      "<<",
+      ">>",
+      ">>>",
+      "&",
+      "|",
+      "^"
+    ];
+    if (arithmeticOperators.includes(expr.operator)) {
+      return t.tsNumberKeyword();
+    }
+
+    if (expr.operator === "+") {
+      const leftType = t.isExpression(expr.left)
+        ? inferTypeFromExpression(expr.left)
+        : null;
+      const rightType = inferTypeFromExpression(expr.right);
+
+      if (
+        (leftType && t.isTSStringKeyword(leftType)) ||
+        (rightType && t.isTSStringKeyword(rightType))
+      ) {
+        return t.tsStringKeyword();
+      }
+
+      return t.tsNumberKeyword();
+    }
+  }
+
+  if (t.isUnaryExpression(expr)) {
+    if (expr.operator === "!" || expr.operator === "delete") {
+      return t.tsBooleanKeyword();
+    }
+    if (
+      expr.operator === "-" ||
+      expr.operator === "+" ||
+      expr.operator === "~"
+    ) {
+      return t.tsNumberKeyword();
+    }
+    if (expr.operator === "typeof") {
+      return t.tsStringKeyword();
+    }
+  }
+
+  if (t.isObjectExpression(expr)) {
+    return t.tsObjectKeyword();
+  }
+
+  return null;
+}
+
+function createPropertyType(
+  typeAnnotation: t.TSTypeAnnotation | null
+): t.TSTypeAnnotation | null {
+  if (!typeAnnotation) {
+    return null;
+  }
+
+  const originalType = typeAnnotation.typeAnnotation;
+  const nullType = t.tsNullKeyword();
+  const unionType = t.tsUnionType([originalType, nullType]);
+
+  return t.tsTypeAnnotation(unionType);
 }
 
 function replaceDeclarationWithAssignment(
