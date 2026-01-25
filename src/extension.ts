@@ -33,6 +33,7 @@ import extractFunction from "./refactorings/extract-function";
 import extractGenericType from "./refactorings/extract-generic-type";
 import extractInterface from "./refactorings/extract-interface";
 import extractParameter from "./refactorings/extract-parameter";
+import extractToInstanceProperty from "./refactorings/extract-to-instance-property";
 import flipIfElse from "./refactorings/flip-if-else";
 import flipOperator from "./refactorings/flip-operator";
 import flipTernary from "./refactorings/flip-ternary";
@@ -98,6 +99,7 @@ const refactorings: { [key: string]: ConfiguredRefactoring } = {
       convertToArrowFunction,
       convertToTemplateLiteral,
       createFactoryForConstructor,
+      extractToInstanceProperty,
       flipIfElse,
       flipOperator,
       flipTernary,

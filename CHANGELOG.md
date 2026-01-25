@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[New Refactoring]** "Extract to Instance Property" to turn a local variable in a class method into an instance property. For TypeScript, it creates a private class property declaration. For JavaScript, it initializes the property in the constructor. ([#883](https://github.com/nicoespeon/abracadabra/issues/883))
+
+![][demo-extract-to-instance-property]
+
 ## [9.11.0] - 2026-01-23 - I'll Make a JSDoc Out of You ⚔️
 
 ### Added
@@ -2238,6 +2244,7 @@ function doSomething(someData) {
 [demo-convert-guard-to-if]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-guard-to-if.gif?raw=true
 [demo-extract-parameter]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-parameter.gif?raw=true
 [demo-convert-comment-to-jsdoc]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-comment-to-jsdoc.gif?raw=true
+[demo-extract-to-instance-property]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-to-instance-property.gif?raw=true
 
 <!-- Links -->
 

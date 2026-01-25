@@ -10,3 +10,4 @@ export * from "./template-literal";
 // templateElement is exported by ./domain too, make it explicit
 export { templateElement } from "./template-literal";
 export * from "./transformation";
+export * from "./typescript";
