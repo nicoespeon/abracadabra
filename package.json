@@ -219,6 +219,11 @@
         "category": "Abracadabra"
       },
       {
+        "command": "abracadabra.extractToInstanceProperty",
+        "title": "Extract to Instance Property",
+        "category": "Abracadabra"
+      },
+      {
         "command": "abracadabra.flipIfElse",
         "title": "Flip If/Else",
         "category": "Abracadabra"
@@ -525,6 +530,11 @@
           "default": true,
           "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
         },
+        "abracadabra.extractToInstanceProperty.showInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if it should appear in the Quick Fix suggestions when it can be executed"
+        },
         "abracadabra.flipIfElse.showInQuickFix": {
           "type": "boolean",
           "default": true,
@@ -703,6 +713,10 @@
         },
         {
           "command": "abracadabra.extractParameter",
+          "when": "editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte"
+        },
+        {
+          "command": "abracadabra.extractToInstanceProperty",
           "when": "editorLangId == javascript || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == typescriptreact || editorLangId == vue || editorLangId == svelte"
         },
         {
