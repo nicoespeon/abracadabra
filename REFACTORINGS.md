@@ -49,6 +49,7 @@ Pro Tip: You can also disable the Quick Fixes you never use in [VS Code settings
   1. [Split Multiple Declarations](#split-multiple-declarations)
   1. [Convert let to const](#convert-let-to-const)
   1. [Extract Parameter](#extract-parameter)
+  1. [Extract to Instance Property](#extract-to-instance-property)
 - Working around the syntax:
   1. [Add Numeric Separator](#add-numeric-separator)
   1. [Convert to Arrow Function](#convert-to-arrow-function)
@@ -450,6 +451,18 @@ Converts the variable declaration into a parameter of the function. It preserves
 
 [⬆️ Go to Table of Contents](#table-of-contents)
 
+### Extract to Instance Property
+
+> 💡 Available as Quick Fix (`Alt ↵`)
+
+Extracts a local variable from a class method into an instance property.
+
+For TypeScript code, it creates a private class property declaration with inferred type annotation. For JavaScript code, it initializes the property in the constructor.
+
+![][demo-extract-to-instance-property]
+
+[⬆️ Go to Table of Contents](#table-of-contents)
+
 ## Working around the syntax
 
 ### Add Numeric Separator
@@ -648,6 +661,7 @@ It won't remove a fragment that's required though: only the ones that have a sin
 [demo-convert-if-else-to-switch]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-if-else-to-switch.gif?raw=true
 [demo-convert-let-to-const]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-let-to-const.gif?raw=true
 [demo-extract-parameter]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-parameter.gif?raw=true
+[demo-extract-to-instance-property]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/extract-to-instance-property.gif?raw=true
 [demo-convert-switch-to-if-else]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/convert-switch-to-if-else.gif?raw=true
 [demo-move-statement-up]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-statement-up.gif?raw=true
 [demo-move-statement-down]: https://github.com/nicoespeon/abracadabra/blob/main/docs/demo/move-statement-down.gif?raw=true
