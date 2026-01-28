@@ -182,7 +182,7 @@ function updateCode(code: Code): Code {
 function negate(path: t.NodePath<t.BinaryExpression | t.LogicalExpression>) {
   const negatedExpression = t.unaryExpression(
     "!",
-    t.getNegatedExpression(path.node),
+    t.getNegatedExpression(path.node, { transformLogicalExpression: true }),
     true
   );
 

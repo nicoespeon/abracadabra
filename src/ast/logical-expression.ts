@@ -25,7 +25,15 @@ export function getNegatedLogicalOperator(
     .otherwise(() => operator);
 }
 
-export function getNegatedExpression(node: t.Expression): t.Expression {
+export function getNegatedExpression(
+  node: t.Expression,
+  options: {
+    /** If `true`, nested logical expressions will be negated too. */
+    transformLogicalExpression?: boolean;
+  } = {}
+): t.Expression {
+  const { transformLogicalExpression = false } = options;
+
   // Simplify double-negations
   if (t.isUnaryExpression(node)) {
     return node.argument;
@@ -43,11 +51,11 @@ export function getNegatedExpression(node: t.Expression): t.Expression {
     };
   }
 
-  if (t.isLogicalExpression(node)) {
+  if (transformLogicalExpression && t.isLogicalExpression(node)) {
     return t.logicalExpression(
       getNegatedLogicalOperator(node.operator),
-      getNegatedExpression(node.left),
-      getNegatedExpression(node.right)
+      getNegatedExpression(node.left, options),
+      getNegatedExpression(node.right, options)
     );
   }
 
