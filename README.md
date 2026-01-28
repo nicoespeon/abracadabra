@@ -8,7 +8,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-73-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-74-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- prettier-ignore-end -->
 
@@ -240,6 +240,7 @@ Thanks goes to these wonderful people ([emoji key][all-contributors-emoji]):
       <td align="center" valign="top" width="14.28%"><a href="https://wheretofind.me/@pinage404"><img src="https://avatars.githubusercontent.com/u/6325757?v=4?s=100" width="100px;" alt="pinage404"/><br /><sub><b>pinage404</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/commits?author=pinage404" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.charlesdesneuf.com"><img src="https://avatars.githubusercontent.com/u/1864786?v=4?s=100" width="100px;" alt="Charles Desneuf"/><br /><sub><b>Charles Desneuf</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3ASelrahcD" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Hifilo"><img src="https://avatars.githubusercontent.com/u/92943726?v=4?s=100" width="100px;" alt="Adrian Gh"/><br /><sub><b>Adrian Gh</b></sub></a><br /><a href="#ideas-Hifilo" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lostfictions"><img src="https://avatars.githubusercontent.com/u/567041?v=4?s=100" width="100px;" alt="six"/><br /><sub><b>six</b></sub></a><br /><a href="https://github.com/nicoespeon/abracadabra/issues?q=author%3Alostfictions" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

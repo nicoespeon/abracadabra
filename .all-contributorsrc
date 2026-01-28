@@ -706,6 +706,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "lostfictions",
+      "name": "six",
+      "avatar_url": "https://avatars.githubusercontent.com/u/567041?v=4",
+      "profile": "https://github.com/lostfictions",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
