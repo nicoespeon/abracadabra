@@ -16,25 +16,40 @@ export function getNegatedBinaryOperator(
     .otherwise(() => operator);
 }
 
-export function getNegatedIfTest(
-  test: t.ConditionalExpression["test"] | t.IfStatement["test"]
-): t.ConditionalExpression["test"] | t.IfStatement["test"] {
+export function getNegatedLogicalOperator(
+  operator: t.LogicalExpression["operator"]
+): t.LogicalExpression["operator"] {
+  return match(operator)
+    .with("||", () => "&&" as const)
+    .with("&&", () => "||" as const)
+    .otherwise(() => operator);
+}
+
+export function getNegatedExpression(node: t.Expression): t.Expression {
   // Simplify double-negations
-  if (t.isUnaryExpression(test)) {
-    return test.argument;
+  if (t.isUnaryExpression(node)) {
+    return node.argument;
   }
 
   // Simplify simple binary expressions
   // E.g. `a > b` => `a <= b` instead of `!(a > b)`
   if (
-    t.isBinaryExpression(test) &&
-    !["instanceof", "in"].includes(test.operator)
+    t.isBinaryExpression(node) &&
+    !["instanceof", "in"].includes(node.operator)
   ) {
     return {
-      ...test,
-      operator: getNegatedBinaryOperator(test.operator)
+      ...node,
+      operator: getNegatedBinaryOperator(node.operator)
     };
   }
 
-  return t.unaryExpression("!", test, true);
+  if (t.isLogicalExpression(node)) {
+    return t.logicalExpression(
+      getNegatedLogicalOperator(node.operator),
+      getNegatedExpression(node.left),
+      getNegatedExpression(node.right)
+    );
+  }
+
+  return t.unaryExpression("!", node, true);
 }

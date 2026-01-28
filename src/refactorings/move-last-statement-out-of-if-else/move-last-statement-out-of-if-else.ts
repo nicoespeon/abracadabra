@@ -36,7 +36,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
 
       if (t.isEmpty(consequent)) {
         path.node.consequent = alternate;
-        path.node.test = t.getNegatedIfTest(path.node.test);
+        path.node.test = t.getNegatedExpression(path.node.test);
         path.node.alternate = null;
       }
 

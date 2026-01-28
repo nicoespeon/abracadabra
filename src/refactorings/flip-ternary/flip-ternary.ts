@@ -22,7 +22,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       const elseBranch = node.alternate;
       node.consequent = elseBranch;
       node.alternate = ifBranch;
-      node.test = t.getNegatedIfTest(node.test);
+      node.test = t.getNegatedExpression(node.test);
     })
   );
 }

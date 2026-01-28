@@ -34,7 +34,7 @@ function updateCode(ast: t.AST, selection: Selection): t.Transformed {
       }
 
       const { node } = path;
-      node.test = t.getNegatedIfTest(node.test);
+      node.test = t.getNegatedExpression(node.test);
     })
   );
 }

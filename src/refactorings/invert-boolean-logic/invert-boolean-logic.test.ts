@@ -143,6 +143,20 @@ describe("Invert Boolean Logic", () => {
       });
     });
 
+    it("`in` operator in chained logic", async () => {
+      await shouldInvertBooleanLogic({
+        code: `if ([cursor]!(a === "object" && "key" in obj && b === "string")) {}`,
+        expected: `if (a !== "object" || !("key" in obj) || b !== "string") {}`
+      });
+    });
+
+    it("`instanceof` operator in chained logic", async () => {
+      await shouldInvertBooleanLogic({
+        code: `if ([cursor]!(a && obj instanceof MyClass && b)) {}`,
+        expected: `if (!a || !(obj instanceof MyClass) || !b) {}`
+      });
+    });
+
     it("non-invertable operators", async () => {
       await shouldInvertBooleanLogic({
         code: "if ([cursor]a + b > 0) {}",

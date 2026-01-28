@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ![][demo-extract-to-instance-property]
 
+### Fixed
+
+- "Invert Boolean Logic" now correctly negates `in` and `instanceof` operators in chained logic. Previously, `!(a && "key" in obj)` would incorrectly become `!a || "key" in obj` instead of `!a || !("key" in obj)`. ([#1285](https://github.com/nicoespeon/abracadabra/issues/1285))
+
 ## [9.11.0] - 2026-01-23 - I'll Make a JSDoc Out of You ⚔️
 
 ### Added

@@ -117,7 +117,7 @@ interface NegatableExpression {
 
 export function getNegatedOperator(node: t.Node): NegatedOperator | null {
   return t.isLogicalExpression(node)
-    ? getNegatedLogicalOperator(node.operator)
+    ? t.getNegatedLogicalOperator(node.operator)
     : t.isBinaryExpression(node)
       ? t.getNegatedBinaryOperator(node.operator)
       : null;
@@ -182,43 +182,10 @@ function updateCode(code: Code): Code {
 function negate(path: t.NodePath<t.BinaryExpression | t.LogicalExpression>) {
   const negatedExpression = t.unaryExpression(
     "!",
-    negateBranch(path.node),
+    t.getNegatedExpression(path.node),
     true
   );
 
   path.replaceWith(negatedExpression);
   path.stop();
-}
-
-function negateBranch(node: t.Expression): t.Expression {
-  if (t.isUnaryExpression(node)) {
-    return node.argument;
-  }
-
-  if (t.isBinaryExpression(node)) {
-    return { ...node, operator: t.getNegatedBinaryOperator(node.operator) };
-  }
-
-  if (t.isLogicalExpression(node)) {
-    return t.logicalExpression(
-      getNegatedLogicalOperator(node.operator),
-      negateBranch(node.left),
-      negateBranch(node.right)
-    );
-  }
-
-  return t.unaryExpression("!", node, true);
-}
-
-function getNegatedLogicalOperator(
-  operator: t.LogicalExpression["operator"]
-): t.LogicalExpression["operator"] {
-  switch (operator) {
-    case "||":
-      return "&&";
-    case "&&":
-      return "||";
-    default:
-      return operator;
-  }
 }
