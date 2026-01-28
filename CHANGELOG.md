@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.12.0] - 2026-01-28 - Stand Out 🎸
+
 ### Added
 
 - **[New Refactoring]** "Extract to Instance Property" to turn a local variable in a class method into an instance property. For TypeScript, it creates a private class property declaration. For JavaScript, it initializes the property in the constructor. ([#883](https://github.com/nicoespeon/abracadabra/issues/883))
@@ -2104,7 +2106,8 @@ function doSomething(someData) {
 
 </details>
 
-[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.11.0...HEAD
+[unreleased]: https://github.com/nicoespeon/abracadabra/compare/9.12.0...HEAD
+[9.12.0]: https://github.com/nicoespeon/abracadabra/compare/9.11.0...9.12.0
 [9.11.0]: https://github.com/nicoespeon/abracadabra/compare/9.10.1...9.11.0
 [9.10.0]: https://github.com/nicoespeon/abracadabra/compare/9.9.1...9.10.0
 [9.9.1]: https://github.com/nicoespeon/abracadabra/compare/9.9.0...9.9.1
