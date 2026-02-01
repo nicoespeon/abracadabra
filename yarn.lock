@@ -4147,12 +4147,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:25.0.3":
-  version: 25.0.3
-  resolution: "@types/node@npm:25.0.3"
+"@types/node@npm:25.1.0":
+  version: 25.1.0
+  resolution: "@types/node@npm:25.1.0"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10c0/b7568f0d765d9469621615e2bb257c7fd1953d95e9acbdb58dffb6627a2c4150d405a4600aa1ad8a40182a94fe5f903cafd3c0a2f5132814debd0e3bfd61f835
+  checksum: 10c0/5f393a127dc9565e2e152514a271455d580c7095afc51302e73ffe8aac3526b64ebacc3c10dd40c93cef81a95436ef2c6a8b522930df567a3f6b189c0eef649a
   languageName: node
   linkType: hard
 
@@ -4734,7 +4734,7 @@ __metadata:
     "@types/jest": "npm:30.0.0"
     "@types/jsdom": "npm:27.0.0"
     "@types/mocha": "npm:10.0.7"
-    "@types/node": "npm:25.0.3"
+    "@types/node": "npm:25.1.0"
     "@types/pluralize": "npm:0.0.33"
     "@types/sinon": "npm:21.0.0"
     "@types/vscode": "npm:1.105.0"
