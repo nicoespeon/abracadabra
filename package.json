@@ -105,7 +105,7 @@
     "typescript-eslint": "8.41.0"
   },
   "dependencies": {
-    "@babel/parser": "7.28.5",
+    "@babel/parser": "7.29.0",
     "@babel/traverse": "7.28.5",
     "@babel/types": "7.28.5",
     "minimatch": "10.1.1",
