@@ -4662,7 +4662,7 @@ __metadata:
     "@vscode/test-electron": "npm:2.5.2"
     "@vscode/vsce": "npm:3.7.1"
     babel-jest: "npm:30.2.0"
-    chai: "npm:6.2.0"
+    chai: "npm:6.2.2"
     esbuild: "npm:0.27.2"
     eslint: "npm:9.39.2"
     glob: "npm:13.0.0"
@@ -5577,10 +5577,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:6.2.0":
-  version: 6.2.0
-  resolution: "chai@npm:6.2.0"
-  checksum: 10c0/a4b7d7f5907187e09f1847afa838d6d1608adc7d822031b7900813c4ed5d9702911ac2468bf290676f22fddb3d727b1be90b57c1d0a69b902534ee29cdc6ff8a
+"chai@npm:6.2.2":
+  version: 6.2.2
+  resolution: "chai@npm:6.2.2"
+  checksum: 10c0/e6c69e5f0c11dffe6ea13d0290936ebb68fcc1ad688b8e952e131df6a6d5797d5e860bc55cef1aca2e950c3e1f96daf79e9d5a70fb7dbaab4e46355e2635ed53
   languageName: node
   linkType: hard
 
