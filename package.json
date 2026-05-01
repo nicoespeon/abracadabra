@@ -82,7 +82,7 @@
     "@vscode/vsce": "3.9.1",
     "babel-jest": "30.3.0",
     "chai": "6.2.2",
-    "esbuild": "0.27.2",
+    "esbuild": "0.28.0",
     "eslint": "10.2.1",
     "glob": "13.0.6",
     "globals": "17.5.0",
