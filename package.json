@@ -80,7 +80,7 @@
     "@types/vscode": "1.105.0",
     "@vscode/test-electron": "2.5.2",
     "@vscode/vsce": "3.9.1",
-    "babel-jest": "30.3.0",
+    "babel-jest": "30.4.1",
     "chai": "6.2.2",
     "esbuild": "0.28.0",
     "eslint": "10.2.1",
