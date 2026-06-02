@@ -102,7 +102,7 @@
     "sinon": "21.0.3",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.54.0"
+    "typescript-eslint": "8.60.1"
   },
   "dependencies": {
     "@babel/parser": "7.29.0",
