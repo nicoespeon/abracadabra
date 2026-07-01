@@ -5045,7 +5045,7 @@ __metadata:
     babel-jest: "npm:30.4.1"
     chai: "npm:6.2.2"
     esbuild: "npm:0.28.1"
-    eslint: "npm:10.4.1"
+    eslint: "npm:10.6.0"
     glob: "npm:13.0.6"
     globals: "npm:17.5.0"
     husky: "npm:9.1.7"
@@ -7449,9 +7449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:10.4.1":
-  version: 10.4.1
-  resolution: "eslint@npm:10.4.1"
+"eslint@npm:10.6.0":
+  version: 10.6.0
+  resolution: "eslint@npm:10.6.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.8.0"
     "@eslint-community/regexpp": "npm:^4.12.2"
@@ -7490,7 +7490,7 @@ __metadata:
       optional: true
   bin:
     eslint: bin/eslint.js
-  checksum: 10c0/c5e6bb5158fb0d62f090c8e2671de5c98283bbb37a58b6d871bada63af3018e683483c96c1a92272fedc8f4e5279a273a0451acf0da67c487406639daa05aedb
+  checksum: 10c0/ebe0261fc750afb7f1a0c5a14f5288e57b971e0bee9754b1620132d22ad0c23690183977b0c9514ffa7ad460768d689d3fb9792ad9267b6c6205e2e0c17d8563
   languageName: node
   linkType: hard
 
