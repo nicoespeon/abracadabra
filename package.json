@@ -110,7 +110,7 @@
     "@babel/types": "7.29.0",
     "minimatch": "10.2.5",
     "pluralize": "8.0.0",
-    "recast": "0.23.11",
+    "recast": "0.23.12",
     "ts-pattern": "5.9.0"
   },
   "activationEvents": [
