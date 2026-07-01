@@ -69,7 +69,7 @@
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
     "@types/babel__traverse": "7.28.0",
-    "@types/chai": "5.2.2",
+    "@types/chai": "5.2.3",
     "@types/glob": "9.0.0",
     "@types/jest": "30.0.0",
     "@types/jsdom": "27.0.0",
