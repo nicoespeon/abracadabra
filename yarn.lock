@@ -6809,11 +6809,11 @@ __metadata:
   linkType: hard
 
 "degit@npm:^2.8.4":
-  version: 2.8.4
-  resolution: "degit@npm:2.8.4"
+  version: 2.8.6
+  resolution: "degit@npm:2.8.6"
   bin:
     degit: degit
-  checksum: 10c0/25ae9daf8010b450ffe8307c5ca903fe8bfaa8bb8622da12f81f2b6c3b1bb24e96fe3ab0b4ec4a1a19684f674b2158a8a3a2178c481882cc4991c7a0859ec40a
+  checksum: 10c0/afe0e88d5d0a00243ce6dbb7c8600741b85a3c16a503db34d44ebde861626bf03cbf2ff34ed97371858295568615bb149195c54825726abc19a946359bae1a82
   languageName: node
   linkType: hard
 
