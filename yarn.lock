@@ -5496,7 +5496,7 @@ __metadata:
     node-stdlib-browser: "npm:1.3.1"
     ovsx: "npm:1.2.0"
     pluralize: "npm:8.0.0"
-    prettier: "npm:3.8.3"
+    prettier: "npm:3.9.9"
     prettier-plugin-organize-imports: "npm:4.3.0"
     pretty-quick: "npm:4.2.2"
     recast: "npm:0.23.12"
@@ -12300,12 +12300,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.8.3":
-  version: 3.8.3
-  resolution: "prettier@npm:3.8.3"
+"prettier@npm:3.9.9":
+  version: 3.9.9
+  resolution: "prettier@npm:3.9.9"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/754816fd7593eb80f6376d7476d463e832c38a12f32775a82683adb6e35b772b1f484d65f19401507b983a8c8a7cd5a4a9f12006bd56491e8f35503473f77473
+  checksum: 10c0/d50ea2537b2ff7dbd5088a214f4d936484e55c665cea2185b477a55b0770be55f3b156a71f63a9a639def6b334667bb327139dc85f2a1041c0a34752cdc74647
   languageName: node
   linkType: hard
 
