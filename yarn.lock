@@ -5494,7 +5494,7 @@ __metadata:
     minimatch: "npm:10.2.5"
     mocha: "npm:11.7.6"
     node-stdlib-browser: "npm:1.3.1"
-    ovsx: "npm:1.1.1"
+    ovsx: "npm:1.2.0"
     pluralize: "npm:8.0.0"
     prettier: "npm:3.8.3"
     prettier-plugin-organize-imports: "npm:4.3.0"
@@ -11818,9 +11818,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ovsx@npm:1.1.1":
-  version: 1.1.1
-  resolution: "ovsx@npm:1.1.1"
+"ovsx@npm:1.2.0":
+  version: 1.2.0
+  resolution: "ovsx@npm:1.2.0"
   dependencies:
     "@inquirer/prompts": "npm:^7.10.1"
     "@vscode/vsce": "npm:^3.7.1"
@@ -11834,7 +11834,7 @@ __metadata:
     yauzl-promise: "npm:^4.0.0"
   bin:
     ovsx: bin/ovsx
-  checksum: 10c0/d4da07c3acd46b2c0d24eb9135faf040868c213c4b5027694527b4ae9346bfd1bdef5f3d2dae6802190f9c6a96d4649ced9e234ae56870a5a61e2e1e77004167
+  checksum: 10c0/83ec96600b26214c82bea5b4c215e24bc6a997b1ea4d8e8e44020150282827140d40556d5142fc68bdafd144affc738521fb42a5f864da69c1074334835e2102
   languageName: node
   linkType: hard
 
