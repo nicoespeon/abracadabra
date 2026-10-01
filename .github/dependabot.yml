@@ -7,6 +7,10 @@ updates:
       time: "10:00"
     open-pull-requests-limit: 10
     ignore:
+      # typescript-eslint doesn't support TS 7 yet
+      - dependency-name: typescript
+        versions:
+          - ">= 7"
       - dependency-name: "@types/babel__traverse"
         versions:
           - "> 7.0.9, < 7.1"

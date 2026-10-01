@@ -20,7 +20,8 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "incremental": true,
-    "tsBuildInfoFile": "out/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+    "types": ["jest", "node"]
   },
   "exclude": [
     "node_modules",
