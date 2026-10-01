@@ -50,7 +50,7 @@ describe("AST Switch", () => {
 
           const result = toSwitch(expression);
           if (!result) {
-            fail("No discriminant found in expression");
+            expect.fail("No discriminant found in expression");
             return;
           }
 
@@ -64,7 +64,7 @@ describe("AST Switch", () => {
 
           const result = toSwitch(expression);
           if (!result) {
-            fail("No discriminant found in expression");
+            expect.fail("No discriminant found in expression");
             return;
           }
 
@@ -78,7 +78,7 @@ describe("AST Switch", () => {
 
           const result = toSwitch(expression);
           if (!result) {
-            fail("No discriminant found in expression");
+            expect.fail("No discriminant found in expression");
             return;
           }
 
@@ -95,7 +95,7 @@ describe("AST Switch", () => {
 
           const result = toSwitch(expression);
           if (!result) {
-            fail("No discriminant found in expression");
+            expect.fail("No discriminant found in expression");
             return;
           }
 

@@ -13,5 +13,5 @@ src/**
 **/*.map
 **/*.ts
 wallaby.js
-jest.config.js
+vitest.config.mjs
 yarn-error.log

@@ -21,7 +21,7 @@ describe("Execute Refactoring", () => {
       details: { trace: "Some trace" }
     });
     const editor = new InMemoryEditor();
-    jest.spyOn(editor, "showError");
+    vi.spyOn(editor, "showError");
 
     await executeRefactoring(fakeRefactoring, editor);
 
@@ -59,7 +59,7 @@ describe("Execute Refactoring", () => {
 
   it("should run given refactoring function if provided for 'write'", async () => {
     const code = "const hello = 'world'";
-    const followUpRefactoring: Refactoring = jest
+    const followUpRefactoring: Refactoring = vi
       .fn()
       .mockReturnValue({ action: "do nothing" });
     const fakeRefactoring: Refactoring = () => ({
@@ -129,7 +129,7 @@ const anotherOne = 'world';`);
       command: "rename symbol"
     });
     const editor = new InMemoryEditor();
-    jest.spyOn(editor, "delegate");
+    vi.spyOn(editor, "delegate");
 
     await executeRefactoring(fakeRefactoring, editor);
 
@@ -137,12 +137,12 @@ const anotherOne = 'world';`);
   });
 
   it("should call refactoring back when command is not supported for 'delegate'", async () => {
-    const fakeRefactoring: Refactoring = jest.fn(() => ({
+    const fakeRefactoring = vi.fn<Refactoring>(() => ({
       action: "delegate",
       command: "rename symbol"
     }));
     const editor = new InMemoryEditor("const hello[cursor] = 'world'");
-    jest.spyOn(editor, "delegate").mockResolvedValueOnce("not supported");
+    vi.spyOn(editor, "delegate").mockResolvedValueOnce("not supported");
 
     await executeRefactoring(fakeRefactoring, editor);
 
@@ -156,7 +156,7 @@ const anotherOne = 'world';`);
   });
 
   it("should run given refactoring function if provided for 'delegate'", async () => {
-    const followUpRefactoring: Refactoring = jest
+    const followUpRefactoring: Refactoring = vi
       .fn()
       .mockReturnValue({ action: "do nothing" });
     const fakeRefactoring: Refactoring = () => ({
@@ -177,10 +177,10 @@ const anotherOne = 'world';`);
   });
 
   it("should NOT run follow-up refactoring function if delegated method is not supported for 'delegate'", async () => {
-    const followUpRefactoring: Refactoring = jest
+    const followUpRefactoring: Refactoring = vi
       .fn()
       .mockReturnValue({ action: "do nothing" });
-    const fakeRefactoring: Refactoring = jest
+    const fakeRefactoring: Refactoring = vi
       .fn()
       .mockReturnValueOnce({
         action: "delegate",
@@ -189,7 +189,7 @@ const anotherOne = 'world';`);
       })
       .mockReturnValue({ action: "do nothing" });
     const editor = new InMemoryEditor("const hello[cursor] = 'world'");
-    jest.spyOn(editor, "delegate").mockResolvedValueOnce("not supported");
+    vi.spyOn(editor, "delegate").mockResolvedValueOnce("not supported");
 
     await executeRefactoring(fakeRefactoring, editor);
 
@@ -197,7 +197,7 @@ const anotherOne = 'world';`);
   });
 
   it("should ask user for input for 'ask user'", async () => {
-    const fakeRefactoring: Refactoring = jest
+    const fakeRefactoring: Refactoring = vi
       .fn()
       .mockReturnValueOnce({
         action: "ask user input",
@@ -205,7 +205,7 @@ const anotherOne = 'world';`);
       })
       .mockReturnValue({ action: "do nothing" });
     const editor = new InMemoryEditor();
-    jest.spyOn(editor, "askUserInput");
+    vi.spyOn(editor, "askUserInput");
 
     await executeRefactoring(fakeRefactoring, editor);
 
@@ -213,7 +213,7 @@ const anotherOne = 'world';`);
   });
 
   it("should call refactoring back with user input for 'ask user'", async () => {
-    const fakeRefactoring: Refactoring = jest
+    const fakeRefactoring: Refactoring = vi
       .fn()
       .mockReturnValueOnce({
         action: "ask user input",
@@ -222,7 +222,7 @@ const anotherOne = 'world';`);
       })
       .mockReturnValue({ action: "do nothing" });
     const editor = new InMemoryEditor("const[cursor] hello = 'world'");
-    jest.spyOn(editor, "askUserInput").mockResolvedValueOnce("newName");
+    vi.spyOn(editor, "askUserInput").mockResolvedValueOnce("newName");
 
     await executeRefactoring(fakeRefactoring, editor);
 
