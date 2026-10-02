@@ -6,7 +6,15 @@ updates:
       interval: monthly
       time: "10:00"
     open-pull-requests-limit: 10
+    groups:
+      # Babel packages depend on each other: bumping one alone duplicates @babel/types and breaks tsc
+      babel:
+        patterns:
+          - "@babel/*"
+          - "@types/babel__*"
     ignore:
+      # Must not exceed engines.vscode, or vsce refuses to package. Bump both together when we need a newer API
+      - dependency-name: "@types/vscode"
       # typescript-eslint doesn't support TS 7 yet
       - dependency-name: typescript
         versions:
@@ -31,9 +39,6 @@ updates:
         versions:
           - 7.12.12
           - 7.13.0
-      - dependency-name: "@types/vscode"
-        versions:
-          - 1.53.0
       - dependency-name: husky
         versions:
           - 5.1.2
