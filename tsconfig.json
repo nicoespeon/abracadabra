@@ -21,7 +21,7 @@
     "isolatedModules": true,
     "incremental": true,
     "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
-    "types": ["jest", "node"]
+    "types": ["vitest/globals", "node"]
   },
   "exclude": [
     "node_modules",

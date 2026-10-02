@@ -27,7 +27,7 @@ export function createConfig(reportErrorsAs = "error") {
         sourceType: "module",
         globals: {
           ...globals.node,
-          ...globals.jest
+          ...globals.vitest
         }
       },
       rules: {

@@ -27,7 +27,7 @@ describe("InlinableObjectPattern", () => {
 
   it("should prepend inlined code with init name before forwarding it to child", () => {
     const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
+    vi.spyOn(child, "updateIdentifiersWith");
     const inlinable = createInlinableObjectPattern(child, "user");
 
     inlinable.updateIdentifiersWith("name");
@@ -37,7 +37,7 @@ describe("InlinableObjectPattern", () => {
 
   it("should resolve inlined code path if inlined code is already a member expression", () => {
     const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
+    vi.spyOn(child, "updateIdentifiersWith");
     const inlinable = createInlinableObjectPattern(child, "names");
 
     inlinable.updateIdentifiersWith("user.first");
@@ -49,7 +49,7 @@ describe("InlinableObjectPattern", () => {
 
   it("should resolve inlined code path if inlined code is an object property", () => {
     const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
+    vi.spyOn(child, "updateIdentifiersWith");
     const inlinable = createInlinableObjectPattern(child, "user");
 
     inlinable.updateIdentifiersWith("n: name");
@@ -59,7 +59,7 @@ describe("InlinableObjectPattern", () => {
 
   it("should resolve inlined code path if inlined code is a complex member expression", () => {
     const child = new FakeInlinable();
-    jest.spyOn(child, "updateIdentifiersWith");
+    vi.spyOn(child, "updateIdentifiersWith");
     const inlinable = createInlinableObjectPattern(child, "user");
 
     inlinable.updateIdentifiersWith("session.data[0].first");
