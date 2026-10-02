@@ -63,7 +63,7 @@
     "deploy:ovsx": "ovsx publish --no-dependencies"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.5",
+    "@eslint/eslintrc": "3.3.7",
     "@eslint/js": "10.0.1",
     "@types/babel__traverse": "7.28.0",
     "@types/chai": "5.2.3",
