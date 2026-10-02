@@ -26,3 +26,7 @@ jobs:
 
       - name: Run CI Tests
         run: yarn test:ci
+
+      # Catches what only breaks at release time (e.g. @types/vscode above engines.vscode)
+      - name: Package extension
+        run: yarn package
