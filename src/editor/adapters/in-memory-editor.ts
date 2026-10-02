@@ -257,7 +257,6 @@ export class InMemoryEditor implements Editor {
           Selection.cursorAt(lineIndex, endChar)
         );
       }
-      line = line.replace(SELECTION_END, "");
 
       lineIndex++;
 
