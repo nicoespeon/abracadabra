@@ -20,13 +20,16 @@ Jest runs tests through its own CommonJS module system. It can't load these pack
 
 Unit tests run with Vitest. Globals (`describe`, `it`, `expect`, `vi`) are enabled so test files don't need imports.
 
+Test files are not isolated from each other (`isolate: false`): workers are reused across files instead of spawning one per file. It makes the suite ~3x faster.
+
 Babel is no longer used to compile tests, so we dropped `@babel/core` and its presets.
 
 ## Consequences
 
 - We can upgrade ESM-only dependencies again
 - Fewer dev dependencies and no Babel config to maintain
-- The full test suite takes about the same time (~10s without cache)
+- The full test suite runs in ~3s, against ~10s with Jest
+- Test files share module state. Tests must not mutate module-level variables, nor spy on or mock modules without restoring them. Otherwise, unrelated tests may fail depending on the order they run
 - Type errors still don't fail tests: CI checks them with `yarn typecheck`
 - Wallaby.js supports Vitest
 

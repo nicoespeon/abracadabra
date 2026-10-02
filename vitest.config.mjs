@@ -5,6 +5,8 @@ export default defineConfig({
   plugins: [htmlAsText()],
   test: {
     globals: true,
+    // ~3x faster; safe as long as tests don't mutate module-level state
+    isolate: false,
     include: ["src/**/*.test.ts"],
     exclude: ["**/*.contract.test.ts"],
     setupFiles: ["./src/test/custom-matchers.ts"]
