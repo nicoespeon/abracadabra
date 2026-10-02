@@ -47,7 +47,7 @@
     "test": "jest",
     "pretest:contract": "tsup-node 'src/**/*.ts' --loader '.html=text' --out-dir out",
     "test:contract": "yarn pretest:contract && node ./out/test/run-contract-tests.js",
-    "test:ci": "yarn typecheck && yarn test && yarn test:contract",
+    "test:ci": "yarn lint && yarn typecheck && yarn test && yarn test:contract",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern '**/playground/**'",
     "build": "node esbuild.config.js --node --browser",
