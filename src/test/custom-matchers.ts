@@ -3,12 +3,9 @@ import { InMemoryEditor } from "../editor/adapters/in-memory-editor";
 import { Code } from "../editor/editor";
 import { Selection } from "../editor/selection";
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toMatchEditor(editor: InMemoryEditor): Promise<R>;
-    }
+declare module "vitest" {
+  interface Matchers<R, T> {
+    toMatchEditor(editor: InMemoryEditor): Promise<R>;
   }
 }
 

@@ -217,6 +217,6 @@ Add in three places:
 ### Running Tests
 
 ```bash
-yarn test --testPathPatterns="my-refactoring" --no-coverage
+yarn test my-refactoring
 yarn typecheck
 ```

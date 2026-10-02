@@ -29,15 +29,15 @@ Architecture decisions for this project [are documented here][adrs], using the [
 1. Go into the cloned repository: `cd abracadabra`
 1. Install dependencies: `yarn install`
 
-The project uses [TypeScript][typescript], [Jest][jest] for the tests and [Prettier][prettier] for the formatting.
+The project uses [TypeScript][typescript], [Vitest][vitest] for the tests and [Prettier][prettier] for the formatting.
 
 ## Run the tests
 
 You can run unit tests with `yarn test`.
 
-To run tests in watch mode, use `yarn test --watch`.
+To run tests in watch mode, use `yarn vitest`.
 
-We use [Jest][jest] under the hood, so you can pass any valid Jest command to `yarn test`.
+We use [Vitest][vitest] under the hood, so you can pass any valid Vitest CLI option to `yarn test`.
 
 ### About tests
 
@@ -192,7 +192,7 @@ That's it. [A GitHub Action](https://github.com/nicoespeon/abracadabra/actions) 
 
 <!-- Links -->
 
-[jest]: https://jestjs.io/
+[vitest]: https://vitest.dev/
 [typescript]: https://www.typescriptlang.org/
 [eslint]: eslint.org
 [prettier]: https://prettier.io

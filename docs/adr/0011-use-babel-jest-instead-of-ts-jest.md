@@ -4,7 +4,7 @@ Date: 2022-02-02
 
 ## Status
 
-Superceded by [15. Use esbuild to build instead of webpack](0015-use-esbuild-to-build-instead-of-webpack.md)
+Superceded by [15. Use esbuild to build instead of webpack](0015-use-esbuild-to-build-instead-of-webpack.md) and [17. Use Vitest instead of Jest](0017-use-vitest-instead-of-jest.md)
 
 ## Context
 
