@@ -102,7 +102,7 @@
     "@babel/parser": "7.29.0",
     "@babel/traverse": "7.29.0",
     "@babel/types": "7.29.0",
-    "minimatch": "10.2.5",
+    "minimatch": "10.2.6",
     "pluralize": "8.0.0",
     "recast": "0.23.12",
     "ts-pattern": "5.9.0"
