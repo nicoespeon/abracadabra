@@ -2847,7 +2847,7 @@ __metadata:
     prettier: "npm:3.9.9"
     prettier-plugin-organize-imports: "npm:4.3.0"
     pretty-quick: "npm:4.2.2"
-    recast: "npm:0.23.12"
+    recast: "npm:0.24.0"
     sinon: "npm:22.1.0"
     ts-pattern: "npm:5.9.0"
     tsup: "npm:8.5.1"
@@ -8406,16 +8406,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recast@npm:0.23.12":
-  version: 0.23.12
-  resolution: "recast@npm:0.23.12"
+"recast@npm:0.24.0":
+  version: 0.24.0
+  resolution: "recast@npm:0.24.0"
   dependencies:
     ast-types: "npm:^0.16.1"
     esprima: "npm:~4.0.0"
     source-map: "npm:~0.6.1"
     tiny-invariant: "npm:^1.3.3"
     tslib: "npm:^2.0.1"
-  checksum: 10c0/6abedaca3ce696b1f3d4e0a9c458319d5e24a8dc2666e91ae9729882f523c144558f4d415b40d398eed6a3956500656299df44ca8c4dba8e35a75bb454a067fc
+  checksum: 10c0/69f5d0daa8852ba6628e81253cb7c5d04d379066c826dc5e2c1e22669e8559aaee2e880f268ef80ea170d944a0674d6ecf1e938f2c7883cdfe79723443badd55
   languageName: node
   linkType: hard
 
