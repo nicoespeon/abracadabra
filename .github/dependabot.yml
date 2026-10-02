@@ -11,6 +11,16 @@ updates:
       - dependency-name: typescript
         versions:
           - ">= 7"
+      # See docs/adr/0018-stay-on-babel-7.md
+      - dependency-name: "@babel/parser"
+        versions:
+          - ">= 8"
+      - dependency-name: "@babel/traverse"
+        versions:
+          - ">= 8"
+      - dependency-name: "@babel/types"
+        versions:
+          - ">= 8"
       - dependency-name: "@types/babel__traverse"
         versions:
           - "> 7.0.9, < 7.1"
