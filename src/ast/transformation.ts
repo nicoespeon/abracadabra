@@ -121,7 +121,8 @@ export function parse(code: Code): AST {
     } catch (error) {
       if (!(error instanceof Error)) {
         throw new Error(
-          `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${error}`
+          `I can't build the AST from the source code. This may be due to a syntax error that you can fix. Here's what went wrong: ${error}`,
+          { cause: error }
         );
       }
 

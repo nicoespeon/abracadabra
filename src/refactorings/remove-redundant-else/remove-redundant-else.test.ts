@@ -284,6 +284,24 @@ describe("Remove Redundant Else", () => {
       });
     });
 
+    it("if has no braces and no sibling next (guard clause)", () => {
+      shouldRemoveRedundantElse({
+        code: `function doSomethingIfValid() {
+  if (age < 6)[cursor]
+    sendResponse(FREE_LIFT);
+  else
+    sendResponse(basePrice);
+}`,
+        expected: `function doSomethingIfValid() {
+  if (age < 6) {
+    sendResponse(FREE_LIFT);
+    return;
+  }
+  sendResponse(basePrice);
+}`
+      });
+    });
+
     it("if has nested branches that all exit (guard clause, no return)", () => {
       shouldRemoveRedundantElse({
         code: `function doSomethingIfValid() {

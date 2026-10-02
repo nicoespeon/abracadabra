@@ -98,7 +98,7 @@ export function findCommonAncestorToDeclareVariable(
   path: NodePath,
   otherPaths: NodePath[]
 ): SelectablePath | null {
-  let ancestor: NodePath | null = null;
+  let ancestor: NodePath;
 
   try {
     // Original type is incorrect, it will return a NodePath or throw

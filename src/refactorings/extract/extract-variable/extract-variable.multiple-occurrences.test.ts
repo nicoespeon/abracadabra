@@ -49,15 +49,8 @@ sendMessage("Hello");`;
 sendMessage("Hello");`;
     const editor = new InMemoryEditor(code);
 
-    let result = extractVariable({
-      state: "new",
-      code: editor.code,
-      selection: editor.selection,
-      highlightSources: []
-    });
-
     // User cancels
-    result = extractVariable({
+    const result = extractVariable({
       state: "with user responses",
       responses: [],
       code: editor.code,
