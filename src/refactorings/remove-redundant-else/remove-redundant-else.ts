@@ -52,7 +52,7 @@ export function createVisitor(
 
       onMatch(path, () => {
         if (!t.hasNextSibling(path) && !hasExitStatement(node.consequent)) {
-          t.pushToBody(node.consequent, t.returnStatement());
+          node.consequent = t.pushToBody(node.consequent, t.returnStatement());
         }
 
         node.alternate = null;

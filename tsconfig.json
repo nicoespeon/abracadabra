@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es2021",
     "outDir": "out",
-    "lib": ["es6", "es2016", "es2021", "ESNext.Array"],
+    "lib": ["es6", "es2016", "es2021", "es2022.error", "ESNext.Array"],
     "sourceMap": true,
     "rootDir": "src",
     "strict": true,
@@ -20,7 +20,8 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "incremental": true,
-    "tsBuildInfoFile": "out/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+    "types": ["vitest/globals", "node"]
   },
   "exclude": [
     "node_modules",

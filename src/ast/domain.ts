@@ -130,7 +130,7 @@ export function forEach(
   );
 }
 
-export function statementWithBraces(node: t.Statement): t.Statement {
+export function statementWithBraces(node: t.Statement) {
   return t.isBlockStatement(node) ? node : t.blockStatement([node]);
 }
 
@@ -139,11 +139,9 @@ export function statementWithoutBraces(node: t.Statement): t.Statement {
 }
 
 export function pushToBody(node: t.Statement, statement: t.Statement) {
-  if (t.isBlockStatement(node)) {
-    node.body.push(statement);
-  } else {
-    node = t.blockStatement([node, statement]);
-  }
+  const block = statementWithBraces(node);
+  block.body.push(statement);
+  return block;
 }
 
 export function toArrowFunctionExpression({

@@ -412,7 +412,7 @@ for (let entry of typedArray) {
     const code = `for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
 }`;
-    const onMatch = jest.fn();
+    const onMatch = vi.fn();
 
     t.traverseAST(t.parse(code), {
       enter(path) {

@@ -1,8 +1,9 @@
 import { JSDOM } from "jsdom";
+import type { Mock } from "vitest";
 import { SelectedPosition } from "../../editor";
 import { createChangeSignatureWebviewTemplate } from "./createChangeSignatureWebviewTemplate";
 
-type AcquireVsCodeAPIPostMessage = Function | jest.Mock<void>;
+type AcquireVsCodeAPIPostMessage = Function | Mock<() => void>;
 
 describe("Change signature Webview Content", () => {
   it("Should render params labels", () => {
@@ -52,7 +53,7 @@ describe("Change signature Webview Content", () => {
   });
 
   describe("Params orders", () => {
-    const postMessage = jest.fn();
+    const postMessage = vi.fn();
     let document: Document;
 
     beforeEach(() => {
@@ -145,7 +146,7 @@ describe("Change signature Webview Content", () => {
     let document: Document;
 
     beforeEach(() => {
-      postMessage = jest.fn();
+      postMessage = vi.fn();
       const selections = [
         createSelectedPosition("paramA", 0),
         createSelectedPosition("paramB", 1)
@@ -221,7 +222,7 @@ describe("Change signature Webview Content", () => {
     let document: Document;
 
     beforeEach(() => {
-      postMessage = jest.fn();
+      postMessage = vi.fn();
       const selections = [
         createSelectedPosition("paramA", 0),
         createSelectedPosition("paramB", 1)
@@ -261,7 +262,7 @@ describe("Change signature Webview Content", () => {
   });
 
   it("Should be able to remove second parameter and add new one", () => {
-    const postMessage = jest.fn();
+    const postMessage = vi.fn();
     const selections = [
       createSelectedPosition("paramA", 0),
       createSelectedPosition("paramB", 1)
