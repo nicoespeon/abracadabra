@@ -2939,9 +2939,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@vscode/vsce@npm:4.0.0"
+"@vscode/vsce@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@vscode/vsce@npm:4.1.0"
   dependencies:
     "@azure/identity": "npm:^4.13.2"
     "@napi-rs/keyring": "npm:^1.3.0"
@@ -2971,7 +2971,7 @@ __metadata:
     yazl: "npm:^2.5.1"
   bin:
     vsce: vsce
-  checksum: 10c0/e02f393a303812096d74cd48eec813ca21add87f58567779f6caf1dfa68bef3719e082b659260439f158d5daa7261981b093ac60428e3f3b09d9651c86b0cc25
+  checksum: 10c0/c5ee16e13466c8fb864c8de16242942c19a375045d9eb906812d3f553cec71ffe748c085178038c9ae73f1d326671a4482833b3010048d91e1ac49a685d949a0
   languageName: node
   linkType: hard
 
@@ -3044,7 +3044,7 @@ __metadata:
     "@types/sinon": "npm:22.0.2"
     "@types/vscode": "npm:1.125.0"
     "@vscode/test-electron": "npm:3.1.0"
-    "@vscode/vsce": "npm:4.0.0"
+    "@vscode/vsce": "npm:4.1.0"
     chai: "npm:6.3.0"
     esbuild: "npm:0.28.2"
     eslint: "npm:10.11.0"
