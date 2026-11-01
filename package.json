@@ -105,7 +105,7 @@
     "minimatch": "10.2.6",
     "pluralize": "8.0.0",
     "recast": "0.24.0",
-    "ts-pattern": "5.9.0"
+    "ts-pattern": "5.9.2"
   },
   "activationEvents": [
     "onLanguage:javascript",
